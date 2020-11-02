@@ -21,49 +21,57 @@ package utils
 import "strconv"
 
 func Int8ToUint8(input []int8) []uint8 {
-    output := make([]uint8, len(input))
-    for i, _val := range input {
-        output[i] = uint8(_val)
-    }
-    return output
+	output := make([]uint8, len(input))
+	for i, _val := range input {
+		output[i] = uint8(_val)
+	}
+	return output
+}
+
+func Uint8ToInt8(input []uint8) []int8 {
+	output := make([]int8, len(input))
+	for i, _val := range input {
+		output[i] = int8(_val)
+	}
+	return output
 }
 
 func Int8ToByte(input []int8) []byte {
-    output := make([]byte, len(input))
-    for i, _val := range input {
-        output[i] = byte(_val)
-    }
-    return output
+	output := make([]byte, len(input))
+	for i, _val := range input {
+		output[i] = byte(_val)
+	}
+	return output
 }
 
 func ByteToInt8(input []byte) []int8 {
-    output := make([]int8, len(input))
-    for i, _val := range input {
-        output[i] = int8(_val)
-    }
-    return output
+	output := make([]int8, len(input))
+	for i, _val := range input {
+		output[i] = int8(_val)
+	}
+	return output
 }
 
 func StrToBool(str string) (bool, error) {
-    boolVal, err := strconv.ParseBool(str)
-    if err != nil {
-        return false, err
-    }
-    return boolVal, nil
+	boolVal, err := strconv.ParseBool(str)
+	if err != nil {
+		return false, err
+	}
+	return boolVal, nil
 }
 
 func StrToUint8(str string) (uint8, error) {
-    intVal, err := strconv.ParseInt(str, 10, 8)
-    if err != nil {
-        return 0, err
-    }
-    return uint8(intVal), nil
+	intVal, err := strconv.ParseInt(str, 10, 8)
+	if err != nil {
+		return 0, err
+	}
+	return uint8(intVal), nil
 }
 
 func StrToUint16(str string) (uint16, error) {
-    intVal, err := strconv.ParseInt(str, 10, 16)
-    if err != nil {
-        return 0, err
-    }
-    return uint16(intVal), nil
+	intVal, err := strconv.ParseInt(str, 10, 16)
+	if err != nil {
+		return 0, err
+	}
+	return uint16(intVal), nil
 }

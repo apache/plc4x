@@ -16,28 +16,9 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package drivers
+package spi
 
-import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"testing"
-)
-
-func TestKnxNetIp(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		t.Errorf("Error decoding test input")
-	}
-	rb := utils.NewReadBuffer(request)
-	adu, err := model.KNXNetIPMessageParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
-
+type HandlerExposer interface {
+	GetPlcFieldHandler() PlcFieldHandler
+	GetPlcValueHandler() PlcValueHandler
 }

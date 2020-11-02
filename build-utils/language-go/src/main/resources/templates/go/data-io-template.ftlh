@@ -111,13 +111,15 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
                     <#assign reservedField = field>
 
             // Reserved Field (Just skip the bytes)
-            ${helper.getReadBufferReadMethodCall(field.type)}
+            if _, _err := ${helper.getReadBufferReadMethodCall(field.type)}; _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
                     <#break>
                 <#case "simple">
                     <#assign simpleField = field>
 
             // Simple Field (${field.name})
-            <#if case.name == "Struct" || field.name == "value">${field.name}<#else>_</#if>, _${field.name}Err := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+            <#if case.name == "Struct" || field.name == "value">${field.name}<#else>_</#if>, _${field.name}Err := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
             if _${field.name}Err != nil {
                 return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
             }
@@ -162,6 +164,61 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
     </#list>
     }
     return nil, errors.New("unsupported type")
+}
+
+func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+    switch {
+    <#list type.switchField.cases as case>
+        case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
+        <#if case.name == "Struct">
+            _map := map[string]interface{}{}
+        </#if>
+        <#list case.fields as field>
+            <#switch field.typeName>
+                <#case "array">
+                    <#assign arrayField = field>
+
+            // Array Field (${field.name})
+            for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, field.loopExpression, type.parserArguments)}); i++ {
+                _itemErr := DataItemSerialize(io, value.GetIndex(i), ${type.parserArguments[0].name}, ${helper.getLanguageTypeNameForTypeReference(type.parserArguments[1].type)}(1))
+                if _itemErr != nil {
+                    return errors.New("Error serializing 'value' field " + _itemErr.Error())
+                }
+            }
+                    <#break>
+                <#case "manual">
+                    <#assign manualField = field>
+
+            // Manual Field (${field.name})
+            _${field.name}Err := ${helper.toSerializationExpression(field, manualField.serializeExpression, type.parserArguments)}
+            if _${field.name}Err != nil {
+                return errors.New("Error serializing '${field.name}' field " + _${field.name}Err.Error())
+            }
+                    <#break>
+                <#case "reserved">
+                    <#assign reservedField = field>
+
+            // Reserved Field (Just skip the bytes)
+            if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))}; _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
+                    <#break>
+                <#case "simple">
+                    <#assign simpleField = field>
+
+            // Simple Field (${field.name})
+            if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()")}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
+                return errors.New("Error serializing '${field.name}' field " + _err.Error())
+            }
+                    <#break>
+            </#switch>
+        </#list>
+    </#list>
+        default:
+
+            return errors.New("unsupported type")
+    }
+    return nil
 }
 
 </#outputformat>

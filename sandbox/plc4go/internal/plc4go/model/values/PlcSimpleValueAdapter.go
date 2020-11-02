@@ -34,7 +34,7 @@ type PlcSimpleNumericValueAdapter struct {
 	PlcSimpleValueAdapter
 }
 
-func (m PlcSimpleNumericValueAdapter) IsBoolean() bool {
+func (m PlcSimpleNumericValueAdapter) IsBool() bool {
 	return true
 }
 
@@ -75,5 +75,9 @@ func (m PlcSimpleNumericValueAdapter) IsFloat32() bool {
 }
 
 func (m PlcSimpleNumericValueAdapter) IsFloat64() bool {
+	return true
+}
+
+func (m PlcSimpleNumericValueAdapter) IsString() bool {
 	return true
 }

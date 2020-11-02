@@ -19,358 +19,628 @@
 package model
 
 import (
-    "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	"errors"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
 func DataItemParse(io *utils.ReadBuffer, dataType string, numberOfValues uint16) (api.PlcValue, error) {
-    switch {
-        case dataType == "IEC61131_BOOL" && numberOfValues == 1: // BOOL
+	switch {
+	case dataType == "IEC61131_BOOL" && numberOfValues == 1: // BOOL
 
-            // Reserved Field (Just skip the bytes)
-            io.ReadUint8(7)
+		// Reserved Field (Just skip the bytes)
+		if _, _err := io.ReadUint8(7); _err != nil {
+			return nil, errors.New("Error parsing reserved field " + _err.Error())
+		}
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadBit()
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcBOOL(value), nil
-        case dataType == "IEC61131_BOOL": // BOOL
+		// Simple Field (value)
+		value, _valueErr := io.ReadBit()
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcBOOL(value), nil
+	case dataType == "IEC61131_BOOL": // BOOL
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_BYTE" && numberOfValues == 1: // BYTE
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_BYTE" && numberOfValues == 1: // BYTE
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint8(8)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcBYTE(value), nil
-        case dataType == "IEC61131_BYTE": // BYTE
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint8(8)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcBYTE(value), nil
+	case dataType == "IEC61131_BYTE": // BYTE
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_WORD" && numberOfValues == 1: // WORD
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_WORD" && numberOfValues == 1: // WORD
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint16(16)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcWORD(value), nil
-        case dataType == "IEC61131_WORD": // WORD
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint16(16)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcWORD(value), nil
+	case dataType == "IEC61131_WORD": // WORD
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_DWORD" && numberOfValues == 1: // DWORD
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_DWORD" && numberOfValues == 1: // DWORD
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint32(32)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcDWORD(value), nil
-        case dataType == "IEC61131_DWORD": // DWORD
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint32(32)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcDWORD(value), nil
+	case dataType == "IEC61131_DWORD": // DWORD
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_LWORD" && numberOfValues == 1: // LWORD
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_LWORD" && numberOfValues == 1: // LWORD
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint64(64)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcLWORD(value), nil
-        case dataType == "IEC61131_LWORD": // LWORD
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint64(64)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcLWORD(value), nil
+	case dataType == "IEC61131_LWORD": // LWORD
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_SINT" && numberOfValues == 1: // SINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_SINT" && numberOfValues == 1: // SINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadInt8(8)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcSINT(value), nil
-        case dataType == "IEC61131_SINT": // SINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadInt8(8)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcSINT(value), nil
+	case dataType == "IEC61131_SINT": // SINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_INT" && numberOfValues == 1: // INT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_INT" && numberOfValues == 1: // INT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadInt16(16)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcINT(value), nil
-        case dataType == "IEC61131_INT": // INT
+		// Simple Field (value)
+		value, _valueErr := io.ReadInt16(16)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcINT(value), nil
+	case dataType == "IEC61131_INT": // INT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_DINT" && numberOfValues == 1: // DINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_DINT" && numberOfValues == 1: // DINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadInt32(32)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcDINT(value), nil
-        case dataType == "IEC61131_DINT": // DINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadInt32(32)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcDINT(value), nil
+	case dataType == "IEC61131_DINT": // DINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_LINT" && numberOfValues == 1: // LINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_LINT" && numberOfValues == 1: // LINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadInt64(64)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcLINT(value), nil
-        case dataType == "IEC61131_LINT": // LINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadInt64(64)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcLINT(value), nil
+	case dataType == "IEC61131_LINT": // LINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_USINT" && numberOfValues == 1: // USINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_USINT" && numberOfValues == 1: // USINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint8(8)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcUSINT(value), nil
-        case dataType == "IEC61131_USINT": // USINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint8(8)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcUSINT(value), nil
+	case dataType == "IEC61131_USINT": // USINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_UINT" && numberOfValues == 1: // UINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_UINT" && numberOfValues == 1: // UINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint16(16)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcUINT(value), nil
-        case dataType == "IEC61131_UINT": // UINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint16(16)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcUINT(value), nil
+	case dataType == "IEC61131_UINT": // UINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_UDINT" && numberOfValues == 1: // UDINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_UDINT" && numberOfValues == 1: // UDINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint32(32)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcUDINT(value), nil
-        case dataType == "IEC61131_UDINT": // UDINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint32(32)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcUDINT(value), nil
+	case dataType == "IEC61131_UDINT": // UDINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_ULINT" && numberOfValues == 1: // ULINT
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_ULINT" && numberOfValues == 1: // ULINT
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint64(64)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcULINT(value), nil
-        case dataType == "IEC61131_ULINT": // ULINT
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint64(64)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcULINT(value), nil
+	case dataType == "IEC61131_ULINT": // ULINT
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_REAL" && numberOfValues == 1: // REAL
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_REAL" && numberOfValues == 1: // REAL
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadFloat32(32)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcREAL(value), nil
-        case dataType == "IEC61131_REAL": // REAL
+		// Simple Field (value)
+		value, _valueErr := io.ReadFloat32(32)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcREAL(value), nil
+	case dataType == "IEC61131_REAL": // REAL
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_LREAL" && numberOfValues == 1: // LREAL
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_LREAL" && numberOfValues == 1: // LREAL
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadFloat64(64)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcLREAL(value), nil
-        case dataType == "IEC61131_LREAL": // LREAL
+		// Simple Field (value)
+		value, _valueErr := io.ReadFloat64(64)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcLREAL(value), nil
+	case dataType == "IEC61131_LREAL": // LREAL
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_CHAR" && numberOfValues == 1: // CHAR
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_CHAR" && numberOfValues == 1: // CHAR
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint8(8)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcCHAR(value), nil
-        case dataType == "IEC61131_CHAR": // CHAR
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint8(8)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcCHAR(value), nil
+	case dataType == "IEC61131_CHAR": // CHAR
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-        case dataType == "IEC61131_WCHAR" && numberOfValues == 1: // WCHAR
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	case dataType == "IEC61131_WCHAR" && numberOfValues == 1: // WCHAR
 
-            // Simple Field (value)
-            value, _valueErr := io.ReadUint16(16)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcWCHAR(value), nil
-        case dataType == "IEC61131_WCHAR": // WCHAR
+		// Simple Field (value)
+		value, _valueErr := io.ReadUint16(16)
+		if _valueErr != nil {
+			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		}
+		return values.NewPlcWCHAR(value), nil
+	case dataType == "IEC61131_WCHAR": // WCHAR
 
-            // Array Field (value)
-            var value []api.PlcValue
-            for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
-                if _itemErr != nil {
-                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
-                }
-                value = append(value, _item)
-            }
-            return values.NewPlcList(value), nil
-    }
-    return nil, errors.New("unsupported type")
+		// Array Field (value)
+		var value []api.PlcValue
+		for i := 0; i < int(numberOfValues); i++ {
+			_item, _itemErr := DataItemParse(io, dataType, uint16(1))
+			if _itemErr != nil {
+				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+			}
+			value = append(value, _item)
+		}
+		return values.NewPlcList(value), nil
+	}
+	return nil, errors.New("unsupported type")
 }
 
+func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataType string, numberOfValues uint16) error {
+	switch {
+	case dataType == "IEC61131_BOOL" && numberOfValues == 1: // BOOL
+
+		// Reserved Field (Just skip the bytes)
+		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+			return errors.New("Error serializing reserved field " + _err.Error())
+		}
+
+		// Simple Field (value)
+		if _err := io.WriteBit(value.GetBool()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_BOOL": // BOOL
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_BYTE" && numberOfValues == 1: // BYTE
+
+		// Simple Field (value)
+		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_BYTE": // BYTE
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_WORD" && numberOfValues == 1: // WORD
+
+		// Simple Field (value)
+		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_WORD": // WORD
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_DWORD" && numberOfValues == 1: // DWORD
+
+		// Simple Field (value)
+		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_DWORD": // DWORD
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_LWORD" && numberOfValues == 1: // LWORD
+
+		// Simple Field (value)
+		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_LWORD": // LWORD
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_SINT" && numberOfValues == 1: // SINT
+
+		// Simple Field (value)
+		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_SINT": // SINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_INT" && numberOfValues == 1: // INT
+
+		// Simple Field (value)
+		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_INT": // INT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_DINT" && numberOfValues == 1: // DINT
+
+		// Simple Field (value)
+		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_DINT": // DINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_LINT" && numberOfValues == 1: // LINT
+
+		// Simple Field (value)
+		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_LINT": // LINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_USINT" && numberOfValues == 1: // USINT
+
+		// Simple Field (value)
+		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_USINT": // USINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_UINT" && numberOfValues == 1: // UINT
+
+		// Simple Field (value)
+		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_UINT": // UINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_UDINT" && numberOfValues == 1: // UDINT
+
+		// Simple Field (value)
+		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_UDINT": // UDINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_ULINT" && numberOfValues == 1: // ULINT
+
+		// Simple Field (value)
+		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_ULINT": // ULINT
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_REAL" && numberOfValues == 1: // REAL
+
+		// Simple Field (value)
+		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_REAL": // REAL
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_LREAL" && numberOfValues == 1: // LREAL
+
+		// Simple Field (value)
+		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_LREAL": // LREAL
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_CHAR" && numberOfValues == 1: // CHAR
+
+		// Simple Field (value)
+		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_CHAR": // CHAR
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	case dataType == "IEC61131_WCHAR" && numberOfValues == 1: // WCHAR
+
+		// Simple Field (value)
+		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case dataType == "IEC61131_WCHAR": // WCHAR
+
+		// Array Field (value)
+		for i := uint32(0); i < uint32(numberOfValues); i++ {
+			_itemErr := DataItemSerialize(io, value.GetIndex(i), dataType, uint16(1))
+			if _itemErr != nil {
+				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+			}
+		}
+	default:
+
+		return errors.New("unsupported type")
+	}
+	return nil
+}

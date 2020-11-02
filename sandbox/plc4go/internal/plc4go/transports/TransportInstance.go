@@ -32,5 +32,6 @@ type TransportInstance interface {
 type TestTransportInstance interface {
 	TransportInstance
 	FillReadBuffer(data []uint8) error
+	GetNumDrainableBytes() uint32
 	DrainWriteBuffer(numBytes uint32) ([]uint8, error)
 }

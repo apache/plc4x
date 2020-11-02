@@ -21,6 +21,7 @@ package model
 import (
 	"encoding/xml"
 	"errors"
+	values2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
@@ -52,14 +53,13 @@ func (m *DefaultPlcWriteRequestBuilder) AddItem(name string, query string, value
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 	fields := make(map[string]model.PlcField)
 	values := make(map[string]values.PlcValue)
-	for _, name := range m.queries {
-		query := m.queries[name]
+	for name, query := range m.queries {
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
 			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
 		}
 		fields[name] = field
-		value, err := m.valueHandler.NewPlcValue(field.GetTypeName(), m.values[name])
+		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
 		if err != nil {
 			return nil, errors.New("Error parsing value of type: " + field.GetTypeName() + ". Got error: " + err.Error())
 		}
@@ -83,6 +83,22 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 	return m.writer.Write(m)
 }
 
+func (m DefaultPlcWriteRequest) GetFieldNames() []string {
+	var fieldNames []string
+	for fieldName, _ := range m.fields {
+		fieldNames = append(fieldNames, fieldName)
+	}
+	return fieldNames
+}
+
+func (m DefaultPlcWriteRequest) GetField(name string) model.PlcField {
+	return m.fields[name]
+}
+
+func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
+	return m.values[name]
+}
+
 func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcWriteRequest"}}); err != nil {
 		return err
@@ -92,11 +108,42 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	for fieldName, field := range m.fields {
+		value := m.values[fieldName]
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err
 		}
 		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
 			return err
+		}
+		switch value.(type) {
+		case values2.PlcList:
+			listValue, ok := value.(values2.PlcList)
+			if !ok {
+				return errors.New("couldn't cast PlcValue to PlcList")
+			}
+			for _, subValue := range listValue.Values {
+				if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+					return err
+				}
+				if !subValue.IsString() {
+					return errors.New("value not serializable to string")
+				}
+				e.EncodeToken(xml.CharData(subValue.GetString()))
+				if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+				return err
+			}
+			if !value.IsString() {
+				return errors.New("value not serializable to string")
+			}
+			e.EncodeToken(xml.CharData(value.GetString()))
+			if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
+				return err
+			}
 		}
 		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err

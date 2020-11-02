@@ -18,7 +18,9 @@
 //
 package values
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+)
 
 type PlcBOOL struct {
 	value bool
@@ -31,26 +33,26 @@ func NewPlcBOOL(value bool) PlcBOOL {
 	}
 }
 
-func (m PlcBOOL) IsBoolean() bool {
+func (m PlcBOOL) IsBool() bool {
 	return true
 }
 
-func (m PlcBOOL) GetBooleanLength() uint32 {
+func (m PlcBOOL) GetBoolLength() uint32 {
 	return 1
 }
 
-func (m PlcBOOL) GetBoolean() bool {
+func (m PlcBOOL) GetBool() bool {
 	return m.value
 }
 
-func (m PlcBOOL) GetBooleanAt(index uint32) bool {
+func (m PlcBOOL) GetBoolAt(index uint32) bool {
 	if index == 0 {
 		return m.value
 	}
 	return false
 }
 
-func (m PlcBOOL) GetBooleanArray() []bool {
+func (m PlcBOOL) GetBoolArray() []bool {
 	return []bool{m.value}
 }
 
@@ -59,4 +61,16 @@ func (m PlcBOOL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m PlcBOOL) IsString() bool {
+	return true
+}
+
+func (m PlcBOOL) GetString() string {
+	if m.GetBool() {
+		return "true"
+	} else {
+		return "false"
+	}
 }

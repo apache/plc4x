@@ -34,6 +34,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.LinkedHashMap;
@@ -142,7 +143,35 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable 
 
     @Override
     public void xmlSerialize(Element parent) {
-        // TODO: Implement
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcWriteRequest");
+        Element fieldsElement = doc.createElement("fields");
+        messageElement.appendChild(fieldsElement);
+        for (Map.Entry<String, FieldValueItem> fieldEntry : fields.entrySet()) {
+            FieldValueItem fieldValueItem = fieldEntry.getValue();
+            String fieldName = fieldEntry.getKey();
+            Element fieldNameElement = doc.createElement(fieldName);
+            fieldsElement.appendChild(fieldNameElement);
+            PlcField field = fieldValueItem.getField();
+            if(!(field instanceof XmlSerializable)) {
+                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+            }
+            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
+            final PlcValue value = fieldValueItem.getValue();
+            if(value instanceof PlcList) {
+                PlcList list = (PlcList) value;
+                for (PlcValue plcValue : list.getList()) {
+                    Element fieldValueElement = doc.createElement("value");
+                    fieldValueElement.setTextContent(plcValue.getString());
+                    fieldNameElement.appendChild(fieldValueElement);
+                }
+            } else {
+                Element fieldValueElement = doc.createElement("value");
+                fieldValueElement.setTextContent(value.getString());
+                fieldNameElement.appendChild(fieldValueElement);
+            }
+        }
+        parent.appendChild(messageElement);
     }
 
     public static class Builder implements PlcWriteRequest.Builder {
