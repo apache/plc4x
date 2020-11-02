@@ -19,9 +19,9 @@
 package utils
 
 import (
-    "bytes"
+	"bytes"
 	"github.com/icza/bitio"
-    "math"
+	"math"
 )
 
 type ReadBuffer struct {
@@ -30,7 +30,7 @@ type ReadBuffer struct {
 	pos    uint64
 }
 
-func ReadBufferNew(data []uint8) *ReadBuffer {
+func NewReadBuffer(data []uint8) *ReadBuffer {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &ReadBuffer{
@@ -139,7 +139,7 @@ func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
 
 func (rb *ReadBuffer) ReadFloat32(bitLength uint8) (float32, error) {
 	rb.pos += uint64(bitLength)
-    uintValue := uint32(rb.reader.TryReadBits(bitLength))
+	uintValue := uint32(rb.reader.TryReadBits(bitLength))
 	res := math.Float32frombits(uintValue)
 	if rb.reader.TryError != nil {
 		return 0, rb.reader.TryError

@@ -22,25 +22,21 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math"
 	"net/url"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-	"sync/atomic"
 )
 
 type ModbusDriver struct {
-	transactionIdCounter int32
-	fieldHandler         spi.PlcFieldHandler
+	fieldHandler spi.PlcFieldHandler
 	plc4go.PlcDriver
 }
 
 func NewModbusDriver() *ModbusDriver {
 	return &ModbusDriver{
-		transactionIdCounter: 0,
-		fieldHandler:         NewFieldHandler(),
+		fieldHandler: NewFieldHandler(),
 	}
 }
 
@@ -78,12 +74,6 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
-	// Generate a new transaction id
-	transactionId := atomic.AddInt32(&m.transactionIdCounter, 1)
-	if transactionId > math.MaxUint16 {
-		transactionId = 1
-		atomic.StoreInt32(&m.transactionIdCounter, 1)
-	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
 	defaultChanel := make(chan interface{})
@@ -102,6 +92,6 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 	codec := NewModbusMessageCodec(transportInstance, nil)
 
 	// Create the new connection
-	connection := NewModbusConnection(uint16(transactionId), codec, options, m.fieldHandler)
+	connection := NewModbusConnection(uint8(1), codec, options, m.fieldHandler)
 	return connection.Connect()
 }

@@ -46,23 +46,23 @@ func (m ConnectionMetadata) CanSubscribe() bool {
 }
 
 type ModbusConnection struct {
-	transactionIdentifier uint16
-	messageCodec          spi.MessageCodec
-	options               map[string][]string
-	fieldHandler          spi.PlcFieldHandler
-	valueHandler          spi.PlcValueHandler
-	requestInterceptor    internalModel.RequestInterceptor
+	unitIdentifier     uint8
+	messageCodec       spi.MessageCodec
+	options            map[string][]string
+	fieldHandler       spi.PlcFieldHandler
+	valueHandler       spi.PlcValueHandler
+	requestInterceptor internalModel.RequestInterceptor
 	plc4go.PlcConnection
 }
 
-func NewModbusConnection(transactionIdentifier uint16, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) ModbusConnection {
+func NewModbusConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) ModbusConnection {
 	return ModbusConnection{
-		transactionIdentifier: transactionIdentifier,
-		messageCodec:          messageCodec,
-		options:               options,
-		fieldHandler:          fieldHandler,
-		valueHandler:          NewValueHandler(),
-		requestInterceptor:    interceptors.NewSingleItemRequestInterceptor(),
+		unitIdentifier:     unitIdentifier,
+		messageCodec:       messageCodec,
+		options:            options,
+		fieldHandler:       fieldHandler,
+		valueHandler:       NewValueHandler(),
+		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
 	}
 }
 
@@ -92,7 +92,7 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	result := make(chan plc4go.PlcConnectionPingResult)
 	diagnosticRequestPdu := model2.CastIModbusPDU(model2.NewModbusPDUDiagnosticRequest(0, 0x42))
 	go func() {
-		pingRequest := model2.NewModbusTcpADU(m.transactionIdentifier, 1, diagnosticRequestPdu)
+		pingRequest := model2.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
 		err := m.messageCodec.Send(pingRequest)
 		if err != nil {
 			result <- plc4go.NewPlcConnectionPingResult(err)
@@ -101,8 +101,8 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		// Register an expected response
 		check := func(response interface{}) bool {
 			responseAdu := model2.CastModbusTcpADU(response)
-			return responseAdu.TransactionIdentifier == m.transactionIdentifier &&
-				responseAdu.UnitIdentifier == 1
+			return responseAdu.TransactionIdentifier == 1 &&
+				responseAdu.UnitIdentifier == m.unitIdentifier
 		}
 		// Register a callback to handle the response
 		pingResponseChanel := m.messageCodec.Expect(check)
@@ -129,12 +129,12 @@ func (m ModbusConnection) GetMetadata() model.PlcConnectionMetadata {
 
 func (m ModbusConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
-		NewModbusReader(m.transactionIdentifier, m.messageCodec), m.requestInterceptor)
+		NewModbusReader(m.unitIdentifier, m.messageCodec), m.requestInterceptor)
 }
 
 func (m ModbusConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewModbusWriter(m.requestInterceptor))
+		m.fieldHandler, m.valueHandler, NewModbusWriter(m.unitIdentifier, m.messageCodec))
 }
 
 func (m ModbusConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
@@ -150,4 +150,12 @@ func (m ModbusConnection) GetTransportInstance() transports.TransportInstance {
 		return mc.GetTransportInstance()
 	}
 	return nil
+}
+
+func (m ModbusConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
+	return m.fieldHandler
+}
+
+func (m ModbusConnection) GetPlcValueHandler() spi.PlcValueHandler {
+	return m.valueHandler
 }

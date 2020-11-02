@@ -40,22 +40,22 @@ func (m PlcValueAdapter) IsNull() bool {
 }
 
 // Boolean
-func (m PlcValueAdapter) IsBoolean() bool {
+func (m PlcValueAdapter) IsBool() bool {
 	return false
 }
-func (m PlcValueAdapter) GetBooleanLength() uint32 {
+func (m PlcValueAdapter) GetBoolLength() uint32 {
 	return 1
 }
-func (m PlcValueAdapter) GetBoolean() bool {
+func (m PlcValueAdapter) GetBool() bool {
 	return false
 }
-func (m PlcValueAdapter) GetBooleanAt(index uint32) bool {
+func (m PlcValueAdapter) GetBoolAt(index uint32) bool {
 	if index == 0 {
-		return m.GetBoolean()
+		return m.GetBool()
 	}
 	return false
 }
-func (m PlcValueAdapter) GetBooleanArray() []bool {
+func (m PlcValueAdapter) GetBoolArray() []bool {
 	return nil
 }
 

@@ -29,6 +29,7 @@
 #include "modbus_pdu_read_file_record_response_item.h"
 #include "modbus_pdu_write_file_record_response_item.h"
 #include "modbus_pdu.h"
+#include "modbus_error_code.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,7 +96,7 @@ struct plc4c_modbus_read_write_modbus_pdu {
   /* Properties */
   union {
     struct { /* ModbusPDUError */
-      uint8_t modbus_pdu_error_exception_code;
+      plc4c_modbus_read_write_modbus_error_code modbus_pdu_error_exception_code;
     };
     struct { /* ModbusPDUReadDiscreteInputsRequest */
       uint16_t modbus_pdu_read_discrete_inputs_request_starting_address;

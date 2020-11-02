@@ -32,16 +32,16 @@ import (
 )
 
 type ModbusReader struct {
-	transactionIdentifier uint16
-	unitIdentifier        int32
+	transactionIdentifier int32
+	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
 	spi.PlcReader
 }
 
-func NewModbusReader(transactionIdentifier uint16, messageCodec spi.MessageCodec) *ModbusReader {
+func NewModbusReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *ModbusReader {
 	return &ModbusReader{
-		transactionIdentifier: transactionIdentifier,
-		unitIdentifier:        0,
+		transactionIdentifier: 0,
+		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
 	}
 }
@@ -52,7 +52,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 	if len(readRequest.GetFieldNames()) == 1 {
 		fieldName := readRequest.GetFieldNames()[0]
 		field := readRequest.GetField(fieldName)
-		modbusField, err := CastFromPlcField(field)
+		modbusField, err := CastToModbusFieldFromPlcField(field)
 		if err != nil {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
@@ -100,17 +100,17 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			return result
 		}
 
-		// Calculate a new unit identifier
-		unitIdentifier := atomic.AddInt32(&m.unitIdentifier, 1)
-		if unitIdentifier > math.MaxUint8 {
-			unitIdentifier = 0
-			atomic.StoreInt32(&m.unitIdentifier, 0)
+		// Calculate a new transaction identifier
+		transactionIdentifier := atomic.AddInt32(&m.transactionIdentifier, 1)
+		if transactionIdentifier > math.MaxUint8 {
+			transactionIdentifier = 1
+			atomic.StoreInt32(&m.transactionIdentifier, 1)
 		}
 
 		// Assemble the finished ADU
 		requestAdu := modbusModel.ModbusTcpADU{
-			TransactionIdentifier: m.transactionIdentifier,
-			UnitIdentifier:        uint8(unitIdentifier),
+			TransactionIdentifier: uint16(transactionIdentifier),
+			UnitIdentifier:        m.unitIdentifier,
 			Pdu:                   pdu,
 		}
 
@@ -127,7 +127,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 		// Register an expected response
 		check := func(response interface{}) bool {
 			responseAdu := modbusModel.CastModbusTcpADU(response)
-			return responseAdu.TransactionIdentifier == m.transactionIdentifier &&
+			return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
 				responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
 		}
 		// Register a callback to handle the response
@@ -137,7 +137,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			// Convert the response into an ADU
 			responseAdu := modbusModel.CastModbusTcpADU(response)
 			// Convert the modbus response into a PLC4X response
-			readResponse, err := toPlc4xResponse(requestAdu, responseAdu, readRequest)
+			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
 
 			if err != nil {
 				result <- model.PlcReadRequestResult{
@@ -162,7 +162,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 	return result
 }
 
-func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *ModbusReader) ToPlc4xReadResponse(responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var data []uint8
 	switch responseAdu.Pdu.(type) {
 	case modbusModel.ModbusPDUReadDiscreteInputsResponse:
@@ -188,13 +188,13 @@ func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusMode
 
 	// Get the field from the request
 	fieldName := readRequest.GetFieldNames()[0]
-	field, err := CastFromPlcField(readRequest.GetField(fieldName))
+	field, err := CastToModbusFieldFromPlcField(readRequest.GetField(fieldName))
 	if err != nil {
 		return nil, errors.New("error casting to modbus-field")
 	}
 
 	// Decode the data according to the information from the request
-	rb := utils.ReadBufferNew(data)
+	rb := utils.NewReadBuffer(data)
 	value, err := modbusModel.DataItemParse(rb, field.Datatype, field.Quantity)
 	if err != nil {
 		return nil, err

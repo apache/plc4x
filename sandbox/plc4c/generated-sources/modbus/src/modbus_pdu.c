@@ -148,8 +148,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(errorFlag == true) { /* ModbusPDUError */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error;
                     
-    // Simple Field (exceptionCode)
-    uint8_t exceptionCode = 0;
+    // Enum field (exceptionCode)
+    plc4c_modbus_read_write_modbus_error_code exceptionCode = plc4c_modbus_read_write_modbus_error_code_null();
     _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &exceptionCode);
     if(_res != OK) {
       return _res;
@@ -1195,7 +1195,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
-      // Simple Field (exceptionCode)
+      // Enum field (exceptionCode)
       _res = plc4c_spi_write_unsigned_byte(io, 8, _message->modbus_pdu_error_exception_code);
       if(_res != OK) {
         return _res;
@@ -1905,7 +1905,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
-      // Simple field (exceptionCode)
+      // Enum Field (exceptionCode)
       lengthInBits += 8;
 
       break;

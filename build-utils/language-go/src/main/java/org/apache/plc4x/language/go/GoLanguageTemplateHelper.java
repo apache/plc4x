@@ -244,7 +244,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.WriteBit((bool) " + fieldName + ")";
+                return "io.WriteBit(" + fieldName + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -477,7 +477,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" is the default name of the reader argument which is always available.
-                    boolean isParserArg = "io".equals(va.getName());
+                    boolean isParserArg = "io".equals(va.getName()) || ((getThisTypeDefinition() instanceof DataIoTypeDefinition) && "_value".equals(va.getName()));
                     boolean isTypeArg = "_type".equals(va.getName());
                     if (!isParserArg && !isTypeArg && parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
@@ -488,8 +488,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         }
                     }
                     if (isParserArg) {
-                        sb.append(va.getName() + ((va.getChild() != null) ?
-                            "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : ""));
+                        if(va.getName().equals("_value")) {
+                            sb.append(va.getName().substring(1) + ((va.getChild() != null) ?
+                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : ""));
+                        } else {
+                            sb.append(va.getName() + ((va.getChild() != null) ?
+                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : ""));
+                        }
                     }
                     // We have to manually evaluate the type information at code-generation time.
                     else if (isTypeArg) {

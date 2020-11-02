@@ -18,7 +18,10 @@
 //
 package values
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"strconv"
+)
 
 type PlcSINT struct {
 	value int8
@@ -106,6 +109,10 @@ func (m PlcSINT) GetFloat32() float32 {
 func (m PlcSINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetInt8())
+}
+
+func (m PlcSINT) GetString() string {
+	return strconv.Itoa(int(m.GetInt64()))
 }
 
 func (m PlcSINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

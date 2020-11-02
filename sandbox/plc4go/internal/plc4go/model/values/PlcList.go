@@ -24,13 +24,13 @@ import (
 )
 
 type PlcList struct {
-	values []api.PlcValue
+	Values []api.PlcValue
 	PlcValueAdapter
 }
 
 func NewPlcList(values []api.PlcValue) PlcList {
 	return PlcList{
-		values: values,
+		Values: values,
 	}
 }
 
@@ -39,15 +39,15 @@ func (m PlcList) IsList() bool {
 }
 
 func (m PlcList) GetLength() uint32 {
-	return uint32(len(m.values))
+	return uint32(len(m.Values))
 }
 
 func (m PlcList) GetIndex(i uint32) api.PlcValue {
-	return m.values[i]
+	return m.Values[i]
 }
 
 func (m PlcList) GetList() []api.PlcValue {
-	return m.values
+	return m.Values
 }
 
 func (m PlcList) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -55,7 +55,7 @@ func (m PlcList) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	for _, value := range m.values {
+	for _, value := range m.Values {
 		if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
 			return err
 		}

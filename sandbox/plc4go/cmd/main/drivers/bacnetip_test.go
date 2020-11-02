@@ -31,7 +31,7 @@ func TestBacnetIp(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
-	rb := utils.ReadBufferNew(request)
+	rb := utils.NewReadBuffer(request)
 	adu, err := model.BVLCParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)

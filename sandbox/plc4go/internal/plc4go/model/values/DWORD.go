@@ -31,26 +31,26 @@ func NewPlcDWORD(value uint32) PlcDWORD {
 	}
 }
 
-func (m PlcDWORD) IsBoolean() bool {
+func (m PlcDWORD) IsBool() bool {
 	return true
 }
 
-func (m PlcDWORD) GetBooleanLength() uint32 {
+func (m PlcDWORD) GetBoolLength() uint32 {
 	return 32
 }
 
-func (m PlcDWORD) GetBoolean() bool {
+func (m PlcDWORD) GetBool() bool {
 	return m.value&1 == 1
 }
 
-func (m PlcDWORD) GetBooleanAt(index uint32) bool {
+func (m PlcDWORD) GetBoolAt(index uint32) bool {
 	if index > 31 {
 		return false
 	}
 	return m.value>>index&1 == 1
 }
 
-func (m PlcDWORD) GetBooleanArray() []bool {
+func (m PlcDWORD) GetBoolArray() []bool {
 	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
@@ -67,6 +67,25 @@ func (m PlcDWORD) GetBooleanArray() []bool {
 		m.value>>26&1 == 1, m.value>>27&1 == 1,
 		m.value>>28&1 == 1, m.value>>29&1 == 1,
 		m.value>>30&1 == 1, m.value>>31&1 == 1}
+}
+
+func (m PlcDWORD) IsString() bool {
+	return true
+}
+
+func (m PlcDWORD) GetString() string {
+	var strVal string
+	for i, val := range m.GetBoolArray() {
+		if i > 0 {
+			strVal = strVal + ", "
+		}
+		if val {
+			strVal = strVal + "true"
+		} else {
+			strVal = strVal + "false"
+		}
+	}
+	return strVal
 }
 
 func (m PlcDWORD) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

@@ -20,6 +20,7 @@ package values
 
 import (
 	"encoding/xml"
+	"fmt"
 	"math"
 )
 
@@ -142,6 +143,14 @@ func (m PlcLREAL) GetFloat32() float32 {
 
 func (m PlcLREAL) GetFloat64() float64 {
 	return m.value
+}
+
+func (m PlcLREAL) IsString() bool {
+	return true
+}
+
+func (m PlcLREAL) GetString() string {
+	return fmt.Sprintf("%f", m.GetFloat64())
 }
 
 func (m PlcLREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

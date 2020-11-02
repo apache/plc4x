@@ -21,6 +21,7 @@ package values
 import (
 	"encoding/xml"
 	"math"
+	"strconv"
 )
 
 type PlcDINT struct {
@@ -123,6 +124,10 @@ func (m PlcDINT) GetFloat32() float32 {
 func (m PlcDINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetInt32())
+}
+
+func (m PlcDINT) GetString() string {
+	return strconv.Itoa(int(m.GetInt64()))
 }
 
 func (m PlcDINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

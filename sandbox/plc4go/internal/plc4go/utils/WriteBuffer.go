@@ -22,6 +22,7 @@ import (
 	"bytes"
 	"errors"
 	"github.com/icza/bitio"
+	"math"
 )
 
 type WriteBuffer struct {
@@ -29,7 +30,7 @@ type WriteBuffer struct {
 	writer *bitio.Writer
 }
 
-func WriteBufferNew() *WriteBuffer {
+func NewWriteBuffer() *WriteBuffer {
 	data := &bytes.Buffer{}
 	writer := bitio.NewWriter(data)
 	return &WriteBuffer{
@@ -87,11 +88,13 @@ func (rb WriteBuffer) WriteInt64(bitLength uint8, value int64) error {
 }
 
 func (rb WriteBuffer) WriteFloat32(bitLength uint8, value float32) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
+	res := math.Float32bits(value)
+	return rb.writer.WriteBits(uint64(res), bitLength)
 }
 
 func (rb WriteBuffer) WriteFloat64(bitLength uint8, value float64) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
+	res := math.Float64bits(value)
+	return rb.writer.WriteBits(res, bitLength)
 }
 
 func (rb WriteBuffer) WriteString(bitLength uint8, value string) error {

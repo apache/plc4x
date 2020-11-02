@@ -49,7 +49,7 @@ func test(t *testing.T, rawMessage string, response bool) {
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
-	rb := utils.ReadBufferNew(request)
+	rb := utils.NewReadBuffer(request)
 	adu, err := model.ModbusTcpADUParse(rb, response)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)
@@ -64,7 +64,7 @@ func test(t *testing.T, rawMessage string, response bool) {
 		var deserializedAdu *model.ModbusTcpADU
 		xml.Unmarshal(serialized, &deserializedAdu)
 
-		wb := utils.WriteBufferNew()
+		wb := utils.NewWriteBuffer()
 		val := model.CastIModbusTcpADU(deserializedAdu)
 		val.Serialize(*wb)
 		serializedMessage := hex.EncodeToString(wb.GetBytes())
@@ -88,7 +88,7 @@ func Connection(t *testing.T) {
 		Pdu:                   &pdu,
 	}
 
-	wb := utils.WriteBufferNew()
+	wb := utils.NewWriteBuffer()
 	adu.Serialize(*wb)
 
 	servAddr := "192.168.23.30:502"
@@ -118,7 +118,7 @@ func Connection(t *testing.T) {
 		os.Exit(1)
 	}
 
-	rb := utils.ReadBufferNew(buffer[0:numBytes])
+	rb := utils.NewReadBuffer(buffer[0:numBytes])
 	response, err := model.ModbusTcpADUParse(rb, true)
 	if err != nil {
 		println("Parsing response failed:", err.Error())
@@ -142,6 +142,7 @@ func TestPlc4goDriver(t *testing.T) {
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
 		t.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+		t.Fail()
 		return
 	}
 	connection := connectionResult.Connection
@@ -151,6 +152,7 @@ func TestPlc4goDriver(t *testing.T) {
 	pingResult := <-pingResultChannel
 	if pingResult.Err != nil {
 		t.Errorf("couldn't ping device: %s", pingResult.Err.Error())
+		t.Fail()
 		return
 	}
 
@@ -164,6 +166,7 @@ func TestPlc4goDriver(t *testing.T) {
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
 		return
 	}
 
@@ -174,11 +177,38 @@ func TestPlc4goDriver(t *testing.T) {
 	rrr := <-rrc
 	if rrr.Err != nil {
 		t.Errorf("error executing read-request: %s", rrr.Err.Error())
+		t.Fail()
 		return
 	}
 
 	// Do something with the response
-	value := rrr.Response.GetValue("field")
+	value1 := rrr.Response.GetValue("field1")
+	value2 := rrr.Response.GetValue("field2")
+	fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
+	fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
 
-	fmt.Printf("\n\nResult: %f\n", value)
+	// Prepare a write-request
+	wrb := connection.WriteRequestBuilder()
+	wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
+	wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
+	writeRequest, err := rrb.Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+
+	// Execute a write-request
+	wrc := writeRequest.Execute()
+
+	// Wait for the response to finish
+	wrr := <-wrc
+	if wrr.Err != nil {
+		t.Errorf("error executing read-request: %s", rrr.Err.Error())
+		t.Fail()
+		return
+	}
+
+	fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
+	fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))
 }

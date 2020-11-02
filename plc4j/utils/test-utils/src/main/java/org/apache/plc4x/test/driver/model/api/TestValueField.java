@@ -18,22 +18,17 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model.api;
 
-public class TestField {
+public class TestValueField extends TestField {
 
-    private final String name;
-    private final String address;
+    private final String[] values;
 
-    public TestField(String name, String address) {
-        this.name = name;
-        this.address = address;
+    public TestValueField(String name, String address, String[] values) {
+        super(name, address);
+        this.values = values;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
+    public String[] getValues() {
+        return values;
     }
 
 }

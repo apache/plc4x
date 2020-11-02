@@ -18,6 +18,8 @@
 //
 package model
 
+import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+
 type PlcWriteRequestBuilder interface {
 	AddItem(name string, query string, value interface{})
 	Build() (PlcWriteRequest, error)
@@ -31,5 +33,8 @@ type PlcWriteRequestResult struct {
 
 type PlcWriteRequest interface {
 	Execute() <-chan PlcWriteRequestResult
+	GetFieldNames() []string
+	GetField(name string) PlcField
+	GetValue(name string) values.PlcValue
 	PlcRequest
 }

@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -211,7 +212,6 @@ public class DriverTestsuiteRunner {
 
     private void executeStep(TestStep testStep, PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
         LOGGER.info(String.format("  - Running step: '%s' - %s", testStep.getName(), testStep.getType()));
-        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final Element payload = testStep.getPayload();
         try {
             switch (testStep.getType()) {
@@ -245,26 +245,49 @@ public class DriverTestsuiteRunner {
                     break;
                 }
                 case API_REQUEST: {
-                    final String referenceXml = payload.asXML();
-                    final TestRequest request = mapper.readValue(referenceXml, TestRequest.class);
-                    if(request instanceof TestReadRequest) {
-                        final TestReadRequest readRequest = (TestReadRequest) request;
-                        final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                        for (TestField testField : readRequest.getFields()) {
-                            builder.addItem(testField.getName(), testField.getAddress());
+                    switch(payload.attributeValue("className")) {
+                        case "org.apache.plc4x.test.driver.model.api.TestReadRequest": {
+                            final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+                            if(payload.element("fields") != null) {
+                                for (Element fieldElement : payload.element("fields").elements("field")) {
+                                    builder.addItem(fieldElement.elementText("name"), fieldElement.elementText("address"));
+                                }
+                            }
+                            final PlcReadRequest plc4xRequest = builder.build();
+                            // Currently we can only process one response at at time, throw an error if more
+                            // are submitted.
+                            if (responseFuture != null) {
+                                throw new DriverTestsuiteException("Previous response not handled.");
+                            }
+                            // Save the response for being used later on.
+                            responseFuture = plc4xRequest.execute();
+                            break;
                         }
-                        final PlcReadRequest plc4xRequest = builder.build();
-                        // Currently we can only process one response at at time, throw an error if more
-                        // are submitted.
-                        if(responseFuture != null) {
-                            throw new DriverTestsuiteException("Previous response not handled.");
+                        case "org.apache.plc4x.test.driver.model.api.TestWriteRequest": {
+                            final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
+                            if(payload.element("fields") != null) {
+                                for (Element fieldElement : payload.element("fields").elements("field")) {
+                                    List<Element> valueElements = fieldElement.elements("value");
+                                    List<String> valueStrings = new ArrayList<>(valueElements.size());
+                                    for (Element valueElement : valueElements) {
+                                        valueStrings.add(valueElement.getTextTrim());
+                                    }
+                                    builder.addItem(fieldElement.elementText("name"),
+                                        fieldElement.elementText("address"), valueStrings.toArray(new Object[0]));
+                                }
+                            }
+                            final PlcWriteRequest plc4xRequest = builder.build();
+                            // Currently we can only process one response at at time, throw an error if more
+                            // are submitted.
+                            if (responseFuture != null) {
+                                throw new DriverTestsuiteException("Previous response not handled.");
+                            }
+                            // Save the response for being used later on.
+                            responseFuture = plc4xRequest.execute();
+                            break;
                         }
-                        // Save the response for being used later on.
-                        responseFuture = plc4xRequest.execute();
-                    } else if(request instanceof TestWriteRequest) {
-                        // TODO: Implement ...
-                        throw new NotImplementedException("api-write-request not implemented yet");
                     }
+
                     break;
                 }
                 case API_RESPONSE: {
@@ -293,7 +316,7 @@ public class DriverTestsuiteRunner {
                     embeddedChannel.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new DriverTestsuiteException("Error processing the xml", e);
         }
         LOGGER.info("    Done");
@@ -478,5 +501,7 @@ public class DriverTestsuiteRunner {
             throw new RuntimeException(e);
         }
     }
+
+
 
 }

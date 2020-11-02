@@ -98,6 +98,10 @@ func (m *TestTransportInstance) FillReadBuffer(data []uint8) error {
 	return nil
 }
 
+func (m *TestTransportInstance) GetNumDrainableBytes() uint32 {
+	return uint32(len(m.writeBuffer))
+}
+
 func (m *TestTransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]

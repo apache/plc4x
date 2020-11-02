@@ -82,7 +82,6 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	fmt.Printf("-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
-
 	return nil
 }
 
@@ -124,8 +123,25 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
 				fieldAddress := fieldNode.GetChild("address").Text
-				fieldValue := fieldNode.GetChild("value").Text
-				wrb.AddItem(fieldName, fieldAddress, fieldValue)
+
+				he, ok := connection.(spi.HandlerExposer)
+				if !ok {
+					return errors.New("connection is not a HandlerExposer")
+				}
+				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
+				if err != nil {
+					return errors.New("error parsing address: " + fieldAddress + " got error " + err.Error())
+				}
+				if field.GetQuantity() > 1 {
+					var fieldValue []string
+					for _, valueChild := range fieldNode.GetChildren("value") {
+						fieldValue = append(fieldValue, valueChild.Text)
+					}
+					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+				} else {
+					fieldValue := fieldNode.GetChild("value").Text
+					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+				}
 			}
 			writeRequest, err := wrb.Build()
 			if err != nil {
@@ -188,15 +204,19 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.WriteBufferNew()
+		wb := utils.NewWriteBuffer()
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.New("error serializing message: " + err.Error())
 		}
 		expectedRawOutput := wb.GetBytes()
+		expectedRawOutputLength := uint32(len(expectedRawOutput))
 
 		// Read exactly this amount of bytes from the transport
-		rawOutput, err := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawOutput)))
+		if testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
+			return errors.New("error getting bytes from transport. Not enough data available")
+		}
+		rawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if err != nil {
 			return errors.New("error getting bytes from transport: " + err.Error())
 		}
@@ -241,7 +261,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.WriteBufferNew()
+		wb := utils.NewWriteBuffer()
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.New("error serializing message: " + err.Error())

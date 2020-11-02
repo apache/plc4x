@@ -18,8 +18,11 @@
 //
 package spi
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+)
 
 type PlcValueHandler interface {
-	NewPlcValue(typeName string, value interface{}) (values.PlcValue, error)
+	NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error)
 }

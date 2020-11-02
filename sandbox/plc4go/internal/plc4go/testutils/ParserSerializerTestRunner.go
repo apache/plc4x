@@ -90,7 +90,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string) {
 				t.Fail()
 				curFailed = true
 			}
-			readBuffer := utils.ReadBufferNew(rawInput)
+			readBuffer := utils.NewReadBuffer(rawInput)
 
 			// Parse the input according to the settings of the testcase
 			helper := new(model.ModbusParserHelper)
@@ -124,7 +124,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string) {
 				t.Fail()
 				curFailed = true
 			}
-			writeBuffer := utils.WriteBufferNew()
+			writeBuffer := utils.NewWriteBuffer()
 			err = s.Serialize(*writeBuffer)
 			if !ok {
 				t.Error("Couldn't serialize message back to byte array")

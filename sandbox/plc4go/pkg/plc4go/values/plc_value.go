@@ -28,11 +28,11 @@ type PlcValue interface {
 	IsNull() bool
 
 	// Boolean
-	IsBoolean() bool
-	GetBooleanLength() uint32
-	GetBoolean() bool
-	GetBooleanAt(index uint32) bool
-	GetBooleanArray() []bool
+	IsBool() bool
+	GetBoolLength() uint32
+	GetBool() bool
+	GetBoolAt(index uint32) bool
+	GetBoolArray() []bool
 
 	// Integer
 	IsUint8() bool

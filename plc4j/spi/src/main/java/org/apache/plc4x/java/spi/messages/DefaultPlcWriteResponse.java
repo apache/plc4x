@@ -26,7 +26,10 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.Collection;
@@ -70,7 +73,21 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, XmlSerializabl
 
     @Override
     public void xmlSerialize(Element parent) {
-        // TODO: Implement
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcWriteResponse");
+        if(request instanceof XmlSerializable) {
+            ((XmlSerializable) request).xmlSerialize(messageElement);
+        }
+        Element fieldsElement = doc.createElement("fields");
+        messageElement.appendChild(fieldsElement);
+        for (Map.Entry<String, PlcResponseCode> fieldEntry : values.entrySet()) {
+            String fieldName = fieldEntry.getKey();
+            final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
+            Element fieldNameElement = doc.createElement(fieldName);
+            fieldNameElement.setAttribute("result", fieldResponseCode.name());
+            fieldsElement.appendChild(fieldNameElement);
+        }
+        parent.appendChild(messageElement);
     }
 
 }

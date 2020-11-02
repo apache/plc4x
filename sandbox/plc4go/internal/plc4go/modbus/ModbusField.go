@@ -61,7 +61,11 @@ func (m ModbusPlcField) GetTypeName() string {
 	return m.Datatype
 }
 
-func CastFromPlcField(plcField model.PlcField) (ModbusPlcField, error) {
+func (m ModbusPlcField) GetQuantity() uint16 {
+	return m.Quantity
+}
+
+func CastToModbusFieldFromPlcField(plcField model.PlcField) (ModbusPlcField, error) {
 	if modbusField, ok := plcField.(ModbusPlcField); ok {
 		return modbusField, nil
 	}

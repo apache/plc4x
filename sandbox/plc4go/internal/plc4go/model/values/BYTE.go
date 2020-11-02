@@ -31,30 +31,49 @@ func NewPlcBYTE(value uint8) PlcBYTE {
 	}
 }
 
-func (m PlcBYTE) IsBoolean() bool {
+func (m PlcBYTE) IsBool() bool {
 	return true
 }
 
-func (m PlcBYTE) GetBooleanLength() uint32 {
+func (m PlcBYTE) GetBoolLength() uint32 {
 	return 8
 }
 
-func (m PlcBYTE) GetBoolean() bool {
+func (m PlcBYTE) GetBool() bool {
 	return m.value&1 == 1
 }
 
-func (m PlcBYTE) GetBooleanAt(index uint32) bool {
+func (m PlcBYTE) GetBoolAt(index uint32) bool {
 	if index > 7 {
 		return false
 	}
 	return m.value>>index&1 == 1
 }
 
-func (m PlcBYTE) GetBooleanArray() []bool {
+func (m PlcBYTE) GetBoolArray() []bool {
 	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
 		m.value>>6&1 == 1, m.value>>7&1 == 1}
+}
+
+func (m PlcBYTE) IsString() bool {
+	return true
+}
+
+func (m PlcBYTE) GetString() string {
+	var strVal string
+	for i, val := range m.GetBoolArray() {
+		if i > 0 {
+			strVal = strVal + ", "
+		}
+		if val {
+			strVal = strVal + "true"
+		} else {
+			strVal = strVal + "false"
+		}
+	}
+	return strVal
 }
 
 func (m PlcBYTE) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

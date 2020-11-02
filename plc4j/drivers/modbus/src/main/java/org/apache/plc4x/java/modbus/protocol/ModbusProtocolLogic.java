@@ -147,19 +147,28 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
 
     private PlcResponseCode getErrorCode(ModbusPDUError errorResponse) {
         switch (errorResponse.getExceptionCode()) {
-            case 1:
-                // This implies the received function code is not supported.
+            case ILLEGAL_FUNCTION:
                 return PlcResponseCode.UNSUPPORTED;
-            case 2:
+            case ILLEGAL_DATA_ADDRESS:
                 return PlcResponseCode.INVALID_ADDRESS;
-            case 3:
+            case ILLEGAL_DATA_VALUE:
                 return PlcResponseCode.INVALID_DATA;
-            case 4:
+            case SLAVE_DEVICE_FAILURE:
                 return PlcResponseCode.REMOTE_ERROR;
-            case 6:
+            case ACKNOWLEDGE:
+                return PlcResponseCode.OK;
+            case SLAVE_DEVICE_BUSY:
                 return PlcResponseCode.REMOTE_BUSY;
+            case NEGATIVE_ACKNOWLEDGE:
+                return PlcResponseCode.REMOTE_ERROR;
+            case MEMORY_PARITY_ERROR:
+                return PlcResponseCode.INTERNAL_ERROR;
+            case GATEWAY_PATH_UNAVAILABLE:
+                return PlcResponseCode.INTERNAL_ERROR;
+            case GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
+                return PlcResponseCode.REMOTE_ERROR;
             default:
-                // This generally implies that something wen't wrong which we didn't anticipate.
+                // This generally implies that something went wrong which we didn't anticipate.
                 return PlcResponseCode.INTERNAL_ERROR;
         }
     }
