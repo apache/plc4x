@@ -184,6 +184,7 @@ public class DriverTestsuiteRunner {
     }
 
     private void run(DriverTestsuite testsuite, Testcase testcase) throws DriverTestsuiteException {
+        LOGGER.info(String.format("Starting testcase: %s", testcase.getName()));
         final PlcConnection plcConnection = getConnection(testsuite.getDriverName(), testsuite.getDriverParameters());
         final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(plcConnection);
         final boolean bigEndian = testsuite.isBigEndian();
@@ -208,6 +209,7 @@ public class DriverTestsuiteRunner {
             }
             LOGGER.info("Finished teardown steps");
         }
+        LOGGER.info(String.format("Finished testcase: %s", testcase.getName()));
     }
 
     private void executeStep(TestStep testStep, PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
@@ -294,7 +296,7 @@ public class DriverTestsuiteRunner {
                     if(responseFuture == null) {
                         throw new DriverTestsuiteException("No response expected.");
                     }
-                    PlcResponse plcResponse = null;
+                    PlcResponse plcResponse;
                     try {
                         plcResponse = responseFuture.get(5000, TimeUnit.MILLISECONDS);
                     } catch(Exception e) {
@@ -317,7 +319,8 @@ public class DriverTestsuiteRunner {
                 }
             }
         } catch (Exception e) {
-            throw new DriverTestsuiteException("Error processing the xml", e);
+            LOGGER.error("    Failed: Error running step: " + testStep.getName() + ": " + e.getMessage());
+            throw new DriverTestsuiteException("Error running the step " + testStep.getName(), e);
         }
         LOGGER.info("    Done");
     }

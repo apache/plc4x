@@ -93,10 +93,11 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        final HandlerRegistration registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout));
+        final HandlerRegistration registration = new HandlerRegistration(commands, expectClazz, packetConsumer,
+            onTimeoutConsumer, errorConsumer, timeout);
         finisher.accept(registration);
         context.sendToWire(request);
-        return new DefaultContextHandler(() -> registration.hasHandled(), () -> registration.cancel());
+        return new DefaultContextHandler(registration::hasHandled, registration::cancel);
     }
 
     @Override

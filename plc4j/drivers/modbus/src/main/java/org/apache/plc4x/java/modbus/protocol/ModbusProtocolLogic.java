@@ -109,7 +109,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p.getTransactionIdentifier() == transactionIdentifier)
+                .check(p -> ((p.getTransactionIdentifier() == transactionIdentifier) &&
+                    (p.getUnitIdentifier() == unitIdentifier)))
                 .unwrap(ModbusTcpADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
@@ -143,6 +144,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
         }
         return future;
+    }
+
+    @Override
+    protected void decode(ConversationContext<ModbusTcpADU> context, ModbusTcpADU msg) throws Exception {
+        super.decode(context, msg);
     }
 
     private PlcResponseCode getErrorCode(ModbusPDUError errorResponse) {
