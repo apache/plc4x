@@ -44,6 +44,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Source Connector Task polling the data source at a given rate.
@@ -219,7 +220,13 @@ public class Plc4xSourceTask extends SourceTask {
             buffer.drainTo(result, numElements);
             return result;
         } else {
-            return Collections.emptyList();
+            try {
+                List<SourceRecord> result = new ArrayList<>(1);
+                result.add(buffer.poll(5000, TimeUnit.MILLISECONDS));
+                return result;
+            } catch (InterruptedException e) {
+                return null;
+            }
         }
     }
 
