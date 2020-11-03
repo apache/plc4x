@@ -20,31 +20,24 @@ package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.data.*;
-import org.apache.kafka.connect.errors.ConnectException;
+
+import org.apache.kafka.connect.transforms.Transformation;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
-import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
-import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
-import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.kafka.util.VersionUtil;
+
+import java.util.concurrent.ExecutionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Source Connector Task polling the data source at a given rate.
@@ -86,7 +79,8 @@ public class Plc4xSinkTask extends SinkTask {
         return VersionUtil.getVersion();
     }
 
-    private PlcDriverManager plcDriverManager;
+    private PlcDriverManager driverManager;
+    private Transformation<SinkRecord> transformation;
 
     @Override
     public void start(Map<String, String> props) {
@@ -94,13 +88,8 @@ public class Plc4xSinkTask extends SinkTask {
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
         String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
         Map<String, String> topics = new HashMap<>();
-
-        //try {
-            log.info("Creating Pooled PLC4x driver manager");
-            plcDriverManager = new PooledPlcDriverManager();
-        //} catch (PlcConnectionException e) {
-        //    log.error("Error starting the scraper", e.toString());
-        //}
+        log.info("Creating Pooled PLC4x driver manager");
+        driverManager = new PooledPlcDriverManager();
     }
 
     @Override
@@ -116,6 +105,46 @@ public class Plc4xSinkTask extends SinkTask {
             return;
         }
         log.info(records.toString());
+        //ObjectMapper mapper = new ObjectMapper();
+
+        for (SinkRecord r: records) {
+            Struct record = (Struct) r.value();
+            String connectionString = (String) record.get("connectionString");
+            String address = (String) record.get("address");
+            String value = (String) record.get("value");
+
+            PlcConnection connection = null;
+            try {
+                connection = driverManager.getConnection(connectionString);
+            } catch (PlcConnectionException e) {
+                log.info("Failed to Open Connection {}" + connectionString);
+            }
+
+            final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+
+            //If an array value is passed instead of a single value then convert to a String array
+            if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
+                String[] values = value.substring(1,value.length() - 1).split(",");
+                log.info("Adding Tag " + Arrays.toString(values));
+                builder.addItem(address, address, values);
+            } else {
+                builder.addItem(address, address, value);
+            }
+
+            PlcWriteRequest writeRequest = builder.build();
+
+            try {
+                writeRequest.execute().get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.info("Failed to Write to {}" + connectionString);
+            }
+
+            try {
+                connection.close();
+            } catch (Exception e) {
+                log.info("Failed to Close {}" + connectionString);
+            }
+        }
         return;
     }
 }
