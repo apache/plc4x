@@ -22,11 +22,15 @@ public class Source {
 
     private final String name;
     private final String connectionString;
+    private final Integer bufferSize;
+    private final Integer pollReturnInterval;
     private final JobReference[] jobReferences;
 
-    public Source(String name, String connectionString, JobReference[] jobReferences) {
+    public Source(String name, String connectionString, Integer bufferSize, JobReference[] jobReferences, Integer pollReturnInterval) {
         this.name = name;
         this.connectionString = connectionString;
+        this.bufferSize = bufferSize;
+        this.pollReturnInterval = pollReturnInterval;
         this.jobReferences = jobReferences;
     }
 
@@ -36,6 +40,14 @@ public class Source {
 
     public String getConnectionString() {
         return connectionString;
+    }
+
+    public Integer getBufferSize() {
+        return bufferSize;
+    }
+
+    public Integer getPollReturnInterval() {
+        return pollReturnInterval;
     }
 
     public JobReference[] getJobReferences() {

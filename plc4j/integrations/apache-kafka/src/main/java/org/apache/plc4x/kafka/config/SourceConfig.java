@@ -20,6 +20,8 @@ package org.apache.plc4x.kafka.config;
 
 import org.apache.plc4x.kafka.Plc4xSourceConnector;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.*;
 
 public class SourceConfig {
@@ -29,6 +31,8 @@ public class SourceConfig {
     private static final String TOPIC_CONFIG = "topic";
     private static final String INTERVAL_CONFIG = "interval";
     private static final String FIELDS_CONFIG = "fields";
+    private static final String KAFKA_POLL_RETURN_CONFIG = "pollReturnInterval";
+    private static final String BUFFER_SIZE_CONFIG = "bufferSize";
 
     private final List<Source> sources;
     private final List<Job> jobs;
@@ -43,6 +47,15 @@ public class SourceConfig {
                 Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG);
             String sourceTopic = properties.getOrDefault(
                 Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG, defaultTopic);
+
+            String sBufferSize = properties.getOrDefault(
+                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + Plc4xSourceConnector.BUFFER_SIZE_CONFIG, Plc4xSourceConnector.BUFFER_SIZE_DEFAULT);
+            Integer bufferSize = StringUtils.isNumeric(sBufferSize) ? Integer.parseInt(sBufferSize) : Integer.parseInt(Plc4xSourceConnector.BUFFER_SIZE_DEFAULT);
+
+            String sPollReturnInterval = properties.getOrDefault(
+                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG, Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT);
+            Integer pollReturnInterval = StringUtils.isNumeric(sPollReturnInterval) ? Integer.parseInt(sPollReturnInterval) : Integer.parseInt(Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT);
+
             String[] jobReferenceNames = properties.get(
                 Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG).split(",");
             JobReference[] jobReferences = new JobReference[jobReferenceNames.length];
@@ -53,7 +66,8 @@ public class SourceConfig {
                 JobReference jobReference = new JobReference(jobReferenceName, topic);
                 jobReferences[i] = jobReference;
             }
-            Source source = new Source(sourceName, connectionString, jobReferences);
+
+            Source source = new Source(sourceName, connectionString, bufferSize, jobReferences, pollReturnInterval);
             sources.add(source);
         }
 
