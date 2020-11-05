@@ -121,7 +121,6 @@ public class Plc4xSinkConnector extends SinkConnector {
                     sinkConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
                 } else {
                     // TODO: Check if the connection string is valid.
-
                     String sinkTopicConfig = SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG;
                     final ConfigValue sinkTopicConfigValue = new ConfigValue(sinkTopicConfig);
                     config.configValues().add(sinkTopicConfigValue);

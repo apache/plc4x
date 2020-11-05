@@ -81,12 +81,13 @@ public class Plc4xSinkTask extends SinkTask {
 
     private PlcDriverManager driverManager;
     private Transformation<SinkRecord> transformation;
+    private String plc4xConnectionString;
 
     @Override
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
-        String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
+        plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
         Map<String, String> topics = new HashMap<>();
         log.info("Creating Pooled PLC4x driver manager");
         driverManager = new PooledPlcDriverManager();
@@ -104,45 +105,53 @@ public class Plc4xSinkTask extends SinkTask {
         if (records.isEmpty()) {
             return;
         }
-        log.info(records.toString());
-        //ObjectMapper mapper = new ObjectMapper();
 
         for (SinkRecord r: records) {
             Struct record = (Struct) r.value();
-            String connectionString = (String) record.get("connectionString");
-            String address = (String) record.get("address");
-            String value = (String) record.get("value");
+            String address = record.getString("address");
+            String value = record.getString("value");
+            Long expires = record.getInt64("expires");
+
+            if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
+                log.warn("Write request has expired {}, discarding {}", System.currentTimeMillis(), address);
+                return;
+            }
 
             PlcConnection connection = null;
             try {
-                connection = driverManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                log.info("Failed to Open Connection {}" + connectionString);
+                connection = driverManager.getConnection(plc4xConnectionString);
+            } catch (PlcConnectionException e) {                
+                log.warn("Failed to Open Connection {}", plc4xConnectionString);
             }
 
             final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            PlcWriteRequest writeRequest;
+            try {
+                //If an array value is passed instead of a single value then convert to a String array
+                if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
+                    String[] values = value.substring(1,value.length() - 1).split(",");
+                    builder.addItem(address, address, values);
+                } else {
+                    builder.addItem(address, address, value);
+                }
 
-            //If an array value is passed instead of a single value then convert to a String array
-            if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
-                String[] values = value.substring(1,value.length() - 1).split(",");
-                log.info("Adding Tag " + Arrays.toString(values));
-                builder.addItem(address, address, values);
-            } else {
-                builder.addItem(address, address, value);
+                writeRequest = builder.build();
+            } catch (Exception e) {
+                //When building a request we want to discard the write if there is an error.
+                log.warn("Failed to Write to {}", plc4xConnectionString);
+                return;
             }
-
-            PlcWriteRequest writeRequest = builder.build();
 
             try {
                 writeRequest.execute().get();
             } catch (InterruptedException | ExecutionException e) {
-                log.info("Failed to Write to {}" + connectionString);
+                log.warn("Failed to Write to {}", plc4xConnectionString);
             }
 
             try {
                 connection.close();
             } catch (Exception e) {
-                log.info("Failed to Close {}" + connectionString);
+                log.warn("Failed to Close {}", plc4xConnectionString);
             }
         }
         return;
