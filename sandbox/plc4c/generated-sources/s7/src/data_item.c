@@ -55,19 +55,19 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_bool_data(value);
 
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_BYTE") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_BYTE") == 0) { /* List */
 
                     // Array field (value)
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_WORD") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_WORD") == 0) { /* List */
 
                     // Array field (value)
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_DWORD") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_DWORD") == 0) { /* List */
 
                     // Array field (value)
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_LWORD") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_LWORD") == 0) { /* List */
 
                     // Array field (value)
         } else 

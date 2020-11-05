@@ -23,27 +23,27 @@ import (
 	"time"
 )
 
-type PlcDATEANDTIME struct {
+type PlcDATE_AND_TIME struct {
 	value time.Time
 	PlcValueAdapter
 }
 
-func NewPlcDATEANDTIME(value time.Time) PlcDATEANDTIME {
-	return PlcDATEANDTIME{
+func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {
+	return PlcDATE_AND_TIME{
 		value: value,
 	}
 }
 
-func (m PlcDATEANDTIME) IsTime() bool {
+func (m PlcDATE_AND_TIME) IsTime() bool {
 	return true
 }
 
-func (m PlcDATEANDTIME) GetTime() time.Time {
+func (m PlcDATE_AND_TIME) GetTime() time.Time {
 	return m.value
 }
 
-func (m PlcDATEANDTIME) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDATEANDTIME"}}); err != nil {
+func (m PlcDATE_AND_TIME) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDATE_AND_TIME"}}); err != nil {
 		return err
 	}
 	return nil

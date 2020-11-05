@@ -29,30 +29,18 @@ type KnxnetipParserHelper struct {
 
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
     switch typeName {
-    case "CEMIAdditionalInformation":
-        return CEMIAdditionalInformationParse(io)
     case "HPAIControlEndpoint":
         return HPAIControlEndpointParse(io)
     case "TunnelingResponseDataBlock":
         return TunnelingResponseDataBlockParse(io)
-    case "ConnectionResponseDataBlock":
-        return ConnectionResponseDataBlockParse(io)
-    case "TunnelingRequestDataBlock":
-        return TunnelingRequestDataBlockParse(io)
     case "KNXGroupAddress":
         numLevels, err := utils.StrToUint8(arguments[0])
         if err != nil {
             return nil, err
         }
         return KNXGroupAddressParse(io, numLevels)
-    case "DIBDeviceInfo":
-        return DIBDeviceInfoParse(io)
-    case "DeviceConfigurationRequestDataBlock":
-        return DeviceConfigurationRequestDataBlockParse(io)
     case "DeviceConfigurationAckDataBlock":
         return DeviceConfigurationAckDataBlockParse(io)
-    case "DIBSuppSvcFamilies":
-        return DIBSuppSvcFamiliesParse(io)
     case "ConnectionRequestInformation":
         return ConnectionRequestInformationParse(io)
     case "HPAIDiscoveryEndpoint":
@@ -77,14 +65,26 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
             return nil, err
         }
         return CEMIParse(io, size)
-    case "MACAddress":
-        return MACAddressParse(io)
-    case "CEMIFrame":
-        return CEMIFrameParse(io)
     case "DeviceStatus":
         return DeviceStatusParse(io)
     case "IPAddress":
         return IPAddressParse(io)
+    case "CEMIAdditionalInformation":
+        return CEMIAdditionalInformationParse(io)
+    case "ConnectionResponseDataBlock":
+        return ConnectionResponseDataBlockParse(io)
+    case "TunnelingRequestDataBlock":
+        return TunnelingRequestDataBlockParse(io)
+    case "DIBDeviceInfo":
+        return DIBDeviceInfoParse(io)
+    case "DeviceConfigurationRequestDataBlock":
+        return DeviceConfigurationRequestDataBlockParse(io)
+    case "DIBSuppSvcFamilies":
+        return DIBSuppSvcFamiliesParse(io)
+    case "MACAddress":
+        return MACAddressParse(io)
+    case "CEMIFrame":
+        return CEMIFrameParse(io)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

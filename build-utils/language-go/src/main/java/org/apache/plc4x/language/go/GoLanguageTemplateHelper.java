@@ -139,6 +139,77 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
     }
 
+    public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
+        if(typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT: {
+                    return "values.NewPlcBOOL";
+                }
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "values.NewPlcUSINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "values.NewPlcUINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "values.NewPlcUDINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "values.NewPlcULINT";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case INT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "values.NewPlcSINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "values.NewPlcINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "values.NewPlcDINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "values.NewPlcLINT";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case FLOAT:
+                case UFLOAT: {
+                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
+                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    if (sizeInBits <= 32) {
+                        return "values.NewPlcREAL";
+                    }
+                    if (sizeInBits <= 64) {
+                        return "values.NewPlcLREAL";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
+                case STRING: {
+                    return "values.NewPlcSTRING";
+                }
+                case TIME: {
+                    return "values.NewPlcTIME";
+                }
+                case DATE: {
+                    return "values.NewPlcDATE";
+                }
+                case DATETIME: {
+                    return "values.NewPlcDATE_AND_TIME";
+                }
+            }
+            throw new RuntimeException("Unsupported simple type");
+        } else {
+            return (typeReference != null) ? ((ComplexTypeReference) typeReference).getName() : "";
+        }
+    }
+
     @Override
     public String getNullValueForTypeReference(TypeReference typeReference) {
         if(typeReference instanceof SimpleTypeReference) {
@@ -288,8 +359,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
+                    stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
                 return "io.WriteString(" + stringTypeReference.getSizeInBits() + ", \"" +
-                    stringTypeReference.getEncoding() + "\", " + fieldName + ")";
+                    encoding + "\", " + fieldName + ")";
             }
         }
         return "Hurz";

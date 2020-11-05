@@ -76,6 +76,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
         <#assign valueDefined=false>
         <#if case.name == "Struct">
             _map := map[string]interface{}{}
+            <#assign valueDefined=true>
         </#if>
         <#list case.fields as field>
             <#switch field.typeName>
@@ -85,11 +86,11 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
             // Array Field (${field.name})
             var ${field.name} []api.PlcValue
             for i := 0; i < int(${helper.toParseExpression(null, field.loopExpression, type.parserArguments)}); i++ {
-                _item, _itemErr := DataItemParse(io, ${type.parserArguments[0].name}, ${helper.getLanguageTypeNameForTypeReference(type.parserArguments[1].type)}(1))
+                _item, _itemErr := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>Complex type array in data-io parsing currently not implemented</#if>
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
-                ${field.name} = append(${field.name}, _item)
+                ${field.name} = append(${field.name}, ${helper.getPlcValueTypeForTypeReference(field.type)}(_item))
             }
                     <#if field.name == "value">
                         <#assign valueDefined=true>
@@ -119,29 +120,30 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
                     <#assign simpleField = field>
 
             // Simple Field (${field.name})
-            <#if case.name == "Struct" || field.name == "value">${field.name}<#else>_</#if>, _${field.name}Err := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+            <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">${field.name}<#else>_</#if>, _${field.name}Err := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
             if _${field.name}Err != nil {
                 return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
             }
                     <#if case.name == "Struct">
             _map["${case.name}"] = ${field.name}
                     </#if>
-                    <#if field.name == "value">
-                        <#assign valueDefined=true>
-                    </#if>
+                    <#assign valueDefined=true>
                     <#break>
             </#switch>
         </#list>
         <#if valueDefined>
             <#switch case.name>
-                <#case "Time">
-            return values.NewPlcTIME(value), nil
+                <#case "TIME_OF_DAY">
+            value := time.Date(0,0,0, int(hour), int(minutes), int(seconds), 0, nil)
+            return values.NewPlcTIME_OF_DAY(value), nil
                     <#break>
-                <#case "Date">
-            return values.NewPlcTIME(value), nil
+                <#case "DATE">
+            value := time.Date(int(year), time.Month(month), int(day), 0, 0, 0, 0, nil)
+            return values.NewPlcDATE(value), nil
                     <#break>
-                <#case "DateTime">
-            return values.NewPlcTIME(value), nil
+                <#case "DATE_AND_TIME">
+            value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
+            return values.NewPlcDATE_AND_TIME(value), nil
                     <#break>
                 <#case "Struct">
             return values.NewPlcStruct(_map), nil
@@ -149,16 +151,8 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
                 <#case "List">
             return values.NewPlcList(value), nil
                     <#break>
-            <#-- Disable this for now as Strings will only be parsed as manual fields
-                <#case "STRING">
-            //return values.NewPlcSTRING(value), nil
-                    <#break-->
                 <#default>
-                    <#if helper.isCountArrayField(case.fields[0])>
-            return values.NewPlcList(value), nil
-                    <#else>
             return values.NewPlc${case.name}(value), nil
-                    </#if>
             </#switch>
         </#if>
     </#list>
@@ -170,9 +164,6 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
     switch {
     <#list type.switchField.cases as case>
         case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
-        <#if case.name == "Struct">
-            _map := map[string]interface{}{}
-        </#if>
         <#list case.fields as field>
             <#switch field.typeName>
                 <#case "array">
@@ -180,7 +171,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 
             // Array Field (${field.name})
             for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, field.loopExpression, type.parserArguments)}); i++ {
-                _itemErr := DataItemSerialize(io, value.GetIndex(i), ${type.parserArguments[0].name}, ${helper.getLanguageTypeNameForTypeReference(type.parserArguments[1].type)}(1))
+                _itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()")}<#else>Complex type array in data-io serialization currently not implemented</#if>
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
                 }

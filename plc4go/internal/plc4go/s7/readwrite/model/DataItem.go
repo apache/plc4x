@@ -40,52 +40,52 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcBOOL(value), nil
-        case dataProtocolId == "IEC61131_BYTE": // BOOL
+        case dataProtocolId == "IEC61131_BYTE": // List
 
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int((8)); i++ {
-                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                _item, _itemErr := io.ReadBit()
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
-                value = append(value, _item)
+                value = append(value, values.NewPlcBOOL(_item))
             }
             return values.NewPlcList(value), nil
-        case dataProtocolId == "IEC61131_WORD": // BOOL
+        case dataProtocolId == "IEC61131_WORD": // List
 
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int((16)); i++ {
-                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                _item, _itemErr := io.ReadBit()
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
-                value = append(value, _item)
+                value = append(value, values.NewPlcBOOL(_item))
             }
             return values.NewPlcList(value), nil
-        case dataProtocolId == "IEC61131_DWORD": // BOOL
+        case dataProtocolId == "IEC61131_DWORD": // List
 
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int((32)); i++ {
-                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                _item, _itemErr := io.ReadBit()
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
-                value = append(value, _item)
+                value = append(value, values.NewPlcBOOL(_item))
             }
             return values.NewPlcList(value), nil
-        case dataProtocolId == "IEC61131_LWORD": // BOOL
+        case dataProtocolId == "IEC61131_LWORD": // List
 
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int((64)); i++ {
-                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                _item, _itemErr := io.ReadBit()
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
-                value = append(value, _item)
+                value = append(value, values.NewPlcBOOL(_item))
             }
             return values.NewPlcList(value), nil
         case dataProtocolId == "IEC61131_SINT": // SINT
@@ -207,7 +207,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcTime(value), nil
         case dataProtocolId == "S7_S5TIME": // Time
 
             // Manual Field (value)
@@ -215,7 +215,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcTime(value), nil
         case dataProtocolId == "IEC61131_LTIME": // Time
 
             // Manual Field (value)
@@ -223,7 +223,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcTime(value), nil
         case dataProtocolId == "IEC61131_DATE": // Date
 
             // Manual Field (value)
@@ -231,7 +231,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcDate(value), nil
         case dataProtocolId == "IEC61131_TIME_OF_DAY": // Time
 
             // Manual Field (value)
@@ -239,7 +239,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcTime(value), nil
         case dataProtocolId == "IEC61131_DATE_AND_TIME": // DateTime
 
             // Manual Field (value)
@@ -247,7 +247,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcTIME(value), nil
+            return values.NewPlcDateTime(value), nil
     }
     return nil, errors.New("unsupported type")
 }
@@ -265,38 +265,38 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
             if _err := io.WriteBit(value.GetBool()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
-        case dataProtocolId == "IEC61131_BYTE": // BOOL
+        case dataProtocolId == "IEC61131_BYTE": // List
 
             // Array Field (value)
             for i := uint32(0); i < uint32((8)); i++ {
-                _itemErr := DataItemSerialize(io, value.GetIndex(i), dataProtocolId, int32(1))
+                _itemErr := io.WriteBit(value.GetIndex(i).GetBool())
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
                 }
             }
-        case dataProtocolId == "IEC61131_WORD": // BOOL
+        case dataProtocolId == "IEC61131_WORD": // List
 
             // Array Field (value)
             for i := uint32(0); i < uint32((16)); i++ {
-                _itemErr := DataItemSerialize(io, value.GetIndex(i), dataProtocolId, int32(1))
+                _itemErr := io.WriteBit(value.GetIndex(i).GetBool())
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
                 }
             }
-        case dataProtocolId == "IEC61131_DWORD": // BOOL
+        case dataProtocolId == "IEC61131_DWORD": // List
 
             // Array Field (value)
             for i := uint32(0); i < uint32((32)); i++ {
-                _itemErr := DataItemSerialize(io, value.GetIndex(i), dataProtocolId, int32(1))
+                _itemErr := io.WriteBit(value.GetIndex(i).GetBool())
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
                 }
             }
-        case dataProtocolId == "IEC61131_LWORD": // BOOL
+        case dataProtocolId == "IEC61131_LWORD": // List
 
             // Array Field (value)
             for i := uint32(0); i < uint32((64)); i++ {
-                _itemErr := DataItemSerialize(io, value.GetIndex(i), dataProtocolId, int32(1))
+                _itemErr := io.WriteBit(value.GetIndex(i).GetBool())
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
                 }

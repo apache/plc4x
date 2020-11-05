@@ -272,19 +272,19 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['IEC61131_BYTE' BOOL
+        ['IEC61131_BYTE' List
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['IEC61131_WORD' BOOL
+        ['IEC61131_WORD' List
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['IEC61131_DWORD' BOOL
+        ['IEC61131_DWORD' List
             [array bit 'value' count '32']
         ]
         // 8 byte (64 bit)
-        ['IEC61131_LWORD' BOOL
+        ['IEC61131_LWORD' List
             [array bit 'value' count '64']
         ]
 

@@ -18,8 +18,18 @@
 //
 package knxnetip
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+)
 
-func NewKnxNetIpDriver() plc4go.PlcDriver {
-	return nil
+type KnxNetIpDriver struct {
+    fieldHandler spi.PlcFieldHandler
+    plc4go.PlcDriver
+}
+
+func NewKnxNetIpDriver() KnxNetIpDriver {
+	return &KnxNetIpDriver{
+	    fieldHandler:
+    }
 }

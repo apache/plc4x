@@ -276,103 +276,103 @@
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['IEC61131_BOOL' BOOL
+        ['IEC61131_BOOL' List
             [array bit 'value' count 'numberOfValues']
         ]
         ['IEC61131_BYTE','1' BYTE
             [simple uint 8 'value']
         ]
-        ['IEC61131_BYTE' BYTE
+        ['IEC61131_BYTE' List
             [array uint 8 'value' count 'numberOfValues']
         ]
         ['IEC61131_WORD','1' WORD
             [simple uint 16 'value']
         ]
-        ['IEC61131_WORD' WORD
+        ['IEC61131_WORD' List
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['IEC61131_DWORD','1' DWORD
             [simple uint 32 'value']
         ]
-        ['IEC61131_DWORD' DWORD
+        ['IEC61131_DWORD' List
             [array uint 32 'value' count 'numberOfValues']
         ]
         ['IEC61131_LWORD','1' LWORD
             [simple uint 64 'value']
         ]
-        ['IEC61131_LWORD' LWORD
+        ['IEC61131_LWORD' List
             [array uint 64 'value' count 'numberOfValues']
         ]
         ['IEC61131_SINT','1' SINT
             [simple int 8 'value']
         ]
-        ['IEC61131_SINT' SINT
+        ['IEC61131_SINT' List
             [array int 8 'value' count 'numberOfValues']
         ]
         ['IEC61131_INT','1' INT
             [simple int 16 'value']
         ]
-        ['IEC61131_INT' INT
+        ['IEC61131_INT' List
             [array int 16 'value' count 'numberOfValues']
         ]
         ['IEC61131_DINT','1' DINT
             [simple int 32 'value']
         ]
-        ['IEC61131_DINT' DINT
+        ['IEC61131_DINT' List
             [array int 32 'value' count 'numberOfValues']
         ]
         ['IEC61131_LINT','1' LINT
             [simple int 64 'value']
         ]
-        ['IEC61131_LINT' LINT
+        ['IEC61131_LINT' List
             [array int 64 'value' count 'numberOfValues']
         ]
         ['IEC61131_USINT','1' USINT
             [simple uint 8 'value']
         ]
-        ['IEC61131_USINT' USINT
+        ['IEC61131_USINT' List
             [array uint 8 'value' count 'numberOfValues']
         ]
         ['IEC61131_UINT','1' UINT
             [simple uint 16 'value']
         ]
-        ['IEC61131_UINT' UINT
+        ['IEC61131_UINT' List
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['IEC61131_UDINT','1' UDINT
             [simple uint 32 'value']
         ]
-        ['IEC61131_UDINT' UDINT
+        ['IEC61131_UDINT' List
             [array uint 32 'value' count 'numberOfValues']
         ]
         ['IEC61131_ULINT','1' ULINT
             [simple uint 64 'value']
         ]
-        ['IEC61131_ULINT' ULINT
+        ['IEC61131_ULINT' List
             [array uint 64 'value' count 'numberOfValues']
         ]
         ['IEC61131_REAL','1' REAL
             [simple float 8.23  'value']
         ]
-        ['IEC61131_REAL' REAL
+        ['IEC61131_REAL' List
             [array float 8.23 'value' count 'numberOfValues']
         ]
         ['IEC61131_LREAL','1' LREAL
             [simple float 11.52  'value']
         ]
-        ['IEC61131_LREAL' LREAL
+        ['IEC61131_LREAL' List
             [array float 11.52 'value' count 'numberOfValues']
         ]
         ['IEC61131_CHAR','1' CHAR
             [simple uint 8 'value']
         ]
-        ['IEC61131_CHAR' CHAR
+        ['IEC61131_CHAR' List
             [array uint 8 'value' count 'numberOfValues']
         ]
         ['IEC61131_WCHAR','1' WCHAR
             [simple uint 16 'value']
         ]
-        ['IEC61131_WCHAR' WCHAR
+        ['IEC61131_WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
     ]
