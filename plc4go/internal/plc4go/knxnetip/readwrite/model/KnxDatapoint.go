@@ -40,7 +40,8 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcBOOL(value), nil
-        case mainNumber == 2: // BOOL
+        case mainNumber == 2: // Struct
+            _map := map[string]interface{}{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -48,17 +49,19 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             }
 
             // Simple Field (control)
-            _, _controlErr := io.ReadBit()
+            control, _controlErr := io.ReadBit()
             if _controlErr != nil {
                 return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
             }
+            _map["Struct"] = control
 
             // Simple Field (value)
             value, _valueErr := io.ReadBit()
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcBOOL(value), nil
+            _map["Struct"] = value
+            return values.NewPlcStruct(_map), nil
         case mainNumber == 21: // Struct
             _map := map[string]interface{}{}
 
@@ -117,7 +120,9 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
                 return nil, errors.New("Error parsing 'b0' field " + _b0Err.Error())
             }
             _map["Struct"] = b0
-        case mainNumber == 3: // USINT
+            return values.NewPlcStruct(_map), nil
+        case mainNumber == 3: // Struct
+            _map := map[string]interface{}{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -125,24 +130,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             }
 
             // Simple Field (control)
-            _, _controlErr := io.ReadBit()
+            control, _controlErr := io.ReadBit()
             if _controlErr != nil {
                 return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
             }
+            _map["Struct"] = control
 
             // Simple Field (value)
             value, _valueErr := io.ReadUint8(3)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcUSINT(value), nil
-        case mainNumber == 18: // USINT
+            _map["Struct"] = value
+            return values.NewPlcStruct(_map), nil
+        case mainNumber == 18: // Struct
+            _map := map[string]interface{}{}
 
             // Simple Field (control)
-            _, _controlErr := io.ReadBit()
+            control, _controlErr := io.ReadBit()
             if _controlErr != nil {
                 return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
             }
+            _map["Struct"] = control
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(1); _err != nil {
@@ -154,7 +163,8 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcUSINT(value), nil
+            _map["Struct"] = value
+            return values.NewPlcStruct(_map), nil
         case mainNumber == 17: // USINT
 
             // Reserved Field (Just skip the bytes)
@@ -207,44 +217,51 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcUDINT(value), nil
-        case mainNumber == 6 && subNumber == 20: // SINT
+        case mainNumber == 6 && subNumber == 20: // Struct
+            _map := map[string]interface{}{}
 
             // Simple Field (a)
-            _, _aErr := io.ReadBit()
+            a, _aErr := io.ReadBit()
             if _aErr != nil {
                 return nil, errors.New("Error parsing 'a' field " + _aErr.Error())
             }
+            _map["Struct"] = a
 
             // Simple Field (b)
-            _, _bErr := io.ReadBit()
+            b, _bErr := io.ReadBit()
             if _bErr != nil {
                 return nil, errors.New("Error parsing 'b' field " + _bErr.Error())
             }
+            _map["Struct"] = b
 
             // Simple Field (c)
-            _, _cErr := io.ReadBit()
+            c, _cErr := io.ReadBit()
             if _cErr != nil {
                 return nil, errors.New("Error parsing 'c' field " + _cErr.Error())
             }
+            _map["Struct"] = c
 
             // Simple Field (d)
-            _, _dErr := io.ReadBit()
+            d, _dErr := io.ReadBit()
             if _dErr != nil {
                 return nil, errors.New("Error parsing 'd' field " + _dErr.Error())
             }
+            _map["Struct"] = d
 
             // Simple Field (e)
-            _, _eErr := io.ReadBit()
+            e, _eErr := io.ReadBit()
             if _eErr != nil {
                 return nil, errors.New("Error parsing 'e' field " + _eErr.Error())
             }
+            _map["Struct"] = e
 
             // Simple Field (value)
             value, _valueErr := io.ReadInt8(8)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return values.NewPlcSINT(value), nil
+            _map["Struct"] = value
+            return values.NewPlcStruct(_map), nil
         case mainNumber == 6: // SINT
 
             // Reserved Field (Just skip the bytes)
@@ -371,6 +388,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             if _secondsErr != nil {
                 return nil, errors.New("Error parsing 'seconds' field " + _secondsErr.Error())
             }
+            return values.NewPlcTime(value), nil
         case mainNumber == 11: // Date
 
             // Reserved Field (Just skip the bytes)
@@ -405,6 +423,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             if _yearErr != nil {
                 return nil, errors.New("Error parsing 'year' field " + _yearErr.Error())
             }
+            return values.NewPlcDate(value), nil
         case mainNumber == 19: // DateTime
 
             // Simple Field (year)
@@ -522,6 +541,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
             if _clockQualityErr != nil {
                 return nil, errors.New("Error parsing 'clockQuality' field " + _clockQualityErr.Error())
             }
+            return values.NewPlcDateTime(value), nil
         case mainNumber == 15: // Struct
             _map := map[string]interface{}{}
 
@@ -601,6 +621,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16
                 return nil, errors.New("Error parsing 'index' field " + _indexErr.Error())
             }
             _map["Struct"] = index
+            return values.NewPlcStruct(_map), nil
     }
     return nil, errors.New("unsupported type")
 }
@@ -618,7 +639,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             if _err := io.WriteBit(value.GetBool()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
-        case mainNumber == 2: // BOOL
+        case mainNumber == 2: // Struct
 
             // Reserved Field (Just skip the bytes)
             if _err := io.WriteUint8(6, uint8(0x0)); _err != nil {
@@ -635,7 +656,6 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case mainNumber == 21: // Struct
-            _map := map[string]interface{}{}
 
             // Simple Field (b7)
             if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -676,7 +696,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             if _err := io.WriteBit(value.GetBool()); _err != nil {
                 return errors.New("Error serializing 'b0' field " + _err.Error())
             }
-        case mainNumber == 3: // USINT
+        case mainNumber == 3: // Struct
 
             // Reserved Field (Just skip the bytes)
             if _err := io.WriteUint8(4, uint8(0x0)); _err != nil {
@@ -692,7 +712,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
-        case mainNumber == 18: // USINT
+        case mainNumber == 18: // Struct
 
             // Simple Field (control)
             if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -752,7 +772,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
-        case mainNumber == 6 && subNumber == 20: // SINT
+        case mainNumber == 6 && subNumber == 20: // Struct
 
             // Simple Field (a)
             if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -847,7 +867,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             }
 
             // Simple Field (value)
-            if _err := io.WriteString(8, "UTF-8", value.GetString()); _err != nil {
+            if _err := io.WriteString(8, "TF-", value.GetString()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case mainNumber == 16: // STRING
@@ -858,7 +878,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
             }
 
             // Simple Field (value)
-            if _err := io.WriteString(112, "UTF-8", value.GetString()); _err != nil {
+            if _err := io.WriteString(112, "TF-", value.GetString()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case mainNumber == 10: // Time
@@ -1025,7 +1045,6 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, mainNumber
                 return errors.New("Error serializing 'clockQuality' field " + _err.Error())
             }
         case mainNumber == 15: // Struct
-            _map := map[string]interface{}{}
 
             // Simple Field (D6)
             if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {

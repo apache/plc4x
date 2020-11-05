@@ -97,6 +97,6 @@ func (rb WriteBuffer) WriteFloat64(bitLength uint8, value float64) error {
 	return rb.writer.WriteBits(res, bitLength)
 }
 
-func (rb WriteBuffer) WriteString(bitLength uint8, value string) error {
+func (rb WriteBuffer) WriteString(bitLength uint8, encoding string, value string) error {
 	return errors.New("WriteString is currently not implemented")
 }

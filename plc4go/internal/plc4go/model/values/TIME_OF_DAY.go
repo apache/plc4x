@@ -23,28 +23,28 @@ import (
 	"time"
 )
 
-type PlcTIMEOFDAY struct {
+type PlcTIME_OF_DAY struct {
 	value time.Time
 	PlcSimpleValueAdapter
 }
 
-func NewPlcTIMEOFDAY(value time.Time) PlcTIMEOFDAY {
+func NewPlcTIME_OF_DAY(value time.Time) PlcTIME_OF_DAY {
 	safeValue := time.Date(0, 0, 0, value.Hour(), value.Minute(), value.Second(), value.Nanosecond(), value.Location())
-	return PlcTIMEOFDAY{
+	return PlcTIME_OF_DAY{
 		value: safeValue,
 	}
 }
 
-func (m PlcTIMEOFDAY) IsTime() bool {
+func (m PlcTIME_OF_DAY) IsTime() bool {
 	return true
 }
 
-func (m PlcTIMEOFDAY) GetTime() time.Time {
+func (m PlcTIME_OF_DAY) GetTime() time.Time {
 	return m.value
 }
 
-func (m PlcTIMEOFDAY) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcTIMEOFDAY"}}); err != nil {
+func (m PlcTIME_OF_DAY) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcTIME_OF_DAY"}}); err != nil {
 		return err
 	}
 	return nil

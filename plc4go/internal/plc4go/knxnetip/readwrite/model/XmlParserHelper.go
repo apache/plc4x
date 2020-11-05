@@ -29,13 +29,6 @@ type KnxnetipXmlParserHelper struct {
 
 func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.Message, error) {
     switch typeName {
-    case "CEMIAdditionalInformation":
-        var obj CEMIAdditionalInformation
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "HPAIControlEndpoint":
         var obj HPAIControlEndpoint
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -50,20 +43,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "ConnectionResponseDataBlock":
-        var obj ConnectionResponseDataBlock
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "TunnelingRequestDataBlock":
-        var obj TunnelingRequestDataBlock
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "KNXGroupAddress":
         var obj KNXGroupAddress
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -71,29 +50,8 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "DIBDeviceInfo":
-        var obj DIBDeviceInfo
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "DeviceConfigurationRequestDataBlock":
-        var obj DeviceConfigurationRequestDataBlock
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "DeviceConfigurationAckDataBlock":
         var obj DeviceConfigurationAckDataBlock
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "DIBSuppSvcFamilies":
-        var obj DIBSuppSvcFamilies
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
@@ -169,20 +127,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "MACAddress":
-        var obj MACAddress
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "CEMIFrame":
-        var obj CEMIFrame
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "DeviceStatus":
         var obj DeviceStatus
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -192,6 +136,62 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
         return obj, nil
     case "IPAddress":
         var obj IPAddress
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "CEMIAdditionalInformation":
+        var obj CEMIAdditionalInformation
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "ConnectionResponseDataBlock":
+        var obj ConnectionResponseDataBlock
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "TunnelingRequestDataBlock":
+        var obj TunnelingRequestDataBlock
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "DIBDeviceInfo":
+        var obj DIBDeviceInfo
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "DeviceConfigurationRequestDataBlock":
+        var obj DeviceConfigurationRequestDataBlock
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "DIBSuppSvcFamilies":
+        var obj DIBSuppSvcFamilies
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "MACAddress":
+        var obj MACAddress
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "CEMIFrame":
+        var obj CEMIFrame
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
