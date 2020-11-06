@@ -109,6 +109,12 @@ public class DirectAdsField implements AdsField {
         return adsDataType;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return adsDataType.toString();
+    }
+
+    @Override
     public int getNumberOfElements() {
         return numberOfElements;
     }

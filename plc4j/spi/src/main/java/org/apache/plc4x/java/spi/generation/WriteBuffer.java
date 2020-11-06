@@ -73,8 +73,8 @@ public class WriteBuffer {
         if(bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
-        if(bitLength > 4) {
-            throw new ParseException("unsigned byte can only contain max 4 bits");
+        if(bitLength > 8) {
+            throw new ParseException("unsigned byte can only contain max 8 bits");
         }
         try {
             bo.writeByte(true, bitLength, value);
@@ -87,8 +87,8 @@ public class WriteBuffer {
         if(bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
-        if(bitLength > 8) {
-            throw new ParseException("unsigned short can only contain max 8 bits");
+        if(bitLength > 16) {
+            throw new ParseException("unsigned short can only contain max 16 bits");
         }
         try {
             bo.writeShort(true, bitLength, value);
@@ -101,8 +101,8 @@ public class WriteBuffer {
         if(bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
-        if(bitLength > 16) {
-            throw new ParseException("unsigned int can only contain max 16 bits");
+        if(bitLength > 32) {
+            throw new ParseException("unsigned int can only contain max 32 bits");
         }
         try {
             if(littleEndian) {
@@ -118,8 +118,8 @@ public class WriteBuffer {
         if(bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
-        if(bitLength > 32) {
-            throw new ParseException("unsigned long can only contain max 32 bits");
+        if(bitLength > 63) {
+            throw new ParseException("unsigned long can only contain max 63 bits");
         }
         try {
             if(littleEndian) {
@@ -132,7 +132,31 @@ public class WriteBuffer {
     }
 
     public void writeUnsignedBigInteger(int bitLength, BigInteger value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        try {
+            if (bitLength == 64) {
+                if(littleEndian) {
+                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                        writeLong(32, value.longValue());
+                        writeLong(32, value.shiftRight(32).longValue());
+                    } else {
+                        writeLong(bitLength, value.longValue());
+                    }
+                } else {
+                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                        writeLong(32, value.shiftRight(32).longValue());
+                        writeLong(32, value.longValue());
+                    } else {
+                        writeLong(bitLength, value.longValue());
+                    }
+                }
+            } else if (bitLength < 64){
+                writeUnsignedLong(bitLength, value.longValue());
+            } else {
+                throw new ParseException("Unsigned Big Integer can only contain max 64 bits");
+            }
+        } catch (ArithmeticException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public void writeByte(int bitLength, byte value) throws ParseException {
@@ -201,15 +225,28 @@ public class WriteBuffer {
     }
 
     public void writeBigInteger(int bitLength, BigInteger value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        try {
+            if(bitLength > 64) {
+                throw new ParseException("Big Integer can only contain max 64 bits");
+            }
+            writeLong(bitLength, value.longValue());
+        } catch (ArithmeticException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
-    public void writeFloat(int bitLength, float value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+    public void writeFloat(float value, int bitsExponent, int bitsMantissa) throws ParseException {
+        if (bitsExponent != 8 || bitsMantissa != 23) {
+            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
+        }
+        writeInt(1 + bitsExponent + bitsMantissa, Float.floatToRawIntBits(value));
     }
 
-    public void writeDouble(int bitLength, double value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+    public void writeDouble(double value, int bitsExponent, int bitsMantissa) throws ParseException {
+        if (bitsExponent != 11 || bitsMantissa != 52) {
+            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
+        }
+        writeLong(1 + bitsExponent + bitsMantissa, Double.doubleToRawLongBits(value));
     }
 
     public void writeBigDecimal(int bitLength, BigDecimal value) throws ParseException {

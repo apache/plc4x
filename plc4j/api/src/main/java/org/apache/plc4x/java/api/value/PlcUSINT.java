@@ -139,7 +139,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(String value) {
         super();
         try {
-            short val = Short.parseShort(value);
+            short val = Short.parseShort(value.trim());
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = val;
                 this.isNullable = false;
@@ -293,11 +293,6 @@ public class PlcUSINT extends PlcIECValue<Short> {
     @JsonIgnore
     public String toString() {
         return Short.toString(value);
-    }
-
-    @JsonIgnore
-    public short getUSINT() {
-        return value;
     }
 
     @JsonIgnore

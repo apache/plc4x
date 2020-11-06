@@ -259,11 +259,23 @@ public class ${type.name}IO {
 
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, boolean littleEndian) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
-            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case, type.parserArguments)} / 8, littleEndian);
+            WriteBuffer io = new WriteBuffer((int) Math.ceil(((float) ${helper.getSizeInBits(case, type.parserArguments)}) / 8.0f), littleEndian);
 
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
+            PlcList values = (PlcList) _value;
+
+            for (PlcValue val : ((List<PlcValue>) values.getList())) {
+                ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${helper.getLanguageTypeNameForField(field)?cap_first}();
+                ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
+            }
+
+                    <#if case.name == "BOOL">
+            while (io.getPos() < io.getData().length) {
+                io.writeBit(false);
+            }
+                    </#if>
                     <#break>
                     <#case "const">
             // Const Field (${field.name})

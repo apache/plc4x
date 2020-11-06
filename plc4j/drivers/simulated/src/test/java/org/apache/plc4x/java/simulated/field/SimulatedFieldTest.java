@@ -37,7 +37,7 @@ public class SimulatedFieldTest {
         assertThat(field.getType(), equalTo(SimulatedFieldType.RANDOM));
         assertThat(field.getName(), equalTo("test"));
         assertThat(field.getDataType(), equalTo(Integer.class));
-        assertThat(field.getNumElements(), equalTo(2));
+        assertThat(field.getNumberOfElements(), equalTo(2));
         assertThat(field.toString(),
             equalTo("TestField{type=RANDOM, name='test', dataType=class java.lang.Integer, numElements=2}"));
     }

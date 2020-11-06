@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.BitSet;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDWORD extends PlcIECValue<Long> {
@@ -139,7 +140,7 @@ public class PlcDWORD extends PlcIECValue<Long> {
     public PlcDWORD(String value) {
         super();
         try {
-            long val = Long.parseLong(value);
+            long val = Long.parseLong(value.trim());
             if (val >= minValue && val <= maxValue) {
                 this.value = val;
                 this.isNullable = false;
@@ -171,7 +172,65 @@ public class PlcDWORD extends PlcIECValue<Long> {
 
     @Override
     @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @JsonIgnore
+    public boolean[] getBooleanArray() {
+        boolean[] booleanValues = new boolean[32];
+        BitSet bitSet = BitSet.valueOf(new long[]{this.value});
+        for (int i = 0; i < 32; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return booleanValues;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isShort() {
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return value.shortValue();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return value.intValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
         return true;
     }
 
@@ -181,9 +240,64 @@ public class PlcDWORD extends PlcIECValue<Long> {
         return value;
     }
 
+    @Override
     @JsonIgnore
-    public long getDWORD() {
-        return value;
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(getLong());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return value.doubleValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return BigDecimal.valueOf(getFloat());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @Override

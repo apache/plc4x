@@ -509,12 +509,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
-            if (field.getNumElements() == 1) {
+            if (field.getNumberOfElements() == 1) {
                 return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
                     stringLength);
             } else {
                 // Fetch all
-                final PlcValue[] resultItems = IntStream.range(0, field.getNumElements()).mapToObj(i -> {
+                final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
                             stringLength);
@@ -595,7 +595,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         S7Field s7Field = (S7Field) field;
         TransportSize transportSize = s7Field.getDataType();
-        int numElements = s7Field.getNumElements();
+        int numElements = s7Field.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
         if((transportSize == TransportSize.TIME) || (transportSize == TransportSize.S5TIME) ||

@@ -65,6 +65,11 @@ public class AbEthField implements PlcField {
         return fileType;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return fileType.toString();
+    }
+
     public short getElementNumber() {
         return elementNumber;
     }

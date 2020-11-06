@@ -115,7 +115,7 @@ public class PlcLINT extends PlcIECValue<Long> {
     public PlcLINT(String value) {
         super();
         try {
-            this.value = Long.parseLong(value);
+            this.value = Long.parseLong(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {
@@ -257,11 +257,6 @@ public class PlcLINT extends PlcIECValue<Long> {
     @JsonIgnore
     public String toString() {
         return Long.toString(value);
-    }
-
-    @JsonIgnore
-    public long getLINT() {
-        return value;
     }
 
     @JsonIgnore

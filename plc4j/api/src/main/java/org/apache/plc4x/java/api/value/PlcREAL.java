@@ -104,7 +104,7 @@ public class PlcREAL extends PlcIECValue<Float> {
     public PlcREAL(String value) {
         super();
         try {
-            this.value = Float.parseFloat(value);
+            this.value = Float.parseFloat(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {
@@ -245,11 +245,6 @@ public class PlcREAL extends PlcIECValue<Float> {
     @JsonIgnore
     public String toString() {
         return Float.toString(value);
-    }
-
-    @JsonIgnore
-    public float getREAL() {
-        return value;
     }
 
     @JsonIgnore

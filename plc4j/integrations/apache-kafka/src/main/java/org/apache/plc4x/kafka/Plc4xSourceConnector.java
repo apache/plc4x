@@ -53,6 +53,14 @@ public class Plc4xSourceConnector extends SourceConnector {
     private static final String INTERVAL_CONFIG = "interval";
     private static final String FIELDS_CONFIG = "fields";
 
+    public static final String KAFKA_POLL_RETURN_CONFIG = "pollReturnInterval";
+    private static final String KAFKA_POLL_RETURN_DOC = "Default poll return interval to be used, if not otherwise configured.";
+    public static final String KAFKA_POLL_RETURN_DEFAULT = "5000";
+
+    public static final String BUFFER_SIZE_CONFIG = "bufferSize";
+    private static final String BUFFER_SIZE_DOC = "Default buffer size to be used, if not otherwise configured.";
+    public static final String BUFFER_SIZE_DEFAULT = "1000";
+
     private SourceConfig sourceConfig;
 
     @Override
@@ -108,6 +116,8 @@ public class Plc4xSourceConnector extends SourceConnector {
             Map<String, String> taskConfig = new HashMap<>();
             taskConfig.put(Plc4xSourceTask.CONNECTION_NAME_CONFIG, source.getName());
             taskConfig.put(Plc4xSourceTask.PLC4X_CONNECTION_STRING_CONFIG, source.getConnectionString());
+            taskConfig.put(Plc4xSourceTask.PLC4X_BUFFER_SIZE_CONFIG, source.getBufferSize().toString());
+            taskConfig.put(Plc4xSourceTask.PLC4X_POLL_RETURN_CONFIG, source.getPollReturnInterval().toString());
             taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, query.toString().substring(1));
             configs.add(taskConfig);
         }

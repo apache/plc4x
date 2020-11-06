@@ -129,7 +129,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
     public PlcUINT(String value) {
         super();
         try {
-            int val = Integer.parseInt(value);
+            int val = Integer.parseInt(value.trim());
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = val;
                 this.isNullable = false;
@@ -277,11 +277,6 @@ public class PlcUINT extends PlcIECValue<Integer> {
     @JsonIgnore
     public String toString() {
         return Integer.toString(value);
-    }
-
-    @JsonIgnore
-    public int getUINT() {
-        return value;
     }
 
     @JsonIgnore

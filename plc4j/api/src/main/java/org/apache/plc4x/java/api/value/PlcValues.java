@@ -31,6 +31,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +54,11 @@ public class PlcValues {
             if(b.length == 1) {
                 return new PlcBOOL(b[0]);
             } else if(b.length > 1) {
-                return new PlcList(Arrays.asList(b));
+                List<PlcBOOL> plcValues = new LinkedList<>();
+                for (int i = 0; i < b.length; i++) {
+                    plcValues.add(new PlcBOOL(b[i]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -63,7 +69,11 @@ public class PlcValues {
             if(b.length == 1) {
                 return new PlcBOOL(b[0]);
             } else if(b.length > 1) {
-                return new PlcList(Arrays.asList(b));
+                List<PlcBOOL> plcValues = new LinkedList<>();
+                for (int i = 0; i < b.length; i++) {
+                    plcValues.add(new PlcBOOL(b[i]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -82,7 +92,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcSINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcBYTE> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcBYTE(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -93,7 +107,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcSINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcBYTE> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcBYTE(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -112,7 +130,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -123,7 +145,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -142,7 +168,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcDINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcDINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcDINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -153,7 +183,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcDINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcDINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcDINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -172,7 +206,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcLINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcLINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcLINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -183,7 +221,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcLINT(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcLINT> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcLINT(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -198,7 +240,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcBigInteger(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcBigInteger> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcBigInteger(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -217,7 +263,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcREAL(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcREAL> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcREAL(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -228,7 +278,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcREAL(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcREAL> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcREAL(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -247,7 +301,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcLREAL(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcLREAL> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcLREAL(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -258,7 +316,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcLREAL(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcLREAL> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcLREAL(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -273,7 +335,11 @@ public class PlcValues {
             if(i.length == 1) {
                 return new PlcBigDecimal(i[0]);
             } else if(i.length > 1) {
-                return new PlcList(Arrays.asList(i));
+                List<PlcBigDecimal> plcValues = new LinkedList<>();
+                for (int j = 0; j < i.length; j++) {
+                    plcValues.add(new PlcBigDecimal(i[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -288,7 +354,11 @@ public class PlcValues {
             if(s.length == 1) {
                 return new PlcString(s[0]);
             } else if(s.length > 1) {
-                return new PlcList(Arrays.asList(s));
+                List<PlcString> plcValues = new LinkedList<>();
+                for (int j = 0; j < s.length; j++) {
+                    plcValues.add(new PlcString(s[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -303,7 +373,11 @@ public class PlcValues {
             if(s.length == 1) {
                 return new PlcTime(s[0]);
             } else if(s.length > 1) {
-                return new PlcList(Arrays.asList(s));
+                List<PlcTime> plcValues = new LinkedList<>();
+                for (int j = 0; j < s.length; j++) {
+                    plcValues.add(new PlcTime(s[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -318,7 +392,11 @@ public class PlcValues {
             if(s.length == 1) {
                 return new PlcDate(s[0]);
             } else if(s.length > 1) {
-                return new PlcList(Arrays.asList(s));
+                List<PlcDate> plcValues = new LinkedList<>();
+                for (int j = 0; j < s.length; j++) {
+                    plcValues.add(new PlcDate(s[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -333,7 +411,11 @@ public class PlcValues {
             if(s.length == 1) {
                 return new PlcDateTime(s[0]);
             } else if(s.length > 1) {
-                return new PlcList(Arrays.asList(s));
+                List<PlcDateTime> plcValues = new LinkedList<>();
+                for (int j = 0; j < s.length; j++) {
+                    plcValues.add(new PlcDateTime(s[j]));
+                }
+                return new PlcList(plcValues);
             }
         }
         return null;
@@ -382,5 +464,4 @@ public class PlcValues {
             throw new PlcIncompatibleDatatypeException(o.getClass());
         }
     }
-
 }

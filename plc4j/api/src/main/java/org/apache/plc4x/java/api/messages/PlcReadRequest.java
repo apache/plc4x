@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcField;
+
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,6 +36,7 @@ public interface PlcReadRequest extends PlcFieldRequest {
         PlcReadRequest build();
 
         Builder addItem(String name, String fieldQuery);
+        Builder addItem(String name, PlcField fieldQuery);
 
     }
 
