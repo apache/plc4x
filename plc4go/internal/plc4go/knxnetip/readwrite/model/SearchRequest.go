@@ -22,61 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type SearchRequest struct {
-    HpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
-    KNXNetIPMessage
+    HpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint
+    Parent *KNXNetIPMessage
+    ISearchRequest
 }
 
 // The corresponding interface
 type ISearchRequest interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m SearchRequest) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *SearchRequest) MsgType() uint16 {
     return 0x0201
 }
 
-func (m SearchRequest) initialize() spi.Message {
-    return m
+
+func (m *SearchRequest) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewSearchRequest(hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint) KNXNetIPMessageInitializer {
-    return &SearchRequest{HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint}
-}
-
-func CastISearchRequest(structType interface{}) ISearchRequest {
-    castFunc := func(typ interface{}) ISearchRequest {
-        if iSearchRequest, ok := typ.(ISearchRequest); ok {
-            return iSearchRequest
-        }
-        return nil
+func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint, ) *KNXNetIPMessage {
+    child := &SearchRequest{
+        HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastSearchRequest(structType interface{}) SearchRequest {
     castFunc := func(typ interface{}) SearchRequest {
-        if sSearchRequest, ok := typ.(SearchRequest); ok {
-            return sSearchRequest
+        if casted, ok := typ.(SearchRequest); ok {
+            return casted
         }
-        if sSearchRequest, ok := typ.(*SearchRequest); ok {
-            return *sSearchRequest
+        if casted, ok := typ.(*SearchRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastSearchRequest(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastSearchRequest(casted.Child)
         }
         return SearchRequest{}
     }
     return castFunc(structType)
 }
 
-func (m SearchRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *SearchRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (hpaiIDiscoveryEndpoint)
     lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
@@ -84,40 +87,39 @@ func (m SearchRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m SearchRequest) LengthInBytes() uint16 {
+func (m *SearchRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SearchRequestParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func SearchRequestParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (hpaiIDiscoveryEndpoint)
-    _hpaiIDiscoveryEndpointMessage, _err := HPAIDiscoveryEndpointParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'hpaiIDiscoveryEndpoint'. " + _err.Error())
-    }
-    var hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
-    hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointOk := _hpaiIDiscoveryEndpointMessage.(IHPAIDiscoveryEndpoint)
-    if !_hpaiIDiscoveryEndpointOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiIDiscoveryEndpointMessage).Name() + " to IHPAIDiscoveryEndpoint")
+    hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
+    if _hpaiIDiscoveryEndpointErr != nil {
+        return nil, errors.New("Error parsing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
     }
 
-    // Create the instance
-    return NewSearchRequest(hpaiIDiscoveryEndpoint), nil
+    // Create a partially initialized instance
+    _child := &SearchRequest{
+        HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m SearchRequest) Serialize(io utils.WriteBuffer) error {
+func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiIDiscoveryEndpoint)
-    hpaiIDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.HpaiIDiscoveryEndpoint)
-    _hpaiIDiscoveryEndpointErr := hpaiIDiscoveryEndpoint.Serialize(io)
+    _hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
     if _hpaiIDiscoveryEndpointErr != nil {
         return errors.New("Error serializing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -135,16 +137,16 @@ func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
             switch tok.Name.Local {
             case "hpaiIDiscoveryEndpoint":
                 var data *HPAIDiscoveryEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.HpaiIDiscoveryEndpoint = CastIHPAIDiscoveryEndpoint(data)
+                m.HpaiIDiscoveryEndpoint = data
             }
         }
     }
 }
 
-func (m SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.SearchRequest"},
         }}); err != nil {

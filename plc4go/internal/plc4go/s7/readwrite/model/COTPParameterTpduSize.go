@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type COTPParameterTpduSize struct {
-    TpduSize ICOTPTpduSize
-    COTPParameter
+    TpduSize COTPTpduSize
+    Parent *COTPParameter
+    ICOTPParameterTpduSize
 }
 
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
-    ICOTPParameter
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPParameterTpduSize) ParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPParameterTpduSize) ParameterType() uint8 {
     return 0xC0
 }
 
-func (m COTPParameterTpduSize) initialize() spi.Message {
-    return m
+
+func (m *COTPParameterTpduSize) InitializeParent(parent *COTPParameter) {
 }
 
-func NewCOTPParameterTpduSize(tpduSize ICOTPTpduSize) COTPParameterInitializer {
-    return &COTPParameterTpduSize{TpduSize: tpduSize}
-}
-
-func CastICOTPParameterTpduSize(structType interface{}) ICOTPParameterTpduSize {
-    castFunc := func(typ interface{}) ICOTPParameterTpduSize {
-        if iCOTPParameterTpduSize, ok := typ.(ICOTPParameterTpduSize); ok {
-            return iCOTPParameterTpduSize
-        }
-        return nil
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, ) *COTPParameter {
+    child := &COTPParameterTpduSize{
+        TpduSize: tpduSize,
+        Parent: NewCOTPParameter(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
     castFunc := func(typ interface{}) COTPParameterTpduSize {
-        if sCOTPParameterTpduSize, ok := typ.(COTPParameterTpduSize); ok {
-            return sCOTPParameterTpduSize
+        if casted, ok := typ.(COTPParameterTpduSize); ok {
+            return casted
         }
-        if sCOTPParameterTpduSize, ok := typ.(*COTPParameterTpduSize); ok {
-            return *sCOTPParameterTpduSize
+        if casted, ok := typ.(*COTPParameterTpduSize); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPParameter); ok {
+            return CastCOTPParameterTpduSize(casted.Child)
+        }
+        if casted, ok := typ.(*COTPParameter); ok {
+            return CastCOTPParameterTpduSize(casted.Child)
         }
         return COTPParameterTpduSize{}
     }
     return castFunc(structType)
 }
 
-func (m COTPParameterTpduSize) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+func (m *COTPParameterTpduSize) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (tpduSize)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m COTPParameterTpduSize) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPParameterTpduSize) LengthInBytes() uint16 {
+func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 
     // Enum field (tpduSize)
     tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
@@ -95,11 +99,16 @@ func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (COTPParameterInitializer,
         return nil, errors.New("Error parsing 'tpduSize' field " + _tpduSizeErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPParameterTpduSize(tpduSize), nil
+    // Create a partially initialized instance
+    _child := &COTPParameterTpduSize{
+        TpduSize: tpduSize,
+        Parent: &COTPParameter{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
+func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (tpduSize)
@@ -111,7 +120,7 @@ func (m COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPParameterTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -128,7 +137,7 @@ func (m *COTPParameterTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElem
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "tpduSize":
-                var data *COTPTpduSize
+                var data COTPTpduSize
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -138,7 +147,7 @@ func (m *COTPParameterTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElem
     }
 }
 
-func (m COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize"},
         }}); err != nil {

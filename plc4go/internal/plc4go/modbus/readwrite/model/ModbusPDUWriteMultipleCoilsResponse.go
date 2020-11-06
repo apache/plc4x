@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUWriteMultipleCoilsResponse struct {
     StartingAddress uint16
     Quantity uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUWriteMultipleCoilsResponse
 }
 
 // The corresponding interface
 type IModbusPDUWriteMultipleCoilsResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUWriteMultipleCoilsResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteMultipleCoilsResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUWriteMultipleCoilsResponse) FunctionFlag() uint8 {
     return 0x0F
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) Response() bool {
+func (m *ModbusPDUWriteMultipleCoilsResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUWriteMultipleCoilsResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
-    return &ModbusPDUWriteMultipleCoilsResponse{StartingAddress: startingAddress, Quantity: quantity}
-}
-
-func CastIModbusPDUWriteMultipleCoilsResponse(structType interface{}) IModbusPDUWriteMultipleCoilsResponse {
-    castFunc := func(typ interface{}) IModbusPDUWriteMultipleCoilsResponse {
-        if iModbusPDUWriteMultipleCoilsResponse, ok := typ.(IModbusPDUWriteMultipleCoilsResponse); ok {
-            return iModbusPDUWriteMultipleCoilsResponse
-        }
-        return nil
+func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16, ) *ModbusPDU {
+    child := &ModbusPDUWriteMultipleCoilsResponse{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUWriteMultipleCoilsResponse(structType interface{}) ModbusPDUWriteMultipleCoilsResponse {
     castFunc := func(typ interface{}) ModbusPDUWriteMultipleCoilsResponse {
-        if sModbusPDUWriteMultipleCoilsResponse, ok := typ.(ModbusPDUWriteMultipleCoilsResponse); ok {
-            return sModbusPDUWriteMultipleCoilsResponse
+        if casted, ok := typ.(ModbusPDUWriteMultipleCoilsResponse); ok {
+            return casted
         }
-        if sModbusPDUWriteMultipleCoilsResponse, ok := typ.(*ModbusPDUWriteMultipleCoilsResponse); ok {
-            return *sModbusPDUWriteMultipleCoilsResponse
+        if casted, ok := typ.(*ModbusPDUWriteMultipleCoilsResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUWriteMultipleCoilsResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUWriteMultipleCoilsResponse(casted.Child)
         }
         return ModbusPDUWriteMultipleCoilsResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUWriteMultipleCoilsResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (startingAddress)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUWriteMultipleCoilsResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUWriteMultipleCoilsResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteMultipleCoilsResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUWriteMultipleCoilsResponseParse(io *utils.ReadBuffer) (ModbusPDUIn
         return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUWriteMultipleCoilsResponse(startingAddress, quantity), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUWriteMultipleCoilsResponse{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUWriteMultipleCoilsResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)
@@ -136,7 +147,7 @@ func (m ModbusPDUWriteMultipleCoilsResponse) Serialize(io utils.WriteBuffer) err
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUWriteMultipleCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsResponse"},
         }}); err != nil {

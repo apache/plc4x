@@ -21,91 +21,98 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIFramePollingData struct {
-    CEMIFrame
+    Parent *CEMIFrame
+    ICEMIFramePollingData
 }
 
 // The corresponding interface
 type ICEMIFramePollingData interface {
-    ICEMIFrame
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIFramePollingData) NotAckFrame() bool {
+///////////////////////////////////////////////////////////
+func (m *CEMIFramePollingData) NotAckFrame() bool {
     return true
 }
 
-func (m CEMIFramePollingData) StandardFrame() bool {
+func (m *CEMIFramePollingData) StandardFrame() bool {
     return true
 }
 
-func (m CEMIFramePollingData) Polling() bool {
+func (m *CEMIFramePollingData) Polling() bool {
     return true
 }
 
-func (m CEMIFramePollingData) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
-    m.Repeated = repeated
-    m.Priority = priority
-    m.AcknowledgeRequested = acknowledgeRequested
-    m.ErrorFlag = errorFlag
-    return m
+
+func (m *CEMIFramePollingData) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+    m.Parent.Repeated = repeated
+    m.Parent.Priority = priority
+    m.Parent.AcknowledgeRequested = acknowledgeRequested
+    m.Parent.ErrorFlag = errorFlag
 }
 
-func NewCEMIFramePollingData() CEMIFrameInitializer {
-    return &CEMIFramePollingData{}
-}
-
-func CastICEMIFramePollingData(structType interface{}) ICEMIFramePollingData {
-    castFunc := func(typ interface{}) ICEMIFramePollingData {
-        if iCEMIFramePollingData, ok := typ.(ICEMIFramePollingData); ok {
-            return iCEMIFramePollingData
-        }
-        return nil
+func NewCEMIFramePollingData(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
+    child := &CEMIFramePollingData{
+        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIFramePollingData(structType interface{}) CEMIFramePollingData {
     castFunc := func(typ interface{}) CEMIFramePollingData {
-        if sCEMIFramePollingData, ok := typ.(CEMIFramePollingData); ok {
-            return sCEMIFramePollingData
+        if casted, ok := typ.(CEMIFramePollingData); ok {
+            return casted
         }
-        if sCEMIFramePollingData, ok := typ.(*CEMIFramePollingData); ok {
-            return *sCEMIFramePollingData
+        if casted, ok := typ.(*CEMIFramePollingData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMIFrame); ok {
+            return CastCEMIFramePollingData(casted.Child)
+        }
+        if casted, ok := typ.(*CEMIFrame); ok {
+            return CastCEMIFramePollingData(casted.Child)
         }
         return CEMIFramePollingData{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIFramePollingData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
+func (m *CEMIFramePollingData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m CEMIFramePollingData) LengthInBytes() uint16 {
+func (m *CEMIFramePollingData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFramePollingDataParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFramePollingDataParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
 
-    // Create the instance
-    return NewCEMIFramePollingData(), nil
+    // Create a partially initialized instance
+    _child := &CEMIFramePollingData{
+        Parent: &CEMIFrame{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIFramePollingData) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIFramePollingData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIFramePollingData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -126,7 +133,7 @@ func (m *CEMIFramePollingData) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
     }
 }
 
-func (m CEMIFramePollingData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIFramePollingData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BVLCReadForeignDeviceTableAck struct {
-    BVLC
+    Parent *BVLC
+    IBVLCReadForeignDeviceTableAck
 }
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTableAck interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCReadForeignDeviceTableAck) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCReadForeignDeviceTableAck) BvlcFunction() uint8 {
     return 0x07
 }
 
-func (m BVLCReadForeignDeviceTableAck) initialize() spi.Message {
-    return m
+
+func (m *BVLCReadForeignDeviceTableAck) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCReadForeignDeviceTableAck() BVLCInitializer {
-    return &BVLCReadForeignDeviceTableAck{}
-}
-
-func CastIBVLCReadForeignDeviceTableAck(structType interface{}) IBVLCReadForeignDeviceTableAck {
-    castFunc := func(typ interface{}) IBVLCReadForeignDeviceTableAck {
-        if iBVLCReadForeignDeviceTableAck, ok := typ.(IBVLCReadForeignDeviceTableAck); ok {
-            return iBVLCReadForeignDeviceTableAck
-        }
-        return nil
+func NewBVLCReadForeignDeviceTableAck() *BVLC {
+    child := &BVLCReadForeignDeviceTableAck{
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
     castFunc := func(typ interface{}) BVLCReadForeignDeviceTableAck {
-        if sBVLCReadForeignDeviceTableAck, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
-            return sBVLCReadForeignDeviceTableAck
+        if casted, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
+            return casted
         }
-        if sBVLCReadForeignDeviceTableAck, ok := typ.(*BVLCReadForeignDeviceTableAck); ok {
-            return *sBVLCReadForeignDeviceTableAck
+        if casted, ok := typ.(*BVLCReadForeignDeviceTableAck); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCReadForeignDeviceTableAck(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCReadForeignDeviceTableAck(casted.Child)
         }
         return BVLCReadForeignDeviceTableAck{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
+func (m *BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableAckParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
+func BVLCReadForeignDeviceTableAckParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create the instance
-    return NewBVLCReadForeignDeviceTableAck(), nil
+    // Create a partially initialized instance
+    _child := &BVLCReadForeignDeviceTableAck{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCReadForeignDeviceTableAck) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCReadForeignDeviceTableAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCReadForeignDeviceTableAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BVLCReadForeignDeviceTableAck) UnmarshalXML(d *xml.Decoder, start xml.S
     }
 }
 
-func (m BVLCReadForeignDeviceTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCReadForeignDeviceTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTableAck"},
         }}); err != nil {

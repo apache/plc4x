@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckVTData struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckVTData
 }
 
 // The corresponding interface
 type IBACnetServiceAckVTData interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckVTData) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckVTData) ServiceChoice() uint8 {
     return 0x17
 }
 
-func (m BACnetServiceAckVTData) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckVTData) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckVTData() BACnetServiceAckInitializer {
-    return &BACnetServiceAckVTData{}
-}
-
-func CastIBACnetServiceAckVTData(structType interface{}) IBACnetServiceAckVTData {
-    castFunc := func(typ interface{}) IBACnetServiceAckVTData {
-        if iBACnetServiceAckVTData, ok := typ.(IBACnetServiceAckVTData); ok {
-            return iBACnetServiceAckVTData
-        }
-        return nil
+func NewBACnetServiceAckVTData() *BACnetServiceAck {
+    child := &BACnetServiceAckVTData{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckVTData(structType interface{}) BACnetServiceAckVTData {
     castFunc := func(typ interface{}) BACnetServiceAckVTData {
-        if sBACnetServiceAckVTData, ok := typ.(BACnetServiceAckVTData); ok {
-            return sBACnetServiceAckVTData
+        if casted, ok := typ.(BACnetServiceAckVTData); ok {
+            return casted
         }
-        if sBACnetServiceAckVTData, ok := typ.(*BACnetServiceAckVTData); ok {
-            return *sBACnetServiceAckVTData
+        if casted, ok := typ.(*BACnetServiceAckVTData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckVTData(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckVTData(casted.Child)
         }
         return BACnetServiceAckVTData{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckVTData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckVTData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckVTData) LengthInBytes() uint16 {
+func (m *BACnetServiceAckVTData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckVTDataParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckVTData(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckVTData{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckVTData) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckVTData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckVTData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckVTData) UnmarshalXML(d *xml.Decoder, start xml.StartEle
     }
 }
 
-func (m BACnetServiceAckVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTData"},
         }}); err != nil {

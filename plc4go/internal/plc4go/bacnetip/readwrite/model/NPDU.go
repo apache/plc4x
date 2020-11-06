@@ -23,9 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
@@ -43,47 +41,37 @@ type NPDU struct {
     SourceLength *uint8
     SourceAddress []uint8
     HopCount *uint8
-    Nlm *INLM
-    Apdu *IAPDU
-
+    Nlm *NLM
+    Apdu *APDU
+    INPDU
 }
 
 // The corresponding interface
 type INPDU interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *INLM, apdu *IAPDU) spi.Message {
+func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU) *NPDU {
     return &NPDU{ProtocolVersionNumber: protocolVersionNumber, MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu}
-}
-
-func CastINPDU(structType interface{}) INPDU {
-    castFunc := func(typ interface{}) INPDU {
-        if iNPDU, ok := typ.(INPDU); ok {
-            return iNPDU
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastNPDU(structType interface{}) NPDU {
     castFunc := func(typ interface{}) NPDU {
-        if sNPDU, ok := typ.(NPDU); ok {
-            return sNPDU
+        if casted, ok := typ.(NPDU); ok {
+            return casted
         }
-        if sNPDU, ok := typ.(*NPDU); ok {
-            return *sNPDU
+        if casted, ok := typ.(*NPDU); ok {
+            return *casted
         }
         return NPDU{}
     }
     return castFunc(structType)
 }
 
-func (m NPDU) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *NPDU) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (protocolVersionNumber)
     lengthInBits += 8
@@ -157,11 +145,11 @@ func (m NPDU) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m NPDU) LengthInBytes() uint16 {
+func (m *NPDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (spi.Message, error) {
+func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
     // Simple Field (protocolVersionNumber)
     protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
@@ -253,7 +241,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (spi.Message, error) {
     // Count array
     destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
     for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
-
         _item, _err := io.ReadUint8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
@@ -287,7 +274,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (spi.Message, error) {
     // Count array
     sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
     for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
-
         _item, _err := io.ReadUint8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())
@@ -307,40 +293,30 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (spi.Message, error) {
     }
 
     // Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
-    var nlm *INLM = nil
+    var nlm *NLM = nil
     if messageTypeFieldPresent {
         _message, _err := NLMParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'nlm' field " + _err.Error())
         }
-        var _item INLM
-        _item, _ok := _message.(INLM)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to INLM")
-        }
-        nlm = &_item
+        nlm = _message
     }
 
     // Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
-    var apdu *IAPDU = nil
+    var apdu *APDU = nil
     if !(messageTypeFieldPresent) {
         _message, _err := APDUParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'apdu' field " + _err.Error())
         }
-        var _item IAPDU
-        _item, _ok := _message.(IAPDU)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IAPDU")
-        }
-        apdu = &_item
+        apdu = _message
     }
 
     // Create the instance
     return NewNPDU(protocolVersionNumber, messageTypeFieldPresent, destinationSpecified, sourceSpecified, expectingReply, networkPriority, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu), nil
 }
 
-func (m NPDU) Serialize(io utils.WriteBuffer) error {
+func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (protocolVersionNumber)
     protocolVersionNumber := uint8(m.ProtocolVersionNumber)
@@ -471,20 +447,20 @@ func (m NPDU) Serialize(io utils.WriteBuffer) error {
     }
 
     // Optional Field (nlm) (Can be skipped, if the value is null)
-    var nlm *INLM = nil
+    var nlm *NLM = nil
     if m.Nlm != nil {
         nlm = m.Nlm
-        _nlmErr := CastINLM(*nlm).Serialize(io)
+        _nlmErr := nlm.Serialize(io)
         if _nlmErr != nil {
             return errors.New("Error serializing 'nlm' field " + _nlmErr.Error())
         }
     }
 
     // Optional Field (apdu) (Can be skipped, if the value is null)
-    var apdu *IAPDU = nil
+    var apdu *APDU = nil
     if m.Apdu != nil {
         apdu = m.Apdu
-        _apduErr := CastIAPDU(*apdu).Serialize(io)
+        _apduErr := apdu.Serialize(io)
         if _apduErr != nil {
             return errors.New("Error serializing 'apdu' field " + _apduErr.Error())
         }
@@ -544,13 +520,13 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 m.NetworkPriority = data
             case "destinationNetworkAddress":
                 var data *uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.DestinationNetworkAddress = data
             case "destinationLength":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.DestinationLength = data
@@ -562,13 +538,13 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 m.DestinationAddress = data
             case "sourceNetworkAddress":
                 var data *uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.SourceNetworkAddress = data
             case "sourceLength":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.SourceLength = data
@@ -580,82 +556,82 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 m.SourceAddress = data
             case "hopCount":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.HopCount = data
             case "nlm":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
-                        var dt *NLMWhoIsRouterToNetwork
+                        var dt *NLM
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Nlm = dt
+                        m.Nlm = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
-                        var dt *NLMIAmRouterToNetwork
+                        var dt *NLM
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Nlm = dt
+                        m.Nlm = dt
                     }
             case "apdu":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
-                        var dt *APDUConfirmedRequest
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
-                        var dt *APDUUnconfirmedRequest
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
-                        var dt *APDUSimpleAck
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
-                        var dt *APDUComplexAck
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
-                        var dt *APDUSegmentAck
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
-                        var dt *APDUError
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
-                        var dt *APDUReject
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
-                        var dt *APDUAbort
+                        var dt *APDU
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Apdu = dt
+                        m.Apdu = dt
                     }
             }
         }
     }
 }
 
-func (m NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NPDU"},
         }}); err != nil {

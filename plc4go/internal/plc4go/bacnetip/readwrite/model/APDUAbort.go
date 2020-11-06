@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -32,53 +31,60 @@ type APDUAbort struct {
     Server bool
     OriginalInvokeId uint8
     AbortReason uint8
-    APDU
+    Parent *APDU
+    IAPDUAbort
 }
 
 // The corresponding interface
 type IAPDUAbort interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUAbort) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUAbort) ApduType() uint8 {
     return 0x7
 }
 
-func (m APDUAbort) initialize() spi.Message {
-    return m
+
+func (m *APDUAbort) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) APDUInitializer {
-    return &APDUAbort{Server: server, OriginalInvokeId: originalInvokeId, AbortReason: abortReason}
-}
-
-func CastIAPDUAbort(structType interface{}) IAPDUAbort {
-    castFunc := func(typ interface{}) IAPDUAbort {
-        if iAPDUAbort, ok := typ.(IAPDUAbort); ok {
-            return iAPDUAbort
-        }
-        return nil
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, ) *APDU {
+    child := &APDUAbort{
+        Server: server,
+        OriginalInvokeId: originalInvokeId,
+        AbortReason: abortReason,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUAbort(structType interface{}) APDUAbort {
     castFunc := func(typ interface{}) APDUAbort {
-        if sAPDUAbort, ok := typ.(APDUAbort); ok {
-            return sAPDUAbort
+        if casted, ok := typ.(APDUAbort); ok {
+            return casted
         }
-        if sAPDUAbort, ok := typ.(*APDUAbort); ok {
-            return *sAPDUAbort
+        if casted, ok := typ.(*APDUAbort); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUAbort(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUAbort(casted.Child)
         }
         return APDUAbort{}
     }
     return castFunc(structType)
 }
 
-func (m APDUAbort) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUAbort) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 3
@@ -95,11 +101,11 @@ func (m APDUAbort) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUAbort) LengthInBytes() uint16 {
+func (m *APDUAbort) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUAbortParse(io *utils.ReadBuffer) (APDUInitializer, error) {
+func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -133,11 +139,18 @@ func APDUAbortParse(io *utils.ReadBuffer) (APDUInitializer, error) {
         return nil, errors.New("Error parsing 'abortReason' field " + _abortReasonErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUAbort(server, originalInvokeId, abortReason), nil
+    // Create a partially initialized instance
+    _child := &APDUAbort{
+        Server: server,
+        OriginalInvokeId: originalInvokeId,
+        AbortReason: abortReason,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUAbort) Serialize(io utils.WriteBuffer) error {
+func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -171,7 +184,7 @@ func (m APDUAbort) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -210,7 +223,7 @@ func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort"},
         }}); err != nil {

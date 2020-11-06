@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -38,53 +37,61 @@ type BACnetErrorReadProperty struct {
     ErrorClass []int8
     ErrorCodeLength uint8
     ErrorCode []int8
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorReadProperty
 }
 
 // The corresponding interface
 type IBACnetErrorReadProperty interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorReadProperty) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorReadProperty) ServiceChoice() uint8 {
     return 0x0C
 }
 
-func (m BACnetErrorReadProperty) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorReadProperty) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorReadProperty(errorClassLength uint8, errorClass []int8, errorCodeLength uint8, errorCode []int8) BACnetErrorInitializer {
-    return &BACnetErrorReadProperty{ErrorClassLength: errorClassLength, ErrorClass: errorClass, ErrorCodeLength: errorCodeLength, ErrorCode: errorCode}
-}
-
-func CastIBACnetErrorReadProperty(structType interface{}) IBACnetErrorReadProperty {
-    castFunc := func(typ interface{}) IBACnetErrorReadProperty {
-        if iBACnetErrorReadProperty, ok := typ.(IBACnetErrorReadProperty); ok {
-            return iBACnetErrorReadProperty
-        }
-        return nil
+func NewBACnetErrorReadProperty(errorClassLength uint8, errorClass []int8, errorCodeLength uint8, errorCode []int8, ) *BACnetError {
+    child := &BACnetErrorReadProperty{
+        ErrorClassLength: errorClassLength,
+        ErrorClass: errorClass,
+        ErrorCodeLength: errorCodeLength,
+        ErrorCode: errorCode,
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorReadProperty(structType interface{}) BACnetErrorReadProperty {
     castFunc := func(typ interface{}) BACnetErrorReadProperty {
-        if sBACnetErrorReadProperty, ok := typ.(BACnetErrorReadProperty); ok {
-            return sBACnetErrorReadProperty
+        if casted, ok := typ.(BACnetErrorReadProperty); ok {
+            return casted
         }
-        if sBACnetErrorReadProperty, ok := typ.(*BACnetErrorReadProperty); ok {
-            return *sBACnetErrorReadProperty
+        if casted, ok := typ.(*BACnetErrorReadProperty); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorReadProperty(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorReadProperty(casted.Child)
         }
         return BACnetErrorReadProperty{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorReadProperty) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorReadProperty) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (errorClassHeader)
     lengthInBits += 5
@@ -111,11 +118,11 @@ func (m BACnetErrorReadProperty) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetErrorReadProperty) LengthInBytes() uint16 {
+func (m *BACnetErrorReadProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
     // Const Field (errorClassHeader)
     errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
@@ -136,7 +143,6 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (BACnetErrorInitializer,
     // Count array
     errorClass := make([]int8, errorClassLength)
     for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'errorClass' field " + _err.Error())
@@ -163,7 +169,6 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (BACnetErrorInitializer,
     // Count array
     errorCode := make([]int8, errorCodeLength)
     for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
@@ -171,11 +176,19 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (BACnetErrorInitializer,
         errorCode[curItem] = _item
     }
 
-    // Create the instance
-    return NewBACnetErrorReadProperty(errorClassLength, errorClass, errorCodeLength, errorCode), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorReadProperty{
+        ErrorClassLength: errorClassLength,
+        ErrorClass: errorClass,
+        ErrorCodeLength: errorCodeLength,
+        ErrorCode: errorCode,
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (errorClassHeader)
@@ -226,7 +239,7 @@ func (m BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -281,7 +294,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty"},
         }}); err != nil {

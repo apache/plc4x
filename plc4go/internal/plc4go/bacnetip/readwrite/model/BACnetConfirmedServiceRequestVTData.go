@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTData struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestVTData
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestVTData interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestVTData) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestVTData) ServiceChoice() uint8 {
     return 0x17
 }
 
-func (m BACnetConfirmedServiceRequestVTData) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestVTData) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestVTData() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestVTData{}
-}
-
-func CastIBACnetConfirmedServiceRequestVTData(structType interface{}) IBACnetConfirmedServiceRequestVTData {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestVTData {
-        if iBACnetConfirmedServiceRequestVTData, ok := typ.(IBACnetConfirmedServiceRequestVTData); ok {
-            return iBACnetConfirmedServiceRequestVTData
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestVTData() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestVTData{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestVTData(structType interface{}) BACnetConfirmedServiceRequestVTData {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestVTData {
-        if sBACnetConfirmedServiceRequestVTData, ok := typ.(BACnetConfirmedServiceRequestVTData); ok {
-            return sBACnetConfirmedServiceRequestVTData
+        if casted, ok := typ.(BACnetConfirmedServiceRequestVTData); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestVTData, ok := typ.(*BACnetConfirmedServiceRequestVTData); ok {
-            return *sBACnetConfirmedServiceRequestVTData
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestVTData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestVTData(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestVTData(casted.Child)
         }
         return BACnetConfirmedServiceRequestVTData{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestVTData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestVTData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestVTData) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestVTData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTDataParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestVTDataParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestVTData(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestVTData{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestVTData) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestVTData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestVTData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestVTData) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m BACnetConfirmedServiceRequestVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTData"},
         }}); err != nil {

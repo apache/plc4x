@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIPollDataCon struct {
-    CEMI
+    Parent *CEMI
+    ICEMIPollDataCon
 }
 
 // The corresponding interface
 type ICEMIPollDataCon interface {
-    ICEMI
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIPollDataCon) MessageCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *CEMIPollDataCon) MessageCode() uint8 {
     return 0x25
 }
 
-func (m CEMIPollDataCon) initialize() spi.Message {
-    return m
+
+func (m *CEMIPollDataCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIPollDataCon() CEMIInitializer {
-    return &CEMIPollDataCon{}
-}
-
-func CastICEMIPollDataCon(structType interface{}) ICEMIPollDataCon {
-    castFunc := func(typ interface{}) ICEMIPollDataCon {
-        if iCEMIPollDataCon, ok := typ.(ICEMIPollDataCon); ok {
-            return iCEMIPollDataCon
-        }
-        return nil
+func NewCEMIPollDataCon() *CEMI {
+    child := &CEMIPollDataCon{
+        Parent: NewCEMI(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIPollDataCon(structType interface{}) CEMIPollDataCon {
     castFunc := func(typ interface{}) CEMIPollDataCon {
-        if sCEMIPollDataCon, ok := typ.(CEMIPollDataCon); ok {
-            return sCEMIPollDataCon
+        if casted, ok := typ.(CEMIPollDataCon); ok {
+            return casted
         }
-        if sCEMIPollDataCon, ok := typ.(*CEMIPollDataCon); ok {
-            return *sCEMIPollDataCon
+        if casted, ok := typ.(*CEMIPollDataCon); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMI); ok {
+            return CastCEMIPollDataCon(casted.Child)
+        }
+        if casted, ok := typ.(*CEMI); ok {
+            return CastCEMIPollDataCon(casted.Child)
         }
         return CEMIPollDataCon{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIPollDataCon) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMI.LengthInBits()
+func (m *CEMIPollDataCon) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m CEMIPollDataCon) LengthInBytes() uint16 {
+func (m *CEMIPollDataCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIPollDataConParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
+func CEMIPollDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-    // Create the instance
-    return NewCEMIPollDataCon(), nil
+    // Create a partially initialized instance
+    _child := &CEMIPollDataCon{
+        Parent: &CEMI{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIPollDataCon) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIPollDataCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIPollDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *CEMIPollDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m CEMIPollDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIPollDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon"},
         }}); err != nil {

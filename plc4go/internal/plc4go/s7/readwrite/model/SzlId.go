@@ -22,54 +22,43 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type SzlId struct {
-    TypeClass ISzlModuleTypeClass
+    TypeClass SzlModuleTypeClass
     SublistExtract uint8
-    SublistList ISzlSublist
-
+    SublistList SzlSublist
+    ISzlId
 }
 
 // The corresponding interface
 type ISzlId interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewSzlId(typeClass ISzlModuleTypeClass, sublistExtract uint8, sublistList ISzlSublist) spi.Message {
+func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
     return &SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
-}
-
-func CastISzlId(structType interface{}) ISzlId {
-    castFunc := func(typ interface{}) ISzlId {
-        if iSzlId, ok := typ.(ISzlId); ok {
-            return iSzlId
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastSzlId(structType interface{}) SzlId {
     castFunc := func(typ interface{}) SzlId {
-        if sSzlId, ok := typ.(SzlId); ok {
-            return sSzlId
+        if casted, ok := typ.(SzlId); ok {
+            return casted
         }
-        if sSzlId, ok := typ.(*SzlId); ok {
-            return *sSzlId
+        if casted, ok := typ.(*SzlId); ok {
+            return *casted
         }
         return SzlId{}
     }
     return castFunc(structType)
 }
 
-func (m SzlId) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *SzlId) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (typeClass)
     lengthInBits += 4
@@ -83,11 +72,11 @@ func (m SzlId) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m SzlId) LengthInBytes() uint16 {
+func (m *SzlId) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SzlIdParse(io *utils.ReadBuffer) (spi.Message, error) {
+func SzlIdParse(io *utils.ReadBuffer) (*SzlId, error) {
 
     // Enum field (typeClass)
     typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
@@ -111,7 +100,7 @@ func SzlIdParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewSzlId(typeClass, sublistExtract, sublistList), nil
 }
 
-func (m SzlId) Serialize(io utils.WriteBuffer) error {
+func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 
     // Enum field (typeClass)
     typeClass := CastSzlModuleTypeClass(m.TypeClass)
@@ -151,7 +140,7 @@ func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "typeClass":
-                var data *SzlModuleTypeClass
+                var data SzlModuleTypeClass
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -163,7 +152,7 @@ func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 }
                 m.SublistExtract = data
             case "sublistList":
-                var data *SzlSublist
+                var data SzlSublist
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -173,7 +162,7 @@ func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlId"},
         }}); err != nil {

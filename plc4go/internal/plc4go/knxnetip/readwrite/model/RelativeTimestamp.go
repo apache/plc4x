@@ -22,52 +22,41 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type RelativeTimestamp struct {
     Timestamp uint16
-
+    IRelativeTimestamp
 }
 
 // The corresponding interface
 type IRelativeTimestamp interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewRelativeTimestamp(timestamp uint16) spi.Message {
+func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
     return &RelativeTimestamp{Timestamp: timestamp}
-}
-
-func CastIRelativeTimestamp(structType interface{}) IRelativeTimestamp {
-    castFunc := func(typ interface{}) IRelativeTimestamp {
-        if iRelativeTimestamp, ok := typ.(IRelativeTimestamp); ok {
-            return iRelativeTimestamp
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastRelativeTimestamp(structType interface{}) RelativeTimestamp {
     castFunc := func(typ interface{}) RelativeTimestamp {
-        if sRelativeTimestamp, ok := typ.(RelativeTimestamp); ok {
-            return sRelativeTimestamp
+        if casted, ok := typ.(RelativeTimestamp); ok {
+            return casted
         }
-        if sRelativeTimestamp, ok := typ.(*RelativeTimestamp); ok {
-            return *sRelativeTimestamp
+        if casted, ok := typ.(*RelativeTimestamp); ok {
+            return *casted
         }
         return RelativeTimestamp{}
     }
     return castFunc(structType)
 }
 
-func (m RelativeTimestamp) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *RelativeTimestamp) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (timestamp)
     lengthInBits += 16
@@ -75,11 +64,11 @@ func (m RelativeTimestamp) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m RelativeTimestamp) LengthInBytes() uint16 {
+func (m *RelativeTimestamp) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func RelativeTimestampParse(io *utils.ReadBuffer) (spi.Message, error) {
+func RelativeTimestampParse(io *utils.ReadBuffer) (*RelativeTimestamp, error) {
 
     // Simple Field (timestamp)
     timestamp, _timestampErr := io.ReadUint16(16)
@@ -91,7 +80,7 @@ func RelativeTimestampParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewRelativeTimestamp(timestamp), nil
 }
 
-func (m RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
+func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (timestamp)
     timestamp := uint16(m.Timestamp)
@@ -127,7 +116,7 @@ func (m *RelativeTimestamp) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWriteGroup struct {
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestWriteGroup
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWriteGroup interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestWriteGroup) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) ServiceChoice() uint8 {
     return 0x0A
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWriteGroup() BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestWriteGroup{}
-}
-
-func CastIBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
-        if iBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(IBACnetUnconfirmedServiceRequestWriteGroup); ok {
-            return iBACnetUnconfirmedServiceRequestWriteGroup
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestWriteGroup() *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestWriteGroup{
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
-        if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
-            return sBACnetUnconfirmedServiceRequestWriteGroup
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(*BACnetUnconfirmedServiceRequestWriteGroup); ok {
-            return *sBACnetUnconfirmedServiceRequestWriteGroup
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWriteGroup); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWriteGroup(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWriteGroup(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestWriteGroup{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestWriteGroup{
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup"},
         }}); err != nil {

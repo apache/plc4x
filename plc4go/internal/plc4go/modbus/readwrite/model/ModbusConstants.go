@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -32,45 +31,35 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = 502
 
 // The data-structure of this message
 type ModbusConstants struct {
-
+    IModbusConstants
 }
 
 // The corresponding interface
 type IModbusConstants interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewModbusConstants() spi.Message {
+func NewModbusConstants() *ModbusConstants {
     return &ModbusConstants{}
-}
-
-func CastIModbusConstants(structType interface{}) IModbusConstants {
-    castFunc := func(typ interface{}) IModbusConstants {
-        if iModbusConstants, ok := typ.(IModbusConstants); ok {
-            return iModbusConstants
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastModbusConstants(structType interface{}) ModbusConstants {
     castFunc := func(typ interface{}) ModbusConstants {
-        if sModbusConstants, ok := typ.(ModbusConstants); ok {
-            return sModbusConstants
+        if casted, ok := typ.(ModbusConstants); ok {
+            return casted
         }
-        if sModbusConstants, ok := typ.(*ModbusConstants); ok {
-            return *sModbusConstants
+        if casted, ok := typ.(*ModbusConstants); ok {
+            return *casted
         }
         return ModbusConstants{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusConstants) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *ModbusConstants) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (modbusTcpDefaultPort)
     lengthInBits += 16
@@ -78,11 +67,11 @@ func (m ModbusConstants) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusConstants) LengthInBytes() uint16 {
+func (m *ModbusConstants) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusConstantsParse(io *utils.ReadBuffer) (spi.Message, error) {
+func ModbusConstantsParse(io *utils.ReadBuffer) (*ModbusConstants, error) {
 
     // Const Field (modbusTcpDefaultPort)
     modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
@@ -97,7 +86,7 @@ func ModbusConstantsParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewModbusConstants(), nil
 }
 
-func (m ModbusConstants) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 
     // Const Field (modbusTcpDefaultPort)
     _modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
@@ -126,7 +115,7 @@ func (m *ModbusConstants) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusConstants"},
         }}); err != nil {

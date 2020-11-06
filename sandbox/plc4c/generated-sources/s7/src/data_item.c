@@ -211,35 +211,17 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Manual Field (value)
                     char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-16"));
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* Time */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_tia_time(io));
+        if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
         } else 
-        if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* Time */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_s5_time(io));
+        if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* Time */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_tia_l_time(io));
+        if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* Date */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_tia_date(io));
+        if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* Time */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_tia_time_of_day(io));
+        if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
         } else 
-        if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DateTime */
-
-                    // Manual Field (value)
-                    time_t value = (time_t) (plc4c_s7_read_write_parse_tia_date_time(io));
+        if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
         }
 
   return OK;

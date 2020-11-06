@@ -22,54 +22,42 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type DIBSuppSvcFamilies struct {
     DescriptionType uint8
-    ServiceIds []IServiceId
-
+    ServiceIds []*ServiceId
+    IDIBSuppSvcFamilies
 }
 
 // The corresponding interface
 type IDIBSuppSvcFamilies interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []IServiceId) spi.Message {
+func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
     return &DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
-}
-
-func CastIDIBSuppSvcFamilies(structType interface{}) IDIBSuppSvcFamilies {
-    castFunc := func(typ interface{}) IDIBSuppSvcFamilies {
-        if iDIBSuppSvcFamilies, ok := typ.(IDIBSuppSvcFamilies); ok {
-            return iDIBSuppSvcFamilies
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastDIBSuppSvcFamilies(structType interface{}) DIBSuppSvcFamilies {
     castFunc := func(typ interface{}) DIBSuppSvcFamilies {
-        if sDIBSuppSvcFamilies, ok := typ.(DIBSuppSvcFamilies); ok {
-            return sDIBSuppSvcFamilies
+        if casted, ok := typ.(DIBSuppSvcFamilies); ok {
+            return casted
         }
-        if sDIBSuppSvcFamilies, ok := typ.(*DIBSuppSvcFamilies); ok {
-            return *sDIBSuppSvcFamilies
+        if casted, ok := typ.(*DIBSuppSvcFamilies); ok {
+            return *casted
         }
         return DIBSuppSvcFamilies{}
     }
     return castFunc(structType)
 }
 
-func (m DIBSuppSvcFamilies) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *DIBSuppSvcFamilies) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -87,11 +75,11 @@ func (m DIBSuppSvcFamilies) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DIBSuppSvcFamilies) LengthInBytes() uint16 {
+func (m *DIBSuppSvcFamilies) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (spi.Message, error) {
+func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -107,17 +95,11 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Array field (serviceIds)
     // Count array
-    serviceIds := make([]IServiceId, uint16(3))
+    serviceIds := make([]*ServiceId, uint16(3))
     for curItem := uint16(0); curItem < uint16(uint16(3)); curItem++ {
-
-        _message, _err := ServiceIdParse(io)
+        _item, _err := ServiceIdParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'serviceIds' field " + _err.Error())
-        }
-        var _item IServiceId
-        _item, _ok := _message.(IServiceId)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ServiceId")
         }
         serviceIds[curItem] = _item
     }
@@ -126,7 +108,7 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil
 }
 
-func (m DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
+func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -175,40 +157,40 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.DescriptionType = data
             case "serviceIds":
-                var _values []IServiceId
+                var _values []*ServiceId
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
-                        var dt *KnxNetIpCore
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement":
-                        var dt *KnxNetIpDeviceManagement
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling":
-                        var dt *KnxNetIpTunneling
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteLogging":
-                        var dt *KnxNetRemoteLogging
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis":
-                        var dt *KnxNetRemoteConfigurationAndDiagnosis
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer":
-                        var dt *KnxNetObjectServer
+                        var dt *ServiceId
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -220,7 +202,7 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
     }
 }
 
-func (m DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies"},
         }}); err != nil {

@@ -19,22 +19,22 @@
 package testutils
 
 import (
-	"encoding/hex"
-	"encoding/xml"
-	"errors"
-	"fmt"
-	"github.com/subchen/go-xmldom"
-	"os"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/test"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
-	"strconv"
-	"testing"
-	"time"
+    "encoding/hex"
+    "encoding/xml"
+    "errors"
+    "fmt"
+    "github.com/subchen/go-xmldom"
+    "os"
+    model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/test"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+    "strconv"
+    "testing"
+    "time"
 )
 
 type DriverTestsuite struct {
@@ -194,7 +194,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		payloadString := step.payload.XML()
 
 		// Parse the xml into a real model
-		message, err := model.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 		if err != nil {
 			return errors.New("error parsing xml: " + err.Error())
 		}
@@ -251,7 +251,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		payloadString := step.payload.XML()
 
 		// Parse the xml into a real model
-		message, err := model.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 		if err != nil {
 			return errors.New("error parsing xml: " + err.Error())
 		}

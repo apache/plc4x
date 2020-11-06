@@ -22,68 +22,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUError struct {
-    ExceptionCode IModbusErrorCode
-    ModbusPDU
+    ExceptionCode ModbusErrorCode
+    Parent *ModbusPDU
+    IModbusPDUError
 }
 
 // The corresponding interface
 type IModbusPDUError interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUError) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUError) ErrorFlag() bool {
     return true
 }
 
-func (m ModbusPDUError) FunctionFlag() uint8 {
+func (m *ModbusPDUError) FunctionFlag() uint8 {
     return 0
 }
 
-func (m ModbusPDUError) Response() bool {
+func (m *ModbusPDUError) Response() bool {
     return false
 }
 
-func (m ModbusPDUError) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUError) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUError(exceptionCode IModbusErrorCode) ModbusPDUInitializer {
-    return &ModbusPDUError{ExceptionCode: exceptionCode}
-}
-
-func CastIModbusPDUError(structType interface{}) IModbusPDUError {
-    castFunc := func(typ interface{}) IModbusPDUError {
-        if iModbusPDUError, ok := typ.(IModbusPDUError); ok {
-            return iModbusPDUError
-        }
-        return nil
+func NewModbusPDUError(exceptionCode ModbusErrorCode, ) *ModbusPDU {
+    child := &ModbusPDUError{
+        ExceptionCode: exceptionCode,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUError(structType interface{}) ModbusPDUError {
     castFunc := func(typ interface{}) ModbusPDUError {
-        if sModbusPDUError, ok := typ.(ModbusPDUError); ok {
-            return sModbusPDUError
+        if casted, ok := typ.(ModbusPDUError); ok {
+            return casted
         }
-        if sModbusPDUError, ok := typ.(*ModbusPDUError); ok {
-            return *sModbusPDUError
+        if casted, ok := typ.(*ModbusPDUError); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUError(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUError(casted.Child)
         }
         return ModbusPDUError{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUError) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUError) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (exceptionCode)
     lengthInBits += 8
@@ -91,11 +95,11 @@ func (m ModbusPDUError) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUError) LengthInBytes() uint16 {
+func (m *ModbusPDUError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Enum field (exceptionCode)
     exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
@@ -103,11 +107,16 @@ func ModbusPDUErrorParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
         return nil, errors.New("Error parsing 'exceptionCode' field " + _exceptionCodeErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUError(exceptionCode), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUError{
+        ExceptionCode: exceptionCode,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUError) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (exceptionCode)
@@ -119,7 +128,7 @@ func (m ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -136,7 +145,7 @@ func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "exceptionCode":
-                var data *ModbusErrorCode
+                var data ModbusErrorCode
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -146,7 +155,7 @@ func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
     }
 }
 
-func (m ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUError"},
         }}); err != nil {

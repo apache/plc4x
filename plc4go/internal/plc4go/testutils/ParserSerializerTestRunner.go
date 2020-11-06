@@ -19,16 +19,16 @@
 package testutils
 
 import (
-	"encoding/hex"
-	"encoding/xml"
-	"fmt"
-	"github.com/subchen/go-xmldom"
-	"os"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"strconv"
-	"strings"
-	"testing"
+    "encoding/hex"
+    "encoding/xml"
+    "fmt"
+    "github.com/subchen/go-xmldom"
+    "os"
+    model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "strconv"
+    "strings"
+    "testing"
 )
 
 func RunParserSerializerTestsuite(t *testing.T, testPath string) {
@@ -93,7 +93,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string) {
 			readBuffer := utils.NewReadBuffer(rawInput)
 
 			// Parse the input according to the settings of the testcase
-			helper := new(model.ModbusParserHelper)
+			helper := new(model2.ModbusParserHelper)
 			msg, err := helper.Parse(rootType, parserArguments, readBuffer)
 			if err != nil {
 				t.Error("Error parsing input data: " + err.Error())

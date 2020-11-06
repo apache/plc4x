@@ -23,83 +23,96 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type CEMIFrameData struct {
-    SourceAddress IKNXAddress
+    SourceAddress *KNXAddress
     DestinationAddress []int8
     GroupAddress bool
     HopCount uint8
     DataLength uint8
-    Tcpi ITPCI
+    Tcpi TPCI
     Counter uint8
-    Apci IAPCI
+    Apci APCI
     DataFirstByte int8
     Data []int8
     Crc uint8
-    CEMIFrame
+    Parent *CEMIFrame
+    ICEMIFrameData
 }
 
 // The corresponding interface
 type ICEMIFrameData interface {
-    ICEMIFrame
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIFrameData) NotAckFrame() bool {
+///////////////////////////////////////////////////////////
+func (m *CEMIFrameData) NotAckFrame() bool {
     return true
 }
 
-func (m CEMIFrameData) StandardFrame() bool {
+func (m *CEMIFrameData) StandardFrame() bool {
     return true
 }
 
-func (m CEMIFrameData) Polling() bool {
+func (m *CEMIFrameData) Polling() bool {
     return false
 }
 
-func (m CEMIFrameData) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
-    m.Repeated = repeated
-    m.Priority = priority
-    m.AcknowledgeRequested = acknowledgeRequested
-    m.ErrorFlag = errorFlag
-    return m
+
+func (m *CEMIFrameData) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+    m.Parent.Repeated = repeated
+    m.Parent.Priority = priority
+    m.Parent.AcknowledgeRequested = acknowledgeRequested
+    m.Parent.ErrorFlag = errorFlag
 }
 
-func NewCEMIFrameData(sourceAddress IKNXAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, dataLength uint8, tcpi ITPCI, counter uint8, apci IAPCI, dataFirstByte int8, data []int8, crc uint8) CEMIFrameInitializer {
-    return &CEMIFrameData{SourceAddress: sourceAddress, DestinationAddress: destinationAddress, GroupAddress: groupAddress, HopCount: hopCount, DataLength: dataLength, Tcpi: tcpi, Counter: counter, Apci: apci, DataFirstByte: dataFirstByte, Data: data, Crc: crc}
-}
-
-func CastICEMIFrameData(structType interface{}) ICEMIFrameData {
-    castFunc := func(typ interface{}) ICEMIFrameData {
-        if iCEMIFrameData, ok := typ.(ICEMIFrameData); ok {
-            return iCEMIFrameData
-        }
-        return nil
+func NewCEMIFrameData(sourceAddress *KNXAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, dataLength uint8, tcpi TPCI, counter uint8, apci APCI, dataFirstByte int8, data []int8, crc uint8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
+    child := &CEMIFrameData{
+        SourceAddress: sourceAddress,
+        DestinationAddress: destinationAddress,
+        GroupAddress: groupAddress,
+        HopCount: hopCount,
+        DataLength: dataLength,
+        Tcpi: tcpi,
+        Counter: counter,
+        Apci: apci,
+        DataFirstByte: dataFirstByte,
+        Data: data,
+        Crc: crc,
+        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIFrameData(structType interface{}) CEMIFrameData {
     castFunc := func(typ interface{}) CEMIFrameData {
-        if sCEMIFrameData, ok := typ.(CEMIFrameData); ok {
-            return sCEMIFrameData
+        if casted, ok := typ.(CEMIFrameData); ok {
+            return casted
         }
-        if sCEMIFrameData, ok := typ.(*CEMIFrameData); ok {
-            return *sCEMIFrameData
+        if casted, ok := typ.(*CEMIFrameData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMIFrame); ok {
+            return CastCEMIFrameData(casted.Child)
+        }
+        if casted, ok := typ.(*CEMIFrame); ok {
+            return CastCEMIFrameData(casted.Child)
         }
         return CEMIFrameData{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIFrameData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
+func (m *CEMIFrameData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (sourceAddress)
     lengthInBits += m.SourceAddress.LengthInBits()
@@ -141,28 +154,22 @@ func (m CEMIFrameData) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m CEMIFrameData) LengthInBytes() uint16 {
+func (m *CEMIFrameData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameDataParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFrameDataParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
 
     // Simple Field (sourceAddress)
-    _sourceAddressMessage, _err := KNXAddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'sourceAddress'. " + _err.Error())
-    }
-    var sourceAddress IKNXAddress
-    sourceAddress, _sourceAddressOk := _sourceAddressMessage.(IKNXAddress)
-    if !_sourceAddressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_sourceAddressMessage).Name() + " to IKNXAddress")
+    sourceAddress, _sourceAddressErr := KNXAddressParse(io)
+    if _sourceAddressErr != nil {
+        return nil, errors.New("Error parsing 'sourceAddress' field " + _sourceAddressErr.Error())
     }
 
     // Array field (destinationAddress)
     // Count array
     destinationAddress := make([]int8, uint16(2))
     for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
@@ -216,7 +223,6 @@ func CEMIFrameDataParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
     // Count array
     data := make([]int8, uint16(dataLength) - uint16(uint16(1)))
     for curItem := uint16(0); curItem < uint16(uint16(dataLength) - uint16(uint16(1))); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'data' field " + _err.Error())
@@ -230,16 +236,30 @@ func CEMIFrameDataParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
         return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
     }
 
-    // Create the instance
-    return NewCEMIFrameData(sourceAddress, destinationAddress, groupAddress, hopCount, dataLength, tcpi, counter, apci, dataFirstByte, data, crc), nil
+    // Create a partially initialized instance
+    _child := &CEMIFrameData{
+        SourceAddress: sourceAddress,
+        DestinationAddress: destinationAddress,
+        GroupAddress: groupAddress,
+        HopCount: hopCount,
+        DataLength: dataLength,
+        Tcpi: tcpi,
+        Counter: counter,
+        Apci: apci,
+        DataFirstByte: dataFirstByte,
+        Data: data,
+        Crc: crc,
+        Parent: &CEMIFrame{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIFrameData) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIFrameData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (sourceAddress)
-    sourceAddress := CastIKNXAddress(m.SourceAddress)
-    _sourceAddressErr := sourceAddress.Serialize(io)
+    _sourceAddressErr := m.SourceAddress.Serialize(io)
     if _sourceAddressErr != nil {
         return errors.New("Error serializing 'sourceAddress' field " + _sourceAddressErr.Error())
     }
@@ -322,7 +342,7 @@ func (m CEMIFrameData) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -340,10 +360,10 @@ func (m *CEMIFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
             switch tok.Name.Local {
             case "sourceAddress":
                 var data *KNXAddress
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.SourceAddress = CastIKNXAddress(data)
+                m.SourceAddress = data
             case "destinationAddress":
                 var _encoded string
                 if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -374,7 +394,7 @@ func (m *CEMIFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.DataLength = data
             case "tcpi":
-                var data *TPCI
+                var data TPCI
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -386,7 +406,7 @@ func (m *CEMIFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.Counter = data
             case "apci":
-                var data *APCI
+                var data APCI
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -419,7 +439,7 @@ func (m *CEMIFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m CEMIFrameData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIFrameData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData"},
         }}); err != nil {

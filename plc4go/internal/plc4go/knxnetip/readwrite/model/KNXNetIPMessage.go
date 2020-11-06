@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -32,50 +31,48 @@ const KNXNetIPMessage_PROTOCOLVERSION uint8 = 0x10
 
 // The data-structure of this message
 type KNXNetIPMessage struct {
-
+    Child IKNXNetIPMessageChild
+    IKNXNetIPMessage
+    IKNXNetIPMessageParent
 }
 
 // The corresponding interface
 type IKNXNetIPMessage interface {
-    spi.Message
     MsgType() uint16
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type KNXNetIPMessageInitializer interface {
-    initialize() spi.Message
+type IKNXNetIPMessageParent interface {
+    SerializeParent(io utils.WriteBuffer, child IKNXNetIPMessage, serializeChildFunction func() error) error
 }
 
-func KNXNetIPMessageMsgType(m IKNXNetIPMessage) uint16 {
-    return m.MsgType()
+type IKNXNetIPMessageChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *KNXNetIPMessage)
+    IKNXNetIPMessage
 }
 
-
-func CastIKNXNetIPMessage(structType interface{}) IKNXNetIPMessage {
-    castFunc := func(typ interface{}) IKNXNetIPMessage {
-        if iKNXNetIPMessage, ok := typ.(IKNXNetIPMessage); ok {
-            return iKNXNetIPMessage
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewKNXNetIPMessage() *KNXNetIPMessage {
+    return &KNXNetIPMessage{}
 }
 
 func CastKNXNetIPMessage(structType interface{}) KNXNetIPMessage {
     castFunc := func(typ interface{}) KNXNetIPMessage {
-        if sKNXNetIPMessage, ok := typ.(KNXNetIPMessage); ok {
-            return sKNXNetIPMessage
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return casted
         }
-        if sKNXNetIPMessage, ok := typ.(*KNXNetIPMessage); ok {
-            return *sKNXNetIPMessage
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return *casted
         }
         return KNXNetIPMessage{}
     }
     return castFunc(structType)
 }
 
-func (m KNXNetIPMessage) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *KNXNetIPMessage) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (headerLength)
     lengthInBits += 8
@@ -90,15 +87,16 @@ func (m KNXNetIPMessage) LengthInBits() uint16 {
     lengthInBits += 16
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m KNXNetIPMessage) LengthInBytes() uint16 {
+func (m *KNXNetIPMessage) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXNetIPMessageParse(io *utils.ReadBuffer) (spi.Message, error) {
+func KNXNetIPMessageParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _headerLengthErr := io.ReadUint8(8)
@@ -128,51 +126,56 @@ func KNXNetIPMessageParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer KNXNetIPMessageInitializer
+    var _parent *KNXNetIPMessage
     var typeSwitchError error
     switch {
     case msgType == 0x0201:
-        initializer, typeSwitchError = SearchRequestParse(io)
+        _parent, typeSwitchError = SearchRequestParse(io)
     case msgType == 0x0202:
-        initializer, typeSwitchError = SearchResponseParse(io)
+        _parent, typeSwitchError = SearchResponseParse(io)
     case msgType == 0x0203:
-        initializer, typeSwitchError = DescriptionRequestParse(io)
+        _parent, typeSwitchError = DescriptionRequestParse(io)
     case msgType == 0x0204:
-        initializer, typeSwitchError = DescriptionResponseParse(io)
+        _parent, typeSwitchError = DescriptionResponseParse(io)
     case msgType == 0x0205:
-        initializer, typeSwitchError = ConnectionRequestParse(io)
+        _parent, typeSwitchError = ConnectionRequestParse(io)
     case msgType == 0x0206:
-        initializer, typeSwitchError = ConnectionResponseParse(io)
+        _parent, typeSwitchError = ConnectionResponseParse(io)
     case msgType == 0x0207:
-        initializer, typeSwitchError = ConnectionStateRequestParse(io)
+        _parent, typeSwitchError = ConnectionStateRequestParse(io)
     case msgType == 0x0208:
-        initializer, typeSwitchError = ConnectionStateResponseParse(io)
+        _parent, typeSwitchError = ConnectionStateResponseParse(io)
     case msgType == 0x0209:
-        initializer, typeSwitchError = DisconnectRequestParse(io)
+        _parent, typeSwitchError = DisconnectRequestParse(io)
     case msgType == 0x020A:
-        initializer, typeSwitchError = DisconnectResponseParse(io)
+        _parent, typeSwitchError = DisconnectResponseParse(io)
     case msgType == 0x020B:
-        initializer, typeSwitchError = UnknownMessageParse(io, totalLength)
+        _parent, typeSwitchError = UnknownMessageParse(io, totalLength)
     case msgType == 0x0310:
-        initializer, typeSwitchError = DeviceConfigurationRequestParse(io, totalLength)
+        _parent, typeSwitchError = DeviceConfigurationRequestParse(io, totalLength)
     case msgType == 0x0311:
-        initializer, typeSwitchError = DeviceConfigurationAckParse(io)
+        _parent, typeSwitchError = DeviceConfigurationAckParse(io)
     case msgType == 0x0420:
-        initializer, typeSwitchError = TunnelingRequestParse(io, totalLength)
+        _parent, typeSwitchError = TunnelingRequestParse(io, totalLength)
     case msgType == 0x0421:
-        initializer, typeSwitchError = TunnelingResponseParse(io)
+        _parent, typeSwitchError = TunnelingResponseParse(io)
     case msgType == 0x0530:
-        initializer, typeSwitchError = RoutingIndicationParse(io)
+        _parent, typeSwitchError = RoutingIndicationParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func KNXNetIPMessageSerialize(io utils.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func() error) error {
+func (m *KNXNetIPMessage) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *KNXNetIPMessage) SerializeParent(io utils.WriteBuffer, child IKNXNetIPMessage, serializeChildFunction func() error) error {
 
     // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     headerLength := uint8(uint8(6))
@@ -188,7 +191,7 @@ func KNXNetIPMessageSerialize(io utils.WriteBuffer, m KNXNetIPMessage, i IKNXNet
     }
 
     // Discriminator Field (msgType) (Used as input to a switch field)
-    msgType := uint16(i.MsgType())
+    msgType := uint16(child.MsgType())
     _msgTypeErr := io.WriteUint16(16, (msgType))
     if _msgTypeErr != nil {
         return errors.New("Error serializing 'msgType' field " + _msgTypeErr.Error())
@@ -202,7 +205,7 @@ func KNXNetIPMessageSerialize(io utils.WriteBuffer, m KNXNetIPMessage, i IKNXNet
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -228,7 +231,7 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m KNXNetIPMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KNXNetIPMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage"},
         }}); err != nil {

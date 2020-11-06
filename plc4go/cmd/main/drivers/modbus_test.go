@@ -65,7 +65,7 @@ func test(t *testing.T, rawMessage string, response bool) {
 		xml.Unmarshal(serialized, &deserializedAdu)
 
 		wb := utils.NewWriteBuffer()
-		val := model.CastIModbusTcpADU(deserializedAdu)
+		val := model.CastModbusTcpADU(deserializedAdu)
 		val.Serialize(*wb)
 		serializedMessage := hex.EncodeToString(wb.GetBytes())
 		if strings.ToUpper(serializedMessage) != strings.ToUpper(rawMessage) {
@@ -78,15 +78,9 @@ func test(t *testing.T, rawMessage string, response bool) {
 // Test that actually sends a read-request to a remote Modbus Slave
 //
 func Connection(t *testing.T) {
-	pdu := model.ModbusPDUReadInputRegistersRequest{
-		StartingAddress: 1,
-		Quantity:        1,
-	}
-	adu := model.ModbusTcpADU{
-		TransactionIdentifier: 0,
-		UnitIdentifier:        255,
-		Pdu:                   &pdu,
-	}
+
+	pdu := model.NewModbusPDUReadInputRegistersRequest(1, 1)
+    adu := model.NewModbusTcpADU( 0,255, pdu)
 
 	wb := utils.NewWriteBuffer()
 	adu.Serialize(*wb)

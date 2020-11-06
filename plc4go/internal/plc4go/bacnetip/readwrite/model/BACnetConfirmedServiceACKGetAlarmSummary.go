@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKGetAlarmSummary struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKGetAlarmSummary
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetAlarmSummary interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKGetAlarmSummary) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) ServiceChoice() uint8 {
     return 0x03
 }
 
-func (m BACnetConfirmedServiceACKGetAlarmSummary) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKGetAlarmSummary() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKGetAlarmSummary{}
-}
-
-func CastIBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) IBACnetConfirmedServiceACKGetAlarmSummary {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKGetAlarmSummary {
-        if iBACnetConfirmedServiceACKGetAlarmSummary, ok := typ.(IBACnetConfirmedServiceACKGetAlarmSummary); ok {
-            return iBACnetConfirmedServiceACKGetAlarmSummary
-        }
-        return nil
+func NewBACnetConfirmedServiceACKGetAlarmSummary() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKGetAlarmSummary{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
-        if sBACnetConfirmedServiceACKGetAlarmSummary, ok := typ.(BACnetConfirmedServiceACKGetAlarmSummary); ok {
-            return sBACnetConfirmedServiceACKGetAlarmSummary
+        if casted, ok := typ.(BACnetConfirmedServiceACKGetAlarmSummary); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKGetAlarmSummary, ok := typ.(*BACnetConfirmedServiceACKGetAlarmSummary); ok {
-            return *sBACnetConfirmedServiceACKGetAlarmSummary
+        if casted, ok := typ.(*BACnetConfirmedServiceACKGetAlarmSummary); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKGetAlarmSummary(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKGetAlarmSummary(casted.Child)
         }
         return BACnetConfirmedServiceACKGetAlarmSummary{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKGetAlarmSummary) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKGetAlarmSummary) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKGetAlarmSummaryParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKGetAlarmSummaryParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKGetAlarmSummary(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKGetAlarmSummary{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) UnmarshalXML(d *xml.Decoder, 
     }
 }
 
-func (m BACnetConfirmedServiceACKGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKGetAlarmSummary"},
         }}); err != nil {

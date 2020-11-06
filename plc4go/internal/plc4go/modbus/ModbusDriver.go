@@ -80,7 +80,7 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 	go func() {
 		for {
 			msg := <-defaultChanel
-			adu := model.CastModbusTcpADU(msg)
+			adu := msg.(model.ModbusTcpADU)
 			serialized, err := json.Marshal(adu)
 			if err != nil {
 				fmt.Errorf("got error serializing adu: %s\n", err.Error())

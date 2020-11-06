@@ -21,6 +21,7 @@ package model
 import (
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+    "time"
 )
 
 func StaticHelperParseTiaTime(io *utils.ReadBuffer) (uint32, error) {
@@ -65,7 +66,7 @@ func StaticHelperSerializeTiaLTime(io *utils.WriteBuffer, value values.PlcValue)
 	return nil
 }
 
-func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      long millisSinceMidnight = io.readUnsignedLong(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -73,7 +74,7 @@ func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (uint32, error) {
 	  } catch (ParseException e) {
 	      return null;
 	  }*/
-	return 0, nil
+	return time.Time{}, nil
 }
 
 func StaticHelperSerializeTiaTimeOfDay(io *utils.WriteBuffer, value values.PlcValue) error {
@@ -81,14 +82,14 @@ func StaticHelperSerializeTiaTimeOfDay(io *utils.WriteBuffer, value values.PlcVa
 	return nil
 }
 
-func StaticHelperParseTiaDate(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaDate(io *utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
 	  } catch (ParseException e) {
 	      return null;
 	  }*/
-	return 0, nil
+	return time.Time{}, nil
 }
 
 func StaticHelperSerializeTiaDate(io *utils.WriteBuffer, value values.PlcValue) error {
@@ -96,7 +97,7 @@ func StaticHelperSerializeTiaDate(io *utils.WriteBuffer, value values.PlcValue) 
 	return nil
 }
 
-func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
 	      int month = io.readUnsignedInt(8);
@@ -112,7 +113,7 @@ func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (uint32, error) {
 	  } catch (Exception e) {
 	      return null;
 	  }*/
-	return 0, nil
+	return time.Time{}, nil
 }
 
 func StaticHelperSerializeTiaDateTime(io *utils.WriteBuffer, value values.PlcValue) error {
@@ -136,7 +137,7 @@ func StaticHelperParseS7String(io *utils.ReadBuffer, stringLength int32, encodin
 	return "", nil
 }
 
-func StaticHelperSerializeS7String(io *utils.ReadBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func StaticHelperSerializeS7String(io *utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	return nil
 }
 

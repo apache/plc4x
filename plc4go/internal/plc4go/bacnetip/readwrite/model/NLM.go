@@ -22,57 +22,54 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type NLM struct {
     VendorId *uint16
-
+    Child INLMChild
+    INLM
+    INLMParent
 }
 
 // The corresponding interface
 type INLM interface {
-    spi.Message
     MessageType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type NLMInitializer interface {
-    initialize(vendorId *uint16) spi.Message
+type INLMParent interface {
+    SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error
 }
 
-func NLMMessageType(m INLM) uint8 {
-    return m.MessageType()
+type INLMChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *NLM, vendorId *uint16)
+    INLM
 }
 
-
-func CastINLM(structType interface{}) INLM {
-    castFunc := func(typ interface{}) INLM {
-        if iNLM, ok := typ.(INLM); ok {
-            return iNLM
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewNLM(vendorId *uint16) *NLM {
+    return &NLM{VendorId: vendorId}
 }
 
 func CastNLM(structType interface{}) NLM {
     castFunc := func(typ interface{}) NLM {
-        if sNLM, ok := typ.(NLM); ok {
-            return sNLM
+        if casted, ok := typ.(NLM); ok {
+            return casted
         }
-        if sNLM, ok := typ.(*NLM); ok {
-            return *sNLM
+        if casted, ok := typ.(*NLM); ok {
+            return *casted
         }
         return NLM{}
     }
     return castFunc(structType)
 }
 
-func (m NLM) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *NLM) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (messageType)
     lengthInBits += 8
@@ -83,15 +80,16 @@ func (m NLM) LengthInBits() uint16 {
     }
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m NLM) LengthInBytes() uint16 {
+func (m *NLM) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NLMParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
+func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 
     // Discriminator Field (messageType) (Used as input to a switch field)
     messageType, _messageTypeErr := io.ReadUint8(8)
@@ -111,26 +109,31 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer NLMInitializer
+    var _parent *NLM
     var typeSwitchError error
     switch {
     case messageType == 0x0:
-        initializer, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
+        _parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
     case messageType == 0x1:
-        initializer, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
+        _parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(vendorId), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent, vendorId)
+    return _parent, nil
 }
 
-func NLMSerialize(io utils.WriteBuffer, m NLM, i INLM, childSerialize func() error) error {
+func (m *NLM) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error {
 
     // Discriminator Field (messageType) (Used as input to a switch field)
-    messageType := uint8(i.MessageType())
+    messageType := uint8(child.MessageType())
     _messageTypeErr := io.WriteUint8(8, (messageType))
     if _messageTypeErr != nil {
         return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
@@ -147,7 +150,7 @@ func NLMSerialize(io utils.WriteBuffer, m NLM, i INLM, childSerialize func() err
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -170,7 +173,7 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
             switch tok.Name.Local {
             case "vendorId":
                 var data *uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.VendorId = data
@@ -179,7 +182,7 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NLM"},
         }}); err != nil {

@@ -22,70 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIAdditionalInformation struct {
-
+    Child ICEMIAdditionalInformationChild
+    ICEMIAdditionalInformation
+    ICEMIAdditionalInformationParent
 }
 
 // The corresponding interface
 type ICEMIAdditionalInformation interface {
-    spi.Message
     AdditionalInformationType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type CEMIAdditionalInformationInitializer interface {
-    initialize() spi.Message
+type ICEMIAdditionalInformationParent interface {
+    SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error
 }
 
-func CEMIAdditionalInformationAdditionalInformationType(m ICEMIAdditionalInformation) uint8 {
-    return m.AdditionalInformationType()
+type ICEMIAdditionalInformationChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *CEMIAdditionalInformation)
+    ICEMIAdditionalInformation
 }
 
-
-func CastICEMIAdditionalInformation(structType interface{}) ICEMIAdditionalInformation {
-    castFunc := func(typ interface{}) ICEMIAdditionalInformation {
-        if iCEMIAdditionalInformation, ok := typ.(ICEMIAdditionalInformation); ok {
-            return iCEMIAdditionalInformation
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
+    return &CEMIAdditionalInformation{}
 }
 
 func CastCEMIAdditionalInformation(structType interface{}) CEMIAdditionalInformation {
     castFunc := func(typ interface{}) CEMIAdditionalInformation {
-        if sCEMIAdditionalInformation, ok := typ.(CEMIAdditionalInformation); ok {
-            return sCEMIAdditionalInformation
+        if casted, ok := typ.(CEMIAdditionalInformation); ok {
+            return casted
         }
-        if sCEMIAdditionalInformation, ok := typ.(*CEMIAdditionalInformation); ok {
-            return *sCEMIAdditionalInformation
+        if casted, ok := typ.(*CEMIAdditionalInformation); ok {
+            return *casted
         }
         return CEMIAdditionalInformation{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIAdditionalInformation) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (additionalInformationType)
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m CEMIAdditionalInformation) LengthInBytes() uint16 {
+func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (spi.Message, error) {
+func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
 
     // Discriminator Field (additionalInformationType) (Used as input to a switch field)
     additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
@@ -94,33 +92,38 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer CEMIAdditionalInformationInitializer
+    var _parent *CEMIAdditionalInformation
     var typeSwitchError error
     switch {
     case additionalInformationType == 0x03:
-        initializer, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
+        _parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
     case additionalInformationType == 0x04:
-        initializer, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
+        _parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func CEMIAdditionalInformationSerialize(io utils.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func() error) error {
+func (m *CEMIAdditionalInformation) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error {
 
     // Discriminator Field (additionalInformationType) (Used as input to a switch field)
-    additionalInformationType := uint8(i.AdditionalInformationType())
+    additionalInformationType := uint8(child.AdditionalInformationType())
     _additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
     if _additionalInformationTypeErr != nil {
         return errors.New("Error serializing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -146,7 +149,7 @@ func (m *CEMIAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformation"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKReadRange struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKReadRange
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadRange interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKReadRange) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKReadRange) ServiceChoice() uint8 {
     return 0x1A
 }
 
-func (m BACnetConfirmedServiceACKReadRange) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKReadRange) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKReadRange() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKReadRange{}
-}
-
-func CastIBACnetConfirmedServiceACKReadRange(structType interface{}) IBACnetConfirmedServiceACKReadRange {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadRange {
-        if iBACnetConfirmedServiceACKReadRange, ok := typ.(IBACnetConfirmedServiceACKReadRange); ok {
-            return iBACnetConfirmedServiceACKReadRange
-        }
-        return nil
+func NewBACnetConfirmedServiceACKReadRange() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKReadRange{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKReadRange(structType interface{}) BACnetConfirmedServiceACKReadRange {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadRange {
-        if sBACnetConfirmedServiceACKReadRange, ok := typ.(BACnetConfirmedServiceACKReadRange); ok {
-            return sBACnetConfirmedServiceACKReadRange
+        if casted, ok := typ.(BACnetConfirmedServiceACKReadRange); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKReadRange, ok := typ.(*BACnetConfirmedServiceACKReadRange); ok {
-            return *sBACnetConfirmedServiceACKReadRange
+        if casted, ok := typ.(*BACnetConfirmedServiceACKReadRange); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKReadRange(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKReadRange(casted.Child)
         }
         return BACnetConfirmedServiceACKReadRange{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKReadRange) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKReadRange) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadRangeParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKReadRangeParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKReadRange(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKReadRange{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKReadRange) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKReadRange) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKReadRange) UnmarshalXML(d *xml.Decoder, start 
     }
 }
 
-func (m BACnetConfirmedServiceACKReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKReadRange"},
         }}); err != nil {

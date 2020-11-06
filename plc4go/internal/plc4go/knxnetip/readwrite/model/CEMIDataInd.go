@@ -22,63 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type CEMIDataInd struct {
     AdditionalInformationLength uint8
-    AdditionalInformation []ICEMIAdditionalInformation
-    CemiDataFrame ICEMIDataFrame
-    CEMI
+    AdditionalInformation []*CEMIAdditionalInformation
+    CemiDataFrame *CEMIDataFrame
+    Parent *CEMI
+    ICEMIDataInd
 }
 
 // The corresponding interface
 type ICEMIDataInd interface {
-    ICEMI
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIDataInd) MessageCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *CEMIDataInd) MessageCode() uint8 {
     return 0x29
 }
 
-func (m CEMIDataInd) initialize() spi.Message {
-    return m
+
+func (m *CEMIDataInd) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIDataInd(additionalInformationLength uint8, additionalInformation []ICEMIAdditionalInformation, cemiDataFrame ICEMIDataFrame) CEMIInitializer {
-    return &CEMIDataInd{AdditionalInformationLength: additionalInformationLength, AdditionalInformation: additionalInformation, CemiDataFrame: cemiDataFrame}
-}
-
-func CastICEMIDataInd(structType interface{}) ICEMIDataInd {
-    castFunc := func(typ interface{}) ICEMIDataInd {
-        if iCEMIDataInd, ok := typ.(ICEMIDataInd); ok {
-            return iCEMIDataInd
-        }
-        return nil
+func NewCEMIDataInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, cemiDataFrame *CEMIDataFrame, ) *CEMI {
+    child := &CEMIDataInd{
+        AdditionalInformationLength: additionalInformationLength,
+        AdditionalInformation: additionalInformation,
+        CemiDataFrame: cemiDataFrame,
+        Parent: NewCEMI(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIDataInd(structType interface{}) CEMIDataInd {
     castFunc := func(typ interface{}) CEMIDataInd {
-        if sCEMIDataInd, ok := typ.(CEMIDataInd); ok {
-            return sCEMIDataInd
+        if casted, ok := typ.(CEMIDataInd); ok {
+            return casted
         }
-        if sCEMIDataInd, ok := typ.(*CEMIDataInd); ok {
-            return *sCEMIDataInd
+        if casted, ok := typ.(*CEMIDataInd); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMI); ok {
+            return CastCEMIDataInd(casted.Child)
+        }
+        if casted, ok := typ.(*CEMI); ok {
+            return CastCEMIDataInd(casted.Child)
         }
         return CEMIDataInd{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIDataInd) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMI.LengthInBits()
+func (m *CEMIDataInd) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (additionalInformationLength)
     lengthInBits += 8
@@ -96,11 +101,11 @@ func (m CEMIDataInd) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m CEMIDataInd) LengthInBytes() uint16 {
+func (m *CEMIDataInd) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIDataIndParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
+func CEMIDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (additionalInformationLength)
     additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -110,38 +115,35 @@ func CEMIDataIndParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
 
     // Array field (additionalInformation)
     // Length array
-    additionalInformation := make([]ICEMIAdditionalInformation, 0)
+    additionalInformation := make([]*CEMIAdditionalInformation, 0)
     _additionalInformationLength := additionalInformationLength
     _additionalInformationEndPos := io.GetPos() + uint16(_additionalInformationLength)
     for ;io.GetPos() < _additionalInformationEndPos; {
-        _message, _err := CEMIAdditionalInformationParse(io)
+        _item, _err := CEMIAdditionalInformationParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'additionalInformation' field " + _err.Error())
-        }
-        var _item ICEMIAdditionalInformation
-        _item, _ok := _message.(ICEMIAdditionalInformation)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to CEMIAdditionalInformation")
         }
         additionalInformation = append(additionalInformation, _item)
     }
 
     // Simple Field (cemiDataFrame)
-    _cemiDataFrameMessage, _err := CEMIDataFrameParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'cemiDataFrame'. " + _err.Error())
-    }
-    var cemiDataFrame ICEMIDataFrame
-    cemiDataFrame, _cemiDataFrameOk := _cemiDataFrameMessage.(ICEMIDataFrame)
-    if !_cemiDataFrameOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiDataFrameMessage).Name() + " to ICEMIDataFrame")
+    cemiDataFrame, _cemiDataFrameErr := CEMIDataFrameParse(io)
+    if _cemiDataFrameErr != nil {
+        return nil, errors.New("Error parsing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
     }
 
-    // Create the instance
-    return NewCEMIDataInd(additionalInformationLength, additionalInformation, cemiDataFrame), nil
+    // Create a partially initialized instance
+    _child := &CEMIDataInd{
+        AdditionalInformationLength: additionalInformationLength,
+        AdditionalInformation: additionalInformation,
+        CemiDataFrame: cemiDataFrame,
+        Parent: &CEMI{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIDataInd) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIDataInd) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (additionalInformationLength)
@@ -162,15 +164,14 @@ func (m CEMIDataInd) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (cemiDataFrame)
-    cemiDataFrame := CastICEMIDataFrame(m.CemiDataFrame)
-    _cemiDataFrameErr := cemiDataFrame.Serialize(io)
+    _cemiDataFrameErr := m.CemiDataFrame.Serialize(io)
     if _cemiDataFrameErr != nil {
         return errors.New("Error serializing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
     }
 
         return nil
     }
-    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -193,16 +194,16 @@ func (m *CEMIDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                 }
                 m.AdditionalInformationLength = data
             case "additionalInformation":
-                var _values []ICEMIAdditionalInformation
+                var _values []*CEMIAdditionalInformation
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
-                        var dt *CEMIAdditionalInformationBusmonitorInfo
+                        var dt *CEMIAdditionalInformation
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
-                        var dt *CEMIAdditionalInformationRelativeTimestamp
+                        var dt *CEMIAdditionalInformation
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -211,16 +212,16 @@ func (m *CEMIDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                     m.AdditionalInformation = _values
             case "cemiDataFrame":
                 var data *CEMIDataFrame
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.CemiDataFrame = CastICEMIDataFrame(data)
+                m.CemiDataFrame = data
             }
         }
     }
 }
 
-func (m CEMIDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd"},
         }}); err != nil {

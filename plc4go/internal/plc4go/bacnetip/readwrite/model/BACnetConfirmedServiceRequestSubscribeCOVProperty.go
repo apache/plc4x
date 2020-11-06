@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestSubscribeCOVProperty
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOVProperty interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) ServiceChoice() uint8 {
     return 0x1C
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestSubscribeCOVProperty() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestSubscribeCOVProperty{}
-}
-
-func CastIBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) IBACnetConfirmedServiceRequestSubscribeCOVProperty {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestSubscribeCOVProperty {
-        if iBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(IBACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-            return iBACnetConfirmedServiceRequestSubscribeCOVProperty
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestSubscribeCOVProperty() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
-        if sBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-            return sBACnetConfirmedServiceRequestSubscribeCOVProperty
+        if casted, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-            return *sBACnetConfirmedServiceRequestSubscribeCOVProperty
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOVProperty(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOVProperty(casted.Child)
         }
         return BACnetConfirmedServiceRequestSubscribeCOVProperty{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestSubscribeCOVProperty(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) UnmarshalXML(d *xml.
     }
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVProperty"},
         }}); err != nil {

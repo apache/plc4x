@@ -23,61 +23,49 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type DIBDeviceInfo struct {
     DescriptionType uint8
     KnxMedium uint8
-    DeviceStatus IDeviceStatus
-    KnxAddress IKNXAddress
-    ProjectInstallationIdentifier IProjectInstallationIdentifier
+    DeviceStatus *DeviceStatus
+    KnxAddress *KNXAddress
+    ProjectInstallationIdentifier *ProjectInstallationIdentifier
     KnxNetIpDeviceSerialNumber []int8
-    KnxNetIpDeviceMulticastAddress IIPAddress
-    KnxNetIpDeviceMacAddress IMACAddress
+    KnxNetIpDeviceMulticastAddress *IPAddress
+    KnxNetIpDeviceMacAddress *MACAddress
     DeviceFriendlyName []int8
-
+    IDIBDeviceInfo
 }
 
 // The corresponding interface
 type IDIBDeviceInfo interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus IDeviceStatus, knxAddress IKNXAddress, projectInstallationIdentifier IProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress IIPAddress, knxNetIpDeviceMacAddress IMACAddress, deviceFriendlyName []int8) spi.Message {
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus *DeviceStatus, knxAddress *KNXAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
     return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
-}
-
-func CastIDIBDeviceInfo(structType interface{}) IDIBDeviceInfo {
-    castFunc := func(typ interface{}) IDIBDeviceInfo {
-        if iDIBDeviceInfo, ok := typ.(IDIBDeviceInfo); ok {
-            return iDIBDeviceInfo
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastDIBDeviceInfo(structType interface{}) DIBDeviceInfo {
     castFunc := func(typ interface{}) DIBDeviceInfo {
-        if sDIBDeviceInfo, ok := typ.(DIBDeviceInfo); ok {
-            return sDIBDeviceInfo
+        if casted, ok := typ.(DIBDeviceInfo); ok {
+            return casted
         }
-        if sDIBDeviceInfo, ok := typ.(*DIBDeviceInfo); ok {
-            return *sDIBDeviceInfo
+        if casted, ok := typ.(*DIBDeviceInfo); ok {
+            return *casted
         }
         return DIBDeviceInfo{}
     }
     return castFunc(structType)
 }
 
-func (m DIBDeviceInfo) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *DIBDeviceInfo) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -116,11 +104,11 @@ func (m DIBDeviceInfo) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DIBDeviceInfo) LengthInBytes() uint16 {
+func (m *DIBDeviceInfo) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DIBDeviceInfoParse(io *utils.ReadBuffer) (spi.Message, error) {
+func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -141,43 +129,27 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Simple Field (deviceStatus)
-    _deviceStatusMessage, _err := DeviceStatusParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'deviceStatus'. " + _err.Error())
-    }
-    var deviceStatus IDeviceStatus
-    deviceStatus, _deviceStatusOk := _deviceStatusMessage.(IDeviceStatus)
-    if !_deviceStatusOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceStatusMessage).Name() + " to IDeviceStatus")
+    deviceStatus, _deviceStatusErr := DeviceStatusParse(io)
+    if _deviceStatusErr != nil {
+        return nil, errors.New("Error parsing 'deviceStatus' field " + _deviceStatusErr.Error())
     }
 
     // Simple Field (knxAddress)
-    _knxAddressMessage, _err := KNXAddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'knxAddress'. " + _err.Error())
-    }
-    var knxAddress IKNXAddress
-    knxAddress, _knxAddressOk := _knxAddressMessage.(IKNXAddress)
-    if !_knxAddressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxAddressMessage).Name() + " to IKNXAddress")
+    knxAddress, _knxAddressErr := KNXAddressParse(io)
+    if _knxAddressErr != nil {
+        return nil, errors.New("Error parsing 'knxAddress' field " + _knxAddressErr.Error())
     }
 
     // Simple Field (projectInstallationIdentifier)
-    _projectInstallationIdentifierMessage, _err := ProjectInstallationIdentifierParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'projectInstallationIdentifier'. " + _err.Error())
-    }
-    var projectInstallationIdentifier IProjectInstallationIdentifier
-    projectInstallationIdentifier, _projectInstallationIdentifierOk := _projectInstallationIdentifierMessage.(IProjectInstallationIdentifier)
-    if !_projectInstallationIdentifierOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_projectInstallationIdentifierMessage).Name() + " to IProjectInstallationIdentifier")
+    projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(io)
+    if _projectInstallationIdentifierErr != nil {
+        return nil, errors.New("Error parsing 'projectInstallationIdentifier' field " + _projectInstallationIdentifierErr.Error())
     }
 
     // Array field (knxNetIpDeviceSerialNumber)
     // Count array
     knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
     for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'knxNetIpDeviceSerialNumber' field " + _err.Error())
@@ -186,32 +158,21 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Simple Field (knxNetIpDeviceMulticastAddress)
-    _knxNetIpDeviceMulticastAddressMessage, _err := IPAddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'knxNetIpDeviceMulticastAddress'. " + _err.Error())
-    }
-    var knxNetIpDeviceMulticastAddress IIPAddress
-    knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressOk := _knxNetIpDeviceMulticastAddressMessage.(IIPAddress)
-    if !_knxNetIpDeviceMulticastAddressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxNetIpDeviceMulticastAddressMessage).Name() + " to IIPAddress")
+    knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(io)
+    if _knxNetIpDeviceMulticastAddressErr != nil {
+        return nil, errors.New("Error parsing 'knxNetIpDeviceMulticastAddress' field " + _knxNetIpDeviceMulticastAddressErr.Error())
     }
 
     // Simple Field (knxNetIpDeviceMacAddress)
-    _knxNetIpDeviceMacAddressMessage, _err := MACAddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'knxNetIpDeviceMacAddress'. " + _err.Error())
-    }
-    var knxNetIpDeviceMacAddress IMACAddress
-    knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressOk := _knxNetIpDeviceMacAddressMessage.(IMACAddress)
-    if !_knxNetIpDeviceMacAddressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxNetIpDeviceMacAddressMessage).Name() + " to IMACAddress")
+    knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(io)
+    if _knxNetIpDeviceMacAddressErr != nil {
+        return nil, errors.New("Error parsing 'knxNetIpDeviceMacAddress' field " + _knxNetIpDeviceMacAddressErr.Error())
     }
 
     // Array field (deviceFriendlyName)
     // Count array
     deviceFriendlyName := make([]int8, uint16(30))
     for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'deviceFriendlyName' field " + _err.Error())
@@ -223,7 +184,7 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewDIBDeviceInfo(descriptionType, knxMedium, deviceStatus, knxAddress, projectInstallationIdentifier, knxNetIpDeviceSerialNumber, knxNetIpDeviceMulticastAddress, knxNetIpDeviceMacAddress, deviceFriendlyName), nil
 }
 
-func (m DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
+func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -247,22 +208,19 @@ func (m DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (deviceStatus)
-    deviceStatus := CastIDeviceStatus(m.DeviceStatus)
-    _deviceStatusErr := deviceStatus.Serialize(io)
+    _deviceStatusErr := m.DeviceStatus.Serialize(io)
     if _deviceStatusErr != nil {
         return errors.New("Error serializing 'deviceStatus' field " + _deviceStatusErr.Error())
     }
 
     // Simple Field (knxAddress)
-    knxAddress := CastIKNXAddress(m.KnxAddress)
-    _knxAddressErr := knxAddress.Serialize(io)
+    _knxAddressErr := m.KnxAddress.Serialize(io)
     if _knxAddressErr != nil {
         return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
     }
 
     // Simple Field (projectInstallationIdentifier)
-    projectInstallationIdentifier := CastIProjectInstallationIdentifier(m.ProjectInstallationIdentifier)
-    _projectInstallationIdentifierErr := projectInstallationIdentifier.Serialize(io)
+    _projectInstallationIdentifierErr := m.ProjectInstallationIdentifier.Serialize(io)
     if _projectInstallationIdentifierErr != nil {
         return errors.New("Error serializing 'projectInstallationIdentifier' field " + _projectInstallationIdentifierErr.Error())
     }
@@ -278,15 +236,13 @@ func (m DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (knxNetIpDeviceMulticastAddress)
-    knxNetIpDeviceMulticastAddress := CastIIPAddress(m.KnxNetIpDeviceMulticastAddress)
-    _knxNetIpDeviceMulticastAddressErr := knxNetIpDeviceMulticastAddress.Serialize(io)
+    _knxNetIpDeviceMulticastAddressErr := m.KnxNetIpDeviceMulticastAddress.Serialize(io)
     if _knxNetIpDeviceMulticastAddressErr != nil {
         return errors.New("Error serializing 'knxNetIpDeviceMulticastAddress' field " + _knxNetIpDeviceMulticastAddressErr.Error())
     }
 
     // Simple Field (knxNetIpDeviceMacAddress)
-    knxNetIpDeviceMacAddress := CastIMACAddress(m.KnxNetIpDeviceMacAddress)
-    _knxNetIpDeviceMacAddressErr := knxNetIpDeviceMacAddress.Serialize(io)
+    _knxNetIpDeviceMacAddressErr := m.KnxNetIpDeviceMacAddress.Serialize(io)
     if _knxNetIpDeviceMacAddressErr != nil {
         return errors.New("Error serializing 'knxNetIpDeviceMacAddress' field " + _knxNetIpDeviceMacAddressErr.Error())
     }
@@ -331,22 +287,22 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 m.KnxMedium = data
             case "deviceStatus":
                 var data *DeviceStatus
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DeviceStatus = CastIDeviceStatus(data)
+                m.DeviceStatus = data
             case "knxAddress":
                 var data *KNXAddress
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.KnxAddress = CastIKNXAddress(data)
+                m.KnxAddress = data
             case "projectInstallationIdentifier":
                 var data *ProjectInstallationIdentifier
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.ProjectInstallationIdentifier = CastIProjectInstallationIdentifier(data)
+                m.ProjectInstallationIdentifier = data
             case "knxNetIpDeviceSerialNumber":
                 var _encoded string
                 if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -360,16 +316,16 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 m.KnxNetIpDeviceSerialNumber = utils.ByteToInt8(_decoded[0:_len])
             case "knxNetIpDeviceMulticastAddress":
                 var data *IPAddress
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.KnxNetIpDeviceMulticastAddress = CastIIPAddress(data)
+                m.KnxNetIpDeviceMulticastAddress = data
             case "knxNetIpDeviceMacAddress":
                 var data *MACAddress
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.KnxNetIpDeviceMacAddress = CastIMACAddress(data)
+                m.KnxNetIpDeviceMacAddress = data
             case "deviceFriendlyName":
                 var _encoded string
                 if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -386,7 +342,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo"},
         }}); err != nil {

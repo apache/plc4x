@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUReadDiscreteInputsRequest struct {
     StartingAddress uint16
     Quantity uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadDiscreteInputsRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadDiscreteInputsRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadDiscreteInputsRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadDiscreteInputsRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadDiscreteInputsRequest) FunctionFlag() uint8 {
     return 0x02
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) Response() bool {
+func (m *ModbusPDUReadDiscreteInputsRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadDiscreteInputsRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadDiscreteInputsRequest{StartingAddress: startingAddress, Quantity: quantity}
-}
-
-func CastIModbusPDUReadDiscreteInputsRequest(structType interface{}) IModbusPDUReadDiscreteInputsRequest {
-    castFunc := func(typ interface{}) IModbusPDUReadDiscreteInputsRequest {
-        if iModbusPDUReadDiscreteInputsRequest, ok := typ.(IModbusPDUReadDiscreteInputsRequest); ok {
-            return iModbusPDUReadDiscreteInputsRequest
-        }
-        return nil
+func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint16, ) *ModbusPDU {
+    child := &ModbusPDUReadDiscreteInputsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadDiscreteInputsRequest(structType interface{}) ModbusPDUReadDiscreteInputsRequest {
     castFunc := func(typ interface{}) ModbusPDUReadDiscreteInputsRequest {
-        if sModbusPDUReadDiscreteInputsRequest, ok := typ.(ModbusPDUReadDiscreteInputsRequest); ok {
-            return sModbusPDUReadDiscreteInputsRequest
+        if casted, ok := typ.(ModbusPDUReadDiscreteInputsRequest); ok {
+            return casted
         }
-        if sModbusPDUReadDiscreteInputsRequest, ok := typ.(*ModbusPDUReadDiscreteInputsRequest); ok {
-            return *sModbusPDUReadDiscreteInputsRequest
+        if casted, ok := typ.(*ModbusPDUReadDiscreteInputsRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadDiscreteInputsRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadDiscreteInputsRequest(casted.Child)
         }
         return ModbusPDUReadDiscreteInputsRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (startingAddress)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUReadDiscreteInputsRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadDiscreteInputsRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadDiscreteInputsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUReadDiscreteInputsRequestParse(io *utils.ReadBuffer) (ModbusPDUIni
         return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUReadDiscreteInputsRequest(startingAddress, quantity), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadDiscreteInputsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadDiscreteInputsRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)
@@ -136,7 +147,7 @@ func (m ModbusPDUReadDiscreteInputsRequest) Serialize(io utils.WriteBuffer) erro
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadDiscreteInputsRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUReadDiscreteInputsRequest) UnmarshalXML(d *xml.Decoder, start 
     }
 }
 
-func (m ModbusPDUReadDiscreteInputsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadDiscreteInputsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest"},
         }}); err != nil {

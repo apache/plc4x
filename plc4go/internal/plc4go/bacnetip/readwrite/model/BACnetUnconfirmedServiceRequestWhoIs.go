@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -38,53 +37,61 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
     DeviceInstanceRangeLowLimit []int8
     DeviceInstanceRangeHighLimitLength uint8
     DeviceInstanceRangeHighLimit []int8
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestWhoIs
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoIs interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoIs) ServiceChoice() uint8 {
     return 0x08
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestWhoIs) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength uint8, deviceInstanceRangeLowLimit []int8, deviceInstanceRangeHighLimitLength uint8, deviceInstanceRangeHighLimit []int8) BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestWhoIs{DeviceInstanceRangeLowLimitLength: deviceInstanceRangeLowLimitLength, DeviceInstanceRangeLowLimit: deviceInstanceRangeLowLimit, DeviceInstanceRangeHighLimitLength: deviceInstanceRangeHighLimitLength, DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit}
-}
-
-func CastIBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) IBACnetUnconfirmedServiceRequestWhoIs {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWhoIs {
-        if iBACnetUnconfirmedServiceRequestWhoIs, ok := typ.(IBACnetUnconfirmedServiceRequestWhoIs); ok {
-            return iBACnetUnconfirmedServiceRequestWhoIs
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength uint8, deviceInstanceRangeLowLimit []int8, deviceInstanceRangeHighLimitLength uint8, deviceInstanceRangeHighLimit []int8, ) *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestWhoIs{
+        DeviceInstanceRangeLowLimitLength: deviceInstanceRangeLowLimitLength,
+        DeviceInstanceRangeLowLimit: deviceInstanceRangeLowLimit,
+        DeviceInstanceRangeHighLimitLength: deviceInstanceRangeHighLimitLength,
+        DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) BACnetUnconfirmedServiceRequestWhoIs {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWhoIs {
-        if sBACnetUnconfirmedServiceRequestWhoIs, ok := typ.(BACnetUnconfirmedServiceRequestWhoIs); ok {
-            return sBACnetUnconfirmedServiceRequestWhoIs
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestWhoIs); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestWhoIs, ok := typ.(*BACnetUnconfirmedServiceRequestWhoIs); ok {
-            return *sBACnetUnconfirmedServiceRequestWhoIs
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWhoIs); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestWhoIs{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (deviceInstanceRangeLowLimitHeader)
     lengthInBits += 5
@@ -111,11 +118,11 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
     // Const Field (deviceInstanceRangeLowLimitHeader)
     deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
@@ -136,7 +143,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (BACnetUnco
     // Count array
     deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
     for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimit' field " + _err.Error())
@@ -163,7 +169,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (BACnetUnco
     // Count array
     deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
     for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimit' field " + _err.Error())
@@ -171,11 +176,19 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (BACnetUnco
         deviceInstanceRangeHighLimit[curItem] = _item
     }
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength, deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimitLength, deviceInstanceRangeHighLimit), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestWhoIs{
+        DeviceInstanceRangeLowLimitLength: deviceInstanceRangeLowLimitLength,
+        DeviceInstanceRangeLowLimit: deviceInstanceRangeLowLimit,
+        DeviceInstanceRangeHighLimitLength: deviceInstanceRangeHighLimitLength,
+        DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (deviceInstanceRangeLowLimitHeader)
@@ -226,7 +239,7 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) er
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -281,7 +294,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs"},
         }}); err != nil {

@@ -22,62 +22,66 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type TunnelingRequest struct {
-    TunnelingRequestDataBlock ITunnelingRequestDataBlock
-    Cemi ICEMI
-    KNXNetIPMessage
+    TunnelingRequestDataBlock *TunnelingRequestDataBlock
+    Cemi *CEMI
+    Parent *KNXNetIPMessage
+    ITunnelingRequest
 }
 
 // The corresponding interface
 type ITunnelingRequest interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m TunnelingRequest) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *TunnelingRequest) MsgType() uint16 {
     return 0x0420
 }
 
-func (m TunnelingRequest) initialize() spi.Message {
-    return m
+
+func (m *TunnelingRequest) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewTunnelingRequest(tunnelingRequestDataBlock ITunnelingRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-    return &TunnelingRequest{TunnelingRequestDataBlock: tunnelingRequestDataBlock, Cemi: cemi}
-}
-
-func CastITunnelingRequest(structType interface{}) ITunnelingRequest {
-    castFunc := func(typ interface{}) ITunnelingRequest {
-        if iTunnelingRequest, ok := typ.(ITunnelingRequest); ok {
-            return iTunnelingRequest
-        }
-        return nil
+func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, cemi *CEMI, ) *KNXNetIPMessage {
+    child := &TunnelingRequest{
+        TunnelingRequestDataBlock: tunnelingRequestDataBlock,
+        Cemi: cemi,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastTunnelingRequest(structType interface{}) TunnelingRequest {
     castFunc := func(typ interface{}) TunnelingRequest {
-        if sTunnelingRequest, ok := typ.(TunnelingRequest); ok {
-            return sTunnelingRequest
+        if casted, ok := typ.(TunnelingRequest); ok {
+            return casted
         }
-        if sTunnelingRequest, ok := typ.(*TunnelingRequest); ok {
-            return *sTunnelingRequest
+        if casted, ok := typ.(*TunnelingRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastTunnelingRequest(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastTunnelingRequest(casted.Child)
         }
         return TunnelingRequest{}
     }
     return castFunc(structType)
 }
 
-func (m TunnelingRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *TunnelingRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (tunnelingRequestDataBlock)
     lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
@@ -88,58 +92,52 @@ func (m TunnelingRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m TunnelingRequest) LengthInBytes() uint16 {
+func (m *TunnelingRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KNXNetIPMessage, error) {
 
     // Simple Field (tunnelingRequestDataBlock)
-    _tunnelingRequestDataBlockMessage, _err := TunnelingRequestDataBlockParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'tunnelingRequestDataBlock'. " + _err.Error())
-    }
-    var tunnelingRequestDataBlock ITunnelingRequestDataBlock
-    tunnelingRequestDataBlock, _tunnelingRequestDataBlockOk := _tunnelingRequestDataBlockMessage.(ITunnelingRequestDataBlock)
-    if !_tunnelingRequestDataBlockOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingRequestDataBlockMessage).Name() + " to ITunnelingRequestDataBlock")
+    tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
+    if _tunnelingRequestDataBlockErr != nil {
+        return nil, errors.New("Error parsing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
     }
 
     // Simple Field (cemi)
-    _cemiMessage, _err := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(tunnelingRequestDataBlock.LengthInBytes()))))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
-    }
-    var cemi ICEMI
-    cemi, _cemiOk := _cemiMessage.(ICEMI)
-    if !_cemiOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
+    cemi, _cemiErr := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(tunnelingRequestDataBlock.LengthInBytes()))))
+    if _cemiErr != nil {
+        return nil, errors.New("Error parsing 'cemi' field " + _cemiErr.Error())
     }
 
-    // Create the instance
-    return NewTunnelingRequest(tunnelingRequestDataBlock, cemi), nil
+    // Create a partially initialized instance
+    _child := &TunnelingRequest{
+        TunnelingRequestDataBlock: tunnelingRequestDataBlock,
+        Cemi: cemi,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m TunnelingRequest) Serialize(io utils.WriteBuffer) error {
+func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (tunnelingRequestDataBlock)
-    tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.TunnelingRequestDataBlock)
-    _tunnelingRequestDataBlockErr := tunnelingRequestDataBlock.Serialize(io)
+    _tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
     if _tunnelingRequestDataBlockErr != nil {
         return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
     }
 
     // Simple Field (cemi)
-    cemi := CastICEMI(m.Cemi)
-    _cemiErr := cemi.Serialize(io)
+    _cemiErr := m.Cemi.Serialize(io)
     if _cemiErr != nil {
         return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -157,74 +155,74 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
             switch tok.Name.Local {
             case "tunnelingRequestDataBlock":
                 var data *TunnelingRequestDataBlock
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.TunnelingRequestDataBlock = CastITunnelingRequestDataBlock(data)
+                m.TunnelingRequestDataBlock = data
             case "cemi":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataReq":
-                        var dt *CEMIDataReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataCon":
-                        var dt *CEMIDataCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd":
-                        var dt *CEMIDataInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq":
-                        var dt *CEMIRawReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawCon":
-                        var dt *CEMIRawCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawInd":
-                        var dt *CEMIRawInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataReq":
-                        var dt *CEMIPollDataReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon":
-                        var dt *CEMIPollDataCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd":
-                        var dt *CEMIBusmonInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq":
-                        var dt *CEMIMPropReadReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadCon":
-                        var dt *CEMIMPropReadCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -235,7 +233,7 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
     }
 }
 
-func (m TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest"},
         }}); err != nil {

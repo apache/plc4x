@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDevice struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestReinitializeDevice
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDevice interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestReinitializeDevice) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) ServiceChoice() uint8 {
     return 0x14
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestReinitializeDevice() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestReinitializeDevice{}
-}
-
-func CastIBACnetConfirmedServiceRequestReinitializeDevice(structType interface{}) IBACnetConfirmedServiceRequestReinitializeDevice {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReinitializeDevice {
-        if iBACnetConfirmedServiceRequestReinitializeDevice, ok := typ.(IBACnetConfirmedServiceRequestReinitializeDevice); ok {
-            return iBACnetConfirmedServiceRequestReinitializeDevice
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestReinitializeDevice() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestReinitializeDevice{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDevice(structType interface{}) BACnetConfirmedServiceRequestReinitializeDevice {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReinitializeDevice {
-        if sBACnetConfirmedServiceRequestReinitializeDevice, ok := typ.(BACnetConfirmedServiceRequestReinitializeDevice); ok {
-            return sBACnetConfirmedServiceRequestReinitializeDevice
+        if casted, ok := typ.(BACnetConfirmedServiceRequestReinitializeDevice); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestReinitializeDevice, ok := typ.(*BACnetConfirmedServiceRequestReinitializeDevice); ok {
-            return *sBACnetConfirmedServiceRequestReinitializeDevice
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestReinitializeDevice); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestReinitializeDevice(casted.Child)
         }
         return BACnetConfirmedServiceRequestReinitializeDevice{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestReinitializeDevice(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestReinitializeDevice{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) UnmarshalXML(d *xml.De
     }
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReinitializeDevice"},
         }}); err != nil {

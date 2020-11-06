@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorConfirmedPrivateTransfer struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorConfirmedPrivateTransfer
 }
 
 // The corresponding interface
 type IBACnetErrorConfirmedPrivateTransfer interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
     return 0x12
 }
 
-func (m BACnetErrorConfirmedPrivateTransfer) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorConfirmedPrivateTransfer) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorConfirmedPrivateTransfer() BACnetErrorInitializer {
-    return &BACnetErrorConfirmedPrivateTransfer{}
-}
-
-func CastIBACnetErrorConfirmedPrivateTransfer(structType interface{}) IBACnetErrorConfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) IBACnetErrorConfirmedPrivateTransfer {
-        if iBACnetErrorConfirmedPrivateTransfer, ok := typ.(IBACnetErrorConfirmedPrivateTransfer); ok {
-            return iBACnetErrorConfirmedPrivateTransfer
-        }
-        return nil
+func NewBACnetErrorConfirmedPrivateTransfer() *BACnetError {
+    child := &BACnetErrorConfirmedPrivateTransfer{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) BACnetErrorConfirmedPrivateTransfer {
     castFunc := func(typ interface{}) BACnetErrorConfirmedPrivateTransfer {
-        if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
-            return sBACnetErrorConfirmedPrivateTransfer
+        if casted, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
+            return casted
         }
-        if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(*BACnetErrorConfirmedPrivateTransfer); ok {
-            return *sBACnetErrorConfirmedPrivateTransfer
+        if casted, ok := typ.(*BACnetErrorConfirmedPrivateTransfer); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorConfirmedPrivateTransfer(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorConfirmedPrivateTransfer(casted.Child)
         }
         return BACnetErrorConfirmedPrivateTransfer{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
+func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorConfirmedPrivateTransferParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorConfirmedPrivateTransferParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorConfirmedPrivateTransfer(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorConfirmedPrivateTransfer{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m BACnetErrorConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer"},
         }}); err != nil {

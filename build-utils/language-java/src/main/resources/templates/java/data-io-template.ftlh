@@ -232,13 +232,13 @@ public class ${type.name}IO {
             _map.put("${field.name}", new PlcSTRING(${field.name}));
                                 <#break>
                             <#case "LocalTime">
-            _map.put("${field.name}", new PlcTime(${field.name}));
+            _map.put("${field.name}", new PlcTIME_OF_DAY(${field.name}));
                                 <#break>
                             <#case "LocalDate">
-            _map.put("${field.name}", new PlcTime(${field.name}));
+            _map.put("${field.name}", new PlcDATE(${field.name}));
                                 <#break>
                             <#case "LocalDateTime">
-            _map.put("${field.name}", new PlcTime(${field.name}));
+            _map.put("${field.name}", new PlcDATE_AND_TIME(${field.name}));
                                 <#break>
                         </#switch>
                     </#if>
@@ -248,14 +248,17 @@ public class ${type.name}IO {
 
             <#if valueDefined>
                 <#switch case.name>
-                    <#case "Time">
-            return new PlcTime(value);
+                    <#case "TIME">
+            return new PlcTIME(value);
                     <#break>
-                    <#case "Date">
-            return new PlcDate(value);
+                    <#case "DATE">
+            return new PlcDATE(value);
                     <#break>
-                    <#case "DateTime">
-            return new PlcDateTime(value);
+                    <#case "TIME_OF_DAY">
+            return new PlcTIME_OF_DAY(value);
+                    <#break>
+                    <#case "DATE_AND_TIME">
+            return new PlcDATE_AND_TIME(value);
                     <#break>
                     <#case "Struct">
             return new PlcStruct(_map);

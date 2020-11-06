@@ -44,3 +44,7 @@ func KnxHelperBytesToF16(io *utils.ReadBuffer) (float32, error) {
         return mantissaPart * float32(powPart), nil
     }
 }
+
+func KnxHelperF16toBytes(io *utils.WriteBuffer, value float32) error {
+    return nil
+}

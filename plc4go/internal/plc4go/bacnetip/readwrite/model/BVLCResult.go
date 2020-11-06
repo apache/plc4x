@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BVLCResult struct {
-    BVLC
+    Parent *BVLC
+    IBVLCResult
 }
 
 // The corresponding interface
 type IBVLCResult interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCResult) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCResult) BvlcFunction() uint8 {
     return 0x00
 }
 
-func (m BVLCResult) initialize() spi.Message {
-    return m
+
+func (m *BVLCResult) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCResult() BVLCInitializer {
-    return &BVLCResult{}
-}
-
-func CastIBVLCResult(structType interface{}) IBVLCResult {
-    castFunc := func(typ interface{}) IBVLCResult {
-        if iBVLCResult, ok := typ.(IBVLCResult); ok {
-            return iBVLCResult
-        }
-        return nil
+func NewBVLCResult() *BVLC {
+    child := &BVLCResult{
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCResult(structType interface{}) BVLCResult {
     castFunc := func(typ interface{}) BVLCResult {
-        if sBVLCResult, ok := typ.(BVLCResult); ok {
-            return sBVLCResult
+        if casted, ok := typ.(BVLCResult); ok {
+            return casted
         }
-        if sBVLCResult, ok := typ.(*BVLCResult); ok {
-            return *sBVLCResult
+        if casted, ok := typ.(*BVLCResult); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCResult(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCResult(casted.Child)
         }
         return BVLCResult{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCResult) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCResult) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BVLCResult) LengthInBytes() uint16 {
+func (m *BVLCResult) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCResultParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
+func BVLCResultParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create the instance
-    return NewBVLCResult(), nil
+    // Create a partially initialized instance
+    _child := &BVLCResult{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCResult) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCResult) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m BVLCResult) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCResult) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCResult"},
         }}); err != nil {

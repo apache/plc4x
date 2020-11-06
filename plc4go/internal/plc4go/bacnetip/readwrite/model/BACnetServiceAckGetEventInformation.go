@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckGetEventInformation struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckGetEventInformation
 }
 
 // The corresponding interface
 type IBACnetServiceAckGetEventInformation interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckGetEventInformation) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckGetEventInformation) ServiceChoice() uint8 {
     return 0x1D
 }
 
-func (m BACnetServiceAckGetEventInformation) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckGetEventInformation) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckGetEventInformation() BACnetServiceAckInitializer {
-    return &BACnetServiceAckGetEventInformation{}
-}
-
-func CastIBACnetServiceAckGetEventInformation(structType interface{}) IBACnetServiceAckGetEventInformation {
-    castFunc := func(typ interface{}) IBACnetServiceAckGetEventInformation {
-        if iBACnetServiceAckGetEventInformation, ok := typ.(IBACnetServiceAckGetEventInformation); ok {
-            return iBACnetServiceAckGetEventInformation
-        }
-        return nil
+func NewBACnetServiceAckGetEventInformation() *BACnetServiceAck {
+    child := &BACnetServiceAckGetEventInformation{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckGetEventInformation(structType interface{}) BACnetServiceAckGetEventInformation {
     castFunc := func(typ interface{}) BACnetServiceAckGetEventInformation {
-        if sBACnetServiceAckGetEventInformation, ok := typ.(BACnetServiceAckGetEventInformation); ok {
-            return sBACnetServiceAckGetEventInformation
+        if casted, ok := typ.(BACnetServiceAckGetEventInformation); ok {
+            return casted
         }
-        if sBACnetServiceAckGetEventInformation, ok := typ.(*BACnetServiceAckGetEventInformation); ok {
-            return *sBACnetServiceAckGetEventInformation
+        if casted, ok := typ.(*BACnetServiceAckGetEventInformation); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckGetEventInformation(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckGetEventInformation(casted.Child)
         }
         return BACnetServiceAckGetEventInformation{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckGetEventInformation) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckGetEventInformation) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckGetEventInformation) LengthInBytes() uint16 {
+func (m *BACnetServiceAckGetEventInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckGetEventInformationParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckGetEventInformationParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckGetEventInformation(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckGetEventInformation{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckGetEventInformation) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckGetEventInformation) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckGetEventInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckGetEventInformation) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m BACnetServiceAckGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEventInformation"},
         }}); err != nil {

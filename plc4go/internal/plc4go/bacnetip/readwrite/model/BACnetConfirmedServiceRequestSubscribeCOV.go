@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -43,53 +42,63 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
     IssueConfirmedNotifications bool
     LifetimeLength uint8
     LifetimeSeconds []int8
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestSubscribeCOV
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestSubscribeCOV) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) ServiceChoice() uint8 {
     return 0x05
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier uint8, monitoredObjectType uint16, monitoredObjectInstanceNumber uint32, issueConfirmedNotifications bool, lifetimeLength uint8, lifetimeSeconds []int8) BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestSubscribeCOV{SubscriberProcessIdentifier: subscriberProcessIdentifier, MonitoredObjectType: monitoredObjectType, MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber, IssueConfirmedNotifications: issueConfirmedNotifications, LifetimeLength: lifetimeLength, LifetimeSeconds: lifetimeSeconds}
-}
-
-func CastIBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) IBACnetConfirmedServiceRequestSubscribeCOV {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestSubscribeCOV {
-        if iBACnetConfirmedServiceRequestSubscribeCOV, ok := typ.(IBACnetConfirmedServiceRequestSubscribeCOV); ok {
-            return iBACnetConfirmedServiceRequestSubscribeCOV
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier uint8, monitoredObjectType uint16, monitoredObjectInstanceNumber uint32, issueConfirmedNotifications bool, lifetimeLength uint8, lifetimeSeconds []int8, ) *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestSubscribeCOV{
+        SubscriberProcessIdentifier: subscriberProcessIdentifier,
+        MonitoredObjectType: monitoredObjectType,
+        MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber,
+        IssueConfirmedNotifications: issueConfirmedNotifications,
+        LifetimeLength: lifetimeLength,
+        LifetimeSeconds: lifetimeSeconds,
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOV {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOV {
-        if sBACnetConfirmedServiceRequestSubscribeCOV, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOV); ok {
-            return sBACnetConfirmedServiceRequestSubscribeCOV
+        if casted, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOV); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestSubscribeCOV, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOV); ok {
-            return *sBACnetConfirmedServiceRequestSubscribeCOV
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOV); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOV(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOV(casted.Child)
         }
         return BACnetConfirmedServiceRequestSubscribeCOV{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (subscriberProcessIdentifierHeader)
     lengthInBits += 8
@@ -129,11 +138,11 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
     // Const Field (subscriberProcessIdentifierHeader)
     subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
@@ -214,7 +223,6 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (BACne
     // Count array
     lifetimeSeconds := make([]int8, lifetimeLength)
     for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())
@@ -222,11 +230,21 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (BACne
         lifetimeSeconds[curItem] = _item
     }
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier, monitoredObjectType, monitoredObjectInstanceNumber, issueConfirmedNotifications, lifetimeLength, lifetimeSeconds), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestSubscribeCOV{
+        SubscriberProcessIdentifier: subscriberProcessIdentifier,
+        MonitoredObjectType: monitoredObjectType,
+        MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber,
+        IssueConfirmedNotifications: issueConfirmedNotifications,
+        LifetimeLength: lifetimeLength,
+        LifetimeSeconds: lifetimeSeconds,
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (subscriberProcessIdentifierHeader)
@@ -306,7 +324,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffe
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -368,7 +386,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOV"},
         }}); err != nil {

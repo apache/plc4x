@@ -22,69 +22,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type ModbusPDUReadFileRecordResponse struct {
-    Items []IModbusPDUReadFileRecordResponseItem
-    ModbusPDU
+    Items []*ModbusPDUReadFileRecordResponseItem
+    Parent *ModbusPDU
+    IModbusPDUReadFileRecordResponse
 }
 
 // The corresponding interface
 type IModbusPDUReadFileRecordResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadFileRecordResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadFileRecordResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadFileRecordResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadFileRecordResponse) FunctionFlag() uint8 {
     return 0x14
 }
 
-func (m ModbusPDUReadFileRecordResponse) Response() bool {
+func (m *ModbusPDUReadFileRecordResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReadFileRecordResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadFileRecordResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadFileRecordResponse(items []IModbusPDUReadFileRecordResponseItem) ModbusPDUInitializer {
-    return &ModbusPDUReadFileRecordResponse{Items: items}
-}
-
-func CastIModbusPDUReadFileRecordResponse(structType interface{}) IModbusPDUReadFileRecordResponse {
-    castFunc := func(typ interface{}) IModbusPDUReadFileRecordResponse {
-        if iModbusPDUReadFileRecordResponse, ok := typ.(IModbusPDUReadFileRecordResponse); ok {
-            return iModbusPDUReadFileRecordResponse
-        }
-        return nil
+func NewModbusPDUReadFileRecordResponse(items []*ModbusPDUReadFileRecordResponseItem, ) *ModbusPDU {
+    child := &ModbusPDUReadFileRecordResponse{
+        Items: items,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadFileRecordResponse(structType interface{}) ModbusPDUReadFileRecordResponse {
     castFunc := func(typ interface{}) ModbusPDUReadFileRecordResponse {
-        if sModbusPDUReadFileRecordResponse, ok := typ.(ModbusPDUReadFileRecordResponse); ok {
-            return sModbusPDUReadFileRecordResponse
+        if casted, ok := typ.(ModbusPDUReadFileRecordResponse); ok {
+            return casted
         }
-        if sModbusPDUReadFileRecordResponse, ok := typ.(*ModbusPDUReadFileRecordResponse); ok {
-            return *sModbusPDUReadFileRecordResponse
+        if casted, ok := typ.(*ModbusPDUReadFileRecordResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadFileRecordResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadFileRecordResponse(casted.Child)
         }
         return ModbusPDUReadFileRecordResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadFileRecordResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadFileRecordResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 8
@@ -99,11 +102,11 @@ func (m ModbusPDUReadFileRecordResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadFileRecordResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReadFileRecordResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -113,28 +116,28 @@ func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (ModbusPDUInitia
 
     // Array field (items)
     // Length array
-    items := make([]IModbusPDUReadFileRecordResponseItem, 0)
+    items := make([]*ModbusPDUReadFileRecordResponseItem, 0)
     _itemsLength := byteCount
     _itemsEndPos := io.GetPos() + uint16(_itemsLength)
     for ;io.GetPos() < _itemsEndPos; {
-        _message, _err := ModbusPDUReadFileRecordResponseItemParse(io)
+        _item, _err := ModbusPDUReadFileRecordResponseItemParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'items' field " + _err.Error())
-        }
-        var _item IModbusPDUReadFileRecordResponseItem
-        _item, _ok := _message.(IModbusPDUReadFileRecordResponseItem)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ModbusPDUReadFileRecordResponseItem")
         }
         items = append(items, _item)
     }
 
-    // Create the instance
-    return NewModbusPDUReadFileRecordResponse(items), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadFileRecordResponse{
+        Items: items,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error {
-    itemsArraySizeInBytes := func(items []IModbusPDUReadFileRecordResponseItem) uint32 {
+func (m *ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error {
+    itemsArraySizeInBytes := func(items []*ModbusPDUReadFileRecordResponseItem) uint32 {
         var sizeInBytes uint32 = 0
         for _, v := range items {
             sizeInBytes += uint32(v.LengthInBytes())
@@ -162,7 +165,7 @@ func (m ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadFileRecordResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,7 +182,7 @@ func (m *ModbusPDUReadFileRecordResponse) UnmarshalXML(d *xml.Decoder, start xml
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "items":
-                var data []IModbusPDUReadFileRecordResponseItem
+                var data []*ModbusPDUReadFileRecordResponseItem
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -189,7 +192,7 @@ func (m *ModbusPDUReadFileRecordResponse) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m ModbusPDUReadFileRecordResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadFileRecordResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponse"},
         }}); err != nil {

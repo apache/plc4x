@@ -23,52 +23,41 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type MACAddress struct {
     Addr []int8
-
+    IMACAddress
 }
 
 // The corresponding interface
 type IMACAddress interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewMACAddress(addr []int8) spi.Message {
+func NewMACAddress(addr []int8) *MACAddress {
     return &MACAddress{Addr: addr}
-}
-
-func CastIMACAddress(structType interface{}) IMACAddress {
-    castFunc := func(typ interface{}) IMACAddress {
-        if iMACAddress, ok := typ.(IMACAddress); ok {
-            return iMACAddress
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastMACAddress(structType interface{}) MACAddress {
     castFunc := func(typ interface{}) MACAddress {
-        if sMACAddress, ok := typ.(MACAddress); ok {
-            return sMACAddress
+        if casted, ok := typ.(MACAddress); ok {
+            return casted
         }
-        if sMACAddress, ok := typ.(*MACAddress); ok {
-            return *sMACAddress
+        if casted, ok := typ.(*MACAddress); ok {
+            return *casted
         }
         return MACAddress{}
     }
     return castFunc(structType)
 }
 
-func (m MACAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *MACAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Addr) > 0 {
@@ -78,17 +67,16 @@ func (m MACAddress) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m MACAddress) LengthInBytes() uint16 {
+func (m *MACAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func MACAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
+func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
 
     // Array field (addr)
     // Count array
     addr := make([]int8, uint16(6))
     for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'addr' field " + _err.Error())
@@ -100,7 +88,7 @@ func MACAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewMACAddress(addr), nil
 }
 
-func (m MACAddress) Serialize(io utils.WriteBuffer) error {
+func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (addr)
     if m.Addr != nil {
@@ -144,7 +132,7 @@ func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"},
         }}); err != nil {

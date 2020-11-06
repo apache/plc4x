@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -38,53 +37,61 @@ type BACnetConfirmedServiceRequestReadProperty struct {
     ObjectInstanceNumber uint32
     PropertyIdentifierLength uint8
     PropertyIdentifier []int8
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestReadProperty
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadProperty interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestReadProperty) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestReadProperty) ServiceChoice() uint8 {
     return 0x0C
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestReadProperty) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8) BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestReadProperty{ObjectType: objectType, ObjectInstanceNumber: objectInstanceNumber, PropertyIdentifierLength: propertyIdentifierLength, PropertyIdentifier: propertyIdentifier}
-}
-
-func CastIBACnetConfirmedServiceRequestReadProperty(structType interface{}) IBACnetConfirmedServiceRequestReadProperty {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadProperty {
-        if iBACnetConfirmedServiceRequestReadProperty, ok := typ.(IBACnetConfirmedServiceRequestReadProperty); ok {
-            return iBACnetConfirmedServiceRequestReadProperty
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, ) *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestReadProperty{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        PropertyIdentifierLength: propertyIdentifierLength,
+        PropertyIdentifier: propertyIdentifier,
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) BACnetConfirmedServiceRequestReadProperty {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadProperty {
-        if sBACnetConfirmedServiceRequestReadProperty, ok := typ.(BACnetConfirmedServiceRequestReadProperty); ok {
-            return sBACnetConfirmedServiceRequestReadProperty
+        if casted, ok := typ.(BACnetConfirmedServiceRequestReadProperty); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestReadProperty, ok := typ.(*BACnetConfirmedServiceRequestReadProperty); ok {
-            return *sBACnetConfirmedServiceRequestReadProperty
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestReadProperty); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestReadProperty(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestReadProperty(casted.Child)
         }
         return BACnetConfirmedServiceRequestReadProperty{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (objectIdentifierHeader)
     lengthInBits += 8
@@ -109,11 +116,11 @@ func (m BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
     // Const Field (objectIdentifierHeader)
     objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -155,7 +162,6 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (BACne
     // Count array
     propertyIdentifier := make([]int8, propertyIdentifierLength)
     for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
@@ -163,11 +169,19 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (BACne
         propertyIdentifier[curItem] = _item
     }
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestReadProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestReadProperty{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        PropertyIdentifierLength: propertyIdentifierLength,
+        PropertyIdentifier: propertyIdentifier,
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)
@@ -215,7 +229,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuffe
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -265,7 +279,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadProperty"},
         }}); err != nil {

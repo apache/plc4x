@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -32,61 +31,68 @@ type ModbusPDUWriteMultipleCoilsRequest struct {
     StartingAddress uint16
     Quantity uint16
     Value []int8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUWriteMultipleCoilsRequest
 }
 
 // The corresponding interface
 type IModbusPDUWriteMultipleCoilsRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUWriteMultipleCoilsRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteMultipleCoilsRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUWriteMultipleCoilsRequest) FunctionFlag() uint8 {
     return 0x0F
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) Response() bool {
+func (m *ModbusPDUWriteMultipleCoilsRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUWriteMultipleCoilsRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []int8) ModbusPDUInitializer {
-    return &ModbusPDUWriteMultipleCoilsRequest{StartingAddress: startingAddress, Quantity: quantity, Value: value}
-}
-
-func CastIModbusPDUWriteMultipleCoilsRequest(structType interface{}) IModbusPDUWriteMultipleCoilsRequest {
-    castFunc := func(typ interface{}) IModbusPDUWriteMultipleCoilsRequest {
-        if iModbusPDUWriteMultipleCoilsRequest, ok := typ.(IModbusPDUWriteMultipleCoilsRequest); ok {
-            return iModbusPDUWriteMultipleCoilsRequest
-        }
-        return nil
+func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []int8, ) *ModbusPDU {
+    child := &ModbusPDUWriteMultipleCoilsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWriteMultipleCoilsRequest {
     castFunc := func(typ interface{}) ModbusPDUWriteMultipleCoilsRequest {
-        if sModbusPDUWriteMultipleCoilsRequest, ok := typ.(ModbusPDUWriteMultipleCoilsRequest); ok {
-            return sModbusPDUWriteMultipleCoilsRequest
+        if casted, ok := typ.(ModbusPDUWriteMultipleCoilsRequest); ok {
+            return casted
         }
-        if sModbusPDUWriteMultipleCoilsRequest, ok := typ.(*ModbusPDUWriteMultipleCoilsRequest); ok {
-            return *sModbusPDUWriteMultipleCoilsRequest
+        if casted, ok := typ.(*ModbusPDUWriteMultipleCoilsRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUWriteMultipleCoilsRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUWriteMultipleCoilsRequest(casted.Child)
         }
         return ModbusPDUWriteMultipleCoilsRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (startingAddress)
     lengthInBits += 16
@@ -105,11 +111,11 @@ func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -133,7 +139,6 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUIni
     // Count array
     value := make([]int8, byteCount)
     for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'value' field " + _err.Error())
@@ -141,11 +146,18 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUIni
         value[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUWriteMultipleCoilsRequest(startingAddress, quantity, value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUWriteMultipleCoilsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)
@@ -181,7 +193,7 @@ func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) erro
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -225,7 +237,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) UnmarshalXML(d *xml.Decoder, start 
     }
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUWriteMultipleCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest"},
         }}); err != nil {

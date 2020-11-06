@@ -22,62 +22,66 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type DescriptionResponse struct {
-    DibDeviceInfo IDIBDeviceInfo
-    DibSuppSvcFamilies IDIBSuppSvcFamilies
-    KNXNetIPMessage
+    DibDeviceInfo *DIBDeviceInfo
+    DibSuppSvcFamilies *DIBSuppSvcFamilies
+    Parent *KNXNetIPMessage
+    IDescriptionResponse
 }
 
 // The corresponding interface
 type IDescriptionResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m DescriptionResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *DescriptionResponse) MsgType() uint16 {
     return 0x0204
 }
 
-func (m DescriptionResponse) initialize() spi.Message {
-    return m
+
+func (m *DescriptionResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewDescriptionResponse(dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-    return &DescriptionResponse{DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
-}
-
-func CastIDescriptionResponse(structType interface{}) IDescriptionResponse {
-    castFunc := func(typ interface{}) IDescriptionResponse {
-        if iDescriptionResponse, ok := typ.(IDescriptionResponse); ok {
-            return iDescriptionResponse
-        }
-        return nil
+func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies, ) *KNXNetIPMessage {
+    child := &DescriptionResponse{
+        DibDeviceInfo: dibDeviceInfo,
+        DibSuppSvcFamilies: dibSuppSvcFamilies,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastDescriptionResponse(structType interface{}) DescriptionResponse {
     castFunc := func(typ interface{}) DescriptionResponse {
-        if sDescriptionResponse, ok := typ.(DescriptionResponse); ok {
-            return sDescriptionResponse
+        if casted, ok := typ.(DescriptionResponse); ok {
+            return casted
         }
-        if sDescriptionResponse, ok := typ.(*DescriptionResponse); ok {
-            return *sDescriptionResponse
+        if casted, ok := typ.(*DescriptionResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastDescriptionResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastDescriptionResponse(casted.Child)
         }
         return DescriptionResponse{}
     }
     return castFunc(structType)
 }
 
-func (m DescriptionResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *DescriptionResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (dibDeviceInfo)
     lengthInBits += m.DibDeviceInfo.LengthInBits()
@@ -88,58 +92,52 @@ func (m DescriptionResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DescriptionResponse) LengthInBytes() uint16 {
+func (m *DescriptionResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DescriptionResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DescriptionResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (dibDeviceInfo)
-    _dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
-    }
-    var dibDeviceInfo IDIBDeviceInfo
-    dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
-    if !_dibDeviceInfoOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
+    dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
+    if _dibDeviceInfoErr != nil {
+        return nil, errors.New("Error parsing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
     }
 
     // Simple Field (dibSuppSvcFamilies)
-    _dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
-    }
-    var dibSuppSvcFamilies IDIBSuppSvcFamilies
-    dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
-    if !_dibSuppSvcFamiliesOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
+    dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
+    if _dibSuppSvcFamiliesErr != nil {
+        return nil, errors.New("Error parsing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
     }
 
-    // Create the instance
-    return NewDescriptionResponse(dibDeviceInfo, dibSuppSvcFamilies), nil
+    // Create a partially initialized instance
+    _child := &DescriptionResponse{
+        DibDeviceInfo: dibDeviceInfo,
+        DibSuppSvcFamilies: dibSuppSvcFamilies,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m DescriptionResponse) Serialize(io utils.WriteBuffer) error {
+func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (dibDeviceInfo)
-    dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
-    _dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+    _dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
     if _dibDeviceInfoErr != nil {
         return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
     }
 
     // Simple Field (dibSuppSvcFamilies)
-    dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
-    _dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+    _dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
     if _dibSuppSvcFamiliesErr != nil {
         return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -157,22 +155,22 @@ func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
             switch tok.Name.Local {
             case "dibDeviceInfo":
                 var data *DIBDeviceInfo
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DibDeviceInfo = CastIDIBDeviceInfo(data)
+                m.DibDeviceInfo = data
             case "dibSuppSvcFamilies":
                 var data *DIBSuppSvcFamilies
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DibSuppSvcFamilies = CastIDIBSuppSvcFamilies(data)
+                m.DibSuppSvcFamilies = data
             }
         }
     }
 }
 
-func (m DescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse"},
         }}); err != nil {

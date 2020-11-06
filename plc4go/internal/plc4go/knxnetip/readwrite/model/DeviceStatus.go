@@ -23,52 +23,41 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type DeviceStatus struct {
     ProgramMode bool
-
+    IDeviceStatus
 }
 
 // The corresponding interface
 type IDeviceStatus interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewDeviceStatus(programMode bool) spi.Message {
+func NewDeviceStatus(programMode bool) *DeviceStatus {
     return &DeviceStatus{ProgramMode: programMode}
-}
-
-func CastIDeviceStatus(structType interface{}) IDeviceStatus {
-    castFunc := func(typ interface{}) IDeviceStatus {
-        if iDeviceStatus, ok := typ.(IDeviceStatus); ok {
-            return iDeviceStatus
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastDeviceStatus(structType interface{}) DeviceStatus {
     castFunc := func(typ interface{}) DeviceStatus {
-        if sDeviceStatus, ok := typ.(DeviceStatus); ok {
-            return sDeviceStatus
+        if casted, ok := typ.(DeviceStatus); ok {
+            return casted
         }
-        if sDeviceStatus, ok := typ.(*DeviceStatus); ok {
-            return *sDeviceStatus
+        if casted, ok := typ.(*DeviceStatus); ok {
+            return *casted
         }
         return DeviceStatus{}
     }
     return castFunc(structType)
 }
 
-func (m DeviceStatus) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *DeviceStatus) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 7
@@ -79,11 +68,11 @@ func (m DeviceStatus) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DeviceStatus) LengthInBytes() uint16 {
+func (m *DeviceStatus) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceStatusParse(io *utils.ReadBuffer) (spi.Message, error) {
+func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -109,7 +98,7 @@ func DeviceStatusParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewDeviceStatus(programMode), nil
 }
 
-func (m DeviceStatus) Serialize(io utils.WriteBuffer) error {
+func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 
     // Reserved Field (reserved)
     {
@@ -153,7 +142,7 @@ func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     }
 }
 
-func (m DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus"},
         }}); err != nil {

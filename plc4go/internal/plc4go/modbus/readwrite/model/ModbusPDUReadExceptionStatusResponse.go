@@ -22,68 +22,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusResponse struct {
     Value uint8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadExceptionStatusResponse
 }
 
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadExceptionStatusResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadExceptionStatusResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadExceptionStatusResponse) FunctionFlag() uint8 {
     return 0x07
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) Response() bool {
+func (m *ModbusPDUReadExceptionStatusResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadExceptionStatusResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadExceptionStatusResponse(value uint8) ModbusPDUInitializer {
-    return &ModbusPDUReadExceptionStatusResponse{Value: value}
-}
-
-func CastIModbusPDUReadExceptionStatusResponse(structType interface{}) IModbusPDUReadExceptionStatusResponse {
-    castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusResponse {
-        if iModbusPDUReadExceptionStatusResponse, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
-            return iModbusPDUReadExceptionStatusResponse
-        }
-        return nil
+func NewModbusPDUReadExceptionStatusResponse(value uint8, ) *ModbusPDU {
+    child := &ModbusPDUReadExceptionStatusResponse{
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadExceptionStatusResponse(structType interface{}) ModbusPDUReadExceptionStatusResponse {
     castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusResponse {
-        if sModbusPDUReadExceptionStatusResponse, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
-            return sModbusPDUReadExceptionStatusResponse
+        if casted, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
+            return casted
         }
-        if sModbusPDUReadExceptionStatusResponse, ok := typ.(*ModbusPDUReadExceptionStatusResponse); ok {
-            return *sModbusPDUReadExceptionStatusResponse
+        if casted, ok := typ.(*ModbusPDUReadExceptionStatusResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadExceptionStatusResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadExceptionStatusResponse(casted.Child)
         }
         return ModbusPDUReadExceptionStatusResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (value)
     lengthInBits += 8
@@ -91,11 +95,11 @@ func (m ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (value)
     value, _valueErr := io.ReadUint8(8)
@@ -103,11 +107,16 @@ func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (ModbusPDUI
         return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUReadExceptionStatusResponse(value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadExceptionStatusResponse{
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (value)
@@ -119,7 +128,7 @@ func (m ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) er
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -146,7 +155,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusResponse"},
         }}); err != nil {

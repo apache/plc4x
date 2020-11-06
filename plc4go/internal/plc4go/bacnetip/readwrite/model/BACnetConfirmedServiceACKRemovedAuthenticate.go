@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKRemovedAuthenticate struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKRemovedAuthenticate
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKRemovedAuthenticate interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) ServiceChoice() uint8 {
     return 0x18
 }
 
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKRemovedAuthenticate() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKRemovedAuthenticate{}
-}
-
-func CastIBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) IBACnetConfirmedServiceACKRemovedAuthenticate {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKRemovedAuthenticate {
-        if iBACnetConfirmedServiceACKRemovedAuthenticate, ok := typ.(IBACnetConfirmedServiceACKRemovedAuthenticate); ok {
-            return iBACnetConfirmedServiceACKRemovedAuthenticate
-        }
-        return nil
+func NewBACnetConfirmedServiceACKRemovedAuthenticate() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKRemovedAuthenticate{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) BACnetConfirmedServiceACKRemovedAuthenticate {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKRemovedAuthenticate {
-        if sBACnetConfirmedServiceACKRemovedAuthenticate, ok := typ.(BACnetConfirmedServiceACKRemovedAuthenticate); ok {
-            return sBACnetConfirmedServiceACKRemovedAuthenticate
+        if casted, ok := typ.(BACnetConfirmedServiceACKRemovedAuthenticate); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKRemovedAuthenticate, ok := typ.(*BACnetConfirmedServiceACKRemovedAuthenticate); ok {
-            return *sBACnetConfirmedServiceACKRemovedAuthenticate
+        if casted, ok := typ.(*BACnetConfirmedServiceACKRemovedAuthenticate); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKRemovedAuthenticate(casted.Child)
         }
         return BACnetConfirmedServiceACKRemovedAuthenticate{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKRemovedAuthenticateParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKRemovedAuthenticate(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKRemovedAuthenticate{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKRemovedAuthenticate) UnmarshalXML(d *xml.Decod
     }
 }
 
-func (m BACnetConfirmedServiceACKRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKRemovedAuthenticate"},
         }}); err != nil {

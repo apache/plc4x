@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type KnxNetIpCore struct {
     Version uint8
-    ServiceId
+    Parent *ServiceId
+    IKnxNetIpCore
 }
 
 // The corresponding interface
 type IKnxNetIpCore interface {
-    IServiceId
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m KnxNetIpCore) ServiceType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *KnxNetIpCore) ServiceType() uint8 {
     return 0x02
 }
 
-func (m KnxNetIpCore) initialize() spi.Message {
-    return m
+
+func (m *KnxNetIpCore) InitializeParent(parent *ServiceId) {
 }
 
-func NewKnxNetIpCore(version uint8) ServiceIdInitializer {
-    return &KnxNetIpCore{Version: version}
-}
-
-func CastIKnxNetIpCore(structType interface{}) IKnxNetIpCore {
-    castFunc := func(typ interface{}) IKnxNetIpCore {
-        if iKnxNetIpCore, ok := typ.(IKnxNetIpCore); ok {
-            return iKnxNetIpCore
-        }
-        return nil
+func NewKnxNetIpCore(version uint8, ) *ServiceId {
+    child := &KnxNetIpCore{
+        Version: version,
+        Parent: NewServiceId(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
     castFunc := func(typ interface{}) KnxNetIpCore {
-        if sKnxNetIpCore, ok := typ.(KnxNetIpCore); ok {
-            return sKnxNetIpCore
+        if casted, ok := typ.(KnxNetIpCore); ok {
+            return casted
         }
-        if sKnxNetIpCore, ok := typ.(*KnxNetIpCore); ok {
-            return *sKnxNetIpCore
+        if casted, ok := typ.(*KnxNetIpCore); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ServiceId); ok {
+            return CastKnxNetIpCore(casted.Child)
+        }
+        if casted, ok := typ.(*ServiceId); ok {
+            return CastKnxNetIpCore(casted.Child)
         }
         return KnxNetIpCore{}
     }
     return castFunc(structType)
 }
 
-func (m KnxNetIpCore) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ServiceId.LengthInBits()
+func (m *KnxNetIpCore) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (version)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m KnxNetIpCore) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m KnxNetIpCore) LengthInBytes() uint16 {
+func (m *KnxNetIpCore) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetIpCoreParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -95,11 +99,16 @@ func KnxNetIpCoreParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
         return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
     }
 
-    // Create the instance
-    return NewKnxNetIpCore(version), nil
+    // Create a partially initialized instance
+    _child := &KnxNetIpCore{
+        Version: version,
+        Parent: &ServiceId{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
+func (m *KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)
@@ -111,7 +120,7 @@ func (m KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *KnxNetIpCore) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *KnxNetIpCore) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     }
 }
 
-func (m KnxNetIpCore) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KnxNetIpCore) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore"},
         }}); err != nil {

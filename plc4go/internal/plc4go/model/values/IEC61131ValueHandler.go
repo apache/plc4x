@@ -349,7 +349,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 			if !ok {
 				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to time.Time")
 			}
-			return NewPlcTIMEOFDAY(casted), nil
+			return NewPlcTIME_OF_DAY(casted), nil
 		}
 	case IEC61131_DATE_AND_TIME:
 		if isString {
@@ -359,7 +359,7 @@ func (m IEC61131ValueHandler) newPlcValue(typeName string, quantity uint16, valu
 			if !ok {
 				return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to time.Time")
 			}
-			return NewPlcDATEANDTIME(casted), nil
+			return NewPlcDATE_AND_TIME(casted), nil
 		}
 
 	// Chars and Strings

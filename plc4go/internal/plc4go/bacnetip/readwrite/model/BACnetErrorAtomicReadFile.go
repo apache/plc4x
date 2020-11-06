@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorAtomicReadFile struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorAtomicReadFile
 }
 
 // The corresponding interface
 type IBACnetErrorAtomicReadFile interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
     return 0x06
 }
 
-func (m BACnetErrorAtomicReadFile) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorAtomicReadFile) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorAtomicReadFile() BACnetErrorInitializer {
-    return &BACnetErrorAtomicReadFile{}
-}
-
-func CastIBACnetErrorAtomicReadFile(structType interface{}) IBACnetErrorAtomicReadFile {
-    castFunc := func(typ interface{}) IBACnetErrorAtomicReadFile {
-        if iBACnetErrorAtomicReadFile, ok := typ.(IBACnetErrorAtomicReadFile); ok {
-            return iBACnetErrorAtomicReadFile
-        }
-        return nil
+func NewBACnetErrorAtomicReadFile() *BACnetError {
+    child := &BACnetErrorAtomicReadFile{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorAtomicReadFile(structType interface{}) BACnetErrorAtomicReadFile {
     castFunc := func(typ interface{}) BACnetErrorAtomicReadFile {
-        if sBACnetErrorAtomicReadFile, ok := typ.(BACnetErrorAtomicReadFile); ok {
-            return sBACnetErrorAtomicReadFile
+        if casted, ok := typ.(BACnetErrorAtomicReadFile); ok {
+            return casted
         }
-        if sBACnetErrorAtomicReadFile, ok := typ.(*BACnetErrorAtomicReadFile); ok {
-            return *sBACnetErrorAtomicReadFile
+        if casted, ok := typ.(*BACnetErrorAtomicReadFile); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorAtomicReadFile(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorAtomicReadFile(casted.Child)
         }
         return BACnetErrorAtomicReadFile{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorAtomicReadFile) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorAtomicReadFile) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
+func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorAtomicReadFileParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorAtomicReadFileParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorAtomicReadFile(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorAtomicReadFile{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorAtomicReadFile) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorAtomicReadFile) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m BACnetErrorAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile"},
         }}); err != nil {

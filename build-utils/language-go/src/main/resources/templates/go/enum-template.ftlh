@@ -48,14 +48,12 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>
 
 type I${type.name} interface {
-    spi.Message
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
     ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}

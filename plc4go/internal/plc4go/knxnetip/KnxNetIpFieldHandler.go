@@ -20,6 +20,7 @@ package knxnetip
 
 import (
     "errors"
+    model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
@@ -49,19 +50,34 @@ type FieldHandler struct {
 
 func NewFieldHandler() FieldHandler {
     return FieldHandler{
-        knxNetIpGroupAddress3Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*))/(?P<middleGroup>(\d|\*))/(?P<subGroup>(\d{1,3}|\*))`),
-        knxNetIpGroupAddress2Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*))/(?P<subGroup>(\d{1,4}|\*))`),
-        knxNetIpGroupAddress1Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*))`),
+        knxNetIpGroupAddress3Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*))/(?P<middleGroup>(\d|\*))/(?P<subGroup>(\d{1,3}|\*))(:(?P<datatype>[a-zA-Z_]+))?`),
+        knxNetIpGroupAddress2Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*))/(?P<subGroup>(\d{1,4}|\*))(:(?P<datatype>[a-zA-Z_]+))?`),
+        knxNetIpGroupAddress1Level: regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*))(:(?P<datatype>[a-zA-Z_]+))?`),
     }
 }
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
     if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress3Level, query); match != nil {
-        return NewModbusPlcFieldFromStrings(MODBUS_FIELD_COIL, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
+        fieldTypeName, ok := match["datatype"]
+        var fieldType model2.KnxDatapointType
+        if ok {
+            fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
+        }
+        return NewKnxNetIpGroupAddress3LevelPlcField(fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
     } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress2Level, query); match != nil {
-        return NewModbusPlcFieldFromStrings(MODBUS_FIELD_COIL, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
+        fieldTypeName, ok := match["datatype"]
+        var fieldType model2.KnxDatapointType
+        if ok {
+            fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
+        }
+        return NewKnxNetIpGroupAddress2LevelPlcField(fieldType, match["mainGroup"], match["subGroup"]), nil
     } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress1Level, query); match != nil {
-        return NewModbusPlcFieldFromStrings(MODBUS_FIELD_DISCRETE_INPUT, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
+        fieldTypeName, ok := match["datatype"]
+        var fieldType model2.KnxDatapointType
+        if ok {
+            fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
+        }
+        return NewKnxNetIpGroupAddress1LevelPlcField(fieldType, match["mainGroup"]), nil
     }
     return nil, errors.New("Invalid address format for address '" + query + "'")
 }

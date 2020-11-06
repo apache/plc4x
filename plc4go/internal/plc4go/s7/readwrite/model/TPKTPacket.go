@@ -23,9 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
     "strconv"
 )
 
@@ -34,46 +32,36 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 
 // The data-structure of this message
 type TPKTPacket struct {
-    Payload ICOTPPacket
-
+    Payload *COTPPacket
+    ITPKTPacket
 }
 
 // The corresponding interface
 type ITPKTPacket interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewTPKTPacket(payload ICOTPPacket) spi.Message {
+func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
     return &TPKTPacket{Payload: payload}
-}
-
-func CastITPKTPacket(structType interface{}) ITPKTPacket {
-    castFunc := func(typ interface{}) ITPKTPacket {
-        if iTPKTPacket, ok := typ.(ITPKTPacket); ok {
-            return iTPKTPacket
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastTPKTPacket(structType interface{}) TPKTPacket {
     castFunc := func(typ interface{}) TPKTPacket {
-        if sTPKTPacket, ok := typ.(TPKTPacket); ok {
-            return sTPKTPacket
+        if casted, ok := typ.(TPKTPacket); ok {
+            return casted
         }
-        if sTPKTPacket, ok := typ.(*TPKTPacket); ok {
-            return *sTPKTPacket
+        if casted, ok := typ.(*TPKTPacket); ok {
+            return *casted
         }
         return TPKTPacket{}
     }
     return castFunc(structType)
 }
 
-func (m TPKTPacket) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *TPKTPacket) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (protocolId)
     lengthInBits += 8
@@ -90,11 +78,11 @@ func (m TPKTPacket) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m TPKTPacket) LengthInBytes() uint16 {
+func (m *TPKTPacket) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TPKTPacketParse(io *utils.ReadBuffer) (spi.Message, error) {
+func TPKTPacketParse(io *utils.ReadBuffer) (*TPKTPacket, error) {
 
     // Const Field (protocolId)
     protocolId, _protocolIdErr := io.ReadUint8(8)
@@ -126,21 +114,16 @@ func TPKTPacketParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Simple Field (payload)
-    _payloadMessage, _err := COTPPacketParse(io, uint16(len) - uint16(uint16(4)))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'payload'. " + _err.Error())
-    }
-    var payload ICOTPPacket
-    payload, _payloadOk := _payloadMessage.(ICOTPPacket)
-    if !_payloadOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_payloadMessage).Name() + " to ICOTPPacket")
+    payload, _payloadErr := COTPPacketParse(io, uint16(len) - uint16(uint16(4)))
+    if _payloadErr != nil {
+        return nil, errors.New("Error parsing 'payload' field " + _payloadErr.Error())
     }
 
     // Create the instance
     return NewTPKTPacket(payload), nil
 }
 
-func (m TPKTPacket) Serialize(io utils.WriteBuffer) error {
+func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 
     // Const Field (protocolId)
     _protocolIdErr := io.WriteUint8(8, 0x03)
@@ -164,8 +147,7 @@ func (m TPKTPacket) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (payload)
-    payload := CastICOTPPacket(m.Payload)
-    _payloadErr := payload.Serialize(io)
+    _payloadErr := m.Payload.Serialize(io)
     if _payloadErr != nil {
         return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
     }
@@ -189,37 +171,37 @@ func (m *TPKTPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
             case "payload":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
-                        var dt *COTPPacketData
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest":
-                        var dt *COTPPacketConnectionRequest
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse":
-                        var dt *COTPPacketConnectionResponse
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest":
-                        var dt *COTPPacketDisconnectRequest
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse":
-                        var dt *COTPPacketDisconnectResponse
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError":
-                        var dt *COTPPacketTpduError
+                        var dt *COTPPacket
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -230,7 +212,7 @@ func (m *TPKTPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m TPKTPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TPKTPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.TPKTPacket"},
         }}); err != nil {

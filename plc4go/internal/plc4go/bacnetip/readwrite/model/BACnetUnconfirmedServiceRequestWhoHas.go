@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -39,53 +38,61 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
     DeviceInstanceHighLimit uint32
     ObjectNameCharacterSet uint8
     ObjectName []int8
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestWhoHas
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoHas interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestWhoHas) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestWhoHas) ServiceChoice() uint8 {
     return 0x07
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoHas) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceLowLimit uint32, deviceInstanceHighLimit uint32, objectNameCharacterSet uint8, objectName []int8) BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestWhoHas{DeviceInstanceLowLimit: deviceInstanceLowLimit, DeviceInstanceHighLimit: deviceInstanceHighLimit, ObjectNameCharacterSet: objectNameCharacterSet, ObjectName: objectName}
-}
-
-func CastIBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) IBACnetUnconfirmedServiceRequestWhoHas {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWhoHas {
-        if iBACnetUnconfirmedServiceRequestWhoHas, ok := typ.(IBACnetUnconfirmedServiceRequestWhoHas); ok {
-            return iBACnetUnconfirmedServiceRequestWhoHas
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceLowLimit uint32, deviceInstanceHighLimit uint32, objectNameCharacterSet uint8, objectName []int8, ) *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestWhoHas{
+        DeviceInstanceLowLimit: deviceInstanceLowLimit,
+        DeviceInstanceHighLimit: deviceInstanceHighLimit,
+        ObjectNameCharacterSet: objectNameCharacterSet,
+        ObjectName: objectName,
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) BACnetUnconfirmedServiceRequestWhoHas {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWhoHas {
-        if sBACnetUnconfirmedServiceRequestWhoHas, ok := typ.(BACnetUnconfirmedServiceRequestWhoHas); ok {
-            return sBACnetUnconfirmedServiceRequestWhoHas
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestWhoHas); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestWhoHas, ok := typ.(*BACnetUnconfirmedServiceRequestWhoHas); ok {
-            return *sBACnetUnconfirmedServiceRequestWhoHas
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWhoHas); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWhoHas(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestWhoHas(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestWhoHas{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (deviceInstanceLowLimitHeader)
     lengthInBits += 8
@@ -116,11 +123,11 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
     // Const Field (deviceInstanceLowLimitHeader)
     deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)
@@ -186,11 +193,19 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (BACnetUnc
         objectName = append(objectName, _item)
     }
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceLowLimit, deviceInstanceHighLimit, objectNameCharacterSet, objectName), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestWhoHas{
+        DeviceInstanceLowLimit: deviceInstanceLowLimit,
+        DeviceInstanceHighLimit: deviceInstanceHighLimit,
+        ObjectNameCharacterSet: objectNameCharacterSet,
+        ObjectName: objectName,
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (deviceInstanceLowLimitHeader)
@@ -251,7 +266,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) e
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -301,7 +316,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, sta
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas"},
         }}); err != nil {

@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -42,53 +41,63 @@ type BACnetUnconfirmedServiceRequestIAm struct {
     MaximumApduLengthAccepted []int8
     SegmentationSupported uint8
     VendorId uint8
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestIAm
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestIAm) ServiceChoice() uint8 {
     return 0x00
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestIAm) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIAm(objectType uint16, objectInstanceNumber uint32, maximumApduLengthAcceptedLength uint8, maximumApduLengthAccepted []int8, segmentationSupported uint8, vendorId uint8) BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestIAm{ObjectType: objectType, ObjectInstanceNumber: objectInstanceNumber, MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength, MaximumApduLengthAccepted: maximumApduLengthAccepted, SegmentationSupported: segmentationSupported, VendorId: vendorId}
-}
-
-func CastIBACnetUnconfirmedServiceRequestIAm(structType interface{}) IBACnetUnconfirmedServiceRequestIAm {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIAm {
-        if iBACnetUnconfirmedServiceRequestIAm, ok := typ.(IBACnetUnconfirmedServiceRequestIAm); ok {
-            return iBACnetUnconfirmedServiceRequestIAm
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestIAm(objectType uint16, objectInstanceNumber uint32, maximumApduLengthAcceptedLength uint8, maximumApduLengthAccepted []int8, segmentationSupported uint8, vendorId uint8, ) *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestIAm{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
+        MaximumApduLengthAccepted: maximumApduLengthAccepted,
+        SegmentationSupported: segmentationSupported,
+        VendorId: vendorId,
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconfirmedServiceRequestIAm {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIAm {
-        if sBACnetUnconfirmedServiceRequestIAm, ok := typ.(BACnetUnconfirmedServiceRequestIAm); ok {
-            return sBACnetUnconfirmedServiceRequestIAm
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestIAm); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestIAm, ok := typ.(*BACnetUnconfirmedServiceRequestIAm); ok {
-            return *sBACnetUnconfirmedServiceRequestIAm
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIAm); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestIAm{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (objectIdentifierHeader)
     lengthInBits += 8
@@ -125,11 +134,11 @@ func (m BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
     // Const Field (objectIdentifierHeader)
     objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -171,7 +180,6 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (BACnetUnconf
     // Count array
     maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
     for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'maximumApduLengthAccepted' field " + _err.Error())
@@ -209,11 +217,21 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (BACnetUnconf
         return nil, errors.New("Error parsing 'vendorId' field " + _vendorIdErr.Error())
     }
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestIAm(objectType, objectInstanceNumber, maximumApduLengthAcceptedLength, maximumApduLengthAccepted, segmentationSupported, vendorId), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestIAm{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        MaximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength,
+        MaximumApduLengthAccepted: maximumApduLengthAccepted,
+        SegmentationSupported: segmentationSupported,
+        VendorId: vendorId,
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)
@@ -287,7 +305,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) erro
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -349,7 +367,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start 
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm"},
         }}); err != nil {

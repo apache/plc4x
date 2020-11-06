@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorRemovedAuthenticate struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorRemovedAuthenticate
 }
 
 // The corresponding interface
 type IBACnetErrorRemovedAuthenticate interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorRemovedAuthenticate) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorRemovedAuthenticate) ServiceChoice() uint8 {
     return 0x18
 }
 
-func (m BACnetErrorRemovedAuthenticate) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorRemovedAuthenticate) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorRemovedAuthenticate() BACnetErrorInitializer {
-    return &BACnetErrorRemovedAuthenticate{}
-}
-
-func CastIBACnetErrorRemovedAuthenticate(structType interface{}) IBACnetErrorRemovedAuthenticate {
-    castFunc := func(typ interface{}) IBACnetErrorRemovedAuthenticate {
-        if iBACnetErrorRemovedAuthenticate, ok := typ.(IBACnetErrorRemovedAuthenticate); ok {
-            return iBACnetErrorRemovedAuthenticate
-        }
-        return nil
+func NewBACnetErrorRemovedAuthenticate() *BACnetError {
+    child := &BACnetErrorRemovedAuthenticate{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemovedAuthenticate {
     castFunc := func(typ interface{}) BACnetErrorRemovedAuthenticate {
-        if sBACnetErrorRemovedAuthenticate, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
-            return sBACnetErrorRemovedAuthenticate
+        if casted, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
+            return casted
         }
-        if sBACnetErrorRemovedAuthenticate, ok := typ.(*BACnetErrorRemovedAuthenticate); ok {
-            return *sBACnetErrorRemovedAuthenticate
+        if casted, ok := typ.(*BACnetErrorRemovedAuthenticate); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorRemovedAuthenticate(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorRemovedAuthenticate(casted.Child)
         }
         return BACnetErrorRemovedAuthenticate{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorRemovedAuthenticate) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorRemovedAuthenticate) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
+func (m *BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorRemovedAuthenticateParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorRemovedAuthenticate(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorRemovedAuthenticate{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.
     }
 }
 
-func (m BACnetErrorRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate"},
         }}); err != nil {

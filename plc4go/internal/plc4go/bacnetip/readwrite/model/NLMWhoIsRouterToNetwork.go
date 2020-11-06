@@ -22,61 +22,65 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type NLMWhoIsRouterToNetwork struct {
     DestinationNetworkAddress []uint16
-    NLM
+    Parent *NLM
+    INLMWhoIsRouterToNetwork
 }
 
 // The corresponding interface
 type INLMWhoIsRouterToNetwork interface {
-    INLM
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m NLMWhoIsRouterToNetwork) MessageType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *NLMWhoIsRouterToNetwork) MessageType() uint8 {
     return 0x0
 }
 
-func (m NLMWhoIsRouterToNetwork) initialize(vendorId *uint16) spi.Message {
-    m.VendorId = vendorId
-    return m
+
+func (m *NLMWhoIsRouterToNetwork) InitializeParent(parent *NLM, vendorId *uint16) {
+    m.Parent.VendorId = vendorId
 }
 
-func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16) NLMInitializer {
-    return &NLMWhoIsRouterToNetwork{DestinationNetworkAddress: destinationNetworkAddress}
-}
-
-func CastINLMWhoIsRouterToNetwork(structType interface{}) INLMWhoIsRouterToNetwork {
-    castFunc := func(typ interface{}) INLMWhoIsRouterToNetwork {
-        if iNLMWhoIsRouterToNetwork, ok := typ.(INLMWhoIsRouterToNetwork); ok {
-            return iNLMWhoIsRouterToNetwork
-        }
-        return nil
+func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint16) *NLM {
+    child := &NLMWhoIsRouterToNetwork{
+        DestinationNetworkAddress: destinationNetworkAddress,
+        Parent: NewNLM(vendorId),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastNLMWhoIsRouterToNetwork(structType interface{}) NLMWhoIsRouterToNetwork {
     castFunc := func(typ interface{}) NLMWhoIsRouterToNetwork {
-        if sNLMWhoIsRouterToNetwork, ok := typ.(NLMWhoIsRouterToNetwork); ok {
-            return sNLMWhoIsRouterToNetwork
+        if casted, ok := typ.(NLMWhoIsRouterToNetwork); ok {
+            return casted
         }
-        if sNLMWhoIsRouterToNetwork, ok := typ.(*NLMWhoIsRouterToNetwork); ok {
-            return *sNLMWhoIsRouterToNetwork
+        if casted, ok := typ.(*NLMWhoIsRouterToNetwork); ok {
+            return *casted
+        }
+        if casted, ok := typ.(NLM); ok {
+            return CastNLMWhoIsRouterToNetwork(casted.Child)
+        }
+        if casted, ok := typ.(*NLM); ok {
+            return CastNLMWhoIsRouterToNetwork(casted.Child)
         }
         return NLMWhoIsRouterToNetwork{}
     }
     return castFunc(structType)
 }
 
-func (m NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.NLM.LengthInBits()
+func (m *NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.DestinationNetworkAddress) > 0 {
@@ -86,11 +90,11 @@ func (m NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m NLMWhoIsRouterToNetwork) LengthInBytes() uint16 {
+func (m *NLMWhoIsRouterToNetwork) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitializer, error) {
+func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
 
     // Array field (destinationNetworkAddress)
     // Length array
@@ -105,11 +109,16 @@ func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messa
         destinationNetworkAddress = append(destinationNetworkAddress, _item)
     }
 
-    // Create the instance
-    return NewNLMWhoIsRouterToNetwork(destinationNetworkAddress), nil
+    // Create a partially initialized instance
+    _child := &NLMWhoIsRouterToNetwork{
+        DestinationNetworkAddress: destinationNetworkAddress,
+        Parent: &NLM{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
+func (m *NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (destinationNetworkAddress)
@@ -124,7 +133,7 @@ func (m NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return NLMSerialize(io, m.NLM, CastINLM(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *NLMWhoIsRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -151,7 +160,7 @@ func (m *NLMWhoIsRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m NLMWhoIsRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *NLMWhoIsRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork"},
         }}); err != nil {

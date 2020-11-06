@@ -23,9 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
@@ -38,54 +36,67 @@ type APDUConfirmedRequest struct {
     InvokeId uint8
     SequenceNumber *uint8
     ProposedWindowSize *uint8
-    ServiceRequest IBACnetConfirmedServiceRequest
-    APDU
+    ServiceRequest *BACnetConfirmedServiceRequest
+    Parent *APDU
+    IAPDUConfirmedRequest
 }
 
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUConfirmedRequest) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUConfirmedRequest) ApduType() uint8 {
     return 0x0
 }
 
-func (m APDUConfirmedRequest) initialize() spi.Message {
-    return m
+
+func (m *APDUConfirmedRequest) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest IBACnetConfirmedServiceRequest) APDUInitializer {
-    return &APDUConfirmedRequest{SegmentedMessage: segmentedMessage, MoreFollows: moreFollows, SegmentedResponseAccepted: segmentedResponseAccepted, MaxSegmentsAccepted: maxSegmentsAccepted, MaxApduLengthAccepted: maxApduLengthAccepted, InvokeId: invokeId, SequenceNumber: sequenceNumber, ProposedWindowSize: proposedWindowSize, ServiceRequest: serviceRequest}
-}
-
-func CastIAPDUConfirmedRequest(structType interface{}) IAPDUConfirmedRequest {
-    castFunc := func(typ interface{}) IAPDUConfirmedRequest {
-        if iAPDUConfirmedRequest, ok := typ.(IAPDUConfirmedRequest); ok {
-            return iAPDUConfirmedRequest
-        }
-        return nil
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest *BACnetConfirmedServiceRequest, ) *APDU {
+    child := &APDUConfirmedRequest{
+        SegmentedMessage: segmentedMessage,
+        MoreFollows: moreFollows,
+        SegmentedResponseAccepted: segmentedResponseAccepted,
+        MaxSegmentsAccepted: maxSegmentsAccepted,
+        MaxApduLengthAccepted: maxApduLengthAccepted,
+        InvokeId: invokeId,
+        SequenceNumber: sequenceNumber,
+        ProposedWindowSize: proposedWindowSize,
+        ServiceRequest: serviceRequest,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUConfirmedRequest(structType interface{}) APDUConfirmedRequest {
     castFunc := func(typ interface{}) APDUConfirmedRequest {
-        if sAPDUConfirmedRequest, ok := typ.(APDUConfirmedRequest); ok {
-            return sAPDUConfirmedRequest
+        if casted, ok := typ.(APDUConfirmedRequest); ok {
+            return casted
         }
-        if sAPDUConfirmedRequest, ok := typ.(*APDUConfirmedRequest); ok {
-            return *sAPDUConfirmedRequest
+        if casted, ok := typ.(*APDUConfirmedRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUConfirmedRequest(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUConfirmedRequest(casted.Child)
         }
         return APDUConfirmedRequest{}
     }
     return castFunc(structType)
 }
 
-func (m APDUConfirmedRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUConfirmedRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (segmentedMessage)
     lengthInBits += 1
@@ -124,11 +135,11 @@ func (m APDUConfirmedRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUConfirmedRequest) LengthInBytes() uint16 {
+func (m *APDUConfirmedRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
+func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 
     // Simple Field (segmentedMessage)
     segmentedMessage, _segmentedMessageErr := io.ReadBit()
@@ -203,21 +214,29 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (APDUIni
     }
 
     // Simple Field (serviceRequest)
-    _serviceRequestMessage, _err := BACnetConfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(uint16(uint16(3)) + uint16(uint16(utils.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
-    }
-    var serviceRequest IBACnetConfirmedServiceRequest
-    serviceRequest, _serviceRequestOk := _serviceRequestMessage.(IBACnetConfirmedServiceRequest)
-    if !_serviceRequestOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to IBACnetConfirmedServiceRequest")
+    serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(uint16(uint16(3)) + uint16(uint16(utils.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
+    if _serviceRequestErr != nil {
+        return nil, errors.New("Error parsing 'serviceRequest' field " + _serviceRequestErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUConfirmedRequest(segmentedMessage, moreFollows, segmentedResponseAccepted, maxSegmentsAccepted, maxApduLengthAccepted, invokeId, sequenceNumber, proposedWindowSize, serviceRequest), nil
+    // Create a partially initialized instance
+    _child := &APDUConfirmedRequest{
+        SegmentedMessage: segmentedMessage,
+        MoreFollows: moreFollows,
+        SegmentedResponseAccepted: segmentedResponseAccepted,
+        MaxSegmentsAccepted: maxSegmentsAccepted,
+        MaxApduLengthAccepted: maxApduLengthAccepted,
+        InvokeId: invokeId,
+        SequenceNumber: sequenceNumber,
+        ProposedWindowSize: proposedWindowSize,
+        ServiceRequest: serviceRequest,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
+func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (segmentedMessage)
@@ -291,15 +310,14 @@ func (m APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (serviceRequest)
-    serviceRequest := CastIBACnetConfirmedServiceRequest(m.ServiceRequest)
-    _serviceRequestErr := serviceRequest.Serialize(io)
+    _serviceRequestErr := m.ServiceRequest.Serialize(io)
     if _serviceRequestErr != nil {
         return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
     }
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUConfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -353,200 +371,200 @@ func (m *APDUConfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
                 m.InvokeId = data
             case "sequenceNumber":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.SequenceNumber = data
             case "proposedWindowSize":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.ProposedWindowSize = data
             case "serviceRequest":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
-                        var dt *BACnetConfirmedServiceRequestAcknowledgeAlarm
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotification":
-                        var dt *BACnetConfirmedServiceRequestConfirmedCOVNotification
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedEventNotification":
-                        var dt *BACnetConfirmedServiceRequestConfirmedEventNotification
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEnrollmentSummary":
-                        var dt *BACnetConfirmedServiceRequestGetEnrollmentSummary
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOV":
-                        var dt *BACnetConfirmedServiceRequestSubscribeCOV
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicReadFile":
-                        var dt *BACnetConfirmedServiceRequestAtomicReadFile
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicWriteFile":
-                        var dt *BACnetConfirmedServiceRequestAtomicWriteFile
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAddListElement":
-                        var dt *BACnetConfirmedServiceRequestAddListElement
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemoveListElement":
-                        var dt *BACnetConfirmedServiceRequestRemoveListElement
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestCreateObject":
-                        var dt *BACnetConfirmedServiceRequestCreateObject
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeleteObject":
-                        var dt *BACnetConfirmedServiceRequestDeleteObject
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadProperty":
-                        var dt *BACnetConfirmedServiceRequestReadProperty
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadPropertyMultiple":
-                        var dt *BACnetConfirmedServiceRequestReadPropertyMultiple
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWriteProperty":
-                        var dt *BACnetConfirmedServiceRequestWriteProperty
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWritePropertyMultiple":
-                        var dt *BACnetConfirmedServiceRequestWritePropertyMultiple
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeviceCommunicationControl":
-                        var dt *BACnetConfirmedServiceRequestDeviceCommunicationControl
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedPrivateTransfer":
-                        var dt *BACnetConfirmedServiceRequestConfirmedPrivateTransfer
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedTextMessage":
-                        var dt *BACnetConfirmedServiceRequestConfirmedTextMessage
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReinitializeDevice":
-                        var dt *BACnetConfirmedServiceRequestReinitializeDevice
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTOpen":
-                        var dt *BACnetConfirmedServiceRequestVTOpen
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTClose":
-                        var dt *BACnetConfirmedServiceRequestVTClose
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTData":
-                        var dt *BACnetConfirmedServiceRequestVTData
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedAuthenticate":
-                        var dt *BACnetConfirmedServiceRequestRemovedAuthenticate
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedRequestKey":
-                        var dt *BACnetConfirmedServiceRequestRemovedRequestKey
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedReadPropertyConditional":
-                        var dt *BACnetConfirmedServiceRequestRemovedReadPropertyConditional
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadRange":
-                        var dt *BACnetConfirmedServiceRequestReadRange
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestLifeSafetyOperation":
-                        var dt *BACnetConfirmedServiceRequestLifeSafetyOperation
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVProperty":
-                        var dt *BACnetConfirmedServiceRequestSubscribeCOVProperty
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEventInformation":
-                        var dt *BACnetConfirmedServiceRequestGetEventInformation
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple":
-                        var dt *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple":
-                        var dt *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+                        var dt *BACnetConfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -557,7 +575,7 @@ func (m *APDUConfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
     }
 }
 
-func (m APDUConfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUConfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest"},
         }}); err != nil {

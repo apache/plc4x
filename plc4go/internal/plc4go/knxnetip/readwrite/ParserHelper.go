@@ -20,6 +20,7 @@ package model
 
 import (
     "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -29,62 +30,62 @@ type KnxnetipParserHelper struct {
 
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
     switch typeName {
+    case "CEMIAdditionalInformation":
+        return model.CEMIAdditionalInformationParse(io)
     case "HPAIControlEndpoint":
-        return HPAIControlEndpointParse(io)
+        return model.HPAIControlEndpointParse(io)
     case "TunnelingResponseDataBlock":
-        return TunnelingResponseDataBlockParse(io)
+        return model.TunnelingResponseDataBlockParse(io)
+    case "ConnectionResponseDataBlock":
+        return model.ConnectionResponseDataBlockParse(io)
+    case "TunnelingRequestDataBlock":
+        return model.TunnelingRequestDataBlockParse(io)
     case "KNXGroupAddress":
         numLevels, err := utils.StrToUint8(arguments[0])
         if err != nil {
             return nil, err
         }
-        return KNXGroupAddressParse(io, numLevels)
+        return model.KNXGroupAddressParse(io, numLevels)
+    case "DIBDeviceInfo":
+        return model.DIBDeviceInfoParse(io)
+    case "DeviceConfigurationRequestDataBlock":
+        return model.DeviceConfigurationRequestDataBlockParse(io)
     case "DeviceConfigurationAckDataBlock":
-        return DeviceConfigurationAckDataBlockParse(io)
+        return model.DeviceConfigurationAckDataBlockParse(io)
+    case "DIBSuppSvcFamilies":
+        return model.DIBSuppSvcFamiliesParse(io)
     case "ConnectionRequestInformation":
-        return ConnectionRequestInformationParse(io)
+        return model.ConnectionRequestInformationParse(io)
     case "HPAIDiscoveryEndpoint":
-        return HPAIDiscoveryEndpointParse(io)
+        return model.HPAIDiscoveryEndpointParse(io)
     case "ProjectInstallationIdentifier":
-        return ProjectInstallationIdentifierParse(io)
+        return model.ProjectInstallationIdentifierParse(io)
     case "KNXAddress":
-        return KNXAddressParse(io)
+        return model.KNXAddressParse(io)
     case "CEMIDataFrame":
-        return CEMIDataFrameParse(io)
+        return model.CEMIDataFrameParse(io)
     case "ServiceId":
-        return ServiceIdParse(io)
+        return model.ServiceIdParse(io)
     case "KNXNetIPMessage":
-        return KNXNetIPMessageParse(io)
+        return model.KNXNetIPMessageParse(io)
     case "HPAIDataEndpoint":
-        return HPAIDataEndpointParse(io)
+        return model.HPAIDataEndpointParse(io)
     case "RelativeTimestamp":
-        return RelativeTimestampParse(io)
+        return model.RelativeTimestampParse(io)
     case "CEMI":
         size, err := utils.StrToUint8(arguments[0])
         if err != nil {
             return nil, err
         }
-        return CEMIParse(io, size)
-    case "DeviceStatus":
-        return DeviceStatusParse(io)
-    case "IPAddress":
-        return IPAddressParse(io)
-    case "CEMIAdditionalInformation":
-        return CEMIAdditionalInformationParse(io)
-    case "ConnectionResponseDataBlock":
-        return ConnectionResponseDataBlockParse(io)
-    case "TunnelingRequestDataBlock":
-        return TunnelingRequestDataBlockParse(io)
-    case "DIBDeviceInfo":
-        return DIBDeviceInfoParse(io)
-    case "DeviceConfigurationRequestDataBlock":
-        return DeviceConfigurationRequestDataBlockParse(io)
-    case "DIBSuppSvcFamilies":
-        return DIBSuppSvcFamiliesParse(io)
+        return model.CEMIParse(io, size)
     case "MACAddress":
-        return MACAddressParse(io)
+        return model.MACAddressParse(io)
     case "CEMIFrame":
-        return CEMIFrameParse(io)
+        return model.CEMIFrameParse(io)
+    case "DeviceStatus":
+        return model.DeviceStatusParse(io)
+    case "IPAddress":
+        return model.IPAddressParse(io)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

@@ -21,83 +21,90 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
-    S7PayloadUserDataItem
+    Parent *S7PayloadUserDataItem
+    IS7PayloadUserDataItemCpuFunctionReadSzlRequest
 }
 
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
-    IS7PayloadUserDataItem
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) CpuFunctionType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) CpuFunctionType() uint8 {
     return 0x04
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message {
-    m.ReturnCode = returnCode
-    m.TransportSize = transportSize
-    m.SzlId = szlId
-    m.SzlIndex = szlIndex
-    return m
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16) {
+    m.Parent.ReturnCode = returnCode
+    m.Parent.TransportSize = transportSize
+    m.Parent.SzlId = szlId
+    m.Parent.SzlIndex = szlIndex
 }
 
-func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest() S7PayloadUserDataItemInitializer {
-    return &S7PayloadUserDataItemCpuFunctionReadSzlRequest{}
-}
-
-func CastIS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlRequest {
-    castFunc := func(typ interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlRequest {
-        if iS7PayloadUserDataItemCpuFunctionReadSzlRequest, ok := typ.(IS7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-            return iS7PayloadUserDataItemCpuFunctionReadSzlRequest
-        }
-        return nil
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16) *S7PayloadUserDataItem {
+    child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+        Parent: NewS7PayloadUserDataItem(returnCode, transportSize, szlId, szlIndex),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
     castFunc := func(typ interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
-        if sS7PayloadUserDataItemCpuFunctionReadSzlRequest, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-            return sS7PayloadUserDataItemCpuFunctionReadSzlRequest
+        if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
+            return casted
         }
-        if sS7PayloadUserDataItemCpuFunctionReadSzlRequest, ok := typ.(*S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-            return *sS7PayloadUserDataItemCpuFunctionReadSzlRequest
+        if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7PayloadUserDataItem); ok {
+            return CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(casted.Child)
+        }
+        if casted, ok := typ.(*S7PayloadUserDataItem); ok {
+            return CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(casted.Child)
         }
         return S7PayloadUserDataItemCpuFunctionReadSzlRequest{}
     }
     return castFunc(structType)
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7PayloadUserDataItem.LengthInBits()
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
 
-    // Create the instance
-    return NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(), nil
+    // Create a partially initialized instance
+    _child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+        Parent: &S7PayloadUserDataItem{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -118,7 +125,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Dec
     }
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest"},
         }}); err != nil {

@@ -22,61 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type DescriptionRequest struct {
-    HpaiControlEndpoint IHPAIControlEndpoint
-    KNXNetIPMessage
+    HpaiControlEndpoint *HPAIControlEndpoint
+    Parent *KNXNetIPMessage
+    IDescriptionRequest
 }
 
 // The corresponding interface
 type IDescriptionRequest interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m DescriptionRequest) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *DescriptionRequest) MsgType() uint16 {
     return 0x0203
 }
 
-func (m DescriptionRequest) initialize() spi.Message {
-    return m
+
+func (m *DescriptionRequest) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewDescriptionRequest(hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
-    return &DescriptionRequest{HpaiControlEndpoint: hpaiControlEndpoint}
-}
-
-func CastIDescriptionRequest(structType interface{}) IDescriptionRequest {
-    castFunc := func(typ interface{}) IDescriptionRequest {
-        if iDescriptionRequest, ok := typ.(IDescriptionRequest); ok {
-            return iDescriptionRequest
-        }
-        return nil
+func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint, ) *KNXNetIPMessage {
+    child := &DescriptionRequest{
+        HpaiControlEndpoint: hpaiControlEndpoint,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastDescriptionRequest(structType interface{}) DescriptionRequest {
     castFunc := func(typ interface{}) DescriptionRequest {
-        if sDescriptionRequest, ok := typ.(DescriptionRequest); ok {
-            return sDescriptionRequest
+        if casted, ok := typ.(DescriptionRequest); ok {
+            return casted
         }
-        if sDescriptionRequest, ok := typ.(*DescriptionRequest); ok {
-            return *sDescriptionRequest
+        if casted, ok := typ.(*DescriptionRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastDescriptionRequest(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastDescriptionRequest(casted.Child)
         }
         return DescriptionRequest{}
     }
     return castFunc(structType)
 }
 
-func (m DescriptionRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *DescriptionRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (hpaiControlEndpoint)
     lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -84,40 +87,39 @@ func (m DescriptionRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DescriptionRequest) LengthInBytes() uint16 {
+func (m *DescriptionRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DescriptionRequestParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DescriptionRequestParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (hpaiControlEndpoint)
-    _hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
-    }
-    var hpaiControlEndpoint IHPAIControlEndpoint
-    hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
-    if !_hpaiControlEndpointOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
+    hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
+    if _hpaiControlEndpointErr != nil {
+        return nil, errors.New("Error parsing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
     }
 
-    // Create the instance
-    return NewDescriptionRequest(hpaiControlEndpoint), nil
+    // Create a partially initialized instance
+    _child := &DescriptionRequest{
+        HpaiControlEndpoint: hpaiControlEndpoint,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m DescriptionRequest) Serialize(io utils.WriteBuffer) error {
+func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiControlEndpoint)
-    hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
-    _hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+    _hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
     if _hpaiControlEndpointErr != nil {
         return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -135,16 +137,16 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
             switch tok.Name.Local {
             case "hpaiControlEndpoint":
                 var data *HPAIControlEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.HpaiControlEndpoint = CastIHPAIControlEndpoint(data)
+                m.HpaiControlEndpoint = data
             }
         }
     }
 }
 
-func (m DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DescriptionRequest"},
         }}); err != nil {

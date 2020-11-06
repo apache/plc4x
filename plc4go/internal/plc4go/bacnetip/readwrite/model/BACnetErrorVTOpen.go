@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorVTOpen struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorVTOpen
 }
 
 // The corresponding interface
 type IBACnetErrorVTOpen interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorVTOpen) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorVTOpen) ServiceChoice() uint8 {
     return 0x15
 }
 
-func (m BACnetErrorVTOpen) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorVTOpen) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorVTOpen() BACnetErrorInitializer {
-    return &BACnetErrorVTOpen{}
-}
-
-func CastIBACnetErrorVTOpen(structType interface{}) IBACnetErrorVTOpen {
-    castFunc := func(typ interface{}) IBACnetErrorVTOpen {
-        if iBACnetErrorVTOpen, ok := typ.(IBACnetErrorVTOpen); ok {
-            return iBACnetErrorVTOpen
-        }
-        return nil
+func NewBACnetErrorVTOpen() *BACnetError {
+    child := &BACnetErrorVTOpen{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorVTOpen(structType interface{}) BACnetErrorVTOpen {
     castFunc := func(typ interface{}) BACnetErrorVTOpen {
-        if sBACnetErrorVTOpen, ok := typ.(BACnetErrorVTOpen); ok {
-            return sBACnetErrorVTOpen
+        if casted, ok := typ.(BACnetErrorVTOpen); ok {
+            return casted
         }
-        if sBACnetErrorVTOpen, ok := typ.(*BACnetErrorVTOpen); ok {
-            return *sBACnetErrorVTOpen
+        if casted, ok := typ.(*BACnetErrorVTOpen); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorVTOpen(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorVTOpen(casted.Child)
         }
         return BACnetErrorVTOpen{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorVTOpen) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorVTOpen) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorVTOpen) LengthInBytes() uint16 {
+func (m *BACnetErrorVTOpen) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorVTOpenParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorVTOpenParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorVTOpen(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorVTOpen{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorVTOpen) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorVTOpen) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m BACnetErrorVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen"},
         }}); err != nil {

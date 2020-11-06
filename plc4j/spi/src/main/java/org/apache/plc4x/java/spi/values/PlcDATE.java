@@ -23,17 +23,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcDateTime extends PlcSimpleValue<LocalDateTime> {
+public class PlcDATE extends PlcSimpleValue<LocalDate> {
+
+    public static PlcDATE of(Object value) {
+        if (value instanceof LocalDate) {
+            return new PlcDATE((LocalDate) value);
+        }
+        throw new PlcRuntimeException("Invalid value type");
+    }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDateTime(@JsonProperty("value") LocalDateTime value) {
+    public PlcDATE(@JsonProperty("value") LocalDate value) {
         super(value, true);
     }
 
@@ -51,18 +57,6 @@ public class PlcDateTime extends PlcSimpleValue<LocalDateTime> {
 
     @Override
     @JsonIgnore
-    public boolean isTime() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public LocalTime getTime() {
-        return value.toLocalTime();
-    }
-
-    @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
@@ -70,18 +64,6 @@ public class PlcDateTime extends PlcSimpleValue<LocalDateTime> {
     @Override
     @JsonIgnore
     public LocalDate getDate() {
-        return value.toLocalDate();
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isDateTime() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public LocalDateTime getDateTime() {
         return value;
     }
 

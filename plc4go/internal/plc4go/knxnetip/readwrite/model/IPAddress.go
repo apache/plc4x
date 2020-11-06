@@ -23,52 +23,41 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type IPAddress struct {
     Addr []int8
-
+    IIPAddress
 }
 
 // The corresponding interface
 type IIPAddress interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewIPAddress(addr []int8) spi.Message {
+func NewIPAddress(addr []int8) *IPAddress {
     return &IPAddress{Addr: addr}
-}
-
-func CastIIPAddress(structType interface{}) IIPAddress {
-    castFunc := func(typ interface{}) IIPAddress {
-        if iIPAddress, ok := typ.(IIPAddress); ok {
-            return iIPAddress
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastIPAddress(structType interface{}) IPAddress {
     castFunc := func(typ interface{}) IPAddress {
-        if sIPAddress, ok := typ.(IPAddress); ok {
-            return sIPAddress
+        if casted, ok := typ.(IPAddress); ok {
+            return casted
         }
-        if sIPAddress, ok := typ.(*IPAddress); ok {
-            return *sIPAddress
+        if casted, ok := typ.(*IPAddress); ok {
+            return *casted
         }
         return IPAddress{}
     }
     return castFunc(structType)
 }
 
-func (m IPAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *IPAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Addr) > 0 {
@@ -78,17 +67,16 @@ func (m IPAddress) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m IPAddress) LengthInBytes() uint16 {
+func (m *IPAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func IPAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
+func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
 
     // Array field (addr)
     // Count array
     addr := make([]int8, uint16(4))
     for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'addr' field " + _err.Error())
@@ -100,7 +88,7 @@ func IPAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewIPAddress(addr), nil
 }
 
-func (m IPAddress) Serialize(io utils.WriteBuffer) error {
+func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (addr)
     if m.Addr != nil {
@@ -144,7 +132,7 @@ func (m *IPAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.IPAddress"},
         }}); err != nil {

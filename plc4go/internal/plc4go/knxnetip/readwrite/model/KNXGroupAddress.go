@@ -22,91 +22,94 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type KNXGroupAddress struct {
-
+    Child IKNXGroupAddressChild
+    IKNXGroupAddress
+    IKNXGroupAddressParent
 }
 
 // The corresponding interface
 type IKNXGroupAddress interface {
-    spi.Message
     NumLevels() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type KNXGroupAddressInitializer interface {
-    initialize() spi.Message
+type IKNXGroupAddressParent interface {
+    SerializeParent(io utils.WriteBuffer, child IKNXGroupAddress, serializeChildFunction func() error) error
 }
 
-func KNXGroupAddressNumLevels(m IKNXGroupAddress) uint8 {
-    return m.NumLevels()
+type IKNXGroupAddressChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *KNXGroupAddress)
+    IKNXGroupAddress
 }
 
-
-func CastIKNXGroupAddress(structType interface{}) IKNXGroupAddress {
-    castFunc := func(typ interface{}) IKNXGroupAddress {
-        if iKNXGroupAddress, ok := typ.(IKNXGroupAddress); ok {
-            return iKNXGroupAddress
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewKNXGroupAddress() *KNXGroupAddress {
+    return &KNXGroupAddress{}
 }
 
 func CastKNXGroupAddress(structType interface{}) KNXGroupAddress {
     castFunc := func(typ interface{}) KNXGroupAddress {
-        if sKNXGroupAddress, ok := typ.(KNXGroupAddress); ok {
-            return sKNXGroupAddress
+        if casted, ok := typ.(KNXGroupAddress); ok {
+            return casted
         }
-        if sKNXGroupAddress, ok := typ.(*KNXGroupAddress); ok {
-            return *sKNXGroupAddress
+        if casted, ok := typ.(*KNXGroupAddress); ok {
+            return *casted
         }
         return KNXGroupAddress{}
     }
     return castFunc(structType)
 }
 
-func (m KNXGroupAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *KNXGroupAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m KNXGroupAddress) LengthInBytes() uint16 {
+func (m *KNXGroupAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (spi.Message, error) {
+func KNXGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KNXGroupAddress, error) {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer KNXGroupAddressInitializer
+    var _parent *KNXGroupAddress
     var typeSwitchError error
     switch {
     case numLevels == 1:
-        initializer, typeSwitchError = KNXGroupAddressFreeLevelParse(io)
+        _parent, typeSwitchError = KNXGroupAddressFreeLevelParse(io)
     case numLevels == 2:
-        initializer, typeSwitchError = KNXGroupAddress2LevelParse(io)
+        _parent, typeSwitchError = KNXGroupAddress2LevelParse(io)
     case numLevels == 3:
-        initializer, typeSwitchError = KNXGroupAddress3LevelParse(io)
+        _parent, typeSwitchError = KNXGroupAddress3LevelParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func KNXGroupAddressSerialize(io utils.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func() error) error {
+func (m *KNXGroupAddress) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *KNXGroupAddress) SerializeParent(io utils.WriteBuffer, child IKNXGroupAddress, serializeChildFunction func() error) error {
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -132,7 +135,7 @@ func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m KNXGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KNXGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIRawReq struct {
-    CEMI
+    Parent *CEMI
+    ICEMIRawReq
 }
 
 // The corresponding interface
 type ICEMIRawReq interface {
-    ICEMI
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIRawReq) MessageCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *CEMIRawReq) MessageCode() uint8 {
     return 0x10
 }
 
-func (m CEMIRawReq) initialize() spi.Message {
-    return m
+
+func (m *CEMIRawReq) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIRawReq() CEMIInitializer {
-    return &CEMIRawReq{}
-}
-
-func CastICEMIRawReq(structType interface{}) ICEMIRawReq {
-    castFunc := func(typ interface{}) ICEMIRawReq {
-        if iCEMIRawReq, ok := typ.(ICEMIRawReq); ok {
-            return iCEMIRawReq
-        }
-        return nil
+func NewCEMIRawReq() *CEMI {
+    child := &CEMIRawReq{
+        Parent: NewCEMI(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIRawReq(structType interface{}) CEMIRawReq {
     castFunc := func(typ interface{}) CEMIRawReq {
-        if sCEMIRawReq, ok := typ.(CEMIRawReq); ok {
-            return sCEMIRawReq
+        if casted, ok := typ.(CEMIRawReq); ok {
+            return casted
         }
-        if sCEMIRawReq, ok := typ.(*CEMIRawReq); ok {
-            return *sCEMIRawReq
+        if casted, ok := typ.(*CEMIRawReq); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMI); ok {
+            return CastCEMIRawReq(casted.Child)
+        }
+        if casted, ok := typ.(*CEMI); ok {
+            return CastCEMIRawReq(casted.Child)
         }
         return CEMIRawReq{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIRawReq) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMI.LengthInBits()
+func (m *CEMIRawReq) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m CEMIRawReq) LengthInBytes() uint16 {
+func (m *CEMIRawReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIRawReqParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
+func CEMIRawReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-    // Create the instance
-    return NewCEMIRawReq(), nil
+    // Create a partially initialized instance
+    _child := &CEMIRawReq{
+        Parent: &CEMI{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIRawReq) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIRawReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *CEMIRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m CEMIRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq"},
         }}); err != nil {

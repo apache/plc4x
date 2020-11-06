@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorRemovedReadPropertyConditional struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorRemovedReadPropertyConditional
 }
 
 // The corresponding interface
 type IBACnetErrorRemovedReadPropertyConditional interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorRemovedReadPropertyConditional) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorRemovedReadPropertyConditional) ServiceChoice() uint8 {
     return 0x0D
 }
 
-func (m BACnetErrorRemovedReadPropertyConditional) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorRemovedReadPropertyConditional) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorRemovedReadPropertyConditional() BACnetErrorInitializer {
-    return &BACnetErrorRemovedReadPropertyConditional{}
-}
-
-func CastIBACnetErrorRemovedReadPropertyConditional(structType interface{}) IBACnetErrorRemovedReadPropertyConditional {
-    castFunc := func(typ interface{}) IBACnetErrorRemovedReadPropertyConditional {
-        if iBACnetErrorRemovedReadPropertyConditional, ok := typ.(IBACnetErrorRemovedReadPropertyConditional); ok {
-            return iBACnetErrorRemovedReadPropertyConditional
-        }
-        return nil
+func NewBACnetErrorRemovedReadPropertyConditional() *BACnetError {
+    child := &BACnetErrorRemovedReadPropertyConditional{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) BACnetErrorRemovedReadPropertyConditional {
     castFunc := func(typ interface{}) BACnetErrorRemovedReadPropertyConditional {
-        if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
-            return sBACnetErrorRemovedReadPropertyConditional
+        if casted, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
+            return casted
         }
-        if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(*BACnetErrorRemovedReadPropertyConditional); ok {
-            return *sBACnetErrorRemovedReadPropertyConditional
+        if casted, ok := typ.(*BACnetErrorRemovedReadPropertyConditional); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorRemovedReadPropertyConditional(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorRemovedReadPropertyConditional(casted.Child)
         }
         return BACnetErrorRemovedReadPropertyConditional{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
+func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorRemovedReadPropertyConditional(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorRemovedReadPropertyConditional{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m BACnetErrorRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional"},
         }}); err != nil {

@@ -22,70 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACK struct {
-
+    Child IBACnetConfirmedServiceACKChild
+    IBACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKParent
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACK interface {
-    spi.Message
     ServiceChoice() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type BACnetConfirmedServiceACKInitializer interface {
-    initialize() spi.Message
+type IBACnetConfirmedServiceACKParent interface {
+    SerializeParent(io utils.WriteBuffer, child IBACnetConfirmedServiceACK, serializeChildFunction func() error) error
 }
 
-func BACnetConfirmedServiceACKServiceChoice(m IBACnetConfirmedServiceACK) uint8 {
-    return m.ServiceChoice()
+type IBACnetConfirmedServiceACKChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *BACnetConfirmedServiceACK)
+    IBACnetConfirmedServiceACK
 }
 
-
-func CastIBACnetConfirmedServiceACK(structType interface{}) IBACnetConfirmedServiceACK {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACK {
-        if iBACnetConfirmedServiceACK, ok := typ.(IBACnetConfirmedServiceACK); ok {
-            return iBACnetConfirmedServiceACK
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
+    return &BACnetConfirmedServiceACK{}
 }
 
 func CastBACnetConfirmedServiceACK(structType interface{}) BACnetConfirmedServiceACK {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACK {
-        if sBACnetConfirmedServiceACK, ok := typ.(BACnetConfirmedServiceACK); ok {
-            return sBACnetConfirmedServiceACK
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACK, ok := typ.(*BACnetConfirmedServiceACK); ok {
-            return *sBACnetConfirmedServiceACK
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return *casted
         }
         return BACnetConfirmedServiceACK{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACK) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *BACnetConfirmedServiceACK) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (serviceChoice)
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACK) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACK) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (spi.Message, error) {
+func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
@@ -94,57 +92,62 @@ func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer BACnetConfirmedServiceACKInitializer
+    var _parent *BACnetConfirmedServiceACK
     var typeSwitchError error
     switch {
     case serviceChoice == 0x03:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(io)
     case serviceChoice == 0x04:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io)
     case serviceChoice == 0x1D:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(io)
     case serviceChoice == 0x06:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(io)
     case serviceChoice == 0x07:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(io)
     case serviceChoice == 0x0A:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(io)
     case serviceChoice == 0x0C:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(io)
     case serviceChoice == 0x0E:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(io)
     case serviceChoice == 0x1A:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(io)
     case serviceChoice == 0x12:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io)
     case serviceChoice == 0x15:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(io)
     case serviceChoice == 0x17:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(io)
     case serviceChoice == 0x18:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(io)
     case serviceChoice == 0x0D:
-        initializer, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io)
+        _parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func BACnetConfirmedServiceACKSerialize(io utils.WriteBuffer, m BACnetConfirmedServiceACK, i IBACnetConfirmedServiceACK, childSerialize func() error) error {
+func (m *BACnetConfirmedServiceACK) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *BACnetConfirmedServiceACK) SerializeParent(io utils.WriteBuffer, child IBACnetConfirmedServiceACK, serializeChildFunction func() error) error {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
-    serviceChoice := uint8(i.ServiceChoice())
+    serviceChoice := uint8(child.ServiceChoice())
     _serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
     if _serviceChoiceErr != nil {
         return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -170,7 +173,7 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m BACnetConfirmedServiceACK) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACK) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACK"},
         }}); err != nil {

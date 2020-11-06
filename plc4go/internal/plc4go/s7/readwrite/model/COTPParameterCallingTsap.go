@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type COTPParameterCallingTsap struct {
     TsapId uint16
-    COTPParameter
+    Parent *COTPParameter
+    ICOTPParameterCallingTsap
 }
 
 // The corresponding interface
 type ICOTPParameterCallingTsap interface {
-    ICOTPParameter
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPParameterCallingTsap) ParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPParameterCallingTsap) ParameterType() uint8 {
     return 0xC1
 }
 
-func (m COTPParameterCallingTsap) initialize() spi.Message {
-    return m
+
+func (m *COTPParameterCallingTsap) InitializeParent(parent *COTPParameter) {
 }
 
-func NewCOTPParameterCallingTsap(tsapId uint16) COTPParameterInitializer {
-    return &COTPParameterCallingTsap{TsapId: tsapId}
-}
-
-func CastICOTPParameterCallingTsap(structType interface{}) ICOTPParameterCallingTsap {
-    castFunc := func(typ interface{}) ICOTPParameterCallingTsap {
-        if iCOTPParameterCallingTsap, ok := typ.(ICOTPParameterCallingTsap); ok {
-            return iCOTPParameterCallingTsap
-        }
-        return nil
+func NewCOTPParameterCallingTsap(tsapId uint16, ) *COTPParameter {
+    child := &COTPParameterCallingTsap{
+        TsapId: tsapId,
+        Parent: NewCOTPParameter(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPParameterCallingTsap(structType interface{}) COTPParameterCallingTsap {
     castFunc := func(typ interface{}) COTPParameterCallingTsap {
-        if sCOTPParameterCallingTsap, ok := typ.(COTPParameterCallingTsap); ok {
-            return sCOTPParameterCallingTsap
+        if casted, ok := typ.(COTPParameterCallingTsap); ok {
+            return casted
         }
-        if sCOTPParameterCallingTsap, ok := typ.(*COTPParameterCallingTsap); ok {
-            return *sCOTPParameterCallingTsap
+        if casted, ok := typ.(*COTPParameterCallingTsap); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPParameter); ok {
+            return CastCOTPParameterCallingTsap(casted.Child)
+        }
+        if casted, ok := typ.(*COTPParameter); ok {
+            return CastCOTPParameterCallingTsap(casted.Child)
         }
         return COTPParameterCallingTsap{}
     }
     return castFunc(structType)
 }
 
-func (m COTPParameterCallingTsap) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+func (m *COTPParameterCallingTsap) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (tsapId)
     lengthInBits += 16
@@ -83,11 +87,11 @@ func (m COTPParameterCallingTsap) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPParameterCallingTsap) LengthInBytes() uint16 {
+func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 
     // Simple Field (tsapId)
     tsapId, _tsapIdErr := io.ReadUint16(16)
@@ -95,11 +99,16 @@ func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (COTPParameterInitializ
         return nil, errors.New("Error parsing 'tsapId' field " + _tsapIdErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPParameterCallingTsap(tsapId), nil
+    // Create a partially initialized instance
+    _child := &COTPParameterCallingTsap{
+        TsapId: tsapId,
+        Parent: &COTPParameter{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
+func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (tsapId)
@@ -111,7 +120,7 @@ func (m COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPParameterCallingTsap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *COTPParameterCallingTsap) UnmarshalXML(d *xml.Decoder, start xml.StartE
     }
 }
 
-func (m COTPParameterCallingTsap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPParameterCallingTsap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap"},
         }}); err != nil {

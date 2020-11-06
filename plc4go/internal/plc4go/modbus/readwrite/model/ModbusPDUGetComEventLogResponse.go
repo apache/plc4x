@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -33,61 +32,69 @@ type ModbusPDUGetComEventLogResponse struct {
     EventCount uint16
     MessageCount uint16
     Events []int8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUGetComEventLogResponse
 }
 
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
     return 0x0C
 }
 
-func (m ModbusPDUGetComEventLogResponse) Response() bool {
+func (m *ModbusPDUGetComEventLogResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUGetComEventLogResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) ModbusPDUInitializer {
-    return &ModbusPDUGetComEventLogResponse{Status: status, EventCount: eventCount, MessageCount: messageCount, Events: events}
-}
-
-func CastIModbusPDUGetComEventLogResponse(structType interface{}) IModbusPDUGetComEventLogResponse {
-    castFunc := func(typ interface{}) IModbusPDUGetComEventLogResponse {
-        if iModbusPDUGetComEventLogResponse, ok := typ.(IModbusPDUGetComEventLogResponse); ok {
-            return iModbusPDUGetComEventLogResponse
-        }
-        return nil
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8, ) *ModbusPDU {
+    child := &ModbusPDUGetComEventLogResponse{
+        Status: status,
+        EventCount: eventCount,
+        MessageCount: messageCount,
+        Events: events,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUGetComEventLogResponse(structType interface{}) ModbusPDUGetComEventLogResponse {
     castFunc := func(typ interface{}) ModbusPDUGetComEventLogResponse {
-        if sModbusPDUGetComEventLogResponse, ok := typ.(ModbusPDUGetComEventLogResponse); ok {
-            return sModbusPDUGetComEventLogResponse
+        if casted, ok := typ.(ModbusPDUGetComEventLogResponse); ok {
+            return casted
         }
-        if sModbusPDUGetComEventLogResponse, ok := typ.(*ModbusPDUGetComEventLogResponse); ok {
-            return *sModbusPDUGetComEventLogResponse
+        if casted, ok := typ.(*ModbusPDUGetComEventLogResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUGetComEventLogResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUGetComEventLogResponse(casted.Child)
         }
         return ModbusPDUGetComEventLogResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 8
@@ -109,11 +116,11 @@ func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -143,7 +150,6 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (ModbusPDUInitia
     // Count array
     events := make([]int8, uint16(byteCount) - uint16(uint16(6)))
     for curItem := uint16(0); curItem < uint16(uint16(byteCount) - uint16(uint16(6))); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'events' field " + _err.Error())
@@ -151,11 +157,19 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (ModbusPDUInitia
         events[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUGetComEventLogResponse(status, eventCount, messageCount, events), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUGetComEventLogResponse{
+        Status: status,
+        EventCount: eventCount,
+        MessageCount: messageCount,
+        Events: events,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -198,7 +212,7 @@ func (m ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -248,7 +262,7 @@ func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogResponse"},
         }}); err != nil {

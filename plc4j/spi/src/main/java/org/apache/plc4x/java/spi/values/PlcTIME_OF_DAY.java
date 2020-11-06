@@ -23,15 +23,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
-import java.time.LocalDate;
+import java.time.Duration;
+import java.time.LocalTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcDate extends PlcSimpleValue<LocalDate> {
+public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
+
+    public static PlcTIME_OF_DAY of(Object value) {
+        if (value instanceof LocalTime) {
+            return new PlcTIME_OF_DAY((LocalTime) value);
+        }
+        throw new PlcRuntimeException("Invalid value type");
+    }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDate(@JsonProperty("value") LocalDate value) {
+    public PlcTIME_OF_DAY(@JsonProperty("value") LocalTime value) {
         super(value, true);
     }
 
@@ -49,13 +58,13 @@ public class PlcDate extends PlcSimpleValue<LocalDate> {
 
     @Override
     @JsonIgnore
-    public boolean isDate() {
+    public boolean isTime() {
         return true;
     }
 
     @Override
     @JsonIgnore
-    public LocalDate getDate() {
+    public LocalTime getTime() {
         return value;
     }
 

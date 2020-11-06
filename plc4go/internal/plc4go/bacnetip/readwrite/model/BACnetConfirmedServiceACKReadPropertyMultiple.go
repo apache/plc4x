@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKReadPropertyMultiple struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKReadPropertyMultiple
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadPropertyMultiple interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
     return 0x0E
 }
 
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKReadPropertyMultiple() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKReadPropertyMultiple{}
-}
-
-func CastIBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) IBACnetConfirmedServiceACKReadPropertyMultiple {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadPropertyMultiple {
-        if iBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(IBACnetConfirmedServiceACKReadPropertyMultiple); ok {
-            return iBACnetConfirmedServiceACKReadPropertyMultiple
-        }
-        return nil
+func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKReadPropertyMultiple{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
-        if sBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-            return sBACnetConfirmedServiceACKReadPropertyMultiple
+        if casted, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-            return *sBACnetConfirmedServiceACKReadPropertyMultiple
+        if casted, ok := typ.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
         }
         return BACnetConfirmedServiceACKReadPropertyMultiple{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyMultipleParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKReadPropertyMultiple(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKReadPropertyMultiple{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) UnmarshalXML(d *xml.Deco
     }
 }
 
-func (m BACnetConfirmedServiceACKReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKReadPropertyMultiple"},
         }}); err != nil {

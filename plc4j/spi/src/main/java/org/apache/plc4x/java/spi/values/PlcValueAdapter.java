@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.utils.XmlSerializable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -202,6 +203,18 @@ public abstract class PlcValueAdapter implements PlcValue, XmlSerializable {
     @Override
     @JsonIgnore
     public String getString() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDuration() {
+        return false;
+    }
+
+    @Override
+    @JsonIgnore
+    public Duration getDuration() {
         throw new PlcIncompatibleDatatypeException("");
     }
 

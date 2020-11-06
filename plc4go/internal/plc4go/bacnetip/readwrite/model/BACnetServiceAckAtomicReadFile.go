@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckAtomicReadFile struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckAtomicReadFile
 }
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFile interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckAtomicReadFile) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicReadFile) ServiceChoice() uint8 {
     return 0x06
 }
 
-func (m BACnetServiceAckAtomicReadFile) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckAtomicReadFile) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckAtomicReadFile() BACnetServiceAckInitializer {
-    return &BACnetServiceAckAtomicReadFile{}
-}
-
-func CastIBACnetServiceAckAtomicReadFile(structType interface{}) IBACnetServiceAckAtomicReadFile {
-    castFunc := func(typ interface{}) IBACnetServiceAckAtomicReadFile {
-        if iBACnetServiceAckAtomicReadFile, ok := typ.(IBACnetServiceAckAtomicReadFile); ok {
-            return iBACnetServiceAckAtomicReadFile
-        }
-        return nil
+func NewBACnetServiceAckAtomicReadFile() *BACnetServiceAck {
+    child := &BACnetServiceAckAtomicReadFile{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckAtomicReadFile(structType interface{}) BACnetServiceAckAtomicReadFile {
     castFunc := func(typ interface{}) BACnetServiceAckAtomicReadFile {
-        if sBACnetServiceAckAtomicReadFile, ok := typ.(BACnetServiceAckAtomicReadFile); ok {
-            return sBACnetServiceAckAtomicReadFile
+        if casted, ok := typ.(BACnetServiceAckAtomicReadFile); ok {
+            return casted
         }
-        if sBACnetServiceAckAtomicReadFile, ok := typ.(*BACnetServiceAckAtomicReadFile); ok {
-            return *sBACnetServiceAckAtomicReadFile
+        if casted, ok := typ.(*BACnetServiceAckAtomicReadFile); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckAtomicReadFile(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckAtomicReadFile(casted.Child)
         }
         return BACnetServiceAckAtomicReadFile{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckAtomicReadFile) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckAtomicReadFile) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckAtomicReadFile) LengthInBytes() uint16 {
+func (m *BACnetServiceAckAtomicReadFile) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicReadFileParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckAtomicReadFileParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckAtomicReadFile(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckAtomicReadFile{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckAtomicReadFile) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckAtomicReadFile) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.
     }
 }
 
-func (m BACnetServiceAckAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicReadFile"},
         }}); err != nil {

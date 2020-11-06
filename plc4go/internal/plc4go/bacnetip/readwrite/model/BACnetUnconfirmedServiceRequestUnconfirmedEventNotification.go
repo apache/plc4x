@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) ServiceChoice() uint8 {
     return 0x03
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{}
-}
-
-func CastIBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
-        if iBACnetUnconfirmedServiceRequestUnconfirmedEventNotification, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
-            return iBACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
-        if sBACnetUnconfirmedServiceRequestUnconfirmedEventNotification, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
-            return sBACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestUnconfirmedEventNotification, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
-            return *sBACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) UnmarshalX
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"},
         }}); err != nil {

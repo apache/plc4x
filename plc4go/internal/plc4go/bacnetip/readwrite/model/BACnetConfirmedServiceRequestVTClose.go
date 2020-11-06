@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTClose struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestVTClose
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestVTClose interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestVTClose) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestVTClose) ServiceChoice() uint8 {
     return 0x16
 }
 
-func (m BACnetConfirmedServiceRequestVTClose) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestVTClose) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestVTClose() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestVTClose{}
-}
-
-func CastIBACnetConfirmedServiceRequestVTClose(structType interface{}) IBACnetConfirmedServiceRequestVTClose {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestVTClose {
-        if iBACnetConfirmedServiceRequestVTClose, ok := typ.(IBACnetConfirmedServiceRequestVTClose); ok {
-            return iBACnetConfirmedServiceRequestVTClose
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestVTClose() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestVTClose{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConfirmedServiceRequestVTClose {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestVTClose {
-        if sBACnetConfirmedServiceRequestVTClose, ok := typ.(BACnetConfirmedServiceRequestVTClose); ok {
-            return sBACnetConfirmedServiceRequestVTClose
+        if casted, ok := typ.(BACnetConfirmedServiceRequestVTClose); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestVTClose, ok := typ.(*BACnetConfirmedServiceRequestVTClose); ok {
-            return *sBACnetConfirmedServiceRequestVTClose
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestVTClose); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
         }
         return BACnetConfirmedServiceRequestVTClose{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestVTClose) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestVTClose) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestVTCloseParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestVTCloseParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestVTClose(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestVTClose{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestVTClose) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestVTClose) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m BACnetConfirmedServiceRequestVTClose) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestVTClose) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTClose"},
         }}); err != nil {

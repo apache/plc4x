@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -32,57 +31,64 @@ type S7ParameterSetupCommunication struct {
     MaxAmqCaller uint16
     MaxAmqCallee uint16
     PduLength uint16
-    S7Parameter
+    Parent *S7Parameter
+    IS7ParameterSetupCommunication
 }
 
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
-    IS7Parameter
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7ParameterSetupCommunication) ParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7ParameterSetupCommunication) ParameterType() uint8 {
     return 0xF0
 }
 
-func (m S7ParameterSetupCommunication) MessageType() uint8 {
+func (m *S7ParameterSetupCommunication) MessageType() uint8 {
     return 0
 }
 
-func (m S7ParameterSetupCommunication) initialize() spi.Message {
-    return m
+
+func (m *S7ParameterSetupCommunication) InitializeParent(parent *S7Parameter) {
 }
 
-func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) S7ParameterInitializer {
-    return &S7ParameterSetupCommunication{MaxAmqCaller: maxAmqCaller, MaxAmqCallee: maxAmqCallee, PduLength: pduLength}
-}
-
-func CastIS7ParameterSetupCommunication(structType interface{}) IS7ParameterSetupCommunication {
-    castFunc := func(typ interface{}) IS7ParameterSetupCommunication {
-        if iS7ParameterSetupCommunication, ok := typ.(IS7ParameterSetupCommunication); ok {
-            return iS7ParameterSetupCommunication
-        }
-        return nil
+func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16, ) *S7Parameter {
+    child := &S7ParameterSetupCommunication{
+        MaxAmqCaller: maxAmqCaller,
+        MaxAmqCallee: maxAmqCallee,
+        PduLength: pduLength,
+        Parent: NewS7Parameter(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupCommunication {
     castFunc := func(typ interface{}) S7ParameterSetupCommunication {
-        if sS7ParameterSetupCommunication, ok := typ.(S7ParameterSetupCommunication); ok {
-            return sS7ParameterSetupCommunication
+        if casted, ok := typ.(S7ParameterSetupCommunication); ok {
+            return casted
         }
-        if sS7ParameterSetupCommunication, ok := typ.(*S7ParameterSetupCommunication); ok {
-            return *sS7ParameterSetupCommunication
+        if casted, ok := typ.(*S7ParameterSetupCommunication); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Parameter); ok {
+            return CastS7ParameterSetupCommunication(casted.Child)
+        }
+        if casted, ok := typ.(*S7Parameter); ok {
+            return CastS7ParameterSetupCommunication(casted.Child)
         }
         return S7ParameterSetupCommunication{}
     }
     return castFunc(structType)
 }
 
-func (m S7ParameterSetupCommunication) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Parameter.LengthInBits()
+func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 8
@@ -99,11 +105,11 @@ func (m S7ParameterSetupCommunication) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7ParameterSetupCommunication) LengthInBytes() uint16 {
+func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (S7ParameterInitializer, error) {
+func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -137,11 +143,18 @@ func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (S7ParameterInitia
         return nil, errors.New("Error parsing 'pduLength' field " + _pduLengthErr.Error())
     }
 
-    // Create the instance
-    return NewS7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduLength), nil
+    // Create a partially initialized instance
+    _child := &S7ParameterSetupCommunication{
+        MaxAmqCaller: maxAmqCaller,
+        MaxAmqCallee: maxAmqCallee,
+        PduLength: pduLength,
+        Parent: &S7Parameter{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
+func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -175,7 +188,7 @@ func (m S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -214,7 +227,7 @@ func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.S
     }
 }
 
-func (m S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication"},
         }}); err != nil {

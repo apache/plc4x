@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,55 +29,61 @@ import (
 type COTPPacketData struct {
     Eot bool
     TpduRef uint8
-    COTPPacket
+    Parent *COTPPacket
+    ICOTPPacketData
 }
 
 // The corresponding interface
 type ICOTPPacketData interface {
-    ICOTPPacket
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPPacketData) TpduCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPPacketData) TpduCode() uint8 {
     return 0xF0
 }
 
-func (m COTPPacketData) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-    m.Parameters = parameters
-    m.Payload = payload
-    return m
+
+func (m *COTPPacketData) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
+    m.Parent.Parameters = parameters
+    m.Parent.Payload = payload
 }
 
-func NewCOTPPacketData(eot bool, tpduRef uint8) COTPPacketInitializer {
-    return &COTPPacketData{Eot: eot, TpduRef: tpduRef}
-}
-
-func CastICOTPPacketData(structType interface{}) ICOTPPacketData {
-    castFunc := func(typ interface{}) ICOTPPacketData {
-        if iCOTPPacketData, ok := typ.(ICOTPPacketData); ok {
-            return iCOTPPacketData
-        }
-        return nil
+func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+    child := &COTPPacketData{
+        Eot: eot,
+        TpduRef: tpduRef,
+        Parent: NewCOTPPacket(parameters, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPPacketData(structType interface{}) COTPPacketData {
     castFunc := func(typ interface{}) COTPPacketData {
-        if sCOTPPacketData, ok := typ.(COTPPacketData); ok {
-            return sCOTPPacketData
+        if casted, ok := typ.(COTPPacketData); ok {
+            return casted
         }
-        if sCOTPPacketData, ok := typ.(*COTPPacketData); ok {
-            return *sCOTPPacketData
+        if casted, ok := typ.(*COTPPacketData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPPacket); ok {
+            return CastCOTPPacketData(casted.Child)
+        }
+        if casted, ok := typ.(*COTPPacket); ok {
+            return CastCOTPPacketData(casted.Child)
         }
         return COTPPacketData{}
     }
     return castFunc(structType)
 }
 
-func (m COTPPacketData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+func (m *COTPPacketData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (eot)
     lengthInBits += 1
@@ -89,11 +94,11 @@ func (m COTPPacketData) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPPacketData) LengthInBytes() uint16 {
+func (m *COTPPacketData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketDataParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketDataParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
     // Simple Field (eot)
     eot, _eotErr := io.ReadBit()
@@ -107,11 +112,17 @@ func COTPPacketDataParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
         return nil, errors.New("Error parsing 'tpduRef' field " + _tpduRefErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPPacketData(eot, tpduRef), nil
+    // Create a partially initialized instance
+    _child := &COTPPacketData{
+        Eot: eot,
+        TpduRef: tpduRef,
+        Parent: &COTPPacket{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPPacketData) Serialize(io utils.WriteBuffer) error {
+func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (eot)
@@ -130,7 +141,7 @@ func (m COTPPacketData) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -163,7 +174,7 @@ func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
     }
 }
 
-func (m COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketData"},
         }}); err != nil {

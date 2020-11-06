@@ -22,61 +22,66 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ConnectionStateResponse struct {
     CommunicationChannelId uint8
-    Status IStatus
-    KNXNetIPMessage
+    Status Status
+    Parent *KNXNetIPMessage
+    IConnectionStateResponse
 }
 
 // The corresponding interface
 type IConnectionStateResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ConnectionStateResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *ConnectionStateResponse) MsgType() uint16 {
     return 0x0208
 }
 
-func (m ConnectionStateResponse) initialize() spi.Message {
-    return m
+
+func (m *ConnectionStateResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewConnectionStateResponse(communicationChannelId uint8, status IStatus) KNXNetIPMessageInitializer {
-    return &ConnectionStateResponse{CommunicationChannelId: communicationChannelId, Status: status}
-}
-
-func CastIConnectionStateResponse(structType interface{}) IConnectionStateResponse {
-    castFunc := func(typ interface{}) IConnectionStateResponse {
-        if iConnectionStateResponse, ok := typ.(IConnectionStateResponse); ok {
-            return iConnectionStateResponse
-        }
-        return nil
+func NewConnectionStateResponse(communicationChannelId uint8, status Status, ) *KNXNetIPMessage {
+    child := &ConnectionStateResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse {
     castFunc := func(typ interface{}) ConnectionStateResponse {
-        if sConnectionStateResponse, ok := typ.(ConnectionStateResponse); ok {
-            return sConnectionStateResponse
+        if casted, ok := typ.(ConnectionStateResponse); ok {
+            return casted
         }
-        if sConnectionStateResponse, ok := typ.(*ConnectionStateResponse); ok {
-            return *sConnectionStateResponse
+        if casted, ok := typ.(*ConnectionStateResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastConnectionStateResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastConnectionStateResponse(casted.Child)
         }
         return ConnectionStateResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionStateResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *ConnectionStateResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (communicationChannelId)
     lengthInBits += 8
@@ -87,11 +92,11 @@ func (m ConnectionStateResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ConnectionStateResponse) LengthInBytes() uint16 {
+func (m *ConnectionStateResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionStateResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionStateResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (communicationChannelId)
     communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
@@ -105,11 +110,17 @@ func ConnectionStateResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitiali
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
     }
 
-    // Create the instance
-    return NewConnectionStateResponse(communicationChannelId, status), nil
+    // Create a partially initialized instance
+    _child := &ConnectionStateResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (communicationChannelId)
@@ -128,7 +139,7 @@ func (m ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -151,7 +162,7 @@ func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data *Status
+                var data Status
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -161,7 +172,7 @@ func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m ConnectionStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse"},
         }}); err != nil {

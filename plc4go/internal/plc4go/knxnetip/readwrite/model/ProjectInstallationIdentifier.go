@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,45 +29,35 @@ import (
 type ProjectInstallationIdentifier struct {
     ProjectNumber uint8
     InstallationNumber uint8
-
+    IProjectInstallationIdentifier
 }
 
 // The corresponding interface
 type IProjectInstallationIdentifier interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) spi.Message {
+func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
     return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
-}
-
-func CastIProjectInstallationIdentifier(structType interface{}) IProjectInstallationIdentifier {
-    castFunc := func(typ interface{}) IProjectInstallationIdentifier {
-        if iProjectInstallationIdentifier, ok := typ.(IProjectInstallationIdentifier); ok {
-            return iProjectInstallationIdentifier
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastProjectInstallationIdentifier(structType interface{}) ProjectInstallationIdentifier {
     castFunc := func(typ interface{}) ProjectInstallationIdentifier {
-        if sProjectInstallationIdentifier, ok := typ.(ProjectInstallationIdentifier); ok {
-            return sProjectInstallationIdentifier
+        if casted, ok := typ.(ProjectInstallationIdentifier); ok {
+            return casted
         }
-        if sProjectInstallationIdentifier, ok := typ.(*ProjectInstallationIdentifier); ok {
-            return *sProjectInstallationIdentifier
+        if casted, ok := typ.(*ProjectInstallationIdentifier); ok {
+            return *casted
         }
         return ProjectInstallationIdentifier{}
     }
     return castFunc(structType)
 }
 
-func (m ProjectInstallationIdentifier) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *ProjectInstallationIdentifier) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (projectNumber)
     lengthInBits += 8
@@ -79,11 +68,11 @@ func (m ProjectInstallationIdentifier) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ProjectInstallationIdentifier) LengthInBytes() uint16 {
+func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (spi.Message, error) {
+func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
 
     // Simple Field (projectNumber)
     projectNumber, _projectNumberErr := io.ReadUint8(8)
@@ -101,7 +90,7 @@ func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (spi.Message, erro
     return NewProjectInstallationIdentifier(projectNumber, installationNumber), nil
 }
 
-func (m ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
+func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (projectNumber)
     projectNumber := uint8(m.ProjectNumber)
@@ -150,7 +139,7 @@ func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.S
     }
 }
 
-func (m ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier"},
         }}); err != nil {

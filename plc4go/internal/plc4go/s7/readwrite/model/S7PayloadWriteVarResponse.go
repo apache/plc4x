@@ -22,65 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type S7PayloadWriteVarResponse struct {
-    Items []IS7VarPayloadStatusItem
-    S7Payload
+    Items []*S7VarPayloadStatusItem
+    Parent *S7Payload
+    IS7PayloadWriteVarResponse
 }
 
 // The corresponding interface
 type IS7PayloadWriteVarResponse interface {
-    IS7Payload
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7PayloadWriteVarResponse) ParameterParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7PayloadWriteVarResponse) ParameterParameterType() uint8 {
     return 0x05
 }
 
-func (m S7PayloadWriteVarResponse) MessageType() uint8 {
+func (m *S7PayloadWriteVarResponse) MessageType() uint8 {
     return 0x03
 }
 
-func (m S7PayloadWriteVarResponse) initialize() spi.Message {
-    return m
+
+func (m *S7PayloadWriteVarResponse) InitializeParent(parent *S7Payload) {
 }
 
-func NewS7PayloadWriteVarResponse(items []IS7VarPayloadStatusItem) S7PayloadInitializer {
-    return &S7PayloadWriteVarResponse{Items: items}
-}
-
-func CastIS7PayloadWriteVarResponse(structType interface{}) IS7PayloadWriteVarResponse {
-    castFunc := func(typ interface{}) IS7PayloadWriteVarResponse {
-        if iS7PayloadWriteVarResponse, ok := typ.(IS7PayloadWriteVarResponse); ok {
-            return iS7PayloadWriteVarResponse
-        }
-        return nil
+func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, ) *S7Payload {
+    child := &S7PayloadWriteVarResponse{
+        Items: items,
+        Parent: NewS7Payload(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResponse {
     castFunc := func(typ interface{}) S7PayloadWriteVarResponse {
-        if sS7PayloadWriteVarResponse, ok := typ.(S7PayloadWriteVarResponse); ok {
-            return sS7PayloadWriteVarResponse
+        if casted, ok := typ.(S7PayloadWriteVarResponse); ok {
+            return casted
         }
-        if sS7PayloadWriteVarResponse, ok := typ.(*S7PayloadWriteVarResponse); ok {
-            return *sS7PayloadWriteVarResponse
+        if casted, ok := typ.(*S7PayloadWriteVarResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Payload); ok {
+            return CastS7PayloadWriteVarResponse(casted.Child)
+        }
+        if casted, ok := typ.(*S7Payload); ok {
+            return CastS7PayloadWriteVarResponse(casted.Child)
         }
         return S7PayloadWriteVarResponse{}
     }
     return castFunc(structType)
 }
 
-func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Payload.LengthInBits()
+func (m *S7PayloadWriteVarResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Items) > 0 {
@@ -92,34 +95,33 @@ func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7PayloadWriteVarResponse) LengthInBytes() uint16 {
+func (m *S7PayloadWriteVarResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadWriteVarResponseParse(io *utils.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadWriteVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
 
     // Array field (items)
     // Count array
-    items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
+    items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
     for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
-
-        _message, _err := S7VarPayloadStatusItemParse(io)
+        _item, _err := S7VarPayloadStatusItemParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'items' field " + _err.Error())
-        }
-        var _item IS7VarPayloadStatusItem
-        _item, _ok := _message.(IS7VarPayloadStatusItem)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadStatusItem")
         }
         items[curItem] = _item
     }
 
-    // Create the instance
-    return NewS7PayloadWriteVarResponse(items), nil
+    // Create a partially initialized instance
+    _child := &S7PayloadWriteVarResponse{
+        Items: items,
+        Parent: &S7Payload{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
+func (m *S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (items)
@@ -134,7 +136,7 @@ func (m S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7PayloadWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -151,7 +153,7 @@ func (m *S7PayloadWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Start
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "items":
-                var data []IS7VarPayloadStatusItem
+                var data []*S7VarPayloadStatusItem
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -161,7 +163,7 @@ func (m *S7PayloadWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m S7PayloadWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7PayloadWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse"},
         }}); err != nil {

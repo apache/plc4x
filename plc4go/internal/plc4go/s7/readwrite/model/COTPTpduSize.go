@@ -19,14 +19,12 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type COTPTpduSize int8
 
 type ICOTPTpduSize interface {
-    spi.Message
     SizeInBytes() uint16
     Serialize(io utils.WriteBuffer) error
 }

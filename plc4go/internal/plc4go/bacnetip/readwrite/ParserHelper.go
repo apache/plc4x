@@ -20,6 +20,7 @@ package model
 
 import (
     "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/bacnetip/readwrite/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -34,45 +35,45 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         if err != nil {
             return nil, err
         }
-        return APDUParse(io, apduLength)
+        return model.APDUParse(io, apduLength)
     case "BACnetTag":
-        return BACnetTagParse(io)
+        return model.BACnetTagParse(io)
     case "BACnetTagWithContent":
-        return BACnetTagWithContentParse(io)
+        return model.BACnetTagWithContentParse(io)
     case "BACnetError":
-        return BACnetErrorParse(io)
+        return model.BACnetErrorParse(io)
     case "NLM":
         apduLength, err := utils.StrToUint16(arguments[0])
         if err != nil {
             return nil, err
         }
-        return NLMParse(io, apduLength)
+        return model.NLMParse(io, apduLength)
     case "BACnetConfirmedServiceRequest":
         len, err := utils.StrToUint16(arguments[0])
         if err != nil {
             return nil, err
         }
-        return BACnetConfirmedServiceRequestParse(io, len)
+        return model.BACnetConfirmedServiceRequestParse(io, len)
     case "BACnetAddress":
-        return BACnetAddressParse(io)
+        return model.BACnetAddressParse(io)
     case "BACnetConfirmedServiceACK":
-        return BACnetConfirmedServiceACKParse(io)
+        return model.BACnetConfirmedServiceACKParse(io)
     case "BACnetUnconfirmedServiceRequest":
         len, err := utils.StrToUint16(arguments[0])
         if err != nil {
             return nil, err
         }
-        return BACnetUnconfirmedServiceRequestParse(io, len)
+        return model.BACnetUnconfirmedServiceRequestParse(io, len)
     case "BACnetServiceAck":
-        return BACnetServiceAckParse(io)
+        return model.BACnetServiceAckParse(io)
     case "BVLC":
-        return BVLCParse(io)
+        return model.BVLCParse(io)
     case "NPDU":
         npduLength, err := utils.StrToUint16(arguments[0])
         if err != nil {
             return nil, err
         }
-        return NPDUParse(io, npduLength)
+        return model.NPDUParse(io, npduLength)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

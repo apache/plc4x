@@ -23,68 +23,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadCoilsResponse struct {
     Value []int8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadCoilsResponse
 }
 
 // The corresponding interface
 type IModbusPDUReadCoilsResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadCoilsResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadCoilsResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadCoilsResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadCoilsResponse) FunctionFlag() uint8 {
     return 0x01
 }
 
-func (m ModbusPDUReadCoilsResponse) Response() bool {
+func (m *ModbusPDUReadCoilsResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReadCoilsResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadCoilsResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadCoilsResponse(value []int8) ModbusPDUInitializer {
-    return &ModbusPDUReadCoilsResponse{Value: value}
-}
-
-func CastIModbusPDUReadCoilsResponse(structType interface{}) IModbusPDUReadCoilsResponse {
-    castFunc := func(typ interface{}) IModbusPDUReadCoilsResponse {
-        if iModbusPDUReadCoilsResponse, ok := typ.(IModbusPDUReadCoilsResponse); ok {
-            return iModbusPDUReadCoilsResponse
-        }
-        return nil
+func NewModbusPDUReadCoilsResponse(value []int8, ) *ModbusPDU {
+    child := &ModbusPDUReadCoilsResponse{
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadCoilsResponse(structType interface{}) ModbusPDUReadCoilsResponse {
     castFunc := func(typ interface{}) ModbusPDUReadCoilsResponse {
-        if sModbusPDUReadCoilsResponse, ok := typ.(ModbusPDUReadCoilsResponse); ok {
-            return sModbusPDUReadCoilsResponse
+        if casted, ok := typ.(ModbusPDUReadCoilsResponse); ok {
+            return casted
         }
-        if sModbusPDUReadCoilsResponse, ok := typ.(*ModbusPDUReadCoilsResponse); ok {
-            return *sModbusPDUReadCoilsResponse
+        if casted, ok := typ.(*ModbusPDUReadCoilsResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadCoilsResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadCoilsResponse(casted.Child)
         }
         return ModbusPDUReadCoilsResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadCoilsResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadCoilsResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 8
@@ -97,11 +101,11 @@ func (m ModbusPDUReadCoilsResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadCoilsResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReadCoilsResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadCoilsResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -113,7 +117,6 @@ func ModbusPDUReadCoilsResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer
     // Count array
     value := make([]int8, byteCount)
     for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'value' field " + _err.Error())
@@ -121,11 +124,16 @@ func ModbusPDUReadCoilsResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer
         value[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUReadCoilsResponse(value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadCoilsResponse{
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadCoilsResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadCoilsResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -147,7 +155,7 @@ func (m ModbusPDUReadCoilsResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,7 +187,7 @@ func (m *ModbusPDUReadCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.Star
     }
 }
 
-func (m ModbusPDUReadCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsResponse"},
         }}); err != nil {

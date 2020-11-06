@@ -23,9 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
     "strconv"
 )
 
@@ -35,52 +33,50 @@ const S7Message_PROTOCOLID uint8 = 0x32
 // The data-structure of this message
 type S7Message struct {
     TpduReference uint16
-    Parameter *IS7Parameter
-    Payload *IS7Payload
-
+    Parameter *S7Parameter
+    Payload *S7Payload
+    Child IS7MessageChild
+    IS7Message
+    IS7MessageParent
 }
 
 // The corresponding interface
 type IS7Message interface {
-    spi.Message
     MessageType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type S7MessageInitializer interface {
-    initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message
+type IS7MessageParent interface {
+    SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error
 }
 
-func S7MessageMessageType(m IS7Message) uint8 {
-    return m.MessageType()
+type IS7MessageChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload)
+    IS7Message
 }
 
-
-func CastIS7Message(structType interface{}) IS7Message {
-    castFunc := func(typ interface{}) IS7Message {
-        if iS7Message, ok := typ.(IS7Message); ok {
-            return iS7Message
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
+    return &S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
 }
 
 func CastS7Message(structType interface{}) S7Message {
     castFunc := func(typ interface{}) S7Message {
-        if sS7Message, ok := typ.(S7Message); ok {
-            return sS7Message
+        if casted, ok := typ.(S7Message); ok {
+            return casted
         }
-        if sS7Message, ok := typ.(*S7Message); ok {
-            return *sS7Message
+        if casted, ok := typ.(*S7Message); ok {
+            return *casted
         }
         return S7Message{}
     }
     return castFunc(structType)
 }
 
-func (m S7Message) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7Message) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (protocolId)
     lengthInBits += 8
@@ -101,6 +97,7 @@ func (m S7Message) LengthInBits() uint16 {
     lengthInBits += 16
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     // Optional Field (parameter)
     if m.Parameter != nil {
@@ -115,11 +112,11 @@ func (m S7Message) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7Message) LengthInBytes() uint16 {
+func (m *S7Message) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7MessageParse(io *utils.ReadBuffer) (spi.Message, error) {
+func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 
     // Const Field (protocolId)
     protocolId, _protocolIdErr := io.ReadUint8(8)
@@ -169,57 +166,52 @@ func S7MessageParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer S7MessageInitializer
+    var _parent *S7Message
     var typeSwitchError error
     switch {
     case messageType == 0x01:
-        initializer, typeSwitchError = S7MessageRequestParse(io)
+        _parent, typeSwitchError = S7MessageRequestParse(io)
     case messageType == 0x02:
-        initializer, typeSwitchError = S7MessageResponseParse(io)
+        _parent, typeSwitchError = S7MessageResponseParse(io)
     case messageType == 0x03:
-        initializer, typeSwitchError = S7MessageResponseDataParse(io)
+        _parent, typeSwitchError = S7MessageResponseDataParse(io)
     case messageType == 0x07:
-        initializer, typeSwitchError = S7MessageUserDataParse(io)
+        _parent, typeSwitchError = S7MessageUserDataParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
     // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
-    var parameter *IS7Parameter = nil
+    var parameter *S7Parameter = nil
     if bool((parameterLength) > ((0))) {
         _message, _err := S7ParameterParse(io, messageType)
         if _err != nil {
             return nil, errors.New("Error parsing 'parameter' field " + _err.Error())
         }
-        var _item IS7Parameter
-        _item, _ok := _message.(IS7Parameter)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IS7Parameter")
-        }
-        parameter = &_item
+        parameter = _message
     }
 
     // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-    var payload *IS7Payload = nil
+    var payload *S7Payload = nil
     if bool((payloadLength) > ((0))) {
-        _message, _err := S7PayloadParse(io, messageType, (*parameter))
+        _message, _err := S7PayloadParse(io, messageType, parameter)
         if _err != nil {
             return nil, errors.New("Error parsing 'payload' field " + _err.Error())
         }
-        var _item IS7Payload
-        _item, _ok := _message.(IS7Payload)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IS7Payload")
-        }
-        payload = &_item
+        payload = _message
     }
 
-    // Create the instance
-    return initializer.initialize(tpduReference, parameter, payload), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent, tpduReference, parameter, payload)
+    return _parent, nil
 }
 
-func S7MessageSerialize(io utils.WriteBuffer, m S7Message, i IS7Message, childSerialize func() error) error {
+func (m *S7Message) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
 
     // Const Field (protocolId)
     _protocolIdErr := io.WriteUint8(8, 0x32)
@@ -228,7 +220,7 @@ func S7MessageSerialize(io utils.WriteBuffer, m S7Message, i IS7Message, childSe
     }
 
     // Discriminator Field (messageType) (Used as input to a switch field)
-    messageType := uint8(i.MessageType())
+    messageType := uint8(child.MessageType())
     _messageTypeErr := io.WriteUint8(8, (messageType))
     if _messageTypeErr != nil {
         return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
@@ -250,40 +242,40 @@ func S7MessageSerialize(io utils.WriteBuffer, m S7Message, i IS7Message, childSe
     }
 
     // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), uint16((*m.Parameter).LengthInBytes()), uint16(uint16(0))))
+    parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), uint16(m.Parameter.LengthInBytes()), uint16(uint16(0))))
     _parameterLengthErr := io.WriteUint16(16, (parameterLength))
     if _parameterLengthErr != nil {
         return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
     }
 
     // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), uint16((*m.Payload).LengthInBytes()), uint16(uint16(0))))
+    payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), uint16(m.Payload.LengthInBytes()), uint16(uint16(0))))
     _payloadLengthErr := io.WriteUint16(16, (payloadLength))
     if _payloadLengthErr != nil {
         return errors.New("Error serializing 'payloadLength' field " + _payloadLengthErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
 
     // Optional Field (parameter) (Can be skipped, if the value is null)
-    var parameter *IS7Parameter = nil
+    var parameter *S7Parameter = nil
     if m.Parameter != nil {
         parameter = m.Parameter
-        _parameterErr := CastIS7Parameter(*parameter).Serialize(io)
+        _parameterErr := parameter.Serialize(io)
         if _parameterErr != nil {
             return errors.New("Error serializing 'parameter' field " + _parameterErr.Error())
         }
     }
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    var payload *IS7Payload = nil
+    var payload *S7Payload = nil
     if m.Payload != nil {
         payload = m.Payload
-        _payloadErr := CastIS7Payload(*payload).Serialize(io)
+        _payloadErr := payload.Serialize(io)
         if _payloadErr != nil {
             return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
         }
@@ -314,75 +306,75 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
             case "parameter":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
-                        var dt *S7ParameterSetupCommunication
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
-                        var dt *S7ParameterReadVarRequest
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
-                        var dt *S7ParameterReadVarResponse
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
-                        var dt *S7ParameterWriteVarRequest
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
-                        var dt *S7ParameterWriteVarResponse
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
-                        var dt *S7ParameterUserData
+                        var dt *S7Parameter
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Parameter = dt
+                        m.Parameter = dt
                     }
             case "payload":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse":
-                        var dt *S7PayloadReadVarResponse
+                        var dt *S7Payload
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Payload = dt
+                        m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
-                        var dt *S7PayloadWriteVarRequest
+                        var dt *S7Payload
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Payload = dt
+                        m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
-                        var dt *S7PayloadWriteVarResponse
+                        var dt *S7Payload
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Payload = dt
+                        m.Payload = dt
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
-                        var dt *S7PayloadUserData
+                        var dt *S7Payload
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.Payload = dt
+                        m.Payload = dt
                     }
             }
         }
     }
 }
 
-func (m S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7Message"},
         }}); err != nil {

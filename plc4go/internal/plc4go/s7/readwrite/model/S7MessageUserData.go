@@ -21,82 +21,89 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7MessageUserData struct {
-    S7Message
+    Parent *S7Message
+    IS7MessageUserData
 }
 
 // The corresponding interface
 type IS7MessageUserData interface {
-    IS7Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7MessageUserData) MessageType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7MessageUserData) MessageType() uint8 {
     return 0x07
 }
 
-func (m S7MessageUserData) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-    m.TpduReference = tpduReference
-    m.Parameter = parameter
-    m.Payload = payload
-    return m
+
+func (m *S7MessageUserData) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
+    m.Parent.TpduReference = tpduReference
+    m.Parent.Parameter = parameter
+    m.Parent.Payload = payload
 }
 
-func NewS7MessageUserData() S7MessageInitializer {
-    return &S7MessageUserData{}
-}
-
-func CastIS7MessageUserData(structType interface{}) IS7MessageUserData {
-    castFunc := func(typ interface{}) IS7MessageUserData {
-        if iS7MessageUserData, ok := typ.(IS7MessageUserData); ok {
-            return iS7MessageUserData
-        }
-        return nil
+func NewS7MessageUserData(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
+    child := &S7MessageUserData{
+        Parent: NewS7Message(tpduReference, parameter, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7MessageUserData(structType interface{}) S7MessageUserData {
     castFunc := func(typ interface{}) S7MessageUserData {
-        if sS7MessageUserData, ok := typ.(S7MessageUserData); ok {
-            return sS7MessageUserData
+        if casted, ok := typ.(S7MessageUserData); ok {
+            return casted
         }
-        if sS7MessageUserData, ok := typ.(*S7MessageUserData); ok {
-            return *sS7MessageUserData
+        if casted, ok := typ.(*S7MessageUserData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Message); ok {
+            return CastS7MessageUserData(casted.Child)
+        }
+        if casted, ok := typ.(*S7Message); ok {
+            return CastS7MessageUserData(casted.Child)
         }
         return S7MessageUserData{}
     }
     return castFunc(structType)
 }
 
-func (m S7MessageUserData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Message.LengthInBits()
+func (m *S7MessageUserData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m S7MessageUserData) LengthInBytes() uint16 {
+func (m *S7MessageUserData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7MessageUserDataParse(io *utils.ReadBuffer) (S7MessageInitializer, error) {
+func S7MessageUserDataParse(io *utils.ReadBuffer) (*S7Message, error) {
 
-    // Create the instance
-    return NewS7MessageUserData(), nil
+    // Create a partially initialized instance
+    _child := &S7MessageUserData{
+        Parent: &S7Message{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7MessageUserData) Serialize(io utils.WriteBuffer) error {
+func (m *S7MessageUserData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7MessageUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -117,7 +124,7 @@ func (m *S7MessageUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m S7MessageUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7MessageUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7MessageUserData"},
         }}); err != nil {

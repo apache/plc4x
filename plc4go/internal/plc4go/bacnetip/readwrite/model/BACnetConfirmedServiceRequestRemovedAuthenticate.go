@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedAuthenticate struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestRemovedAuthenticate
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestRemovedAuthenticate interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) ServiceChoice() uint8 {
     return 0x18
 }
 
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestRemovedAuthenticate() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestRemovedAuthenticate{}
-}
-
-func CastIBACnetConfirmedServiceRequestRemovedAuthenticate(structType interface{}) IBACnetConfirmedServiceRequestRemovedAuthenticate {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestRemovedAuthenticate {
-        if iBACnetConfirmedServiceRequestRemovedAuthenticate, ok := typ.(IBACnetConfirmedServiceRequestRemovedAuthenticate); ok {
-            return iBACnetConfirmedServiceRequestRemovedAuthenticate
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestRemovedAuthenticate() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestRemovedAuthenticate{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestRemovedAuthenticate(structType interface{}) BACnetConfirmedServiceRequestRemovedAuthenticate {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestRemovedAuthenticate {
-        if sBACnetConfirmedServiceRequestRemovedAuthenticate, ok := typ.(BACnetConfirmedServiceRequestRemovedAuthenticate); ok {
-            return sBACnetConfirmedServiceRequestRemovedAuthenticate
+        if casted, ok := typ.(BACnetConfirmedServiceRequestRemovedAuthenticate); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestRemovedAuthenticate, ok := typ.(*BACnetConfirmedServiceRequestRemovedAuthenticate); ok {
-            return *sBACnetConfirmedServiceRequestRemovedAuthenticate
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestRemovedAuthenticate); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestRemovedAuthenticate(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestRemovedAuthenticate(casted.Child)
         }
         return BACnetConfirmedServiceRequestRemovedAuthenticate{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedAuthenticateParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestRemovedAuthenticate(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestRemovedAuthenticate{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) UnmarshalXML(d *xml.D
     }
 }
 
-func (m BACnetConfirmedServiceRequestRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedAuthenticate"},
         }}); err != nil {

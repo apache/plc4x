@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -38,53 +37,63 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
     UnknownFlag bool
     LostFlag bool
     SequenceNumber uint8
-    CEMIAdditionalInformation
+    Parent *CEMIAdditionalInformation
+    ICEMIAdditionalInformationBusmonitorInfo
 }
 
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
-    ICEMIAdditionalInformation
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIAdditionalInformationBusmonitorInfo) AdditionalInformationType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *CEMIAdditionalInformationBusmonitorInfo) AdditionalInformationType() uint8 {
     return 0x03
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) initialize() spi.Message {
-    return m
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) InitializeParent(parent *CEMIAdditionalInformation) {
 }
 
-func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationInitializer {
-    return &CEMIAdditionalInformationBusmonitorInfo{FrameErrorFlag: frameErrorFlag, BitErrorFlag: bitErrorFlag, ParityErrorFlag: parityErrorFlag, UnknownFlag: unknownFlag, LostFlag: lostFlag, SequenceNumber: sequenceNumber}
-}
-
-func CastICEMIAdditionalInformationBusmonitorInfo(structType interface{}) ICEMIAdditionalInformationBusmonitorInfo {
-    castFunc := func(typ interface{}) ICEMIAdditionalInformationBusmonitorInfo {
-        if iCEMIAdditionalInformationBusmonitorInfo, ok := typ.(ICEMIAdditionalInformationBusmonitorInfo); ok {
-            return iCEMIAdditionalInformationBusmonitorInfo
-        }
-        return nil
+func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8, ) *CEMIAdditionalInformation {
+    child := &CEMIAdditionalInformationBusmonitorInfo{
+        FrameErrorFlag: frameErrorFlag,
+        BitErrorFlag: bitErrorFlag,
+        ParityErrorFlag: parityErrorFlag,
+        UnknownFlag: unknownFlag,
+        LostFlag: lostFlag,
+        SequenceNumber: sequenceNumber,
+        Parent: NewCEMIAdditionalInformation(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdditionalInformationBusmonitorInfo {
     castFunc := func(typ interface{}) CEMIAdditionalInformationBusmonitorInfo {
-        if sCEMIAdditionalInformationBusmonitorInfo, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
-            return sCEMIAdditionalInformationBusmonitorInfo
+        if casted, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
+            return casted
         }
-        if sCEMIAdditionalInformationBusmonitorInfo, ok := typ.(*CEMIAdditionalInformationBusmonitorInfo); ok {
-            return *sCEMIAdditionalInformationBusmonitorInfo
+        if casted, ok := typ.(*CEMIAdditionalInformationBusmonitorInfo); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMIAdditionalInformation); ok {
+            return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
+        }
+        if casted, ok := typ.(*CEMIAdditionalInformation); ok {
+            return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
         }
         return CEMIAdditionalInformationBusmonitorInfo{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMIAdditionalInformation.LengthInBits()
+func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (len)
     lengthInBits += 8
@@ -110,11 +119,11 @@ func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
+func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
 
     // Const Field (len)
     len, _lenErr := io.ReadUint8(8)
@@ -161,11 +170,21 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (CEMIAdd
         return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
     }
 
-    // Create the instance
-    return NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber), nil
+    // Create a partially initialized instance
+    _child := &CEMIAdditionalInformationBusmonitorInfo{
+        FrameErrorFlag: frameErrorFlag,
+        BitErrorFlag: bitErrorFlag,
+        ParityErrorFlag: parityErrorFlag,
+        UnknownFlag: unknownFlag,
+        LostFlag: lostFlag,
+        SequenceNumber: sequenceNumber,
+        Parent: &CEMIAdditionalInformation{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (len)
@@ -218,7 +237,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer)
 
         return nil
     }
-    return CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -275,7 +294,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, s
     }
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo"},
         }}); err != nil {

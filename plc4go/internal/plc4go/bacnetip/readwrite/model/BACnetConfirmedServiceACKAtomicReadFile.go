@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKAtomicReadFile struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKAtomicReadFile
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicReadFile interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKAtomicReadFile) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKAtomicReadFile) ServiceChoice() uint8 {
     return 0x06
 }
 
-func (m BACnetConfirmedServiceACKAtomicReadFile) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKAtomicReadFile) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKAtomicReadFile() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKAtomicReadFile{}
-}
-
-func CastIBACnetConfirmedServiceACKAtomicReadFile(structType interface{}) IBACnetConfirmedServiceACKAtomicReadFile {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKAtomicReadFile {
-        if iBACnetConfirmedServiceACKAtomicReadFile, ok := typ.(IBACnetConfirmedServiceACKAtomicReadFile); ok {
-            return iBACnetConfirmedServiceACKAtomicReadFile
-        }
-        return nil
+func NewBACnetConfirmedServiceACKAtomicReadFile() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKAtomicReadFile{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKAtomicReadFile(structType interface{}) BACnetConfirmedServiceACKAtomicReadFile {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKAtomicReadFile {
-        if sBACnetConfirmedServiceACKAtomicReadFile, ok := typ.(BACnetConfirmedServiceACKAtomicReadFile); ok {
-            return sBACnetConfirmedServiceACKAtomicReadFile
+        if casted, ok := typ.(BACnetConfirmedServiceACKAtomicReadFile); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKAtomicReadFile, ok := typ.(*BACnetConfirmedServiceACKAtomicReadFile); ok {
-            return *sBACnetConfirmedServiceACKAtomicReadFile
+        if casted, ok := typ.(*BACnetConfirmedServiceACKAtomicReadFile); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKAtomicReadFile(casted.Child)
         }
         return BACnetConfirmedServiceACKAtomicReadFile{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKAtomicReadFile) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKAtomicReadFile) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKAtomicReadFileParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKAtomicReadFileParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKAtomicReadFile(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKAtomicReadFile{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKAtomicReadFile) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKAtomicReadFile) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, s
     }
 }
 
-func (m BACnetConfirmedServiceACKAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKAtomicReadFile"},
         }}); err != nil {

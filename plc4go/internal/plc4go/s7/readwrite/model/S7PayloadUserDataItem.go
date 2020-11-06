@@ -22,61 +22,57 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type S7PayloadUserDataItem struct {
-    ReturnCode IDataTransportErrorCode
-    TransportSize IDataTransportSize
-    SzlId ISzlId
+    ReturnCode DataTransportErrorCode
+    TransportSize DataTransportSize
+    SzlId *SzlId
     SzlIndex uint16
-
+    Child IS7PayloadUserDataItemChild
+    IS7PayloadUserDataItem
+    IS7PayloadUserDataItemParent
 }
 
 // The corresponding interface
 type IS7PayloadUserDataItem interface {
-    spi.Message
     CpuFunctionType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type S7PayloadUserDataItemInitializer interface {
-    initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message
+type IS7PayloadUserDataItemParent interface {
+    SerializeParent(io utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error
 }
 
-func S7PayloadUserDataItemCpuFunctionType(m IS7PayloadUserDataItem) uint8 {
-    return m.CpuFunctionType()
+type IS7PayloadUserDataItemChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16)
+    IS7PayloadUserDataItem
 }
 
-
-func CastIS7PayloadUserDataItem(structType interface{}) IS7PayloadUserDataItem {
-    castFunc := func(typ interface{}) IS7PayloadUserDataItem {
-        if iS7PayloadUserDataItem, ok := typ.(IS7PayloadUserDataItem); ok {
-            return iS7PayloadUserDataItem
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16) *S7PayloadUserDataItem {
+    return &S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, SzlId: szlId, SzlIndex: szlIndex}
 }
 
 func CastS7PayloadUserDataItem(structType interface{}) S7PayloadUserDataItem {
     castFunc := func(typ interface{}) S7PayloadUserDataItem {
-        if sS7PayloadUserDataItem, ok := typ.(S7PayloadUserDataItem); ok {
-            return sS7PayloadUserDataItem
+        if casted, ok := typ.(S7PayloadUserDataItem); ok {
+            return casted
         }
-        if sS7PayloadUserDataItem, ok := typ.(*S7PayloadUserDataItem); ok {
-            return *sS7PayloadUserDataItem
+        if casted, ok := typ.(*S7PayloadUserDataItem); ok {
+            return *casted
         }
         return S7PayloadUserDataItem{}
     }
     return castFunc(structType)
 }
 
-func (m S7PayloadUserDataItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (returnCode)
     lengthInBits += 8
@@ -94,15 +90,16 @@ func (m S7PayloadUserDataItem) LengthInBits() uint16 {
     lengthInBits += 16
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m S7PayloadUserDataItem) LengthInBytes() uint16 {
+func (m *S7PayloadUserDataItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (spi.Message, error) {
+func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S7PayloadUserDataItem, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -123,14 +120,9 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (sp
     }
 
     // Simple Field (szlId)
-    _szlIdMessage, _err := SzlIdParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'szlId'. " + _err.Error())
-    }
-    var szlId ISzlId
-    szlId, _szlIdOk := _szlIdMessage.(ISzlId)
-    if !_szlIdOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_szlIdMessage).Name() + " to ISzlId")
+    szlId, _szlIdErr := SzlIdParse(io)
+    if _szlIdErr != nil {
+        return nil, errors.New("Error parsing 'szlId' field " + _szlIdErr.Error())
     }
 
     // Simple Field (szlIndex)
@@ -140,23 +132,28 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (sp
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer S7PayloadUserDataItemInitializer
+    var _parent *S7PayloadUserDataItem
     var typeSwitchError error
     switch {
     case cpuFunctionType == 0x04:
-        initializer, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io)
+        _parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io)
     case cpuFunctionType == 0x08:
-        initializer, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io)
+        _parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(returnCode, transportSize, szlId, szlIndex), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent, returnCode, transportSize, szlId, szlIndex)
+    return _parent, nil
 }
 
-func S7PayloadUserDataItemSerialize(io utils.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func() error) error {
+func (m *S7PayloadUserDataItem) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -180,8 +177,7 @@ func S7PayloadUserDataItemSerialize(io utils.WriteBuffer, m S7PayloadUserDataIte
     }
 
     // Simple Field (szlId)
-    szlId := CastISzlId(m.SzlId)
-    _szlIdErr := szlId.Serialize(io)
+    _szlIdErr := m.SzlId.Serialize(io)
     if _szlIdErr != nil {
         return errors.New("Error serializing 'szlId' field " + _szlIdErr.Error())
     }
@@ -194,7 +190,7 @@ func S7PayloadUserDataItemSerialize(io utils.WriteBuffer, m S7PayloadUserDataIte
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -216,23 +212,23 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "returnCode":
-                var data *DataTransportErrorCode
+                var data DataTransportErrorCode
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.ReturnCode = data
             case "transportSize":
-                var data *DataTransportSize
+                var data DataTransportSize
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.TransportSize = data
             case "szlId":
                 var data *SzlId
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.SzlId = CastISzlId(data)
+                m.SzlId = data
             case "szlIndex":
                 var data uint16
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -244,7 +240,7 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
     }
 }
 
-func (m S7PayloadUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7PayloadUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem"},
         }}); err != nil {

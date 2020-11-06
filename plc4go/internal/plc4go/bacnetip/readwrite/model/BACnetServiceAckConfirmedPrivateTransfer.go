@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckConfirmedPrivateTransfer struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckConfirmedPrivateTransfer
 }
 
 // The corresponding interface
 type IBACnetServiceAckConfirmedPrivateTransfer interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
     return 0x12
 }
 
-func (m BACnetServiceAckConfirmedPrivateTransfer) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckConfirmedPrivateTransfer) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckConfirmedPrivateTransfer() BACnetServiceAckInitializer {
-    return &BACnetServiceAckConfirmedPrivateTransfer{}
-}
-
-func CastIBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
-        if iBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(IBACnetServiceAckConfirmedPrivateTransfer); ok {
-            return iBACnetServiceAckConfirmedPrivateTransfer
-        }
-        return nil
+func NewBACnetServiceAckConfirmedPrivateTransfer() *BACnetServiceAck {
+    child := &BACnetServiceAckConfirmedPrivateTransfer{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) BACnetServiceAckConfirmedPrivateTransfer {
     castFunc := func(typ interface{}) BACnetServiceAckConfirmedPrivateTransfer {
-        if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
-            return sBACnetServiceAckConfirmedPrivateTransfer
+        if casted, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
+            return casted
         }
-        if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(*BACnetServiceAckConfirmedPrivateTransfer); ok {
-            return *sBACnetServiceAckConfirmedPrivateTransfer
+        if casted, ok := typ.(*BACnetServiceAckConfirmedPrivateTransfer); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckConfirmedPrivateTransfer(casted.Child)
         }
         return BACnetServiceAckConfirmedPrivateTransfer{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBytes() uint16 {
+func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckConfirmedPrivateTransferParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckConfirmedPrivateTransferParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckConfirmedPrivateTransfer(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckConfirmedPrivateTransfer{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, 
     }
 }
 
-func (m BACnetServiceAckConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckConfirmedPrivateTransfer"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BVLCSecureBVLL struct {
-    BVLC
+    Parent *BVLC
+    IBVLCSecureBVLL
 }
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCSecureBVLL) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCSecureBVLL) BvlcFunction() uint8 {
     return 0x0C
 }
 
-func (m BVLCSecureBVLL) initialize() spi.Message {
-    return m
+
+func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCSecureBVLL() BVLCInitializer {
-    return &BVLCSecureBVLL{}
-}
-
-func CastIBVLCSecureBVLL(structType interface{}) IBVLCSecureBVLL {
-    castFunc := func(typ interface{}) IBVLCSecureBVLL {
-        if iBVLCSecureBVLL, ok := typ.(IBVLCSecureBVLL); ok {
-            return iBVLCSecureBVLL
-        }
-        return nil
+func NewBVLCSecureBVLL() *BVLC {
+    child := &BVLCSecureBVLL{
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCSecureBVLL(structType interface{}) BVLCSecureBVLL {
     castFunc := func(typ interface{}) BVLCSecureBVLL {
-        if sBVLCSecureBVLL, ok := typ.(BVLCSecureBVLL); ok {
-            return sBVLCSecureBVLL
+        if casted, ok := typ.(BVLCSecureBVLL); ok {
+            return casted
         }
-        if sBVLCSecureBVLL, ok := typ.(*BVLCSecureBVLL); ok {
-            return *sBVLCSecureBVLL
+        if casted, ok := typ.(*BVLCSecureBVLL); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCSecureBVLL(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCSecureBVLL(casted.Child)
         }
         return BVLCSecureBVLL{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCSecureBVLL) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCSecureBVLL) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BVLCSecureBVLL) LengthInBytes() uint16 {
+func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCSecureBVLLParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
+func BVLCSecureBVLLParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create the instance
-    return NewBVLCSecureBVLL(), nil
+    // Create a partially initialized instance
+    _child := &BVLCSecureBVLL{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCSecureBVLL) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCSecureBVLL) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
     }
 }
 
-func (m BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCSecureBVLL"},
         }}); err != nil {

@@ -22,52 +22,41 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7VarPayloadStatusItem struct {
-    ReturnCode IDataTransportErrorCode
-
+    ReturnCode DataTransportErrorCode
+    IS7VarPayloadStatusItem
 }
 
 // The corresponding interface
 type IS7VarPayloadStatusItem interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewS7VarPayloadStatusItem(returnCode IDataTransportErrorCode) spi.Message {
+func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadStatusItem {
     return &S7VarPayloadStatusItem{ReturnCode: returnCode}
-}
-
-func CastIS7VarPayloadStatusItem(structType interface{}) IS7VarPayloadStatusItem {
-    castFunc := func(typ interface{}) IS7VarPayloadStatusItem {
-        if iS7VarPayloadStatusItem, ok := typ.(IS7VarPayloadStatusItem); ok {
-            return iS7VarPayloadStatusItem
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
     castFunc := func(typ interface{}) S7VarPayloadStatusItem {
-        if sS7VarPayloadStatusItem, ok := typ.(S7VarPayloadStatusItem); ok {
-            return sS7VarPayloadStatusItem
+        if casted, ok := typ.(S7VarPayloadStatusItem); ok {
+            return casted
         }
-        if sS7VarPayloadStatusItem, ok := typ.(*S7VarPayloadStatusItem); ok {
-            return *sS7VarPayloadStatusItem
+        if casted, ok := typ.(*S7VarPayloadStatusItem); ok {
+            return *casted
         }
         return S7VarPayloadStatusItem{}
     }
     return castFunc(structType)
 }
 
-func (m S7VarPayloadStatusItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (returnCode)
     lengthInBits += 8
@@ -75,11 +64,11 @@ func (m S7VarPayloadStatusItem) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7VarPayloadStatusItem) LengthInBytes() uint16 {
+func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (spi.Message, error) {
+func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -91,7 +80,7 @@ func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
-func (m S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
+func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -117,7 +106,7 @@ func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartEle
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "returnCode":
-                var data *DataTransportErrorCode
+                var data DataTransportErrorCode
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -127,7 +116,7 @@ func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartEle
     }
 }
 
-func (m S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem"},
         }}); err != nil {

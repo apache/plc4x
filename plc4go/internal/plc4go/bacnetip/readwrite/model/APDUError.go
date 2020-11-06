@@ -23,62 +23,66 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type APDUError struct {
     OriginalInvokeId uint8
-    Error IBACnetError
-    APDU
+    Error *BACnetError
+    Parent *APDU
+    IAPDUError
 }
 
 // The corresponding interface
 type IAPDUError interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUError) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUError) ApduType() uint8 {
     return 0x5
 }
 
-func (m APDUError) initialize() spi.Message {
-    return m
+
+func (m *APDUError) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUError(originalInvokeId uint8, error IBACnetError) APDUInitializer {
-    return &APDUError{OriginalInvokeId: originalInvokeId, Error: error}
-}
-
-func CastIAPDUError(structType interface{}) IAPDUError {
-    castFunc := func(typ interface{}) IAPDUError {
-        if iAPDUError, ok := typ.(IAPDUError); ok {
-            return iAPDUError
-        }
-        return nil
+func NewAPDUError(originalInvokeId uint8, error *BACnetError, ) *APDU {
+    child := &APDUError{
+        OriginalInvokeId: originalInvokeId,
+        Error: error,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUError(structType interface{}) APDUError {
     castFunc := func(typ interface{}) APDUError {
-        if sAPDUError, ok := typ.(APDUError); ok {
-            return sAPDUError
+        if casted, ok := typ.(APDUError); ok {
+            return casted
         }
-        if sAPDUError, ok := typ.(*APDUError); ok {
-            return *sAPDUError
+        if casted, ok := typ.(*APDUError); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUError(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUError(casted.Child)
         }
         return APDUError{}
     }
     return castFunc(structType)
 }
 
-func (m APDUError) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUError) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 4
@@ -92,11 +96,11 @@ func (m APDUError) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUError) LengthInBytes() uint16 {
+func (m *APDUError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUErrorParse(io *utils.ReadBuffer) (APDUInitializer, error) {
+func APDUErrorParse(io *utils.ReadBuffer) (*APDU, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -119,21 +123,22 @@ func APDUErrorParse(io *utils.ReadBuffer) (APDUInitializer, error) {
     }
 
     // Simple Field (error)
-    _errorMessage, _err := BACnetErrorParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'error'. " + _err.Error())
-    }
-    var error IBACnetError
-    error, _errorOk := _errorMessage.(IBACnetError)
-    if !_errorOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_errorMessage).Name() + " to IBACnetError")
+    error, _errorErr := BACnetErrorParse(io)
+    if _errorErr != nil {
+        return nil, errors.New("Error parsing 'error' field " + _errorErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUError(originalInvokeId, error), nil
+    // Create a partially initialized instance
+    _child := &APDUError{
+        OriginalInvokeId: originalInvokeId,
+        Error: error,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUError) Serialize(io utils.WriteBuffer) error {
+func (m *APDUError) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -152,15 +157,14 @@ func (m APDUError) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (error)
-    error := CastIBACnetError(m.Error)
-    _errorErr := error.Serialize(io)
+    _errorErr := m.Error.Serialize(io)
     if _errorErr != nil {
         return errors.New("Error serializing 'error' field " + _errorErr.Error())
     }
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -185,85 +189,85 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
             case "error":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
-                        var dt *BACnetErrorGetAlarmSummary
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary":
-                        var dt *BACnetErrorGetEnrollmentSummary
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEventInformation":
-                        var dt *BACnetErrorGetEventInformation
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile":
-                        var dt *BACnetErrorAtomicReadFile
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicWriteFile":
-                        var dt *BACnetErrorAtomicWriteFile
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject":
-                        var dt *BACnetErrorCreateObject
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty":
-                        var dt *BACnetErrorReadProperty
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple":
-                        var dt *BACnetErrorReadPropertyMultiple
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange":
-                        var dt *BACnetErrorReadRange
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer":
-                        var dt *BACnetErrorConfirmedPrivateTransfer
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen":
-                        var dt *BACnetErrorVTOpen
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTData":
-                        var dt *BACnetErrorVTData
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate":
-                        var dt *BACnetErrorRemovedAuthenticate
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Error = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional":
-                        var dt *BACnetErrorRemovedReadPropertyConditional
+                        var dt *BACnetError
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -274,7 +278,7 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUError"},
         }}); err != nil {
