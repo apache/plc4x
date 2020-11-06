@@ -58,21 +58,20 @@ public class Plc4xSinkTask extends SinkTask {
     static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
     private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
 
+    static final String PLC4X_TOPIC_CONFIG = "topic";
+    private static final String PLC4X_TOPIC_DOC = "Task Topic";
+
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
-        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC);
+        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
+        .define(PLC4X_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_TOPIC_DOC);
 
     /*
      * Configuration of the output.
      */
     private static final String SINK_NAME_FIELD = "sink-name";
-    private static final String JOB_NAME_FIELD = "job-name";
+    private static final String SINK_TOPIC_FIELD = "topic";
 
-    private static final Schema KEY_SCHEMA =
-        new SchemaBuilder(Schema.Type.STRUCT)
-            .field(SINK_NAME_FIELD, Schema.STRING_SCHEMA)
-            .field(JOB_NAME_FIELD, Schema.STRING_SCHEMA)
-            .build();
 
     @Override
     public String version() {
@@ -82,12 +81,14 @@ public class Plc4xSinkTask extends SinkTask {
     private PlcDriverManager driverManager;
     private Transformation<SinkRecord> transformation;
     private String plc4xConnectionString;
+    private String plc4xTopic;
 
     @Override
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
         plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
+        plc4xTopic = config.getString(PLC4X_TOPIC_CONFIG);
         Map<String, String> topics = new HashMap<>();
         log.info("Creating Pooled PLC4x driver manager");
         driverManager = new PooledPlcDriverManager();
@@ -108,9 +109,15 @@ public class Plc4xSinkTask extends SinkTask {
 
         for (SinkRecord r: records) {
             Struct record = (Struct) r.value();
+            String topic = r.topic();
             String address = record.getString("address");
             String value = record.getString("value");
             Long expires = record.getInt64("expires");
+
+            if (!topic.equals(plc4xTopic)) {
+                log.debug("Ignoring write request recived on wrong topic");
+                return;
+            }
 
             if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
                 log.warn("Write request has expired {}, discarding {}", System.currentTimeMillis(), address);
@@ -120,7 +127,7 @@ public class Plc4xSinkTask extends SinkTask {
             PlcConnection connection = null;
             try {
                 connection = driverManager.getConnection(plc4xConnectionString);
-            } catch (PlcConnectionException e) {                
+            } catch (PlcConnectionException e) {
                 log.warn("Failed to Open Connection {}", plc4xConnectionString);
             }
 
@@ -144,6 +151,7 @@ public class Plc4xSinkTask extends SinkTask {
 
             try {
                 writeRequest.execute().get();
+                log.info("Wrote {} to device {}", address, plc4xConnectionString);
             } catch (InterruptedException | ExecutionException e) {
                 log.warn("Failed to Write to {}", plc4xConnectionString);
             }

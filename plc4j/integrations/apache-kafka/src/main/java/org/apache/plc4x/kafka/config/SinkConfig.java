@@ -33,16 +33,15 @@ public class SinkConfig {
     private final List<Sink> sinks;
 
     public static SinkConfig fromPropertyMap(Map<String, String> properties) {
-        String defaultTopic = properties.getOrDefault(Plc4xSinkConnector.DEFAULT_TOPIC_CONFIG, null);
 
         String[] sinkNames = properties.getOrDefault(Plc4xSinkConnector.SINK_CONFIG, "").split(",");
         List<Sink> sinks = new ArrayList<>(sinkNames.length);
         for (String sinkName : sinkNames) {
             String connectionString = properties.get(
                 Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + CONNECTION_STRING_CONFIG);
-            String sinkTopic = properties.getOrDefault(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG, defaultTopic);
-            Sink sink = new Sink(sinkName, connectionString);
+            String sinkTopic = properties.get(
+                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG);
+            Sink sink = new Sink(sinkName, connectionString, sinkTopic);
             sinks.add(sink);
         }
 

@@ -38,9 +38,6 @@ public class Plc4xSinkConnector extends SinkConnector {
 
     private static final Logger log = LoggerFactory.getLogger(Plc4xSinkConnector.class);
 
-    public static final String DEFAULT_TOPIC_CONFIG = "default-topic";
-    private static final String DEFAULT_TOPIC_DOC = "Default topic to be used, if not otherwise configured.";
-
     public static final String SINK_CONFIG = "sinks";
     private static final String SINK_DOC = "List of sink names that will be configured.";
 
@@ -76,6 +73,7 @@ public class Plc4xSinkConnector extends SinkConnector {
             Map<String, String> taskConfig = new HashMap<>();
             taskConfig.put(Plc4xSinkTask.CONNECTION_NAME_CONFIG, sink.getName());
             taskConfig.put(Plc4xSinkTask.PLC4X_CONNECTION_STRING_CONFIG, sink.getConnectionString());
+            taskConfig.put(Plc4xSinkTask.PLC4X_TOPIC_CONFIG, sink.getTopic());
             configs.add(taskConfig);
         }
         return configs;
@@ -92,14 +90,10 @@ public class Plc4xSinkConnector extends SinkConnector {
         // Add the dynamic parts of the config
 
         // Find the important config elements
-        String defaultTopic = null;
         ConfigValue sinks = null;
 
         for (ConfigValue configValue : config.configValues()) {
             switch (configValue.name()) {
-                case DEFAULT_TOPIC_CONFIG:
-                    defaultTopic = (String) configValue.value();
-                    break;
                 case SINK_CONFIG:
                     sinks = configValue;
                     break;
@@ -136,7 +130,6 @@ public class Plc4xSinkConnector extends SinkConnector {
     @Override
     public ConfigDef config() {
         return new ConfigDef()
-            .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
             .define(SINK_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, SINK_DOC);
     }
 

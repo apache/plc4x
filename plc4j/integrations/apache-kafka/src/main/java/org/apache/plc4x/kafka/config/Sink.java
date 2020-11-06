@@ -22,10 +22,12 @@ public class Sink {
 
     private final String name;
     private final String connectionString;
+    private final String topic;
 
-    public Sink(String name, String connectionString) {
+    public Sink(String name, String connectionString, String topic) {
         this.name = name;
         this.connectionString = connectionString;
+        this.topic = topic;
     }
 
     public String getName() {
@@ -34,6 +36,10 @@ public class Sink {
 
     public String getConnectionString() {
         return connectionString;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
 }
