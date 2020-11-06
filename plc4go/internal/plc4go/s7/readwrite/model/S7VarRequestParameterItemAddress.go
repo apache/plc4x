@@ -22,61 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type S7VarRequestParameterItemAddress struct {
-    Address IS7Address
-    S7VarRequestParameterItem
+    Address *S7Address
+    Parent *S7VarRequestParameterItem
+    IS7VarRequestParameterItemAddress
 }
 
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
-    IS7VarRequestParameterItem
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7VarRequestParameterItemAddress) ItemType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7VarRequestParameterItemAddress) ItemType() uint8 {
     return 0x12
 }
 
-func (m S7VarRequestParameterItemAddress) initialize() spi.Message {
-    return m
+
+func (m *S7VarRequestParameterItemAddress) InitializeParent(parent *S7VarRequestParameterItem) {
 }
 
-func NewS7VarRequestParameterItemAddress(address IS7Address) S7VarRequestParameterItemInitializer {
-    return &S7VarRequestParameterItemAddress{Address: address}
-}
-
-func CastIS7VarRequestParameterItemAddress(structType interface{}) IS7VarRequestParameterItemAddress {
-    castFunc := func(typ interface{}) IS7VarRequestParameterItemAddress {
-        if iS7VarRequestParameterItemAddress, ok := typ.(IS7VarRequestParameterItemAddress); ok {
-            return iS7VarRequestParameterItemAddress
-        }
-        return nil
+func NewS7VarRequestParameterItemAddress(address *S7Address, ) *S7VarRequestParameterItem {
+    child := &S7VarRequestParameterItemAddress{
+        Address: address,
+        Parent: NewS7VarRequestParameterItem(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestParameterItemAddress {
     castFunc := func(typ interface{}) S7VarRequestParameterItemAddress {
-        if sS7VarRequestParameterItemAddress, ok := typ.(S7VarRequestParameterItemAddress); ok {
-            return sS7VarRequestParameterItemAddress
+        if casted, ok := typ.(S7VarRequestParameterItemAddress); ok {
+            return casted
         }
-        if sS7VarRequestParameterItemAddress, ok := typ.(*S7VarRequestParameterItemAddress); ok {
-            return *sS7VarRequestParameterItemAddress
+        if casted, ok := typ.(*S7VarRequestParameterItemAddress); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7VarRequestParameterItem); ok {
+            return CastS7VarRequestParameterItemAddress(casted.Child)
+        }
+        if casted, ok := typ.(*S7VarRequestParameterItem); ok {
+            return CastS7VarRequestParameterItemAddress(casted.Child)
         }
         return S7VarRequestParameterItemAddress{}
     }
     return castFunc(structType)
 }
 
-func (m S7VarRequestParameterItemAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7VarRequestParameterItem.LengthInBits()
+func (m *S7VarRequestParameterItemAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (itemLength)
     lengthInBits += 8
@@ -87,11 +90,11 @@ func (m S7VarRequestParameterItemAddress) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
+func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (S7VarRequestParameterItemInitializer, error) {
+func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _itemLengthErr := io.ReadUint8(8)
@@ -100,21 +103,21 @@ func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (S7VarRequestPa
     }
 
     // Simple Field (address)
-    _addressMessage, _err := S7AddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'address'. " + _err.Error())
-    }
-    var address IS7Address
-    address, _addressOk := _addressMessage.(IS7Address)
-    if !_addressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_addressMessage).Name() + " to IS7Address")
+    address, _addressErr := S7AddressParse(io)
+    if _addressErr != nil {
+        return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
     }
 
-    // Create the instance
-    return NewS7VarRequestParameterItemAddress(address), nil
+    // Create a partially initialized instance
+    _child := &S7VarRequestParameterItemAddress{
+        Address: address,
+        Parent: &S7VarRequestParameterItem{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
+func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -125,15 +128,14 @@ func (m S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error 
     }
 
     // Simple Field (address)
-    address := CastIS7Address(m.Address)
-    _addressErr := address.Serialize(io)
+    _addressErr := m.Address.Serialize(io)
     if _addressErr != nil {
         return errors.New("Error serializing 'address' field " + _addressErr.Error())
     }
 
         return nil
     }
-    return S7VarRequestParameterItemSerialize(io, m.S7VarRequestParameterItem, CastIS7VarRequestParameterItem(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -152,7 +154,7 @@ func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xm
             case "address":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.s7.readwrite.S7AddressAny":
-                        var dt *S7AddressAny
+                        var dt *S7Address
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -163,7 +165,7 @@ func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xm
     }
 }
 
-func (m S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress"},
         }}); err != nil {

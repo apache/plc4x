@@ -259,6 +259,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
     }
 
+    public boolean needsPointerAccess(PropertyField field) {
+        return !(field instanceof EnumField) && ("optional".equals(field.getTypeName()) || isComplexTypeReference(field.getType()));
+    }
+
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
@@ -477,7 +481,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
-            if("if".equals(tt.getOperation())) {
+            if ("if".equals(tt.getOperation())) {
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
@@ -510,6 +514,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return vl.getName() + "." + StringUtils.capitalize(vl.getChild().getName()) + "()" +
                 ((vl.getChild().getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild().getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+        }
+        // If we are accessing optional fields of simple type, we need to use pointer-access.
+        else if (!serialize && (getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) &&
+            (((OptionalField) getFieldForNameFromCurrent(vl.getName())).getType() instanceof SimpleTypeReference)) {
+            return "(*" + vl.getName() + ")" +
+                ((vl.getChild() != null) ?
+                    "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess) : "");
         }
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         else if ("CAST".equals(vl.getName())) {
@@ -662,7 +673,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     String childProperty = vl.getChild().getName();
                     final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream().filter(field -> (field instanceof DiscriminatorField) && ((DiscriminatorField) field).getName().equals(childProperty)).findFirst();
                     if(matchingDiscriminatorField.isPresent()) {
-                        return "CastI" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ")." + StringUtils.capitalize(childProperty) + "()";
+                        return "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ")." + StringUtils.capitalize(childProperty) + "()";
                     }
                 }
             }
@@ -670,12 +681,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // If the current term references a serialization argument, handle it differently (don't prefix it with "m.")
         else if((serializerArguments != null) && Arrays.stream(serializerArguments).anyMatch(argument -> argument.getName().equals(vl.getName()))) {
             return vl.getName() + ((vl.getChild() != null) ?
-                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
-        }
-        // If the current term is an optional type, we need to add pointer access
-        // (Except if we're doing a nil/not-nil check)
-        if((getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) && !suppressPointerAccess) {
-            return "(*" + (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ")" + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
         return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
@@ -793,15 +798,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"math\"");
         }
 
-        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi\"");
         imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils\"");
-
-        // "Fields with complex type": "reflect"
-        if(complexTypeDefinition.getFields().stream().anyMatch(field ->
-            !(field instanceof EnumField) &&
-            ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
-            imports.add("\"reflect\"");
-        }
 
         // For Constant field: "strconv"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
@@ -810,6 +807,25 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"strconv\"");
         }
 
+        return imports;
+    }
+
+    public List<String> getRequiredImportsForDataIo() {
+        DataIoTypeDefinition dataIo = (DataIoTypeDefinition) getThisTypeDefinition();
+
+        List<String> imports = new ArrayList<>();
+
+        imports.add("\"errors\"");
+        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values\"");
+        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils\"");
+        imports.add("api \"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values\"");
+
+        if(dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->
+            (typeCase.getName().equals("TIME_OF_DAY") && hasFieldsWithNames(typeCase.getFields(), "hour", "minutes", "seconds")) ||
+                (typeCase.getName().equals("DATE") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day")) ||
+                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day", "hour", "minutes", "seconds")))) {
+            imports.add("\"time\"");
+        }
         return imports;
     }
 

@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type KnxNetRemoteConfigurationAndDiagnosis struct {
     Version uint8
-    ServiceId
+    Parent *ServiceId
+    IKnxNetRemoteConfigurationAndDiagnosis
 }
 
 // The corresponding interface
 type IKnxNetRemoteConfigurationAndDiagnosis interface {
-    IServiceId
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *KnxNetRemoteConfigurationAndDiagnosis) ServiceType() uint8 {
     return 0x07
 }
 
-func (m KnxNetRemoteConfigurationAndDiagnosis) initialize() spi.Message {
-    return m
+
+func (m *KnxNetRemoteConfigurationAndDiagnosis) InitializeParent(parent *ServiceId) {
 }
 
-func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) ServiceIdInitializer {
-    return &KnxNetRemoteConfigurationAndDiagnosis{Version: version}
-}
-
-func CastIKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) IKnxNetRemoteConfigurationAndDiagnosis {
-    castFunc := func(typ interface{}) IKnxNetRemoteConfigurationAndDiagnosis {
-        if iKnxNetRemoteConfigurationAndDiagnosis, ok := typ.(IKnxNetRemoteConfigurationAndDiagnosis); ok {
-            return iKnxNetRemoteConfigurationAndDiagnosis
-        }
-        return nil
+func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8, ) *ServiceId {
+    child := &KnxNetRemoteConfigurationAndDiagnosis{
+        Version: version,
+        Parent: NewServiceId(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) KnxNetRemoteConfigurationAndDiagnosis {
     castFunc := func(typ interface{}) KnxNetRemoteConfigurationAndDiagnosis {
-        if sKnxNetRemoteConfigurationAndDiagnosis, ok := typ.(KnxNetRemoteConfigurationAndDiagnosis); ok {
-            return sKnxNetRemoteConfigurationAndDiagnosis
+        if casted, ok := typ.(KnxNetRemoteConfigurationAndDiagnosis); ok {
+            return casted
         }
-        if sKnxNetRemoteConfigurationAndDiagnosis, ok := typ.(*KnxNetRemoteConfigurationAndDiagnosis); ok {
-            return *sKnxNetRemoteConfigurationAndDiagnosis
+        if casted, ok := typ.(*KnxNetRemoteConfigurationAndDiagnosis); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ServiceId); ok {
+            return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
+        }
+        if casted, ok := typ.(*ServiceId); ok {
+            return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
         }
         return KnxNetRemoteConfigurationAndDiagnosis{}
     }
     return castFunc(structType)
 }
 
-func (m KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ServiceId.LengthInBits()
+func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (version)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
+func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -95,11 +99,16 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (ServiceId
         return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
     }
 
-    // Create the instance
-    return NewKnxNetRemoteConfigurationAndDiagnosis(version), nil
+    // Create a partially initialized instance
+    _child := &KnxNetRemoteConfigurationAndDiagnosis{
+        Version: version,
+        Parent: &ServiceId{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) error {
+func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)
@@ -111,7 +120,7 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) e
 
         return nil
     }
-    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, sta
     }
 }
 
-func (m KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis"},
         }}); err != nil {

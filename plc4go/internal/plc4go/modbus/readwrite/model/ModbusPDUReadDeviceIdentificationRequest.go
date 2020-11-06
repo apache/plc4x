@@ -21,87 +21,94 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadDeviceIdentificationRequest struct {
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadDeviceIdentificationRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadDeviceIdentificationRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadDeviceIdentificationRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
     return 0x2B
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) Response() bool {
+func (m *ModbusPDUReadDeviceIdentificationRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadDeviceIdentificationRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadDeviceIdentificationRequest() ModbusPDUInitializer {
-    return &ModbusPDUReadDeviceIdentificationRequest{}
-}
-
-func CastIModbusPDUReadDeviceIdentificationRequest(structType interface{}) IModbusPDUReadDeviceIdentificationRequest {
-    castFunc := func(typ interface{}) IModbusPDUReadDeviceIdentificationRequest {
-        if iModbusPDUReadDeviceIdentificationRequest, ok := typ.(IModbusPDUReadDeviceIdentificationRequest); ok {
-            return iModbusPDUReadDeviceIdentificationRequest
-        }
-        return nil
+func NewModbusPDUReadDeviceIdentificationRequest() *ModbusPDU {
+    child := &ModbusPDUReadDeviceIdentificationRequest{
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) ModbusPDUReadDeviceIdentificationRequest {
     castFunc := func(typ interface{}) ModbusPDUReadDeviceIdentificationRequest {
-        if sModbusPDUReadDeviceIdentificationRequest, ok := typ.(ModbusPDUReadDeviceIdentificationRequest); ok {
-            return sModbusPDUReadDeviceIdentificationRequest
+        if casted, ok := typ.(ModbusPDUReadDeviceIdentificationRequest); ok {
+            return casted
         }
-        if sModbusPDUReadDeviceIdentificationRequest, ok := typ.(*ModbusPDUReadDeviceIdentificationRequest); ok {
-            return *sModbusPDUReadDeviceIdentificationRequest
+        if casted, ok := typ.(*ModbusPDUReadDeviceIdentificationRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadDeviceIdentificationRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadDeviceIdentificationRequest(casted.Child)
         }
         return ModbusPDUReadDeviceIdentificationRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadDeviceIdentificationRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
-    // Create the instance
-    return NewModbusPDUReadDeviceIdentificationRequest(), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadDeviceIdentificationRequest{
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -122,7 +129,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) UnmarshalXML(d *xml.Decoder, 
     }
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadDeviceIdentificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest"},
         }}); err != nil {

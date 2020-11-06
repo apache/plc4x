@@ -19,14 +19,12 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type Status uint8
 
 type IStatus interface {
-    spi.Message
     Serialize(io utils.WriteBuffer) error
 }
 

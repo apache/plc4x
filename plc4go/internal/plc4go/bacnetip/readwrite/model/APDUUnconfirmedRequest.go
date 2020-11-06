@@ -23,61 +23,64 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type APDUUnconfirmedRequest struct {
-    ServiceRequest IBACnetUnconfirmedServiceRequest
-    APDU
+    ServiceRequest *BACnetUnconfirmedServiceRequest
+    Parent *APDU
+    IAPDUUnconfirmedRequest
 }
 
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUUnconfirmedRequest) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUUnconfirmedRequest) ApduType() uint8 {
     return 0x1
 }
 
-func (m APDUUnconfirmedRequest) initialize() spi.Message {
-    return m
+
+func (m *APDUUnconfirmedRequest) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUUnconfirmedRequest(serviceRequest IBACnetUnconfirmedServiceRequest) APDUInitializer {
-    return &APDUUnconfirmedRequest{ServiceRequest: serviceRequest}
-}
-
-func CastIAPDUUnconfirmedRequest(structType interface{}) IAPDUUnconfirmedRequest {
-    castFunc := func(typ interface{}) IAPDUUnconfirmedRequest {
-        if iAPDUUnconfirmedRequest, ok := typ.(IAPDUUnconfirmedRequest); ok {
-            return iAPDUUnconfirmedRequest
-        }
-        return nil
+func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, ) *APDU {
+    child := &APDUUnconfirmedRequest{
+        ServiceRequest: serviceRequest,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUUnconfirmedRequest(structType interface{}) APDUUnconfirmedRequest {
     castFunc := func(typ interface{}) APDUUnconfirmedRequest {
-        if sAPDUUnconfirmedRequest, ok := typ.(APDUUnconfirmedRequest); ok {
-            return sAPDUUnconfirmedRequest
+        if casted, ok := typ.(APDUUnconfirmedRequest); ok {
+            return casted
         }
-        if sAPDUUnconfirmedRequest, ok := typ.(*APDUUnconfirmedRequest); ok {
-            return *sAPDUUnconfirmedRequest
+        if casted, ok := typ.(*APDUUnconfirmedRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUUnconfirmedRequest(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUUnconfirmedRequest(casted.Child)
         }
         return APDUUnconfirmedRequest{}
     }
     return castFunc(structType)
 }
 
-func (m APDUUnconfirmedRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 4
@@ -88,11 +91,11 @@ func (m APDUUnconfirmedRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUUnconfirmedRequest) LengthInBytes() uint16 {
+func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
+func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -109,21 +112,21 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (APDUI
     }
 
     // Simple Field (serviceRequest)
-    _serviceRequestMessage, _err := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(1)))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
-    }
-    var serviceRequest IBACnetUnconfirmedServiceRequest
-    serviceRequest, _serviceRequestOk := _serviceRequestMessage.(IBACnetUnconfirmedServiceRequest)
-    if !_serviceRequestOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to IBACnetUnconfirmedServiceRequest")
+    serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(1)))
+    if _serviceRequestErr != nil {
+        return nil, errors.New("Error parsing 'serviceRequest' field " + _serviceRequestErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUUnconfirmedRequest(serviceRequest), nil
+    // Create a partially initialized instance
+    _child := &APDUUnconfirmedRequest{
+        ServiceRequest: serviceRequest,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
+func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -135,15 +138,14 @@ func (m APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (serviceRequest)
-    serviceRequest := CastIBACnetUnconfirmedServiceRequest(m.ServiceRequest)
-    _serviceRequestErr := serviceRequest.Serialize(io)
+    _serviceRequestErr := m.ServiceRequest.Serialize(io)
     if _serviceRequestErr != nil {
         return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
     }
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -162,73 +164,73 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
             case "serviceRequest":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm":
-                        var dt *BACnetUnconfirmedServiceRequestIAm
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave":
-                        var dt *BACnetUnconfirmedServiceRequestIHave
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification":
-                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification":
-                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer":
-                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage":
-                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization":
-                        var dt *BACnetUnconfirmedServiceRequestTimeSynchronization
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas":
-                        var dt *BACnetUnconfirmedServiceRequestWhoHas
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs":
-                        var dt *BACnetUnconfirmedServiceRequestWhoIs
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization":
-                        var dt *BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup":
-                        var dt *BACnetUnconfirmedServiceRequestWriteGroup
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ServiceRequest = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple":
-                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+                        var dt *BACnetUnconfirmedServiceRequest
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -239,7 +241,7 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
     }
 }
 
-func (m APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest"},
         }}); err != nil {

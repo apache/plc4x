@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestUTCTimeSynchronization
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) ServiceChoice() uint8 {
     return 0x09
 }
 
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}
-}
-
-func CastIBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) IBACnetUnconfirmedServiceRequestUTCTimeSynchronization {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUTCTimeSynchronization {
-        if iBACnetUnconfirmedServiceRequestUTCTimeSynchronization, ok := typ.(IBACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-            return iBACnetUnconfirmedServiceRequestUTCTimeSynchronization
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
-        if sBACnetUnconfirmedServiceRequestUTCTimeSynchronization, ok := typ.(BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-            return sBACnetUnconfirmedServiceRequestUTCTimeSynchronization
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestUTCTimeSynchronization, ok := typ.(*BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-            return *sBACnetUnconfirmedServiceRequestUTCTimeSynchronization
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) UnmarshalXML(d *
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization"},
         }}); err != nil {

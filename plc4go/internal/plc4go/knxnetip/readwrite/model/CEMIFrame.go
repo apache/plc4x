@@ -22,70 +22,59 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIFrame struct {
     Repeated bool
-    Priority ICEMIPriority
+    Priority CEMIPriority
     AcknowledgeRequested bool
     ErrorFlag bool
-
+    Child ICEMIFrameChild
+    ICEMIFrame
+    ICEMIFrameParent
 }
 
 // The corresponding interface
 type ICEMIFrame interface {
-    spi.Message
     NotAckFrame() bool
     Polling() bool
     StandardFrame() bool
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type CEMIFrameInitializer interface {
-    initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message
+type ICEMIFrameParent interface {
+    SerializeParent(io utils.WriteBuffer, child ICEMIFrame, serializeChildFunction func() error) error
 }
 
-func CEMIFrameNotAckFrame(m ICEMIFrame) bool {
-    return m.NotAckFrame()
+type ICEMIFrameChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
+    ICEMIFrame
 }
 
-func CEMIFramePolling(m ICEMIFrame) bool {
-    return m.Polling()
-}
-
-func CEMIFrameStandardFrame(m ICEMIFrame) bool {
-    return m.StandardFrame()
-}
-
-
-func CastICEMIFrame(structType interface{}) ICEMIFrame {
-    castFunc := func(typ interface{}) ICEMIFrame {
-        if iCEMIFrame, ok := typ.(ICEMIFrame); ok {
-            return iCEMIFrame
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewCEMIFrame(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
+    return &CEMIFrame{Repeated: repeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
 
 func CastCEMIFrame(structType interface{}) CEMIFrame {
     castFunc := func(typ interface{}) CEMIFrame {
-        if sCEMIFrame, ok := typ.(CEMIFrame); ok {
-            return sCEMIFrame
+        if casted, ok := typ.(CEMIFrame); ok {
+            return casted
         }
-        if sCEMIFrame, ok := typ.(*CEMIFrame); ok {
-            return *sCEMIFrame
+        if casted, ok := typ.(*CEMIFrame); ok {
+            return *casted
         }
         return CEMIFrame{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIFrame) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *CEMIFrame) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (standardFrame)
     lengthInBits += 1
@@ -109,15 +98,16 @@ func (m CEMIFrame) LengthInBits() uint16 {
     lengthInBits += 1
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m CEMIFrame) LengthInBytes() uint16 {
+func (m *CEMIFrame) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameParse(io *utils.ReadBuffer) (spi.Message, error) {
+func CEMIFrameParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
 
     // Discriminator Field (standardFrame) (Used as input to a switch field)
     standardFrame, _standardFrameErr := io.ReadBit()
@@ -162,39 +152,44 @@ func CEMIFrameParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer CEMIFrameInitializer
+    var _parent *CEMIFrame
     var typeSwitchError error
     switch {
     case notAckFrame == false:
-        initializer, typeSwitchError = CEMIFrameAckParse(io)
+        _parent, typeSwitchError = CEMIFrameAckParse(io)
     case notAckFrame == true && standardFrame == true && polling == false:
-        initializer, typeSwitchError = CEMIFrameDataParse(io)
+        _parent, typeSwitchError = CEMIFrameDataParse(io)
     case notAckFrame == true && standardFrame == true && polling == true:
-        initializer, typeSwitchError = CEMIFramePollingDataParse(io)
+        _parent, typeSwitchError = CEMIFramePollingDataParse(io)
     case notAckFrame == true && standardFrame == false && polling == false:
-        initializer, typeSwitchError = CEMIFrameDataExtParse(io)
+        _parent, typeSwitchError = CEMIFrameDataExtParse(io)
     case notAckFrame == true && standardFrame == false && polling == true:
-        initializer, typeSwitchError = CEMIFramePollingDataExtParse(io)
+        _parent, typeSwitchError = CEMIFramePollingDataExtParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(repeated, priority, acknowledgeRequested, errorFlag), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent, repeated, priority, acknowledgeRequested, errorFlag)
+    return _parent, nil
 }
 
-func CEMIFrameSerialize(io utils.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func() error) error {
+func (m *CEMIFrame) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *CEMIFrame) SerializeParent(io utils.WriteBuffer, child ICEMIFrame, serializeChildFunction func() error) error {
 
     // Discriminator Field (standardFrame) (Used as input to a switch field)
-    standardFrame := bool(i.StandardFrame())
+    standardFrame := bool(child.StandardFrame())
     _standardFrameErr := io.WriteBit((standardFrame))
     if _standardFrameErr != nil {
         return errors.New("Error serializing 'standardFrame' field " + _standardFrameErr.Error())
     }
 
     // Discriminator Field (polling) (Used as input to a switch field)
-    polling := bool(i.Polling())
+    polling := bool(child.Polling())
     _pollingErr := io.WriteBit((polling))
     if _pollingErr != nil {
         return errors.New("Error serializing 'polling' field " + _pollingErr.Error())
@@ -208,7 +203,7 @@ func CEMIFrameSerialize(io utils.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSe
     }
 
     // Discriminator Field (notAckFrame) (Used as input to a switch field)
-    notAckFrame := bool(i.NotAckFrame())
+    notAckFrame := bool(child.NotAckFrame())
     _notAckFrameErr := io.WriteBit((notAckFrame))
     if _notAckFrameErr != nil {
         return errors.New("Error serializing 'notAckFrame' field " + _notAckFrameErr.Error())
@@ -236,7 +231,7 @@ func CEMIFrameSerialize(io utils.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSe
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -264,7 +259,7 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 }
                 m.Repeated = data
             case "priority":
-                var data *CEMIPriority
+                var data CEMIPriority
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -286,7 +281,7 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrame"},
         }}); err != nil {

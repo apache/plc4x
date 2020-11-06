@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestAcknowledgeAlarm
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) ServiceChoice() uint8 {
     return 0x00
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestAcknowledgeAlarm{}
-}
-
-func CastIBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) IBACnetConfirmedServiceRequestAcknowledgeAlarm {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestAcknowledgeAlarm {
-        if iBACnetConfirmedServiceRequestAcknowledgeAlarm, ok := typ.(IBACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-            return iBACnetConfirmedServiceRequestAcknowledgeAlarm
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
-        if sBACnetConfirmedServiceRequestAcknowledgeAlarm, ok := typ.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-            return sBACnetConfirmedServiceRequestAcknowledgeAlarm
+        if casted, ok := typ.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestAcknowledgeAlarm, ok := typ.(*BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-            return *sBACnetConfirmedServiceRequestAcknowledgeAlarm
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestAcknowledgeAlarm(casted.Child)
         }
         return BACnetConfirmedServiceRequestAcknowledgeAlarm{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestAcknowledgeAlarm(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) UnmarshalXML(d *xml.Deco
     }
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm"},
         }}); err != nil {

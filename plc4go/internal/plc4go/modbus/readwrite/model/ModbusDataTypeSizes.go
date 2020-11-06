@@ -19,14 +19,12 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type ModbusDataTypeSizes string
 
 type IModbusDataTypeSizes interface {
-    spi.Message
     DataTypeSize() uint8
     Serialize(io utils.WriteBuffer) error
 }

@@ -20,17 +20,17 @@ package modbus
 
 import (
 	"errors"
-	model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+	driverModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
 	internalModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi/interceptors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	apiModel "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 )
 
 type ConnectionMetadata struct {
-	model.PlcConnectionMetadata
+    apiModel.PlcConnectionMetadata
 }
 
 func (m ConnectionMetadata) CanRead() bool {
@@ -90,9 +90,9 @@ func (m ModbusConnection) IsConnected() bool {
 
 func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	result := make(chan plc4go.PlcConnectionPingResult)
-	diagnosticRequestPdu := model2.CastIModbusPDU(model2.NewModbusPDUDiagnosticRequest(0, 0x42))
+	diagnosticRequestPdu := driverModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 	go func() {
-		pingRequest := model2.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
+		pingRequest := driverModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
 		err := m.messageCodec.Send(pingRequest)
 		if err != nil {
 			result <- plc4go.NewPlcConnectionPingResult(err)
@@ -100,7 +100,7 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		}
 		// Register an expected response
 		check := func(response interface{}) bool {
-			responseAdu := model2.CastModbusTcpADU(response)
+			responseAdu := driverModel.CastModbusTcpADU(response)
 			return responseAdu.TransactionIdentifier == 1 &&
 				responseAdu.UnitIdentifier == m.unitIdentifier
 		}
@@ -123,25 +123,25 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return result
 }
 
-func (m ModbusConnection) GetMetadata() model.PlcConnectionMetadata {
+func (m ModbusConnection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return ConnectionMetadata{}
 }
 
-func (m ModbusConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
+func (m ModbusConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
 		NewModbusReader(m.unitIdentifier, m.messageCodec), m.requestInterceptor)
 }
 
-func (m ModbusConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
+func (m ModbusConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
 		m.fieldHandler, m.valueHandler, NewModbusWriter(m.unitIdentifier, m.messageCodec))
 }
 
-func (m ModbusConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
+func (m ModbusConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	panic("implement me")
 }
 
-func (m ModbusConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
+func (m ModbusConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	panic("implement me")
 }
 

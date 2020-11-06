@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,53 +30,59 @@ import (
 type APDUSimpleAck struct {
     OriginalInvokeId uint8
     ServiceChoice uint8
-    APDU
+    Parent *APDU
+    IAPDUSimpleAck
 }
 
 // The corresponding interface
 type IAPDUSimpleAck interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUSimpleAck) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUSimpleAck) ApduType() uint8 {
     return 0x2
 }
 
-func (m APDUSimpleAck) initialize() spi.Message {
-    return m
+
+func (m *APDUSimpleAck) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) APDUInitializer {
-    return &APDUSimpleAck{OriginalInvokeId: originalInvokeId, ServiceChoice: serviceChoice}
-}
-
-func CastIAPDUSimpleAck(structType interface{}) IAPDUSimpleAck {
-    castFunc := func(typ interface{}) IAPDUSimpleAck {
-        if iAPDUSimpleAck, ok := typ.(IAPDUSimpleAck); ok {
-            return iAPDUSimpleAck
-        }
-        return nil
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, ) *APDU {
+    child := &APDUSimpleAck{
+        OriginalInvokeId: originalInvokeId,
+        ServiceChoice: serviceChoice,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
     castFunc := func(typ interface{}) APDUSimpleAck {
-        if sAPDUSimpleAck, ok := typ.(APDUSimpleAck); ok {
-            return sAPDUSimpleAck
+        if casted, ok := typ.(APDUSimpleAck); ok {
+            return casted
         }
-        if sAPDUSimpleAck, ok := typ.(*APDUSimpleAck); ok {
-            return *sAPDUSimpleAck
+        if casted, ok := typ.(*APDUSimpleAck); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUSimpleAck(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUSimpleAck(casted.Child)
         }
         return APDUSimpleAck{}
     }
     return castFunc(structType)
 }
 
-func (m APDUSimpleAck) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUSimpleAck) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 4
@@ -91,11 +96,11 @@ func (m APDUSimpleAck) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUSimpleAck) LengthInBytes() uint16 {
+func (m *APDUSimpleAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(io *utils.ReadBuffer) (APDUInitializer, error) {
+func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -123,11 +128,17 @@ func APDUSimpleAckParse(io *utils.ReadBuffer) (APDUInitializer, error) {
         return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUSimpleAck(originalInvokeId, serviceChoice), nil
+    // Create a partially initialized instance
+    _child := &APDUSimpleAck{
+        OriginalInvokeId: originalInvokeId,
+        ServiceChoice: serviceChoice,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
+func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -154,7 +165,7 @@ func (m APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -187,7 +198,7 @@ func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck"},
         }}); err != nil {

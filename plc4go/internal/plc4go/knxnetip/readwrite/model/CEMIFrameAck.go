@@ -21,91 +21,98 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type CEMIFrameAck struct {
-    CEMIFrame
+    Parent *CEMIFrame
+    ICEMIFrameAck
 }
 
 // The corresponding interface
 type ICEMIFrameAck interface {
-    ICEMIFrame
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIFrameAck) NotAckFrame() bool {
+///////////////////////////////////////////////////////////
+func (m *CEMIFrameAck) NotAckFrame() bool {
     return false
 }
 
-func (m CEMIFrameAck) StandardFrame() bool {
+func (m *CEMIFrameAck) StandardFrame() bool {
     return false
 }
 
-func (m CEMIFrameAck) Polling() bool {
+func (m *CEMIFrameAck) Polling() bool {
     return false
 }
 
-func (m CEMIFrameAck) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
-    m.Repeated = repeated
-    m.Priority = priority
-    m.AcknowledgeRequested = acknowledgeRequested
-    m.ErrorFlag = errorFlag
-    return m
+
+func (m *CEMIFrameAck) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+    m.Parent.Repeated = repeated
+    m.Parent.Priority = priority
+    m.Parent.AcknowledgeRequested = acknowledgeRequested
+    m.Parent.ErrorFlag = errorFlag
 }
 
-func NewCEMIFrameAck() CEMIFrameInitializer {
-    return &CEMIFrameAck{}
-}
-
-func CastICEMIFrameAck(structType interface{}) ICEMIFrameAck {
-    castFunc := func(typ interface{}) ICEMIFrameAck {
-        if iCEMIFrameAck, ok := typ.(ICEMIFrameAck); ok {
-            return iCEMIFrameAck
-        }
-        return nil
+func NewCEMIFrameAck(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
+    child := &CEMIFrameAck{
+        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIFrameAck(structType interface{}) CEMIFrameAck {
     castFunc := func(typ interface{}) CEMIFrameAck {
-        if sCEMIFrameAck, ok := typ.(CEMIFrameAck); ok {
-            return sCEMIFrameAck
+        if casted, ok := typ.(CEMIFrameAck); ok {
+            return casted
         }
-        if sCEMIFrameAck, ok := typ.(*CEMIFrameAck); ok {
-            return *sCEMIFrameAck
+        if casted, ok := typ.(*CEMIFrameAck); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMIFrame); ok {
+            return CastCEMIFrameAck(casted.Child)
+        }
+        if casted, ok := typ.(*CEMIFrame); ok {
+            return CastCEMIFrameAck(casted.Child)
         }
         return CEMIFrameAck{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIFrameAck) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
+func (m *CEMIFrameAck) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m CEMIFrameAck) LengthInBytes() uint16 {
+func (m *CEMIFrameAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameAckParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFrameAckParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
 
-    // Create the instance
-    return NewCEMIFrameAck(), nil
+    // Create a partially initialized instance
+    _child := &CEMIFrameAck{
+        Parent: &CEMIFrame{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIFrameAck) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIFrameAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -126,7 +133,7 @@ func (m *CEMIFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     }
 }
 
-func (m CEMIFrameAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIFrameAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameAck"},
         }}); err != nil {

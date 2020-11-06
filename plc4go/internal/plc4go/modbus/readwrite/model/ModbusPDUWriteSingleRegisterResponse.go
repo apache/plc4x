@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUWriteSingleRegisterResponse struct {
     Address uint16
     Value uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUWriteSingleRegisterResponse
 }
 
 // The corresponding interface
 type IModbusPDUWriteSingleRegisterResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUWriteSingleRegisterResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteSingleRegisterResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUWriteSingleRegisterResponse) FunctionFlag() uint8 {
     return 0x06
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) Response() bool {
+func (m *ModbusPDUWriteSingleRegisterResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUWriteSingleRegisterResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) ModbusPDUInitializer {
-    return &ModbusPDUWriteSingleRegisterResponse{Address: address, Value: value}
-}
-
-func CastIModbusPDUWriteSingleRegisterResponse(structType interface{}) IModbusPDUWriteSingleRegisterResponse {
-    castFunc := func(typ interface{}) IModbusPDUWriteSingleRegisterResponse {
-        if iModbusPDUWriteSingleRegisterResponse, ok := typ.(IModbusPDUWriteSingleRegisterResponse); ok {
-            return iModbusPDUWriteSingleRegisterResponse
-        }
-        return nil
+func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16, ) *ModbusPDU {
+    child := &ModbusPDUWriteSingleRegisterResponse{
+        Address: address,
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUWriteSingleRegisterResponse(structType interface{}) ModbusPDUWriteSingleRegisterResponse {
     castFunc := func(typ interface{}) ModbusPDUWriteSingleRegisterResponse {
-        if sModbusPDUWriteSingleRegisterResponse, ok := typ.(ModbusPDUWriteSingleRegisterResponse); ok {
-            return sModbusPDUWriteSingleRegisterResponse
+        if casted, ok := typ.(ModbusPDUWriteSingleRegisterResponse); ok {
+            return casted
         }
-        if sModbusPDUWriteSingleRegisterResponse, ok := typ.(*ModbusPDUWriteSingleRegisterResponse); ok {
-            return *sModbusPDUWriteSingleRegisterResponse
+        if casted, ok := typ.(*ModbusPDUWriteSingleRegisterResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUWriteSingleRegisterResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUWriteSingleRegisterResponse(casted.Child)
         }
         return ModbusPDUWriteSingleRegisterResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (address)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUWriteSingleRegisterResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (address)
     address, _addressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (ModbusPDUI
         return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUWriteSingleRegisterResponse(address, value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUWriteSingleRegisterResponse{
+        Address: address,
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (address)
@@ -136,7 +147,7 @@ func (m ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) er
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUWriteSingleRegisterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUWriteSingleRegisterResponse) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m ModbusPDUWriteSingleRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUWriteSingleRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterResponse"},
         }}); err != nil {

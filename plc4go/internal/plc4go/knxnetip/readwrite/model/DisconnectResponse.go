@@ -22,61 +22,66 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type DisconnectResponse struct {
     CommunicationChannelId uint8
-    Status IStatus
-    KNXNetIPMessage
+    Status Status
+    Parent *KNXNetIPMessage
+    IDisconnectResponse
 }
 
 // The corresponding interface
 type IDisconnectResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m DisconnectResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *DisconnectResponse) MsgType() uint16 {
     return 0x020A
 }
 
-func (m DisconnectResponse) initialize() spi.Message {
-    return m
+
+func (m *DisconnectResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewDisconnectResponse(communicationChannelId uint8, status IStatus) KNXNetIPMessageInitializer {
-    return &DisconnectResponse{CommunicationChannelId: communicationChannelId, Status: status}
-}
-
-func CastIDisconnectResponse(structType interface{}) IDisconnectResponse {
-    castFunc := func(typ interface{}) IDisconnectResponse {
-        if iDisconnectResponse, ok := typ.(IDisconnectResponse); ok {
-            return iDisconnectResponse
-        }
-        return nil
+func NewDisconnectResponse(communicationChannelId uint8, status Status, ) *KNXNetIPMessage {
+    child := &DisconnectResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastDisconnectResponse(structType interface{}) DisconnectResponse {
     castFunc := func(typ interface{}) DisconnectResponse {
-        if sDisconnectResponse, ok := typ.(DisconnectResponse); ok {
-            return sDisconnectResponse
+        if casted, ok := typ.(DisconnectResponse); ok {
+            return casted
         }
-        if sDisconnectResponse, ok := typ.(*DisconnectResponse); ok {
-            return *sDisconnectResponse
+        if casted, ok := typ.(*DisconnectResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastDisconnectResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastDisconnectResponse(casted.Child)
         }
         return DisconnectResponse{}
     }
     return castFunc(structType)
 }
 
-func (m DisconnectResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *DisconnectResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (communicationChannelId)
     lengthInBits += 8
@@ -87,11 +92,11 @@ func (m DisconnectResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DisconnectResponse) LengthInBytes() uint16 {
+func (m *DisconnectResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DisconnectResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DisconnectResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (communicationChannelId)
     communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
@@ -105,11 +110,17 @@ func DisconnectResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, 
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
     }
 
-    // Create the instance
-    return NewDisconnectResponse(communicationChannelId, status), nil
+    // Create a partially initialized instance
+    _child := &DisconnectResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m DisconnectResponse) Serialize(io utils.WriteBuffer) error {
+func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (communicationChannelId)
@@ -128,7 +139,7 @@ func (m DisconnectResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -151,7 +162,7 @@ func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data *Status
+                var data Status
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -161,7 +172,7 @@ func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
     }
 }
 
-func (m DisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DisconnectResponse"},
         }}); err != nil {

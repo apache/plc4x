@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -168,6 +169,16 @@ public class PlcNull implements PlcValue {
 
     @Override
     public String getString() {
+        return null;
+    }
+
+    @Override
+    public boolean isDuration() {
+        return false;
+    }
+
+    @Override
+    public Duration getDuration() {
         return null;
     }
 

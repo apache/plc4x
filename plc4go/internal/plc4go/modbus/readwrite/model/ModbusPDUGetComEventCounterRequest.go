@@ -21,87 +21,94 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUGetComEventCounterRequest struct {
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUGetComEventCounterRequest
 }
 
 // The corresponding interface
 type IModbusPDUGetComEventCounterRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUGetComEventCounterRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUGetComEventCounterRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUGetComEventCounterRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUGetComEventCounterRequest) FunctionFlag() uint8 {
     return 0x0B
 }
 
-func (m ModbusPDUGetComEventCounterRequest) Response() bool {
+func (m *ModbusPDUGetComEventCounterRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUGetComEventCounterRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUGetComEventCounterRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUGetComEventCounterRequest() ModbusPDUInitializer {
-    return &ModbusPDUGetComEventCounterRequest{}
-}
-
-func CastIModbusPDUGetComEventCounterRequest(structType interface{}) IModbusPDUGetComEventCounterRequest {
-    castFunc := func(typ interface{}) IModbusPDUGetComEventCounterRequest {
-        if iModbusPDUGetComEventCounterRequest, ok := typ.(IModbusPDUGetComEventCounterRequest); ok {
-            return iModbusPDUGetComEventCounterRequest
-        }
-        return nil
+func NewModbusPDUGetComEventCounterRequest() *ModbusPDU {
+    child := &ModbusPDUGetComEventCounterRequest{
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUGetComEventCounterRequest(structType interface{}) ModbusPDUGetComEventCounterRequest {
     castFunc := func(typ interface{}) ModbusPDUGetComEventCounterRequest {
-        if sModbusPDUGetComEventCounterRequest, ok := typ.(ModbusPDUGetComEventCounterRequest); ok {
-            return sModbusPDUGetComEventCounterRequest
+        if casted, ok := typ.(ModbusPDUGetComEventCounterRequest); ok {
+            return casted
         }
-        if sModbusPDUGetComEventCounterRequest, ok := typ.(*ModbusPDUGetComEventCounterRequest); ok {
-            return *sModbusPDUGetComEventCounterRequest
+        if casted, ok := typ.(*ModbusPDUGetComEventCounterRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUGetComEventCounterRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUGetComEventCounterRequest(casted.Child)
         }
         return ModbusPDUGetComEventCounterRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUGetComEventCounterRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUGetComEventCounterRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventCounterRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUGetComEventCounterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
-    // Create the instance
-    return NewModbusPDUGetComEventCounterRequest(), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUGetComEventCounterRequest{
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -122,7 +129,7 @@ func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start 
     }
 }
 
-func (m ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterRequest"},
         }}); err != nil {

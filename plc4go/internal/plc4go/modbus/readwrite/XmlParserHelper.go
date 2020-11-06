@@ -21,6 +21,7 @@ package model
 import (
     "encoding/xml"
     "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
@@ -30,56 +31,56 @@ type ModbusXmlParserHelper struct {
 func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string) (spi.Message, error) {
     switch typeName {
     case "ModbusPDUWriteFileRecordRequestItem":
-        var obj ModbusPDUWriteFileRecordRequestItem
+        var obj *model.ModbusPDUWriteFileRecordRequestItem
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusPDUReadFileRecordResponseItem":
-        var obj ModbusPDUReadFileRecordResponseItem
+        var obj *model.ModbusPDUReadFileRecordResponseItem
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusConstants":
-        var obj ModbusConstants
+        var obj *model.ModbusConstants
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusTcpADU":
-        var obj ModbusTcpADU
+        var obj *model.ModbusTcpADU
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusPDUWriteFileRecordResponseItem":
-        var obj ModbusPDUWriteFileRecordResponseItem
+        var obj *model.ModbusPDUWriteFileRecordResponseItem
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusPDU":
-        var obj ModbusPDU
+        var obj *model.ModbusPDU
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusPDUReadFileRecordRequestItem":
-        var obj ModbusPDUReadFileRecordRequestItem
+        var obj *model.ModbusPDUReadFileRecordRequestItem
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
     case "ModbusSerialADU":
-        var obj ModbusSerialADU
+        var obj *model.ModbusSerialADU
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())

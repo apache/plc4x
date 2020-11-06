@@ -22,70 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetError struct {
-
+    Child IBACnetErrorChild
+    IBACnetError
+    IBACnetErrorParent
 }
 
 // The corresponding interface
 type IBACnetError interface {
-    spi.Message
     ServiceChoice() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type BACnetErrorInitializer interface {
-    initialize() spi.Message
+type IBACnetErrorParent interface {
+    SerializeParent(io utils.WriteBuffer, child IBACnetError, serializeChildFunction func() error) error
 }
 
-func BACnetErrorServiceChoice(m IBACnetError) uint8 {
-    return m.ServiceChoice()
+type IBACnetErrorChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *BACnetError)
+    IBACnetError
 }
 
-
-func CastIBACnetError(structType interface{}) IBACnetError {
-    castFunc := func(typ interface{}) IBACnetError {
-        if iBACnetError, ok := typ.(IBACnetError); ok {
-            return iBACnetError
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewBACnetError() *BACnetError {
+    return &BACnetError{}
 }
 
 func CastBACnetError(structType interface{}) BACnetError {
     castFunc := func(typ interface{}) BACnetError {
-        if sBACnetError, ok := typ.(BACnetError); ok {
-            return sBACnetError
+        if casted, ok := typ.(BACnetError); ok {
+            return casted
         }
-        if sBACnetError, ok := typ.(*BACnetError); ok {
-            return *sBACnetError
+        if casted, ok := typ.(*BACnetError); ok {
+            return *casted
         }
         return BACnetError{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetError) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *BACnetError) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (serviceChoice)
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m BACnetError) LengthInBytes() uint16 {
+func (m *BACnetError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorParse(io *utils.ReadBuffer) (spi.Message, error) {
+func BACnetErrorParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
@@ -94,57 +92,62 @@ func BACnetErrorParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer BACnetErrorInitializer
+    var _parent *BACnetError
     var typeSwitchError error
     switch {
     case serviceChoice == 0x03:
-        initializer, typeSwitchError = BACnetErrorGetAlarmSummaryParse(io)
+        _parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(io)
     case serviceChoice == 0x04:
-        initializer, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(io)
+        _parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(io)
     case serviceChoice == 0x1D:
-        initializer, typeSwitchError = BACnetErrorGetEventInformationParse(io)
+        _parent, typeSwitchError = BACnetErrorGetEventInformationParse(io)
     case serviceChoice == 0x06:
-        initializer, typeSwitchError = BACnetErrorAtomicReadFileParse(io)
+        _parent, typeSwitchError = BACnetErrorAtomicReadFileParse(io)
     case serviceChoice == 0x07:
-        initializer, typeSwitchError = BACnetErrorAtomicWriteFileParse(io)
+        _parent, typeSwitchError = BACnetErrorAtomicWriteFileParse(io)
     case serviceChoice == 0x0A:
-        initializer, typeSwitchError = BACnetErrorCreateObjectParse(io)
+        _parent, typeSwitchError = BACnetErrorCreateObjectParse(io)
     case serviceChoice == 0x0C:
-        initializer, typeSwitchError = BACnetErrorReadPropertyParse(io)
+        _parent, typeSwitchError = BACnetErrorReadPropertyParse(io)
     case serviceChoice == 0x0E:
-        initializer, typeSwitchError = BACnetErrorReadPropertyMultipleParse(io)
+        _parent, typeSwitchError = BACnetErrorReadPropertyMultipleParse(io)
     case serviceChoice == 0x1A:
-        initializer, typeSwitchError = BACnetErrorReadRangeParse(io)
+        _parent, typeSwitchError = BACnetErrorReadRangeParse(io)
     case serviceChoice == 0x12:
-        initializer, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(io)
+        _parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(io)
     case serviceChoice == 0x15:
-        initializer, typeSwitchError = BACnetErrorVTOpenParse(io)
+        _parent, typeSwitchError = BACnetErrorVTOpenParse(io)
     case serviceChoice == 0x17:
-        initializer, typeSwitchError = BACnetErrorVTDataParse(io)
+        _parent, typeSwitchError = BACnetErrorVTDataParse(io)
     case serviceChoice == 0x18:
-        initializer, typeSwitchError = BACnetErrorRemovedAuthenticateParse(io)
+        _parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(io)
     case serviceChoice == 0x0D:
-        initializer, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(io)
+        _parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func BACnetErrorSerialize(io utils.WriteBuffer, m BACnetError, i IBACnetError, childSerialize func() error) error {
+func (m *BACnetError) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *BACnetError) SerializeParent(io utils.WriteBuffer, child IBACnetError, serializeChildFunction func() error) error {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
-    serviceChoice := uint8(i.ServiceChoice())
+    serviceChoice := uint8(child.ServiceChoice())
     _serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
     if _serviceChoiceErr != nil {
         return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -170,7 +173,7 @@ func (m *BACnetError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
     }
 }
 
-func (m BACnetError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetError"},
         }}); err != nil {

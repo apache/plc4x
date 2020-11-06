@@ -22,68 +22,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueResponse struct {
     FifoValue []uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadFifoQueueResponse
 }
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadFifoQueueResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadFifoQueueResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadFifoQueueResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadFifoQueueResponse) FunctionFlag() uint8 {
     return 0x18
 }
 
-func (m ModbusPDUReadFifoQueueResponse) Response() bool {
+func (m *ModbusPDUReadFifoQueueResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReadFifoQueueResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadFifoQueueResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadFifoQueueResponse{FifoValue: fifoValue}
-}
-
-func CastIModbusPDUReadFifoQueueResponse(structType interface{}) IModbusPDUReadFifoQueueResponse {
-    castFunc := func(typ interface{}) IModbusPDUReadFifoQueueResponse {
-        if iModbusPDUReadFifoQueueResponse, ok := typ.(IModbusPDUReadFifoQueueResponse); ok {
-            return iModbusPDUReadFifoQueueResponse
-        }
-        return nil
+func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16, ) *ModbusPDU {
+    child := &ModbusPDUReadFifoQueueResponse{
+        FifoValue: fifoValue,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadFifoQueueResponse(structType interface{}) ModbusPDUReadFifoQueueResponse {
     castFunc := func(typ interface{}) ModbusPDUReadFifoQueueResponse {
-        if sModbusPDUReadFifoQueueResponse, ok := typ.(ModbusPDUReadFifoQueueResponse); ok {
-            return sModbusPDUReadFifoQueueResponse
+        if casted, ok := typ.(ModbusPDUReadFifoQueueResponse); ok {
+            return casted
         }
-        if sModbusPDUReadFifoQueueResponse, ok := typ.(*ModbusPDUReadFifoQueueResponse); ok {
-            return *sModbusPDUReadFifoQueueResponse
+        if casted, ok := typ.(*ModbusPDUReadFifoQueueResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadFifoQueueResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadFifoQueueResponse(casted.Child)
         }
         return ModbusPDUReadFifoQueueResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 16
@@ -99,11 +103,11 @@ func (m ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _byteCountErr := io.ReadUint16(16)
@@ -121,7 +125,6 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (ModbusPDUInitial
     // Count array
     fifoValue := make([]uint16, fifoCount)
     for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
-
         _item, _err := io.ReadUint16(16)
         if _err != nil {
             return nil, errors.New("Error parsing 'fifoValue' field " + _err.Error())
@@ -129,11 +132,16 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (ModbusPDUInitial
         fifoValue[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUReadFifoQueueResponse(fifoValue), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadFifoQueueResponse{
+        FifoValue: fifoValue,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -162,7 +170,7 @@ func (m ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -189,7 +197,7 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
     }
 }
 
-func (m ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueResponse"},
         }}); err != nil {

@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,45 +30,35 @@ import (
 type TunnelingRequestDataBlock struct {
     CommunicationChannelId uint8
     SequenceCounter uint8
-
+    ITunnelingRequestDataBlock
 }
 
 // The corresponding interface
 type ITunnelingRequestDataBlock interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) spi.Message {
+func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *TunnelingRequestDataBlock {
     return &TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
-
-func CastITunnelingRequestDataBlock(structType interface{}) ITunnelingRequestDataBlock {
-    castFunc := func(typ interface{}) ITunnelingRequestDataBlock {
-        if iTunnelingRequestDataBlock, ok := typ.(ITunnelingRequestDataBlock); ok {
-            return iTunnelingRequestDataBlock
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastTunnelingRequestDataBlock(structType interface{}) TunnelingRequestDataBlock {
     castFunc := func(typ interface{}) TunnelingRequestDataBlock {
-        if sTunnelingRequestDataBlock, ok := typ.(TunnelingRequestDataBlock); ok {
-            return sTunnelingRequestDataBlock
+        if casted, ok := typ.(TunnelingRequestDataBlock); ok {
+            return casted
         }
-        if sTunnelingRequestDataBlock, ok := typ.(*TunnelingRequestDataBlock); ok {
-            return *sTunnelingRequestDataBlock
+        if casted, ok := typ.(*TunnelingRequestDataBlock); ok {
+            return *casted
         }
         return TunnelingRequestDataBlock{}
     }
     return castFunc(structType)
 }
 
-func (m TunnelingRequestDataBlock) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *TunnelingRequestDataBlock) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -86,11 +75,11 @@ func (m TunnelingRequestDataBlock) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m TunnelingRequestDataBlock) LengthInBytes() uint16 {
+func (m *TunnelingRequestDataBlock) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TunnelingRequestDataBlockParse(io *utils.ReadBuffer) (spi.Message, error) {
+func TunnelingRequestDataBlockParse(io *utils.ReadBuffer) (*TunnelingRequestDataBlock, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -128,7 +117,7 @@ func TunnelingRequestDataBlockParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewTunnelingRequestDataBlock(communicationChannelId, sequenceCounter), nil
 }
 
-func (m TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
+func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -192,7 +181,7 @@ func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m TunnelingRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TunnelingRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock"},
         }}); err != nil {

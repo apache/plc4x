@@ -23,68 +23,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadWriteMultipleHoldingRegistersResponse struct {
     Value []int8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadWriteMultipleHoldingRegistersResponse
 }
 
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) FunctionFlag() uint8 {
     return 0x17
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Response() bool {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []int8) ModbusPDUInitializer {
-    return &ModbusPDUReadWriteMultipleHoldingRegistersResponse{Value: value}
-}
-
-func CastIModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface{}) IModbusPDUReadWriteMultipleHoldingRegistersResponse {
-    castFunc := func(typ interface{}) IModbusPDUReadWriteMultipleHoldingRegistersResponse {
-        if iModbusPDUReadWriteMultipleHoldingRegistersResponse, ok := typ.(IModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
-            return iModbusPDUReadWriteMultipleHoldingRegistersResponse
-        }
-        return nil
+func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []int8, ) *ModbusPDU {
+    child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface{}) ModbusPDUReadWriteMultipleHoldingRegistersResponse {
     castFunc := func(typ interface{}) ModbusPDUReadWriteMultipleHoldingRegistersResponse {
-        if sModbusPDUReadWriteMultipleHoldingRegistersResponse, ok := typ.(ModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
-            return sModbusPDUReadWriteMultipleHoldingRegistersResponse
+        if casted, ok := typ.(ModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
+            return casted
         }
-        if sModbusPDUReadWriteMultipleHoldingRegistersResponse, ok := typ.(*ModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
-            return *sModbusPDUReadWriteMultipleHoldingRegistersResponse
+        if casted, ok := typ.(*ModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadWriteMultipleHoldingRegistersResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadWriteMultipleHoldingRegistersResponse(casted.Child)
         }
         return ModbusPDUReadWriteMultipleHoldingRegistersResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 8
@@ -97,11 +101,11 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint1
     return lengthInBits
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -113,7 +117,6 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffe
     // Count array
     value := make([]int8, byteCount)
     for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'value' field " + _err.Error())
@@ -121,11 +124,16 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffe
         value[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -147,7 +155,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io utils.W
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,7 +187,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml
     }
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse"},
         }}); err != nil {

@@ -23,60 +23,64 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
-    KnxLayer IKnxLayer
-    ConnectionRequestInformation
+    KnxLayer KnxLayer
+    Parent *ConnectionRequestInformation
+    IConnectionRequestInformationTunnelConnection
 }
 
 // The corresponding interface
 type IConnectionRequestInformationTunnelConnection interface {
-    IConnectionRequestInformation
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
     return 0x04
 }
 
-func (m ConnectionRequestInformationTunnelConnection) initialize() spi.Message {
-    return m
+
+func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
-func NewConnectionRequestInformationTunnelConnection(knxLayer IKnxLayer) ConnectionRequestInformationInitializer {
-    return &ConnectionRequestInformationTunnelConnection{KnxLayer: knxLayer}
-}
-
-func CastIConnectionRequestInformationTunnelConnection(structType interface{}) IConnectionRequestInformationTunnelConnection {
-    castFunc := func(typ interface{}) IConnectionRequestInformationTunnelConnection {
-        if iConnectionRequestInformationTunnelConnection, ok := typ.(IConnectionRequestInformationTunnelConnection); ok {
-            return iConnectionRequestInformationTunnelConnection
-        }
-        return nil
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer, ) *ConnectionRequestInformation {
+    child := &ConnectionRequestInformationTunnelConnection{
+        KnxLayer: knxLayer,
+        Parent: NewConnectionRequestInformation(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastConnectionRequestInformationTunnelConnection(structType interface{}) ConnectionRequestInformationTunnelConnection {
     castFunc := func(typ interface{}) ConnectionRequestInformationTunnelConnection {
-        if sConnectionRequestInformationTunnelConnection, ok := typ.(ConnectionRequestInformationTunnelConnection); ok {
-            return sConnectionRequestInformationTunnelConnection
+        if casted, ok := typ.(ConnectionRequestInformationTunnelConnection); ok {
+            return casted
         }
-        if sConnectionRequestInformationTunnelConnection, ok := typ.(*ConnectionRequestInformationTunnelConnection); ok {
-            return *sConnectionRequestInformationTunnelConnection
+        if casted, ok := typ.(*ConnectionRequestInformationTunnelConnection); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ConnectionRequestInformation); ok {
+            return CastConnectionRequestInformationTunnelConnection(casted.Child)
+        }
+        if casted, ok := typ.(*ConnectionRequestInformation); ok {
+            return CastConnectionRequestInformationTunnelConnection(casted.Child)
         }
         return ConnectionRequestInformationTunnelConnection{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
+func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (knxLayer)
     lengthInBits += 8
@@ -87,11 +91,11 @@ func (m ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
+func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
+func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
     // Enum field (knxLayer)
     knxLayer, _knxLayerErr := KnxLayerParse(io)
@@ -113,11 +117,16 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (Co
         }
     }
 
-    // Create the instance
-    return NewConnectionRequestInformationTunnelConnection(knxLayer), nil
+    // Create a partially initialized instance
+    _child := &ConnectionRequestInformationTunnelConnection{
+        KnxLayer: knxLayer,
+        Parent: &ConnectionRequestInformation{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
+func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (knxLayer)
@@ -137,7 +146,7 @@ func (m ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBu
 
         return nil
     }
-    return ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -154,7 +163,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "knxLayer":
-                var data *KnxLayer
+                var data KnxLayer
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -164,7 +173,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
     }
 }
 
-func (m ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection"},
         }}); err != nil {

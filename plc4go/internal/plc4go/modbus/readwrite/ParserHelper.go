@@ -20,6 +20,7 @@ package model
 
 import (
     "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -30,33 +31,33 @@ type ModbusParserHelper struct {
 func (m ModbusParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
     switch typeName {
     case "ModbusPDUWriteFileRecordRequestItem":
-        return ModbusPDUWriteFileRecordRequestItemParse(io)
+        return model.ModbusPDUWriteFileRecordRequestItemParse(io)
     case "ModbusPDUReadFileRecordResponseItem":
-        return ModbusPDUReadFileRecordResponseItemParse(io)
+        return model.ModbusPDUReadFileRecordResponseItemParse(io)
     case "ModbusConstants":
-        return ModbusConstantsParse(io)
+        return model.ModbusConstantsParse(io)
     case "ModbusTcpADU":
         response, err := utils.StrToBool(arguments[0])
         if err != nil {
             return nil, err
         }
-        return ModbusTcpADUParse(io, response)
+        return model.ModbusTcpADUParse(io, response)
     case "ModbusPDUWriteFileRecordResponseItem":
-        return ModbusPDUWriteFileRecordResponseItemParse(io)
+        return model.ModbusPDUWriteFileRecordResponseItemParse(io)
     case "ModbusPDU":
         response, err := utils.StrToBool(arguments[0])
         if err != nil {
             return nil, err
         }
-        return ModbusPDUParse(io, response)
+        return model.ModbusPDUParse(io, response)
     case "ModbusPDUReadFileRecordRequestItem":
-        return ModbusPDUReadFileRecordRequestItemParse(io)
+        return model.ModbusPDUReadFileRecordRequestItemParse(io)
     case "ModbusSerialADU":
         response, err := utils.StrToBool(arguments[0])
         if err != nil {
             return nil, err
         }
-        return ModbusSerialADUParse(io, response)
+        return model.ModbusSerialADUParse(io, response)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

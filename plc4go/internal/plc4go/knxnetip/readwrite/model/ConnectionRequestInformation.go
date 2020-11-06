@@ -22,56 +22,53 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ConnectionRequestInformation struct {
-
+    Child IConnectionRequestInformationChild
+    IConnectionRequestInformation
+    IConnectionRequestInformationParent
 }
 
 // The corresponding interface
 type IConnectionRequestInformation interface {
-    spi.Message
     ConnectionType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type ConnectionRequestInformationInitializer interface {
-    initialize() spi.Message
+type IConnectionRequestInformationParent interface {
+    SerializeParent(io utils.WriteBuffer, child IConnectionRequestInformation, serializeChildFunction func() error) error
 }
 
-func ConnectionRequestInformationConnectionType(m IConnectionRequestInformation) uint8 {
-    return m.ConnectionType()
+type IConnectionRequestInformationChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *ConnectionRequestInformation)
+    IConnectionRequestInformation
 }
 
-
-func CastIConnectionRequestInformation(structType interface{}) IConnectionRequestInformation {
-    castFunc := func(typ interface{}) IConnectionRequestInformation {
-        if iConnectionRequestInformation, ok := typ.(IConnectionRequestInformation); ok {
-            return iConnectionRequestInformation
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewConnectionRequestInformation() *ConnectionRequestInformation {
+    return &ConnectionRequestInformation{}
 }
 
 func CastConnectionRequestInformation(structType interface{}) ConnectionRequestInformation {
     castFunc := func(typ interface{}) ConnectionRequestInformation {
-        if sConnectionRequestInformation, ok := typ.(ConnectionRequestInformation); ok {
-            return sConnectionRequestInformation
+        if casted, ok := typ.(ConnectionRequestInformation); ok {
+            return casted
         }
-        if sConnectionRequestInformation, ok := typ.(*ConnectionRequestInformation); ok {
-            return *sConnectionRequestInformation
+        if casted, ok := typ.(*ConnectionRequestInformation); ok {
+            return *casted
         }
         return ConnectionRequestInformation{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionRequestInformation) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *ConnectionRequestInformation) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -80,15 +77,16 @@ func (m ConnectionRequestInformation) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m ConnectionRequestInformation) LengthInBytes() uint16 {
+func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationParse(io *utils.ReadBuffer) (spi.Message, error) {
+func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -103,23 +101,28 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (spi.Message, error
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer ConnectionRequestInformationInitializer
+    var _parent *ConnectionRequestInformation
     var typeSwitchError error
     switch {
     case connectionType == 0x03:
-        initializer, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(io)
+        _parent, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(io)
     case connectionType == 0x04:
-        initializer, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
+        _parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func ConnectionRequestInformationSerialize(io utils.WriteBuffer, m ConnectionRequestInformation, i IConnectionRequestInformation, childSerialize func() error) error {
+func (m *ConnectionRequestInformation) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, child IConnectionRequestInformation, serializeChildFunction func() error) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -129,14 +132,14 @@ func ConnectionRequestInformationSerialize(io utils.WriteBuffer, m ConnectionReq
     }
 
     // Discriminator Field (connectionType) (Used as input to a switch field)
-    connectionType := uint8(i.ConnectionType())
+    connectionType := uint8(child.ConnectionType())
     _connectionTypeErr := io.WriteUint8(8, (connectionType))
     if _connectionTypeErr != nil {
         return errors.New("Error serializing 'connectionType' field " + _connectionTypeErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -162,7 +165,7 @@ func (m *ConnectionRequestInformation) UnmarshalXML(d *xml.Decoder, start xml.St
     }
 }
 
-func (m ConnectionRequestInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionRequestInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformation"},
         }}); err != nil {

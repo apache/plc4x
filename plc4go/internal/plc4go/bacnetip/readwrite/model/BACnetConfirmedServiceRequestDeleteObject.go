@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestDeleteObject struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestDeleteObject
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeleteObject interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestDeleteObject) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestDeleteObject) ServiceChoice() uint8 {
     return 0x0B
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestDeleteObject) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestDeleteObject() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestDeleteObject{}
-}
-
-func CastIBACnetConfirmedServiceRequestDeleteObject(structType interface{}) IBACnetConfirmedServiceRequestDeleteObject {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestDeleteObject {
-        if iBACnetConfirmedServiceRequestDeleteObject, ok := typ.(IBACnetConfirmedServiceRequestDeleteObject); ok {
-            return iBACnetConfirmedServiceRequestDeleteObject
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestDeleteObject() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestDeleteObject{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) BACnetConfirmedServiceRequestDeleteObject {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeleteObject {
-        if sBACnetConfirmedServiceRequestDeleteObject, ok := typ.(BACnetConfirmedServiceRequestDeleteObject); ok {
-            return sBACnetConfirmedServiceRequestDeleteObject
+        if casted, ok := typ.(BACnetConfirmedServiceRequestDeleteObject); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestDeleteObject, ok := typ.(*BACnetConfirmedServiceRequestDeleteObject); ok {
-            return *sBACnetConfirmedServiceRequestDeleteObject
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestDeleteObject); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestDeleteObject(casted.Child)
         }
         return BACnetConfirmedServiceRequestDeleteObject{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeleteObjectParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestDeleteObjectParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestDeleteObject(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestDeleteObject{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestDeleteObject) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestDeleteObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeleteObject"},
         }}); err != nil {

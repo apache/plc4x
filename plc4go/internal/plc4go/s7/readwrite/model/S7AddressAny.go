@@ -23,65 +23,74 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7AddressAny struct {
-    TransportSize ITransportSize
+    TransportSize TransportSize
     NumberOfElements uint16
     DbNumber uint16
-    Area IMemoryArea
+    Area MemoryArea
     ByteAddress uint16
     BitAddress uint8
-    S7Address
+    Parent *S7Address
+    IS7AddressAny
 }
 
 // The corresponding interface
 type IS7AddressAny interface {
-    IS7Address
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7AddressAny) AddressType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7AddressAny) AddressType() uint8 {
     return 0x10
 }
 
-func (m S7AddressAny) initialize() spi.Message {
-    return m
+
+func (m *S7AddressAny) InitializeParent(parent *S7Address) {
 }
 
-func NewS7AddressAny(transportSize ITransportSize, numberOfElements uint16, dbNumber uint16, area IMemoryArea, byteAddress uint16, bitAddress uint8) S7AddressInitializer {
-    return &S7AddressAny{TransportSize: transportSize, NumberOfElements: numberOfElements, DbNumber: dbNumber, Area: area, ByteAddress: byteAddress, BitAddress: bitAddress}
-}
-
-func CastIS7AddressAny(structType interface{}) IS7AddressAny {
-    castFunc := func(typ interface{}) IS7AddressAny {
-        if iS7AddressAny, ok := typ.(IS7AddressAny); ok {
-            return iS7AddressAny
-        }
-        return nil
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8, ) *S7Address {
+    child := &S7AddressAny{
+        TransportSize: transportSize,
+        NumberOfElements: numberOfElements,
+        DbNumber: dbNumber,
+        Area: area,
+        ByteAddress: byteAddress,
+        BitAddress: bitAddress,
+        Parent: NewS7Address(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7AddressAny(structType interface{}) S7AddressAny {
     castFunc := func(typ interface{}) S7AddressAny {
-        if sS7AddressAny, ok := typ.(S7AddressAny); ok {
-            return sS7AddressAny
+        if casted, ok := typ.(S7AddressAny); ok {
+            return casted
         }
-        if sS7AddressAny, ok := typ.(*S7AddressAny); ok {
-            return *sS7AddressAny
+        if casted, ok := typ.(*S7AddressAny); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Address); ok {
+            return CastS7AddressAny(casted.Child)
+        }
+        if casted, ok := typ.(*S7Address); ok {
+            return CastS7AddressAny(casted.Child)
         }
         return S7AddressAny{}
     }
     return castFunc(structType)
 }
 
-func (m S7AddressAny) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Address.LengthInBits()
+func (m *S7AddressAny) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (transportSize)
     lengthInBits += 8
@@ -107,11 +116,11 @@ func (m S7AddressAny) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7AddressAny) LengthInBytes() uint16 {
+func (m *S7AddressAny) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7AddressAnyParse(io *utils.ReadBuffer) (S7AddressInitializer, error) {
+func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 
     // Enum field (transportSize)
     transportSize, _transportSizeErr := TransportSizeParse(io)
@@ -163,11 +172,21 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (S7AddressInitializer, error) {
         return nil, errors.New("Error parsing 'bitAddress' field " + _bitAddressErr.Error())
     }
 
-    // Create the instance
-    return NewS7AddressAny(transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress), nil
+    // Create a partially initialized instance
+    _child := &S7AddressAny{
+        TransportSize: transportSize,
+        NumberOfElements: numberOfElements,
+        DbNumber: dbNumber,
+        Area: area,
+        ByteAddress: byteAddress,
+        BitAddress: bitAddress,
+        Parent: &S7Address{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7AddressAny) Serialize(io utils.WriteBuffer) error {
+func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (transportSize)
@@ -222,7 +241,7 @@ func (m S7AddressAny) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7AddressSerialize(io, m.S7Address, CastIS7Address(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -239,7 +258,7 @@ func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "transportSize":
-                var data *TransportSize
+                var data TransportSize
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -257,7 +276,7 @@ func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
                 }
                 m.DbNumber = data
             case "area":
-                var data *MemoryArea
+                var data MemoryArea
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -279,7 +298,7 @@ func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     }
 }
 
-func (m S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7AddressAny"},
         }}); err != nil {

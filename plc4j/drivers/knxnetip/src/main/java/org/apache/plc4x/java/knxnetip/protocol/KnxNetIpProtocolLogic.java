@@ -31,7 +31,7 @@ import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
-import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
+import org.apache.plc4x.java.knxnetip.model .KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level;
@@ -288,10 +288,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
                     final WriteBuffer writeBuffer = KnxDatapointIO.staticSerialize(value,
-                        groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+                        groupAddress.getType().getFormatName());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
-                    data = new byte[serialized.length - 1];
+                    data =  new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
                 } catch (ParseException e) {
                     future.completeExceptionally(new PlcRuntimeException("Error serializing PlcValue.", e));
@@ -458,7 +458,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 // Parse the payload depending on the type of the group-address.
                 ReadBuffer rawDataReader = new ReadBuffer(payload);
                 final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
-                    groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+                    groupAddress.getType().getFormatName());
 
                 // Assemble the plc4x return data-structure.
                 Map<String, PlcValue> dataPointMap = new HashMap<>();
@@ -478,7 +478,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     dataPointMap.put("line", new PlcSTRING(lineName));
                 }
                 dataPointMap.put("description", new PlcSTRING(groupAddress.getName()));
-                dataPointMap.put("unitOfMeasurement", new PlcSTRING(groupAddress.getType().getName()));
+                dataPointMap.put("unitOfMeasurement", new PlcSTRING(groupAddress.getType().getFormatName()));
                 dataPointMap.put("value", value);
                 final PlcStruct dataPoint = new PlcStruct(dataPointMap);
 

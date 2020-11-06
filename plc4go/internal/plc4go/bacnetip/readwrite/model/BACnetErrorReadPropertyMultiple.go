@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorReadPropertyMultiple struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorReadPropertyMultiple
 }
 
 // The corresponding interface
 type IBACnetErrorReadPropertyMultiple interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
     return 0x0E
 }
 
-func (m BACnetErrorReadPropertyMultiple) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorReadPropertyMultiple) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorReadPropertyMultiple() BACnetErrorInitializer {
-    return &BACnetErrorReadPropertyMultiple{}
-}
-
-func CastIBACnetErrorReadPropertyMultiple(structType interface{}) IBACnetErrorReadPropertyMultiple {
-    castFunc := func(typ interface{}) IBACnetErrorReadPropertyMultiple {
-        if iBACnetErrorReadPropertyMultiple, ok := typ.(IBACnetErrorReadPropertyMultiple); ok {
-            return iBACnetErrorReadPropertyMultiple
-        }
-        return nil
+func NewBACnetErrorReadPropertyMultiple() *BACnetError {
+    child := &BACnetErrorReadPropertyMultiple{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorReadPropertyMultiple(structType interface{}) BACnetErrorReadPropertyMultiple {
     castFunc := func(typ interface{}) BACnetErrorReadPropertyMultiple {
-        if sBACnetErrorReadPropertyMultiple, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
-            return sBACnetErrorReadPropertyMultiple
+        if casted, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
+            return casted
         }
-        if sBACnetErrorReadPropertyMultiple, ok := typ.(*BACnetErrorReadPropertyMultiple); ok {
-            return *sBACnetErrorReadPropertyMultiple
+        if casted, ok := typ.(*BACnetErrorReadPropertyMultiple); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorReadPropertyMultiple(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorReadPropertyMultiple(casted.Child)
         }
         return BACnetErrorReadPropertyMultiple{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
+func (m *BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyMultipleParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorReadPropertyMultiple(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorReadPropertyMultiple{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m BACnetErrorReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple"},
         }}); err != nil {

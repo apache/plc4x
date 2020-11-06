@@ -22,65 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type S7PayloadUserData struct {
-    Items []IS7PayloadUserDataItem
-    S7Payload
+    Items []*S7PayloadUserDataItem
+    Parent *S7Payload
+    IS7PayloadUserData
 }
 
 // The corresponding interface
 type IS7PayloadUserData interface {
-    IS7Payload
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7PayloadUserData) ParameterParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7PayloadUserData) ParameterParameterType() uint8 {
     return 0x00
 }
 
-func (m S7PayloadUserData) MessageType() uint8 {
+func (m *S7PayloadUserData) MessageType() uint8 {
     return 0x07
 }
 
-func (m S7PayloadUserData) initialize() spi.Message {
-    return m
+
+func (m *S7PayloadUserData) InitializeParent(parent *S7Payload) {
 }
 
-func NewS7PayloadUserData(items []IS7PayloadUserDataItem) S7PayloadInitializer {
-    return &S7PayloadUserData{Items: items}
-}
-
-func CastIS7PayloadUserData(structType interface{}) IS7PayloadUserData {
-    castFunc := func(typ interface{}) IS7PayloadUserData {
-        if iS7PayloadUserData, ok := typ.(IS7PayloadUserData); ok {
-            return iS7PayloadUserData
-        }
-        return nil
+func NewS7PayloadUserData(items []*S7PayloadUserDataItem, ) *S7Payload {
+    child := &S7PayloadUserData{
+        Items: items,
+        Parent: NewS7Payload(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7PayloadUserData(structType interface{}) S7PayloadUserData {
     castFunc := func(typ interface{}) S7PayloadUserData {
-        if sS7PayloadUserData, ok := typ.(S7PayloadUserData); ok {
-            return sS7PayloadUserData
+        if casted, ok := typ.(S7PayloadUserData); ok {
+            return casted
         }
-        if sS7PayloadUserData, ok := typ.(*S7PayloadUserData); ok {
-            return *sS7PayloadUserData
+        if casted, ok := typ.(*S7PayloadUserData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Payload); ok {
+            return CastS7PayloadUserData(casted.Child)
+        }
+        if casted, ok := typ.(*S7Payload); ok {
+            return CastS7PayloadUserData(casted.Child)
         }
         return S7PayloadUserData{}
     }
     return castFunc(structType)
 }
 
-func (m S7PayloadUserData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Payload.LengthInBits()
+func (m *S7PayloadUserData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Items) > 0 {
@@ -92,34 +95,33 @@ func (m S7PayloadUserData) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7PayloadUserData) LengthInBytes() uint16 {
+func (m *S7PayloadUserData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
 
     // Array field (items)
     // Count array
-    items := make([]IS7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).Items)))
+    items := make([]*S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).Items)))
     for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {
-
-        _message, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
+        _item, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
         if _err != nil {
             return nil, errors.New("Error parsing 'items' field " + _err.Error())
-        }
-        var _item IS7PayloadUserDataItem
-        _item, _ok := _message.(IS7PayloadUserDataItem)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7PayloadUserDataItem")
         }
         items[curItem] = _item
     }
 
-    // Create the instance
-    return NewS7PayloadUserData(items), nil
+    // Create a partially initialized instance
+    _child := &S7PayloadUserData{
+        Items: items,
+        Parent: &S7Payload{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
+func (m *S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (items)
@@ -134,7 +136,7 @@ func (m S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -151,16 +153,16 @@ func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "items":
-                var _values []IS7PayloadUserDataItem
+                var _values []*S7PayloadUserDataItem
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
-                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlRequest
+                        var dt *S7PayloadUserDataItem
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         _values = append(_values, dt)
                     case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse":
-                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlResponse
+                        var dt *S7PayloadUserDataItem
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -172,7 +174,7 @@ func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m S7PayloadUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7PayloadUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData"},
         }}); err != nil {

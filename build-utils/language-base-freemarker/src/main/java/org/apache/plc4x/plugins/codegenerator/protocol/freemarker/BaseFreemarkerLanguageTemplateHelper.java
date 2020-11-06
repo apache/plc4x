@@ -298,24 +298,42 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public boolean hasFieldOfType(String fieldTypeName) {
         if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
-        return ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field -> field.getTypeName().equals(fieldTypeName));
-    }
+           return ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field -> field.getTypeName().equals(fieldTypeName));
+        }
         return false;
+    }
+
+    public boolean hasFieldsWithNames(List<Field> fields, String... names) {
+        for (String name : names) {
+            boolean foundName = false;
+            for (Field field : fields) {
+                if(field instanceof NamedField) {
+                    if(name.equals(((NamedField) field).getName())) {
+                        foundName = true;
+                        break;
+                    }
+                }
+            }
+            if(!foundName) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Field getFieldForNameFromCurrentOrParent(String fieldName) {
         if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
-        return ((ComplexTypeDefinition) getThisTypeDefinition()).getAllPropertyFields()
-            .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
-    }
+            return ((ComplexTypeDefinition) getThisTypeDefinition()).getAllPropertyFields()
+                .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+        }
         return null;
     }
 
     public Field getFieldForNameFromCurrent(String fieldName) {
         if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
-        return ((ComplexTypeDefinition) getThisTypeDefinition()).getPropertyFields()
-            .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
-    }
+            return ((ComplexTypeDefinition) getThisTypeDefinition()).getPropertyFields()
+                .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+        }
         return null;
     }
 

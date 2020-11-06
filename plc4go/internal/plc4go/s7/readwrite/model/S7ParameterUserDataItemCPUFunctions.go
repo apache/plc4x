@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -36,53 +35,65 @@ type S7ParameterUserDataItemCPUFunctions struct {
     DataUnitReferenceNumber *uint8
     LastDataUnit *uint8
     ErrorCode *uint16
-    S7ParameterUserDataItem
+    Parent *S7ParameterUserDataItem
+    IS7ParameterUserDataItemCPUFunctions
 }
 
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
-    IS7ParameterUserDataItem
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7ParameterUserDataItemCPUFunctions) ItemType() uint8 {
     return 0x12
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) initialize() spi.Message {
-    return m
+
+func (m *S7ParameterUserDataItemCPUFunctions) InitializeParent(parent *S7ParameterUserDataItem) {
 }
 
-func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) S7ParameterUserDataItemInitializer {
-    return &S7ParameterUserDataItemCPUFunctions{Method: method, CpuFunctionType: cpuFunctionType, CpuFunctionGroup: cpuFunctionGroup, CpuSubfunction: cpuSubfunction, SequenceNumber: sequenceNumber, DataUnitReferenceNumber: dataUnitReferenceNumber, LastDataUnit: lastDataUnit, ErrorCode: errorCode}
-}
-
-func CastIS7ParameterUserDataItemCPUFunctions(structType interface{}) IS7ParameterUserDataItemCPUFunctions {
-    castFunc := func(typ interface{}) IS7ParameterUserDataItemCPUFunctions {
-        if iS7ParameterUserDataItemCPUFunctions, ok := typ.(IS7ParameterUserDataItemCPUFunctions); ok {
-            return iS7ParameterUserDataItemCPUFunctions
-        }
-        return nil
+func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16, ) *S7ParameterUserDataItem {
+    child := &S7ParameterUserDataItemCPUFunctions{
+        Method: method,
+        CpuFunctionType: cpuFunctionType,
+        CpuFunctionGroup: cpuFunctionGroup,
+        CpuSubfunction: cpuSubfunction,
+        SequenceNumber: sequenceNumber,
+        DataUnitReferenceNumber: dataUnitReferenceNumber,
+        LastDataUnit: lastDataUnit,
+        ErrorCode: errorCode,
+        Parent: NewS7ParameterUserDataItem(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
     castFunc := func(typ interface{}) S7ParameterUserDataItemCPUFunctions {
-        if sS7ParameterUserDataItemCPUFunctions, ok := typ.(S7ParameterUserDataItemCPUFunctions); ok {
-            return sS7ParameterUserDataItemCPUFunctions
+        if casted, ok := typ.(S7ParameterUserDataItemCPUFunctions); ok {
+            return casted
         }
-        if sS7ParameterUserDataItemCPUFunctions, ok := typ.(*S7ParameterUserDataItemCPUFunctions); ok {
-            return *sS7ParameterUserDataItemCPUFunctions
+        if casted, ok := typ.(*S7ParameterUserDataItemCPUFunctions); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7ParameterUserDataItem); ok {
+            return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
+        }
+        if casted, ok := typ.(*S7ParameterUserDataItem); ok {
+            return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
         }
         return S7ParameterUserDataItemCPUFunctions{}
     }
     return castFunc(structType)
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7ParameterUserDataItem.LengthInBits()
+func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (itemLength)
     lengthInBits += 8
@@ -120,11 +131,11 @@ func (m S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
+func (m *S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (S7ParameterUserDataItemInitializer, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _itemLengthErr := io.ReadUint8(8)
@@ -195,11 +206,23 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (S7Parameter
         errorCode = &_val
     }
 
-    // Create the instance
-    return NewS7ParameterUserDataItemCPUFunctions(method, cpuFunctionType, cpuFunctionGroup, cpuSubfunction, sequenceNumber, dataUnitReferenceNumber, lastDataUnit, errorCode), nil
+    // Create a partially initialized instance
+    _child := &S7ParameterUserDataItemCPUFunctions{
+        Method: method,
+        CpuFunctionType: cpuFunctionType,
+        CpuFunctionGroup: cpuFunctionGroup,
+        CpuSubfunction: cpuSubfunction,
+        SequenceNumber: sequenceNumber,
+        DataUnitReferenceNumber: dataUnitReferenceNumber,
+        LastDataUnit: lastDataUnit,
+        ErrorCode: errorCode,
+        Parent: &S7ParameterUserDataItem{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) error {
+func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -276,7 +299,7 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) err
 
         return nil
     }
-    return S7ParameterUserDataItemSerialize(io, m.S7ParameterUserDataItem, CastIS7ParameterUserDataItem(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -324,19 +347,19 @@ func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start
                 m.SequenceNumber = data
             case "dataUnitReferenceNumber":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.DataUnitReferenceNumber = data
             case "lastDataUnit":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.LastDataUnit = data
             case "errorCode":
                 var data *uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.ErrorCode = data
@@ -345,7 +368,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions"},
         }}); err != nil {

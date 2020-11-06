@@ -18,7 +18,10 @@
 //
 package spi
 
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+
 type Message interface {
 	LengthInBytes() uint16
 	LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
 }

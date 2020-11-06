@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) ServiceChoice() uint8 {
     return 0x1E
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{}
-}
-
-func CastIBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType interface{}) IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-        if iBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, ok := typ.(IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
-            return iBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
-        if sBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
-            return sBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+        if casted, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
-            return *sBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(casted.Child)
         }
         return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) UnmarshalXML
     }
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"},
         }}); err != nil {

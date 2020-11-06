@@ -23,64 +23,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationUnsignedInteger struct {
     Data []int8
-    BACnetTag
+    Parent *BACnetTag
+    IBACnetTagApplicationUnsignedInteger
 }
 
 // The corresponding interface
 type IBACnetTagApplicationUnsignedInteger interface {
-    IBACnetTag
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetTagApplicationUnsignedInteger) ContextSpecificTag() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetTagApplicationUnsignedInteger) ContextSpecificTag() uint8 {
     return 0
 }
 
-func (m BACnetTagApplicationUnsignedInteger) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-    m.TypeOrTagNumber = typeOrTagNumber
-    m.LengthValueType = lengthValueType
-    m.ExtTagNumber = extTagNumber
-    m.ExtLength = extLength
-    return m
+
+func (m *BACnetTagApplicationUnsignedInteger) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
+    m.Parent.TypeOrTagNumber = typeOrTagNumber
+    m.Parent.LengthValueType = lengthValueType
+    m.Parent.ExtTagNumber = extTagNumber
+    m.Parent.ExtLength = extLength
 }
 
-func NewBACnetTagApplicationUnsignedInteger(data []int8) BACnetTagInitializer {
-    return &BACnetTagApplicationUnsignedInteger{Data: data}
-}
-
-func CastIBACnetTagApplicationUnsignedInteger(structType interface{}) IBACnetTagApplicationUnsignedInteger {
-    castFunc := func(typ interface{}) IBACnetTagApplicationUnsignedInteger {
-        if iBACnetTagApplicationUnsignedInteger, ok := typ.(IBACnetTagApplicationUnsignedInteger); ok {
-            return iBACnetTagApplicationUnsignedInteger
-        }
-        return nil
+func NewBACnetTagApplicationUnsignedInteger(data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+    child := &BACnetTagApplicationUnsignedInteger{
+        Data: data,
+        Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetTagApplicationUnsignedInteger(structType interface{}) BACnetTagApplicationUnsignedInteger {
     castFunc := func(typ interface{}) BACnetTagApplicationUnsignedInteger {
-        if sBACnetTagApplicationUnsignedInteger, ok := typ.(BACnetTagApplicationUnsignedInteger); ok {
-            return sBACnetTagApplicationUnsignedInteger
+        if casted, ok := typ.(BACnetTagApplicationUnsignedInteger); ok {
+            return casted
         }
-        if sBACnetTagApplicationUnsignedInteger, ok := typ.(*BACnetTagApplicationUnsignedInteger); ok {
-            return *sBACnetTagApplicationUnsignedInteger
+        if casted, ok := typ.(*BACnetTagApplicationUnsignedInteger); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetTag); ok {
+            return CastBACnetTagApplicationUnsignedInteger(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetTag); ok {
+            return CastBACnetTagApplicationUnsignedInteger(casted.Child)
         }
         return BACnetTagApplicationUnsignedInteger{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+func (m *BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Data) > 0 {
@@ -90,11 +94,11 @@ func (m BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetTagApplicationUnsignedInteger) LengthInBytes() uint16 {
+func (m *BACnetTagApplicationUnsignedInteger) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationUnsignedIntegerParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationUnsignedIntegerParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
     // Array field (data)
     // Length array
@@ -109,11 +113,16 @@ func BACnetTagApplicationUnsignedIntegerParse(io *utils.ReadBuffer, lengthValueT
         data = append(data, _item)
     }
 
-    // Create the instance
-    return NewBACnetTagApplicationUnsignedInteger(data), nil
+    // Create a partially initialized instance
+    _child := &BACnetTagApplicationUnsignedInteger{
+        Data: data,
+        Parent: &BACnetTag{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (data)
@@ -128,7 +137,7 @@ func (m BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) err
 
         return nil
     }
-    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -160,7 +169,7 @@ func (m *BACnetTagApplicationUnsignedInteger) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m BACnetTagApplicationUnsignedInteger) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetTagApplicationUnsignedInteger) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger"},
         }}); err != nil {

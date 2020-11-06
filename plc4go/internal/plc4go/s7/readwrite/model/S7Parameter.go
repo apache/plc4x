@@ -22,75 +22,69 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7Parameter struct {
-
+    Child IS7ParameterChild
+    IS7Parameter
+    IS7ParameterParent
 }
 
 // The corresponding interface
 type IS7Parameter interface {
-    spi.Message
     MessageType() uint8
     ParameterType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type S7ParameterInitializer interface {
-    initialize() spi.Message
+type IS7ParameterParent interface {
+    SerializeParent(io utils.WriteBuffer, child IS7Parameter, serializeChildFunction func() error) error
 }
 
-func S7ParameterMessageType(m IS7Parameter) uint8 {
-    return m.MessageType()
+type IS7ParameterChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *S7Parameter)
+    IS7Parameter
 }
 
-func S7ParameterParameterType(m IS7Parameter) uint8 {
-    return m.ParameterType()
-}
-
-
-func CastIS7Parameter(structType interface{}) IS7Parameter {
-    castFunc := func(typ interface{}) IS7Parameter {
-        if iS7Parameter, ok := typ.(IS7Parameter); ok {
-            return iS7Parameter
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewS7Parameter() *S7Parameter {
+    return &S7Parameter{}
 }
 
 func CastS7Parameter(structType interface{}) S7Parameter {
     castFunc := func(typ interface{}) S7Parameter {
-        if sS7Parameter, ok := typ.(S7Parameter); ok {
-            return sS7Parameter
+        if casted, ok := typ.(S7Parameter); ok {
+            return casted
         }
-        if sS7Parameter, ok := typ.(*S7Parameter); ok {
-            return *sS7Parameter
+        if casted, ok := typ.(*S7Parameter); ok {
+            return *casted
         }
         return S7Parameter{}
     }
     return castFunc(structType)
 }
 
-func (m S7Parameter) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7Parameter) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (parameterType)
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m S7Parameter) LengthInBytes() uint16 {
+func (m *S7Parameter) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (spi.Message, error) {
+func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
     parameterType, _parameterTypeErr := io.ReadUint8(8)
@@ -99,41 +93,46 @@ func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (spi.Message, err
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer S7ParameterInitializer
+    var _parent *S7Parameter
     var typeSwitchError error
     switch {
     case parameterType == 0xF0:
-        initializer, typeSwitchError = S7ParameterSetupCommunicationParse(io)
+        _parent, typeSwitchError = S7ParameterSetupCommunicationParse(io)
     case parameterType == 0x04 && messageType == 0x01:
-        initializer, typeSwitchError = S7ParameterReadVarRequestParse(io)
+        _parent, typeSwitchError = S7ParameterReadVarRequestParse(io)
     case parameterType == 0x04 && messageType == 0x03:
-        initializer, typeSwitchError = S7ParameterReadVarResponseParse(io)
+        _parent, typeSwitchError = S7ParameterReadVarResponseParse(io)
     case parameterType == 0x05 && messageType == 0x01:
-        initializer, typeSwitchError = S7ParameterWriteVarRequestParse(io)
+        _parent, typeSwitchError = S7ParameterWriteVarRequestParse(io)
     case parameterType == 0x05 && messageType == 0x03:
-        initializer, typeSwitchError = S7ParameterWriteVarResponseParse(io)
+        _parent, typeSwitchError = S7ParameterWriteVarResponseParse(io)
     case parameterType == 0x00 && messageType == 0x07:
-        initializer, typeSwitchError = S7ParameterUserDataParse(io)
+        _parent, typeSwitchError = S7ParameterUserDataParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func S7ParameterSerialize(io utils.WriteBuffer, m S7Parameter, i IS7Parameter, childSerialize func() error) error {
+func (m *S7Parameter) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, serializeChildFunction func() error) error {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
-    parameterType := uint8(i.ParameterType())
+    parameterType := uint8(child.ParameterType())
     _parameterTypeErr := io.WriteUint8(8, (parameterType))
     if _parameterTypeErr != nil {
         return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -159,7 +158,7 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
     }
 }
 
-func (m S7Parameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7Parameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7Parameter"},
         }}); err != nil {

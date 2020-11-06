@@ -22,70 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7ParameterUserDataItem struct {
-
+    Child IS7ParameterUserDataItemChild
+    IS7ParameterUserDataItem
+    IS7ParameterUserDataItemParent
 }
 
 // The corresponding interface
 type IS7ParameterUserDataItem interface {
-    spi.Message
     ItemType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type S7ParameterUserDataItemInitializer interface {
-    initialize() spi.Message
+type IS7ParameterUserDataItemParent interface {
+    SerializeParent(io utils.WriteBuffer, child IS7ParameterUserDataItem, serializeChildFunction func() error) error
 }
 
-func S7ParameterUserDataItemItemType(m IS7ParameterUserDataItem) uint8 {
-    return m.ItemType()
+type IS7ParameterUserDataItemChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *S7ParameterUserDataItem)
+    IS7ParameterUserDataItem
 }
 
-
-func CastIS7ParameterUserDataItem(structType interface{}) IS7ParameterUserDataItem {
-    castFunc := func(typ interface{}) IS7ParameterUserDataItem {
-        if iS7ParameterUserDataItem, ok := typ.(IS7ParameterUserDataItem); ok {
-            return iS7ParameterUserDataItem
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewS7ParameterUserDataItem() *S7ParameterUserDataItem {
+    return &S7ParameterUserDataItem{}
 }
 
 func CastS7ParameterUserDataItem(structType interface{}) S7ParameterUserDataItem {
     castFunc := func(typ interface{}) S7ParameterUserDataItem {
-        if sS7ParameterUserDataItem, ok := typ.(S7ParameterUserDataItem); ok {
-            return sS7ParameterUserDataItem
+        if casted, ok := typ.(S7ParameterUserDataItem); ok {
+            return casted
         }
-        if sS7ParameterUserDataItem, ok := typ.(*S7ParameterUserDataItem); ok {
-            return *sS7ParameterUserDataItem
+        if casted, ok := typ.(*S7ParameterUserDataItem); ok {
+            return *casted
         }
         return S7ParameterUserDataItem{}
     }
     return castFunc(structType)
 }
 
-func (m S7ParameterUserDataItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7ParameterUserDataItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (itemType)
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m S7ParameterUserDataItem) LengthInBytes() uint16 {
+func (m *S7ParameterUserDataItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (spi.Message, error) {
+func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
 
     // Discriminator Field (itemType) (Used as input to a switch field)
     itemType, _itemTypeErr := io.ReadUint8(8)
@@ -94,31 +92,36 @@ func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer S7ParameterUserDataItemInitializer
+    var _parent *S7ParameterUserDataItem
     var typeSwitchError error
     switch {
     case itemType == 0x12:
-        initializer, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(io)
+        _parent, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func S7ParameterUserDataItemSerialize(io utils.WriteBuffer, m S7ParameterUserDataItem, i IS7ParameterUserDataItem, childSerialize func() error) error {
+func (m *S7ParameterUserDataItem) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *S7ParameterUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7ParameterUserDataItem, serializeChildFunction func() error) error {
 
     // Discriminator Field (itemType) (Used as input to a switch field)
-    itemType := uint8(i.ItemType())
+    itemType := uint8(child.ItemType())
     _itemTypeErr := io.WriteUint8(8, (itemType))
     if _itemTypeErr != nil {
         return errors.New("Error serializing 'itemType' field " + _itemTypeErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -144,7 +147,7 @@ func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m S7ParameterUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7ParameterUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem"},
         }}); err != nil {

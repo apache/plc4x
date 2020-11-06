@@ -21,87 +21,94 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReportServerIdRequest struct {
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReportServerIdRequest
 }
 
 // The corresponding interface
 type IModbusPDUReportServerIdRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReportServerIdRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReportServerIdRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
     return 0x11
 }
 
-func (m ModbusPDUReportServerIdRequest) Response() bool {
+func (m *ModbusPDUReportServerIdRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReportServerIdRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReportServerIdRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReportServerIdRequest() ModbusPDUInitializer {
-    return &ModbusPDUReportServerIdRequest{}
-}
-
-func CastIModbusPDUReportServerIdRequest(structType interface{}) IModbusPDUReportServerIdRequest {
-    castFunc := func(typ interface{}) IModbusPDUReportServerIdRequest {
-        if iModbusPDUReportServerIdRequest, ok := typ.(IModbusPDUReportServerIdRequest); ok {
-            return iModbusPDUReportServerIdRequest
-        }
-        return nil
+func NewModbusPDUReportServerIdRequest() *ModbusPDU {
+    child := &ModbusPDUReportServerIdRequest{
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportServerIdRequest {
     castFunc := func(typ interface{}) ModbusPDUReportServerIdRequest {
-        if sModbusPDUReportServerIdRequest, ok := typ.(ModbusPDUReportServerIdRequest); ok {
-            return sModbusPDUReportServerIdRequest
+        if casted, ok := typ.(ModbusPDUReportServerIdRequest); ok {
+            return casted
         }
-        if sModbusPDUReportServerIdRequest, ok := typ.(*ModbusPDUReportServerIdRequest); ok {
-            return *sModbusPDUReportServerIdRequest
+        if casted, ok := typ.(*ModbusPDUReportServerIdRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReportServerIdRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReportServerIdRequest(casted.Child)
         }
         return ModbusPDUReportServerIdRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReportServerIdRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReportServerIdRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReportServerIdRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
-    // Create the instance
-    return NewModbusPDUReportServerIdRequest(), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReportServerIdRequest{
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -122,7 +129,7 @@ func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.
     }
 }
 
-func (m ModbusPDUReportServerIdRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReportServerIdRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdRequest"},
         }}); err != nil {

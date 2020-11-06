@@ -23,60 +23,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type UnknownMessage struct {
     UnknownData []int8
-    KNXNetIPMessage
+    Parent *KNXNetIPMessage
+    IUnknownMessage
 }
 
 // The corresponding interface
 type IUnknownMessage interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m UnknownMessage) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *UnknownMessage) MsgType() uint16 {
     return 0x020B
 }
 
-func (m UnknownMessage) initialize() spi.Message {
-    return m
+
+func (m *UnknownMessage) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewUnknownMessage(unknownData []int8) KNXNetIPMessageInitializer {
-    return &UnknownMessage{UnknownData: unknownData}
-}
-
-func CastIUnknownMessage(structType interface{}) IUnknownMessage {
-    castFunc := func(typ interface{}) IUnknownMessage {
-        if iUnknownMessage, ok := typ.(IUnknownMessage); ok {
-            return iUnknownMessage
-        }
-        return nil
+func NewUnknownMessage(unknownData []int8, ) *KNXNetIPMessage {
+    child := &UnknownMessage{
+        UnknownData: unknownData,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastUnknownMessage(structType interface{}) UnknownMessage {
     castFunc := func(typ interface{}) UnknownMessage {
-        if sUnknownMessage, ok := typ.(UnknownMessage); ok {
-            return sUnknownMessage
+        if casted, ok := typ.(UnknownMessage); ok {
+            return casted
         }
-        if sUnknownMessage, ok := typ.(*UnknownMessage); ok {
-            return *sUnknownMessage
+        if casted, ok := typ.(*UnknownMessage); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastUnknownMessage(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastUnknownMessage(casted.Child)
         }
         return UnknownMessage{}
     }
     return castFunc(structType)
 }
 
-func (m UnknownMessage) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *UnknownMessage) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.UnknownData) > 0 {
@@ -86,17 +90,16 @@ func (m UnknownMessage) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m UnknownMessage) LengthInBytes() uint16 {
+func (m *UnknownMessage) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KNXNetIPMessage, error) {
 
     // Array field (unknownData)
     // Count array
     unknownData := make([]int8, uint16(totalLength) - uint16(uint16(6)))
     for curItem := uint16(0); curItem < uint16(uint16(totalLength) - uint16(uint16(6))); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
@@ -104,11 +107,16 @@ func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMess
         unknownData[curItem] = _item
     }
 
-    // Create the instance
-    return NewUnknownMessage(unknownData), nil
+    // Create a partially initialized instance
+    _child := &UnknownMessage{
+        UnknownData: unknownData,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m UnknownMessage) Serialize(io utils.WriteBuffer) error {
+func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (unknownData)
@@ -123,7 +131,7 @@ func (m UnknownMessage) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -155,7 +163,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
     }
 }
 
-func (m UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.UnknownMessage"},
         }}); err != nil {

@@ -19,14 +19,12 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
-    spi.Message
     Serialize(io utils.WriteBuffer) error
 }
 

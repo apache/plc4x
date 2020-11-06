@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedReadPropertyConditional struct {
-    BACnetConfirmedServiceRequest
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestRemovedReadPropertyConditional
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestRemovedReadPropertyConditional interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) ServiceChoice() uint8 {
     return 0x0D
 }
 
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional() BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{}
-}
-
-func CastIBACnetConfirmedServiceRequestRemovedReadPropertyConditional(structType interface{}) IBACnetConfirmedServiceRequestRemovedReadPropertyConditional {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestRemovedReadPropertyConditional {
-        if iBACnetConfirmedServiceRequestRemovedReadPropertyConditional, ok := typ.(IBACnetConfirmedServiceRequestRemovedReadPropertyConditional); ok {
-            return iBACnetConfirmedServiceRequestRemovedReadPropertyConditional
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional() *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestRemovedReadPropertyConditional(structType interface{}) BACnetConfirmedServiceRequestRemovedReadPropertyConditional {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestRemovedReadPropertyConditional {
-        if sBACnetConfirmedServiceRequestRemovedReadPropertyConditional, ok := typ.(BACnetConfirmedServiceRequestRemovedReadPropertyConditional); ok {
-            return sBACnetConfirmedServiceRequestRemovedReadPropertyConditional
+        if casted, ok := typ.(BACnetConfirmedServiceRequestRemovedReadPropertyConditional); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestRemovedReadPropertyConditional, ok := typ.(*BACnetConfirmedServiceRequestRemovedReadPropertyConditional); ok {
-            return *sBACnetConfirmedServiceRequestRemovedReadPropertyConditional
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestRemovedReadPropertyConditional); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestRemovedReadPropertyConditional(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestRemovedReadPropertyConditional(casted.Child)
         }
         return BACnetConfirmedServiceRequestRemovedReadPropertyConditional{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestRemovedReadPropertyConditional(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) UnmarshalX
     }
 }
 
-func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedReadPropertyConditional"},
         }}); err != nil {

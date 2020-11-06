@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BVLCRegisterForeignDevice struct {
-    BVLC
+    Parent *BVLC
+    IBVLCRegisterForeignDevice
 }
 
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCRegisterForeignDevice) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCRegisterForeignDevice) BvlcFunction() uint8 {
     return 0x05
 }
 
-func (m BVLCRegisterForeignDevice) initialize() spi.Message {
-    return m
+
+func (m *BVLCRegisterForeignDevice) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCRegisterForeignDevice() BVLCInitializer {
-    return &BVLCRegisterForeignDevice{}
-}
-
-func CastIBVLCRegisterForeignDevice(structType interface{}) IBVLCRegisterForeignDevice {
-    castFunc := func(typ interface{}) IBVLCRegisterForeignDevice {
-        if iBVLCRegisterForeignDevice, ok := typ.(IBVLCRegisterForeignDevice); ok {
-            return iBVLCRegisterForeignDevice
-        }
-        return nil
+func NewBVLCRegisterForeignDevice() *BVLC {
+    child := &BVLCRegisterForeignDevice{
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCRegisterForeignDevice(structType interface{}) BVLCRegisterForeignDevice {
     castFunc := func(typ interface{}) BVLCRegisterForeignDevice {
-        if sBVLCRegisterForeignDevice, ok := typ.(BVLCRegisterForeignDevice); ok {
-            return sBVLCRegisterForeignDevice
+        if casted, ok := typ.(BVLCRegisterForeignDevice); ok {
+            return casted
         }
-        if sBVLCRegisterForeignDevice, ok := typ.(*BVLCRegisterForeignDevice); ok {
-            return *sBVLCRegisterForeignDevice
+        if casted, ok := typ.(*BVLCRegisterForeignDevice); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCRegisterForeignDevice(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCRegisterForeignDevice(casted.Child)
         }
         return BVLCRegisterForeignDevice{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCRegisterForeignDevice) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCRegisterForeignDevice) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BVLCRegisterForeignDevice) LengthInBytes() uint16 {
+func (m *BVLCRegisterForeignDevice) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCRegisterForeignDeviceParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
+func BVLCRegisterForeignDeviceParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create the instance
-    return NewBVLCRegisterForeignDevice(), nil
+    // Create a partially initialized instance
+    _child := &BVLCRegisterForeignDevice{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCRegisterForeignDevice) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCRegisterForeignDevice) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCRegisterForeignDevice) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BVLCRegisterForeignDevice) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m BVLCRegisterForeignDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCRegisterForeignDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCRegisterForeignDevice"},
         }}); err != nil {

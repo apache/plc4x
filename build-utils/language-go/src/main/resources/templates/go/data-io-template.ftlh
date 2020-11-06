@@ -63,10 +63,11 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+    <#if helper.getRequiredImportsForDataIo()?has_content>
+        <#list helper.getRequiredImportsForDataIo() as import>
+            ${import}
+        </#list>
+    </#if>
 )
 
 func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
@@ -134,15 +135,21 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
         <#if valueDefined>
             <#switch case.name>
                 <#case "TIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
             value := time.Date(0,0,0, int(hour), int(minutes), int(seconds), 0, nil)
+                    </#if>
             return values.NewPlcTIME_OF_DAY(value), nil
                     <#break>
                 <#case "DATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
             value := time.Date(int(year), time.Month(month), int(day), 0, 0, 0, 0, nil)
+                    </#if>
             return values.NewPlcDATE(value), nil
                     <#break>
                 <#case "DATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
             value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
+                    </#if>
             return values.NewPlcDATE_AND_TIME(value), nil
                     <#break>
                 <#case "Struct">

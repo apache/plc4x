@@ -22,63 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type ConnectionRequest struct {
-    HpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint
-    HpaiDataEndpoint IHPAIDataEndpoint
-    ConnectionRequestInformation IConnectionRequestInformation
-    KNXNetIPMessage
+    HpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint
+    HpaiDataEndpoint *HPAIDataEndpoint
+    ConnectionRequestInformation *ConnectionRequestInformation
+    Parent *KNXNetIPMessage
+    IConnectionRequest
 }
 
 // The corresponding interface
 type IConnectionRequest interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ConnectionRequest) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *ConnectionRequest) MsgType() uint16 {
     return 0x0205
 }
 
-func (m ConnectionRequest) initialize() spi.Message {
-    return m
+
+func (m *ConnectionRequest) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewConnectionRequest(hpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint, hpaiDataEndpoint IHPAIDataEndpoint, connectionRequestInformation IConnectionRequestInformation) KNXNetIPMessageInitializer {
-    return &ConnectionRequest{HpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint, HpaiDataEndpoint: hpaiDataEndpoint, ConnectionRequestInformation: connectionRequestInformation}
-}
-
-func CastIConnectionRequest(structType interface{}) IConnectionRequest {
-    castFunc := func(typ interface{}) IConnectionRequest {
-        if iConnectionRequest, ok := typ.(IConnectionRequest); ok {
-            return iConnectionRequest
-        }
-        return nil
+func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiDataEndpoint *HPAIDataEndpoint, connectionRequestInformation *ConnectionRequestInformation, ) *KNXNetIPMessage {
+    child := &ConnectionRequest{
+        HpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint,
+        HpaiDataEndpoint: hpaiDataEndpoint,
+        ConnectionRequestInformation: connectionRequestInformation,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastConnectionRequest(structType interface{}) ConnectionRequest {
     castFunc := func(typ interface{}) ConnectionRequest {
-        if sConnectionRequest, ok := typ.(ConnectionRequest); ok {
-            return sConnectionRequest
+        if casted, ok := typ.(ConnectionRequest); ok {
+            return casted
         }
-        if sConnectionRequest, ok := typ.(*ConnectionRequest); ok {
-            return *sConnectionRequest
+        if casted, ok := typ.(*ConnectionRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastConnectionRequest(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastConnectionRequest(casted.Child)
         }
         return ConnectionRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *ConnectionRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (hpaiDiscoveryEndpoint)
     lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
@@ -92,76 +97,65 @@ func (m ConnectionRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ConnectionRequest) LengthInBytes() uint16 {
+func (m *ConnectionRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionRequestParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (hpaiDiscoveryEndpoint)
-    _hpaiDiscoveryEndpointMessage, _err := HPAIDiscoveryEndpointParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'hpaiDiscoveryEndpoint'. " + _err.Error())
-    }
-    var hpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint
-    hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointOk := _hpaiDiscoveryEndpointMessage.(IHPAIDiscoveryEndpoint)
-    if !_hpaiDiscoveryEndpointOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDiscoveryEndpointMessage).Name() + " to IHPAIDiscoveryEndpoint")
+    hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
+    if _hpaiDiscoveryEndpointErr != nil {
+        return nil, errors.New("Error parsing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
     }
 
     // Simple Field (hpaiDataEndpoint)
-    _hpaiDataEndpointMessage, _err := HPAIDataEndpointParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'hpaiDataEndpoint'. " + _err.Error())
-    }
-    var hpaiDataEndpoint IHPAIDataEndpoint
-    hpaiDataEndpoint, _hpaiDataEndpointOk := _hpaiDataEndpointMessage.(IHPAIDataEndpoint)
-    if !_hpaiDataEndpointOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDataEndpointMessage).Name() + " to IHPAIDataEndpoint")
+    hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(io)
+    if _hpaiDataEndpointErr != nil {
+        return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
     }
 
     // Simple Field (connectionRequestInformation)
-    _connectionRequestInformationMessage, _err := ConnectionRequestInformationParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'connectionRequestInformation'. " + _err.Error())
-    }
-    var connectionRequestInformation IConnectionRequestInformation
-    connectionRequestInformation, _connectionRequestInformationOk := _connectionRequestInformationMessage.(IConnectionRequestInformation)
-    if !_connectionRequestInformationOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_connectionRequestInformationMessage).Name() + " to IConnectionRequestInformation")
+    connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(io)
+    if _connectionRequestInformationErr != nil {
+        return nil, errors.New("Error parsing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())
     }
 
-    // Create the instance
-    return NewConnectionRequest(hpaiDiscoveryEndpoint, hpaiDataEndpoint, connectionRequestInformation), nil
+    // Create a partially initialized instance
+    _child := &ConnectionRequest{
+        HpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint,
+        HpaiDataEndpoint: hpaiDataEndpoint,
+        ConnectionRequestInformation: connectionRequestInformation,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ConnectionRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiDiscoveryEndpoint)
-    hpaiDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.HpaiDiscoveryEndpoint)
-    _hpaiDiscoveryEndpointErr := hpaiDiscoveryEndpoint.Serialize(io)
+    _hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
     if _hpaiDiscoveryEndpointErr != nil {
         return errors.New("Error serializing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
     }
 
     // Simple Field (hpaiDataEndpoint)
-    hpaiDataEndpoint := CastIHPAIDataEndpoint(m.HpaiDataEndpoint)
-    _hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(io)
+    _hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(io)
     if _hpaiDataEndpointErr != nil {
         return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
     }
 
     // Simple Field (connectionRequestInformation)
-    connectionRequestInformation := CastIConnectionRequestInformation(m.ConnectionRequestInformation)
-    _connectionRequestInformationErr := connectionRequestInformation.Serialize(io)
+    _connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(io)
     if _connectionRequestInformationErr != nil {
         return errors.New("Error serializing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,26 +173,26 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
             switch tok.Name.Local {
             case "hpaiDiscoveryEndpoint":
                 var data *HPAIDiscoveryEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.HpaiDiscoveryEndpoint = CastIHPAIDiscoveryEndpoint(data)
+                m.HpaiDiscoveryEndpoint = data
             case "hpaiDataEndpoint":
                 var data *HPAIDataEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.HpaiDataEndpoint = CastIHPAIDataEndpoint(data)
+                m.HpaiDataEndpoint = data
             case "connectionRequestInformation":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
-                        var dt *ConnectionRequestInformationDeviceManagement
+                        var dt *ConnectionRequestInformation
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.ConnectionRequestInformation = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection":
-                        var dt *ConnectionRequestInformationTunnelConnection
+                        var dt *ConnectionRequestInformation
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -209,7 +203,7 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest"},
         }}); err != nil {

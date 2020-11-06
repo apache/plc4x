@@ -19,14 +19,12 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 type TransportSize int8
 
 type ITransportSize interface {
-    spi.Message
     Supported_S7_300() bool
     Supported_LOGO() bool
     SizeInBytes() uint8

@@ -20,7 +20,6 @@ package modbus
 
 import (
 	"errors"
-	"fmt"
 	"math"
 	modbusModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
 	plc4goModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
@@ -62,28 +61,16 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			return result
 		}
 		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusModel.ModbusDataTypeSizesValueOf(modbusField.Datatype).DataTypeSize())) / float64(2)))
-		var pdu modbusModel.IModbusPDU = nil
+		var pdu *modbusModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case MODBUS_FIELD_COIL:
-			pdu = modbusModel.ModbusPDUReadCoilsRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        modbusField.Quantity,
-			}
+		    pdu = modbusModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
 		case MODBUS_FIELD_DISCRETE_INPUT:
-			pdu = modbusModel.ModbusPDUReadDiscreteInputsRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        modbusField.Quantity,
-			}
+			pdu = modbusModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
 		case MODBUS_FIELD_INPUT_REGISTER:
-			pdu = modbusModel.ModbusPDUReadInputRegistersRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        numWords,
-			}
+			pdu = modbusModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
 		case MODBUS_FIELD_HOLDING_REGISTER:
-			pdu = modbusModel.ModbusPDUReadHoldingRegistersRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        numWords,
-			}
+			pdu = modbusModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
 		case MODBUS_FIELD_EXTENDED_REGISTER:
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
@@ -158,29 +145,28 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			Err:      errors.New("modbus only supports single-item requests"),
 		}
 	}
-	fmt.Printf("Read Request %s", readRequest)
 	return result
 }
 
 func (m *ModbusReader) ToPlc4xReadResponse(responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var data []uint8
-	switch responseAdu.Pdu.(type) {
-	case modbusModel.ModbusPDUReadDiscreteInputsResponse:
+	switch responseAdu.Pdu.Child.(type) {
+	case *modbusModel.ModbusPDUReadDiscreteInputsResponse:
 		pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
 		data = utils.Int8ToUint8(pdu.Value)
 		// Pure Boolean ...
-	case modbusModel.ModbusPDUReadCoilsResponse:
+	case *modbusModel.ModbusPDUReadCoilsResponse:
 		pdu := modbusModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
 		data = utils.Int8ToUint8(pdu.Value)
 		// Pure Boolean ...
-	case modbusModel.ModbusPDUReadInputRegistersResponse:
+	case *modbusModel.ModbusPDUReadInputRegistersResponse:
 		pdu := modbusModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ToUint8(pdu.Value)
 		// DataIo ...
-	case modbusModel.ModbusPDUReadHoldingRegistersResponse:
+	case *modbusModel.ModbusPDUReadHoldingRegistersResponse:
 		pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ToUint8(pdu.Value)
-	case modbusModel.ModbusPDUError:
+	case *modbusModel.ModbusPDUError:
 		return nil, errors.New("got an error from remote")
 	default:
 		return nil, errors.New("unsupported response type")

@@ -22,64 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7ParameterWriteVarResponse struct {
     NumItems uint8
-    S7Parameter
+    Parent *S7Parameter
+    IS7ParameterWriteVarResponse
 }
 
 // The corresponding interface
 type IS7ParameterWriteVarResponse interface {
-    IS7Parameter
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7ParameterWriteVarResponse) ParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7ParameterWriteVarResponse) ParameterType() uint8 {
     return 0x05
 }
 
-func (m S7ParameterWriteVarResponse) MessageType() uint8 {
+func (m *S7ParameterWriteVarResponse) MessageType() uint8 {
     return 0x03
 }
 
-func (m S7ParameterWriteVarResponse) initialize() spi.Message {
-    return m
+
+func (m *S7ParameterWriteVarResponse) InitializeParent(parent *S7Parameter) {
 }
 
-func NewS7ParameterWriteVarResponse(numItems uint8) S7ParameterInitializer {
-    return &S7ParameterWriteVarResponse{NumItems: numItems}
-}
-
-func CastIS7ParameterWriteVarResponse(structType interface{}) IS7ParameterWriteVarResponse {
-    castFunc := func(typ interface{}) IS7ParameterWriteVarResponse {
-        if iS7ParameterWriteVarResponse, ok := typ.(IS7ParameterWriteVarResponse); ok {
-            return iS7ParameterWriteVarResponse
-        }
-        return nil
+func NewS7ParameterWriteVarResponse(numItems uint8, ) *S7Parameter {
+    child := &S7ParameterWriteVarResponse{
+        NumItems: numItems,
+        Parent: NewS7Parameter(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7ParameterWriteVarResponse(structType interface{}) S7ParameterWriteVarResponse {
     castFunc := func(typ interface{}) S7ParameterWriteVarResponse {
-        if sS7ParameterWriteVarResponse, ok := typ.(S7ParameterWriteVarResponse); ok {
-            return sS7ParameterWriteVarResponse
+        if casted, ok := typ.(S7ParameterWriteVarResponse); ok {
+            return casted
         }
-        if sS7ParameterWriteVarResponse, ok := typ.(*S7ParameterWriteVarResponse); ok {
-            return *sS7ParameterWriteVarResponse
+        if casted, ok := typ.(*S7ParameterWriteVarResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Parameter); ok {
+            return CastS7ParameterWriteVarResponse(casted.Child)
+        }
+        if casted, ok := typ.(*S7Parameter); ok {
+            return CastS7ParameterWriteVarResponse(casted.Child)
         }
         return S7ParameterWriteVarResponse{}
     }
     return castFunc(structType)
 }
 
-func (m S7ParameterWriteVarResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Parameter.LengthInBits()
+func (m *S7ParameterWriteVarResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (numItems)
     lengthInBits += 8
@@ -87,11 +91,11 @@ func (m S7ParameterWriteVarResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7ParameterWriteVarResponse) LengthInBytes() uint16 {
+func (m *S7ParameterWriteVarResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterWriteVarResponseParse(io *utils.ReadBuffer) (S7ParameterInitializer, error) {
+func S7ParameterWriteVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error) {
 
     // Simple Field (numItems)
     numItems, _numItemsErr := io.ReadUint8(8)
@@ -99,11 +103,16 @@ func S7ParameterWriteVarResponseParse(io *utils.ReadBuffer) (S7ParameterInitiali
         return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
     }
 
-    // Create the instance
-    return NewS7ParameterWriteVarResponse(numItems), nil
+    // Create a partially initialized instance
+    _child := &S7ParameterWriteVarResponse{
+        NumItems: numItems,
+        Parent: &S7Parameter{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
+func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (numItems)
@@ -115,7 +124,7 @@ func (m S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7ParameterWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -142,7 +151,7 @@ func (m *S7ParameterWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Sta
     }
 }
 
-func (m S7ParameterWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7ParameterWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse"},
         }}); err != nil {

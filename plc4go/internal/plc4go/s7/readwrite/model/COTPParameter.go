@@ -22,56 +22,53 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type COTPParameter struct {
-
+    Child ICOTPParameterChild
+    ICOTPParameter
+    ICOTPParameterParent
 }
 
 // The corresponding interface
 type ICOTPParameter interface {
-    spi.Message
     ParameterType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type COTPParameterInitializer interface {
-    initialize() spi.Message
+type ICOTPParameterParent interface {
+    SerializeParent(io utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error
 }
 
-func COTPParameterParameterType(m ICOTPParameter) uint8 {
-    return m.ParameterType()
+type ICOTPParameterChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *COTPParameter)
+    ICOTPParameter
 }
 
-
-func CastICOTPParameter(structType interface{}) ICOTPParameter {
-    castFunc := func(typ interface{}) ICOTPParameter {
-        if iCOTPParameter, ok := typ.(ICOTPParameter); ok {
-            return iCOTPParameter
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewCOTPParameter() *COTPParameter {
+    return &COTPParameter{}
 }
 
 func CastCOTPParameter(structType interface{}) COTPParameter {
     castFunc := func(typ interface{}) COTPParameter {
-        if sCOTPParameter, ok := typ.(COTPParameter); ok {
-            return sCOTPParameter
+        if casted, ok := typ.(COTPParameter); ok {
+            return casted
         }
-        if sCOTPParameter, ok := typ.(*COTPParameter); ok {
-            return *sCOTPParameter
+        if casted, ok := typ.(*COTPParameter); ok {
+            return *casted
         }
         return COTPParameter{}
     }
     return castFunc(structType)
 }
 
-func (m COTPParameter) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *COTPParameter) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (parameterType)
     lengthInBits += 8
@@ -80,15 +77,16 @@ func (m COTPParameter) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m COTPParameter) LengthInBytes() uint16 {
+func (m *COTPParameter) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (spi.Message, error) {
+func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
     parameterType, _parameterTypeErr := io.ReadUint8(8)
@@ -103,32 +101,37 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer COTPParameterInitializer
+    var _parent *COTPParameter
     var typeSwitchError error
     switch {
     case parameterType == 0xC0:
-        initializer, typeSwitchError = COTPParameterTpduSizeParse(io)
+        _parent, typeSwitchError = COTPParameterTpduSizeParse(io)
     case parameterType == 0xC1:
-        initializer, typeSwitchError = COTPParameterCallingTsapParse(io)
+        _parent, typeSwitchError = COTPParameterCallingTsapParse(io)
     case parameterType == 0xC2:
-        initializer, typeSwitchError = COTPParameterCalledTsapParse(io)
+        _parent, typeSwitchError = COTPParameterCalledTsapParse(io)
     case parameterType == 0xC3:
-        initializer, typeSwitchError = COTPParameterChecksumParse(io)
+        _parent, typeSwitchError = COTPParameterChecksumParse(io)
     case parameterType == 0xE0:
-        initializer, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
+        _parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func COTPParameterSerialize(io utils.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func() error) error {
+func (m *COTPParameter) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
-    parameterType := uint8(i.ParameterType())
+    parameterType := uint8(child.ParameterType())
     _parameterTypeErr := io.WriteUint8(8, (parameterType))
     if _parameterTypeErr != nil {
         return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
@@ -142,7 +145,7 @@ func COTPParameterSerialize(io utils.WriteBuffer, m COTPParameter, i ICOTPParame
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -168,7 +171,7 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPParameter"},
         }}); err != nil {

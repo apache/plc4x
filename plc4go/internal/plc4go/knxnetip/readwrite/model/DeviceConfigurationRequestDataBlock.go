@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,45 +30,35 @@ import (
 type DeviceConfigurationRequestDataBlock struct {
     CommunicationChannelId uint8
     SequenceCounter uint8
-
+    IDeviceConfigurationRequestDataBlock
 }
 
 // The corresponding interface
 type IDeviceConfigurationRequestDataBlock interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) spi.Message {
+func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *DeviceConfigurationRequestDataBlock {
     return &DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
-
-func CastIDeviceConfigurationRequestDataBlock(structType interface{}) IDeviceConfigurationRequestDataBlock {
-    castFunc := func(typ interface{}) IDeviceConfigurationRequestDataBlock {
-        if iDeviceConfigurationRequestDataBlock, ok := typ.(IDeviceConfigurationRequestDataBlock); ok {
-            return iDeviceConfigurationRequestDataBlock
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastDeviceConfigurationRequestDataBlock(structType interface{}) DeviceConfigurationRequestDataBlock {
     castFunc := func(typ interface{}) DeviceConfigurationRequestDataBlock {
-        if sDeviceConfigurationRequestDataBlock, ok := typ.(DeviceConfigurationRequestDataBlock); ok {
-            return sDeviceConfigurationRequestDataBlock
+        if casted, ok := typ.(DeviceConfigurationRequestDataBlock); ok {
+            return casted
         }
-        if sDeviceConfigurationRequestDataBlock, ok := typ.(*DeviceConfigurationRequestDataBlock); ok {
-            return *sDeviceConfigurationRequestDataBlock
+        if casted, ok := typ.(*DeviceConfigurationRequestDataBlock); ok {
+            return *casted
         }
         return DeviceConfigurationRequestDataBlock{}
     }
     return castFunc(structType)
 }
 
-func (m DeviceConfigurationRequestDataBlock) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *DeviceConfigurationRequestDataBlock) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -86,11 +75,11 @@ func (m DeviceConfigurationRequestDataBlock) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DeviceConfigurationRequestDataBlock) LengthInBytes() uint16 {
+func (m *DeviceConfigurationRequestDataBlock) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestDataBlockParse(io *utils.ReadBuffer) (spi.Message, error) {
+func DeviceConfigurationRequestDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -128,7 +117,7 @@ func DeviceConfigurationRequestDataBlockParse(io *utils.ReadBuffer) (spi.Message
     return NewDeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter), nil
 }
 
-func (m DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) error {
+func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -192,7 +181,7 @@ func (m *DeviceConfigurationRequestDataBlock) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m DeviceConfigurationRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DeviceConfigurationRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock"},
         }}); err != nil {

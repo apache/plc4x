@@ -23,64 +23,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationEnumerated struct {
     Data []int8
-    BACnetTag
+    Parent *BACnetTag
+    IBACnetTagApplicationEnumerated
 }
 
 // The corresponding interface
 type IBACnetTagApplicationEnumerated interface {
-    IBACnetTag
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetTagApplicationEnumerated) ContextSpecificTag() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetTagApplicationEnumerated) ContextSpecificTag() uint8 {
     return 0
 }
 
-func (m BACnetTagApplicationEnumerated) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-    m.TypeOrTagNumber = typeOrTagNumber
-    m.LengthValueType = lengthValueType
-    m.ExtTagNumber = extTagNumber
-    m.ExtLength = extLength
-    return m
+
+func (m *BACnetTagApplicationEnumerated) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
+    m.Parent.TypeOrTagNumber = typeOrTagNumber
+    m.Parent.LengthValueType = lengthValueType
+    m.Parent.ExtTagNumber = extTagNumber
+    m.Parent.ExtLength = extLength
 }
 
-func NewBACnetTagApplicationEnumerated(data []int8) BACnetTagInitializer {
-    return &BACnetTagApplicationEnumerated{Data: data}
-}
-
-func CastIBACnetTagApplicationEnumerated(structType interface{}) IBACnetTagApplicationEnumerated {
-    castFunc := func(typ interface{}) IBACnetTagApplicationEnumerated {
-        if iBACnetTagApplicationEnumerated, ok := typ.(IBACnetTagApplicationEnumerated); ok {
-            return iBACnetTagApplicationEnumerated
-        }
-        return nil
+func NewBACnetTagApplicationEnumerated(data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+    child := &BACnetTagApplicationEnumerated{
+        Data: data,
+        Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetTagApplicationEnumerated(structType interface{}) BACnetTagApplicationEnumerated {
     castFunc := func(typ interface{}) BACnetTagApplicationEnumerated {
-        if sBACnetTagApplicationEnumerated, ok := typ.(BACnetTagApplicationEnumerated); ok {
-            return sBACnetTagApplicationEnumerated
+        if casted, ok := typ.(BACnetTagApplicationEnumerated); ok {
+            return casted
         }
-        if sBACnetTagApplicationEnumerated, ok := typ.(*BACnetTagApplicationEnumerated); ok {
-            return *sBACnetTagApplicationEnumerated
+        if casted, ok := typ.(*BACnetTagApplicationEnumerated); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetTag); ok {
+            return CastBACnetTagApplicationEnumerated(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetTag); ok {
+            return CastBACnetTagApplicationEnumerated(casted.Child)
         }
         return BACnetTagApplicationEnumerated{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetTagApplicationEnumerated) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+func (m *BACnetTagApplicationEnumerated) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Data) > 0 {
@@ -90,11 +94,11 @@ func (m BACnetTagApplicationEnumerated) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetTagApplicationEnumerated) LengthInBytes() uint16 {
+func (m *BACnetTagApplicationEnumerated) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
     // Array field (data)
     // Length array
@@ -109,11 +113,16 @@ func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType u
         data = append(data, _item)
     }
 
-    // Create the instance
-    return NewBACnetTagApplicationEnumerated(data), nil
+    // Create a partially initialized instance
+    _child := &BACnetTagApplicationEnumerated{
+        Data: data,
+        Parent: &BACnetTag{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (data)
@@ -128,7 +137,7 @@ func (m BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetTagApplicationEnumerated) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -160,7 +169,7 @@ func (m *BACnetTagApplicationEnumerated) UnmarshalXML(d *xml.Decoder, start xml.
     }
 }
 
-func (m BACnetTagApplicationEnumerated) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetTagApplicationEnumerated) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated"},
         }}); err != nil {

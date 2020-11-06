@@ -22,55 +22,43 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type HPAIDiscoveryEndpoint struct {
-    HostProtocolCode IHostProtocolCode
-    IpAddress IIPAddress
+    HostProtocolCode HostProtocolCode
+    IpAddress *IPAddress
     IpPort uint16
-
+    IHPAIDiscoveryEndpoint
 }
 
 // The corresponding interface
 type IHPAIDiscoveryEndpoint interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewHPAIDiscoveryEndpoint(hostProtocolCode IHostProtocolCode, ipAddress IIPAddress, ipPort uint16) spi.Message {
+func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDiscoveryEndpoint {
     return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
-
-func CastIHPAIDiscoveryEndpoint(structType interface{}) IHPAIDiscoveryEndpoint {
-    castFunc := func(typ interface{}) IHPAIDiscoveryEndpoint {
-        if iHPAIDiscoveryEndpoint, ok := typ.(IHPAIDiscoveryEndpoint); ok {
-            return iHPAIDiscoveryEndpoint
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastHPAIDiscoveryEndpoint(structType interface{}) HPAIDiscoveryEndpoint {
     castFunc := func(typ interface{}) HPAIDiscoveryEndpoint {
-        if sHPAIDiscoveryEndpoint, ok := typ.(HPAIDiscoveryEndpoint); ok {
-            return sHPAIDiscoveryEndpoint
+        if casted, ok := typ.(HPAIDiscoveryEndpoint); ok {
+            return casted
         }
-        if sHPAIDiscoveryEndpoint, ok := typ.(*HPAIDiscoveryEndpoint); ok {
-            return *sHPAIDiscoveryEndpoint
+        if casted, ok := typ.(*HPAIDiscoveryEndpoint); ok {
+            return *casted
         }
         return HPAIDiscoveryEndpoint{}
     }
     return castFunc(structType)
 }
 
-func (m HPAIDiscoveryEndpoint) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *HPAIDiscoveryEndpoint) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -87,11 +75,11 @@ func (m HPAIDiscoveryEndpoint) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
+func (m *HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (spi.Message, error) {
+func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (*HPAIDiscoveryEndpoint, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -106,14 +94,9 @@ func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Simple Field (ipAddress)
-    _ipAddressMessage, _err := IPAddressParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'ipAddress'. " + _err.Error())
-    }
-    var ipAddress IIPAddress
-    ipAddress, _ipAddressOk := _ipAddressMessage.(IIPAddress)
-    if !_ipAddressOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_ipAddressMessage).Name() + " to IIPAddress")
+    ipAddress, _ipAddressErr := IPAddressParse(io)
+    if _ipAddressErr != nil {
+        return nil, errors.New("Error parsing 'ipAddress' field " + _ipAddressErr.Error())
     }
 
     // Simple Field (ipPort)
@@ -126,7 +109,7 @@ func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
 }
 
-func (m HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
+func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -143,8 +126,7 @@ func (m HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (ipAddress)
-    ipAddress := CastIIPAddress(m.IpAddress)
-    _ipAddressErr := ipAddress.Serialize(io)
+    _ipAddressErr := m.IpAddress.Serialize(io)
     if _ipAddressErr != nil {
         return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
     }
@@ -173,17 +155,17 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "hostProtocolCode":
-                var data *HostProtocolCode
+                var data HostProtocolCode
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.HostProtocolCode = data
             case "ipAddress":
                 var data *IPAddress
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.IpAddress = CastIIPAddress(data)
+                m.IpAddress = data
             case "ipPort":
                 var data uint16
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -195,7 +177,7 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
     }
 }
 
-func (m HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint"},
         }}); err != nil {

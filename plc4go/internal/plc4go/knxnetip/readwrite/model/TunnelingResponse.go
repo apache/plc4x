@@ -22,61 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type TunnelingResponse struct {
-    TunnelingResponseDataBlock ITunnelingResponseDataBlock
-    KNXNetIPMessage
+    TunnelingResponseDataBlock *TunnelingResponseDataBlock
+    Parent *KNXNetIPMessage
+    ITunnelingResponse
 }
 
 // The corresponding interface
 type ITunnelingResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m TunnelingResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *TunnelingResponse) MsgType() uint16 {
     return 0x0421
 }
 
-func (m TunnelingResponse) initialize() spi.Message {
-    return m
+
+func (m *TunnelingResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewTunnelingResponse(tunnelingResponseDataBlock ITunnelingResponseDataBlock) KNXNetIPMessageInitializer {
-    return &TunnelingResponse{TunnelingResponseDataBlock: tunnelingResponseDataBlock}
-}
-
-func CastITunnelingResponse(structType interface{}) ITunnelingResponse {
-    castFunc := func(typ interface{}) ITunnelingResponse {
-        if iTunnelingResponse, ok := typ.(ITunnelingResponse); ok {
-            return iTunnelingResponse
-        }
-        return nil
+func NewTunnelingResponse(tunnelingResponseDataBlock *TunnelingResponseDataBlock, ) *KNXNetIPMessage {
+    child := &TunnelingResponse{
+        TunnelingResponseDataBlock: tunnelingResponseDataBlock,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastTunnelingResponse(structType interface{}) TunnelingResponse {
     castFunc := func(typ interface{}) TunnelingResponse {
-        if sTunnelingResponse, ok := typ.(TunnelingResponse); ok {
-            return sTunnelingResponse
+        if casted, ok := typ.(TunnelingResponse); ok {
+            return casted
         }
-        if sTunnelingResponse, ok := typ.(*TunnelingResponse); ok {
-            return *sTunnelingResponse
+        if casted, ok := typ.(*TunnelingResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastTunnelingResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastTunnelingResponse(casted.Child)
         }
         return TunnelingResponse{}
     }
     return castFunc(structType)
 }
 
-func (m TunnelingResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *TunnelingResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (tunnelingResponseDataBlock)
     lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
@@ -84,40 +87,39 @@ func (m TunnelingResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m TunnelingResponse) LengthInBytes() uint16 {
+func (m *TunnelingResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TunnelingResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func TunnelingResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (tunnelingResponseDataBlock)
-    _tunnelingResponseDataBlockMessage, _err := TunnelingResponseDataBlockParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'tunnelingResponseDataBlock'. " + _err.Error())
-    }
-    var tunnelingResponseDataBlock ITunnelingResponseDataBlock
-    tunnelingResponseDataBlock, _tunnelingResponseDataBlockOk := _tunnelingResponseDataBlockMessage.(ITunnelingResponseDataBlock)
-    if !_tunnelingResponseDataBlockOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingResponseDataBlockMessage).Name() + " to ITunnelingResponseDataBlock")
+    tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
+    if _tunnelingResponseDataBlockErr != nil {
+        return nil, errors.New("Error parsing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
     }
 
-    // Create the instance
-    return NewTunnelingResponse(tunnelingResponseDataBlock), nil
+    // Create a partially initialized instance
+    _child := &TunnelingResponse{
+        TunnelingResponseDataBlock: tunnelingResponseDataBlock,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m TunnelingResponse) Serialize(io utils.WriteBuffer) error {
+func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (tunnelingResponseDataBlock)
-    tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.TunnelingResponseDataBlock)
-    _tunnelingResponseDataBlockErr := tunnelingResponseDataBlock.Serialize(io)
+    _tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
     if _tunnelingResponseDataBlockErr != nil {
         return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -135,16 +137,16 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
             switch tok.Name.Local {
             case "tunnelingResponseDataBlock":
                 var data *TunnelingResponseDataBlock
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.TunnelingResponseDataBlock = CastITunnelingResponseDataBlock(data)
+                m.TunnelingResponseDataBlock = data
             }
         }
     }
 }
 
-func (m TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponse"},
         }}); err != nil {

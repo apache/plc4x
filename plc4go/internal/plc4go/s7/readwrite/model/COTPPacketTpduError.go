@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,55 +29,61 @@ import (
 type COTPPacketTpduError struct {
     DestinationReference uint16
     RejectCause uint8
-    COTPPacket
+    Parent *COTPPacket
+    ICOTPPacketTpduError
 }
 
 // The corresponding interface
 type ICOTPPacketTpduError interface {
-    ICOTPPacket
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPPacketTpduError) TpduCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPPacketTpduError) TpduCode() uint8 {
     return 0x70
 }
 
-func (m COTPPacketTpduError) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-    m.Parameters = parameters
-    m.Payload = payload
-    return m
+
+func (m *COTPPacketTpduError) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
+    m.Parent.Parameters = parameters
+    m.Parent.Payload = payload
 }
 
-func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8) COTPPacketInitializer {
-    return &COTPPacketTpduError{DestinationReference: destinationReference, RejectCause: rejectCause}
-}
-
-func CastICOTPPacketTpduError(structType interface{}) ICOTPPacketTpduError {
-    castFunc := func(typ interface{}) ICOTPPacketTpduError {
-        if iCOTPPacketTpduError, ok := typ.(ICOTPPacketTpduError); ok {
-            return iCOTPPacketTpduError
-        }
-        return nil
+func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+    child := &COTPPacketTpduError{
+        DestinationReference: destinationReference,
+        RejectCause: rejectCause,
+        Parent: NewCOTPPacket(parameters, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
     castFunc := func(typ interface{}) COTPPacketTpduError {
-        if sCOTPPacketTpduError, ok := typ.(COTPPacketTpduError); ok {
-            return sCOTPPacketTpduError
+        if casted, ok := typ.(COTPPacketTpduError); ok {
+            return casted
         }
-        if sCOTPPacketTpduError, ok := typ.(*COTPPacketTpduError); ok {
-            return *sCOTPPacketTpduError
+        if casted, ok := typ.(*COTPPacketTpduError); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPPacket); ok {
+            return CastCOTPPacketTpduError(casted.Child)
+        }
+        if casted, ok := typ.(*COTPPacket); ok {
+            return CastCOTPPacketTpduError(casted.Child)
         }
         return COTPPacketTpduError{}
     }
     return castFunc(structType)
 }
 
-func (m COTPPacketTpduError) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+func (m *COTPPacketTpduError) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (destinationReference)
     lengthInBits += 16
@@ -89,11 +94,11 @@ func (m COTPPacketTpduError) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPPacketTpduError) LengthInBytes() uint16 {
+func (m *COTPPacketTpduError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
     // Simple Field (destinationReference)
     destinationReference, _destinationReferenceErr := io.ReadUint16(16)
@@ -107,11 +112,17 @@ func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (COTPPacketInitializer, erro
         return nil, errors.New("Error parsing 'rejectCause' field " + _rejectCauseErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPPacketTpduError(destinationReference, rejectCause), nil
+    // Create a partially initialized instance
+    _child := &COTPPacketTpduError{
+        DestinationReference: destinationReference,
+        RejectCause: rejectCause,
+        Parent: &COTPPacket{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
+func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (destinationReference)
@@ -130,7 +141,7 @@ func (m COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPPacketTpduError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -163,7 +174,7 @@ func (m *COTPPacketTpduError) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
     }
 }
 
-func (m COTPPacketTpduError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPPacketTpduError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError"},
         }}); err != nil {

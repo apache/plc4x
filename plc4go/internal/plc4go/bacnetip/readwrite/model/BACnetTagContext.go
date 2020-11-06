@@ -23,64 +23,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetTagContext struct {
     Data []int8
-    BACnetTag
+    Parent *BACnetTag
+    IBACnetTagContext
 }
 
 // The corresponding interface
 type IBACnetTagContext interface {
-    IBACnetTag
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetTagContext) ContextSpecificTag() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetTagContext) ContextSpecificTag() uint8 {
     return 1
 }
 
-func (m BACnetTagContext) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-    m.TypeOrTagNumber = typeOrTagNumber
-    m.LengthValueType = lengthValueType
-    m.ExtTagNumber = extTagNumber
-    m.ExtLength = extLength
-    return m
+
+func (m *BACnetTagContext) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
+    m.Parent.TypeOrTagNumber = typeOrTagNumber
+    m.Parent.LengthValueType = lengthValueType
+    m.Parent.ExtTagNumber = extTagNumber
+    m.Parent.ExtLength = extLength
 }
 
-func NewBACnetTagContext(data []int8) BACnetTagInitializer {
-    return &BACnetTagContext{Data: data}
-}
-
-func CastIBACnetTagContext(structType interface{}) IBACnetTagContext {
-    castFunc := func(typ interface{}) IBACnetTagContext {
-        if iBACnetTagContext, ok := typ.(IBACnetTagContext); ok {
-            return iBACnetTagContext
-        }
-        return nil
+func NewBACnetTagContext(data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+    child := &BACnetTagContext{
+        Data: data,
+        Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetTagContext(structType interface{}) BACnetTagContext {
     castFunc := func(typ interface{}) BACnetTagContext {
-        if sBACnetTagContext, ok := typ.(BACnetTagContext); ok {
-            return sBACnetTagContext
+        if casted, ok := typ.(BACnetTagContext); ok {
+            return casted
         }
-        if sBACnetTagContext, ok := typ.(*BACnetTagContext); ok {
-            return *sBACnetTagContext
+        if casted, ok := typ.(*BACnetTagContext); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetTag); ok {
+            return CastBACnetTagContext(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetTag); ok {
+            return CastBACnetTagContext(casted.Child)
         }
         return BACnetTagContext{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetTagContext) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+func (m *BACnetTagContext) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Data) > 0 {
@@ -90,11 +94,11 @@ func (m BACnetTagContext) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetTagContext) LengthInBytes() uint16 {
+func (m *BACnetTagContext) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
     // Array field (data)
     // Length array
@@ -109,11 +113,16 @@ func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNu
         data = append(data, _item)
     }
 
-    // Create the instance
-    return NewBACnetTagContext(data), nil
+    // Create a partially initialized instance
+    _child := &BACnetTagContext{
+        Data: data,
+        Parent: &BACnetTag{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetTagContext) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetTagContext) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (data)
@@ -128,7 +137,7 @@ func (m BACnetTagContext) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -160,7 +169,7 @@ func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
     }
 }
 
-func (m BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext"},
         }}); err != nil {

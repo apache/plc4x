@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -34,45 +33,35 @@ type SzlDataTreeItem struct {
     ModuleTypeId uint16
     Ausbg uint16
     Ausbe uint16
-
+    ISzlDataTreeItem
 }
 
 // The corresponding interface
 type ISzlDataTreeItem interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) spi.Message {
+func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
     return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
-}
-
-func CastISzlDataTreeItem(structType interface{}) ISzlDataTreeItem {
-    castFunc := func(typ interface{}) ISzlDataTreeItem {
-        if iSzlDataTreeItem, ok := typ.(ISzlDataTreeItem); ok {
-            return iSzlDataTreeItem
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastSzlDataTreeItem(structType interface{}) SzlDataTreeItem {
     castFunc := func(typ interface{}) SzlDataTreeItem {
-        if sSzlDataTreeItem, ok := typ.(SzlDataTreeItem); ok {
-            return sSzlDataTreeItem
+        if casted, ok := typ.(SzlDataTreeItem); ok {
+            return casted
         }
-        if sSzlDataTreeItem, ok := typ.(*SzlDataTreeItem); ok {
-            return *sSzlDataTreeItem
+        if casted, ok := typ.(*SzlDataTreeItem); ok {
+            return *casted
         }
         return SzlDataTreeItem{}
     }
     return castFunc(structType)
 }
 
-func (m SzlDataTreeItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *SzlDataTreeItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (itemIndex)
     lengthInBits += 16
@@ -94,11 +83,11 @@ func (m SzlDataTreeItem) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m SzlDataTreeItem) LengthInBytes() uint16 {
+func (m *SzlDataTreeItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(io *utils.ReadBuffer) (spi.Message, error) {
+func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
 
     // Simple Field (itemIndex)
     itemIndex, _itemIndexErr := io.ReadUint16(16)
@@ -110,7 +99,6 @@ func SzlDataTreeItemParse(io *utils.ReadBuffer) (spi.Message, error) {
     // Count array
     mlfb := make([]int8, uint16(20))
     for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'mlfb' field " + _err.Error())
@@ -140,7 +128,7 @@ func SzlDataTreeItemParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
 }
 
-func (m SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
+func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (itemIndex)
     itemIndex := uint16(m.ItemIndex)
@@ -236,7 +224,7 @@ func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem"},
         }}); err != nil {

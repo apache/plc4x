@@ -21,83 +21,90 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationObjectIdentifier struct {
-    BACnetTag
+    Parent *BACnetTag
+    IBACnetTagApplicationObjectIdentifier
 }
 
 // The corresponding interface
 type IBACnetTagApplicationObjectIdentifier interface {
-    IBACnetTag
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetTagApplicationObjectIdentifier) ContextSpecificTag() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetTagApplicationObjectIdentifier) ContextSpecificTag() uint8 {
     return 0
 }
 
-func (m BACnetTagApplicationObjectIdentifier) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-    m.TypeOrTagNumber = typeOrTagNumber
-    m.LengthValueType = lengthValueType
-    m.ExtTagNumber = extTagNumber
-    m.ExtLength = extLength
-    return m
+
+func (m *BACnetTagApplicationObjectIdentifier) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
+    m.Parent.TypeOrTagNumber = typeOrTagNumber
+    m.Parent.LengthValueType = lengthValueType
+    m.Parent.ExtTagNumber = extTagNumber
+    m.Parent.ExtLength = extLength
 }
 
-func NewBACnetTagApplicationObjectIdentifier() BACnetTagInitializer {
-    return &BACnetTagApplicationObjectIdentifier{}
-}
-
-func CastIBACnetTagApplicationObjectIdentifier(structType interface{}) IBACnetTagApplicationObjectIdentifier {
-    castFunc := func(typ interface{}) IBACnetTagApplicationObjectIdentifier {
-        if iBACnetTagApplicationObjectIdentifier, ok := typ.(IBACnetTagApplicationObjectIdentifier); ok {
-            return iBACnetTagApplicationObjectIdentifier
-        }
-        return nil
+func NewBACnetTagApplicationObjectIdentifier(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+    child := &BACnetTagApplicationObjectIdentifier{
+        Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetTagApplicationObjectIdentifier(structType interface{}) BACnetTagApplicationObjectIdentifier {
     castFunc := func(typ interface{}) BACnetTagApplicationObjectIdentifier {
-        if sBACnetTagApplicationObjectIdentifier, ok := typ.(BACnetTagApplicationObjectIdentifier); ok {
-            return sBACnetTagApplicationObjectIdentifier
+        if casted, ok := typ.(BACnetTagApplicationObjectIdentifier); ok {
+            return casted
         }
-        if sBACnetTagApplicationObjectIdentifier, ok := typ.(*BACnetTagApplicationObjectIdentifier); ok {
-            return *sBACnetTagApplicationObjectIdentifier
+        if casted, ok := typ.(*BACnetTagApplicationObjectIdentifier); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetTag); ok {
+            return CastBACnetTagApplicationObjectIdentifier(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetTag); ok {
+            return CastBACnetTagApplicationObjectIdentifier(casted.Child)
         }
         return BACnetTagApplicationObjectIdentifier{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetTagApplicationObjectIdentifier) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+func (m *BACnetTagApplicationObjectIdentifier) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetTagApplicationObjectIdentifier) LengthInBytes() uint16 {
+func (m *BACnetTagApplicationObjectIdentifier) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationObjectIdentifierParse(io *utils.ReadBuffer) (BACnetTagInitializer, error) {
+func BACnetTagApplicationObjectIdentifierParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 
-    // Create the instance
-    return NewBACnetTagApplicationObjectIdentifier(), nil
+    // Create a partially initialized instance
+    _child := &BACnetTagApplicationObjectIdentifier{
+        Parent: &BACnetTag{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetTagApplicationObjectIdentifier) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetTagApplicationObjectIdentifier) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -118,7 +125,7 @@ func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m BACnetTagApplicationObjectIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetTagApplicationObjectIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier"},
         }}); err != nil {

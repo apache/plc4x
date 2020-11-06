@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckCreateObject struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckCreateObject
 }
 
 // The corresponding interface
 type IBACnetServiceAckCreateObject interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckCreateObject) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckCreateObject) ServiceChoice() uint8 {
     return 0x0A
 }
 
-func (m BACnetServiceAckCreateObject) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckCreateObject) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckCreateObject() BACnetServiceAckInitializer {
-    return &BACnetServiceAckCreateObject{}
-}
-
-func CastIBACnetServiceAckCreateObject(structType interface{}) IBACnetServiceAckCreateObject {
-    castFunc := func(typ interface{}) IBACnetServiceAckCreateObject {
-        if iBACnetServiceAckCreateObject, ok := typ.(IBACnetServiceAckCreateObject); ok {
-            return iBACnetServiceAckCreateObject
-        }
-        return nil
+func NewBACnetServiceAckCreateObject() *BACnetServiceAck {
+    child := &BACnetServiceAckCreateObject{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckCreateObject(structType interface{}) BACnetServiceAckCreateObject {
     castFunc := func(typ interface{}) BACnetServiceAckCreateObject {
-        if sBACnetServiceAckCreateObject, ok := typ.(BACnetServiceAckCreateObject); ok {
-            return sBACnetServiceAckCreateObject
+        if casted, ok := typ.(BACnetServiceAckCreateObject); ok {
+            return casted
         }
-        if sBACnetServiceAckCreateObject, ok := typ.(*BACnetServiceAckCreateObject); ok {
-            return *sBACnetServiceAckCreateObject
+        if casted, ok := typ.(*BACnetServiceAckCreateObject); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckCreateObject(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckCreateObject(casted.Child)
         }
         return BACnetServiceAckCreateObject{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckCreateObject) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckCreateObject) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckCreateObject) LengthInBytes() uint16 {
+func (m *BACnetServiceAckCreateObject) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckCreateObjectParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckCreateObject(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckCreateObject{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckCreateObject) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckCreateObject) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckCreateObject) UnmarshalXML(d *xml.Decoder, start xml.St
     }
 }
 
-func (m BACnetServiceAckCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckCreateObject"},
         }}); err != nil {

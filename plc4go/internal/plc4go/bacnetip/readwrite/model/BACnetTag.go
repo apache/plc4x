@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -32,50 +31,48 @@ type BACnetTag struct {
     LengthValueType uint8
     ExtTagNumber *uint8
     ExtLength *uint8
-
+    Child IBACnetTagChild
+    IBACnetTag
+    IBACnetTagParent
 }
 
 // The corresponding interface
 type IBACnetTag interface {
-    spi.Message
     ContextSpecificTag() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type BACnetTagInitializer interface {
-    initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message
+type IBACnetTagParent interface {
+    SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error
 }
 
-func BACnetTagContextSpecificTag(m IBACnetTag) uint8 {
-    return m.ContextSpecificTag()
+type IBACnetTagChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8)
+    IBACnetTag
 }
 
-
-func CastIBACnetTag(structType interface{}) IBACnetTag {
-    castFunc := func(typ interface{}) IBACnetTag {
-        if iBACnetTag, ok := typ.(IBACnetTag); ok {
-            return iBACnetTag
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewBACnetTag(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+    return &BACnetTag{TypeOrTagNumber: typeOrTagNumber, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength}
 }
 
 func CastBACnetTag(structType interface{}) BACnetTag {
     castFunc := func(typ interface{}) BACnetTag {
-        if sBACnetTag, ok := typ.(BACnetTag); ok {
-            return sBACnetTag
+        if casted, ok := typ.(BACnetTag); ok {
+            return casted
         }
-        if sBACnetTag, ok := typ.(*BACnetTag); ok {
-            return *sBACnetTag
+        if casted, ok := typ.(*BACnetTag); ok {
+            return *casted
         }
         return BACnetTag{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetTag) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *BACnetTag) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (typeOrTagNumber)
     lengthInBits += 4
@@ -97,15 +94,16 @@ func (m BACnetTag) LengthInBits() uint16 {
     }
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m BACnetTag) LengthInBytes() uint16 {
+func (m *BACnetTag) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagParse(io *utils.ReadBuffer) (spi.Message, error) {
+func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
@@ -148,47 +146,52 @@ func BACnetTagParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer BACnetTagInitializer
+    var _parent *BACnetTag
     var typeSwitchError error
     switch {
     case contextSpecificTag == 0 && typeOrTagNumber == 0x0:
-        initializer, typeSwitchError = BACnetTagApplicationNullParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationNullParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x1:
-        initializer, typeSwitchError = BACnetTagApplicationBooleanParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationBooleanParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x2:
-        initializer, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x3:
-        initializer, typeSwitchError = BACnetTagApplicationSignedIntegerParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationSignedIntegerParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x4:
-        initializer, typeSwitchError = BACnetTagApplicationRealParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationRealParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x5:
-        initializer, typeSwitchError = BACnetTagApplicationDoubleParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationDoubleParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x6:
-        initializer, typeSwitchError = BACnetTagApplicationOctetStringParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationOctetStringParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x7:
-        initializer, typeSwitchError = BACnetTagApplicationCharacterStringParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationCharacterStringParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x8:
-        initializer, typeSwitchError = BACnetTagApplicationBitStringParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationBitStringParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0x9:
-        initializer, typeSwitchError = BACnetTagApplicationEnumeratedParse(io, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagApplicationEnumeratedParse(io, lengthValueType, *extLength)
     case contextSpecificTag == 0 && typeOrTagNumber == 0xA:
-        initializer, typeSwitchError = BACnetTagApplicationDateParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationDateParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0xB:
-        initializer, typeSwitchError = BACnetTagApplicationTimeParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationTimeParse(io)
     case contextSpecificTag == 0 && typeOrTagNumber == 0xC:
-        initializer, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
+        _parent, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
     case contextSpecificTag == 1:
-        initializer, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
+        _parent, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(typeOrTagNumber, lengthValueType, extTagNumber, extLength), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent, typeOrTagNumber, lengthValueType, extTagNumber, extLength)
+    return _parent, nil
 }
 
-func BACnetTagSerialize(io utils.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func() error) error {
+func (m *BACnetTag) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber := uint8(m.TypeOrTagNumber)
@@ -198,7 +201,7 @@ func BACnetTagSerialize(io utils.WriteBuffer, m BACnetTag, i IBACnetTag, childSe
     }
 
     // Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-    contextSpecificTag := uint8(i.ContextSpecificTag())
+    contextSpecificTag := uint8(child.ContextSpecificTag())
     _contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
     if _contextSpecificTagErr != nil {
         return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
@@ -232,7 +235,7 @@ func BACnetTagSerialize(io utils.WriteBuffer, m BACnetTag, i IBACnetTag, childSe
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -267,13 +270,13 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 m.LengthValueType = data
             case "extTagNumber":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.ExtTagNumber = data
             case "extLength":
                 var data *uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.ExtLength = data
@@ -282,7 +285,7 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTag"},
         }}); err != nil {

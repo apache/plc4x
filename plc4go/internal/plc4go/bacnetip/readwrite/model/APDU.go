@@ -22,70 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type APDU struct {
-
+    Child IAPDUChild
+    IAPDU
+    IAPDUParent
 }
 
 // The corresponding interface
 type IAPDU interface {
-    spi.Message
     ApduType() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type APDUInitializer interface {
-    initialize() spi.Message
+type IAPDUParent interface {
+    SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChildFunction func() error) error
 }
 
-func APDUApduType(m IAPDU) uint8 {
-    return m.ApduType()
+type IAPDUChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *APDU)
+    IAPDU
 }
 
-
-func CastIAPDU(structType interface{}) IAPDU {
-    castFunc := func(typ interface{}) IAPDU {
-        if iAPDU, ok := typ.(IAPDU); ok {
-            return iAPDU
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewAPDU() *APDU {
+    return &APDU{}
 }
 
 func CastAPDU(structType interface{}) APDU {
     castFunc := func(typ interface{}) APDU {
-        if sAPDU, ok := typ.(APDU); ok {
-            return sAPDU
+        if casted, ok := typ.(APDU); ok {
+            return casted
         }
-        if sAPDU, ok := typ.(*APDU); ok {
-            return *sAPDU
+        if casted, ok := typ.(*APDU); ok {
+            return *casted
         }
         return APDU{}
     }
     return castFunc(structType)
 }
 
-func (m APDU) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *APDU) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Discriminator Field (apduType)
     lengthInBits += 4
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m APDU) LengthInBytes() uint16 {
+func (m *APDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
+func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 
     // Discriminator Field (apduType) (Used as input to a switch field)
     apduType, _apduTypeErr := io.ReadUint8(4)
@@ -94,45 +92,50 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer APDUInitializer
+    var _parent *APDU
     var typeSwitchError error
     switch {
     case apduType == 0x0:
-        initializer, typeSwitchError = APDUConfirmedRequestParse(io, apduLength)
+        _parent, typeSwitchError = APDUConfirmedRequestParse(io, apduLength)
     case apduType == 0x1:
-        initializer, typeSwitchError = APDUUnconfirmedRequestParse(io, apduLength)
+        _parent, typeSwitchError = APDUUnconfirmedRequestParse(io, apduLength)
     case apduType == 0x2:
-        initializer, typeSwitchError = APDUSimpleAckParse(io)
+        _parent, typeSwitchError = APDUSimpleAckParse(io)
     case apduType == 0x3:
-        initializer, typeSwitchError = APDUComplexAckParse(io)
+        _parent, typeSwitchError = APDUComplexAckParse(io)
     case apduType == 0x4:
-        initializer, typeSwitchError = APDUSegmentAckParse(io)
+        _parent, typeSwitchError = APDUSegmentAckParse(io)
     case apduType == 0x5:
-        initializer, typeSwitchError = APDUErrorParse(io)
+        _parent, typeSwitchError = APDUErrorParse(io)
     case apduType == 0x6:
-        initializer, typeSwitchError = APDURejectParse(io)
+        _parent, typeSwitchError = APDURejectParse(io)
     case apduType == 0x7:
-        initializer, typeSwitchError = APDUAbortParse(io)
+        _parent, typeSwitchError = APDUAbortParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func APDUSerialize(io utils.WriteBuffer, m APDU, i IAPDU, childSerialize func() error) error {
+func (m *APDU) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *APDU) SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChildFunction func() error) error {
 
     // Discriminator Field (apduType) (Used as input to a switch field)
-    apduType := uint8(i.ApduType())
+    apduType := uint8(child.ApduType())
     _apduTypeErr := io.WriteUint8(4, (apduType))
     if _apduTypeErr != nil {
         return errors.New("Error serializing 'apduType' field " + _apduTypeErr.Error())
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -158,7 +161,7 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDU"},
         }}); err != nil {

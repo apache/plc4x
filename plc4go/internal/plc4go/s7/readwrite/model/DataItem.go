@@ -19,10 +19,10 @@
 package model
 
 import (
-    "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+            "errors"
+            "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+            "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+            api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
 func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int32) (api.PlcValue, error) {
@@ -200,54 +200,12 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcSTRING(value), nil
-        case dataProtocolId == "IEC61131_TIME": // Time
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseTiaTime(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcTime(value), nil
-        case dataProtocolId == "S7_S5TIME": // Time
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseS5Time(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcTime(value), nil
-        case dataProtocolId == "IEC61131_LTIME": // Time
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseTiaLTime(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcTime(value), nil
-        case dataProtocolId == "IEC61131_DATE": // Date
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseTiaDate(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcDate(value), nil
-        case dataProtocolId == "IEC61131_TIME_OF_DAY": // Time
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseTiaTimeOfDay(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcTime(value), nil
-        case dataProtocolId == "IEC61131_DATE_AND_TIME": // DateTime
-
-            // Manual Field (value)
-            value, _valueErr := StaticHelperParseTiaDateTime(io)
-            if _valueErr != nil {
-                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-            }
-            return values.NewPlcDateTime(value), nil
+        case dataProtocolId == "IEC61131_TIME": // TIME
+        case dataProtocolId == "S7_S5TIME": // TIME
+        case dataProtocolId == "IEC61131_LTIME": // LTIME
+        case dataProtocolId == "IEC61131_DATE": // DATE
+        case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
+        case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
     }
     return nil, errors.New("unsupported type")
 }
@@ -389,48 +347,12 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
             if _valueErr != nil {
                 return errors.New("Error serializing 'value' field " + _valueErr.Error())
             }
-        case dataProtocolId == "IEC61131_TIME": // Time
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeTiaTime(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
-        case dataProtocolId == "S7_S5TIME": // Time
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeS5Time(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
-        case dataProtocolId == "IEC61131_LTIME": // Time
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeTiaLTime(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
-        case dataProtocolId == "IEC61131_DATE": // Date
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeTiaDate(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
-        case dataProtocolId == "IEC61131_TIME_OF_DAY": // Time
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeTiaTimeOfDay(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
-        case dataProtocolId == "IEC61131_DATE_AND_TIME": // DateTime
-
-            // Manual Field (value)
-            _valueErr := StaticHelperSerializeTiaDateTime(io, value)
-            if _valueErr != nil {
-                return errors.New("Error serializing 'value' field " + _valueErr.Error())
-            }
+        case dataProtocolId == "IEC61131_TIME": // TIME
+        case dataProtocolId == "S7_S5TIME": // TIME
+        case dataProtocolId == "IEC61131_LTIME": // LTIME
+        case dataProtocolId == "IEC61131_DATE": // DATE
+        case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
+        case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
         default:
 
             return errors.New("unsupported type")

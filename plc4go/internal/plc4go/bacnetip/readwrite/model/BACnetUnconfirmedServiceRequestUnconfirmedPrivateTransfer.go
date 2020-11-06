@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -39,53 +38,60 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
     VendorId uint8
     ServiceNumber uint16
     Values []int8
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) ServiceChoice() uint8 {
     return 0x04
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8, serviceNumber uint16, values []int8) BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{VendorId: vendorId, ServiceNumber: serviceNumber, Values: values}
-}
-
-func CastIBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-        if iBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
-            return iBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8, serviceNumber uint16, values []int8, ) *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
+        VendorId: vendorId,
+        ServiceNumber: serviceNumber,
+        Values: values,
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-        if sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
-            return sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
-            return *sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (vendorIdHeader)
     lengthInBits += 8
@@ -113,11 +119,11 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits(
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.ReadBuffer, len uint16) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 
     // Const Field (vendorIdHeader)
     vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
@@ -180,11 +186,18 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
         return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG)) + " but got " + strconv.Itoa(int(listOfValuesClosingTag)))
     }
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId, serviceNumber, values), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
+        VendorId: vendorId,
+        ServiceNumber: serviceNumber,
+        Values: values,
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (vendorIdHeader)
@@ -237,7 +250,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -281,7 +294,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"},
         }}); err != nil {

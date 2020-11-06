@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorReadRange struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorReadRange
 }
 
 // The corresponding interface
 type IBACnetErrorReadRange interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorReadRange) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorReadRange) ServiceChoice() uint8 {
     return 0x1A
 }
 
-func (m BACnetErrorReadRange) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorReadRange) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorReadRange() BACnetErrorInitializer {
-    return &BACnetErrorReadRange{}
-}
-
-func CastIBACnetErrorReadRange(structType interface{}) IBACnetErrorReadRange {
-    castFunc := func(typ interface{}) IBACnetErrorReadRange {
-        if iBACnetErrorReadRange, ok := typ.(IBACnetErrorReadRange); ok {
-            return iBACnetErrorReadRange
-        }
-        return nil
+func NewBACnetErrorReadRange() *BACnetError {
+    child := &BACnetErrorReadRange{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
     castFunc := func(typ interface{}) BACnetErrorReadRange {
-        if sBACnetErrorReadRange, ok := typ.(BACnetErrorReadRange); ok {
-            return sBACnetErrorReadRange
+        if casted, ok := typ.(BACnetErrorReadRange); ok {
+            return casted
         }
-        if sBACnetErrorReadRange, ok := typ.(*BACnetErrorReadRange); ok {
-            return *sBACnetErrorReadRange
+        if casted, ok := typ.(*BACnetErrorReadRange); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorReadRange(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorReadRange(casted.Child)
         }
         return BACnetErrorReadRange{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorReadRange) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorReadRange) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorReadRange) LengthInBytes() uint16 {
+func (m *BACnetErrorReadRange) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadRangeParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadRangeParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorReadRange(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorReadRange{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorReadRange) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorReadRange) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
     }
 }
 
-func (m BACnetErrorReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange"},
         }}); err != nil {

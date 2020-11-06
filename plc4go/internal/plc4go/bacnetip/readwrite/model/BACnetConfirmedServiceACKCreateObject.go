@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKCreateObject struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKCreateObject
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKCreateObject interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKCreateObject) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKCreateObject) ServiceChoice() uint8 {
     return 0x0A
 }
 
-func (m BACnetConfirmedServiceACKCreateObject) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKCreateObject) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKCreateObject() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKCreateObject{}
-}
-
-func CastIBACnetConfirmedServiceACKCreateObject(structType interface{}) IBACnetConfirmedServiceACKCreateObject {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKCreateObject {
-        if iBACnetConfirmedServiceACKCreateObject, ok := typ.(IBACnetConfirmedServiceACKCreateObject); ok {
-            return iBACnetConfirmedServiceACKCreateObject
-        }
-        return nil
+func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKCreateObject{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) BACnetConfirmedServiceACKCreateObject {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKCreateObject {
-        if sBACnetConfirmedServiceACKCreateObject, ok := typ.(BACnetConfirmedServiceACKCreateObject); ok {
-            return sBACnetConfirmedServiceACKCreateObject
+        if casted, ok := typ.(BACnetConfirmedServiceACKCreateObject); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKCreateObject, ok := typ.(*BACnetConfirmedServiceACKCreateObject); ok {
-            return *sBACnetConfirmedServiceACKCreateObject
+        if casted, ok := typ.(*BACnetConfirmedServiceACKCreateObject); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
         }
         return BACnetConfirmedServiceACKCreateObject{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKCreateObject) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKCreateObject) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKCreateObject) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKCreateObject) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKCreateObjectParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKCreateObjectParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKCreateObject(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKCreateObject{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKCreateObject) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKCreateObject) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKCreateObject) UnmarshalXML(d *xml.Decoder, sta
     }
 }
 
-func (m BACnetConfirmedServiceACKCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKCreateObject"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIHave struct {
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestIHave
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIHave interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestIHave) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestIHave) ServiceChoice() uint8 {
     return 0x01
 }
 
-func (m BACnetUnconfirmedServiceRequestIHave) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestIHave) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestIHave() BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestIHave{}
-}
-
-func CastIBACnetUnconfirmedServiceRequestIHave(structType interface{}) IBACnetUnconfirmedServiceRequestIHave {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIHave {
-        if iBACnetUnconfirmedServiceRequestIHave, ok := typ.(IBACnetUnconfirmedServiceRequestIHave); ok {
-            return iBACnetUnconfirmedServiceRequestIHave
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestIHave() *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestIHave{
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIHave {
-        if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
-            return sBACnetUnconfirmedServiceRequestIHave
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(*BACnetUnconfirmedServiceRequestIHave); ok {
-            return *sBACnetUnconfirmedServiceRequestIHave
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIHave); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestIHave{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestIHave) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestIHave(), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestIHave{
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestIHave) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestIHave) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetUnconfirmedServiceRequestIHave) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestIHave) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestIHave) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave"},
         }}); err != nil {

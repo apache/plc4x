@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -33,53 +32,62 @@ type CEMIMPropReadReq struct {
     PropertyId uint8
     NumberOfElements uint8
     StartIndex uint16
-    CEMI
+    Parent *CEMI
+    ICEMIMPropReadReq
 }
 
 // The corresponding interface
 type ICEMIMPropReadReq interface {
-    ICEMI
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m CEMIMPropReadReq) MessageCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *CEMIMPropReadReq) MessageCode() uint8 {
     return 0xFC
 }
 
-func (m CEMIMPropReadReq) initialize() spi.Message {
-    return m
+
+func (m *CEMIMPropReadReq) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16) CEMIInitializer {
-    return &CEMIMPropReadReq{InterfaceObjectType: interfaceObjectType, ObjectInstance: objectInstance, PropertyId: propertyId, NumberOfElements: numberOfElements, StartIndex: startIndex}
-}
-
-func CastICEMIMPropReadReq(structType interface{}) ICEMIMPropReadReq {
-    castFunc := func(typ interface{}) ICEMIMPropReadReq {
-        if iCEMIMPropReadReq, ok := typ.(ICEMIMPropReadReq); ok {
-            return iCEMIMPropReadReq
-        }
-        return nil
+func NewCEMIMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, ) *CEMI {
+    child := &CEMIMPropReadReq{
+        InterfaceObjectType: interfaceObjectType,
+        ObjectInstance: objectInstance,
+        PropertyId: propertyId,
+        NumberOfElements: numberOfElements,
+        StartIndex: startIndex,
+        Parent: NewCEMI(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCEMIMPropReadReq(structType interface{}) CEMIMPropReadReq {
     castFunc := func(typ interface{}) CEMIMPropReadReq {
-        if sCEMIMPropReadReq, ok := typ.(CEMIMPropReadReq); ok {
-            return sCEMIMPropReadReq
+        if casted, ok := typ.(CEMIMPropReadReq); ok {
+            return casted
         }
-        if sCEMIMPropReadReq, ok := typ.(*CEMIMPropReadReq); ok {
-            return *sCEMIMPropReadReq
+        if casted, ok := typ.(*CEMIMPropReadReq); ok {
+            return *casted
+        }
+        if casted, ok := typ.(CEMI); ok {
+            return CastCEMIMPropReadReq(casted.Child)
+        }
+        if casted, ok := typ.(*CEMI); ok {
+            return CastCEMIMPropReadReq(casted.Child)
         }
         return CEMIMPropReadReq{}
     }
     return castFunc(structType)
 }
 
-func (m CEMIMPropReadReq) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.CEMI.LengthInBits()
+func (m *CEMIMPropReadReq) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (interfaceObjectType)
     lengthInBits += 16
@@ -99,11 +107,11 @@ func (m CEMIMPropReadReq) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m CEMIMPropReadReq) LengthInBytes() uint16 {
+func (m *CEMIMPropReadReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIMPropReadReqParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
+func CEMIMPropReadReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (interfaceObjectType)
     interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
@@ -135,11 +143,20 @@ func CEMIMPropReadReqParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
         return nil, errors.New("Error parsing 'startIndex' field " + _startIndexErr.Error())
     }
 
-    // Create the instance
-    return NewCEMIMPropReadReq(interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex), nil
+    // Create a partially initialized instance
+    _child := &CEMIMPropReadReq{
+        InterfaceObjectType: interfaceObjectType,
+        ObjectInstance: objectInstance,
+        PropertyId: propertyId,
+        NumberOfElements: numberOfElements,
+        StartIndex: startIndex,
+        Parent: &CEMI{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m CEMIMPropReadReq) Serialize(io utils.WriteBuffer) error {
+func (m *CEMIMPropReadReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (interfaceObjectType)
@@ -179,7 +196,7 @@ func (m CEMIMPropReadReq) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *CEMIMPropReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -230,7 +247,7 @@ func (m *CEMIMPropReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
     }
 }
 
-func (m CEMIMPropReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *CEMIMPropReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq"},
         }}); err != nil {

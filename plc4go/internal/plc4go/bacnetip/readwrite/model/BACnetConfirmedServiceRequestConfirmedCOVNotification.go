@@ -23,9 +23,7 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
     "strconv"
 )
 
@@ -46,54 +44,66 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
     IssueConfirmedNotificationsInstanceNumber uint32
     LifetimeLength uint8
     LifetimeSeconds []int8
-    Notifications []IBACnetTagWithContent
-    BACnetConfirmedServiceRequest
+    Notifications []*BACnetTagWithContent
+    Parent *BACnetConfirmedServiceRequest
+    IBACnetConfirmedServiceRequestConfirmedCOVNotification
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotification interface {
-    IBACnetConfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) ServiceChoice() uint8 {
     return 0x01
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier uint8, monitoredObjectType uint16, monitoredObjectInstanceNumber uint32, issueConfirmedNotificationsType uint16, issueConfirmedNotificationsInstanceNumber uint32, lifetimeLength uint8, lifetimeSeconds []int8, notifications []IBACnetTagWithContent) BACnetConfirmedServiceRequestInitializer {
-    return &BACnetConfirmedServiceRequestConfirmedCOVNotification{SubscriberProcessIdentifier: subscriberProcessIdentifier, MonitoredObjectType: monitoredObjectType, MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber, IssueConfirmedNotificationsType: issueConfirmedNotificationsType, IssueConfirmedNotificationsInstanceNumber: issueConfirmedNotificationsInstanceNumber, LifetimeLength: lifetimeLength, LifetimeSeconds: lifetimeSeconds, Notifications: notifications}
-}
-
-func CastIBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotification {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotification {
-        if iBACnetConfirmedServiceRequestConfirmedCOVNotification, ok := typ.(IBACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-            return iBACnetConfirmedServiceRequestConfirmedCOVNotification
-        }
-        return nil
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier uint8, monitoredObjectType uint16, monitoredObjectInstanceNumber uint32, issueConfirmedNotificationsType uint16, issueConfirmedNotificationsInstanceNumber uint32, lifetimeLength uint8, lifetimeSeconds []int8, notifications []*BACnetTagWithContent, ) *BACnetConfirmedServiceRequest {
+    child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
+        SubscriberProcessIdentifier: subscriberProcessIdentifier,
+        MonitoredObjectType: monitoredObjectType,
+        MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber,
+        IssueConfirmedNotificationsType: issueConfirmedNotificationsType,
+        IssueConfirmedNotificationsInstanceNumber: issueConfirmedNotificationsInstanceNumber,
+        LifetimeLength: lifetimeLength,
+        LifetimeSeconds: lifetimeSeconds,
+        Notifications: notifications,
+        Parent: NewBACnetConfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
     castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
-        if sBACnetConfirmedServiceRequestConfirmedCOVNotification, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-            return sBACnetConfirmedServiceRequestConfirmedCOVNotification
+        if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceRequestConfirmedCOVNotification, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-            return *sBACnetConfirmedServiceRequestConfirmedCOVNotification
+        if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+            return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
         }
         return BACnetConfirmedServiceRequestConfirmedCOVNotification{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (subscriberProcessIdentifierHeader)
     lengthInBits += 8
@@ -146,11 +156,11 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() ui
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 
     // Const Field (subscriberProcessIdentifierHeader)
     subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
@@ -228,7 +238,6 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
     // Count array
     lifetimeSeconds := make([]int8, lifetimeLength)
     for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())
@@ -247,18 +256,13 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 
     // Array field (notifications)
     // Length array
-    notifications := make([]IBACnetTagWithContent, 0)
+    notifications := make([]*BACnetTagWithContent, 0)
     _notificationsLength := uint16(len) - uint16(uint16(18))
     _notificationsEndPos := io.GetPos() + uint16(_notificationsLength)
     for ;io.GetPos() < _notificationsEndPos; {
-        _message, _err := BACnetTagWithContentParse(io)
+        _item, _err := BACnetTagWithContentParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'notifications' field " + _err.Error())
-        }
-        var _item IBACnetTagWithContent
-        _item, _ok := _message.(IBACnetTagWithContent)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to BACnetTagWithContent")
         }
         notifications = append(notifications, _item)
     }
@@ -272,11 +276,23 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
         return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESCLOSINGTAG)) + " but got " + strconv.Itoa(int(listOfValuesClosingTag)))
     }
 
-    // Create the instance
-    return NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier, monitoredObjectType, monitoredObjectInstanceNumber, issueConfirmedNotificationsType, issueConfirmedNotificationsInstanceNumber, lifetimeLength, lifetimeSeconds, notifications), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
+        SubscriberProcessIdentifier: subscriberProcessIdentifier,
+        MonitoredObjectType: monitoredObjectType,
+        MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber,
+        IssueConfirmedNotificationsType: issueConfirmedNotificationsType,
+        IssueConfirmedNotificationsInstanceNumber: issueConfirmedNotificationsInstanceNumber,
+        LifetimeLength: lifetimeLength,
+        LifetimeSeconds: lifetimeSeconds,
+        Notifications: notifications,
+        Parent: &BACnetConfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (subscriberProcessIdentifierHeader)
@@ -379,7 +395,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io util
 
         return nil
     }
-    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -443,7 +459,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
                 }
                 m.LifetimeSeconds = utils.ByteToInt8(_decoded[0:_len])
             case "notifications":
-                var data []IBACnetTagWithContent
+                var data []*BACnetTagWithContent
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -453,7 +469,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
     }
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotification"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorGetEnrollmentSummary struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorGetEnrollmentSummary
 }
 
 // The corresponding interface
 type IBACnetErrorGetEnrollmentSummary interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorGetEnrollmentSummary) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorGetEnrollmentSummary) ServiceChoice() uint8 {
     return 0x04
 }
 
-func (m BACnetErrorGetEnrollmentSummary) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorGetEnrollmentSummary) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorGetEnrollmentSummary() BACnetErrorInitializer {
-    return &BACnetErrorGetEnrollmentSummary{}
-}
-
-func CastIBACnetErrorGetEnrollmentSummary(structType interface{}) IBACnetErrorGetEnrollmentSummary {
-    castFunc := func(typ interface{}) IBACnetErrorGetEnrollmentSummary {
-        if iBACnetErrorGetEnrollmentSummary, ok := typ.(IBACnetErrorGetEnrollmentSummary); ok {
-            return iBACnetErrorGetEnrollmentSummary
-        }
-        return nil
+func NewBACnetErrorGetEnrollmentSummary() *BACnetError {
+    child := &BACnetErrorGetEnrollmentSummary{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorGetEnrollmentSummary(structType interface{}) BACnetErrorGetEnrollmentSummary {
     castFunc := func(typ interface{}) BACnetErrorGetEnrollmentSummary {
-        if sBACnetErrorGetEnrollmentSummary, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
-            return sBACnetErrorGetEnrollmentSummary
+        if casted, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
+            return casted
         }
-        if sBACnetErrorGetEnrollmentSummary, ok := typ.(*BACnetErrorGetEnrollmentSummary); ok {
-            return *sBACnetErrorGetEnrollmentSummary
+        if casted, ok := typ.(*BACnetErrorGetEnrollmentSummary); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorGetEnrollmentSummary(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorGetEnrollmentSummary(casted.Child)
         }
         return BACnetErrorGetEnrollmentSummary{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorGetEnrollmentSummary) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorGetEnrollmentSummary) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
+func (m *BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetEnrollmentSummaryParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorGetEnrollmentSummaryParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorGetEnrollmentSummary(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorGetEnrollmentSummary{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m BACnetErrorGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary"},
         }}); err != nil {

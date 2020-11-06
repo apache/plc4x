@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckReadPropertyMultiple struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckReadPropertyMultiple
 }
 
 // The corresponding interface
 type IBACnetServiceAckReadPropertyMultiple interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckReadPropertyMultiple) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckReadPropertyMultiple) ServiceChoice() uint8 {
     return 0x0E
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckReadPropertyMultiple) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadPropertyMultiple() BACnetServiceAckInitializer {
-    return &BACnetServiceAckReadPropertyMultiple{}
-}
-
-func CastIBACnetServiceAckReadPropertyMultiple(structType interface{}) IBACnetServiceAckReadPropertyMultiple {
-    castFunc := func(typ interface{}) IBACnetServiceAckReadPropertyMultiple {
-        if iBACnetServiceAckReadPropertyMultiple, ok := typ.(IBACnetServiceAckReadPropertyMultiple); ok {
-            return iBACnetServiceAckReadPropertyMultiple
-        }
-        return nil
+func NewBACnetServiceAckReadPropertyMultiple() *BACnetServiceAck {
+    child := &BACnetServiceAckReadPropertyMultiple{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) BACnetServiceAckReadPropertyMultiple {
     castFunc := func(typ interface{}) BACnetServiceAckReadPropertyMultiple {
-        if sBACnetServiceAckReadPropertyMultiple, ok := typ.(BACnetServiceAckReadPropertyMultiple); ok {
-            return sBACnetServiceAckReadPropertyMultiple
+        if casted, ok := typ.(BACnetServiceAckReadPropertyMultiple); ok {
+            return casted
         }
-        if sBACnetServiceAckReadPropertyMultiple, ok := typ.(*BACnetServiceAckReadPropertyMultiple); ok {
-            return *sBACnetServiceAckReadPropertyMultiple
+        if casted, ok := typ.(*BACnetServiceAckReadPropertyMultiple); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadPropertyMultiple(casted.Child)
         }
         return BACnetServiceAckReadPropertyMultiple{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckReadPropertyMultiple) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
+func (m *BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckReadPropertyMultiple(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckReadPropertyMultiple{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadPropertyMultiple"},
         }}); err != nil {

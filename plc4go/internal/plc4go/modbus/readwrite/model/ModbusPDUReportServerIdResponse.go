@@ -23,68 +23,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReportServerIdResponse struct {
     Value []int8
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReportServerIdResponse
 }
 
 // The corresponding interface
 type IModbusPDUReportServerIdResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReportServerIdResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReportServerIdResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUReportServerIdResponse) FunctionFlag() uint8 {
     return 0x11
 }
 
-func (m ModbusPDUReportServerIdResponse) Response() bool {
+func (m *ModbusPDUReportServerIdResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUReportServerIdResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReportServerIdResponse(value []int8) ModbusPDUInitializer {
-    return &ModbusPDUReportServerIdResponse{Value: value}
-}
-
-func CastIModbusPDUReportServerIdResponse(structType interface{}) IModbusPDUReportServerIdResponse {
-    castFunc := func(typ interface{}) IModbusPDUReportServerIdResponse {
-        if iModbusPDUReportServerIdResponse, ok := typ.(IModbusPDUReportServerIdResponse); ok {
-            return iModbusPDUReportServerIdResponse
-        }
-        return nil
+func NewModbusPDUReportServerIdResponse(value []int8, ) *ModbusPDU {
+    child := &ModbusPDUReportServerIdResponse{
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReportServerIdResponse(structType interface{}) ModbusPDUReportServerIdResponse {
     castFunc := func(typ interface{}) ModbusPDUReportServerIdResponse {
-        if sModbusPDUReportServerIdResponse, ok := typ.(ModbusPDUReportServerIdResponse); ok {
-            return sModbusPDUReportServerIdResponse
+        if casted, ok := typ.(ModbusPDUReportServerIdResponse); ok {
+            return casted
         }
-        if sModbusPDUReportServerIdResponse, ok := typ.(*ModbusPDUReportServerIdResponse); ok {
-            return *sModbusPDUReportServerIdResponse
+        if casted, ok := typ.(*ModbusPDUReportServerIdResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReportServerIdResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReportServerIdResponse(casted.Child)
         }
         return ModbusPDUReportServerIdResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (byteCount)
     lengthInBits += 8
@@ -97,11 +101,11 @@ func (m ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReportServerIdResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUReportServerIdResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReportServerIdResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -113,7 +117,6 @@ func ModbusPDUReportServerIdResponseParse(io *utils.ReadBuffer) (ModbusPDUInitia
     // Count array
     value := make([]int8, byteCount)
     for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'value' field " + _err.Error())
@@ -121,11 +124,16 @@ func ModbusPDUReportServerIdResponseParse(io *utils.ReadBuffer) (ModbusPDUInitia
         value[curItem] = _item
     }
 
-    // Create the instance
-    return NewModbusPDUReportServerIdResponse(value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReportServerIdResponse{
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReportServerIdResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReportServerIdResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -147,7 +155,7 @@ func (m ModbusPDUReportServerIdResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReportServerIdResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,7 +187,7 @@ func (m *ModbusPDUReportServerIdResponse) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m ModbusPDUReportServerIdResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReportServerIdResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdResponse"},
         }}); err != nil {

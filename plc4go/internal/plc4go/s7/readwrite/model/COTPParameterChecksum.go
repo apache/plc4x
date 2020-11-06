@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type COTPParameterChecksum struct {
     Crc uint8
-    COTPParameter
+    Parent *COTPParameter
+    ICOTPParameterChecksum
 }
 
 // The corresponding interface
 type ICOTPParameterChecksum interface {
-    ICOTPParameter
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPParameterChecksum) ParameterType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPParameterChecksum) ParameterType() uint8 {
     return 0xC3
 }
 
-func (m COTPParameterChecksum) initialize() spi.Message {
-    return m
+
+func (m *COTPParameterChecksum) InitializeParent(parent *COTPParameter) {
 }
 
-func NewCOTPParameterChecksum(crc uint8) COTPParameterInitializer {
-    return &COTPParameterChecksum{Crc: crc}
-}
-
-func CastICOTPParameterChecksum(structType interface{}) ICOTPParameterChecksum {
-    castFunc := func(typ interface{}) ICOTPParameterChecksum {
-        if iCOTPParameterChecksum, ok := typ.(ICOTPParameterChecksum); ok {
-            return iCOTPParameterChecksum
-        }
-        return nil
+func NewCOTPParameterChecksum(crc uint8, ) *COTPParameter {
+    child := &COTPParameterChecksum{
+        Crc: crc,
+        Parent: NewCOTPParameter(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
     castFunc := func(typ interface{}) COTPParameterChecksum {
-        if sCOTPParameterChecksum, ok := typ.(COTPParameterChecksum); ok {
-            return sCOTPParameterChecksum
+        if casted, ok := typ.(COTPParameterChecksum); ok {
+            return casted
         }
-        if sCOTPParameterChecksum, ok := typ.(*COTPParameterChecksum); ok {
-            return *sCOTPParameterChecksum
+        if casted, ok := typ.(*COTPParameterChecksum); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPParameter); ok {
+            return CastCOTPParameterChecksum(casted.Child)
+        }
+        if casted, ok := typ.(*COTPParameter); ok {
+            return CastCOTPParameterChecksum(casted.Child)
         }
         return COTPParameterChecksum{}
     }
     return castFunc(structType)
 }
 
-func (m COTPParameterChecksum) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+func (m *COTPParameterChecksum) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (crc)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m COTPParameterChecksum) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPParameterChecksum) LengthInBytes() uint16 {
+func (m *COTPParameterChecksum) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterChecksumParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 
     // Simple Field (crc)
     crc, _crcErr := io.ReadUint8(8)
@@ -95,11 +99,16 @@ func COTPParameterChecksumParse(io *utils.ReadBuffer) (COTPParameterInitializer,
         return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPParameterChecksum(crc), nil
+    // Create a partially initialized instance
+    _child := &COTPParameterChecksum{
+        Crc: crc,
+        Parent: &COTPParameter{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
+func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (crc)
@@ -111,7 +120,7 @@ func (m COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElem
     }
 }
 
-func (m COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPParameterChecksum"},
         }}); err != nil {

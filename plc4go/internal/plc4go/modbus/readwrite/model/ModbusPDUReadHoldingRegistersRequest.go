@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUReadHoldingRegistersRequest struct {
     StartingAddress uint16
     Quantity uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadHoldingRegistersRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadHoldingRegistersRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadHoldingRegistersRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadHoldingRegistersRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadHoldingRegistersRequest) FunctionFlag() uint8 {
     return 0x03
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) Response() bool {
+func (m *ModbusPDUReadHoldingRegistersRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadHoldingRegistersRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadHoldingRegistersRequest{StartingAddress: startingAddress, Quantity: quantity}
-}
-
-func CastIModbusPDUReadHoldingRegistersRequest(structType interface{}) IModbusPDUReadHoldingRegistersRequest {
-    castFunc := func(typ interface{}) IModbusPDUReadHoldingRegistersRequest {
-        if iModbusPDUReadHoldingRegistersRequest, ok := typ.(IModbusPDUReadHoldingRegistersRequest); ok {
-            return iModbusPDUReadHoldingRegistersRequest
-        }
-        return nil
+func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16, ) *ModbusPDU {
+    child := &ModbusPDUReadHoldingRegistersRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadHoldingRegistersRequest(structType interface{}) ModbusPDUReadHoldingRegistersRequest {
     castFunc := func(typ interface{}) ModbusPDUReadHoldingRegistersRequest {
-        if sModbusPDUReadHoldingRegistersRequest, ok := typ.(ModbusPDUReadHoldingRegistersRequest); ok {
-            return sModbusPDUReadHoldingRegistersRequest
+        if casted, ok := typ.(ModbusPDUReadHoldingRegistersRequest); ok {
+            return casted
         }
-        if sModbusPDUReadHoldingRegistersRequest, ok := typ.(*ModbusPDUReadHoldingRegistersRequest); ok {
-            return *sModbusPDUReadHoldingRegistersRequest
+        if casted, ok := typ.(*ModbusPDUReadHoldingRegistersRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadHoldingRegistersRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadHoldingRegistersRequest(casted.Child)
         }
         return ModbusPDUReadHoldingRegistersRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (startingAddress)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadHoldingRegistersRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadHoldingRegistersRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUReadHoldingRegistersRequestParse(io *utils.ReadBuffer) (ModbusPDUI
         return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUReadHoldingRegistersRequest(startingAddress, quantity), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadHoldingRegistersRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)
@@ -136,7 +147,7 @@ func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) er
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, star
     }
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadHoldingRegistersRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest"},
         }}); err != nil {

@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,56 +29,63 @@ import (
 type COTPPacketDisconnectRequest struct {
     DestinationReference uint16
     SourceReference uint16
-    ProtocolClass ICOTPProtocolClass
-    COTPPacket
+    ProtocolClass COTPProtocolClass
+    Parent *COTPPacket
+    ICOTPPacketDisconnectRequest
 }
 
 // The corresponding interface
 type ICOTPPacketDisconnectRequest interface {
-    ICOTPPacket
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPPacketDisconnectRequest) TpduCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPPacketDisconnectRequest) TpduCode() uint8 {
     return 0x80
 }
 
-func (m COTPPacketDisconnectRequest) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-    m.Parameters = parameters
-    m.Payload = payload
-    return m
+
+func (m *COTPPacketDisconnectRequest) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
+    m.Parent.Parameters = parameters
+    m.Parent.Payload = payload
 }
 
-func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass ICOTPProtocolClass) COTPPacketInitializer {
-    return &COTPPacketDisconnectRequest{DestinationReference: destinationReference, SourceReference: sourceReference, ProtocolClass: protocolClass}
-}
-
-func CastICOTPPacketDisconnectRequest(structType interface{}) ICOTPPacketDisconnectRequest {
-    castFunc := func(typ interface{}) ICOTPPacketDisconnectRequest {
-        if iCOTPPacketDisconnectRequest, ok := typ.(ICOTPPacketDisconnectRequest); ok {
-            return iCOTPPacketDisconnectRequest
-        }
-        return nil
+func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+    child := &COTPPacketDisconnectRequest{
+        DestinationReference: destinationReference,
+        SourceReference: sourceReference,
+        ProtocolClass: protocolClass,
+        Parent: NewCOTPPacket(parameters, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPPacketDisconnectRequest(structType interface{}) COTPPacketDisconnectRequest {
     castFunc := func(typ interface{}) COTPPacketDisconnectRequest {
-        if sCOTPPacketDisconnectRequest, ok := typ.(COTPPacketDisconnectRequest); ok {
-            return sCOTPPacketDisconnectRequest
+        if casted, ok := typ.(COTPPacketDisconnectRequest); ok {
+            return casted
         }
-        if sCOTPPacketDisconnectRequest, ok := typ.(*COTPPacketDisconnectRequest); ok {
-            return *sCOTPPacketDisconnectRequest
+        if casted, ok := typ.(*COTPPacketDisconnectRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPPacket); ok {
+            return CastCOTPPacketDisconnectRequest(casted.Child)
+        }
+        if casted, ok := typ.(*COTPPacket); ok {
+            return CastCOTPPacketDisconnectRequest(casted.Child)
         }
         return COTPPacketDisconnectRequest{}
     }
     return castFunc(structType)
 }
 
-func (m COTPPacketDisconnectRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+func (m *COTPPacketDisconnectRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (destinationReference)
     lengthInBits += 16
@@ -93,11 +99,11 @@ func (m COTPPacketDisconnectRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPPacketDisconnectRequest) LengthInBytes() uint16 {
+func (m *COTPPacketDisconnectRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketDisconnectRequestParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketDisconnectRequestParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
     // Simple Field (destinationReference)
     destinationReference, _destinationReferenceErr := io.ReadUint16(16)
@@ -117,11 +123,18 @@ func COTPPacketDisconnectRequestParse(io *utils.ReadBuffer) (COTPPacketInitializ
         return nil, errors.New("Error parsing 'protocolClass' field " + _protocolClassErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPPacketDisconnectRequest(destinationReference, sourceReference, protocolClass), nil
+    // Create a partially initialized instance
+    _child := &COTPPacketDisconnectRequest{
+        DestinationReference: destinationReference,
+        SourceReference: sourceReference,
+        ProtocolClass: protocolClass,
+        Parent: &COTPPacket{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
+func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (destinationReference)
@@ -147,7 +160,7 @@ func (m COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPPacketDisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -176,7 +189,7 @@ func (m *COTPPacketDisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.Sta
                 }
                 m.SourceReference = data
             case "protocolClass":
-                var data *COTPProtocolClass
+                var data COTPProtocolClass
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -186,7 +199,7 @@ func (m *COTPPacketDisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.Sta
     }
 }
 
-func (m COTPPacketDisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPPacketDisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest"},
         }}); err != nil {

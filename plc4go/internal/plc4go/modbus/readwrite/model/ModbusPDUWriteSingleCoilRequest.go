@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUWriteSingleCoilRequest struct {
     Address uint16
     Value uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUWriteSingleCoilRequest
 }
 
 // The corresponding interface
 type IModbusPDUWriteSingleCoilRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUWriteSingleCoilRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUWriteSingleCoilRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUWriteSingleCoilRequest) FunctionFlag() uint8 {
     return 0x05
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) Response() bool {
+func (m *ModbusPDUWriteSingleCoilRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUWriteSingleCoilRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUInitializer {
-    return &ModbusPDUWriteSingleCoilRequest{Address: address, Value: value}
-}
-
-func CastIModbusPDUWriteSingleCoilRequest(structType interface{}) IModbusPDUWriteSingleCoilRequest {
-    castFunc := func(typ interface{}) IModbusPDUWriteSingleCoilRequest {
-        if iModbusPDUWriteSingleCoilRequest, ok := typ.(IModbusPDUWriteSingleCoilRequest); ok {
-            return iModbusPDUWriteSingleCoilRequest
-        }
-        return nil
+func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16, ) *ModbusPDU {
+    child := &ModbusPDUWriteSingleCoilRequest{
+        Address: address,
+        Value: value,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteSingleCoilRequest {
     castFunc := func(typ interface{}) ModbusPDUWriteSingleCoilRequest {
-        if sModbusPDUWriteSingleCoilRequest, ok := typ.(ModbusPDUWriteSingleCoilRequest); ok {
-            return sModbusPDUWriteSingleCoilRequest
+        if casted, ok := typ.(ModbusPDUWriteSingleCoilRequest); ok {
+            return casted
         }
-        if sModbusPDUWriteSingleCoilRequest, ok := typ.(*ModbusPDUWriteSingleCoilRequest); ok {
-            return *sModbusPDUWriteSingleCoilRequest
+        if casted, ok := typ.(*ModbusPDUWriteSingleCoilRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUWriteSingleCoilRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUWriteSingleCoilRequest(casted.Child)
         }
         return ModbusPDUWriteSingleCoilRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (address)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUWriteSingleCoilRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleCoilRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteSingleCoilRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (address)
     address, _addressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUWriteSingleCoilRequestParse(io *utils.ReadBuffer) (ModbusPDUInitia
         return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUWriteSingleCoilRequest(address, value), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUWriteSingleCoilRequest{
+        Address: address,
+        Value: value,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUWriteSingleCoilRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (address)
@@ -136,7 +147,7 @@ func (m ModbusPDUWriteSingleCoilRequest) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUWriteSingleCoilRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUWriteSingleCoilRequest) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUWriteSingleCoilRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleCoilRequest"},
         }}); err != nil {

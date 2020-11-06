@@ -23,7 +23,6 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -34,53 +33,62 @@ type APDUSegmentAck struct {
     OriginalInvokeId uint8
     SequenceNumber uint8
     ProposedWindowSize uint8
-    APDU
+    Parent *APDU
+    IAPDUSegmentAck
 }
 
 // The corresponding interface
 type IAPDUSegmentAck interface {
-    IAPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m APDUSegmentAck) ApduType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *APDUSegmentAck) ApduType() uint8 {
     return 0x4
 }
 
-func (m APDUSegmentAck) initialize() spi.Message {
-    return m
+
+func (m *APDUSegmentAck) InitializeParent(parent *APDU) {
 }
 
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8) APDUInitializer {
-    return &APDUSegmentAck{NegativeAck: negativeAck, Server: server, OriginalInvokeId: originalInvokeId, SequenceNumber: sequenceNumber, ProposedWindowSize: proposedWindowSize}
-}
-
-func CastIAPDUSegmentAck(structType interface{}) IAPDUSegmentAck {
-    castFunc := func(typ interface{}) IAPDUSegmentAck {
-        if iAPDUSegmentAck, ok := typ.(IAPDUSegmentAck); ok {
-            return iAPDUSegmentAck
-        }
-        return nil
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8, ) *APDU {
+    child := &APDUSegmentAck{
+        NegativeAck: negativeAck,
+        Server: server,
+        OriginalInvokeId: originalInvokeId,
+        SequenceNumber: sequenceNumber,
+        ProposedWindowSize: proposedWindowSize,
+        Parent: NewAPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
     castFunc := func(typ interface{}) APDUSegmentAck {
-        if sAPDUSegmentAck, ok := typ.(APDUSegmentAck); ok {
-            return sAPDUSegmentAck
+        if casted, ok := typ.(APDUSegmentAck); ok {
+            return casted
         }
-        if sAPDUSegmentAck, ok := typ.(*APDUSegmentAck); ok {
-            return *sAPDUSegmentAck
+        if casted, ok := typ.(*APDUSegmentAck); ok {
+            return *casted
+        }
+        if casted, ok := typ.(APDU); ok {
+            return CastAPDUSegmentAck(casted.Child)
+        }
+        if casted, ok := typ.(*APDU); ok {
+            return CastAPDUSegmentAck(casted.Child)
         }
         return APDUSegmentAck{}
     }
     return castFunc(structType)
 }
 
-func (m APDUSegmentAck) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.APDU.LengthInBits()
+func (m *APDUSegmentAck) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Reserved Field (reserved)
     lengthInBits += 2
@@ -103,11 +111,11 @@ func (m APDUSegmentAck) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m APDUSegmentAck) LengthInBytes() uint16 {
+func (m *APDUSegmentAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUSegmentAckParse(io *utils.ReadBuffer) (APDUInitializer, error) {
+func APDUSegmentAckParse(io *utils.ReadBuffer) (*APDU, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -153,11 +161,20 @@ func APDUSegmentAckParse(io *utils.ReadBuffer) (APDUInitializer, error) {
         return nil, errors.New("Error parsing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
     }
 
-    // Create the instance
-    return NewAPDUSegmentAck(negativeAck, server, originalInvokeId, sequenceNumber, proposedWindowSize), nil
+    // Create a partially initialized instance
+    _child := &APDUSegmentAck{
+        NegativeAck: negativeAck,
+        Server: server,
+        OriginalInvokeId: originalInvokeId,
+        SequenceNumber: sequenceNumber,
+        ProposedWindowSize: proposedWindowSize,
+        Parent: &APDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
+func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)
@@ -205,7 +222,7 @@ func (m APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -256,7 +273,7 @@ func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
     }
 }
 
-func (m APDUSegmentAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *APDUSegmentAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck"},
         }}); err != nil {

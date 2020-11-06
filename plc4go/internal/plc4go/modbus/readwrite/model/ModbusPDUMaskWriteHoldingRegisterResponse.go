@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,61 +30,68 @@ type ModbusPDUMaskWriteHoldingRegisterResponse struct {
     ReferenceAddress uint16
     AndMask uint16
     OrMask uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUMaskWriteHoldingRegisterResponse
 }
 
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterResponse interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) FunctionFlag() uint8 {
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) FunctionFlag() uint8 {
     return 0x16
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
     return true
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {
-    return &ModbusPDUMaskWriteHoldingRegisterResponse{ReferenceAddress: referenceAddress, AndMask: andMask, OrMask: orMask}
-}
-
-func CastIModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) IModbusPDUMaskWriteHoldingRegisterResponse {
-    castFunc := func(typ interface{}) IModbusPDUMaskWriteHoldingRegisterResponse {
-        if iModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(IModbusPDUMaskWriteHoldingRegisterResponse); ok {
-            return iModbusPDUMaskWriteHoldingRegisterResponse
-        }
-        return nil
+func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16, ) *ModbusPDU {
+    child := &ModbusPDUMaskWriteHoldingRegisterResponse{
+        ReferenceAddress: referenceAddress,
+        AndMask: andMask,
+        OrMask: orMask,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
     castFunc := func(typ interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
-        if sModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(ModbusPDUMaskWriteHoldingRegisterResponse); ok {
-            return sModbusPDUMaskWriteHoldingRegisterResponse
+        if casted, ok := typ.(ModbusPDUMaskWriteHoldingRegisterResponse); ok {
+            return casted
         }
-        if sModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(*ModbusPDUMaskWriteHoldingRegisterResponse); ok {
-            return *sModbusPDUMaskWriteHoldingRegisterResponse
+        if casted, ok := typ.(*ModbusPDUMaskWriteHoldingRegisterResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUMaskWriteHoldingRegisterResponse(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUMaskWriteHoldingRegisterResponse(casted.Child)
         }
         return ModbusPDUMaskWriteHoldingRegisterResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (referenceAddress)
     lengthInBits += 16
@@ -99,11 +105,11 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (referenceAddress)
     referenceAddress, _referenceAddressErr := io.ReadUint16(16)
@@ -123,11 +129,18 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *utils.ReadBuffer) (Modbu
         return nil, errors.New("Error parsing 'orMask' field " + _orMaskErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUMaskWriteHoldingRegisterResponse{
+        ReferenceAddress: referenceAddress,
+        AndMask: andMask,
+        OrMask: orMask,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (referenceAddress)
@@ -153,7 +166,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuffe
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -192,7 +205,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder,
     }
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterResponse"},
         }}); err != nil {

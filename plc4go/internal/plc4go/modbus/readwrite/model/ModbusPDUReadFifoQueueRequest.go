@@ -22,68 +22,72 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueRequest struct {
     FifoPointerAddress uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadFifoQueueRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
     return 0x18
 }
 
-func (m ModbusPDUReadFifoQueueRequest) Response() bool {
+func (m *ModbusPDUReadFifoQueueRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReadFifoQueueRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadFifoQueueRequest{FifoPointerAddress: fifoPointerAddress}
-}
-
-func CastIModbusPDUReadFifoQueueRequest(structType interface{}) IModbusPDUReadFifoQueueRequest {
-    castFunc := func(typ interface{}) IModbusPDUReadFifoQueueRequest {
-        if iModbusPDUReadFifoQueueRequest, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
-            return iModbusPDUReadFifoQueueRequest
-        }
-        return nil
+func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16, ) *ModbusPDU {
+    child := &ModbusPDUReadFifoQueueRequest{
+        FifoPointerAddress: fifoPointerAddress,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadFifoQueueRequest(structType interface{}) ModbusPDUReadFifoQueueRequest {
     castFunc := func(typ interface{}) ModbusPDUReadFifoQueueRequest {
-        if sModbusPDUReadFifoQueueRequest, ok := typ.(ModbusPDUReadFifoQueueRequest); ok {
-            return sModbusPDUReadFifoQueueRequest
+        if casted, ok := typ.(ModbusPDUReadFifoQueueRequest); ok {
+            return casted
         }
-        if sModbusPDUReadFifoQueueRequest, ok := typ.(*ModbusPDUReadFifoQueueRequest); ok {
-            return *sModbusPDUReadFifoQueueRequest
+        if casted, ok := typ.(*ModbusPDUReadFifoQueueRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadFifoQueueRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadFifoQueueRequest(casted.Child)
         }
         return ModbusPDUReadFifoQueueRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (fifoPointerAddress)
     lengthInBits += 16
@@ -91,11 +95,11 @@ func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadFifoQueueRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (fifoPointerAddress)
     fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
@@ -103,11 +107,16 @@ func ModbusPDUReadFifoQueueRequestParse(io *utils.ReadBuffer) (ModbusPDUInitiali
         return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadFifoQueueRequest{
+        FifoPointerAddress: fifoPointerAddress,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (fifoPointerAddress)
@@ -119,7 +128,7 @@ func (m ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -146,7 +155,7 @@ func (m *ModbusPDUReadFifoQueueRequest) UnmarshalXML(d *xml.Decoder, start xml.S
     }
 }
 
-func (m ModbusPDUReadFifoQueueRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadFifoQueueRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueRequest"},
         }}); err != nil {

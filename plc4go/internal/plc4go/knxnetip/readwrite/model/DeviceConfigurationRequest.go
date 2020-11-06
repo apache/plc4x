@@ -22,62 +22,66 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type DeviceConfigurationRequest struct {
-    DeviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
-    Cemi ICEMI
-    KNXNetIPMessage
+    DeviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock
+    Cemi *CEMI
+    Parent *KNXNetIPMessage
+    IDeviceConfigurationRequest
 }
 
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m DeviceConfigurationRequest) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *DeviceConfigurationRequest) MsgType() uint16 {
     return 0x0310
 }
 
-func (m DeviceConfigurationRequest) initialize() spi.Message {
-    return m
+
+func (m *DeviceConfigurationRequest) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-    return &DeviceConfigurationRequest{DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, Cemi: cemi}
-}
-
-func CastIDeviceConfigurationRequest(structType interface{}) IDeviceConfigurationRequest {
-    castFunc := func(typ interface{}) IDeviceConfigurationRequest {
-        if iDeviceConfigurationRequest, ok := typ.(IDeviceConfigurationRequest); ok {
-            return iDeviceConfigurationRequest
-        }
-        return nil
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock, cemi *CEMI, ) *KNXNetIPMessage {
+    child := &DeviceConfigurationRequest{
+        DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
+        Cemi: cemi,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
     castFunc := func(typ interface{}) DeviceConfigurationRequest {
-        if sDeviceConfigurationRequest, ok := typ.(DeviceConfigurationRequest); ok {
-            return sDeviceConfigurationRequest
+        if casted, ok := typ.(DeviceConfigurationRequest); ok {
+            return casted
         }
-        if sDeviceConfigurationRequest, ok := typ.(*DeviceConfigurationRequest); ok {
-            return *sDeviceConfigurationRequest
+        if casted, ok := typ.(*DeviceConfigurationRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastDeviceConfigurationRequest(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastDeviceConfigurationRequest(casted.Child)
         }
         return DeviceConfigurationRequest{}
     }
     return castFunc(structType)
 }
 
-func (m DeviceConfigurationRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *DeviceConfigurationRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (deviceConfigurationRequestDataBlock)
     lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
@@ -88,58 +92,52 @@ func (m DeviceConfigurationRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DeviceConfigurationRequest) LengthInBytes() uint16 {
+func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KNXNetIPMessage, error) {
 
     // Simple Field (deviceConfigurationRequestDataBlock)
-    _deviceConfigurationRequestDataBlockMessage, _err := DeviceConfigurationRequestDataBlockParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'deviceConfigurationRequestDataBlock'. " + _err.Error())
-    }
-    var deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
-    deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockOk := _deviceConfigurationRequestDataBlockMessage.(IDeviceConfigurationRequestDataBlock)
-    if !_deviceConfigurationRequestDataBlockOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationRequestDataBlockMessage).Name() + " to IDeviceConfigurationRequestDataBlock")
+    deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
+    if _deviceConfigurationRequestDataBlockErr != nil {
+        return nil, errors.New("Error parsing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
     }
 
     // Simple Field (cemi)
-    _cemiMessage, _err := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
-    }
-    var cemi ICEMI
-    cemi, _cemiOk := _cemiMessage.(ICEMI)
-    if !_cemiOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
+    cemi, _cemiErr := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
+    if _cemiErr != nil {
+        return nil, errors.New("Error parsing 'cemi' field " + _cemiErr.Error())
     }
 
-    // Create the instance
-    return NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi), nil
+    // Create a partially initialized instance
+    _child := &DeviceConfigurationRequest{
+        DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
+        Cemi: cemi,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
+func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (deviceConfigurationRequestDataBlock)
-    deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.DeviceConfigurationRequestDataBlock)
-    _deviceConfigurationRequestDataBlockErr := deviceConfigurationRequestDataBlock.Serialize(io)
+    _deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
     if _deviceConfigurationRequestDataBlockErr != nil {
         return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
     }
 
     // Simple Field (cemi)
-    cemi := CastICEMI(m.Cemi)
-    _cemiErr := cemi.Serialize(io)
+    _cemiErr := m.Cemi.Serialize(io)
     if _cemiErr != nil {
         return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -157,74 +155,74 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
             switch tok.Name.Local {
             case "deviceConfigurationRequestDataBlock":
                 var data *DeviceConfigurationRequestDataBlock
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DeviceConfigurationRequestDataBlock = CastIDeviceConfigurationRequestDataBlock(data)
+                m.DeviceConfigurationRequestDataBlock = data
             case "cemi":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataReq":
-                        var dt *CEMIDataReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataCon":
-                        var dt *CEMIDataCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd":
-                        var dt *CEMIDataInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq":
-                        var dt *CEMIRawReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawCon":
-                        var dt *CEMIRawCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawInd":
-                        var dt *CEMIRawInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataReq":
-                        var dt *CEMIPollDataReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon":
-                        var dt *CEMIPollDataCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd":
-                        var dt *CEMIBusmonInd
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq":
-                        var dt *CEMIMPropReadReq
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Cemi = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadCon":
-                        var dt *CEMIMPropReadCon
+                        var dt *CEMI
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -235,7 +233,7 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
     }
 }
 
-func (m DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest"},
         }}); err != nil {

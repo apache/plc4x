@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,56 +29,62 @@ import (
 type S7MessageResponse struct {
     ErrorClass uint8
     ErrorCode uint8
-    S7Message
+    Parent *S7Message
+    IS7MessageResponse
 }
 
 // The corresponding interface
 type IS7MessageResponse interface {
-    IS7Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m S7MessageResponse) MessageType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *S7MessageResponse) MessageType() uint8 {
     return 0x02
 }
 
-func (m S7MessageResponse) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-    m.TpduReference = tpduReference
-    m.Parameter = parameter
-    m.Payload = payload
-    return m
+
+func (m *S7MessageResponse) InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) {
+    m.Parent.TpduReference = tpduReference
+    m.Parent.Parameter = parameter
+    m.Parent.Payload = payload
 }
 
-func NewS7MessageResponse(errorClass uint8, errorCode uint8) S7MessageInitializer {
-    return &S7MessageResponse{ErrorClass: errorClass, ErrorCode: errorCode}
-}
-
-func CastIS7MessageResponse(structType interface{}) IS7MessageResponse {
-    castFunc := func(typ interface{}) IS7MessageResponse {
-        if iS7MessageResponse, ok := typ.(IS7MessageResponse); ok {
-            return iS7MessageResponse
-        }
-        return nil
+func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
+    child := &S7MessageResponse{
+        ErrorClass: errorClass,
+        ErrorCode: errorCode,
+        Parent: NewS7Message(tpduReference, parameter, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastS7MessageResponse(structType interface{}) S7MessageResponse {
     castFunc := func(typ interface{}) S7MessageResponse {
-        if sS7MessageResponse, ok := typ.(S7MessageResponse); ok {
-            return sS7MessageResponse
+        if casted, ok := typ.(S7MessageResponse); ok {
+            return casted
         }
-        if sS7MessageResponse, ok := typ.(*S7MessageResponse); ok {
-            return *sS7MessageResponse
+        if casted, ok := typ.(*S7MessageResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(S7Message); ok {
+            return CastS7MessageResponse(casted.Child)
+        }
+        if casted, ok := typ.(*S7Message); ok {
+            return CastS7MessageResponse(casted.Child)
         }
         return S7MessageResponse{}
     }
     return castFunc(structType)
 }
 
-func (m S7MessageResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.S7Message.LengthInBits()
+func (m *S7MessageResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (errorClass)
     lengthInBits += 8
@@ -90,11 +95,11 @@ func (m S7MessageResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7MessageResponse) LengthInBytes() uint16 {
+func (m *S7MessageResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7MessageResponseParse(io *utils.ReadBuffer) (S7MessageInitializer, error) {
+func S7MessageResponseParse(io *utils.ReadBuffer) (*S7Message, error) {
 
     // Simple Field (errorClass)
     errorClass, _errorClassErr := io.ReadUint8(8)
@@ -108,11 +113,17 @@ func S7MessageResponseParse(io *utils.ReadBuffer) (S7MessageInitializer, error) 
         return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
     }
 
-    // Create the instance
-    return NewS7MessageResponse(errorClass, errorCode), nil
+    // Create a partially initialized instance
+    _child := &S7MessageResponse{
+        ErrorClass: errorClass,
+        ErrorCode: errorCode,
+        Parent: &S7Message{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m S7MessageResponse) Serialize(io utils.WriteBuffer) error {
+func (m *S7MessageResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (errorClass)
@@ -131,7 +142,7 @@ func (m S7MessageResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7MessageResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -164,7 +175,7 @@ func (m *S7MessageResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m S7MessageResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7MessageResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7MessageResponse"},
         }}); err != nil {

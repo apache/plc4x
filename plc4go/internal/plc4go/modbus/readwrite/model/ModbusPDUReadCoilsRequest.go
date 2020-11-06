@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,61 +29,67 @@ import (
 type ModbusPDUReadCoilsRequest struct {
     StartingAddress uint16
     Quantity uint16
-    ModbusPDU
+    Parent *ModbusPDU
+    IModbusPDUReadCoilsRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadCoilsRequest interface {
-    IModbusPDU
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ModbusPDUReadCoilsRequest) ErrorFlag() bool {
+///////////////////////////////////////////////////////////
+func (m *ModbusPDUReadCoilsRequest) ErrorFlag() bool {
     return false
 }
 
-func (m ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
+func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
     return 0x01
 }
 
-func (m ModbusPDUReadCoilsRequest) Response() bool {
+func (m *ModbusPDUReadCoilsRequest) Response() bool {
     return false
 }
 
-func (m ModbusPDUReadCoilsRequest) initialize() spi.Message {
-    return m
+
+func (m *ModbusPDUReadCoilsRequest) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadCoilsRequest{StartingAddress: startingAddress, Quantity: quantity}
-}
-
-func CastIModbusPDUReadCoilsRequest(structType interface{}) IModbusPDUReadCoilsRequest {
-    castFunc := func(typ interface{}) IModbusPDUReadCoilsRequest {
-        if iModbusPDUReadCoilsRequest, ok := typ.(IModbusPDUReadCoilsRequest); ok {
-            return iModbusPDUReadCoilsRequest
-        }
-        return nil
+func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16, ) *ModbusPDU {
+    child := &ModbusPDUReadCoilsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: NewModbusPDU(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastModbusPDUReadCoilsRequest(structType interface{}) ModbusPDUReadCoilsRequest {
     castFunc := func(typ interface{}) ModbusPDUReadCoilsRequest {
-        if sModbusPDUReadCoilsRequest, ok := typ.(ModbusPDUReadCoilsRequest); ok {
-            return sModbusPDUReadCoilsRequest
+        if casted, ok := typ.(ModbusPDUReadCoilsRequest); ok {
+            return casted
         }
-        if sModbusPDUReadCoilsRequest, ok := typ.(*ModbusPDUReadCoilsRequest); ok {
-            return *sModbusPDUReadCoilsRequest
+        if casted, ok := typ.(*ModbusPDUReadCoilsRequest); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ModbusPDU); ok {
+            return CastModbusPDUReadCoilsRequest(casted.Child)
+        }
+        if casted, ok := typ.(*ModbusPDU); ok {
+            return CastModbusPDUReadCoilsRequest(casted.Child)
         }
         return ModbusPDUReadCoilsRequest{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (startingAddress)
     lengthInBits += 16
@@ -95,11 +100,11 @@ func (m ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
+func (m *ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -113,11 +118,17 @@ func ModbusPDUReadCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer,
         return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
     }
 
-    // Create the instance
-    return NewModbusPDUReadCoilsRequest(startingAddress, quantity), nil
+    // Create a partially initialized instance
+    _child := &ModbusPDUReadCoilsRequest{
+        StartingAddress: startingAddress,
+        Quantity: quantity,
+        Parent: &ModbusPDU{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)
@@ -136,7 +147,7 @@ func (m ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -169,7 +180,7 @@ func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m ModbusPDUReadCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsRequest"},
         }}); err != nil {

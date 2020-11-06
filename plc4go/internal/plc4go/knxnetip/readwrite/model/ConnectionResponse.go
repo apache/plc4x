@@ -22,64 +22,70 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type ConnectionResponse struct {
     CommunicationChannelId uint8
-    Status IStatus
-    HpaiDataEndpoint *IHPAIDataEndpoint
-    ConnectionResponseDataBlock *IConnectionResponseDataBlock
-    KNXNetIPMessage
+    Status Status
+    HpaiDataEndpoint *HPAIDataEndpoint
+    ConnectionResponseDataBlock *ConnectionResponseDataBlock
+    Parent *KNXNetIPMessage
+    IConnectionResponse
 }
 
 // The corresponding interface
 type IConnectionResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ConnectionResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *ConnectionResponse) MsgType() uint16 {
     return 0x0206
 }
 
-func (m ConnectionResponse) initialize() spi.Message {
-    return m
+
+func (m *ConnectionResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewConnectionResponse(communicationChannelId uint8, status IStatus, hpaiDataEndpoint *IHPAIDataEndpoint, connectionResponseDataBlock *IConnectionResponseDataBlock) KNXNetIPMessageInitializer {
-    return &ConnectionResponse{CommunicationChannelId: communicationChannelId, Status: status, HpaiDataEndpoint: hpaiDataEndpoint, ConnectionResponseDataBlock: connectionResponseDataBlock}
-}
-
-func CastIConnectionResponse(structType interface{}) IConnectionResponse {
-    castFunc := func(typ interface{}) IConnectionResponse {
-        if iConnectionResponse, ok := typ.(IConnectionResponse); ok {
-            return iConnectionResponse
-        }
-        return nil
+func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock, ) *KNXNetIPMessage {
+    child := &ConnectionResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        HpaiDataEndpoint: hpaiDataEndpoint,
+        ConnectionResponseDataBlock: connectionResponseDataBlock,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastConnectionResponse(structType interface{}) ConnectionResponse {
     castFunc := func(typ interface{}) ConnectionResponse {
-        if sConnectionResponse, ok := typ.(ConnectionResponse); ok {
-            return sConnectionResponse
+        if casted, ok := typ.(ConnectionResponse); ok {
+            return casted
         }
-        if sConnectionResponse, ok := typ.(*ConnectionResponse); ok {
-            return *sConnectionResponse
+        if casted, ok := typ.(*ConnectionResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastConnectionResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastConnectionResponse(casted.Child)
         }
         return ConnectionResponse{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *ConnectionResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (communicationChannelId)
     lengthInBits += 8
@@ -100,11 +106,11 @@ func (m ConnectionResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ConnectionResponse) LengthInBytes() uint16 {
+func (m *ConnectionResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (communicationChannelId)
     communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
@@ -119,40 +125,38 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, 
     }
 
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
-    var hpaiDataEndpoint *IHPAIDataEndpoint = nil
+    var hpaiDataEndpoint *HPAIDataEndpoint = nil
     if bool((status) == (Status_NO_ERROR)) {
         _message, _err := HPAIDataEndpointParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
         }
-        var _item IHPAIDataEndpoint
-        _item, _ok := _message.(IHPAIDataEndpoint)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IHPAIDataEndpoint")
-        }
-        hpaiDataEndpoint = &_item
+        hpaiDataEndpoint = _message
     }
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
-    var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
+    var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
     if bool((status) == (Status_NO_ERROR)) {
         _message, _err := ConnectionResponseDataBlockParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
         }
-        var _item IConnectionResponseDataBlock
-        _item, _ok := _message.(IConnectionResponseDataBlock)
-        if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IConnectionResponseDataBlock")
-        }
-        connectionResponseDataBlock = &_item
+        connectionResponseDataBlock = _message
     }
 
-    // Create the instance
-    return NewConnectionResponse(communicationChannelId, status, hpaiDataEndpoint, connectionResponseDataBlock), nil
+    // Create a partially initialized instance
+    _child := &ConnectionResponse{
+        CommunicationChannelId: communicationChannelId,
+        Status: status,
+        HpaiDataEndpoint: hpaiDataEndpoint,
+        ConnectionResponseDataBlock: connectionResponseDataBlock,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ConnectionResponse) Serialize(io utils.WriteBuffer) error {
+func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (communicationChannelId)
@@ -170,20 +174,20 @@ func (m ConnectionResponse) Serialize(io utils.WriteBuffer) error {
     }
 
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
-    var hpaiDataEndpoint *IHPAIDataEndpoint = nil
+    var hpaiDataEndpoint *HPAIDataEndpoint = nil
     if m.HpaiDataEndpoint != nil {
         hpaiDataEndpoint = m.HpaiDataEndpoint
-        _hpaiDataEndpointErr := CastIHPAIDataEndpoint(*hpaiDataEndpoint).Serialize(io)
+        _hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(io)
         if _hpaiDataEndpointErr != nil {
             return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
         }
     }
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
-    var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
+    var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
     if m.ConnectionResponseDataBlock != nil {
         connectionResponseDataBlock = m.ConnectionResponseDataBlock
-        _connectionResponseDataBlockErr := CastIConnectionResponseDataBlock(*connectionResponseDataBlock).Serialize(io)
+        _connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(io)
         if _connectionResponseDataBlockErr != nil {
             return errors.New("Error serializing 'connectionResponseDataBlock' field " + _connectionResponseDataBlockErr.Error())
         }
@@ -191,7 +195,7 @@ func (m ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -214,38 +218,38 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data *Status
+                var data Status
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.Status = data
             case "hpaiDataEndpoint":
-                var data *IHPAIDataEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *HPAIDataEndpoint
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.HpaiDataEndpoint = data
             case "connectionResponseDataBlock":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockDeviceManagement":
-                        var dt *ConnectionResponseDataBlockDeviceManagement
+                        var dt *ConnectionResponseDataBlock
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.ConnectionResponseDataBlock = dt
+                        m.ConnectionResponseDataBlock = dt
                     case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection":
-                        var dt *ConnectionResponseDataBlockTunnelConnection
+                        var dt *ConnectionResponseDataBlock
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
-                        *m.ConnectionResponseDataBlock = dt
+                        m.ConnectionResponseDataBlock = dt
                     }
             }
         }
     }
 }
 
-func (m ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse"},
         }}); err != nil {

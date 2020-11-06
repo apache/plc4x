@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,55 +29,61 @@ import (
 type COTPPacketDisconnectResponse struct {
     DestinationReference uint16
     SourceReference uint16
-    COTPPacket
+    Parent *COTPPacket
+    ICOTPPacketDisconnectResponse
 }
 
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
-    ICOTPPacket
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m COTPPacketDisconnectResponse) TpduCode() uint8 {
+///////////////////////////////////////////////////////////
+func (m *COTPPacketDisconnectResponse) TpduCode() uint8 {
     return 0xC0
 }
 
-func (m COTPPacketDisconnectResponse) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-    m.Parameters = parameters
-    m.Payload = payload
-    return m
+
+func (m *COTPPacketDisconnectResponse) InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message) {
+    m.Parent.Parameters = parameters
+    m.Parent.Payload = payload
 }
 
-func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16) COTPPacketInitializer {
-    return &COTPPacketDisconnectResponse{DestinationReference: destinationReference, SourceReference: sourceReference}
-}
-
-func CastICOTPPacketDisconnectResponse(structType interface{}) ICOTPPacketDisconnectResponse {
-    castFunc := func(typ interface{}) ICOTPPacketDisconnectResponse {
-        if iCOTPPacketDisconnectResponse, ok := typ.(ICOTPPacketDisconnectResponse); ok {
-            return iCOTPPacketDisconnectResponse
-        }
-        return nil
+func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []*COTPParameter, payload *S7Message) *COTPPacket {
+    child := &COTPPacketDisconnectResponse{
+        DestinationReference: destinationReference,
+        SourceReference: sourceReference,
+        Parent: NewCOTPPacket(parameters, payload),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconnectResponse {
     castFunc := func(typ interface{}) COTPPacketDisconnectResponse {
-        if sCOTPPacketDisconnectResponse, ok := typ.(COTPPacketDisconnectResponse); ok {
-            return sCOTPPacketDisconnectResponse
+        if casted, ok := typ.(COTPPacketDisconnectResponse); ok {
+            return casted
         }
-        if sCOTPPacketDisconnectResponse, ok := typ.(*COTPPacketDisconnectResponse); ok {
-            return *sCOTPPacketDisconnectResponse
+        if casted, ok := typ.(*COTPPacketDisconnectResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(COTPPacket); ok {
+            return CastCOTPPacketDisconnectResponse(casted.Child)
+        }
+        if casted, ok := typ.(*COTPPacket); ok {
+            return CastCOTPPacketDisconnectResponse(casted.Child)
         }
         return COTPPacketDisconnectResponse{}
     }
     return castFunc(structType)
 }
 
-func (m COTPPacketDisconnectResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+func (m *COTPPacketDisconnectResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (destinationReference)
     lengthInBits += 16
@@ -89,11 +94,11 @@ func (m COTPPacketDisconnectResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m COTPPacketDisconnectResponse) LengthInBytes() uint16 {
+func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
     // Simple Field (destinationReference)
     destinationReference, _destinationReferenceErr := io.ReadUint16(16)
@@ -107,11 +112,17 @@ func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (COTPPacketInitiali
         return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
     }
 
-    // Create the instance
-    return NewCOTPPacketDisconnectResponse(destinationReference, sourceReference), nil
+    // Create a partially initialized instance
+    _child := &COTPPacketDisconnectResponse{
+        DestinationReference: destinationReference,
+        SourceReference: sourceReference,
+        Parent: &COTPPacket{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
+func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (destinationReference)
@@ -130,7 +141,7 @@ func (m COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *COTPPacketDisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -163,7 +174,7 @@ func (m *COTPPacketDisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.St
     }
 }
 
-func (m COTPPacketDisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *COTPPacketDisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse"},
         }}); err != nil {

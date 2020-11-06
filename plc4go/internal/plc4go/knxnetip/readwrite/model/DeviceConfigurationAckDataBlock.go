@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,46 +29,36 @@ import (
 type DeviceConfigurationAckDataBlock struct {
     CommunicationChannelId uint8
     SequenceCounter uint8
-    Status IStatus
-
+    Status Status
+    IDeviceConfigurationAckDataBlock
 }
 
 // The corresponding interface
 type IDeviceConfigurationAckDataBlock interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status IStatus) spi.Message {
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *DeviceConfigurationAckDataBlock {
     return &DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
-
-func CastIDeviceConfigurationAckDataBlock(structType interface{}) IDeviceConfigurationAckDataBlock {
-    castFunc := func(typ interface{}) IDeviceConfigurationAckDataBlock {
-        if iDeviceConfigurationAckDataBlock, ok := typ.(IDeviceConfigurationAckDataBlock); ok {
-            return iDeviceConfigurationAckDataBlock
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastDeviceConfigurationAckDataBlock(structType interface{}) DeviceConfigurationAckDataBlock {
     castFunc := func(typ interface{}) DeviceConfigurationAckDataBlock {
-        if sDeviceConfigurationAckDataBlock, ok := typ.(DeviceConfigurationAckDataBlock); ok {
-            return sDeviceConfigurationAckDataBlock
+        if casted, ok := typ.(DeviceConfigurationAckDataBlock); ok {
+            return casted
         }
-        if sDeviceConfigurationAckDataBlock, ok := typ.(*DeviceConfigurationAckDataBlock); ok {
-            return *sDeviceConfigurationAckDataBlock
+        if casted, ok := typ.(*DeviceConfigurationAckDataBlock); ok {
+            return *casted
         }
         return DeviceConfigurationAckDataBlock{}
     }
     return castFunc(structType)
 }
 
-func (m DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (structureLength)
     lengthInBits += 8
@@ -86,11 +75,11 @@ func (m DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m DeviceConfigurationAckDataBlock) LengthInBytes() uint16 {
+func (m *DeviceConfigurationAckDataBlock) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (spi.Message, error) {
+func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigurationAckDataBlock, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -120,7 +109,7 @@ func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (spi.Message, er
     return NewDeviceConfigurationAckDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
-func (m DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error {
+func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))
@@ -179,7 +168,7 @@ func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml
                 }
                 m.SequenceCounter = data
             case "status":
-                var data *Status
+                var data Status
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -189,7 +178,7 @@ func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m DeviceConfigurationAckDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *DeviceConfigurationAckDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAckDataBlock"},
         }}); err != nil {

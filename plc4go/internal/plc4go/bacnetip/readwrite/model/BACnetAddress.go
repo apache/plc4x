@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -30,45 +29,35 @@ import (
 type BACnetAddress struct {
     Address []uint8
     Port uint16
-
+    IBACnetAddress
 }
 
 // The corresponding interface
 type IBACnetAddress interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewBACnetAddress(address []uint8, port uint16) spi.Message {
+func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
     return &BACnetAddress{Address: address, Port: port}
-}
-
-func CastIBACnetAddress(structType interface{}) IBACnetAddress {
-    castFunc := func(typ interface{}) IBACnetAddress {
-        if iBACnetAddress, ok := typ.(IBACnetAddress); ok {
-            return iBACnetAddress
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastBACnetAddress(structType interface{}) BACnetAddress {
     castFunc := func(typ interface{}) BACnetAddress {
-        if sBACnetAddress, ok := typ.(BACnetAddress); ok {
-            return sBACnetAddress
+        if casted, ok := typ.(BACnetAddress); ok {
+            return casted
         }
-        if sBACnetAddress, ok := typ.(*BACnetAddress); ok {
-            return *sBACnetAddress
+        if casted, ok := typ.(*BACnetAddress); ok {
+            return *casted
         }
         return BACnetAddress{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *BACnetAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Address) > 0 {
@@ -81,17 +70,16 @@ func (m BACnetAddress) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetAddress) LengthInBytes() uint16 {
+func (m *BACnetAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
+func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
 
     // Array field (address)
     // Count array
     address := make([]uint8, uint16(4))
     for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-
         _item, _err := io.ReadUint8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'address' field " + _err.Error())
@@ -109,7 +97,7 @@ func BACnetAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewBACnetAddress(address, port), nil
 }
 
-func (m BACnetAddress) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (address)
     if m.Address != nil {
@@ -161,7 +149,7 @@ func (m *BACnetAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetAddress"},
         }}); err != nil {

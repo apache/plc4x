@@ -41,7 +41,7 @@
 <#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
-${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/ParserHelper.go
+${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/ParserHelper.go
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -64,6 +64,7 @@ package model
 
 import (
     "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -87,7 +88,7 @@ func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments 
             </#if>
         </#list>
     </#if>
-        return ${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
+        return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
     }
     return nil, errors.New("Unsupported type " + typeName)

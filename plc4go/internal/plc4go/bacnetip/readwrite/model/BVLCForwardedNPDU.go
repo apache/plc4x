@@ -22,63 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type BVLCForwardedNPDU struct {
     Ip []uint8
     Port uint16
-    Npdu INPDU
-    BVLC
+    Npdu *NPDU
+    Parent *BVLC
+    IBVLCForwardedNPDU
 }
 
 // The corresponding interface
 type IBVLCForwardedNPDU interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCForwardedNPDU) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCForwardedNPDU) BvlcFunction() uint8 {
     return 0x04
 }
 
-func (m BVLCForwardedNPDU) initialize() spi.Message {
-    return m
+
+func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu INPDU) BVLCInitializer {
-    return &BVLCForwardedNPDU{Ip: ip, Port: port, Npdu: npdu}
-}
-
-func CastIBVLCForwardedNPDU(structType interface{}) IBVLCForwardedNPDU {
-    castFunc := func(typ interface{}) IBVLCForwardedNPDU {
-        if iBVLCForwardedNPDU, ok := typ.(IBVLCForwardedNPDU); ok {
-            return iBVLCForwardedNPDU
-        }
-        return nil
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, ) *BVLC {
+    child := &BVLCForwardedNPDU{
+        Ip: ip,
+        Port: port,
+        Npdu: npdu,
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
     castFunc := func(typ interface{}) BVLCForwardedNPDU {
-        if sBVLCForwardedNPDU, ok := typ.(BVLCForwardedNPDU); ok {
-            return sBVLCForwardedNPDU
+        if casted, ok := typ.(BVLCForwardedNPDU); ok {
+            return casted
         }
-        if sBVLCForwardedNPDU, ok := typ.(*BVLCForwardedNPDU); ok {
-            return *sBVLCForwardedNPDU
+        if casted, ok := typ.(*BVLCForwardedNPDU); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCForwardedNPDU(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCForwardedNPDU(casted.Child)
         }
         return BVLCForwardedNPDU{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCForwardedNPDU) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Array field
     if len(m.Ip) > 0 {
@@ -94,17 +99,16 @@ func (m BVLCForwardedNPDU) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BVLCForwardedNPDU) LengthInBytes() uint16 {
+func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
+func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
 
     // Array field (ip)
     // Count array
     ip := make([]uint8, uint16(4))
     for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-
         _item, _err := io.ReadUint8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'ip' field " + _err.Error())
@@ -119,21 +123,23 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (BVLCInitia
     }
 
     // Simple Field (npdu)
-    _npduMessage, _err := NPDUParse(io, uint16(bvlcLength) - uint16(uint16(10)))
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
-    }
-    var npdu INPDU
-    npdu, _npduOk := _npduMessage.(INPDU)
-    if !_npduOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to INPDU")
+    npdu, _npduErr := NPDUParse(io, uint16(bvlcLength) - uint16(uint16(10)))
+    if _npduErr != nil {
+        return nil, errors.New("Error parsing 'npdu' field " + _npduErr.Error())
     }
 
-    // Create the instance
-    return NewBVLCForwardedNPDU(ip, port, npdu), nil
+    // Create a partially initialized instance
+    _child := &BVLCForwardedNPDU{
+        Ip: ip,
+        Port: port,
+        Npdu: npdu,
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (ip)
@@ -154,15 +160,14 @@ func (m BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (npdu)
-    npdu := CastINPDU(m.Npdu)
-    _npduErr := npdu.Serialize(io)
+    _npduErr := m.Npdu.Serialize(io)
     if _npduErr != nil {
         return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
     }
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -192,16 +197,16 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
                 m.Port = data
             case "npdu":
                 var data *NPDU
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.Npdu = CastINPDU(data)
+                m.Npdu = data
             }
         }
     }
 }
 
-func (m BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCForwardedNPDU"},
         }}); err != nil {

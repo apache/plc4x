@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,12 +75,14 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 return PlcLREAL.of(value);
             } else if (value instanceof BigDecimal) {
                 return new PlcBigDecimal((BigDecimal) value);
+            } else if (value instanceof Duration) {
+                return new PlcTIME((Duration) value);
             } else if (value instanceof LocalTime) {
-                return new PlcTime((LocalTime) value);
+                return new PlcTIME_OF_DAY((LocalTime) value);
             } else if (value instanceof LocalDate) {
-                return new PlcDate((LocalDate) value);
+                return new PlcDATE((LocalDate) value);
             } else if (value instanceof LocalDateTime) {
-                return new PlcDateTime((LocalDateTime) value);
+                return new PlcDATE_AND_TIME((LocalDateTime) value);
             } else if (value instanceof String) {
                 return new PlcSTRING((String) value);
             } else {
@@ -160,6 +163,14 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 case "IEC61131_WSTRING":
                 case "IEC61131_STRING16":
                     return PlcSTRING.of(value);
+                case "IEC61131_TIME":
+                    return PlcTIME.of(value);
+                case "IEC61131_DATE":
+                    return PlcDATE.of(value);
+                case "IEC61131_TIME_OF_DAY":
+                    return PlcTIME_OF_DAY.of(value);
+                case "IEC61131_DATE_AND_TIME":
+                    return PlcDATE_AND_TIME.of(value);
                 default:
                     return customDataType(field, new Object[] {value});
             }

@@ -23,7 +23,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,45 +30,35 @@ import (
 type ModbusPDUReadFileRecordResponseItem struct {
     ReferenceType uint8
     Data []int8
-
+    IModbusPDUReadFileRecordResponseItem
 }
 
 // The corresponding interface
 type IModbusPDUReadFileRecordResponseItem interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) spi.Message {
+func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) *ModbusPDUReadFileRecordResponseItem {
     return &ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
-}
-
-func CastIModbusPDUReadFileRecordResponseItem(structType interface{}) IModbusPDUReadFileRecordResponseItem {
-    castFunc := func(typ interface{}) IModbusPDUReadFileRecordResponseItem {
-        if iModbusPDUReadFileRecordResponseItem, ok := typ.(IModbusPDUReadFileRecordResponseItem); ok {
-            return iModbusPDUReadFileRecordResponseItem
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastModbusPDUReadFileRecordResponseItem(structType interface{}) ModbusPDUReadFileRecordResponseItem {
     castFunc := func(typ interface{}) ModbusPDUReadFileRecordResponseItem {
-        if sModbusPDUReadFileRecordResponseItem, ok := typ.(ModbusPDUReadFileRecordResponseItem); ok {
-            return sModbusPDUReadFileRecordResponseItem
+        if casted, ok := typ.(ModbusPDUReadFileRecordResponseItem); ok {
+            return casted
         }
-        if sModbusPDUReadFileRecordResponseItem, ok := typ.(*ModbusPDUReadFileRecordResponseItem); ok {
-            return *sModbusPDUReadFileRecordResponseItem
+        if casted, ok := typ.(*ModbusPDUReadFileRecordResponseItem); ok {
+            return *casted
         }
         return ModbusPDUReadFileRecordResponseItem{}
     }
     return castFunc(structType)
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Implicit Field (dataLength)
     lengthInBits += 8
@@ -85,11 +74,11 @@ func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
+func (m *ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (spi.Message, error) {
+func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
 
     // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     dataLength, _dataLengthErr := io.ReadUint8(8)
@@ -120,7 +109,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (spi.Message
     return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
+func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
@@ -184,7 +173,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) UnmarshalXML(d *xml.Decoder, start
     }
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ModbusPDUReadFileRecordResponseItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem"},
         }}); err != nil {

@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetErrorCreateObject struct {
-    BACnetError
+    Parent *BACnetError
+    IBACnetErrorCreateObject
 }
 
 // The corresponding interface
 type IBACnetErrorCreateObject interface {
-    IBACnetError
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetErrorCreateObject) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetErrorCreateObject) ServiceChoice() uint8 {
     return 0x0A
 }
 
-func (m BACnetErrorCreateObject) initialize() spi.Message {
-    return m
+
+func (m *BACnetErrorCreateObject) InitializeParent(parent *BACnetError) {
 }
 
-func NewBACnetErrorCreateObject() BACnetErrorInitializer {
-    return &BACnetErrorCreateObject{}
-}
-
-func CastIBACnetErrorCreateObject(structType interface{}) IBACnetErrorCreateObject {
-    castFunc := func(typ interface{}) IBACnetErrorCreateObject {
-        if iBACnetErrorCreateObject, ok := typ.(IBACnetErrorCreateObject); ok {
-            return iBACnetErrorCreateObject
-        }
-        return nil
+func NewBACnetErrorCreateObject() *BACnetError {
+    child := &BACnetErrorCreateObject{
+        Parent: NewBACnetError(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject {
     castFunc := func(typ interface{}) BACnetErrorCreateObject {
-        if sBACnetErrorCreateObject, ok := typ.(BACnetErrorCreateObject); ok {
-            return sBACnetErrorCreateObject
+        if casted, ok := typ.(BACnetErrorCreateObject); ok {
+            return casted
         }
-        if sBACnetErrorCreateObject, ok := typ.(*BACnetErrorCreateObject); ok {
-            return *sBACnetErrorCreateObject
+        if casted, ok := typ.(*BACnetErrorCreateObject); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorCreateObject(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorCreateObject(casted.Child)
         }
         return BACnetErrorCreateObject{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetErrorCreateObject) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetError.LengthInBits()
+func (m *BACnetErrorCreateObject) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetErrorCreateObject) LengthInBytes() uint16 {
+func (m *BACnetErrorCreateObject) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorCreateObjectParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorCreateObjectParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create the instance
-    return NewBACnetErrorCreateObject(), nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorCreateObject{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetErrorCreateObject) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetErrorCreateObject) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetErrorCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m BACnetErrorCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetErrorCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject"},
         }}); err != nil {

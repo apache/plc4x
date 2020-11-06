@@ -23,9 +23,7 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
     "strconv"
 )
 
@@ -41,54 +39,63 @@ type BACnetServiceAckReadProperty struct {
     ObjectInstanceNumber uint32
     PropertyIdentifierLength uint8
     PropertyIdentifier []int8
-    Value IBACnetTag
-    BACnetServiceAck
+    Value *BACnetTag
+    Parent *BACnetServiceAck
+    IBACnetServiceAckReadProperty
 }
 
 // The corresponding interface
 type IBACnetServiceAckReadProperty interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckReadProperty) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
     return 0x0C
 }
 
-func (m BACnetServiceAckReadProperty) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value IBACnetTag) BACnetServiceAckInitializer {
-    return &BACnetServiceAckReadProperty{ObjectType: objectType, ObjectInstanceNumber: objectInstanceNumber, PropertyIdentifierLength: propertyIdentifierLength, PropertyIdentifier: propertyIdentifier, Value: value}
-}
-
-func CastIBACnetServiceAckReadProperty(structType interface{}) IBACnetServiceAckReadProperty {
-    castFunc := func(typ interface{}) IBACnetServiceAckReadProperty {
-        if iBACnetServiceAckReadProperty, ok := typ.(IBACnetServiceAckReadProperty); ok {
-            return iBACnetServiceAckReadProperty
-        }
-        return nil
+func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value *BACnetTag, ) *BACnetServiceAck {
+    child := &BACnetServiceAckReadProperty{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        PropertyIdentifierLength: propertyIdentifierLength,
+        PropertyIdentifier: propertyIdentifier,
+        Value: value,
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckReadProperty(structType interface{}) BACnetServiceAckReadProperty {
     castFunc := func(typ interface{}) BACnetServiceAckReadProperty {
-        if sBACnetServiceAckReadProperty, ok := typ.(BACnetServiceAckReadProperty); ok {
-            return sBACnetServiceAckReadProperty
+        if casted, ok := typ.(BACnetServiceAckReadProperty); ok {
+            return casted
         }
-        if sBACnetServiceAckReadProperty, ok := typ.(*BACnetServiceAckReadProperty); ok {
-            return *sBACnetServiceAckReadProperty
+        if casted, ok := typ.(*BACnetServiceAckReadProperty); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadProperty(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadProperty(casted.Child)
         }
         return BACnetServiceAckReadProperty{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckReadProperty) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckReadProperty) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (objectIdentifierHeader)
     lengthInBits += 8
@@ -122,11 +129,11 @@ func (m BACnetServiceAckReadProperty) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m BACnetServiceAckReadProperty) LengthInBytes() uint16 {
+func (m *BACnetServiceAckReadProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
     // Const Field (objectIdentifierHeader)
     objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -168,7 +175,6 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (BACnetServiceAckIn
     // Count array
     propertyIdentifier := make([]int8, propertyIdentifierLength)
     for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
@@ -186,14 +192,9 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (BACnetServiceAckIn
     }
 
     // Simple Field (value)
-    _valueMessage, _err := BACnetTagParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'value'. " + _err.Error())
-    }
-    var value IBACnetTag
-    value, _valueOk := _valueMessage.(IBACnetTag)
-    if !_valueOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_valueMessage).Name() + " to IBACnetTag")
+    value, _valueErr := BACnetTagParse(io)
+    if _valueErr != nil {
+        return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
     }
 
     // Const Field (closingTag)
@@ -205,11 +206,20 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (BACnetServiceAckIn
         return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
     }
 
-    // Create the instance
-    return NewBACnetServiceAckReadProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier, value), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckReadProperty{
+        ObjectType: objectType,
+        ObjectInstanceNumber: objectInstanceNumber,
+        PropertyIdentifierLength: propertyIdentifierLength,
+        PropertyIdentifier: propertyIdentifier,
+        Value: value,
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)
@@ -262,8 +272,7 @@ func (m BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
     }
 
     // Simple Field (value)
-    value := CastIBACnetTag(m.Value)
-    _valueErr := value.Serialize(io)
+    _valueErr := m.Value.Serialize(io)
     if _valueErr != nil {
         return errors.New("Error serializing 'value' field " + _valueErr.Error())
     }
@@ -276,7 +285,7 @@ func (m BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -324,85 +333,85 @@ func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.St
             case "value":
                 switch tok.Attr[0].Value {
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
-                        var dt *BACnetTagApplicationNull
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
-                        var dt *BACnetTagApplicationBoolean
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
-                        var dt *BACnetTagApplicationUnsignedInteger
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
-                        var dt *BACnetTagApplicationSignedInteger
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
-                        var dt *BACnetTagApplicationReal
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
-                        var dt *BACnetTagApplicationDouble
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
-                        var dt *BACnetTagApplicationOctetString
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
-                        var dt *BACnetTagApplicationCharacterString
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
-                        var dt *BACnetTagApplicationBitString
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
-                        var dt *BACnetTagApplicationEnumerated
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
-                        var dt *BACnetTagApplicationDate
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
-                        var dt *BACnetTagApplicationTime
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
-                        var dt *BACnetTagApplicationObjectIdentifier
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
                         m.Value = dt
                     case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
-                        var dt *BACnetTagContext
+                        var dt *BACnetTag
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
                         }
@@ -413,7 +422,7 @@ func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.St
     }
 }
 
-func (m BACnetServiceAckReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadProperty"},
         }}); err != nil {

@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
@@ -32,50 +31,48 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // The data-structure of this message
 type BVLC struct {
-
+    Child IBVLCChild
+    IBVLC
+    IBVLCParent
 }
 
 // The corresponding interface
 type IBVLC interface {
-    spi.Message
     BvlcFunction() uint8
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-type BVLCInitializer interface {
-    initialize() spi.Message
+type IBVLCParent interface {
+    SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error
 }
 
-func BVLCBvlcFunction(m IBVLC) uint8 {
-    return m.BvlcFunction()
+type IBVLCChild interface {
+    Serialize(io utils.WriteBuffer) error
+    InitializeParent(parent *BVLC)
+    IBVLC
 }
 
-
-func CastIBVLC(structType interface{}) IBVLC {
-    castFunc := func(typ interface{}) IBVLC {
-        if iBVLC, ok := typ.(IBVLC); ok {
-            return iBVLC
-        }
-        return nil
-    }
-    return castFunc(structType)
+func NewBVLC() *BVLC {
+    return &BVLC{}
 }
 
 func CastBVLC(structType interface{}) BVLC {
     castFunc := func(typ interface{}) BVLC {
-        if sBVLC, ok := typ.(BVLC); ok {
-            return sBVLC
+        if casted, ok := typ.(BVLC); ok {
+            return casted
         }
-        if sBVLC, ok := typ.(*BVLC); ok {
-            return *sBVLC
+        if casted, ok := typ.(*BVLC); ok {
+            return *casted
         }
         return BVLC{}
     }
     return castFunc(structType)
 }
 
-func (m BVLC) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *BVLC) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Const Field (bacnetType)
     lengthInBits += 8
@@ -87,15 +84,16 @@ func (m BVLC) LengthInBits() uint16 {
     lengthInBits += 16
 
     // Length of sub-type elements will be added by sub-type...
+    lengthInBits += m.Child.LengthInBits()
 
     return lengthInBits
 }
 
-func (m BVLC) LengthInBytes() uint16 {
+func (m *BVLC) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCParse(io *utils.ReadBuffer) (spi.Message, error) {
+func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 
     // Const Field (bacnetType)
     bacnetType, _bacnetTypeErr := io.ReadUint8(8)
@@ -119,45 +117,50 @@ func BVLCParse(io *utils.ReadBuffer) (spi.Message, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var initializer BVLCInitializer
+    var _parent *BVLC
     var typeSwitchError error
     switch {
     case bvlcFunction == 0x00:
-        initializer, typeSwitchError = BVLCResultParse(io)
+        _parent, typeSwitchError = BVLCResultParse(io)
     case bvlcFunction == 0x01:
-        initializer, typeSwitchError = BVLCWideBroadcastDistributionTableParse(io)
+        _parent, typeSwitchError = BVLCWideBroadcastDistributionTableParse(io)
     case bvlcFunction == 0x02:
-        initializer, typeSwitchError = BVLCReadBroadcastDistributionTableParse(io)
+        _parent, typeSwitchError = BVLCReadBroadcastDistributionTableParse(io)
     case bvlcFunction == 0x03:
-        initializer, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(io)
+        _parent, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(io)
     case bvlcFunction == 0x04:
-        initializer, typeSwitchError = BVLCForwardedNPDUParse(io, bvlcLength)
+        _parent, typeSwitchError = BVLCForwardedNPDUParse(io, bvlcLength)
     case bvlcFunction == 0x05:
-        initializer, typeSwitchError = BVLCRegisterForeignDeviceParse(io)
+        _parent, typeSwitchError = BVLCRegisterForeignDeviceParse(io)
     case bvlcFunction == 0x06:
-        initializer, typeSwitchError = BVLCReadForeignDeviceTableParse(io)
+        _parent, typeSwitchError = BVLCReadForeignDeviceTableParse(io)
     case bvlcFunction == 0x07:
-        initializer, typeSwitchError = BVLCReadForeignDeviceTableAckParse(io)
+        _parent, typeSwitchError = BVLCReadForeignDeviceTableAckParse(io)
     case bvlcFunction == 0x08:
-        initializer, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(io)
+        _parent, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(io)
     case bvlcFunction == 0x09:
-        initializer, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(io)
+        _parent, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(io)
     case bvlcFunction == 0x0A:
-        initializer, typeSwitchError = BVLCOriginalUnicastNPDUParse(io, bvlcLength)
+        _parent, typeSwitchError = BVLCOriginalUnicastNPDUParse(io, bvlcLength)
     case bvlcFunction == 0x0B:
-        initializer, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
+        _parent, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
     case bvlcFunction == 0x0C:
-        initializer, typeSwitchError = BVLCSecureBVLLParse(io)
+        _parent, typeSwitchError = BVLCSecureBVLLParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
-    // Create the instance
-    return initializer.initialize(), nil
+    // Finish initializing
+    _parent.Child.InitializeParent(_parent)
+    return _parent, nil
 }
 
-func BVLCSerialize(io utils.WriteBuffer, m BVLC, i IBVLC, childSerialize func() error) error {
+func (m *BVLC) Serialize(io utils.WriteBuffer) error {
+    return m.Child.Serialize(io)
+}
+
+func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
 
     // Const Field (bacnetType)
     _bacnetTypeErr := io.WriteUint8(8, 0x81)
@@ -166,7 +169,7 @@ func BVLCSerialize(io utils.WriteBuffer, m BVLC, i IBVLC, childSerialize func() 
     }
 
     // Discriminator Field (bvlcFunction) (Used as input to a switch field)
-    bvlcFunction := uint8(i.BvlcFunction())
+    bvlcFunction := uint8(child.BvlcFunction())
     _bvlcFunctionErr := io.WriteUint8(8, (bvlcFunction))
     if _bvlcFunctionErr != nil {
         return errors.New("Error serializing 'bvlcFunction' field " + _bvlcFunctionErr.Error())
@@ -180,7 +183,7 @@ func BVLCSerialize(io utils.WriteBuffer, m BVLC, i IBVLC, childSerialize func() 
     }
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    _typeSwitchErr := childSerialize()
+    _typeSwitchErr := serializeChildFunction()
     if _typeSwitchErr != nil {
         return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
     }
@@ -206,7 +209,7 @@ func (m *BVLC) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLC"},
         }}); err != nil {

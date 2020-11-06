@@ -22,7 +22,6 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
@@ -31,45 +30,35 @@ type KNXAddress struct {
     MainGroup uint8
     MiddleGroup uint8
     SubGroup uint8
-
+    IKNXAddress
 }
 
 // The corresponding interface
 type IKNXAddress interface {
-    spi.Message
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewKNXAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) spi.Message {
+func NewKNXAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KNXAddress {
     return &KNXAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
-}
-
-func CastIKNXAddress(structType interface{}) IKNXAddress {
-    castFunc := func(typ interface{}) IKNXAddress {
-        if iKNXAddress, ok := typ.(IKNXAddress); ok {
-            return iKNXAddress
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastKNXAddress(structType interface{}) KNXAddress {
     castFunc := func(typ interface{}) KNXAddress {
-        if sKNXAddress, ok := typ.(KNXAddress); ok {
-            return sKNXAddress
+        if casted, ok := typ.(KNXAddress); ok {
+            return casted
         }
-        if sKNXAddress, ok := typ.(*KNXAddress); ok {
-            return *sKNXAddress
+        if casted, ok := typ.(*KNXAddress); ok {
+            return *casted
         }
         return KNXAddress{}
     }
     return castFunc(structType)
 }
 
-func (m KNXAddress) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *KNXAddress) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (mainGroup)
     lengthInBits += 4
@@ -83,11 +72,11 @@ func (m KNXAddress) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m KNXAddress) LengthInBytes() uint16 {
+func (m *KNXAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
+func KNXAddressParse(io *utils.ReadBuffer) (*KNXAddress, error) {
 
     // Simple Field (mainGroup)
     mainGroup, _mainGroupErr := io.ReadUint8(4)
@@ -111,7 +100,7 @@ func KNXAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
     return NewKNXAddress(mainGroup, middleGroup, subGroup), nil
 }
 
-func (m KNXAddress) Serialize(io utils.WriteBuffer) error {
+func (m *KNXAddress) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (mainGroup)
     mainGroup := uint8(m.MainGroup)
@@ -173,7 +162,7 @@ func (m *KNXAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m KNXAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KNXAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KNXAddress"},
         }}); err != nil {

@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type KnxNetObjectServer struct {
     Version uint8
-    ServiceId
+    Parent *ServiceId
+    IKnxNetObjectServer
 }
 
 // The corresponding interface
 type IKnxNetObjectServer interface {
-    IServiceId
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m KnxNetObjectServer) ServiceType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *KnxNetObjectServer) ServiceType() uint8 {
     return 0x08
 }
 
-func (m KnxNetObjectServer) initialize() spi.Message {
-    return m
+
+func (m *KnxNetObjectServer) InitializeParent(parent *ServiceId) {
 }
 
-func NewKnxNetObjectServer(version uint8) ServiceIdInitializer {
-    return &KnxNetObjectServer{Version: version}
-}
-
-func CastIKnxNetObjectServer(structType interface{}) IKnxNetObjectServer {
-    castFunc := func(typ interface{}) IKnxNetObjectServer {
-        if iKnxNetObjectServer, ok := typ.(IKnxNetObjectServer); ok {
-            return iKnxNetObjectServer
-        }
-        return nil
+func NewKnxNetObjectServer(version uint8, ) *ServiceId {
+    child := &KnxNetObjectServer{
+        Version: version,
+        Parent: NewServiceId(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
     castFunc := func(typ interface{}) KnxNetObjectServer {
-        if sKnxNetObjectServer, ok := typ.(KnxNetObjectServer); ok {
-            return sKnxNetObjectServer
+        if casted, ok := typ.(KnxNetObjectServer); ok {
+            return casted
         }
-        if sKnxNetObjectServer, ok := typ.(*KnxNetObjectServer); ok {
-            return *sKnxNetObjectServer
+        if casted, ok := typ.(*KnxNetObjectServer); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ServiceId); ok {
+            return CastKnxNetObjectServer(casted.Child)
+        }
+        if casted, ok := typ.(*ServiceId); ok {
+            return CastKnxNetObjectServer(casted.Child)
         }
         return KnxNetObjectServer{}
     }
     return castFunc(structType)
 }
 
-func (m KnxNetObjectServer) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ServiceId.LengthInBits()
+func (m *KnxNetObjectServer) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (version)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m KnxNetObjectServer) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m KnxNetObjectServer) LengthInBytes() uint16 {
+func (m *KnxNetObjectServer) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetObjectServerParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -95,11 +99,16 @@ func KnxNetObjectServerParse(io *utils.ReadBuffer) (ServiceIdInitializer, error)
         return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
     }
 
-    // Create the instance
-    return NewKnxNetObjectServer(version), nil
+    // Create a partially initialized instance
+    _child := &KnxNetObjectServer{
+        Version: version,
+        Parent: &ServiceId{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
+func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)
@@ -111,7 +120,7 @@ func (m KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement
     }
 }
 
-func (m KnxNetObjectServer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KnxNetObjectServer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer"},
         }}); err != nil {

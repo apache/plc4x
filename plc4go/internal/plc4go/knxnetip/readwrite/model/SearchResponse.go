@@ -22,63 +22,68 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "reflect"
 )
 
 // The data-structure of this message
 type SearchResponse struct {
-    HpaiControlEndpoint IHPAIControlEndpoint
-    DibDeviceInfo IDIBDeviceInfo
-    DibSuppSvcFamilies IDIBSuppSvcFamilies
-    KNXNetIPMessage
+    HpaiControlEndpoint *HPAIControlEndpoint
+    DibDeviceInfo *DIBDeviceInfo
+    DibSuppSvcFamilies *DIBSuppSvcFamilies
+    Parent *KNXNetIPMessage
+    ISearchResponse
 }
 
 // The corresponding interface
 type ISearchResponse interface {
-    IKNXNetIPMessage
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m SearchResponse) MsgType() uint16 {
+///////////////////////////////////////////////////////////
+func (m *SearchResponse) MsgType() uint16 {
     return 0x0202
 }
 
-func (m SearchResponse) initialize() spi.Message {
-    return m
+
+func (m *SearchResponse) InitializeParent(parent *KNXNetIPMessage) {
 }
 
-func NewSearchResponse(hpaiControlEndpoint IHPAIControlEndpoint, dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-    return &SearchResponse{HpaiControlEndpoint: hpaiControlEndpoint, DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
-}
-
-func CastISearchResponse(structType interface{}) ISearchResponse {
-    castFunc := func(typ interface{}) ISearchResponse {
-        if iSearchResponse, ok := typ.(ISearchResponse); ok {
-            return iSearchResponse
-        }
-        return nil
+func NewSearchResponse(hpaiControlEndpoint *HPAIControlEndpoint, dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DIBSuppSvcFamilies, ) *KNXNetIPMessage {
+    child := &SearchResponse{
+        HpaiControlEndpoint: hpaiControlEndpoint,
+        DibDeviceInfo: dibDeviceInfo,
+        DibSuppSvcFamilies: dibSuppSvcFamilies,
+        Parent: NewKNXNetIPMessage(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastSearchResponse(structType interface{}) SearchResponse {
     castFunc := func(typ interface{}) SearchResponse {
-        if sSearchResponse, ok := typ.(SearchResponse); ok {
-            return sSearchResponse
+        if casted, ok := typ.(SearchResponse); ok {
+            return casted
         }
-        if sSearchResponse, ok := typ.(*SearchResponse); ok {
-            return *sSearchResponse
+        if casted, ok := typ.(*SearchResponse); ok {
+            return *casted
+        }
+        if casted, ok := typ.(KNXNetIPMessage); ok {
+            return CastSearchResponse(casted.Child)
+        }
+        if casted, ok := typ.(*KNXNetIPMessage); ok {
+            return CastSearchResponse(casted.Child)
         }
         return SearchResponse{}
     }
     return castFunc(structType)
 }
 
-func (m SearchResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+func (m *SearchResponse) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (hpaiControlEndpoint)
     lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -92,76 +97,65 @@ func (m SearchResponse) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m SearchResponse) LengthInBytes() uint16 {
+func (m *SearchResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SearchResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func SearchResponseParse(io *utils.ReadBuffer) (*KNXNetIPMessage, error) {
 
     // Simple Field (hpaiControlEndpoint)
-    _hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
-    }
-    var hpaiControlEndpoint IHPAIControlEndpoint
-    hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
-    if !_hpaiControlEndpointOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
+    hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
+    if _hpaiControlEndpointErr != nil {
+        return nil, errors.New("Error parsing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
     }
 
     // Simple Field (dibDeviceInfo)
-    _dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
-    }
-    var dibDeviceInfo IDIBDeviceInfo
-    dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
-    if !_dibDeviceInfoOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
+    dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
+    if _dibDeviceInfoErr != nil {
+        return nil, errors.New("Error parsing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
     }
 
     // Simple Field (dibSuppSvcFamilies)
-    _dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
-    if _err != nil {
-        return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
-    }
-    var dibSuppSvcFamilies IDIBSuppSvcFamilies
-    dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
-    if !_dibSuppSvcFamiliesOk {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
+    dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
+    if _dibSuppSvcFamiliesErr != nil {
+        return nil, errors.New("Error parsing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
     }
 
-    // Create the instance
-    return NewSearchResponse(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies), nil
+    // Create a partially initialized instance
+    _child := &SearchResponse{
+        HpaiControlEndpoint: hpaiControlEndpoint,
+        DibDeviceInfo: dibDeviceInfo,
+        DibSuppSvcFamilies: dibSuppSvcFamilies,
+        Parent: &KNXNetIPMessage{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m SearchResponse) Serialize(io utils.WriteBuffer) error {
+func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiControlEndpoint)
-    hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
-    _hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+    _hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
     if _hpaiControlEndpointErr != nil {
         return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
     }
 
     // Simple Field (dibDeviceInfo)
-    dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
-    _dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+    _dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
     if _dibDeviceInfoErr != nil {
         return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
     }
 
     // Simple Field (dibSuppSvcFamilies)
-    dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
-    _dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+    _dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
     if _dibSuppSvcFamiliesErr != nil {
         return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
     }
 
         return nil
     }
-    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -179,28 +173,28 @@ func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
             switch tok.Name.Local {
             case "hpaiControlEndpoint":
                 var data *HPAIControlEndpoint
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.HpaiControlEndpoint = CastIHPAIControlEndpoint(data)
+                m.HpaiControlEndpoint = data
             case "dibDeviceInfo":
                 var data *DIBDeviceInfo
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DibDeviceInfo = CastIDIBDeviceInfo(data)
+                m.DibDeviceInfo = data
             case "dibSuppSvcFamilies":
                 var data *DIBSuppSvcFamilies
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.DibSuppSvcFamilies = CastIDIBSuppSvcFamilies(data)
+                m.DibSuppSvcFamilies = data
             }
         }
     }
 }
 
-func (m SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.SearchResponse"},
         }}); err != nil {

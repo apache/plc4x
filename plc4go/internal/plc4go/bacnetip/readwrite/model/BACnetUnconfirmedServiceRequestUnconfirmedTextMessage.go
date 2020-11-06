@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
-    BACnetUnconfirmedServiceRequest
+    Parent *BACnetUnconfirmedServiceRequest
+    IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
-    IBACnetUnconfirmedServiceRequest
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) ServiceChoice() uint8 {
     return 0x05
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) initialize() spi.Message {
-    return m
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
 
-func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() BACnetUnconfirmedServiceRequestInitializer {
-    return &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{}
-}
-
-func CastIBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
-    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
-        if iBACnetUnconfirmedServiceRequestUnconfirmedTextMessage, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
-            return iBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-        }
-        return nil
+func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() *BACnetUnconfirmedServiceRequest {
+    child := &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
+        Parent: NewBACnetUnconfirmedServiceRequest(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
     castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
-        if sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
-            return sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
+            return casted
         }
-        if sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
-            return *sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
+            return CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(casted.Child)
         }
         return BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBytes() uint16 {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
-    // Create the instance
-    return NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(), nil
+    // Create a partially initialized instance
+    _child := &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
+        Parent: &BACnetUnconfirmedServiceRequest{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) UnmarshalXML(d *
     }
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"},
         }}); err != nil {

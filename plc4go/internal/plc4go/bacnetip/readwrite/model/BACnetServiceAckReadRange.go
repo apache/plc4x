@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetServiceAckReadRange struct {
-    BACnetServiceAck
+    Parent *BACnetServiceAck
+    IBACnetServiceAckReadRange
 }
 
 // The corresponding interface
 type IBACnetServiceAckReadRange interface {
-    IBACnetServiceAck
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetServiceAckReadRange) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckReadRange) ServiceChoice() uint8 {
     return 0x1A
 }
 
-func (m BACnetServiceAckReadRange) initialize() spi.Message {
-    return m
+
+func (m *BACnetServiceAckReadRange) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadRange() BACnetServiceAckInitializer {
-    return &BACnetServiceAckReadRange{}
-}
-
-func CastIBACnetServiceAckReadRange(structType interface{}) IBACnetServiceAckReadRange {
-    castFunc := func(typ interface{}) IBACnetServiceAckReadRange {
-        if iBACnetServiceAckReadRange, ok := typ.(IBACnetServiceAckReadRange); ok {
-            return iBACnetServiceAckReadRange
-        }
-        return nil
+func NewBACnetServiceAckReadRange() *BACnetServiceAck {
+    child := &BACnetServiceAckReadRange{
+        Parent: NewBACnetServiceAck(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetServiceAckReadRange(structType interface{}) BACnetServiceAckReadRange {
     castFunc := func(typ interface{}) BACnetServiceAckReadRange {
-        if sBACnetServiceAckReadRange, ok := typ.(BACnetServiceAckReadRange); ok {
-            return sBACnetServiceAckReadRange
+        if casted, ok := typ.(BACnetServiceAckReadRange); ok {
+            return casted
         }
-        if sBACnetServiceAckReadRange, ok := typ.(*BACnetServiceAckReadRange); ok {
-            return *sBACnetServiceAckReadRange
+        if casted, ok := typ.(*BACnetServiceAckReadRange); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadRange(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetServiceAck); ok {
+            return CastBACnetServiceAckReadRange(casted.Child)
         }
         return BACnetServiceAckReadRange{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetServiceAckReadRange) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+func (m *BACnetServiceAckReadRange) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetServiceAckReadRange) LengthInBytes() uint16 {
+func (m *BACnetServiceAckReadRange) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadRangeParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadRangeParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create the instance
-    return NewBACnetServiceAckReadRange(), nil
+    // Create a partially initialized instance
+    _child := &BACnetServiceAckReadRange{
+        Parent: &BACnetServiceAck{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetServiceAckReadRange) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetServiceAckReadRange) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.Start
     }
 }
 
-func (m BACnetServiceAckReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetServiceAckReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadRange"},
         }}); err != nil {

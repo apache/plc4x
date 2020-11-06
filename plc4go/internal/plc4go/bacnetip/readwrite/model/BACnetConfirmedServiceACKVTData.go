@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKVTData struct {
-    BACnetConfirmedServiceACK
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKVTData
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTData interface {
-    IBACnetConfirmedServiceACK
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BACnetConfirmedServiceACKVTData) ServiceChoice() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceACKVTData) ServiceChoice() uint8 {
     return 0x17
 }
 
-func (m BACnetConfirmedServiceACKVTData) initialize() spi.Message {
-    return m
+
+func (m *BACnetConfirmedServiceACKVTData) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
-func NewBACnetConfirmedServiceACKVTData() BACnetConfirmedServiceACKInitializer {
-    return &BACnetConfirmedServiceACKVTData{}
-}
-
-func CastIBACnetConfirmedServiceACKVTData(structType interface{}) IBACnetConfirmedServiceACKVTData {
-    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKVTData {
-        if iBACnetConfirmedServiceACKVTData, ok := typ.(IBACnetConfirmedServiceACKVTData); ok {
-            return iBACnetConfirmedServiceACKVTData
-        }
-        return nil
+func NewBACnetConfirmedServiceACKVTData() *BACnetConfirmedServiceACK {
+    child := &BACnetConfirmedServiceACKVTData{
+        Parent: NewBACnetConfirmedServiceACK(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKVTData(structType interface{}) BACnetConfirmedServiceACKVTData {
     castFunc := func(typ interface{}) BACnetConfirmedServiceACKVTData {
-        if sBACnetConfirmedServiceACKVTData, ok := typ.(BACnetConfirmedServiceACKVTData); ok {
-            return sBACnetConfirmedServiceACKVTData
+        if casted, ok := typ.(BACnetConfirmedServiceACKVTData); ok {
+            return casted
         }
-        if sBACnetConfirmedServiceACKVTData, ok := typ.(*BACnetConfirmedServiceACKVTData); ok {
-            return *sBACnetConfirmedServiceACKVTData
+        if casted, ok := typ.(*BACnetConfirmedServiceACKVTData); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKVTData(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKVTData(casted.Child)
         }
         return BACnetConfirmedServiceACKVTData{}
     }
     return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceACKVTData) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+func (m *BACnetConfirmedServiceACKVTData) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BACnetConfirmedServiceACKVTData) LengthInBytes() uint16 {
+func (m *BACnetConfirmedServiceACKVTData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKVTDataParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKVTDataParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create the instance
-    return NewBACnetConfirmedServiceACKVTData(), nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKVTData{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BACnetConfirmedServiceACKVTData) Serialize(io utils.WriteBuffer) error {
+func (m *BACnetConfirmedServiceACKVTData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKVTData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BACnetConfirmedServiceACKVTData) UnmarshalXML(d *xml.Decoder, start xml
     }
 }
 
-func (m BACnetConfirmedServiceACKVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BACnetConfirmedServiceACKVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKVTData"},
         }}); err != nil {

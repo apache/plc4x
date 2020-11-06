@@ -24,54 +24,43 @@ import (
     "errors"
     "io"
     "math"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type S7VarPayloadDataItem struct {
-    ReturnCode IDataTransportErrorCode
-    TransportSize IDataTransportSize
+    ReturnCode DataTransportErrorCode
+    TransportSize DataTransportSize
     Data []int8
-
+    IS7VarPayloadDataItem
 }
 
 // The corresponding interface
 type IS7VarPayloadDataItem interface {
-    spi.Message
-    Serialize(io utils.WriteBuffer, lastItem bool) error
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
 }
 
-
-func NewS7VarPayloadDataItem(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, data []int8) spi.Message {
+func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []int8) *S7VarPayloadDataItem {
     return &S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
-}
-
-func CastIS7VarPayloadDataItem(structType interface{}) IS7VarPayloadDataItem {
-    castFunc := func(typ interface{}) IS7VarPayloadDataItem {
-        if iS7VarPayloadDataItem, ok := typ.(IS7VarPayloadDataItem); ok {
-            return iS7VarPayloadDataItem
-        }
-        return nil
-    }
-    return castFunc(structType)
 }
 
 func CastS7VarPayloadDataItem(structType interface{}) S7VarPayloadDataItem {
     castFunc := func(typ interface{}) S7VarPayloadDataItem {
-        if sS7VarPayloadDataItem, ok := typ.(S7VarPayloadDataItem); ok {
-            return sS7VarPayloadDataItem
+        if casted, ok := typ.(S7VarPayloadDataItem); ok {
+            return casted
         }
-        if sS7VarPayloadDataItem, ok := typ.(*S7VarPayloadDataItem); ok {
-            return *sS7VarPayloadDataItem
+        if casted, ok := typ.(*S7VarPayloadDataItem); ok {
+            return *casted
         }
         return S7VarPayloadDataItem{}
     }
     return castFunc(structType)
 }
 
-func (m S7VarPayloadDataItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Enum Field (returnCode)
     lengthInBits += 8
@@ -96,11 +85,11 @@ func (m S7VarPayloadDataItem) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m S7VarPayloadDataItem) LengthInBytes() uint16 {
+func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (spi.Message, error) {
+func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -124,7 +113,6 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (spi.Message
     // Count array
     data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength)))
     for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength))); curItem++ {
-
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'data' field " + _err.Error())
@@ -148,7 +136,7 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (spi.Message
     return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
+func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -210,13 +198,13 @@ func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "returnCode":
-                var data *DataTransportErrorCode
+                var data DataTransportErrorCode
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.ReturnCode = data
             case "transportSize":
-                var data *DataTransportSize
+                var data DataTransportSize
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
@@ -237,7 +225,7 @@ func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
     }
 }
 
-func (m S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem"},
         }}); err != nil {

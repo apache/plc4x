@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type ConnectionRequestInformationDeviceManagement struct {
-    ConnectionRequestInformation
+    Parent *ConnectionRequestInformation
+    IConnectionRequestInformationDeviceManagement
 }
 
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
-    IConnectionRequestInformation
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m ConnectionRequestInformationDeviceManagement) ConnectionType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *ConnectionRequestInformationDeviceManagement) ConnectionType() uint8 {
     return 0x03
 }
 
-func (m ConnectionRequestInformationDeviceManagement) initialize() spi.Message {
-    return m
+
+func (m *ConnectionRequestInformationDeviceManagement) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
-func NewConnectionRequestInformationDeviceManagement() ConnectionRequestInformationInitializer {
-    return &ConnectionRequestInformationDeviceManagement{}
-}
-
-func CastIConnectionRequestInformationDeviceManagement(structType interface{}) IConnectionRequestInformationDeviceManagement {
-    castFunc := func(typ interface{}) IConnectionRequestInformationDeviceManagement {
-        if iConnectionRequestInformationDeviceManagement, ok := typ.(IConnectionRequestInformationDeviceManagement); ok {
-            return iConnectionRequestInformationDeviceManagement
-        }
-        return nil
+func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInformation {
+    child := &ConnectionRequestInformationDeviceManagement{
+        Parent: NewConnectionRequestInformation(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastConnectionRequestInformationDeviceManagement(structType interface{}) ConnectionRequestInformationDeviceManagement {
     castFunc := func(typ interface{}) ConnectionRequestInformationDeviceManagement {
-        if sConnectionRequestInformationDeviceManagement, ok := typ.(ConnectionRequestInformationDeviceManagement); ok {
-            return sConnectionRequestInformationDeviceManagement
+        if casted, ok := typ.(ConnectionRequestInformationDeviceManagement); ok {
+            return casted
         }
-        if sConnectionRequestInformationDeviceManagement, ok := typ.(*ConnectionRequestInformationDeviceManagement); ok {
-            return *sConnectionRequestInformationDeviceManagement
+        if casted, ok := typ.(*ConnectionRequestInformationDeviceManagement); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ConnectionRequestInformation); ok {
+            return CastConnectionRequestInformationDeviceManagement(casted.Child)
+        }
+        if casted, ok := typ.(*ConnectionRequestInformation); ok {
+            return CastConnectionRequestInformationDeviceManagement(casted.Child)
         }
         return ConnectionRequestInformationDeviceManagement{}
     }
     return castFunc(structType)
 }
 
-func (m ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
+func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
+func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(io *utils.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
+func ConnectionRequestInformationDeviceManagementParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
-    // Create the instance
-    return NewConnectionRequestInformationDeviceManagement(), nil
+    // Create a partially initialized instance
+    _child := &ConnectionRequestInformationDeviceManagement{
+        Parent: &ConnectionRequestInformation{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
+func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decod
     }
 }
 
-func (m ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement"},
         }}); err != nil {

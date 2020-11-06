@@ -21,79 +21,86 @@ package model
 import (
     "encoding/xml"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type BVLCReadBroadcastDistributionTableAck struct {
-    BVLC
+    Parent *BVLC
+    IBVLCReadBroadcastDistributionTableAck
 }
 
 // The corresponding interface
 type IBVLCReadBroadcastDistributionTableAck interface {
-    IBVLC
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m BVLCReadBroadcastDistributionTableAck) BvlcFunction() uint8 {
+///////////////////////////////////////////////////////////
+func (m *BVLCReadBroadcastDistributionTableAck) BvlcFunction() uint8 {
     return 0x03
 }
 
-func (m BVLCReadBroadcastDistributionTableAck) initialize() spi.Message {
-    return m
+
+func (m *BVLCReadBroadcastDistributionTableAck) InitializeParent(parent *BVLC) {
 }
 
-func NewBVLCReadBroadcastDistributionTableAck() BVLCInitializer {
-    return &BVLCReadBroadcastDistributionTableAck{}
-}
-
-func CastIBVLCReadBroadcastDistributionTableAck(structType interface{}) IBVLCReadBroadcastDistributionTableAck {
-    castFunc := func(typ interface{}) IBVLCReadBroadcastDistributionTableAck {
-        if iBVLCReadBroadcastDistributionTableAck, ok := typ.(IBVLCReadBroadcastDistributionTableAck); ok {
-            return iBVLCReadBroadcastDistributionTableAck
-        }
-        return nil
+func NewBVLCReadBroadcastDistributionTableAck() *BVLC {
+    child := &BVLCReadBroadcastDistributionTableAck{
+        Parent: NewBVLC(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) BVLCReadBroadcastDistributionTableAck {
     castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTableAck {
-        if sBVLCReadBroadcastDistributionTableAck, ok := typ.(BVLCReadBroadcastDistributionTableAck); ok {
-            return sBVLCReadBroadcastDistributionTableAck
+        if casted, ok := typ.(BVLCReadBroadcastDistributionTableAck); ok {
+            return casted
         }
-        if sBVLCReadBroadcastDistributionTableAck, ok := typ.(*BVLCReadBroadcastDistributionTableAck); ok {
-            return *sBVLCReadBroadcastDistributionTableAck
+        if casted, ok := typ.(*BVLCReadBroadcastDistributionTableAck); ok {
+            return *casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCReadBroadcastDistributionTableAck(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCReadBroadcastDistributionTableAck(casted.Child)
         }
         return BVLCReadBroadcastDistributionTableAck{}
     }
     return castFunc(structType)
 }
 
-func (m BVLCReadBroadcastDistributionTableAck) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.BVLC.LengthInBits()
+func (m *BVLCReadBroadcastDistributionTableAck) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m BVLCReadBroadcastDistributionTableAck) LengthInBytes() uint16 {
+func (m *BVLCReadBroadcastDistributionTableAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableAckParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
+func BVLCReadBroadcastDistributionTableAckParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create the instance
-    return NewBVLCReadBroadcastDistributionTableAck(), nil
+    // Create a partially initialized instance
+    _child := &BVLCReadBroadcastDistributionTableAck{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m BVLCReadBroadcastDistributionTableAck) Serialize(io utils.WriteBuffer) error {
+func (m *BVLCReadBroadcastDistributionTableAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
     }
-    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -114,7 +121,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) UnmarshalXML(d *xml.Decoder, sta
     }
 }
 
-func (m BVLCReadBroadcastDistributionTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *BVLCReadBroadcastDistributionTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTableAck"},
         }}); err != nil {

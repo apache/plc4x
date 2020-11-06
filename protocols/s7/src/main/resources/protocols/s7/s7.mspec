@@ -349,24 +349,17 @@
         // -----------------------------------------
         // TIA Date-Formats
         // -----------------------------------------
-        ['IEC61131_TIME' Time
-            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTime", io, _value)' '4']
+        ['IEC61131_TIME' TIME
         ]
-        ['S7_S5TIME' Time
-            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS5Time", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS5Time", io, _value)' '4']
+        ['S7_S5TIME' TIME
         ]
-        // TODO: Check if this is really 8 bytes
-        ['IEC61131_LTIME' Time
-            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaLTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaLTime", io, _value)' '8']
+        ['IEC61131_LTIME' LTIME
         ]
-        ['IEC61131_DATE' Date
-            [manual date 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDate", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDate", io, _value)' '2']
+        ['IEC61131_DATE' DATE
         ]
-        ['IEC61131_TIME_OF_DAY' Time
-            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTimeOfDay", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTimeOfDay", io, _value)' '4']
+        ['IEC61131_TIME_OF_DAY' TIME_OF_DAY
         ]
-        ['IEC61131_DATE_AND_TIME' DateTime
-            [manual dateTime 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDateTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDateTime", io, _value)' '8']
+        ['IEC61131_DATE_AND_TIME' DATE_AND_TIME
         ]
     ]
 ]

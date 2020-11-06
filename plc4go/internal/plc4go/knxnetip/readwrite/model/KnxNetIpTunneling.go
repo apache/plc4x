@@ -22,60 +22,64 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
 type KnxNetIpTunneling struct {
     Version uint8
-    ServiceId
+    Parent *ServiceId
+    IKnxNetIpTunneling
 }
 
 // The corresponding interface
 type IKnxNetIpTunneling interface {
-    IServiceId
+    LengthInBytes() uint16
+    LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
 }
 
+///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
-func (m KnxNetIpTunneling) ServiceType() uint8 {
+///////////////////////////////////////////////////////////
+func (m *KnxNetIpTunneling) ServiceType() uint8 {
     return 0x04
 }
 
-func (m KnxNetIpTunneling) initialize() spi.Message {
-    return m
+
+func (m *KnxNetIpTunneling) InitializeParent(parent *ServiceId) {
 }
 
-func NewKnxNetIpTunneling(version uint8) ServiceIdInitializer {
-    return &KnxNetIpTunneling{Version: version}
-}
-
-func CastIKnxNetIpTunneling(structType interface{}) IKnxNetIpTunneling {
-    castFunc := func(typ interface{}) IKnxNetIpTunneling {
-        if iKnxNetIpTunneling, ok := typ.(IKnxNetIpTunneling); ok {
-            return iKnxNetIpTunneling
-        }
-        return nil
+func NewKnxNetIpTunneling(version uint8, ) *ServiceId {
+    child := &KnxNetIpTunneling{
+        Version: version,
+        Parent: NewServiceId(),
     }
-    return castFunc(structType)
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastKnxNetIpTunneling(structType interface{}) KnxNetIpTunneling {
     castFunc := func(typ interface{}) KnxNetIpTunneling {
-        if sKnxNetIpTunneling, ok := typ.(KnxNetIpTunneling); ok {
-            return sKnxNetIpTunneling
+        if casted, ok := typ.(KnxNetIpTunneling); ok {
+            return casted
         }
-        if sKnxNetIpTunneling, ok := typ.(*KnxNetIpTunneling); ok {
-            return *sKnxNetIpTunneling
+        if casted, ok := typ.(*KnxNetIpTunneling); ok {
+            return *casted
+        }
+        if casted, ok := typ.(ServiceId); ok {
+            return CastKnxNetIpTunneling(casted.Child)
+        }
+        if casted, ok := typ.(*ServiceId); ok {
+            return CastKnxNetIpTunneling(casted.Child)
         }
         return KnxNetIpTunneling{}
     }
     return castFunc(structType)
 }
 
-func (m KnxNetIpTunneling) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ServiceId.LengthInBits()
+func (m *KnxNetIpTunneling) LengthInBits() uint16 {
+    lengthInBits := uint16(0)
 
     // Simple field (version)
     lengthInBits += 8
@@ -83,11 +87,11 @@ func (m KnxNetIpTunneling) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m KnxNetIpTunneling) LengthInBytes() uint16 {
+func (m *KnxNetIpTunneling) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetIpTunnelingParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetIpTunnelingParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -95,11 +99,16 @@ func KnxNetIpTunnelingParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) 
         return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
     }
 
-    // Create the instance
-    return NewKnxNetIpTunneling(version), nil
+    // Create a partially initialized instance
+    _child := &KnxNetIpTunneling{
+        Version: version,
+        Parent: &ServiceId{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
-func (m KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
+func (m *KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)
@@ -111,7 +120,7 @@ func (m KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
 
         return nil
     }
-    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *KnxNetIpTunneling) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -138,7 +147,7 @@ func (m *KnxNetIpTunneling) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m KnxNetIpTunneling) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *KnxNetIpTunneling) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling"},
         }}); err != nil {

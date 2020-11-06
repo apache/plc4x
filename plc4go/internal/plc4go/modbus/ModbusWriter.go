@@ -79,20 +79,18 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))
 
-		var pdu modbusModel.IModbusPDU = nil
+		var pdu *modbusModel.ModbusPDU
 		switch modbusField.FieldType {
 		case MODBUS_FIELD_COIL:
-			pdu = modbusModel.ModbusPDUWriteMultipleCoilsRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        modbusField.Quantity,
-				Value:           data,
-			}
+			pdu = modbusModel.NewModbusPDUWriteMultipleCoilsRequest(
+				modbusField.Address,
+				modbusField.Quantity,
+				data)
 		case MODBUS_FIELD_HOLDING_REGISTER:
-			pdu = modbusModel.ModbusPDUWriteMultipleHoldingRegistersRequest{
-				StartingAddress: modbusField.Address,
-				Quantity:        numWords,
-				Value:           data,
-			}
+			pdu = modbusModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
+			    modbusField.Address,
+			    numWords,
+			    data)
 		case MODBUS_FIELD_EXTENDED_REGISTER:
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
@@ -176,20 +174,20 @@ func (m ModbusWriter) ToPlc4xWriteResponse(requestAdu modbusModel.ModbusTcpADU, 
 	fieldName := writeRequest.GetFieldNames()[0]
 
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-	switch responseAdu.Pdu.(type) {
-	case modbusModel.ModbusPDUWriteMultipleCoilsResponse:
+	switch responseAdu.Pdu.Child.(type) {
+	case *modbusModel.ModbusPDUWriteMultipleCoilsResponse:
 		req := modbusModel.CastModbusPDUWriteMultipleCoilsRequest(requestAdu.Pdu)
 		resp := modbusModel.CastModbusPDUWriteMultipleCoilsResponse(responseAdu.Pdu)
 		if req.Quantity == resp.Quantity {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case modbusModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
+	case *modbusModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
 		req := modbusModel.CastModbusPDUWriteMultipleHoldingRegistersRequest(requestAdu.Pdu)
 		resp := modbusModel.CastModbusPDUWriteMultipleHoldingRegistersResponse(responseAdu.Pdu)
 		if req.Quantity == resp.Quantity {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case modbusModel.ModbusPDUError:
+	case *modbusModel.ModbusPDUError:
 		resp := modbusModel.CastModbusPDUError(&responseAdu.Pdu)
 		switch resp.ExceptionCode {
 		case modbusModel.ModbusErrorCode_ILLEGAL_FUNCTION:
