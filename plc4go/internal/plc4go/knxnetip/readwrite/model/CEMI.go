@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -38,6 +40,7 @@ type ICEMI interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type ICEMIParent interface {
@@ -150,8 +153,10 @@ func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChild
 }
 
 func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -162,17 +167,137 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataReq":
+                            var dt *CEMIDataReq
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIDataReq)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataCon":
+                            var dt *CEMIDataCon
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIDataCon)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd":
+                            var dt *CEMIDataInd
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIDataInd)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq":
+                            var dt *CEMIRawReq
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIRawReq)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawCon":
+                            var dt *CEMIRawCon
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIRawCon)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawInd":
+                            var dt *CEMIRawInd
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIRawInd)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataReq":
+                            var dt *CEMIPollDataReq
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIPollDataReq)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon":
+                            var dt *CEMIPollDataCon
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIPollDataCon)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd":
+                            var dt *CEMIBusmonInd
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIBusmonInd)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq":
+                            var dt *CEMIMPropReadReq
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIMPropReadReq)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadCon":
+                            var dt *CEMIMPropReadCon
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIMPropReadCon)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *CEMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMI"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

@@ -37,6 +37,7 @@ type IS7VarRequestParameterItemAddress interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -139,42 +140,34 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 }
 
 func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "address":
+                var dt *S7Address
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Address = dt
+            }
+        }
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
             }
             return err
         }
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "address":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.s7.readwrite.S7AddressAny":
-                        var dt *S7Address
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Address = dt
-                    }
-            }
-        }
     }
 }
 
 func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

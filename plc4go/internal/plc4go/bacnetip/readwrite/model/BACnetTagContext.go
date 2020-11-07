@@ -38,6 +38,7 @@ type IBACnetTagContext interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -141,14 +142,10 @@ func (m *BACnetTagContext) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -166,21 +163,20 @@ func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                 m.Data = utils.ByteToInt8(_decoded[0:_len])
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext"},
-        }}); err != nil {
-        return err
-    }
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
     base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

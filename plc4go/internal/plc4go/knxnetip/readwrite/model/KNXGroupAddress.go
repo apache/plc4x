@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -38,6 +40,7 @@ type IKNXGroupAddress interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type IKNXGroupAddressParent interface {
@@ -118,8 +121,10 @@ func (m *KNXGroupAddress) SerializeParent(io utils.WriteBuffer, child IKNXGroupA
 }
 
 func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -130,17 +135,57 @@ func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddressFreeLevel":
+                            var dt *KNXGroupAddressFreeLevel
+                            if m.Child != nil {
+                                dt = m.Child.(*KNXGroupAddressFreeLevel)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level":
+                            var dt *KNXGroupAddress2Level
+                            if m.Child != nil {
+                                dt = m.Child.(*KNXGroupAddress2Level)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level":
+                            var dt *KNXGroupAddress3Level
+                            if m.Child != nil {
+                                dt = m.Child.(*KNXGroupAddress3Level)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *KNXGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

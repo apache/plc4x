@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -38,6 +40,7 @@ type IBACnetError interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type IBACnetErrorParent interface {
@@ -156,8 +159,10 @@ func (m *BACnetError) SerializeParent(io utils.WriteBuffer, child IBACnetError, 
 }
 
 func (m *BACnetError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -168,17 +173,167 @@ func (m *BACnetError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
+                            var dt *BACnetErrorGetAlarmSummary
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorGetAlarmSummary)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary":
+                            var dt *BACnetErrorGetEnrollmentSummary
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorGetEnrollmentSummary)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEventInformation":
+                            var dt *BACnetErrorGetEventInformation
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorGetEventInformation)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile":
+                            var dt *BACnetErrorAtomicReadFile
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorAtomicReadFile)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicWriteFile":
+                            var dt *BACnetErrorAtomicWriteFile
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorAtomicWriteFile)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject":
+                            var dt *BACnetErrorCreateObject
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorCreateObject)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty":
+                            var dt *BACnetErrorReadProperty
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorReadProperty)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple":
+                            var dt *BACnetErrorReadPropertyMultiple
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorReadPropertyMultiple)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange":
+                            var dt *BACnetErrorReadRange
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorReadRange)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer":
+                            var dt *BACnetErrorConfirmedPrivateTransfer
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorConfirmedPrivateTransfer)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen":
+                            var dt *BACnetErrorVTOpen
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorVTOpen)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTData":
+                            var dt *BACnetErrorVTData
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorVTData)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate":
+                            var dt *BACnetErrorRemovedAuthenticate
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorRemovedAuthenticate)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional":
+                            var dt *BACnetErrorRemovedReadPropertyConditional
+                            if m.Child != nil {
+                                dt = m.Child.(*BACnetErrorRemovedReadPropertyConditional)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *BACnetError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetError"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

@@ -41,6 +41,7 @@ type ISzlDataTreeItem interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
@@ -172,8 +173,10 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -225,8 +228,9 @@ func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 }
 
 func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

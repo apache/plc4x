@@ -46,6 +46,7 @@ type IBACnetErrorReadProperty interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -243,14 +244,10 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -291,15 +288,17 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 m.ErrorCode = utils.ByteToInt8(_decoded[0:_len])
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.ErrorClassLength, xml.StartElement{Name: xml.Name{Local: "errorClassLength"}}); err != nil {
         return err
     }
@@ -314,9 +313,6 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
     _encodedErrorCode := make([]byte, base64.StdEncoding.EncodedLen(len(m.ErrorCode)))
     base64.StdEncoding.Encode(_encodedErrorCode, utils.Int8ToByte(m.ErrorCode))
     if err := e.EncodeElement(_encodedErrorCode, xml.StartElement{Name: xml.Name{Local: "errorCode"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

@@ -43,6 +43,7 @@ type IAPDUComplexAck interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -264,14 +265,10 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -307,103 +304,24 @@ func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
                 }
                 m.ProposedWindowSize = data
             case "serviceAck":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetAlarmSummary":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEnrollmentSummary":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEventInformation":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicReadFile":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicWriteFile":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckCreateObject":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadProperty":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadPropertyMultiple":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadRange":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckConfirmedPrivateTransfer":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTOpen":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTData":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedAuthenticate":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedReadPropertyConditional":
-                        var dt *BACnetServiceAck
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ServiceAck = dt
-                    }
+                var dt *BACnetServiceAck
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.ServiceAck = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *APDUComplexAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.SegmentedMessage, xml.StartElement{Name: xml.Name{Local: "segmentedMessage"}}); err != nil {
         return err
     }
@@ -420,9 +338,6 @@ func (m *APDUComplexAck) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
         return err
     }
     if err := e.EncodeElement(m.ServiceAck, xml.StartElement{Name: xml.Name{Local: "serviceAck"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

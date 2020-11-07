@@ -37,6 +37,7 @@ type IMACAddress interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewMACAddress(addr []int8) *MACAddress {
@@ -104,8 +105,10 @@ func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -133,8 +136,9 @@ func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 }
 
 func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

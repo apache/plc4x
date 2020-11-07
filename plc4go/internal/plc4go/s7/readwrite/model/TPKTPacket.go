@@ -41,6 +41,7 @@ type ITPKTPacket interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
@@ -156,8 +157,10 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *TPKTPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -169,52 +172,20 @@ func (m *TPKTPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "payload":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError":
-                        var dt *COTPPacket
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    }
+                var dt *COTPPacket
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Payload = dt
             }
         }
     }
 }
 
 func (m *TPKTPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.s7.readwrite.TPKTPacket"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.TPKTPacket"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

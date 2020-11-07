@@ -41,6 +41,7 @@ type ICEMIMPropReadReq interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -200,14 +201,10 @@ func (m *CEMIMPropReadReq) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMIMPropReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -244,15 +241,17 @@ func (m *CEMIMPropReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                 m.StartIndex = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *CEMIMPropReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.InterfaceObjectType, xml.StartElement{Name: xml.Name{Local: "interfaceObjectType"}}); err != nil {
         return err
     }
@@ -266,9 +265,6 @@ func (m *CEMIMPropReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) er
         return err
     }
     if err := e.EncodeElement(m.StartIndex, xml.StartElement{Name: xml.Name{Local: "startIndex"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

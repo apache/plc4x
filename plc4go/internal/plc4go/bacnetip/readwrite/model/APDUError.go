@@ -39,6 +39,7 @@ type IAPDUError interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -168,14 +169,10 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -187,110 +184,28 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 }
                 m.OriginalInvokeId = data
             case "error":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEventInformation":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicWriteFile":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTData":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional":
-                        var dt *BACnetError
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Error = dt
-                    }
+                var dt *BACnetError
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Error = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUError"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.OriginalInvokeId, xml.StartElement{Name: xml.Name{Local: "originalInvokeId"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Error, xml.StartElement{Name: xml.Name{Local: "error"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

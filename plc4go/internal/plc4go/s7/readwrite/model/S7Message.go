@@ -25,6 +25,8 @@ import (
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
+    "reflect"
+    "strings"
 )
 
 // Constant values.
@@ -46,6 +48,7 @@ type IS7Message interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type IS7MessageParent interface {
@@ -285,8 +288,10 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 }
 
 func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -304,70 +309,59 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 }
                 m.TpduReference = data
             case "parameter":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
-                        var dt *S7Parameter
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Parameter = dt
-                    }
+                var dt *S7Parameter
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Parameter = dt
             case "payload":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse":
-                        var dt *S7Payload
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
-                        var dt *S7Payload
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
-                        var dt *S7Payload
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
-                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
-                        var dt *S7Payload
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Payload = dt
+                var dt *S7Payload
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Payload = dt
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.s7.readwrite.S7MessageRequest":
+                            var dt *S7MessageRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*S7MessageRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.s7.readwrite.S7MessageResponse":
+                            var dt *S7MessageResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*S7MessageResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.s7.readwrite.S7MessageResponseData":
+                            var dt *S7MessageResponseData
+                            if m.Child != nil {
+                                dt = m.Child.(*S7MessageResponseData)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.s7.readwrite.S7MessageUserData":
+                            var dt *S7MessageUserData
+                            if m.Child != nil {
+                                dt = m.Child.(*S7MessageUserData)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
                     }
             }
         }
@@ -375,14 +369,21 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 func (m *S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7Message"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.TpduReference, xml.StartElement{Name: xml.Name{Local: "tpduReference"}}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeElement(m.Parameter, xml.StartElement{Name: xml.Name{Local: "parameter"}}); err != nil {
         return err
     }

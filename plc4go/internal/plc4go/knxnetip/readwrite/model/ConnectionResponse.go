@@ -40,6 +40,7 @@ type IConnectionResponse interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -199,14 +200,10 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -230,31 +227,24 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.HpaiDataEndpoint = data
             case "connectionResponseDataBlock":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockDeviceManagement":
-                        var dt *ConnectionResponseDataBlock
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ConnectionResponseDataBlock = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection":
-                        var dt *ConnectionResponseDataBlock
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ConnectionResponseDataBlock = dt
-                    }
+                var dt *ConnectionResponseDataBlock
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.ConnectionResponseDataBlock = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
         return err
     }
@@ -265,9 +255,6 @@ func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
         return err
     }
     if err := e.EncodeElement(m.ConnectionResponseDataBlock, xml.StartElement{Name: xml.Name{Local: "connectionResponseDataBlock"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil
