@@ -444,7 +444,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /**
      * @return switch field of the current base type.
      */
-    protected SwitchField getSwitchField() {
+    public SwitchField getSwitchField() {
         return getSwitchField(thisType);
     }
 

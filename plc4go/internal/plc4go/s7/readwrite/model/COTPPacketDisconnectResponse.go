@@ -38,6 +38,7 @@ type ICOTPPacketDisconnectResponse interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -145,14 +146,10 @@ func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *COTPPacketDisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -171,22 +168,21 @@ func (m *COTPPacketDisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.St
                 m.SourceReference = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *COTPPacketDisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.DestinationReference, xml.StartElement{Name: xml.Name{Local: "destinationReference"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.SourceReference, xml.StartElement{Name: xml.Name{Local: "sourceReference"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

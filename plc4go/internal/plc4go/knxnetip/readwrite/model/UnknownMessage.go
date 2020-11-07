@@ -38,6 +38,7 @@ type IUnknownMessage interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -135,14 +136,10 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -160,21 +157,20 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
                 m.UnknownData = utils.ByteToInt8(_decoded[0:_len])
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.UnknownMessage"},
-        }}); err != nil {
-        return err
-    }
     _encodedUnknownData := make([]byte, base64.StdEncoding.EncodedLen(len(m.UnknownData)))
     base64.StdEncoding.Encode(_encodedUnknownData, utils.Int8ToByte(m.UnknownData))
     if err := e.EncodeElement(_encodedUnknownData, xml.StartElement{Name: xml.Name{Local: "unknownData"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

@@ -114,6 +114,7 @@ type I${type.name} interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 <#if helper.isDiscriminatedChildTypeDefinition()>
     <#assign discriminatedChildType = type>
@@ -857,23 +858,34 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 }
 
 func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    <#if helper.isDiscriminatedChildTypeDefinition()>
+    token = start
+    </#if>
     for {
-        token, err := d.Token()
+    <#if !helper.isDiscriminatedChildTypeDefinition()>
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
             }
             return err
         }
+    </#if>
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-    <#if type.propertyFields?has_content>
-        <#list type.propertyFields as field>
+    <#if type.fields?has_content>
+        <#assign hasSwitch = false>
+        <#list type.fields as field>
+            <#if helper.isSwitchField(field)>
+                <#assign hasSwitch = true>
+            <#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
             case "${field.name}":
             <#-- int8 arrays are serialized in Base64 encoding -->
-            <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
+                <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
                 var _encoded string
                 if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
@@ -884,70 +896,103 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
                     return err
                 }
                 m.${field.name?cap_first} = utils.ByteToInt8(_decoded[0:_len])
-            <#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
-                <#if helper.isArrayField(field)>
-                var _values []<#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
-                </#if>
-                switch tok.Attr[0].Value {
-                <#list helper.getSubTypeDefinitions(helper.getTypeDefinitionForTypeReference(field.type)) as subtype>
-                    case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
-                        var dt *${helper.getLanguageTypeNameForField(field)}
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
+                <#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
                     <#if helper.isArrayField(field)>
-                        _values = append(_values, dt)
-                    <#else>
-                        m.${field.name?cap_first} = dt
+                var _values []<#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
                     </#if>
-                </#list>
-                    }
-                <#if helper.isArrayField(field)>
-                    m.${field.name?cap_first} = _values
-                </#if>
-            <#elseif helper.isArrayField(field)>
+                var dt *${helper.getLanguageTypeNameForField(field)}
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                    <#if helper.isArrayField(field)>
+                _values = append(_values, dt)
+                m.${field.name?cap_first} = _values
+                    <#else>
+                m.${field.name?cap_first} = dt
+                    </#if>
+                <#elseif helper.isArrayField(field)>
                 var data []<#if helper.isComplexTypeReference(field.type)>*</#if>${helper.getLanguageTypeNameForField(field)}
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.${field.name?cap_first} = data
-            <#elseif helper.needsPointerAccess(field)>
+                <#elseif helper.needsPointerAccess(field)>
                 var data *${helper.getLanguageTypeNameForField(field)}
                 if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.${field.name?cap_first} = data
-            <#else>
+                <#else>
                 var data ${helper.getLanguageTypeNameForField(field)}
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.${field.name?cap_first} = data
+                </#if>
             </#if>
         </#list>
+        <#if hasSwitch>
+                default:
+                    switch start.Attr[0].Value {
+            <#list helper.getSwitchField().cases as subtype>
+                        case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
+                            var dt *${subtype.name}
+                            if m.Child != nil {
+                                dt = m.Child.(*${subtype.name})
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                <#if helper.isArrayField(field)>
+                            _values = append(_values, dt)
+                <#else>
+                            dt.Parent = m
+                            m.Child = dt
+                </#if>
+            </#list>
+                    }
+        </#if>
     </#if>
             }
         }
+    <#if helper.isDiscriminatedChildTypeDefinition()>
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    </#if>
     }
 }
 
 func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    <#if helper.isDiscriminatedParentTypeDefinition()>
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}." + className[strings.LastIndex(className, ".") + 1:]
+    <#elseif !helper.isDiscriminatedChildTypeDefinition()>
+    className := "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${type.name}"
+    </#if>
+    <#if !helper.isDiscriminatedChildTypeDefinition()>
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${type.name}"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
-    <#if type.propertyFields?has_content>
-        <#list type.propertyFields as field>
+    </#if>
+    <#if type.fields?has_content>
+        <#list type.fields as field>
+            <#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
             <#-- int8 arrays are serialized in Base64 encoding -->
-            <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
+                <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
     _encoded${field.name?cap_first} := make([]byte, base64.StdEncoding.EncodedLen(len(m.${field.name?cap_first})))
     base64.StdEncoding.Encode(_encoded${field.name?cap_first}, utils.Int8ToByte(m.${field.name?cap_first}))
     if err := e.EncodeElement(_encoded${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
         return err
     }
-            <#-- normal arrays have one element with the same name wrapping them -->
-            <#elseif helper.isArrayField(field)>
+                <#-- normal arrays have one element with the same name wrapping them -->
+                <#elseif helper.isArrayField(field)>
     if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
         return err
     }
@@ -957,16 +1002,25 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
         return err
     }
-            <#else>
+                <#else>
     if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
         return err
     }
+                </#if>
+            <#elseif helper.isSwitchField(field)>
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
             </#if>
         </#list>
     </#if>
+    <#if !helper.isDiscriminatedChildTypeDefinition()>
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
+    </#if>
     return nil
 }
 

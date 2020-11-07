@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -40,6 +42,7 @@ type IModbusPDU interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type IModbusPDUParent interface {
@@ -224,8 +227,10 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 }
 
 func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -236,17 +241,417 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUError":
+                            var dt *ModbusPDUError
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUError)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest":
+                            var dt *ModbusPDUReadDiscreteInputsRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadDiscreteInputsRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsResponse":
+                            var dt *ModbusPDUReadDiscreteInputsResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadDiscreteInputsResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsRequest":
+                            var dt *ModbusPDUReadCoilsRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadCoilsRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsResponse":
+                            var dt *ModbusPDUReadCoilsResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadCoilsResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleCoilRequest":
+                            var dt *ModbusPDUWriteSingleCoilRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteSingleCoilRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleCoilResponse":
+                            var dt *ModbusPDUWriteSingleCoilResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteSingleCoilResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest":
+                            var dt *ModbusPDUWriteMultipleCoilsRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteMultipleCoilsRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsResponse":
+                            var dt *ModbusPDUWriteMultipleCoilsResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteMultipleCoilsResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersRequest":
+                            var dt *ModbusPDUReadInputRegistersRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadInputRegistersRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersResponse":
+                            var dt *ModbusPDUReadInputRegistersResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadInputRegistersResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest":
+                            var dt *ModbusPDUReadHoldingRegistersRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadHoldingRegistersRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse":
+                            var dt *ModbusPDUReadHoldingRegistersResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadHoldingRegistersResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterRequest":
+                            var dt *ModbusPDUWriteSingleRegisterRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteSingleRegisterRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterResponse":
+                            var dt *ModbusPDUWriteSingleRegisterResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteSingleRegisterResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest":
+                            var dt *ModbusPDUWriteMultipleHoldingRegistersRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteMultipleHoldingRegistersRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse":
+                            var dt *ModbusPDUWriteMultipleHoldingRegistersResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteMultipleHoldingRegistersResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersRequest":
+                            var dt *ModbusPDUReadWriteMultipleHoldingRegistersRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadWriteMultipleHoldingRegistersRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse":
+                            var dt *ModbusPDUReadWriteMultipleHoldingRegistersResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadWriteMultipleHoldingRegistersResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterRequest":
+                            var dt *ModbusPDUMaskWriteHoldingRegisterRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUMaskWriteHoldingRegisterRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterResponse":
+                            var dt *ModbusPDUMaskWriteHoldingRegisterResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUMaskWriteHoldingRegisterResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueRequest":
+                            var dt *ModbusPDUReadFifoQueueRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadFifoQueueRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueResponse":
+                            var dt *ModbusPDUReadFifoQueueResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadFifoQueueResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequest":
+                            var dt *ModbusPDUReadFileRecordRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadFileRecordRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponse":
+                            var dt *ModbusPDUReadFileRecordResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadFileRecordResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequest":
+                            var dt *ModbusPDUWriteFileRecordRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteFileRecordRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordResponse":
+                            var dt *ModbusPDUWriteFileRecordResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUWriteFileRecordResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusRequest":
+                            var dt *ModbusPDUReadExceptionStatusRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadExceptionStatusRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusResponse":
+                            var dt *ModbusPDUReadExceptionStatusResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadExceptionStatusResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUDiagnosticRequest":
+                            var dt *ModbusPDUDiagnosticRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUDiagnosticRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUDiagnosticResponse":
+                            var dt *ModbusPDUDiagnosticResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUDiagnosticResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterRequest":
+                            var dt *ModbusPDUGetComEventCounterRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUGetComEventCounterRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterResponse":
+                            var dt *ModbusPDUGetComEventCounterResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUGetComEventCounterResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogRequest":
+                            var dt *ModbusPDUGetComEventLogRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUGetComEventLogRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogResponse":
+                            var dt *ModbusPDUGetComEventLogResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUGetComEventLogResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdRequest":
+                            var dt *ModbusPDUReportServerIdRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReportServerIdRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdResponse":
+                            var dt *ModbusPDUReportServerIdResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReportServerIdResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest":
+                            var dt *ModbusPDUReadDeviceIdentificationRequest
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadDeviceIdentificationRequest)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse":
+                            var dt *ModbusPDUReadDeviceIdentificationResponse
+                            if m.Child != nil {
+                                dt = m.Child.(*ModbusPDUReadDeviceIdentificationResponse)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.modbus.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDU"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

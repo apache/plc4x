@@ -40,6 +40,7 @@ type IS7VarPayloadDataItem interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []int8) *S7VarPayloadDataItem {
@@ -185,8 +186,10 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 }
 
 func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -226,8 +229,9 @@ func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 }
 
 func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

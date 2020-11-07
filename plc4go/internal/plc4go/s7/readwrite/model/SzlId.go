@@ -38,6 +38,7 @@ type ISzlId interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
@@ -127,8 +128,10 @@ func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -163,8 +166,9 @@ func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.s7.readwrite.SzlId"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlId"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

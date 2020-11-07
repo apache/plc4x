@@ -38,6 +38,7 @@ type IModbusPDUReadCoilsRequest interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -151,14 +152,10 @@ func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -177,22 +174,21 @@ func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.Start
                 m.Quantity = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *ModbusPDUReadCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsRequest"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.StartingAddress, xml.StartElement{Name: xml.Name{Local: "startingAddress"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "quantity"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

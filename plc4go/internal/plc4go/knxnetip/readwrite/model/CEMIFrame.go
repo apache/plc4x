@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -44,6 +46,7 @@ type ICEMIFrame interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type ICEMIFrameParent interface {
@@ -240,8 +243,10 @@ func (m *CEMIFrame) SerializeParent(io utils.WriteBuffer, child ICEMIFrame, seri
 }
 
 func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -276,14 +281,69 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                     return err
                 }
                 m.ErrorFlag = data
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameAck":
+                            var dt *CEMIFrameAck
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIFrameAck)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData":
+                            var dt *CEMIFrameData
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIFrameData)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData":
+                            var dt *CEMIFramePollingData
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIFramePollingData)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameDataExt":
+                            var dt *CEMIFrameDataExt
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIFrameDataExt)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingDataExt":
+                            var dt *CEMIFramePollingDataExt
+                            if m.Child != nil {
+                                dt = m.Child.(*CEMIFramePollingDataExt)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrame"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
@@ -299,6 +359,11 @@ func (m *CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.ErrorFlag, xml.StartElement{Name: xml.Name{Local: "errorFlag"}}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

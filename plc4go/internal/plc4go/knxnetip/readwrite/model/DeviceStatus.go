@@ -37,6 +37,7 @@ type IDeviceStatus interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewDeviceStatus(programMode bool) *DeviceStatus {
@@ -119,8 +120,10 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -143,8 +146,9 @@ func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 }
 
 func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

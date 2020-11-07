@@ -38,6 +38,7 @@ type IDeviceConfigurationRequestDataBlock interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *DeviceConfigurationRequestDataBlock {
@@ -152,8 +153,10 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) er
 }
 
 func (m *DeviceConfigurationRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -182,8 +185,9 @@ func (m *DeviceConfigurationRequestDataBlock) UnmarshalXML(d *xml.Decoder, start
 }
 
 func (m *DeviceConfigurationRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

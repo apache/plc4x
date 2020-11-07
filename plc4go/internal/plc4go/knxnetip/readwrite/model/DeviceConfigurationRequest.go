@@ -38,6 +38,7 @@ type IDeviceConfigurationRequest interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -141,14 +142,10 @@ func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -160,92 +157,28 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
                 }
                 m.DeviceConfigurationRequestDataBlock = data
             case "cemi":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataReq":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataCon":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawCon":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawInd":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataReq":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadCon":
-                        var dt *CEMI
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Cemi = dt
-                    }
+                var dt *CEMI
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Cemi = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.DeviceConfigurationRequestDataBlock, xml.StartElement{Name: xml.Name{Local: "deviceConfigurationRequestDataBlock"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Cemi, xml.StartElement{Name: xml.Name{Local: "cemi"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

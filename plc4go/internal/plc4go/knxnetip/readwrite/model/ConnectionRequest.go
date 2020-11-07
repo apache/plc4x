@@ -39,6 +39,7 @@ type IConnectionRequest interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,14 +160,10 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -184,31 +181,24 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
                 }
                 m.HpaiDataEndpoint = data
             case "connectionRequestInformation":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
-                        var dt *ConnectionRequestInformation
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ConnectionRequestInformation = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection":
-                        var dt *ConnectionRequestInformation
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.ConnectionRequestInformation = dt
-                    }
+                var dt *ConnectionRequestInformation
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.ConnectionRequestInformation = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.HpaiDiscoveryEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiDiscoveryEndpoint"}}); err != nil {
         return err
     }
@@ -216,9 +206,6 @@ func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
         return err
     }
     if err := e.EncodeElement(m.ConnectionRequestInformation, xml.StartElement{Name: xml.Name{Local: "connectionRequestInformation"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

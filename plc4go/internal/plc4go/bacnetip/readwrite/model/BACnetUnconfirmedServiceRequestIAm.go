@@ -50,6 +50,7 @@ type IBACnetUnconfirmedServiceRequestIAm interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -309,14 +310,10 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -364,15 +361,17 @@ func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start 
                 m.VendorId = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.ObjectType, xml.StartElement{Name: xml.Name{Local: "objectType"}}); err != nil {
         return err
     }
@@ -391,9 +390,6 @@ func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xm
         return err
     }
     if err := e.EncodeElement(m.VendorId, xml.StartElement{Name: xml.Name{Local: "vendorId"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

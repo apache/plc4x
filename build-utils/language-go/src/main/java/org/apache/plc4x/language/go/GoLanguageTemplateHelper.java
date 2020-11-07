@@ -807,6 +807,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"strconv\"");
         }
 
+        if(isDiscriminatedParentTypeDefinition()) {
+            imports.add("\"reflect\"");
+            imports.add("\"strings\"");
+        }
+
         return imports;
     }
 

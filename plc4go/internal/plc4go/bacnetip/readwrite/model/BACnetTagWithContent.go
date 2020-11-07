@@ -47,6 +47,7 @@ type IBACnetTagWithContent interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
@@ -267,8 +268,10 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -316,100 +319,20 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
                 }
                 m.PropertyIdentifier = data
             case "value":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    }
+                var dt *BACnetTag
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Value = dt
             }
         }
     }
 }
 
 func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagWithContent"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagWithContent"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

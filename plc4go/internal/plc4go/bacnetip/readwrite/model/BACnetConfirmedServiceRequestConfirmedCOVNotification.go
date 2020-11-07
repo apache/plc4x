@@ -54,6 +54,7 @@ type IBACnetConfirmedServiceRequestConfirmedCOVNotification interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -399,14 +400,10 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -466,15 +463,17 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
                 m.Notifications = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotification"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.SubscriberProcessIdentifier, xml.StartElement{Name: xml.Name{Local: "subscriberProcessIdentifier"}}); err != nil {
         return err
     }
@@ -505,9 +504,6 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xm
         return err
     }
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "notifications"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

@@ -51,6 +51,7 @@ type INPDU interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU) *NPDU {
@@ -470,8 +471,10 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -561,79 +564,26 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 }
                 m.HopCount = data
             case "nlm":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
-                        var dt *NLM
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Nlm = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
-                        var dt *NLM
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Nlm = dt
-                    }
+                var dt *NLM
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Nlm = dt
             case "apdu":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
-                        var dt *APDU
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Apdu = dt
-                    }
+                var dt *APDU
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Apdu = dt
             }
         }
     }
 }
 
 func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.bacnetip.readwrite.NPDU"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NPDU"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

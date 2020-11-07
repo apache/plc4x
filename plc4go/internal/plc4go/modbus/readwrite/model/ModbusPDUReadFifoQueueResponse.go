@@ -37,6 +37,7 @@ type IModbusPDUReadFifoQueueResponse interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -174,14 +175,10 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -194,15 +191,17 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
                 m.FifoValue = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueResponse"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
         return err
     }
@@ -210,9 +209,6 @@ func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.St
         return err
     }
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

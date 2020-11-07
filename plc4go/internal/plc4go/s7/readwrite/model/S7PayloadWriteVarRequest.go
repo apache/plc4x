@@ -37,6 +37,7 @@ type IS7PayloadWriteVarRequest interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -145,14 +146,10 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -165,15 +162,17 @@ func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
                 m.Items = data
             }
         }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
     }
 }
 
 func (m *S7PayloadWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
         return err
     }
@@ -181,9 +180,6 @@ func (m *S7PayloadWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartEle
         return err
     }
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

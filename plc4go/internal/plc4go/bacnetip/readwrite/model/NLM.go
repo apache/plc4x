@@ -23,6 +23,8 @@ import (
     "errors"
     "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "reflect"
+    "strings"
 )
 
 // The data-structure of this message
@@ -39,6 +41,7 @@ type INLM interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 type INLMParent interface {
@@ -159,8 +162,10 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 }
 
 func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -177,20 +182,50 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                     return err
                 }
                 m.VendorId = data
+                default:
+                    switch start.Attr[0].Value {
+                        case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
+                            var dt *NLMWhoIsRouterToNetwork
+                            if m.Child != nil {
+                                dt = m.Child.(*NLMWhoIsRouterToNetwork)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                        case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
+                            var dt *NLMIAmRouterToNetwork
+                            if m.Child != nil {
+                                dt = m.Child.(*NLMIAmRouterToNetwork)
+                            }
+                            if err := d.DecodeElement(&dt, &tok); err != nil {
+                                return err
+                            }
+                            dt.Parent = m
+                            m.Child = dt
+                    }
             }
         }
     }
 }
 
 func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := reflect.TypeOf(m.Child).String()
+    className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NLM"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.VendorId, xml.StartElement{Name: xml.Name{Local: "vendorId"}}); err != nil {
         return err
     }
+    marshaller, ok := m.Child.(xml.Marshaler)
+    if !ok {
+        return errors.New("child is not castable to Marshaler")
+    }
+    marshaller.MarshalXML(e, start)
     if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }

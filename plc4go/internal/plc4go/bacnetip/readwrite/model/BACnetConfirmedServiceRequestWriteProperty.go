@@ -50,6 +50,7 @@ type IBACnetConfirmedServiceRequestWriteProperty interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -320,14 +321,10 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -362,190 +359,30 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder
                 }
                 m.PropertyIdentifier = utils.ByteToInt8(_decoded[0:_len])
             case "value":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Value = dt
-                    }
+                var dt *BACnetTag
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Value = dt
             case "priority":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
-                        var dt *BACnetTag
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.Priority = dt
-                    }
+                var dt *BACnetTag
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.Priority = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWriteProperty"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.ObjectType, xml.StartElement{Name: xml.Name{Local: "objectType"}}); err != nil {
         return err
     }
@@ -564,9 +401,6 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) MarshalXML(e *xml.Encoder, 
         return err
     }
     if err := e.EncodeElement(m.Priority, xml.StartElement{Name: xml.Name{Local: "priority"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

@@ -38,6 +38,7 @@ type ITunnelingRequestDataBlock interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *TunnelingRequestDataBlock {
@@ -152,8 +153,10 @@ func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -182,8 +185,9 @@ func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Start
 }
 
 func (m *TunnelingRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }

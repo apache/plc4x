@@ -39,6 +39,7 @@ type ICEMIBusmonInd interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -175,14 +176,10 @@ func (m *CEMIBusmonInd) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
+    token = start
     for {
-        token, err := d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
         switch token.(type) {
         case xml.StartElement:
             tok := token.(xml.StartElement)
@@ -195,65 +192,31 @@ func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 m.AdditionalInformationLength = data
             case "additionalInformation":
                 var _values []*CEMIAdditionalInformation
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
-                        var dt *CEMIAdditionalInformation
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
-                        var dt *CEMIAdditionalInformation
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    }
-                    m.AdditionalInformation = _values
+                var dt *CEMIAdditionalInformation
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                _values = append(_values, dt)
+                m.AdditionalInformation = _values
             case "cemiFrame":
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameAck":
-                        var dt *CEMIFrame
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.CemiFrame = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData":
-                        var dt *CEMIFrame
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.CemiFrame = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData":
-                        var dt *CEMIFrame
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.CemiFrame = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameDataExt":
-                        var dt *CEMIFrame
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.CemiFrame = dt
-                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingDataExt":
-                        var dt *CEMIFrame
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        m.CemiFrame = dt
-                    }
+                var dt *CEMIFrame
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.CemiFrame = dt
             }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
         }
     }
 }
 
 func (m *CEMIBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd"},
-        }}); err != nil {
-        return err
-    }
     if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
         return err
     }
@@ -267,9 +230,6 @@ func (m *CEMIBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error
         return err
     }
     if err := e.EncodeElement(m.CemiFrame, xml.StartElement{Name: xml.Name{Local: "cemiFrame"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
         return err
     }
     return nil

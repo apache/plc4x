@@ -37,6 +37,7 @@ type IDIBSuppSvcFamilies interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
@@ -138,8 +139,10 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    var token xml.Token
+    var err error
     for {
-        token, err := d.Token()
+        token, err = d.Token()
         if err != nil {
             if err == io.EOF {
                 return nil
@@ -158,53 +161,21 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 m.DescriptionType = data
             case "serviceIds":
                 var _values []*ServiceId
-                switch tok.Attr[0].Value {
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteLogging":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer":
-                        var dt *ServiceId
-                        if err := d.DecodeElement(&dt, &tok); err != nil {
-                            return err
-                        }
-                        _values = append(_values, dt)
-                    }
-                    m.ServiceIds = _values
+                var dt *ServiceId
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                _values = append(_values, dt)
+                m.ServiceIds = _values
             }
         }
     }
 }
 
 func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    className := "org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies"
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies"},
+            {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
         return err
     }
