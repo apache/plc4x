@@ -181,8 +181,10 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap":
                             var dt *COTPParameterCallingTsap
                             if m.Child != nil {
@@ -191,8 +193,10 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap":
                             var dt *COTPParameterCalledTsap
                             if m.Child != nil {
@@ -201,8 +205,10 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPParameterChecksum":
                             var dt *COTPParameterChecksum
                             if m.Child != nil {
@@ -211,8 +217,10 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPParameterDisconnectAdditionalInformation":
                             var dt *COTPParameterDisconnectAdditionalInformation
                             if m.Child != nil {
@@ -221,8 +229,10 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

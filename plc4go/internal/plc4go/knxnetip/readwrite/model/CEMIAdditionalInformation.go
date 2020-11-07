@@ -159,8 +159,10 @@ func (m *CEMIAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
                             var dt *CEMIAdditionalInformationRelativeTimestamp
                             if m.Child != nil {
@@ -169,8 +171,10 @@ func (m *CEMIAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

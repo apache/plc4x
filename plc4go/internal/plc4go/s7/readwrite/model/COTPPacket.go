@@ -259,8 +259,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest":
                             var dt *COTPPacketConnectionRequest
                             if m.Child != nil {
@@ -269,8 +271,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse":
                             var dt *COTPPacketConnectionResponse
                             if m.Child != nil {
@@ -279,8 +283,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest":
                             var dt *COTPPacketDisconnectRequest
                             if m.Child != nil {
@@ -289,8 +295,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse":
                             var dt *COTPPacketDisconnectResponse
                             if m.Child != nil {
@@ -299,8 +307,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError":
                             var dt *COTPPacketTpduError
                             if m.Child != nil {
@@ -309,8 +319,10 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

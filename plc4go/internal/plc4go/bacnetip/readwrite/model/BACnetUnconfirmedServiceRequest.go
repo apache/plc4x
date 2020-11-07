@@ -179,8 +179,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave":
                             var dt *BACnetUnconfirmedServiceRequestIHave
                             if m.Child != nil {
@@ -189,8 +191,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification":
                             var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
                             if m.Child != nil {
@@ -199,8 +203,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification":
                             var dt *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
                             if m.Child != nil {
@@ -209,8 +215,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer":
                             var dt *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
                             if m.Child != nil {
@@ -219,8 +227,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage":
                             var dt *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
                             if m.Child != nil {
@@ -229,8 +239,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization":
                             var dt *BACnetUnconfirmedServiceRequestTimeSynchronization
                             if m.Child != nil {
@@ -239,8 +251,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas":
                             var dt *BACnetUnconfirmedServiceRequestWhoHas
                             if m.Child != nil {
@@ -249,8 +263,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs":
                             var dt *BACnetUnconfirmedServiceRequestWhoIs
                             if m.Child != nil {
@@ -259,8 +275,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization":
                             var dt *BACnetUnconfirmedServiceRequestUTCTimeSynchronization
                             if m.Child != nil {
@@ -269,8 +287,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup":
                             var dt *BACnetUnconfirmedServiceRequestWriteGroup
                             if m.Child != nil {
@@ -279,8 +299,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple":
                             var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
                             if m.Child != nil {
@@ -289,8 +311,10 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

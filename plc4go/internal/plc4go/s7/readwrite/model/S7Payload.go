@@ -148,8 +148,10 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
                             var dt *S7PayloadWriteVarRequest
                             if m.Child != nil {
@@ -158,8 +160,10 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
                             var dt *S7PayloadWriteVarResponse
                             if m.Child != nil {
@@ -168,8 +172,10 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
                             var dt *S7PayloadUserData
                             if m.Child != nil {
@@ -178,8 +184,10 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

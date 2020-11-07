@@ -171,8 +171,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
                             var dt *APDUUnconfirmedRequest
                             if m.Child != nil {
@@ -181,8 +183,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
                             var dt *APDUSimpleAck
                             if m.Child != nil {
@@ -191,8 +195,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
                             var dt *APDUComplexAck
                             if m.Child != nil {
@@ -201,8 +207,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
                             var dt *APDUSegmentAck
                             if m.Child != nil {
@@ -211,8 +219,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
                             var dt *APDUError
                             if m.Child != nil {
@@ -221,8 +231,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
                             var dt *APDUReject
                             if m.Child != nil {
@@ -231,8 +243,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
                             var dt *APDUAbort
                             if m.Child != nil {
@@ -241,8 +255,10 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

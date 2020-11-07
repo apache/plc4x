@@ -183,8 +183,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKGetEnrollmentSummary":
                             var dt *BACnetConfirmedServiceACKGetEnrollmentSummary
                             if m.Child != nil {
@@ -193,8 +195,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKGetEventInformation":
                             var dt *BACnetConfirmedServiceACKGetEventInformation
                             if m.Child != nil {
@@ -203,8 +207,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKAtomicReadFile":
                             var dt *BACnetConfirmedServiceACKAtomicReadFile
                             if m.Child != nil {
@@ -213,8 +219,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKAtomicWriteFile":
                             var dt *BACnetConfirmedServiceACKAtomicWriteFile
                             if m.Child != nil {
@@ -223,8 +231,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKCreateObject":
                             var dt *BACnetConfirmedServiceACKCreateObject
                             if m.Child != nil {
@@ -233,8 +243,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKReadProperty":
                             var dt *BACnetConfirmedServiceACKReadProperty
                             if m.Child != nil {
@@ -243,8 +255,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKReadPropertyMultiple":
                             var dt *BACnetConfirmedServiceACKReadPropertyMultiple
                             if m.Child != nil {
@@ -253,8 +267,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKReadRange":
                             var dt *BACnetConfirmedServiceACKReadRange
                             if m.Child != nil {
@@ -263,8 +279,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKConfirmedPrivateTransfer":
                             var dt *BACnetConfirmedServiceACKConfirmedPrivateTransfer
                             if m.Child != nil {
@@ -273,8 +291,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKVTOpen":
                             var dt *BACnetConfirmedServiceACKVTOpen
                             if m.Child != nil {
@@ -283,8 +303,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKVTData":
                             var dt *BACnetConfirmedServiceACKVTData
                             if m.Child != nil {
@@ -293,8 +315,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKRemovedAuthenticate":
                             var dt *BACnetConfirmedServiceACKRemovedAuthenticate
                             if m.Child != nil {
@@ -303,8 +327,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceACKRemovedReadPropertyConditional":
                             var dt *BACnetConfirmedServiceACKRemovedReadPropertyConditional
                             if m.Child != nil {
@@ -313,8 +339,10 @@ func (m *BACnetConfirmedServiceACK) UnmarshalXML(d *xml.Decoder, start xml.Start
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

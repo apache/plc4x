@@ -192,8 +192,10 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
                             var dt *NLMIAmRouterToNetwork
                             if m.Child != nil {
@@ -202,8 +204,10 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

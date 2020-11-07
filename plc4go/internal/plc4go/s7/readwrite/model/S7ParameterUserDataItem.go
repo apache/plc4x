@@ -157,8 +157,10 @@ func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

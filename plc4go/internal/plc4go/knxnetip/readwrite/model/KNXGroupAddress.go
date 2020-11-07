@@ -145,8 +145,10 @@ func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level":
                             var dt *KNXGroupAddress2Level
                             if m.Child != nil {
@@ -155,8 +157,10 @@ func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level":
                             var dt *KNXGroupAddress3Level
                             if m.Child != nil {
@@ -165,8 +169,10 @@ func (m *KNXGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

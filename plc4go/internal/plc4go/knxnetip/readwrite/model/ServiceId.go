@@ -167,8 +167,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement":
                             var dt *KnxNetIpDeviceManagement
                             if m.Child != nil {
@@ -177,8 +179,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling":
                             var dt *KnxNetIpTunneling
                             if m.Child != nil {
@@ -187,8 +191,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteLogging":
                             var dt *KnxNetRemoteLogging
                             if m.Child != nil {
@@ -197,8 +203,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis":
                             var dt *KnxNetRemoteConfigurationAndDiagnosis
                             if m.Child != nil {
@@ -207,8 +215,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer":
                             var dt *KnxNetObjectServer
                             if m.Child != nil {
@@ -217,8 +227,10 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

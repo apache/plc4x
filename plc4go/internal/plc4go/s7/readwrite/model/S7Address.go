@@ -157,8 +157,10 @@ func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }
