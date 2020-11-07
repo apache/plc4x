@@ -946,8 +946,10 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
                 <#if helper.isArrayField(field)>
                             _values = append(_values, dt)
                 <#else>
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                 </#if>
             </#list>
                     }

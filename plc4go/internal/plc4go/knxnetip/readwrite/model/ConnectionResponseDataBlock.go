@@ -175,8 +175,10 @@ func (m *ConnectionResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Sta
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection":
                             var dt *ConnectionResponseDataBlockTunnelConnection
                             if m.Child != nil {
@@ -185,8 +187,10 @@ func (m *ConnectionResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Sta
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

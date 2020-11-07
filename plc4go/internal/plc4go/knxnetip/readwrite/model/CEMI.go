@@ -177,8 +177,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataCon":
                             var dt *CEMIDataCon
                             if m.Child != nil {
@@ -187,8 +189,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataInd":
                             var dt *CEMIDataInd
                             if m.Child != nil {
@@ -197,8 +201,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawReq":
                             var dt *CEMIRawReq
                             if m.Child != nil {
@@ -207,8 +213,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawCon":
                             var dt *CEMIRawCon
                             if m.Child != nil {
@@ -217,8 +225,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIRawInd":
                             var dt *CEMIRawInd
                             if m.Child != nil {
@@ -227,8 +237,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataReq":
                             var dt *CEMIPollDataReq
                             if m.Child != nil {
@@ -237,8 +249,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIPollDataCon":
                             var dt *CEMIPollDataCon
                             if m.Child != nil {
@@ -247,8 +261,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd":
                             var dt *CEMIBusmonInd
                             if m.Child != nil {
@@ -257,8 +273,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq":
                             var dt *CEMIMPropReadReq
                             if m.Child != nil {
@@ -267,8 +285,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadCon":
                             var dt *CEMIMPropReadCon
                             if m.Child != nil {
@@ -277,8 +297,10 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

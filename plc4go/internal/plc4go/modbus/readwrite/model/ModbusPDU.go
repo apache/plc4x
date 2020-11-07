@@ -251,8 +251,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest":
                             var dt *ModbusPDUReadDiscreteInputsRequest
                             if m.Child != nil {
@@ -261,8 +263,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsResponse":
                             var dt *ModbusPDUReadDiscreteInputsResponse
                             if m.Child != nil {
@@ -271,8 +275,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsRequest":
                             var dt *ModbusPDUReadCoilsRequest
                             if m.Child != nil {
@@ -281,8 +287,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadCoilsResponse":
                             var dt *ModbusPDUReadCoilsResponse
                             if m.Child != nil {
@@ -291,8 +299,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleCoilRequest":
                             var dt *ModbusPDUWriteSingleCoilRequest
                             if m.Child != nil {
@@ -301,8 +311,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleCoilResponse":
                             var dt *ModbusPDUWriteSingleCoilResponse
                             if m.Child != nil {
@@ -311,8 +323,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest":
                             var dt *ModbusPDUWriteMultipleCoilsRequest
                             if m.Child != nil {
@@ -321,8 +335,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleCoilsResponse":
                             var dt *ModbusPDUWriteMultipleCoilsResponse
                             if m.Child != nil {
@@ -331,8 +347,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersRequest":
                             var dt *ModbusPDUReadInputRegistersRequest
                             if m.Child != nil {
@@ -341,8 +359,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersResponse":
                             var dt *ModbusPDUReadInputRegistersResponse
                             if m.Child != nil {
@@ -351,8 +371,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest":
                             var dt *ModbusPDUReadHoldingRegistersRequest
                             if m.Child != nil {
@@ -361,8 +383,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse":
                             var dt *ModbusPDUReadHoldingRegistersResponse
                             if m.Child != nil {
@@ -371,8 +395,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterRequest":
                             var dt *ModbusPDUWriteSingleRegisterRequest
                             if m.Child != nil {
@@ -381,8 +407,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteSingleRegisterResponse":
                             var dt *ModbusPDUWriteSingleRegisterResponse
                             if m.Child != nil {
@@ -391,8 +419,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest":
                             var dt *ModbusPDUWriteMultipleHoldingRegistersRequest
                             if m.Child != nil {
@@ -401,8 +431,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse":
                             var dt *ModbusPDUWriteMultipleHoldingRegistersResponse
                             if m.Child != nil {
@@ -411,8 +443,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersRequest":
                             var dt *ModbusPDUReadWriteMultipleHoldingRegistersRequest
                             if m.Child != nil {
@@ -421,8 +455,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse":
                             var dt *ModbusPDUReadWriteMultipleHoldingRegistersResponse
                             if m.Child != nil {
@@ -431,8 +467,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterRequest":
                             var dt *ModbusPDUMaskWriteHoldingRegisterRequest
                             if m.Child != nil {
@@ -441,8 +479,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterResponse":
                             var dt *ModbusPDUMaskWriteHoldingRegisterResponse
                             if m.Child != nil {
@@ -451,8 +491,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueRequest":
                             var dt *ModbusPDUReadFifoQueueRequest
                             if m.Child != nil {
@@ -461,8 +503,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFifoQueueResponse":
                             var dt *ModbusPDUReadFifoQueueResponse
                             if m.Child != nil {
@@ -471,8 +515,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequest":
                             var dt *ModbusPDUReadFileRecordRequest
                             if m.Child != nil {
@@ -481,8 +527,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponse":
                             var dt *ModbusPDUReadFileRecordResponse
                             if m.Child != nil {
@@ -491,8 +539,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequest":
                             var dt *ModbusPDUWriteFileRecordRequest
                             if m.Child != nil {
@@ -501,8 +551,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordResponse":
                             var dt *ModbusPDUWriteFileRecordResponse
                             if m.Child != nil {
@@ -511,8 +563,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusRequest":
                             var dt *ModbusPDUReadExceptionStatusRequest
                             if m.Child != nil {
@@ -521,8 +575,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusResponse":
                             var dt *ModbusPDUReadExceptionStatusResponse
                             if m.Child != nil {
@@ -531,8 +587,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUDiagnosticRequest":
                             var dt *ModbusPDUDiagnosticRequest
                             if m.Child != nil {
@@ -541,8 +599,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUDiagnosticResponse":
                             var dt *ModbusPDUDiagnosticResponse
                             if m.Child != nil {
@@ -551,8 +611,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterRequest":
                             var dt *ModbusPDUGetComEventCounterRequest
                             if m.Child != nil {
@@ -561,8 +623,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterResponse":
                             var dt *ModbusPDUGetComEventCounterResponse
                             if m.Child != nil {
@@ -571,8 +635,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogRequest":
                             var dt *ModbusPDUGetComEventLogRequest
                             if m.Child != nil {
@@ -581,8 +647,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogResponse":
                             var dt *ModbusPDUGetComEventLogResponse
                             if m.Child != nil {
@@ -591,8 +659,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdRequest":
                             var dt *ModbusPDUReportServerIdRequest
                             if m.Child != nil {
@@ -601,8 +671,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdResponse":
                             var dt *ModbusPDUReportServerIdResponse
                             if m.Child != nil {
@@ -611,8 +683,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest":
                             var dt *ModbusPDUReadDeviceIdentificationRequest
                             if m.Child != nil {
@@ -621,8 +695,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse":
                             var dt *ModbusPDUReadDeviceIdentificationResponse
                             if m.Child != nil {
@@ -631,8 +707,10 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

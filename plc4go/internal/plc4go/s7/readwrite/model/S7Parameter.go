@@ -168,8 +168,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
                             var dt *S7ParameterReadVarRequest
                             if m.Child != nil {
@@ -178,8 +180,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
                             var dt *S7ParameterReadVarResponse
                             if m.Child != nil {
@@ -188,8 +192,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
                             var dt *S7ParameterWriteVarRequest
                             if m.Child != nil {
@@ -198,8 +204,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
                             var dt *S7ParameterWriteVarResponse
                             if m.Child != nil {
@@ -208,8 +216,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
                             var dt *S7ParameterUserData
                             if m.Child != nil {
@@ -218,8 +228,10 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }

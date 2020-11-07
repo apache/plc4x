@@ -241,8 +241,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.SearchResponse":
                             var dt *SearchResponse
                             if m.Child != nil {
@@ -251,8 +253,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DescriptionRequest":
                             var dt *DescriptionRequest
                             if m.Child != nil {
@@ -261,8 +265,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse":
                             var dt *DescriptionResponse
                             if m.Child != nil {
@@ -271,8 +277,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest":
                             var dt *ConnectionRequest
                             if m.Child != nil {
@@ -281,8 +289,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse":
                             var dt *ConnectionResponse
                             if m.Child != nil {
@@ -291,8 +301,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest":
                             var dt *ConnectionStateRequest
                             if m.Child != nil {
@@ -301,8 +313,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse":
                             var dt *ConnectionStateResponse
                             if m.Child != nil {
@@ -311,8 +325,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DisconnectRequest":
                             var dt *DisconnectRequest
                             if m.Child != nil {
@@ -321,8 +337,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DisconnectResponse":
                             var dt *DisconnectResponse
                             if m.Child != nil {
@@ -331,8 +349,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.UnknownMessage":
                             var dt *UnknownMessage
                             if m.Child != nil {
@@ -341,8 +361,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest":
                             var dt *DeviceConfigurationRequest
                             if m.Child != nil {
@@ -351,8 +373,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAck":
                             var dt *DeviceConfigurationAck
                             if m.Child != nil {
@@ -361,8 +385,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest":
                             var dt *TunnelingRequest
                             if m.Child != nil {
@@ -371,8 +397,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponse":
                             var dt *TunnelingResponse
                             if m.Child != nil {
@@ -381,8 +409,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                         case "org.apache.plc4x.java.knxnetip.readwrite.RoutingIndication":
                             var dt *RoutingIndication
                             if m.Child != nil {
@@ -391,8 +421,10 @@ func (m *KNXNetIPMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
                             }
-                            dt.Parent = m
-                            m.Child = dt
+                            if m.Child == nil {
+                                dt.Parent = m
+                                m.Child = dt
+                            }
                     }
             }
         }
