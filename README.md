@@ -249,7 +249,7 @@ Join the PLC4X community by using one of the following channels. We'll be glad t
 
 Subscribe to the following mailing lists: 
 * Apache PLC4X Developer List: [dev-subscribe@plc4x.apache.org](mailto:dev-subscribe@plc4x.apache.org)
-* Apache PLC4X Commits List: [commit-subscribe@plc4x.apache.org](mailto:commit-subscribe@plc4x.apache.org)
+* Apache PLC4X Commits List: [commits-subscribe@plc4x.apache.org](mailto:commits-subscribe@plc4x.apache.org)
 * Apache PLC4X Jira Notification List: [issues-subscribe@plc4x.apache.org](mailto:issues-subscribe@plc4x.apache.org)
 
 See also: [https://plc4x.apache.org/mailing-lists.html](https://plc4x.apache.org/mailing-lists.html)

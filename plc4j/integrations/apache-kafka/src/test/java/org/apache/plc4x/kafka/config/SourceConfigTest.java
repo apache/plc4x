@@ -39,6 +39,8 @@ public class SourceConfigTest {
             "\n" +
             "sources=machineA,machineB,machineC\n" +
             "sources.machineA.connectionString=s7://1.2.3.4/1/1\n" +
+            "sources.machineA.pollReturnInterval=5000\n" +
+            "sources.machineA.bufferSize=1000\n" +
             "sources.machineA.jobReferences=s7-dashboard,s7-heartbeat\n" +
             "sources.machineA.jobReferences.s7-heartbeat.topic=heartbeat\n" +
             "\n" +
