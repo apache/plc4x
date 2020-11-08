@@ -19,8 +19,8 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
     "time"
 )
 

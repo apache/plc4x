@@ -19,7 +19,7 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
 )
 
 type ReadRequestInterceptor interface {

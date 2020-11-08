@@ -18,24 +18,33 @@
 //
 package knxnetip
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
+import (
+    "errors"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    model2 "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+)
+
+type KnxNetIpField interface {
+     model2.PlcField
+}
 
 type KnxNetIpGroupAddress3LevelPlcField struct {
-    FieldType   model.KnxDatapointType
+    FieldType   *model.KnxDatapointType
     // 5 Bits: Values 0-31
     MainGroup   string
     // 3 Bits: values 0-7
     MiddleGroup string
     // 8 Bits
     SubGroup    string
+    KnxNetIpField
 }
 
-func NewKnxNetIpGroupAddress3LevelPlcField(FieldType model.KnxDatapointType, MainGroup string, MiddleGroup string, SubGroup string) KnxNetIpGroupAddress3LevelPlcField {
+func NewKnxNetIpGroupAddress3LevelPlcField(fieldType *model.KnxDatapointType, mainGroup string, middleGroup string, subGroup string) KnxNetIpGroupAddress3LevelPlcField {
     return KnxNetIpGroupAddress3LevelPlcField{
-        FieldType:   FieldType,
-        MainGroup:   MainGroup,
-        MiddleGroup: MiddleGroup,
-        SubGroup:    SubGroup,
+        FieldType:   fieldType,
+        MainGroup:   mainGroup,
+        MiddleGroup: middleGroup,
+        SubGroup:    subGroup,
     }
 }
 
@@ -48,18 +57,19 @@ func (k KnxNetIpGroupAddress3LevelPlcField) GetQuantity() uint16 {
 }
 
 type KnxNetIpGroupAddress2LevelPlcField struct {
-    FieldType   model.KnxDatapointType
+    FieldType   *model.KnxDatapointType
     // 5 Bits: Values 0-31
     MainGroup   string
     // 11 Bits
     SubGroup    string
+    KnxNetIpField
 }
 
-func NewKnxNetIpGroupAddress2LevelPlcField(FieldType model.KnxDatapointType, MainGroup string, SubGroup string) KnxNetIpGroupAddress2LevelPlcField {
+func NewKnxNetIpGroupAddress2LevelPlcField(fieldType *model.KnxDatapointType, mainGroup string, subGroup string) KnxNetIpGroupAddress2LevelPlcField {
     return KnxNetIpGroupAddress2LevelPlcField{
-        FieldType:   FieldType,
-        MainGroup:   MainGroup,
-        SubGroup:    SubGroup,
+        FieldType:   fieldType,
+        MainGroup:   mainGroup,
+        SubGroup:    subGroup,
     }
 }
 
@@ -72,15 +82,16 @@ func (k KnxNetIpGroupAddress2LevelPlcField) GetQuantity() uint16 {
 }
 
 type KnxNetIpGroupAddress1LevelPlcField struct {
-    FieldType   model.KnxDatapointType
+    FieldType   *model.KnxDatapointType
     // 16 Bits
     MainGroup   string
+    KnxNetIpField
 }
 
-func NewKnxNetIpGroupAddress1LevelPlcField(FieldType model.KnxDatapointType, MainGroup string) KnxNetIpGroupAddress1LevelPlcField {
+func NewKnxNetIpGroupAddress1LevelPlcField(fieldType *model.KnxDatapointType, mainGroup string) KnxNetIpGroupAddress1LevelPlcField {
     return KnxNetIpGroupAddress1LevelPlcField{
-        FieldType:   FieldType,
-        MainGroup:   MainGroup,
+        FieldType:   fieldType,
+        MainGroup:   mainGroup,
     }
 }
 
@@ -90,4 +101,11 @@ func (k KnxNetIpGroupAddress1LevelPlcField) GetTypeName() string {
 
 func (k KnxNetIpGroupAddress1LevelPlcField) GetQuantity() uint16 {
     return 1
+}
+
+func CastToKnxNetIpFieldFromPlcField(plcField model2.PlcField) (KnxNetIpField, error) {
+    if knxNetIpField, ok := plcField.(KnxNetIpField); ok {
+        return knxNetIpField, nil
+    }
+    return nil, errors.New("couldn't cast to KnxNetIpField")
 }

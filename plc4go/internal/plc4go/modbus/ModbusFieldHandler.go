@@ -20,9 +20,9 @@ package modbus
 
 import (
 	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
 	"regexp"
 )
 

@@ -21,8 +21,8 @@ package model
 import (
     "encoding/xml"
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
 )
 
 type KnxnetipXmlParserHelper struct {
@@ -51,6 +51,13 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
+    case "KnxAddress":
+        var obj *model.KnxAddress
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
     case "ConnectionResponseDataBlock":
         var obj *model.ConnectionResponseDataBlock
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -60,13 +67,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
         return obj, nil
     case "TunnelingRequestDataBlock":
         var obj *model.TunnelingRequestDataBlock
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "KNXGroupAddress":
-        var obj *model.KNXGroupAddress
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
@@ -121,13 +121,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "KNXAddress":
-        var obj *model.KNXAddress
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "CEMIDataFrame":
         var obj *model.CEMIDataFrame
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -137,13 +130,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
         return obj, nil
     case "ServiceId":
         var obj *model.ServiceId
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "KNXNetIPMessage":
-        var obj *model.KNXNetIPMessage
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
@@ -170,8 +156,22 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
+    case "KnxGroupAddress":
+        var obj *model.KnxGroupAddress
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
     case "MACAddress":
         var obj *model.MACAddress
+        err := xml.Unmarshal([]byte(xmlString), &obj)
+        if err != nil {
+            return nil, errors.New("error unmarshalling xml: " + err.Error())
+        }
+        return obj, nil
+    case "KnxNetIpMessage":
+        var obj *model.KnxNetIpMessage
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())

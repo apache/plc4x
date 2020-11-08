@@ -21,9 +21,9 @@ package knxnetip
 import (
     "errors"
 	"fmt"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 	"time"
 )
 
@@ -51,7 +51,11 @@ func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, def
 }
 
 func (m *KnxNetIpMessageCodec) Connect() error {
-	return m.transportInstance.Connect()
+	// "connect" to the remote UDP server
+    err := m.transportInstance.Connect()
+	
+
+	return err
 }
 
 func (m *KnxNetIpMessageCodec) Disconnect() error {
@@ -60,10 +64,10 @@ func (m *KnxNetIpMessageCodec) Disconnect() error {
 
 func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
-	knxMessage := model.CastKNXNetIPMessage(message)
+	knxMessage := model.CastKnxNetIpMessage(message)
 	// Serialize the request
 	wb := utils.NewWriteBuffer()
-	err := model.KNXNetIPMessageSerialize(*wb)
+	err := knxMessage.Serialize(*wb)
 	if err != nil {
 		return errors.New("error serializing request " + err.Error())
 	}
@@ -76,7 +80,7 @@ func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *ModbusMessageCodec) Receive() (interface{}, error) {
+func (m *KnxNetIpMessageCodec) Receive() (interface{}, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		data, err := m.transportInstance.PeekReadableBytes(6)
@@ -93,7 +97,7 @@ func (m *ModbusMessageCodec) Receive() (interface{}, error) {
 				return nil, nil
 			}
 			rb := utils.NewReadBuffer(data)
-			adu, err := model.ModbusTcpADUParse(rb, true)
+			adu, err := model.KnxNetIpMessageParse(rb)
 			if err != nil {
 				// TODO: Possibly clean up ...
 				return nil, nil
@@ -104,9 +108,9 @@ func (m *ModbusMessageCodec) Receive() (interface{}, error) {
 	return nil, nil
 }
 
-func (m *ModbusMessageCodec) Expect(check func(interface{}) bool) chan interface{} {
+func (m *KnxNetIpMessageCodec) Expect(check func(interface{}) bool) chan interface{} {
 	responseChanel := make(chan interface{})
-	expectation := ModbusExpectation{
+	expectation := KnxNetIpExpectation{
 		timestamp:       time.Now(),
 		check:           check,
 		responseChannel: responseChanel,
@@ -115,14 +119,14 @@ func (m *ModbusMessageCodec) Expect(check func(interface{}) bool) chan interface
 	return responseChanel
 }
 
-func work(codec *ModbusMessageCodec) {
+func work(codec *KnxNetIpMessageCodec) {
 	// Start an endless loop
 	// TODO: Provide some means to terminate this ...
 	for {
 		if len(codec.expectations) > 0 {
 			message, err := codec.Receive()
 			if err != nil {
-				fmt.Errorf("got an error reading from transport %s", err.Error())
+				fmt.Printf("got an error reading from transport %s", err.Error())
 			} else if message != nil {
 				messageHandled := false
 				// Go through all expectations
@@ -153,6 +157,6 @@ func work(codec *ModbusMessageCodec) {
 	}
 }
 
-func (m ModbusMessageCodec) GetTransportInstance() transports.TransportInstance {
+func (m KnxNetIpMessageCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }

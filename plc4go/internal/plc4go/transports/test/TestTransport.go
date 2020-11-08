@@ -21,7 +21,7 @@ package test
 import (
 	"errors"
 	"net/url"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
 )
 
 type TestTransport struct {

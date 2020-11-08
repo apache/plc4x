@@ -19,7 +19,7 @@
 package modbus
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/model/values"
 )
 
 type ValueHandler struct {

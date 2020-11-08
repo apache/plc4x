@@ -20,9 +20,9 @@ package model
 
 import (
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 )
 
 type KnxnetipParserHelper struct {
@@ -36,16 +36,12 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.HPAIControlEndpointParse(io)
     case "TunnelingResponseDataBlock":
         return model.TunnelingResponseDataBlockParse(io)
+    case "KnxAddress":
+        return model.KnxAddressParse(io)
     case "ConnectionResponseDataBlock":
         return model.ConnectionResponseDataBlockParse(io)
     case "TunnelingRequestDataBlock":
         return model.TunnelingRequestDataBlockParse(io)
-    case "KNXGroupAddress":
-        numLevels, err := utils.StrToUint8(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.KNXGroupAddressParse(io, numLevels)
     case "DIBDeviceInfo":
         return model.DIBDeviceInfoParse(io)
     case "DeviceConfigurationRequestDataBlock":
@@ -60,14 +56,10 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.HPAIDiscoveryEndpointParse(io)
     case "ProjectInstallationIdentifier":
         return model.ProjectInstallationIdentifierParse(io)
-    case "KNXAddress":
-        return model.KNXAddressParse(io)
     case "CEMIDataFrame":
         return model.CEMIDataFrameParse(io)
     case "ServiceId":
         return model.ServiceIdParse(io)
-    case "KNXNetIPMessage":
-        return model.KNXNetIPMessageParse(io)
     case "HPAIDataEndpoint":
         return model.HPAIDataEndpointParse(io)
     case "RelativeTimestamp":
@@ -78,8 +70,16 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
             return nil, err
         }
         return model.CEMIParse(io, size)
+    case "KnxGroupAddress":
+        numLevels, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.KnxGroupAddressParse(io, numLevels)
     case "MACAddress":
         return model.MACAddressParse(io)
+    case "KnxNetIpMessage":
+        return model.KnxNetIpMessageParse(io)
     case "CEMIFrame":
         return model.CEMIFrameParse(io)
     case "DeviceStatus":

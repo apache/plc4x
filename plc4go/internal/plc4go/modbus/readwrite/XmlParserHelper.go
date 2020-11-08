@@ -21,8 +21,8 @@ package model
 import (
     "encoding/xml"
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/modbus/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
 )
 
 type ModbusXmlParserHelper struct {

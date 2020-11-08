@@ -18,7 +18,7 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+import "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
 
 type PlcReadResponse interface {
 	GetRequest() PlcReadRequest

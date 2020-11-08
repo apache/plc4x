@@ -18,7 +18,7 @@
 //
 package spi
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+import "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
 
 type PlcWriter interface {
 	Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult

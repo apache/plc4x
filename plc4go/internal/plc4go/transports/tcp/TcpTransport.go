@@ -23,8 +23,8 @@ import (
     "errors"
     "net"
     "net/url"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
     "regexp"
     "strconv"
 )
@@ -46,7 +46,7 @@ func (m TcpTransport) GetTransportName() string {
 }
 
 func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-    connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9\.\-]+))(:(?P<port>[0-9]{1,5}))?`)
+    connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
     var address string
     var port uint32
     if match := utils.GetSubgropMatches(connectionStringRegexp, transportUrl.Host); match != nil {
@@ -126,17 +126,6 @@ func (m *TcpTransportInstance) Connect() error {
     }
 
     m.reader = bufio.NewReader(m.tcpConn)
-/*    go func() {
-        for {
-            buf := make([]byte, 512)
-            numBytes, err := m.tcpConn.Read(buf)
-            if err != nil {
-                fmt.Errorf("error reading: %s", err.Error())
-            } else if numBytes > 0 {
-                m.readBuffer.Write(buf[:numBytes])
-            }
-        }
-    }()*/
 
     return nil
 }
@@ -153,7 +142,7 @@ func (m *TcpTransportInstance) Close() error {
 
 func (m *TcpTransportInstance) GetNumReadableBytes() (uint32, error) {
     if m.reader != nil {
-        m.reader.Peek(1)
+        _, _ = m.reader.Peek(1)
         return uint32(m.reader.Buffered()), nil
     }
     return 0, errors.New("error getting number of available bytes from transport. No reader available")

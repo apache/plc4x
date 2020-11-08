@@ -22,7 +22,7 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
     "strconv"
     "reflect"
     "strings"
