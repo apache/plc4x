@@ -19,20 +19,24 @@
 package drivers
 
 import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-	"testing"
+    "encoding/hex"
+    "fmt"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports/udp"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/pkg/plc4go"
+    "testing"
 )
 
-func TestKnxNetIp(t *testing.T) {
+func KnxNetIp(t *testing.T) {
 	t.Skip()
 	request, err := hex.DecodeString("000a00000006010300000004")
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
 	rb := utils.NewReadBuffer(request)
-	adu, err := model.KNXNetIPMessageParse(rb)
+	adu, err := model.KnxNetIpMessageParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)
 	}
@@ -41,3 +45,87 @@ func TestKnxNetIp(t *testing.T) {
 	}
 
 }
+
+func TestKnxNetIpPlc4goDriver(t *testing.T) {
+    driverManager := plc4go.NewPlcDriverManager()
+    driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+    driverManager.RegisterTransport(udp.NewUdpTransport())
+
+    // Get a connection to a remote PLC
+    crc := driverManager.GetConnection("knxnet-ip://192.168.42.11")
+
+    // Wait for the driver to connect (or not)
+    connectionResult := <-crc
+    if connectionResult.Err != nil {
+        t.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
+    }
+    connection := connectionResult.Connection
+
+    // Try to ping the remote device
+    pingResultChannel := connection.Ping()
+    pingResult := <-pingResultChannel
+    if pingResult.Err != nil {
+        t.Errorf("couldn't ping device: %s", pingResult.Err.Error())
+        t.Fail()
+        return
+    }
+
+    // Make sure the connection is closed at the end
+    defer connection.Close()
+
+    // Prepare a read-request
+    rrb := connection.ReadRequestBuilder()
+    rrb.AddItem("field1", "holding-register:1:REAL")
+    rrb.AddItem("field2", "holding-register:3:REAL")
+    readRequest, err := rrb.Build()
+    if err != nil {
+        t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
+    }
+
+    // Execute a read-request
+    rrc := readRequest.Execute()
+
+    // Wait for the response to finish
+    rrr := <-rrc
+    if rrr.Err != nil {
+        t.Errorf("error executing read-request: %s", rrr.Err.Error())
+        t.Fail()
+        return
+    }
+
+    // Do something with the response
+    value1 := rrr.Response.GetValue("field1")
+    value2 := rrr.Response.GetValue("field2")
+    fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
+    fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+
+    // Prepare a write-request
+    wrb := connection.WriteRequestBuilder()
+    wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
+    wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
+    writeRequest, err := rrb.Build()
+    if err != nil {
+        t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
+    }
+
+    // Execute a write-request
+    wrc := writeRequest.Execute()
+
+    // Wait for the response to finish
+    wrr := <-wrc
+    if wrr.Err != nil {
+        t.Errorf("error executing read-request: %s", rrr.Err.Error())
+        t.Fail()
+        return
+    }
+
+    fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
+    fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))
+}
+

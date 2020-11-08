@@ -18,7 +18,7 @@
 //
 package spi
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+import "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 
 type Message interface {
 	LengthInBytes() uint16

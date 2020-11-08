@@ -21,7 +21,7 @@ package read
 import (
 	"encoding/json"
 	"fmt"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go"
 )
 
 func main() int {
@@ -31,7 +31,7 @@ func main() int {
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
-		_ = fmt.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
 		return 1
 	}
 	connection := connectionResult.Connection
@@ -44,7 +44,7 @@ func main() int {
 	rrb.AddItem("field", "holding-register:1:REAL[2]")
 	readRequest, err := rrb.Build()
 	if err != nil {
-		_ = fmt.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+        fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return 2
 	}
 
@@ -54,14 +54,14 @@ func main() int {
 	// Wait for the response to finish
 	rrr := <-rrc
 	if rrr.Err != nil {
-		_ = fmt.Errorf("error executing read-request: %s", rrr.Err.Error())
+        fmt.Printf("error executing read-request: %s", rrr.Err.Error())
 		return 3
 	}
 
 	// Do something with the response
 	readResponseJson, err := json.Marshal(rrr.Response)
 	if err != nil {
-		_ = fmt.Errorf("error serializing read-response: %s", err.Error())
+        fmt.Printf("error serializing read-response: %s", err.Error())
 		return 4
 	}
 	fmt.Printf("Result: %s\n", string(readResponseJson))

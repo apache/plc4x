@@ -20,8 +20,8 @@ package drivers
 
 import (
 	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/bacnetip/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/bacnetip/readwrite/model"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 	"testing"
 )
 

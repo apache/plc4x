@@ -18,7 +18,7 @@
 //
 package s7
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+import "plc4x.apache.org/plc4go/v0/pkg/plc4go"
 
 func NewS7Driver() plc4go.PlcDriver {
 	return nil

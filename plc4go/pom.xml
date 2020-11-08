@@ -182,7 +182,7 @@
         </executions>
         <configuration>
           <packages>
-            <package>plc4x.apache.org/plc4go-modbus-driver/v0/cmd/main</package>
+            <package>plc4x.apache.org/plc4go/v0/cmd/main</package>
           </packages>
           <sources>${project.basedir}</sources>
         </configuration>

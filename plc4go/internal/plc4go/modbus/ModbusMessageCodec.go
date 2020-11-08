@@ -21,9 +21,9 @@ package modbus
 import (
 	"errors"
 	"fmt"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/modbus/readwrite/model"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 	"time"
 )
 
@@ -122,7 +122,7 @@ func work(codec *ModbusMessageCodec) {
 		if len(codec.expectations) > 0 {
 			message, err := codec.Receive()
 			if err != nil {
-				fmt.Errorf("got an error reading from transport %s", err.Error())
+				fmt.Printf("got an error reading from transport %s", err.Error())
 			} else if message != nil {
 				messageHandled := false
 				// Go through all expectations

@@ -20,10 +20,10 @@ package knxnetip
 
 import (
     "errors"
-    model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+    model2 "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
     "regexp"
 )
 
@@ -63,21 +63,21 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
         if ok {
             fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
         }
-        return NewKnxNetIpGroupAddress3LevelPlcField(fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
+        return NewKnxNetIpGroupAddress3LevelPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
     } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress2Level, query); match != nil {
         fieldTypeName, ok := match["datatype"]
         var fieldType model2.KnxDatapointType
         if ok {
             fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
         }
-        return NewKnxNetIpGroupAddress2LevelPlcField(fieldType, match["mainGroup"], match["subGroup"]), nil
+        return NewKnxNetIpGroupAddress2LevelPlcField(&fieldType, match["mainGroup"], match["subGroup"]), nil
     } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress1Level, query); match != nil {
         fieldTypeName, ok := match["datatype"]
         var fieldType model2.KnxDatapointType
         if ok {
             fieldType = model2.KnxDatapointTypeValueOf(fieldTypeName)
         }
-        return NewKnxNetIpGroupAddress1LevelPlcField(fieldType, match["mainGroup"]), nil
+        return NewKnxNetIpGroupAddress1LevelPlcField(&fieldType, match["mainGroup"]), nil
     }
     return nil, errors.New("Invalid address format for address '" + query + "'")
 }

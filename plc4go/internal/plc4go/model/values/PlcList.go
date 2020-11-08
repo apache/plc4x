@@ -20,7 +20,7 @@ package values
 
 import (
 	"encoding/xml"
-	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	api "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
 )
 
 type PlcList struct {

@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/xml"
 	"errors"
-	values2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	values2 "plc4x.apache.org/plc4go/v0/internal/plc4go/model/values"
+	"plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
 )
 
 type DefaultPlcWriteRequestBuilder struct {

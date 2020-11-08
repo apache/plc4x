@@ -19,15 +19,12 @@
 package knxnetip
 
 import (
-    "encoding/json"
     "errors"
-    "fmt"
     "net/url"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/modbus"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+    "plc4x.apache.org/plc4go/v0/pkg/plc4go"
 )
 
 type KnxNetIpDriver struct {
@@ -80,14 +77,14 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
     defaultChanel := make(chan interface{})
     go func() {
         for {
-            msg := <-defaultChanel
-            adu := model.CastModbusTcpADU(msg)
+            _ = <-defaultChanel
+/*            adu := model.CastModbusTcpADU(msg)
             serialized, err := json.Marshal(adu)
             if err != nil {
-                fmt.Errorf("got error serializing adu: %s\n", err.Error())
+                fmt.Printf("got error serializing adu: %s\n", err.Error())
             } else {
                 fmt.Printf("got message in the default handler %s\n", serialized)
-            }
+            }*/
         }
     }()
     codec := modbus.NewModbusMessageCodec(transportInstance, nil)
