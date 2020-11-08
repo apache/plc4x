@@ -157,7 +157,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                         Predicate predicate = either.get();
                         if (predicate.test(instance) == false) {
                             // We do not match -> cannot handle
-                            logger.trace("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
+                            logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
+                                t.getClass().getSimpleName(), instance.getClass().getSimpleName());
                             continue registrations;
                         }
                     }
@@ -171,7 +172,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 return;
             }
         }
-        logger.trace("No registered handler found for message {}, using default decode method", t);
+        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
         protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, passive), t);
     }
 
