@@ -17,7 +17,7 @@
 // under the License.
 //
 
-[discriminatedType 'KNXNetIPMessage'
+[discriminatedType 'KnxNetIpMessage'
     [implicit      uint 8  'headerLength'    '6']
     [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']
@@ -108,7 +108,7 @@
     [simple   uint 8       'descriptionType']
     [simple   uint 8       'knxMedium']
     [simple   DeviceStatus 'deviceStatus']
-    [simple   KNXAddress   'knxAddress']
+    [simple   KnxAddress   'knxAddress']
     [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
     [array    int 8        'knxNetIpDeviceSerialNumber' count '6']
     [simple   IPAddress    'knxNetIpDeviceMulticastAddress']
@@ -149,7 +149,7 @@
         ['0x03' ConnectionResponseDataBlockDeviceManagement
         ]
         ['0x04' ConnectionResponseDataBlockTunnelConnection
-            [simple KNXAddress 'knxAddress']
+            [simple KnxAddress 'knxAddress']
         ]
     ]
 ]
@@ -190,7 +190,7 @@
     [array int 8 'addr' count '6']
 ]
 
-[type 'KNXAddress'
+[type 'KnxAddress'
     [simple uint 4 'mainGroup']
     [simple uint 4 'middleGroup']
     [simple uint 8 'subGroup']
@@ -316,7 +316,7 @@
     [simple        bit          'groupDestinationAddress']
     [simple        uint 3       'hopCount']
     [simple        uint 4       'extendedFrameFormat']
-    [simple        KNXAddress   'sourceAddress']
+    [simple        KnxAddress   'sourceAddress']
     [array         int 8        'destinationAddress' count '2']
     [simple        uint 8       'dataLength']
     [enum          TPCI         'tcpi']
@@ -340,7 +340,7 @@
         ['false' CEMIFrameAck
         ]
         ['true','true','false' CEMIFrameData
-            [simple   KNXAddress      'sourceAddress']
+            [simple   KnxAddress      'sourceAddress']
             [array    int 8           'destinationAddress' count '2']
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
@@ -358,7 +358,7 @@
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'extendedFrameFormat']
-            [simple   KNXAddress      'sourceAddress']
+            [simple   KnxAddress      'sourceAddress']
             [array    int 8           'destinationAddress' count '2']
             [simple   uint 8          'dataLength']
             [enum     TPCI            'tcpi']
@@ -377,16 +377,16 @@
     [simple   uint 16 'timestamp']
 ]
 
-[discriminatedType 'KNXGroupAddress' [uint 2 'numLevels']
+[discriminatedType 'KnxGroupAddress' [uint 2 'numLevels']
     [typeSwitch 'numLevels'
-        ['1' KNXGroupAddressFreeLevel
+        ['1' KnxGroupAddressFreeLevel
             [simple uint 16 'subGroup']
         ]
-        ['2' KNXGroupAddress2Level
+        ['2' KnxGroupAddress2Level
             [simple uint 5  'mainGroup']
             [simple uint 11 'subGroup']
         ]
-        ['3' KNXGroupAddress3Level
+        ['3' KnxGroupAddress3Level
             [simple uint 5 'mainGroup']
             [simple uint 3 'middleGroup']
             [simple uint 8 'subGroup']

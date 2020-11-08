@@ -40,7 +40,7 @@
     Differences from normal:
     Repeat: True
     Last two reserved bits are true
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
         <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
@@ -80,7 +80,7 @@
     Raw CEMI Frame: bab8b838bb
     Control Field: ba
     First of the last two reserved bits is true
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
         <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
@@ -117,7 +117,7 @@
   <testcase>
     <name>Search Request</name>
     <raw>06100201000e0801c0a82a46ef8e</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <SearchRequest className="org.apache.plc4x.java.knxnetip.readwrite.SearchRequest">
         <hpaiIDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
@@ -134,7 +134,7 @@
   <testcase>
     <name>Search Response</name>
     <raw>06100202004c0801c0a82a0b0e5736010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <SearchResponse className="org.apache.plc4x.java.knxnetip.readwrite.SearchResponse">
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
@@ -150,7 +150,7 @@
           <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
             <mainGroup>15</mainGroup>
             <middleGroup>15</middleGroup>
             <subGroup>255</subGroup>
@@ -189,7 +189,7 @@
   <testcase>
     <name>Description Request</name>
     <raw>06100203000e0801000000000000</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DescriptionRequest className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionRequest">
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
@@ -206,7 +206,7 @@
   <testcase>
     <name>Description Response</name>
     <raw>06100204004436010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DescriptionResponse className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse">
         <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
@@ -215,7 +215,7 @@
           <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
             <mainGroup>15</mainGroup>
             <middleGroup>15</middleGroup>
             <subGroup>255</subGroup>
@@ -254,7 +254,7 @@
   <testcase>
     <name>Connect Request</name>
     <raw>06100205001a0801c0a82a46f4310801c0a82a46f43204040200</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
         <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
@@ -281,7 +281,7 @@
   <testcase>
     <name>Connect Response</name>
     <raw>06100206001466000801c0a82a0b0e5704041101</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse">
         <communicationChannelId>102</communicationChannelId>
@@ -294,7 +294,7 @@
           <ipPort>3671</ipPort>
         </hpaiDataEndpoint>
         <connectionResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection">
-          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
             <mainGroup>1</mainGroup>
             <middleGroup>1</middleGroup>
             <subGroup>1</subGroup>
@@ -307,7 +307,7 @@
   <testcase>
     <name>Connection State Request</name>
     <raw>06100207001066000801c0a82a46f431</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionStateRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest">
         <communicationChannelId>102</communicationChannelId>
@@ -325,7 +325,7 @@
   <testcase>
     <name>Connection State Response</name>
     <raw>0610020800086600</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionStateResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse">
         <communicationChannelId>102</communicationChannelId>
@@ -337,7 +337,7 @@
   <testcase>
     <name>Device Configuration Request</name>
     <raw>06100310001104670000fc000001531001</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DeviceConfigurationRequest className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest">
         <deviceConfigurationRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock">
@@ -358,7 +358,7 @@
   <testcase>
     <name>Device Configuration Ack</name>
     <raw>06100311000a04670000</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DeviceConfigurationAck className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAck">
         <deviceConfigurationAckDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAckDataBlock">
@@ -373,7 +373,7 @@
   <testcase>
     <name>Disconnect Request</name>
     <raw>06100209001067000801c0a82a46f431</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DisconnectRequest className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectRequest">
         <communicationChannelId>103</communicationChannelId>
@@ -391,7 +391,7 @@
   <testcase>
     <name>Disconnect Response</name>
     <raw>0610020a00086600</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DisconnectResponse className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectResponse">
         <communicationChannelId>102</communicationChannelId>
@@ -407,7 +407,7 @@
     Raw CEMI Frame: bc360a1e0ce100810d
     Control Field: bc
     -->
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
         <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
@@ -436,7 +436,7 @@
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
-            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
+            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
               <mainGroup>3</mainGroup>
               <middleGroup>6</middleGroup>
               <subGroup>10</subGroup>
@@ -460,7 +460,7 @@
   <testcase>
     <name>Tunneling Response</name>
     <raw>06100421000a046b0000</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <TunnelingResponse className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponse">
         <tunnelingResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponseDataBlock">
@@ -475,7 +475,7 @@
   <testcase>
     <name>Default</name>
     <raw>0610020500180801c0a82a46c4090801c0a82a46c40a0203</raw>
-    <root-type>KNXNetIPMessage</root-type>
+    <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
         <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">

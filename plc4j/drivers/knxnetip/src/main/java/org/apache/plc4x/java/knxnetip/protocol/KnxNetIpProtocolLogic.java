@@ -32,11 +32,11 @@ import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.model .KnxNetIpSubscriptionHandle;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KnxGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.knxnetip.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -49,6 +49,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.spi.values.PlcStruct;
@@ -64,7 +65,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements PlcSubscriber {
+public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> implements PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
@@ -90,7 +91,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     }
 
     @Override
-    public void onConnect(ConversationContext<KNXNetIPMessage> context) {
+    public void onConnect(ConversationContext<KnxNetIpMessage> context) {
         // Only the UDP transport supports login.
         if(!context.isPassive()) {
             LOGGER.info("KNX Driver running in ACTIVE mode.");
@@ -110,7 +111,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP,
                     knxNetIpDriverContext.getLocalIPAddress(), knxNetIpDriverContext.getLocalPort()));
             context.sendRequest(searchRequest)
-                .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
                 .check(p -> p instanceof SearchResponse)
                 .unwrap(p -> (SearchResponse) p)
                 .handle(searchResponse -> {
@@ -140,7 +141,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                 knxNetIpDriverContext.getTunnelConnectionType()));
                         LOGGER.info("Sending KNXnet/IP Connection Request.");
                         context.sendRequest(connectionRequest)
-                            .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
                             .check(p -> p instanceof ConnectionResponse)
                             .unwrap(p -> (ConnectionResponse) p)
                             .handle(connectionResponse -> {
@@ -159,8 +160,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                     // Save the KNX Address the Gateway assigned to this connection.
                                     knxNetIpDriverContext.setClientKnxAddress(tunnelConnectionDataBlock.getKnxAddress());
 
-                                    final KNXAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
-                                    final KNXAddress clientKnxAddress = knxNetIpDriverContext.getClientKnxAddress();
+                                    final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
+                                    final KnxAddress clientKnxAddress = knxNetIpDriverContext.getClientKnxAddress();
                                     LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got assigned client KNX address '%d.%d.%d'",
                                         knxNetIpDriverContext.getGatewayName(),
                                         gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(),
@@ -184,7 +185,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                                         knxNetIpDriverContext.getLocalIPAddress(),
                                                         knxNetIpDriverContext.getLocalPort()));
                                             context.sendRequest(connectionStateRequest)
-                                                .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                                                .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
                                                 .check(p -> p instanceof ConnectionStateResponse)
                                                 .unwrap(p -> (ConnectionStateResponse) p)
                                                 .handle(connectionStateResponse -> {
@@ -230,7 +231,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     }
 
     @Override
-    public void onDisconnect(ConversationContext<KNXNetIPMessage> context) {
+    public void onDisconnect(ConversationContext<KnxNetIpMessage> context) {
         // Cancel the timer for sending connection state requests.
         connectionStateTimer.cancel();
 
@@ -238,14 +239,14 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
                 knxNetIpDriverContext.getLocalIPAddress(), knxNetIpDriverContext.getLocalPort()));
         context.sendRequest(disconnectRequest)
-            .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
             .check(p -> p instanceof DisconnectResponse)
             .unwrap(p -> (DisconnectResponse) p)
             .handle(disconnectResponse -> {
                 // In general we should probably check if the disconnect was successful, but in
                 // the end we couldn't do much if the disconnect would fail.
                 final String gatewayName = knxNetIpDriverContext.getGatewayName();
-                final KNXAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
+                final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
                 LOGGER.info(String.format("Disconnected from KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
                     gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
 
@@ -355,7 +356,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             // Start a new request-transaction (Is ended in the response-handler)
             transaction.submit(() -> context.sendRequest(knxRequest)
-                .expectResponse(KNXNetIPMessage.class, REQUEST_TIMEOUT)
+                .expectResponse(KnxNetIpMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((tr, e) -> future.completeExceptionally(e))
                 .check(tr -> tr instanceof TunnelingResponse)
@@ -386,7 +387,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     }
 
     @Override
-    protected void decode(ConversationContext<KNXNetIPMessage> context, KNXNetIPMessage msg) throws Exception {
+    protected void decode(ConversationContext<KnxNetIpMessage> context, KnxNetIpMessage msg) throws Exception {
         // Handle a normal tunneling request, which is delivering KNX data.
         if(msg instanceof TunnelingRequest) {
             TunnelingRequest tunnelingRequest = (TunnelingRequest) msg;
@@ -428,7 +429,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         }
     }
 
-    protected void processCemiData(KNXAddress sourceAddress, byte[] destinationGroupAddress,
+    protected void processCemiData(KnxAddress sourceAddress, byte[] destinationGroupAddress,
                                    byte firstByte, byte[] restBytes) throws ParseException {
         // The first byte is actually just 6 bit long, but we'll treat it as a full one.
         // So here we create a byte array containing the first and all the following bytes.
@@ -438,8 +439,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
         // Decode the group address depending on the project settings.
         ReadBuffer addressBuffer = new ReadBuffer(destinationGroupAddress);
-        final KNXGroupAddress knxGroupAddress =
-            KNXGroupAddressIO.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
+        final KnxGroupAddress knxGroupAddress =
+            KnxGroupAddressIO.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
         final String destinationAddress = toString(knxGroupAddress);
 
         // If there is an ETS5 model provided, continue decoding the payload.
@@ -500,7 +501,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     }
 
     @Override
-    public void close(ConversationContext<KNXNetIPMessage> context) {
+    public void close(ConversationContext<KnxNetIpMessage> context) {
         // TODO Implement Closing on Protocol Level
     }
 
@@ -508,12 +509,12 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         for (String fieldName : subscriptionRequest.getFieldNames()) {
-            final PlcField field = subscriptionRequest.getField(fieldName);
-            if(!(field instanceof KnxNetIpField)) {
+            final DefaultPlcSubscriptionField field = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
+            if(!(field.getPlcField() instanceof KnxNetIpField)) {
                 values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             } else {
                 values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
-                    new KnxNetIpSubscriptionHandle(this, (KnxNetIpField) field)));
+                    new KnxNetIpSubscriptionHandle(this, (KnxNetIpField) field.getPlcField())));
             }
         }
         return CompletableFuture.completedFuture(
@@ -580,19 +581,19 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         return address.getData();
     }
 
-    protected static String toString(KNXAddress knxAddress) {
+    protected static String toString(KnxAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
     }
 
-    protected static String toString(KNXGroupAddress groupAddress) {
-        if (groupAddress instanceof KNXGroupAddress3Level) {
-            KNXGroupAddress3Level level3 = (KNXGroupAddress3Level) groupAddress;
+    protected static String toString(KnxGroupAddress groupAddress) {
+        if (groupAddress instanceof KnxGroupAddress3Level) {
+            KnxGroupAddress3Level level3 = (KnxGroupAddress3Level) groupAddress;
             return level3.getMainGroup() + "/" + level3.getMiddleGroup() + "/" + level3.getSubGroup();
-        } else if (groupAddress instanceof KNXGroupAddress2Level) {
-            KNXGroupAddress2Level level2 = (KNXGroupAddress2Level) groupAddress;
+        } else if (groupAddress instanceof KnxGroupAddress2Level) {
+            KnxGroupAddress2Level level2 = (KnxGroupAddress2Level) groupAddress;
             return level2.getMainGroup() + "/" + level2.getSubGroup();
-        } else if(groupAddress instanceof KNXGroupAddressFreeLevel) {
-            KNXGroupAddressFreeLevel free = (KNXGroupAddressFreeLevel) groupAddress;
+        } else if(groupAddress instanceof KnxGroupAddressFreeLevel) {
+            KnxGroupAddressFreeLevel free = (KnxGroupAddressFreeLevel) groupAddress;
             return free.getSubGroup() + "";
         }
         throw new PlcRuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
