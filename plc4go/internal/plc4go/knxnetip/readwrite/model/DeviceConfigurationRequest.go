@@ -62,13 +62,13 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock *DeviceCo
     return child.Parent
 }
 
-func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
-    castFunc := func(typ interface{}) DeviceConfigurationRequest {
+func CastDeviceConfigurationRequest(structType interface{}) *DeviceConfigurationRequest {
+    castFunc := func(typ interface{}) *DeviceConfigurationRequest {
         if casted, ok := typ.(DeviceConfigurationRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DeviceConfigurationRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastDeviceConfigurationRequest(casted.Child)
@@ -76,7 +76,7 @@ func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationR
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastDeviceConfigurationRequest(casted.Child)
         }
-        return DeviceConfigurationRequest{}
+        return nil
     }
     return castFunc(structType)
 }

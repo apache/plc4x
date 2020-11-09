@@ -72,13 +72,13 @@ func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength u
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) BACnetUnconfirmedServiceRequestWhoIs {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWhoIs {
+func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) *BACnetUnconfirmedServiceRequestWhoIs {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestWhoIs {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestWhoIs); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWhoIs); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
@@ -86,7 +86,7 @@ func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) BACnetUnco
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestWhoIs(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestWhoIs{}
+        return nil
     }
     return castFunc(structType)
 }

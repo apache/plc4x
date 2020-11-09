@@ -64,13 +64,13 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, para
     return child.Parent
 }
 
-func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
-    castFunc := func(typ interface{}) COTPPacketTpduError {
+func CastCOTPPacketTpduError(structType interface{}) *COTPPacketTpduError {
+    castFunc := func(typ interface{}) *COTPPacketTpduError {
         if casted, ok := typ.(COTPPacketTpduError); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPPacketTpduError); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPPacket); ok {
             return CastCOTPPacketTpduError(casted.Child)
@@ -78,7 +78,7 @@ func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
         if casted, ok := typ.(*COTPPacket); ok {
             return CastCOTPPacketTpduError(casted.Child)
         }
-        return COTPPacketTpduError{}
+        return nil
     }
     return castFunc(structType)
 }

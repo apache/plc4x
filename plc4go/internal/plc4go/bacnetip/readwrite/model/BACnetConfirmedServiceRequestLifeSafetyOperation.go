@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation() *BACnetConfirmedServi
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType interface{}) BACnetConfirmedServiceRequestLifeSafetyOperation {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestLifeSafetyOperation {
+func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType interface{}) *BACnetConfirmedServiceRequestLifeSafetyOperation {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestLifeSafetyOperation {
         if casted, ok := typ.(BACnetConfirmedServiceRequestLifeSafetyOperation); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestLifeSafetyOperation); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestLifeSafetyOperation(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType interface{}
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestLifeSafetyOperation(casted.Child)
         }
-        return BACnetConfirmedServiceRequestLifeSafetyOperation{}
+        return nil
     }
     return castFunc(structType)
 }

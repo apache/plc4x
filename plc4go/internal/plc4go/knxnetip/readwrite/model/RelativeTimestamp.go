@@ -43,15 +43,15 @@ func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
     return &RelativeTimestamp{Timestamp: timestamp}
 }
 
-func CastRelativeTimestamp(structType interface{}) RelativeTimestamp {
-    castFunc := func(typ interface{}) RelativeTimestamp {
+func CastRelativeTimestamp(structType interface{}) *RelativeTimestamp {
+    castFunc := func(typ interface{}) *RelativeTimestamp {
         if casted, ok := typ.(RelativeTimestamp); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*RelativeTimestamp); ok {
-            return *casted
+            return casted
         }
-        return RelativeTimestamp{}
+        return nil
     }
     return castFunc(structType)
 }

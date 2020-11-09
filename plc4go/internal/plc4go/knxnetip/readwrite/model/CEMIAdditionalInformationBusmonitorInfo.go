@@ -74,13 +74,13 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
     return child.Parent
 }
 
-func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdditionalInformationBusmonitorInfo {
-    castFunc := func(typ interface{}) CEMIAdditionalInformationBusmonitorInfo {
+func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) *CEMIAdditionalInformationBusmonitorInfo {
+    castFunc := func(typ interface{}) *CEMIAdditionalInformationBusmonitorInfo {
         if casted, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIAdditionalInformationBusmonitorInfo); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIAdditionalInformation); ok {
             return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
@@ -88,7 +88,7 @@ func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdd
         if casted, ok := typ.(*CEMIAdditionalInformation); ok {
             return CastCEMIAdditionalInformationBusmonitorInfo(casted.Child)
         }
-        return CEMIAdditionalInformationBusmonitorInfo{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -60,13 +60,13 @@ func NewKnxNetIpCore(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
-    castFunc := func(typ interface{}) KnxNetIpCore {
+func CastKnxNetIpCore(structType interface{}) *KnxNetIpCore {
+    castFunc := func(typ interface{}) *KnxNetIpCore {
         if casted, ok := typ.(KnxNetIpCore); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetIpCore); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetIpCore(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetIpCore(casted.Child)
         }
-        return KnxNetIpCore{}
+        return nil
     }
     return castFunc(structType)
 }

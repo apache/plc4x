@@ -60,13 +60,13 @@ func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) KnxNetRemoteConfigurationAndDiagnosis {
-    castFunc := func(typ interface{}) KnxNetRemoteConfigurationAndDiagnosis {
+func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) *KnxNetRemoteConfigurationAndDiagnosis {
+    castFunc := func(typ interface{}) *KnxNetRemoteConfigurationAndDiagnosis {
         if casted, ok := typ.(KnxNetRemoteConfigurationAndDiagnosis); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetRemoteConfigurationAndDiagnosis); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) KnxNetRem
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetRemoteConfigurationAndDiagnosis(casted.Child)
         }
-        return KnxNetRemoteConfigurationAndDiagnosis{}
+        return nil
     }
     return castFunc(structType)
 }

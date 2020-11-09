@@ -57,13 +57,13 @@ func NewBACnetErrorCreateObject() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject {
-    castFunc := func(typ interface{}) BACnetErrorCreateObject {
+func CastBACnetErrorCreateObject(structType interface{}) *BACnetErrorCreateObject {
+    castFunc := func(typ interface{}) *BACnetErrorCreateObject {
         if casted, ok := typ.(BACnetErrorCreateObject); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorCreateObject); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorCreateObject(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorCreateObject(casted.Child)
         }
-        return BACnetErrorCreateObject{}
+        return nil
     }
     return castFunc(structType)
 }

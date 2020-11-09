@@ -57,13 +57,13 @@ func NewBVLCWideBroadcastDistributionTable() *BVLC {
     return child.Parent
 }
 
-func CastBVLCWideBroadcastDistributionTable(structType interface{}) BVLCWideBroadcastDistributionTable {
-    castFunc := func(typ interface{}) BVLCWideBroadcastDistributionTable {
+func CastBVLCWideBroadcastDistributionTable(structType interface{}) *BVLCWideBroadcastDistributionTable {
+    castFunc := func(typ interface{}) *BVLCWideBroadcastDistributionTable {
         if casted, ok := typ.(BVLCWideBroadcastDistributionTable); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCWideBroadcastDistributionTable); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCWideBroadcastDistributionTable(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCWideBroadcastDistributionTable(structType interface{}) BVLCWideBroa
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCWideBroadcastDistributionTable(casted.Child)
         }
-        return BVLCWideBroadcastDistributionTable{}
+        return nil
     }
     return castFunc(structType)
 }

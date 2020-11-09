@@ -66,13 +66,13 @@ func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference
     return child.Parent
 }
 
-func CastCOTPPacketConnectionRequest(structType interface{}) COTPPacketConnectionRequest {
-    castFunc := func(typ interface{}) COTPPacketConnectionRequest {
+func CastCOTPPacketConnectionRequest(structType interface{}) *COTPPacketConnectionRequest {
+    castFunc := func(typ interface{}) *COTPPacketConnectionRequest {
         if casted, ok := typ.(COTPPacketConnectionRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPPacketConnectionRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPPacket); ok {
             return CastCOTPPacketConnectionRequest(casted.Child)
@@ -80,7 +80,7 @@ func CastCOTPPacketConnectionRequest(structType interface{}) COTPPacketConnectio
         if casted, ok := typ.(*COTPPacket); ok {
             return CastCOTPPacketConnectionRequest(casted.Child)
         }
-        return COTPPacketConnectionRequest{}
+        return nil
     }
     return castFunc(structType)
 }

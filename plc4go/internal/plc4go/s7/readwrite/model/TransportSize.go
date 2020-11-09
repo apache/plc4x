@@ -683,11 +683,14 @@ func (m TransportSize) LengthInBytes() uint16 {
 }
 
 func TransportSizeParse(io *utils.ReadBuffer) (TransportSize, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadInt8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return TransportSizeValueOf(val), nil
 }
 
 func (e TransportSize) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteInt8(8, int8(e))
+    return err
 }

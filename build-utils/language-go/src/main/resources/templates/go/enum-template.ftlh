@@ -48,7 +48,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 )
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>
@@ -119,15 +119,21 @@ func (m ${type.name}) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-<#if type.type?has_content>
+<#if type.type?has_content && helper.isSimpleTypeReference(type.type)>
+    <#assign simpleTypeReference = type.type>
+    <#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(io *utils.ReadBuffer) (${type.name}, error) {
-    // TODO: Implement ...
-    return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>, nil
+    val, err := ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(type.typeReference))}
+    if err != nil {
+        return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>, nil
+    }
+    return ${type.name}ValueOf(val), nil
 }
 
 func (e ${type.name}) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(type.typeReference), helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(type.typeReference)) + "(e)")}
+    return err
 }
+    </#if>
 </#if>
 </#outputformat>

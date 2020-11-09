@@ -64,13 +64,13 @@ func NewCEMIBusmonInd(additionalInformationLength uint8, additionalInformation [
     return child.Parent
 }
 
-func CastCEMIBusmonInd(structType interface{}) CEMIBusmonInd {
-    castFunc := func(typ interface{}) CEMIBusmonInd {
+func CastCEMIBusmonInd(structType interface{}) *CEMIBusmonInd {
+    castFunc := func(typ interface{}) *CEMIBusmonInd {
         if casted, ok := typ.(CEMIBusmonInd); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIBusmonInd); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIBusmonInd(casted.Child)
@@ -78,7 +78,7 @@ func CastCEMIBusmonInd(structType interface{}) CEMIBusmonInd {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIBusmonInd(casted.Child)
         }
-        return CEMIBusmonInd{}
+        return nil
     }
     return castFunc(structType)
 }

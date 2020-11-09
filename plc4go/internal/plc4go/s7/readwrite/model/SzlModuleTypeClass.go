@@ -68,11 +68,14 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 }
 
 func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(4)
+    if err != nil {
+        return 0, nil
+    }
+    return SzlModuleTypeClassValueOf(val), nil
 }
 
 func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(4, uint8(e))
+    return err
 }

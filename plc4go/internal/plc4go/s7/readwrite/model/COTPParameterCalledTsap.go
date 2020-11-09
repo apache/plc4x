@@ -60,13 +60,13 @@ func NewCOTPParameterCalledTsap(tsapId uint16, ) *COTPParameter {
     return child.Parent
 }
 
-func CastCOTPParameterCalledTsap(structType interface{}) COTPParameterCalledTsap {
-    castFunc := func(typ interface{}) COTPParameterCalledTsap {
+func CastCOTPParameterCalledTsap(structType interface{}) *COTPParameterCalledTsap {
+    castFunc := func(typ interface{}) *COTPParameterCalledTsap {
         if casted, ok := typ.(COTPParameterCalledTsap); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPParameterCalledTsap); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPParameter); ok {
             return CastCOTPParameterCalledTsap(casted.Child)
@@ -74,7 +74,7 @@ func CastCOTPParameterCalledTsap(structType interface{}) COTPParameterCalledTsap
         if casted, ok := typ.(*COTPParameter); ok {
             return CastCOTPParameterCalledTsap(casted.Child)
         }
-        return COTPParameterCalledTsap{}
+        return nil
     }
     return castFunc(structType)
 }

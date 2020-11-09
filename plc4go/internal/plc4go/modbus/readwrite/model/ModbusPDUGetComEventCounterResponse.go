@@ -70,13 +70,13 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16, ) 
     return child.Parent
 }
 
-func CastModbusPDUGetComEventCounterResponse(structType interface{}) ModbusPDUGetComEventCounterResponse {
-    castFunc := func(typ interface{}) ModbusPDUGetComEventCounterResponse {
+func CastModbusPDUGetComEventCounterResponse(structType interface{}) *ModbusPDUGetComEventCounterResponse {
+    castFunc := func(typ interface{}) *ModbusPDUGetComEventCounterResponse {
         if casted, ok := typ.(ModbusPDUGetComEventCounterResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUGetComEventCounterResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUGetComEventCounterResponse(casted.Child)
@@ -84,7 +84,7 @@ func CastModbusPDUGetComEventCounterResponse(structType interface{}) ModbusPDUGe
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUGetComEventCounterResponse(casted.Child)
         }
-        return ModbusPDUGetComEventCounterResponse{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -57,13 +57,13 @@ func NewBACnetErrorVTData() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorVTData(structType interface{}) BACnetErrorVTData {
-    castFunc := func(typ interface{}) BACnetErrorVTData {
+func CastBACnetErrorVTData(structType interface{}) *BACnetErrorVTData {
+    castFunc := func(typ interface{}) *BACnetErrorVTData {
         if casted, ok := typ.(BACnetErrorVTData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorVTData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorVTData(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorVTData(structType interface{}) BACnetErrorVTData {
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorVTData(casted.Child)
         }
-        return BACnetErrorVTData{}
+        return nil
     }
     return castFunc(structType)
 }

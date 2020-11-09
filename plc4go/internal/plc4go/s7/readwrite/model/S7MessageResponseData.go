@@ -65,13 +65,13 @@ func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference u
     return child.Parent
 }
 
-func CastS7MessageResponseData(structType interface{}) S7MessageResponseData {
-    castFunc := func(typ interface{}) S7MessageResponseData {
+func CastS7MessageResponseData(structType interface{}) *S7MessageResponseData {
+    castFunc := func(typ interface{}) *S7MessageResponseData {
         if casted, ok := typ.(S7MessageResponseData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7MessageResponseData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Message); ok {
             return CastS7MessageResponseData(casted.Child)
@@ -79,7 +79,7 @@ func CastS7MessageResponseData(structType interface{}) S7MessageResponseData {
         if casted, ok := typ.(*S7Message); ok {
             return CastS7MessageResponseData(casted.Child)
         }
-        return S7MessageResponseData{}
+        return nil
     }
     return castFunc(structType)
 }

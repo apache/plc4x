@@ -62,13 +62,13 @@ func NewTunnelingRequest(tunnelingRequestDataBlock *TunnelingRequestDataBlock, c
     return child.Parent
 }
 
-func CastTunnelingRequest(structType interface{}) TunnelingRequest {
-    castFunc := func(typ interface{}) TunnelingRequest {
+func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
+    castFunc := func(typ interface{}) *TunnelingRequest {
         if casted, ok := typ.(TunnelingRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*TunnelingRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastTunnelingRequest(casted.Child)
@@ -76,7 +76,7 @@ func CastTunnelingRequest(structType interface{}) TunnelingRequest {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastTunnelingRequest(casted.Child)
         }
-        return TunnelingRequest{}
+        return nil
     }
     return castFunc(structType)
 }

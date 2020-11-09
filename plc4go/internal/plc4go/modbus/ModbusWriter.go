@@ -144,7 +144,7 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 			// Convert the response into an ADU
 			responseAdu := modbusModel.CastModbusTcpADU(response)
 			// Convert the modbus response into a PLC4X response
-			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, responseAdu, writeRequest)
+			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
 
 			if err != nil {
 				result <- model.PlcWriteRequestResult{

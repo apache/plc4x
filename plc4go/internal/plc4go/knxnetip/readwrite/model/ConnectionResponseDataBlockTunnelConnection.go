@@ -60,13 +60,13 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress *KnxAddress, ) *C
     return child.Parent
 }
 
-func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) ConnectionResponseDataBlockTunnelConnection {
-    castFunc := func(typ interface{}) ConnectionResponseDataBlockTunnelConnection {
+func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *ConnectionResponseDataBlockTunnelConnection {
+    castFunc := func(typ interface{}) *ConnectionResponseDataBlockTunnelConnection {
         if casted, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionResponseDataBlockTunnelConnection); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ConnectionResponseDataBlock); ok {
             return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
@@ -74,7 +74,7 @@ func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) Con
         if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
             return CastConnectionResponseDataBlockTunnelConnection(casted.Child)
         }
-        return ConnectionResponseDataBlockTunnelConnection{}
+        return nil
     }
     return castFunc(structType)
 }

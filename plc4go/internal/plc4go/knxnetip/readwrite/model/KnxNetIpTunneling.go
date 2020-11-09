@@ -60,13 +60,13 @@ func NewKnxNetIpTunneling(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetIpTunneling(structType interface{}) KnxNetIpTunneling {
-    castFunc := func(typ interface{}) KnxNetIpTunneling {
+func CastKnxNetIpTunneling(structType interface{}) *KnxNetIpTunneling {
+    castFunc := func(typ interface{}) *KnxNetIpTunneling {
         if casted, ok := typ.(KnxNetIpTunneling); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetIpTunneling); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetIpTunneling(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetIpTunneling(structType interface{}) KnxNetIpTunneling {
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetIpTunneling(casted.Child)
         }
-        return KnxNetIpTunneling{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -65,8 +65,8 @@ package model
 import (
     "encoding/xml"
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
 )
 
 type ${protocolName?cap_first}XmlParserHelper struct {

@@ -57,13 +57,13 @@ func NewCEMIRawInd() *CEMI {
     return child.Parent
 }
 
-func CastCEMIRawInd(structType interface{}) CEMIRawInd {
-    castFunc := func(typ interface{}) CEMIRawInd {
+func CastCEMIRawInd(structType interface{}) *CEMIRawInd {
+    castFunc := func(typ interface{}) *CEMIRawInd {
         if casted, ok := typ.(CEMIRawInd); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIRawInd); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIRawInd(casted.Child)
@@ -71,7 +71,7 @@ func CastCEMIRawInd(structType interface{}) CEMIRawInd {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIRawInd(casted.Child)
         }
-        return CEMIRawInd{}
+        return nil
     }
     return castFunc(structType)
 }

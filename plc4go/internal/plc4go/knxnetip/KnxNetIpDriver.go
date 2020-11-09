@@ -20,8 +20,8 @@ package knxnetip
 
 import (
     "errors"
+    "fmt"
     "net/url"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/modbus"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
     "plc4x.apache.org/plc4go/v0/pkg/plc4go"
@@ -78,6 +78,7 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
     go func() {
         for {
             _ = <-defaultChanel
+            fmt.Printf("Hurz")
 /*            adu := model.CastModbusTcpADU(msg)
             serialized, err := json.Marshal(adu)
             if err != nil {
@@ -85,12 +86,16 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
             } else {
                 fmt.Printf("got message in the default handler %s\n", serialized)
             }*/
+//            06100201000e0801c0a82a32c70e
+//                          xxxx
+//            06100201000e08  c0a82a32c95f
         }
     }()
-    codec := modbus.NewModbusMessageCodec(transportInstance, nil)
+    codec := NewKnxNetIpMessageCodec(transportInstance, nil)
 
     // Create the new connection
-    connection := modbus.NewModbusConnection(uint8(1), codec, options, m.fieldHandler)
+    connection := NewKnxNetIpConnection(codec, options, m.fieldHandler)
+
     return connection.Connect()
 }
 

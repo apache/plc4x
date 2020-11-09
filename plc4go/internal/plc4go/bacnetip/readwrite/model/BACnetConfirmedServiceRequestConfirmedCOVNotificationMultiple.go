@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() *BACnetC
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structType interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
         if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structTyp
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(casted.Child)
         }
-        return BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}
+        return nil
     }
     return castFunc(structType)
 }

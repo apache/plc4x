@@ -57,15 +57,15 @@ func NewS7Address() *S7Address {
     return &S7Address{}
 }
 
-func CastS7Address(structType interface{}) S7Address {
-    castFunc := func(typ interface{}) S7Address {
+func CastS7Address(structType interface{}) *S7Address {
+    castFunc := func(typ interface{}) *S7Address {
         if casted, ok := typ.(S7Address); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7Address); ok {
-            return *casted
+            return casted
         }
-        return S7Address{}
+        return nil
     }
     return castFunc(structType)
 }

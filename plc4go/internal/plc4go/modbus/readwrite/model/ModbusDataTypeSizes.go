@@ -226,12 +226,3 @@ func (m ModbusDataTypeSizes) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusDataTypeSizesParse(io *utils.ReadBuffer) (ModbusDataTypeSizes, error) {
-    // TODO: Implement ...
-    return "", nil
-}
-
-func (e ModbusDataTypeSizes) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
-}

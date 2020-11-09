@@ -61,13 +61,13 @@ func NewBACnetTagApplicationObjectIdentifier(typeOrTagNumber uint8, lengthValueT
     return child.Parent
 }
 
-func CastBACnetTagApplicationObjectIdentifier(structType interface{}) BACnetTagApplicationObjectIdentifier {
-    castFunc := func(typ interface{}) BACnetTagApplicationObjectIdentifier {
+func CastBACnetTagApplicationObjectIdentifier(structType interface{}) *BACnetTagApplicationObjectIdentifier {
+    castFunc := func(typ interface{}) *BACnetTagApplicationObjectIdentifier {
         if casted, ok := typ.(BACnetTagApplicationObjectIdentifier); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationObjectIdentifier); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationObjectIdentifier(casted.Child)
@@ -75,7 +75,7 @@ func CastBACnetTagApplicationObjectIdentifier(structType interface{}) BACnetTagA
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationObjectIdentifier(casted.Child)
         }
-        return BACnetTagApplicationObjectIdentifier{}
+        return nil
     }
     return castFunc(structType)
 }

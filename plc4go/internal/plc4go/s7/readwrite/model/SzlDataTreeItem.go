@@ -48,15 +48,15 @@ func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausb
     return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
 }
 
-func CastSzlDataTreeItem(structType interface{}) SzlDataTreeItem {
-    castFunc := func(typ interface{}) SzlDataTreeItem {
+func CastSzlDataTreeItem(structType interface{}) *SzlDataTreeItem {
+    castFunc := func(typ interface{}) *SzlDataTreeItem {
         if casted, ok := typ.(SzlDataTreeItem); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*SzlDataTreeItem); ok {
-            return *casted
+            return casted
         }
-        return SzlDataTreeItem{}
+        return nil
     }
     return castFunc(structType)
 }

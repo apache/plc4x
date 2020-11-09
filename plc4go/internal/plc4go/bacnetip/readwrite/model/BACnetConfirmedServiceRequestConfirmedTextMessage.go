@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessage() *BACnetConfirmedServ
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessage {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedTextMessage {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{}) *BACnetConfirmedServiceRequestConfirmedTextMessage {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedTextMessage {
         if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedTextMessage); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedTextMessage(casted.Child)
         }
-        return BACnetConfirmedServiceRequestConfirmedTextMessage{}
+        return nil
     }
     return castFunc(structType)
 }

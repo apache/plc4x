@@ -49,15 +49,15 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *Mo
     return &ModbusTcpADU{TransactionIdentifier: transactionIdentifier, UnitIdentifier: unitIdentifier, Pdu: pdu}
 }
 
-func CastModbusTcpADU(structType interface{}) ModbusTcpADU {
-    castFunc := func(typ interface{}) ModbusTcpADU {
+func CastModbusTcpADU(structType interface{}) *ModbusTcpADU {
+    castFunc := func(typ interface{}) *ModbusTcpADU {
         if casted, ok := typ.(ModbusTcpADU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusTcpADU); ok {
-            return *casted
+            return casted
         }
-        return ModbusTcpADU{}
+        return nil
     }
     return castFunc(structType)
 }

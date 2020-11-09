@@ -64,13 +64,13 @@ func NewS7PayloadUserData(items []*S7PayloadUserDataItem, ) *S7Payload {
     return child.Parent
 }
 
-func CastS7PayloadUserData(structType interface{}) S7PayloadUserData {
-    castFunc := func(typ interface{}) S7PayloadUserData {
+func CastS7PayloadUserData(structType interface{}) *S7PayloadUserData {
+    castFunc := func(typ interface{}) *S7PayloadUserData {
         if casted, ok := typ.(S7PayloadUserData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7PayloadUserData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Payload); ok {
             return CastS7PayloadUserData(casted.Child)
@@ -78,7 +78,7 @@ func CastS7PayloadUserData(structType interface{}) S7PayloadUserData {
         if casted, ok := typ.(*S7Payload); ok {
             return CastS7PayloadUserData(casted.Child)
         }
-        return S7PayloadUserData{}
+        return nil
     }
     return castFunc(structType)
 }

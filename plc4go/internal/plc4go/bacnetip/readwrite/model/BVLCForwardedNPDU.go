@@ -64,13 +64,13 @@ func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, ) *BVLC {
     return child.Parent
 }
 
-func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
-    castFunc := func(typ interface{}) BVLCForwardedNPDU {
+func CastBVLCForwardedNPDU(structType interface{}) *BVLCForwardedNPDU {
+    castFunc := func(typ interface{}) *BVLCForwardedNPDU {
         if casted, ok := typ.(BVLCForwardedNPDU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCForwardedNPDU); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCForwardedNPDU(casted.Child)
@@ -78,7 +78,7 @@ func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCForwardedNPDU(casted.Child)
         }
-        return BVLCForwardedNPDU{}
+        return nil
     }
     return castFunc(structType)
 }

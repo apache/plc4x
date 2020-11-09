@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceACKGetAlarmSummary() *BACnetConfirmedServiceACK {
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
+func CastBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) *BACnetConfirmedServiceACKGetAlarmSummary {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKGetAlarmSummary {
         if casted, ok := typ.(BACnetConfirmedServiceACKGetAlarmSummary); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceACKGetAlarmSummary); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKGetAlarmSummary(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) BACnet
         if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKGetAlarmSummary(casted.Child)
         }
-        return BACnetConfirmedServiceACKGetAlarmSummary{}
+        return nil
     }
     return castFunc(structType)
 }

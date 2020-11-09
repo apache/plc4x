@@ -72,13 +72,13 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(casted.Child)
@@ -86,7 +86,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType in
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{}
+        return nil
     }
     return castFunc(structType)
 }

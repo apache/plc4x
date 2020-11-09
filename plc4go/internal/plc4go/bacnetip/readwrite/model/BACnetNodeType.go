@@ -122,11 +122,14 @@ func (m BACnetNodeType) LengthInBytes() uint16 {
 }
 
 func BACnetNodeTypeParse(io *utils.ReadBuffer) (BACnetNodeType, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return BACnetNodeTypeValueOf(val), nil
 }
 
 func (e BACnetNodeType) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

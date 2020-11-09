@@ -71,13 +71,13 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
     return child.Parent
 }
 
-func CastAPDUComplexAck(structType interface{}) APDUComplexAck {
-    castFunc := func(typ interface{}) APDUComplexAck {
+func CastAPDUComplexAck(structType interface{}) *APDUComplexAck {
+    castFunc := func(typ interface{}) *APDUComplexAck {
         if casted, ok := typ.(APDUComplexAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUComplexAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUComplexAck(casted.Child)
@@ -85,7 +85,7 @@ func CastAPDUComplexAck(structType interface{}) APDUComplexAck {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUComplexAck(casted.Child)
         }
-        return APDUComplexAck{}
+        return nil
     }
     return castFunc(structType)
 }

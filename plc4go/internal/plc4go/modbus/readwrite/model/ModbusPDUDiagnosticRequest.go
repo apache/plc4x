@@ -70,13 +70,13 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16, ) *ModbusPDU
     return child.Parent
 }
 
-func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticRequest {
-    castFunc := func(typ interface{}) ModbusPDUDiagnosticRequest {
+func CastModbusPDUDiagnosticRequest(structType interface{}) *ModbusPDUDiagnosticRequest {
+    castFunc := func(typ interface{}) *ModbusPDUDiagnosticRequest {
         if casted, ok := typ.(ModbusPDUDiagnosticRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUDiagnosticRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUDiagnosticRequest(casted.Child)
@@ -84,7 +84,7 @@ func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticR
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUDiagnosticRequest(casted.Child)
         }
-        return ModbusPDUDiagnosticRequest{}
+        return nil
     }
     return castFunc(structType)
 }

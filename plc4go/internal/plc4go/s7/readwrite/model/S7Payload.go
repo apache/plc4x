@@ -58,15 +58,15 @@ func NewS7Payload() *S7Payload {
     return &S7Payload{}
 }
 
-func CastS7Payload(structType interface{}) S7Payload {
-    castFunc := func(typ interface{}) S7Payload {
+func CastS7Payload(structType interface{}) *S7Payload {
+    castFunc := func(typ interface{}) *S7Payload {
         if casted, ok := typ.(S7Payload); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7Payload); ok {
-            return *casted
+            return casted
         }
-        return S7Payload{}
+        return nil
     }
     return castFunc(structType)
 }

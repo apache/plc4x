@@ -57,13 +57,13 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup() *BACnetUnconfirmedServiceReq
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) *BACnetUnconfirmedServiceRequestWriteGroup {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestWriteGroup {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestWriteGroup); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestWriteGroup(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACne
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestWriteGroup(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestWriteGroup{}
+        return nil
     }
     return castFunc(structType)
 }

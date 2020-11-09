@@ -60,13 +60,13 @@ func NewBVLCOriginalUnicastNPDU(npdu *NPDU, ) *BVLC {
     return child.Parent
 }
 
-func CastBVLCOriginalUnicastNPDU(structType interface{}) BVLCOriginalUnicastNPDU {
-    castFunc := func(typ interface{}) BVLCOriginalUnicastNPDU {
+func CastBVLCOriginalUnicastNPDU(structType interface{}) *BVLCOriginalUnicastNPDU {
+    castFunc := func(typ interface{}) *BVLCOriginalUnicastNPDU {
         if casted, ok := typ.(BVLCOriginalUnicastNPDU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCOriginalUnicastNPDU); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCOriginalUnicastNPDU(casted.Child)
@@ -74,7 +74,7 @@ func CastBVLCOriginalUnicastNPDU(structType interface{}) BVLCOriginalUnicastNPDU
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCOriginalUnicastNPDU(casted.Child)
         }
-        return BVLCOriginalUnicastNPDU{}
+        return nil
     }
     return castFunc(structType)
 }

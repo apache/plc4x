@@ -69,13 +69,13 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
     return child.Parent
 }
 
-func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupCommunication {
-    castFunc := func(typ interface{}) S7ParameterSetupCommunication {
+func CastS7ParameterSetupCommunication(structType interface{}) *S7ParameterSetupCommunication {
+    castFunc := func(typ interface{}) *S7ParameterSetupCommunication {
         if casted, ok := typ.(S7ParameterSetupCommunication); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7ParameterSetupCommunication); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Parameter); ok {
             return CastS7ParameterSetupCommunication(casted.Child)
@@ -83,7 +83,7 @@ func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupC
         if casted, ok := typ.(*S7Parameter); ok {
             return CastS7ParameterSetupCommunication(casted.Child)
         }
-        return S7ParameterSetupCommunication{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -57,13 +57,13 @@ func NewBACnetErrorRemovedAuthenticate() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemovedAuthenticate {
-    castFunc := func(typ interface{}) BACnetErrorRemovedAuthenticate {
+func CastBACnetErrorRemovedAuthenticate(structType interface{}) *BACnetErrorRemovedAuthenticate {
+    castFunc := func(typ interface{}) *BACnetErrorRemovedAuthenticate {
         if casted, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorRemovedAuthenticate); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorRemovedAuthenticate(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemov
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorRemovedAuthenticate(casted.Child)
         }
-        return BACnetErrorRemovedAuthenticate{}
+        return nil
     }
     return castFunc(structType)
 }

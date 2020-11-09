@@ -60,13 +60,13 @@ func NewCOTPParameterDisconnectAdditionalInformation(data []uint8, ) *COTPParame
     return child.Parent
 }
 
-func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) COTPParameterDisconnectAdditionalInformation {
-    castFunc := func(typ interface{}) COTPParameterDisconnectAdditionalInformation {
+func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) *COTPParameterDisconnectAdditionalInformation {
+    castFunc := func(typ interface{}) *COTPParameterDisconnectAdditionalInformation {
         if casted, ok := typ.(COTPParameterDisconnectAdditionalInformation); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPParameterDisconnectAdditionalInformation); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPParameter); ok {
             return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
@@ -74,7 +74,7 @@ func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) CO
         if casted, ok := typ.(*COTPParameter); ok {
             return CastCOTPParameterDisconnectAdditionalInformation(casted.Child)
         }
-        return COTPParameterDisconnectAdditionalInformation{}
+        return nil
     }
     return castFunc(structType)
 }

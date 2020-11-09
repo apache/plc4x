@@ -65,13 +65,13 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8, ) *APD
     return child.Parent
 }
 
-func CastAPDUAbort(structType interface{}) APDUAbort {
-    castFunc := func(typ interface{}) APDUAbort {
+func CastAPDUAbort(structType interface{}) *APDUAbort {
+    castFunc := func(typ interface{}) *APDUAbort {
         if casted, ok := typ.(APDUAbort); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUAbort); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUAbort(casted.Child)
@@ -79,7 +79,7 @@ func CastAPDUAbort(structType interface{}) APDUAbort {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUAbort(casted.Child)
         }
-        return APDUAbort{}
+        return nil
     }
     return castFunc(structType)
 }

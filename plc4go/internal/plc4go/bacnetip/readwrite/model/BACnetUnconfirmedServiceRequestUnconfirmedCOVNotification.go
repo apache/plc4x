@@ -57,13 +57,13 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() *BACnetUncon
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType in
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
+        return nil
     }
     return castFunc(structType)
 }

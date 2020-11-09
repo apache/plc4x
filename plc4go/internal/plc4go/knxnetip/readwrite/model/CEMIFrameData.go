@@ -93,13 +93,13 @@ func NewCEMIFrameData(sourceAddress *KnxAddress, destinationAddress []int8, grou
     return child.Parent
 }
 
-func CastCEMIFrameData(structType interface{}) CEMIFrameData {
-    castFunc := func(typ interface{}) CEMIFrameData {
+func CastCEMIFrameData(structType interface{}) *CEMIFrameData {
+    castFunc := func(typ interface{}) *CEMIFrameData {
         if casted, ok := typ.(CEMIFrameData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIFrameData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIFrame); ok {
             return CastCEMIFrameData(casted.Child)
@@ -107,7 +107,7 @@ func CastCEMIFrameData(structType interface{}) CEMIFrameData {
         if casted, ok := typ.(*CEMIFrame); ok {
             return CastCEMIFrameData(casted.Child)
         }
-        return CEMIFrameData{}
+        return nil
     }
     return castFunc(structType)
 }

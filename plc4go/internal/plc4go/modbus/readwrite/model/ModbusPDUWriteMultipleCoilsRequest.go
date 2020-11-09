@@ -73,13 +73,13 @@ func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint
     return child.Parent
 }
 
-func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWriteMultipleCoilsRequest {
-    castFunc := func(typ interface{}) ModbusPDUWriteMultipleCoilsRequest {
+func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) *ModbusPDUWriteMultipleCoilsRequest {
+    castFunc := func(typ interface{}) *ModbusPDUWriteMultipleCoilsRequest {
         if casted, ok := typ.(ModbusPDUWriteMultipleCoilsRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUWriteMultipleCoilsRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUWriteMultipleCoilsRequest(casted.Child)
@@ -87,7 +87,7 @@ func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWri
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUWriteMultipleCoilsRequest(casted.Child)
         }
-        return ModbusPDUWriteMultipleCoilsRequest{}
+        return nil
     }
     return castFunc(structType)
 }

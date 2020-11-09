@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestRemoveListElement() *BACnetConfirmedService
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestRemoveListElement(structType interface{}) BACnetConfirmedServiceRequestRemoveListElement {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestRemoveListElement {
+func CastBACnetConfirmedServiceRequestRemoveListElement(structType interface{}) *BACnetConfirmedServiceRequestRemoveListElement {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestRemoveListElement {
         if casted, ok := typ.(BACnetConfirmedServiceRequestRemoveListElement); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestRemoveListElement); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestRemoveListElement(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestRemoveListElement(structType interface{}) 
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestRemoveListElement(casted.Child)
         }
-        return BACnetConfirmedServiceRequestRemoveListElement{}
+        return nil
     }
     return castFunc(structType)
 }

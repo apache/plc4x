@@ -20,7 +20,6 @@ package drivers
 
 import (
     "encoding/hex"
-    "fmt"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/transports/udp"
@@ -76,18 +75,18 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     defer connection.Close()
 
     // Prepare a read-request
-    rrb := connection.ReadRequestBuilder()
-    rrb.AddItem("field1", "holding-register:1:REAL")
-    rrb.AddItem("field2", "holding-register:3:REAL")
-    readRequest, err := rrb.Build()
+    srb := connection.SubscriptionRequestBuilder()
+    srb.AddChangeOfStateItem("field1", "*/*/*")
+    srb.AddChangeOfStateItem("field2", "holding-register:3:REAL")
+    subscriptionRequest, err := srb.Build()
     if err != nil {
-        t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+        t.Errorf("error preparing subscription-request: %s", connectionResult.Err.Error())
         t.Fail()
         return
     }
 
-    // Execute a read-request
-    rrc := readRequest.Execute()
+    // Execute a subscription-request
+    rrc := subscriptionRequest.Execute()
 
     // Wait for the response to finish
     rrr := <-rrc
@@ -98,7 +97,7 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     }
 
     // Do something with the response
-    value1 := rrr.Response.GetValue("field1")
+    /*value1 := rrr.Response.GetValue("field1")
     value2 := rrr.Response.GetValue("field2")
     fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
     fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
@@ -126,6 +125,6 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     }
 
     fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
-    fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))
+    fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))*/
 }
 

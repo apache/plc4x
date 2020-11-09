@@ -70,13 +70,13 @@ func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint
     return child.Parent
 }
 
-func CastModbusPDUReadDiscreteInputsRequest(structType interface{}) ModbusPDUReadDiscreteInputsRequest {
-    castFunc := func(typ interface{}) ModbusPDUReadDiscreteInputsRequest {
+func CastModbusPDUReadDiscreteInputsRequest(structType interface{}) *ModbusPDUReadDiscreteInputsRequest {
+    castFunc := func(typ interface{}) *ModbusPDUReadDiscreteInputsRequest {
         if casted, ok := typ.(ModbusPDUReadDiscreteInputsRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUReadDiscreteInputsRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUReadDiscreteInputsRequest(casted.Child)
@@ -84,7 +84,7 @@ func CastModbusPDUReadDiscreteInputsRequest(structType interface{}) ModbusPDURea
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUReadDiscreteInputsRequest(casted.Child)
         }
-        return ModbusPDUReadDiscreteInputsRequest{}
+        return nil
     }
     return castFunc(structType)
 }

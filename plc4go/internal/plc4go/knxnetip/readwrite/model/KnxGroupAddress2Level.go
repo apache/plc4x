@@ -62,13 +62,13 @@ func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16, ) *KnxGroupAddre
     return child.Parent
 }
 
-func CastKnxGroupAddress2Level(structType interface{}) KnxGroupAddress2Level {
-    castFunc := func(typ interface{}) KnxGroupAddress2Level {
+func CastKnxGroupAddress2Level(structType interface{}) *KnxGroupAddress2Level {
+    castFunc := func(typ interface{}) *KnxGroupAddress2Level {
         if casted, ok := typ.(KnxGroupAddress2Level); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxGroupAddress2Level); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxGroupAddress); ok {
             return CastKnxGroupAddress2Level(casted.Child)
@@ -76,7 +76,7 @@ func CastKnxGroupAddress2Level(structType interface{}) KnxGroupAddress2Level {
         if casted, ok := typ.(*KnxGroupAddress); ok {
             return CastKnxGroupAddress2Level(casted.Child)
         }
-        return KnxGroupAddress2Level{}
+        return nil
     }
     return castFunc(structType)
 }

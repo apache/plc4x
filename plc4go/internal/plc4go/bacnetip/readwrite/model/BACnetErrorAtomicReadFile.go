@@ -57,13 +57,13 @@ func NewBACnetErrorAtomicReadFile() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorAtomicReadFile(structType interface{}) BACnetErrorAtomicReadFile {
-    castFunc := func(typ interface{}) BACnetErrorAtomicReadFile {
+func CastBACnetErrorAtomicReadFile(structType interface{}) *BACnetErrorAtomicReadFile {
+    castFunc := func(typ interface{}) *BACnetErrorAtomicReadFile {
         if casted, ok := typ.(BACnetErrorAtomicReadFile); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorAtomicReadFile); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorAtomicReadFile(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorAtomicReadFile(structType interface{}) BACnetErrorAtomicRead
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorAtomicReadFile(casted.Child)
         }
-        return BACnetErrorAtomicReadFile{}
+        return nil
     }
     return castFunc(structType)
 }

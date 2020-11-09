@@ -57,13 +57,13 @@ func NewBACnetErrorVTOpen() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorVTOpen(structType interface{}) BACnetErrorVTOpen {
-    castFunc := func(typ interface{}) BACnetErrorVTOpen {
+func CastBACnetErrorVTOpen(structType interface{}) *BACnetErrorVTOpen {
+    castFunc := func(typ interface{}) *BACnetErrorVTOpen {
         if casted, ok := typ.(BACnetErrorVTOpen); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorVTOpen); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorVTOpen(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorVTOpen(structType interface{}) BACnetErrorVTOpen {
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorVTOpen(casted.Child)
         }
-        return BACnetErrorVTOpen{}
+        return nil
     }
     return castFunc(structType)
 }

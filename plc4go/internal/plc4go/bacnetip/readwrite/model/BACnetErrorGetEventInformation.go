@@ -57,13 +57,13 @@ func NewBACnetErrorGetEventInformation() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorGetEventInformation(structType interface{}) BACnetErrorGetEventInformation {
-    castFunc := func(typ interface{}) BACnetErrorGetEventInformation {
+func CastBACnetErrorGetEventInformation(structType interface{}) *BACnetErrorGetEventInformation {
+    castFunc := func(typ interface{}) *BACnetErrorGetEventInformation {
         if casted, ok := typ.(BACnetErrorGetEventInformation); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorGetEventInformation); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorGetEventInformation(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorGetEventInformation(structType interface{}) BACnetErrorGetEv
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorGetEventInformation(casted.Child)
         }
-        return BACnetErrorGetEventInformation{}
+        return nil
     }
     return castFunc(structType)
 }

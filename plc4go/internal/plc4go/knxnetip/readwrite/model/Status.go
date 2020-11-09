@@ -92,11 +92,14 @@ func (m Status) LengthInBytes() uint16 {
 }
 
 func StatusParse(io *utils.ReadBuffer) (Status, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return StatusValueOf(val), nil
 }
 
 func (e Status) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

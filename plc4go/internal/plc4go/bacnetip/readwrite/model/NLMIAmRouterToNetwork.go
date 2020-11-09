@@ -61,13 +61,13 @@ func NewNLMIAmRouterToNetwork(destinationNetworkAddress []uint16, vendorId *uint
     return child.Parent
 }
 
-func CastNLMIAmRouterToNetwork(structType interface{}) NLMIAmRouterToNetwork {
-    castFunc := func(typ interface{}) NLMIAmRouterToNetwork {
+func CastNLMIAmRouterToNetwork(structType interface{}) *NLMIAmRouterToNetwork {
+    castFunc := func(typ interface{}) *NLMIAmRouterToNetwork {
         if casted, ok := typ.(NLMIAmRouterToNetwork); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*NLMIAmRouterToNetwork); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(NLM); ok {
             return CastNLMIAmRouterToNetwork(casted.Child)
@@ -75,7 +75,7 @@ func CastNLMIAmRouterToNetwork(structType interface{}) NLMIAmRouterToNetwork {
         if casted, ok := typ.(*NLM); ok {
             return CastNLMIAmRouterToNetwork(casted.Child)
         }
-        return NLMIAmRouterToNetwork{}
+        return nil
     }
     return castFunc(structType)
 }

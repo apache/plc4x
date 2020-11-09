@@ -61,13 +61,13 @@ func NewBACnetTagApplicationDate(typeOrTagNumber uint8, lengthValueType uint8, e
     return child.Parent
 }
 
-func CastBACnetTagApplicationDate(structType interface{}) BACnetTagApplicationDate {
-    castFunc := func(typ interface{}) BACnetTagApplicationDate {
+func CastBACnetTagApplicationDate(structType interface{}) *BACnetTagApplicationDate {
+    castFunc := func(typ interface{}) *BACnetTagApplicationDate {
         if casted, ok := typ.(BACnetTagApplicationDate); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationDate); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationDate(casted.Child)
@@ -75,7 +75,7 @@ func CastBACnetTagApplicationDate(structType interface{}) BACnetTagApplicationDa
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationDate(casted.Child)
         }
-        return BACnetTagApplicationDate{}
+        return nil
     }
     return castFunc(structType)
 }

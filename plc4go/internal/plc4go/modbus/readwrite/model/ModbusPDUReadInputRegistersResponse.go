@@ -69,13 +69,13 @@ func NewModbusPDUReadInputRegistersResponse(value []int8, ) *ModbusPDU {
     return child.Parent
 }
 
-func CastModbusPDUReadInputRegistersResponse(structType interface{}) ModbusPDUReadInputRegistersResponse {
-    castFunc := func(typ interface{}) ModbusPDUReadInputRegistersResponse {
+func CastModbusPDUReadInputRegistersResponse(structType interface{}) *ModbusPDUReadInputRegistersResponse {
+    castFunc := func(typ interface{}) *ModbusPDUReadInputRegistersResponse {
         if casted, ok := typ.(ModbusPDUReadInputRegistersResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUReadInputRegistersResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUReadInputRegistersResponse(casted.Child)
@@ -83,7 +83,7 @@ func CastModbusPDUReadInputRegistersResponse(structType interface{}) ModbusPDURe
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUReadInputRegistersResponse(casted.Child)
         }
-        return ModbusPDUReadInputRegistersResponse{}
+        return nil
     }
     return castFunc(structType)
 }

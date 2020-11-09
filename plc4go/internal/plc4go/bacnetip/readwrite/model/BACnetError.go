@@ -57,15 +57,15 @@ func NewBACnetError() *BACnetError {
     return &BACnetError{}
 }
 
-func CastBACnetError(structType interface{}) BACnetError {
-    castFunc := func(typ interface{}) BACnetError {
+func CastBACnetError(structType interface{}) *BACnetError {
+    castFunc := func(typ interface{}) *BACnetError {
         if casted, ok := typ.(BACnetError); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetError); ok {
-            return *casted
+            return casted
         }
-        return BACnetError{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -61,13 +61,13 @@ func NewUnknownMessage(unknownData []int8, ) *KnxNetIpMessage {
     return child.Parent
 }
 
-func CastUnknownMessage(structType interface{}) UnknownMessage {
-    castFunc := func(typ interface{}) UnknownMessage {
+func CastUnknownMessage(structType interface{}) *UnknownMessage {
+    castFunc := func(typ interface{}) *UnknownMessage {
         if casted, ok := typ.(UnknownMessage); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*UnknownMessage); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastUnknownMessage(casted.Child)
@@ -75,7 +75,7 @@ func CastUnknownMessage(structType interface{}) UnknownMessage {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastUnknownMessage(casted.Child)
         }
-        return UnknownMessage{}
+        return nil
     }
     return castFunc(structType)
 }

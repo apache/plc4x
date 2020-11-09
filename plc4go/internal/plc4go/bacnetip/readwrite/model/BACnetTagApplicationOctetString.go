@@ -61,13 +61,13 @@ func NewBACnetTagApplicationOctetString(typeOrTagNumber uint8, lengthValueType u
     return child.Parent
 }
 
-func CastBACnetTagApplicationOctetString(structType interface{}) BACnetTagApplicationOctetString {
-    castFunc := func(typ interface{}) BACnetTagApplicationOctetString {
+func CastBACnetTagApplicationOctetString(structType interface{}) *BACnetTagApplicationOctetString {
+    castFunc := func(typ interface{}) *BACnetTagApplicationOctetString {
         if casted, ok := typ.(BACnetTagApplicationOctetString); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationOctetString); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationOctetString(casted.Child)
@@ -75,7 +75,7 @@ func CastBACnetTagApplicationOctetString(structType interface{}) BACnetTagApplic
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationOctetString(casted.Child)
         }
-        return BACnetTagApplicationOctetString{}
+        return nil
     }
     return castFunc(structType)
 }

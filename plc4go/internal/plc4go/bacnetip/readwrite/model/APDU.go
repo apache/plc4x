@@ -57,15 +57,15 @@ func NewAPDU() *APDU {
     return &APDU{}
 }
 
-func CastAPDU(structType interface{}) APDU {
-    castFunc := func(typ interface{}) APDU {
+func CastAPDU(structType interface{}) *APDU {
+    castFunc := func(typ interface{}) *APDU {
         if casted, ok := typ.(APDU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDU); ok {
-            return *casted
+            return casted
         }
-        return APDU{}
+        return nil
     }
     return castFunc(structType)
 }

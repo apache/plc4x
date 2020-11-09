@@ -65,13 +65,13 @@ func NewModbusPDUReportServerIdRequest() *ModbusPDU {
     return child.Parent
 }
 
-func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportServerIdRequest {
-    castFunc := func(typ interface{}) ModbusPDUReportServerIdRequest {
+func CastModbusPDUReportServerIdRequest(structType interface{}) *ModbusPDUReportServerIdRequest {
+    castFunc := func(typ interface{}) *ModbusPDUReportServerIdRequest {
         if casted, ok := typ.(ModbusPDUReportServerIdRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUReportServerIdRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUReportServerIdRequest(casted.Child)
@@ -79,7 +79,7 @@ func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportS
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUReportServerIdRequest(casted.Child)
         }
-        return ModbusPDUReportServerIdRequest{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -64,13 +64,13 @@ func NewCEMIDataCon(additionalInformationLength uint8, additionalInformation []*
     return child.Parent
 }
 
-func CastCEMIDataCon(structType interface{}) CEMIDataCon {
-    castFunc := func(typ interface{}) CEMIDataCon {
+func CastCEMIDataCon(structType interface{}) *CEMIDataCon {
+    castFunc := func(typ interface{}) *CEMIDataCon {
         if casted, ok := typ.(CEMIDataCon); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIDataCon); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIDataCon(casted.Child)
@@ -78,7 +78,7 @@ func CastCEMIDataCon(structType interface{}) CEMIDataCon {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIDataCon(casted.Child)
         }
-        return CEMIDataCon{}
+        return nil
     }
     return castFunc(structType)
 }

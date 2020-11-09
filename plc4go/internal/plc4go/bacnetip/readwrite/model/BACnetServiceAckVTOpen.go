@@ -57,13 +57,13 @@ func NewBACnetServiceAckVTOpen() *BACnetServiceAck {
     return child.Parent
 }
 
-func CastBACnetServiceAckVTOpen(structType interface{}) BACnetServiceAckVTOpen {
-    castFunc := func(typ interface{}) BACnetServiceAckVTOpen {
+func CastBACnetServiceAckVTOpen(structType interface{}) *BACnetServiceAckVTOpen {
+    castFunc := func(typ interface{}) *BACnetServiceAckVTOpen {
         if casted, ok := typ.(BACnetServiceAckVTOpen); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckVTOpen); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckVTOpen(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetServiceAckVTOpen(structType interface{}) BACnetServiceAckVTOpen {
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckVTOpen(casted.Child)
         }
-        return BACnetServiceAckVTOpen{}
+        return nil
     }
     return castFunc(structType)
 }

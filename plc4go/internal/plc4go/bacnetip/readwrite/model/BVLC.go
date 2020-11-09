@@ -61,15 +61,15 @@ func NewBVLC() *BVLC {
     return &BVLC{}
 }
 
-func CastBVLC(structType interface{}) BVLC {
-    castFunc := func(typ interface{}) BVLC {
+func CastBVLC(structType interface{}) *BVLC {
+    castFunc := func(typ interface{}) *BVLC {
         if casted, ok := typ.(BVLC); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLC); ok {
-            return *casted
+            return casted
         }
-        return BVLC{}
+        return nil
     }
     return castFunc(structType)
 }

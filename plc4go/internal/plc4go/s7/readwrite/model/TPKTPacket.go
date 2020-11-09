@@ -48,15 +48,15 @@ func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
     return &TPKTPacket{Payload: payload}
 }
 
-func CastTPKTPacket(structType interface{}) TPKTPacket {
-    castFunc := func(typ interface{}) TPKTPacket {
+func CastTPKTPacket(structType interface{}) *TPKTPacket {
+    castFunc := func(typ interface{}) *TPKTPacket {
         if casted, ok := typ.(TPKTPacket); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*TPKTPacket); ok {
-            return *casted
+            return casted
         }
-        return TPKTPacket{}
+        return nil
     }
     return castFunc(structType)
 }

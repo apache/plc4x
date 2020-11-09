@@ -285,7 +285,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             throw new RuntimeException("Couldn't find given enum type definition with name " + complexTypeReference.getName());
         }
         if(!(typeDefinition instanceof EnumTypeDefinition)) {
-            throw new RuntimeException("Referenced tpye with name " + complexTypeReference.getName() + " is not an enum type");
+            throw new RuntimeException("Referenced type with name " + complexTypeReference.getName() + " is not an enum type");
         }
         EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) typeDefinition;
         // Enum types always have simple type references.

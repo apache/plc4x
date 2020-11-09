@@ -69,13 +69,13 @@ func NewCEMIFrameAck(repeated bool, priority CEMIPriority, acknowledgeRequested 
     return child.Parent
 }
 
-func CastCEMIFrameAck(structType interface{}) CEMIFrameAck {
-    castFunc := func(typ interface{}) CEMIFrameAck {
+func CastCEMIFrameAck(structType interface{}) *CEMIFrameAck {
+    castFunc := func(typ interface{}) *CEMIFrameAck {
         if casted, ok := typ.(CEMIFrameAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIFrameAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIFrame); ok {
             return CastCEMIFrameAck(casted.Child)
@@ -83,7 +83,7 @@ func CastCEMIFrameAck(structType interface{}) CEMIFrameAck {
         if casted, ok := typ.(*CEMIFrame); ok {
             return CastCEMIFrameAck(casted.Child)
         }
-        return CEMIFrameAck{}
+        return nil
     }
     return castFunc(structType)
 }

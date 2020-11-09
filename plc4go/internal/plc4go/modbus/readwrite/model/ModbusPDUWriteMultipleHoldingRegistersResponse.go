@@ -70,13 +70,13 @@ func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, q
     return child.Parent
 }
 
-func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) ModbusPDUWriteMultipleHoldingRegistersResponse {
-    castFunc := func(typ interface{}) ModbusPDUWriteMultipleHoldingRegistersResponse {
+func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) *ModbusPDUWriteMultipleHoldingRegistersResponse {
+    castFunc := func(typ interface{}) *ModbusPDUWriteMultipleHoldingRegistersResponse {
         if casted, ok := typ.(ModbusPDUWriteMultipleHoldingRegistersResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUWriteMultipleHoldingRegistersResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUWriteMultipleHoldingRegistersResponse(casted.Child)
@@ -84,7 +84,7 @@ func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) 
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUWriteMultipleHoldingRegistersResponse(casted.Child)
         }
-        return ModbusPDUWriteMultipleHoldingRegistersResponse{}
+        return nil
     }
     return castFunc(structType)
 }

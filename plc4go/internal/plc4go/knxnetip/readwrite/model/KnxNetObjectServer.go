@@ -60,13 +60,13 @@ func NewKnxNetObjectServer(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
-    castFunc := func(typ interface{}) KnxNetObjectServer {
+func CastKnxNetObjectServer(structType interface{}) *KnxNetObjectServer {
+    castFunc := func(typ interface{}) *KnxNetObjectServer {
         if casted, ok := typ.(KnxNetObjectServer); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetObjectServer); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetObjectServer(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetObjectServer(casted.Child)
         }
-        return KnxNetObjectServer{}
+        return nil
     }
     return castFunc(structType)
 }

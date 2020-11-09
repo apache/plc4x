@@ -64,13 +64,13 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint *HPAIDiscoveryEndpoint, hpaiData
     return child.Parent
 }
 
-func CastConnectionRequest(structType interface{}) ConnectionRequest {
-    castFunc := func(typ interface{}) ConnectionRequest {
+func CastConnectionRequest(structType interface{}) *ConnectionRequest {
+    castFunc := func(typ interface{}) *ConnectionRequest {
         if casted, ok := typ.(ConnectionRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastConnectionRequest(casted.Child)
@@ -78,7 +78,7 @@ func CastConnectionRequest(structType interface{}) ConnectionRequest {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastConnectionRequest(casted.Child)
         }
-        return ConnectionRequest{}
+        return nil
     }
     return castFunc(structType)
 }

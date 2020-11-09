@@ -64,13 +64,13 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp *RelativeTi
     return child.Parent
 }
 
-func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMIAdditionalInformationRelativeTimestamp {
-    castFunc := func(typ interface{}) CEMIAdditionalInformationRelativeTimestamp {
+func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) *CEMIAdditionalInformationRelativeTimestamp {
+    castFunc := func(typ interface{}) *CEMIAdditionalInformationRelativeTimestamp {
         if casted, ok := typ.(CEMIAdditionalInformationRelativeTimestamp); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIAdditionalInformationRelativeTimestamp); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIAdditionalInformation); ok {
             return CastCEMIAdditionalInformationRelativeTimestamp(casted.Child)
@@ -78,7 +78,7 @@ func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMI
         if casted, ok := typ.(*CEMIAdditionalInformation); ok {
             return CastCEMIAdditionalInformationRelativeTimestamp(casted.Child)
         }
-        return CEMIAdditionalInformationRelativeTimestamp{}
+        return nil
     }
     return castFunc(structType)
 }

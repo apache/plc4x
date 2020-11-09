@@ -63,13 +63,13 @@ func NewAPDUError(originalInvokeId uint8, error *BACnetError, ) *APDU {
     return child.Parent
 }
 
-func CastAPDUError(structType interface{}) APDUError {
-    castFunc := func(typ interface{}) APDUError {
+func CastAPDUError(structType interface{}) *APDUError {
+    castFunc := func(typ interface{}) *APDUError {
         if casted, ok := typ.(APDUError); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUError); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUError(casted.Child)
@@ -77,7 +77,7 @@ func CastAPDUError(structType interface{}) APDUError {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUError(casted.Child)
         }
-        return APDUError{}
+        return nil
     }
     return castFunc(structType)
 }

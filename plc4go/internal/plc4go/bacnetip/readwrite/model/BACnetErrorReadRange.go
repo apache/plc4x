@@ -57,13 +57,13 @@ func NewBACnetErrorReadRange() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
-    castFunc := func(typ interface{}) BACnetErrorReadRange {
+func CastBACnetErrorReadRange(structType interface{}) *BACnetErrorReadRange {
+    castFunc := func(typ interface{}) *BACnetErrorReadRange {
         if casted, ok := typ.(BACnetErrorReadRange); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorReadRange); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorReadRange(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorReadRange(casted.Child)
         }
-        return BACnetErrorReadRange{}
+        return nil
     }
     return castFunc(structType)
 }

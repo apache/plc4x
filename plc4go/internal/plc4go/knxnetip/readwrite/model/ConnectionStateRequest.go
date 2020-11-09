@@ -63,13 +63,13 @@ func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint
     return child.Parent
 }
 
-func CastConnectionStateRequest(structType interface{}) ConnectionStateRequest {
-    castFunc := func(typ interface{}) ConnectionStateRequest {
+func CastConnectionStateRequest(structType interface{}) *ConnectionStateRequest {
+    castFunc := func(typ interface{}) *ConnectionStateRequest {
         if casted, ok := typ.(ConnectionStateRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionStateRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastConnectionStateRequest(casted.Child)
@@ -77,7 +77,7 @@ func CastConnectionStateRequest(structType interface{}) ConnectionStateRequest {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastConnectionStateRequest(casted.Child)
         }
-        return ConnectionStateRequest{}
+        return nil
     }
     return castFunc(structType)
 }

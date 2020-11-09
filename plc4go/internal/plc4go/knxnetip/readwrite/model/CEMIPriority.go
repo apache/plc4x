@@ -68,11 +68,14 @@ func (m CEMIPriority) LengthInBytes() uint16 {
 }
 
 func CEMIPriorityParse(io *utils.ReadBuffer) (CEMIPriority, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(2)
+    if err != nil {
+        return 0, nil
+    }
+    return CEMIPriorityValueOf(val), nil
 }
 
 func (e CEMIPriority) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(2, uint8(e))
+    return err
 }

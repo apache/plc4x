@@ -60,13 +60,13 @@ func NewCOTPParameterChecksum(crc uint8, ) *COTPParameter {
     return child.Parent
 }
 
-func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
-    castFunc := func(typ interface{}) COTPParameterChecksum {
+func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {
+    castFunc := func(typ interface{}) *COTPParameterChecksum {
         if casted, ok := typ.(COTPParameterChecksum); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPParameterChecksum); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPParameter); ok {
             return CastCOTPParameterChecksum(casted.Child)
@@ -74,7 +74,7 @@ func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
         if casted, ok := typ.(*COTPParameter); ok {
             return CastCOTPParameterChecksum(casted.Child)
         }
-        return COTPParameterChecksum{}
+        return nil
     }
     return castFunc(structType)
 }

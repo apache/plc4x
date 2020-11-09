@@ -71,11 +71,14 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
 }
 
 func COTPProtocolClassParse(io *utils.ReadBuffer) (COTPProtocolClass, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadInt8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return COTPProtocolClassValueOf(val), nil
 }
 
 func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteInt8(8, int8(e))
+    return err
 }

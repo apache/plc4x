@@ -64,13 +64,13 @@ func NewS7PayloadReadVarResponse(items []*S7VarPayloadDataItem, ) *S7Payload {
     return child.Parent
 }
 
-func CastS7PayloadReadVarResponse(structType interface{}) S7PayloadReadVarResponse {
-    castFunc := func(typ interface{}) S7PayloadReadVarResponse {
+func CastS7PayloadReadVarResponse(structType interface{}) *S7PayloadReadVarResponse {
+    castFunc := func(typ interface{}) *S7PayloadReadVarResponse {
         if casted, ok := typ.(S7PayloadReadVarResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7PayloadReadVarResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Payload); ok {
             return CastS7PayloadReadVarResponse(casted.Child)
@@ -78,7 +78,7 @@ func CastS7PayloadReadVarResponse(structType interface{}) S7PayloadReadVarRespon
         if casted, ok := typ.(*S7Payload); ok {
             return CastS7PayloadReadVarResponse(casted.Child)
         }
-        return S7PayloadReadVarResponse{}
+        return nil
     }
     return castFunc(structType)
 }

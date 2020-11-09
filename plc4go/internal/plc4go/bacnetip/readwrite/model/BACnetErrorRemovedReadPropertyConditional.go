@@ -57,13 +57,13 @@ func NewBACnetErrorRemovedReadPropertyConditional() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) BACnetErrorRemovedReadPropertyConditional {
-    castFunc := func(typ interface{}) BACnetErrorRemovedReadPropertyConditional {
+func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) *BACnetErrorRemovedReadPropertyConditional {
+    castFunc := func(typ interface{}) *BACnetErrorRemovedReadPropertyConditional {
         if casted, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorRemovedReadPropertyConditional); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorRemovedReadPropertyConditional(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) BACne
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorRemovedReadPropertyConditional(casted.Child)
         }
-        return BACnetErrorRemovedReadPropertyConditional{}
+        return nil
     }
     return castFunc(structType)
 }

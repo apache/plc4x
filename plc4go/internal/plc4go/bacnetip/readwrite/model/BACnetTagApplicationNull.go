@@ -61,13 +61,13 @@ func NewBACnetTagApplicationNull(typeOrTagNumber uint8, lengthValueType uint8, e
     return child.Parent
 }
 
-func CastBACnetTagApplicationNull(structType interface{}) BACnetTagApplicationNull {
-    castFunc := func(typ interface{}) BACnetTagApplicationNull {
+func CastBACnetTagApplicationNull(structType interface{}) *BACnetTagApplicationNull {
+    castFunc := func(typ interface{}) *BACnetTagApplicationNull {
         if casted, ok := typ.(BACnetTagApplicationNull); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationNull); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationNull(casted.Child)
@@ -75,7 +75,7 @@ func CastBACnetTagApplicationNull(structType interface{}) BACnetTagApplicationNu
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationNull(casted.Child)
         }
-        return BACnetTagApplicationNull{}
+        return nil
     }
     return castFunc(structType)
 }

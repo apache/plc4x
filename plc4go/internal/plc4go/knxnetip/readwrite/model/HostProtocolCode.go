@@ -62,11 +62,14 @@ func (m HostProtocolCode) LengthInBytes() uint16 {
 }
 
 func HostProtocolCodeParse(io *utils.ReadBuffer) (HostProtocolCode, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return HostProtocolCodeValueOf(val), nil
 }
 
 func (e HostProtocolCode) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

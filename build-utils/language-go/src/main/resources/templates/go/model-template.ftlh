@@ -175,13 +175,13 @@ func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if
 </#if>
 }
 
-func Cast${type.name}(structType interface{}) ${type.name} {
-    castFunc := func(typ interface{}) ${type.name} {
+func Cast${type.name}(structType interface{}) *${type.name} {
+    castFunc := func(typ interface{}) *${type.name} {
         if casted, ok := typ.(${type.name}); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*${type.name}); ok {
-            return *casted
+            return casted
         }
     <#if type.parentType?has_content>
         if casted, ok := typ.(${type.parentType.name}); ok {
@@ -191,7 +191,7 @@ func Cast${type.name}(structType interface{}) ${type.name} {
             return Cast${type.name}(casted.Child)
         }
     </#if>
-        return ${type.name}{}
+        return nil
     }
     return castFunc(structType)
 }

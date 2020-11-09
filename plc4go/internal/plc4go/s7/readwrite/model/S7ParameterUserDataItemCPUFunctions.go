@@ -74,13 +74,13 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
     return child.Parent
 }
 
-func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
-    castFunc := func(typ interface{}) S7ParameterUserDataItemCPUFunctions {
+func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) *S7ParameterUserDataItemCPUFunctions {
+    castFunc := func(typ interface{}) *S7ParameterUserDataItemCPUFunctions {
         if casted, ok := typ.(S7ParameterUserDataItemCPUFunctions); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7ParameterUserDataItemCPUFunctions); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7ParameterUserDataItem); ok {
             return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
@@ -88,7 +88,7 @@ func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7Parameter
         if casted, ok := typ.(*S7ParameterUserDataItem); ok {
             return CastS7ParameterUserDataItemCPUFunctions(casted.Child)
         }
-        return S7ParameterUserDataItemCPUFunctions{}
+        return nil
     }
     return castFunc(structType)
 }

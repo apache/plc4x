@@ -84,13 +84,13 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
+func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestConfirmedCOVNotification {
         if casted, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
@@ -98,7 +98,7 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interf
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestConfirmedCOVNotification(casted.Child)
         }
-        return BACnetConfirmedServiceRequestConfirmedCOVNotification{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -233,11 +233,14 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
 }
 
 func BACnetObjectTypeParse(io *utils.ReadBuffer) (BACnetObjectType, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint16(10)
+    if err != nil {
+        return 0, nil
+    }
+    return BACnetObjectTypeValueOf(val), nil
 }
 
 func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint16(10, uint16(e))
+    return err
 }

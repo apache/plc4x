@@ -57,13 +57,13 @@ func NewBVLCReadBroadcastDistributionTable() *BVLC {
     return child.Parent
 }
 
-func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroadcastDistributionTable {
-    castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTable {
+func CastBVLCReadBroadcastDistributionTable(structType interface{}) *BVLCReadBroadcastDistributionTable {
+    castFunc := func(typ interface{}) *BVLCReadBroadcastDistributionTable {
         if casted, ok := typ.(BVLCReadBroadcastDistributionTable); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCReadBroadcastDistributionTable); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCReadBroadcastDistributionTable(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroa
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCReadBroadcastDistributionTable(casted.Child)
         }
-        return BVLCReadBroadcastDistributionTable{}
+        return nil
     }
     return castFunc(structType)
 }

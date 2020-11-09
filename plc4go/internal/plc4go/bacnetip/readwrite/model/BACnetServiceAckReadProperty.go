@@ -76,13 +76,13 @@ func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uin
     return child.Parent
 }
 
-func CastBACnetServiceAckReadProperty(structType interface{}) BACnetServiceAckReadProperty {
-    castFunc := func(typ interface{}) BACnetServiceAckReadProperty {
+func CastBACnetServiceAckReadProperty(structType interface{}) *BACnetServiceAckReadProperty {
+    castFunc := func(typ interface{}) *BACnetServiceAckReadProperty {
         if casted, ok := typ.(BACnetServiceAckReadProperty); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckReadProperty); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckReadProperty(casted.Child)
@@ -90,7 +90,7 @@ func CastBACnetServiceAckReadProperty(structType interface{}) BACnetServiceAckRe
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckReadProperty(casted.Child)
         }
-        return BACnetServiceAckReadProperty{}
+        return nil
     }
     return castFunc(structType)
 }

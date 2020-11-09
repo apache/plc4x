@@ -57,13 +57,13 @@ func NewCEMIPollDataReq() *CEMI {
     return child.Parent
 }
 
-func CastCEMIPollDataReq(structType interface{}) CEMIPollDataReq {
-    castFunc := func(typ interface{}) CEMIPollDataReq {
+func CastCEMIPollDataReq(structType interface{}) *CEMIPollDataReq {
+    castFunc := func(typ interface{}) *CEMIPollDataReq {
         if casted, ok := typ.(CEMIPollDataReq); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIPollDataReq); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIPollDataReq(casted.Child)
@@ -71,7 +71,7 @@ func CastCEMIPollDataReq(structType interface{}) CEMIPollDataReq {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIPollDataReq(casted.Child)
         }
-        return CEMIPollDataReq{}
+        return nil
     }
     return castFunc(structType)
 }

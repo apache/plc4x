@@ -65,13 +65,13 @@ func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
     return child.Parent
 }
 
-func CastModbusPDUReadExceptionStatusRequest(structType interface{}) ModbusPDUReadExceptionStatusRequest {
-    castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusRequest {
+func CastModbusPDUReadExceptionStatusRequest(structType interface{}) *ModbusPDUReadExceptionStatusRequest {
+    castFunc := func(typ interface{}) *ModbusPDUReadExceptionStatusRequest {
         if casted, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUReadExceptionStatusRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUReadExceptionStatusRequest(casted.Child)
@@ -79,7 +79,7 @@ func CastModbusPDUReadExceptionStatusRequest(structType interface{}) ModbusPDURe
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUReadExceptionStatusRequest(casted.Child)
         }
-        return ModbusPDUReadExceptionStatusRequest{}
+        return nil
     }
     return castFunc(structType)
 }

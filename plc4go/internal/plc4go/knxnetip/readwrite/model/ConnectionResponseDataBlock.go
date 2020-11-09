@@ -57,15 +57,15 @@ func NewConnectionResponseDataBlock() *ConnectionResponseDataBlock {
     return &ConnectionResponseDataBlock{}
 }
 
-func CastConnectionResponseDataBlock(structType interface{}) ConnectionResponseDataBlock {
-    castFunc := func(typ interface{}) ConnectionResponseDataBlock {
+func CastConnectionResponseDataBlock(structType interface{}) *ConnectionResponseDataBlock {
+    castFunc := func(typ interface{}) *ConnectionResponseDataBlock {
         if casted, ok := typ.(ConnectionResponseDataBlock); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
-            return *casted
+            return casted
         }
-        return ConnectionResponseDataBlock{}
+        return nil
     }
     return castFunc(structType)
 }

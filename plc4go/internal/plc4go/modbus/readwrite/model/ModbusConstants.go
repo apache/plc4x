@@ -46,15 +46,15 @@ func NewModbusConstants() *ModbusConstants {
     return &ModbusConstants{}
 }
 
-func CastModbusConstants(structType interface{}) ModbusConstants {
-    castFunc := func(typ interface{}) ModbusConstants {
+func CastModbusConstants(structType interface{}) *ModbusConstants {
+    castFunc := func(typ interface{}) *ModbusConstants {
         if casted, ok := typ.(ModbusConstants); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusConstants); ok {
-            return *casted
+            return casted
         }
-        return ModbusConstants{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -65,15 +65,15 @@ func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Paylo
     return &S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
 }
 
-func CastS7Message(structType interface{}) S7Message {
-    castFunc := func(typ interface{}) S7Message {
+func CastS7Message(structType interface{}) *S7Message {
+    castFunc := func(typ interface{}) *S7Message {
         if casted, ok := typ.(S7Message); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7Message); ok {
-            return *casted
+            return casted
         }
-        return S7Message{}
+        return nil
     }
     return castFunc(structType)
 }

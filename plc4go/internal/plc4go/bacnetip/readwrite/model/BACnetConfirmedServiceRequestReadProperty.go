@@ -72,13 +72,13 @@ func NewBACnetConfirmedServiceRequestReadProperty(objectType uint16, objectInsta
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) BACnetConfirmedServiceRequestReadProperty {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadProperty {
+func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) *BACnetConfirmedServiceRequestReadProperty {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestReadProperty {
         if casted, ok := typ.(BACnetConfirmedServiceRequestReadProperty); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestReadProperty); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestReadProperty(casted.Child)
@@ -86,7 +86,7 @@ func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) BACne
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestReadProperty(casted.Child)
         }
-        return BACnetConfirmedServiceRequestReadProperty{}
+        return nil
     }
     return castFunc(structType)
 }

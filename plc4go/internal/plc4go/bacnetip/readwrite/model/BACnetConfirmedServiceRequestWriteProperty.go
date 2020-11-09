@@ -78,13 +78,13 @@ func NewBACnetConfirmedServiceRequestWriteProperty(objectType uint16, objectInst
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) BACnetConfirmedServiceRequestWriteProperty {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestWriteProperty {
+func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) *BACnetConfirmedServiceRequestWriteProperty {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestWriteProperty {
         if casted, ok := typ.(BACnetConfirmedServiceRequestWriteProperty); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestWriteProperty); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestWriteProperty(casted.Child)
@@ -92,7 +92,7 @@ func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) BACn
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestWriteProperty(casted.Child)
         }
-        return BACnetConfirmedServiceRequestWriteProperty{}
+        return nil
     }
     return castFunc(structType)
 }

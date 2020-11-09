@@ -95,13 +95,13 @@ func NewCEMIFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat 
     return child.Parent
 }
 
-func CastCEMIFrameDataExt(structType interface{}) CEMIFrameDataExt {
-    castFunc := func(typ interface{}) CEMIFrameDataExt {
+func CastCEMIFrameDataExt(structType interface{}) *CEMIFrameDataExt {
+    castFunc := func(typ interface{}) *CEMIFrameDataExt {
         if casted, ok := typ.(CEMIFrameDataExt); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIFrameDataExt); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIFrame); ok {
             return CastCEMIFrameDataExt(casted.Child)
@@ -109,7 +109,7 @@ func CastCEMIFrameDataExt(structType interface{}) CEMIFrameDataExt {
         if casted, ok := typ.(*CEMIFrame); ok {
             return CastCEMIFrameDataExt(casted.Child)
         }
-        return CEMIFrameDataExt{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -57,15 +57,15 @@ func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
     return &S7VarRequestParameterItem{}
 }
 
-func CastS7VarRequestParameterItem(structType interface{}) S7VarRequestParameterItem {
-    castFunc := func(typ interface{}) S7VarRequestParameterItem {
+func CastS7VarRequestParameterItem(structType interface{}) *S7VarRequestParameterItem {
+    castFunc := func(typ interface{}) *S7VarRequestParameterItem {
         if casted, ok := typ.(S7VarRequestParameterItem); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7VarRequestParameterItem); ok {
-            return *casted
+            return casted
         }
-        return S7VarRequestParameterItem{}
+        return nil
     }
     return castFunc(structType)
 }

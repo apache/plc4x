@@ -124,7 +124,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			// Convert the response into an ADU
 			responseAdu := modbusModel.CastModbusTcpADU(response)
 			// Convert the modbus response into a PLC4X response
-			readResponse, err := m.ToPlc4xReadResponse(responseAdu, readRequest)
+			readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
 
 			if err != nil {
 				result <- model.PlcReadRequestResult{

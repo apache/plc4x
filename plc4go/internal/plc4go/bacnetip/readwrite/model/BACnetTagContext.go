@@ -65,13 +65,13 @@ func NewBACnetTagContext(data []int8, typeOrTagNumber uint8, lengthValueType uin
     return child.Parent
 }
 
-func CastBACnetTagContext(structType interface{}) BACnetTagContext {
-    castFunc := func(typ interface{}) BACnetTagContext {
+func CastBACnetTagContext(structType interface{}) *BACnetTagContext {
+    castFunc := func(typ interface{}) *BACnetTagContext {
         if casted, ok := typ.(BACnetTagContext); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagContext); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagContext(casted.Child)
@@ -79,7 +79,7 @@ func CastBACnetTagContext(structType interface{}) BACnetTagContext {
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagContext(casted.Child)
         }
-        return BACnetTagContext{}
+        return nil
     }
     return castFunc(structType)
 }
