@@ -95,11 +95,14 @@ func (m ApplicationTag) LengthInBytes() uint16 {
 }
 
 func ApplicationTagParse(io *utils.ReadBuffer) (ApplicationTag, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadInt8(4)
+    if err != nil {
+        return 0, nil
+    }
+    return ApplicationTagValueOf(val), nil
 }
 
 func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteInt8(4, int8(e))
+    return err
 }

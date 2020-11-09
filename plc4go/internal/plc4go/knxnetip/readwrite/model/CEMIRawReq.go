@@ -57,13 +57,13 @@ func NewCEMIRawReq() *CEMI {
     return child.Parent
 }
 
-func CastCEMIRawReq(structType interface{}) CEMIRawReq {
-    castFunc := func(typ interface{}) CEMIRawReq {
+func CastCEMIRawReq(structType interface{}) *CEMIRawReq {
+    castFunc := func(typ interface{}) *CEMIRawReq {
         if casted, ok := typ.(CEMIRawReq); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIRawReq); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIRawReq(casted.Child)
@@ -71,7 +71,7 @@ func CastCEMIRawReq(structType interface{}) CEMIRawReq {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIRawReq(casted.Child)
         }
-        return CEMIRawReq{}
+        return nil
     }
     return castFunc(structType)
 }

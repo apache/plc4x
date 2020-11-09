@@ -57,13 +57,13 @@ func NewBACnetServiceAckReadRange() *BACnetServiceAck {
     return child.Parent
 }
 
-func CastBACnetServiceAckReadRange(structType interface{}) BACnetServiceAckReadRange {
-    castFunc := func(typ interface{}) BACnetServiceAckReadRange {
+func CastBACnetServiceAckReadRange(structType interface{}) *BACnetServiceAckReadRange {
+    castFunc := func(typ interface{}) *BACnetServiceAckReadRange {
         if casted, ok := typ.(BACnetServiceAckReadRange); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckReadRange); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckReadRange(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetServiceAckReadRange(structType interface{}) BACnetServiceAckReadR
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckReadRange(casted.Child)
         }
-        return BACnetServiceAckReadRange{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -61,13 +61,13 @@ func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer, ) *Conne
     return child.Parent
 }
 
-func CastConnectionRequestInformationTunnelConnection(structType interface{}) ConnectionRequestInformationTunnelConnection {
-    castFunc := func(typ interface{}) ConnectionRequestInformationTunnelConnection {
+func CastConnectionRequestInformationTunnelConnection(structType interface{}) *ConnectionRequestInformationTunnelConnection {
+    castFunc := func(typ interface{}) *ConnectionRequestInformationTunnelConnection {
         if casted, ok := typ.(ConnectionRequestInformationTunnelConnection); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionRequestInformationTunnelConnection); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ConnectionRequestInformation); ok {
             return CastConnectionRequestInformationTunnelConnection(casted.Child)
@@ -75,7 +75,7 @@ func CastConnectionRequestInformationTunnelConnection(structType interface{}) Co
         if casted, ok := typ.(*ConnectionRequestInformation); ok {
             return CastConnectionRequestInformationTunnelConnection(casted.Child)
         }
-        return ConnectionRequestInformationTunnelConnection{}
+        return nil
     }
     return castFunc(structType)
 }

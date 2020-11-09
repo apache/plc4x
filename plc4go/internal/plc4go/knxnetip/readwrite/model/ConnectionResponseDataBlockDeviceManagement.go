@@ -57,13 +57,13 @@ func NewConnectionResponseDataBlockDeviceManagement() *ConnectionResponseDataBlo
     return child.Parent
 }
 
-func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) ConnectionResponseDataBlockDeviceManagement {
-    castFunc := func(typ interface{}) ConnectionResponseDataBlockDeviceManagement {
+func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) *ConnectionResponseDataBlockDeviceManagement {
+    castFunc := func(typ interface{}) *ConnectionResponseDataBlockDeviceManagement {
         if casted, ok := typ.(ConnectionResponseDataBlockDeviceManagement); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionResponseDataBlockDeviceManagement); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ConnectionResponseDataBlock); ok {
             return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
@@ -71,7 +71,7 @@ func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) Con
         if casted, ok := typ.(*ConnectionResponseDataBlock); ok {
             return CastConnectionResponseDataBlockDeviceManagement(casted.Child)
         }
-        return ConnectionResponseDataBlockDeviceManagement{}
+        return nil
     }
     return castFunc(structType)
 }

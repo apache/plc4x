@@ -58,15 +58,15 @@ func NewS7Parameter() *S7Parameter {
     return &S7Parameter{}
 }
 
-func CastS7Parameter(structType interface{}) S7Parameter {
-    castFunc := func(typ interface{}) S7Parameter {
+func CastS7Parameter(structType interface{}) *S7Parameter {
+    castFunc := func(typ interface{}) *S7Parameter {
         if casted, ok := typ.(S7Parameter); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7Parameter); ok {
-            return *casted
+            return casted
         }
-        return S7Parameter{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -52,15 +52,15 @@ func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus *Devi
     return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
-func CastDIBDeviceInfo(structType interface{}) DIBDeviceInfo {
-    castFunc := func(typ interface{}) DIBDeviceInfo {
+func CastDIBDeviceInfo(structType interface{}) *DIBDeviceInfo {
+    castFunc := func(typ interface{}) *DIBDeviceInfo {
         if casted, ok := typ.(DIBDeviceInfo); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DIBDeviceInfo); ok {
-            return *casted
+            return casted
         }
-        return DIBDeviceInfo{}
+        return nil
     }
     return castFunc(structType)
 }

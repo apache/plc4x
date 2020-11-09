@@ -57,13 +57,13 @@ func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAck {
     return child.Parent
 }
 
-func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) BACnetServiceAckRemovedAuthenticate {
-    castFunc := func(typ interface{}) BACnetServiceAckRemovedAuthenticate {
+func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) *BACnetServiceAckRemovedAuthenticate {
+    castFunc := func(typ interface{}) *BACnetServiceAckRemovedAuthenticate {
         if casted, ok := typ.(BACnetServiceAckRemovedAuthenticate); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckRemovedAuthenticate); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) BACnetServi
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
         }
-        return BACnetServiceAckRemovedAuthenticate{}
+        return nil
     }
     return castFunc(structType)
 }

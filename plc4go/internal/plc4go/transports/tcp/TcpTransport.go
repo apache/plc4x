@@ -48,7 +48,7 @@ func (m TcpTransport) GetTransportName() string {
 func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
     connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
     var address string
-    var port uint32
+    var port int
     if match := utils.GetSubgropMatches(connectionStringRegexp, transportUrl.Host); match != nil {
         if val, ok := match["ip"]; ok && len(val) > 0 {
             address = val
@@ -62,14 +62,14 @@ func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[
             if err != nil {
                 return nil, errors.New("error setting port: " + err.Error())
             } else {
-                port = uint32(portVal)
+                port = portVal
             }
         } else if val, ok := options["defaultTcpPort"]; ok && len(val) > 0 {
             portVal, err := strconv.Atoi(val[0])
             if err != nil {
                 return nil, errors.New("error setting default tcp port: " + err.Error())
             } else {
-                port = uint32(portVal)
+                port = portVal
             }
         } else {
             return nil, errors.New("error setting port. No explicit or default port provided")
@@ -85,7 +85,13 @@ func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[
         }
     }
 
-    transportInstance := NewTcpTransportInstance(address, port, connectTimeout, &m)
+    // Potentially resolve the ip address, if a hostname was provided
+    tcpAddr, err := net.ResolveTCPAddr("tcp", address + ":" + strconv.Itoa(port))
+    if err != nil {
+        return nil, errors.New("error resolving typ address: " + err.Error())
+    }
+
+    transportInstance := NewTcpTransportInstance(tcpAddr, connectTimeout, &m)
 
     castFunc := func(typ interface{}) (transports.TransportInstance, error) {
         if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -97,33 +103,30 @@ func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[
 }
 
 type TcpTransportInstance struct {
-    address string
-    port uint32
-    connectTimeout uint32
+    RemoteAddress *net.TCPAddr
+    LocalAddress *net.TCPAddr
+    ConnectTimeout uint32
     transport *TcpTransport
     tcpConn net.Conn
     reader *bufio.Reader
 }
 
-func NewTcpTransportInstance(address string, port uint32, connectTimeout uint32, transport *TcpTransport) *TcpTransportInstance {
+func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *TcpTransport) *TcpTransportInstance {
     return &TcpTransportInstance {
-        address: address,
-        port: port,
-        connectTimeout: connectTimeout,
+        RemoteAddress: remoteAddress,
+        ConnectTimeout: connectTimeout,
         transport: transport,
     }
 }
 
 func (m *TcpTransportInstance) Connect() error {
-    tcpAddr, err := net.ResolveTCPAddr("tcp", m.address + ":" + strconv.Itoa(int(m.port)))
-    if err != nil {
-        return errors.New("error resolving typ address: " + err.Error())
-    }
-
-    m.tcpConn, err = net.Dial("tcp", tcpAddr.String())
+    var err error
+    m.tcpConn, err = net.Dial("tcp", m.RemoteAddress.String())
     if err != nil {
         return errors.New("error connecting to remote address: " + err.Error())
     }
+
+    m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
 
     m.reader = bufio.NewReader(m.tcpConn)
 

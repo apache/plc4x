@@ -65,11 +65,14 @@ func (m KnxLayer) LengthInBytes() uint16 {
 }
 
 func KnxLayerParse(io *utils.ReadBuffer) (KnxLayer, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return KnxLayerValueOf(val), nil
 }
 
 func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

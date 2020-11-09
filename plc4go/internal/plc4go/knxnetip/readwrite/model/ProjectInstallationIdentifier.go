@@ -44,15 +44,15 @@ func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber ui
     return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
 }
 
-func CastProjectInstallationIdentifier(structType interface{}) ProjectInstallationIdentifier {
-    castFunc := func(typ interface{}) ProjectInstallationIdentifier {
+func CastProjectInstallationIdentifier(structType interface{}) *ProjectInstallationIdentifier {
+    castFunc := func(typ interface{}) *ProjectInstallationIdentifier {
         if casted, ok := typ.(ProjectInstallationIdentifier); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ProjectInstallationIdentifier); ok {
-            return *casted
+            return casted
         }
-        return ProjectInstallationIdentifier{}
+        return nil
     }
     return castFunc(structType)
 }

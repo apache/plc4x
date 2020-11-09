@@ -47,13 +47,13 @@ func (m UdpTransport) GetTransportName() string {
 
 func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
     connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
-    var address string
-    var port uint32
+    var remoteAddress string
+    var remotePort int
     if match := utils.GetSubgropMatches(connectionStringRegexp, transportUrl.Host); match != nil {
         if val, ok := match["ip"]; ok && len(val) > 0 {
-            address = val
+            remoteAddress = val
         } else if val, ok := match["hostname"]; ok && len(val) > 0 {
-            address = val
+            remoteAddress = val
         } else {
             return nil, errors.New("missing hostname or ip to connect")
         }
@@ -62,14 +62,14 @@ func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[
             if err != nil {
                 return nil, errors.New("error setting port: " + err.Error())
             } else {
-                port = uint32(portVal)
+                remotePort = portVal
             }
         } else if val, ok := options["defaultUdpPort"]; ok && len(val) > 0 {
             portVal, err := strconv.Atoi(val[0])
             if err != nil {
                 return nil, errors.New("error setting default udp port: " + err.Error())
             } else {
-                port = uint32(portVal)
+                remotePort = portVal
             }
         } else {
             return nil, errors.New("error setting port. No explicit or default port provided")
@@ -85,7 +85,13 @@ func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[
         }
     }
 
-    transportInstance := NewUdpTransportInstance(address, port, connectTimeout, &m)
+    // Potentially resolve the ip address, if a hostname was provided
+    udpAddr, err := net.ResolveUDPAddr("udp", remoteAddress + ":" + strconv.Itoa(remotePort))
+    if err != nil {
+        return nil, errors.New("error resolving typ address: " + err.Error())
+    }
+
+    transportInstance := NewUdpTransportInstance(udpAddr, connectTimeout, &m)
 
     castFunc := func(typ interface{}) (transports.TransportInstance, error) {
         if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -97,33 +103,32 @@ func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[
 }
 
 type UdpTransportInstance struct {
-    address string
-    port uint32
-    connectTimeout uint32
+    RemoteAddress *net.UDPAddr
+    LocalAddress *net.UDPAddr
+    ConnectTimeout uint32
     transport *UdpTransport
     udpConn   net.Conn
     reader    *bufio.Reader
 }
 
-func NewUdpTransportInstance(address string, port uint32, connectTimeout uint32, transport *UdpTransport) *UdpTransportInstance {
+func NewUdpTransportInstance(remoteAddress *net.UDPAddr, connectTimeout uint32, transport *UdpTransport) *UdpTransportInstance {
     return &UdpTransportInstance {
-        address: address,
-        port: port,
-        connectTimeout: connectTimeout,
+        RemoteAddress: remoteAddress,
+        ConnectTimeout: connectTimeout,
         transport: transport,
     }
 }
 
 func (m *UdpTransportInstance) Connect() error {
-    udpAddr, err := net.ResolveUDPAddr("udp", m.address + ":" + strconv.Itoa(int(m.port)))
-    if err != nil {
-        return errors.New("error resolving typ address: " + err.Error())
-    }
-
-    m.udpConn, err = net.Dial("udp", udpAddr.String())
+    // "connect" to the remote
+    var err error
+    m.udpConn, err = net.Dial("udp", m.RemoteAddress.String())
     if err != nil {
         return errors.New("error connecting to remote address: " + err.Error())
     }
+
+    // Update the local address and port in the transport instance
+    m.LocalAddress = m.udpConn.LocalAddr().(*net.UDPAddr)
 
     m.reader = bufio.NewReader(m.udpConn)
 

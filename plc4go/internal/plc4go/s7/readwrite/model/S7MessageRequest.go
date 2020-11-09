@@ -60,13 +60,13 @@ func NewS7MessageRequest(tpduReference uint16, parameter *S7Parameter, payload *
     return child.Parent
 }
 
-func CastS7MessageRequest(structType interface{}) S7MessageRequest {
-    castFunc := func(typ interface{}) S7MessageRequest {
+func CastS7MessageRequest(structType interface{}) *S7MessageRequest {
+    castFunc := func(typ interface{}) *S7MessageRequest {
         if casted, ok := typ.(S7MessageRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7MessageRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Message); ok {
             return CastS7MessageRequest(casted.Child)
@@ -74,7 +74,7 @@ func CastS7MessageRequest(structType interface{}) S7MessageRequest {
         if casted, ok := typ.(*S7Message); ok {
             return CastS7MessageRequest(casted.Child)
         }
-        return S7MessageRequest{}
+        return nil
     }
     return castFunc(structType)
 }

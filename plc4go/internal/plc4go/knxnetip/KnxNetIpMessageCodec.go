@@ -20,11 +20,11 @@ package knxnetip
 
 import (
     "errors"
-	"fmt"
+    "fmt"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
-	"time"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "time"
 )
 
 type KnxNetIpExpectation struct {
@@ -42,7 +42,7 @@ type KnxNetIpMessageCodec struct {
 func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *KnxNetIpMessageCodec {
 	codec := &KnxNetIpMessageCodec{
 		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: defaultIncomingMessageChannel,
+        defaultIncomingMessageChannel: defaultIncomingMessageChannel,
 		expectations:                  []KnxNetIpExpectation{},
 	}
 	// Start a worker that handles processing of responses
@@ -51,11 +51,8 @@ func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, def
 }
 
 func (m *KnxNetIpMessageCodec) Connect() error {
-	// "connect" to the remote UDP server
-    err := m.transportInstance.Connect()
-	
-
-	return err
+    // "connect" to the remote UDP server
+    return m.transportInstance.Connect()
 }
 
 func (m *KnxNetIpMessageCodec) Disconnect() error {
@@ -89,7 +86,7 @@ func (m *KnxNetIpMessageCodec) Receive() (interface{}, error) {
 			return nil, nil
 		}
 		// Get the size of the entire packet
-		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
+		packetSize := (uint32(data[4]) << 8) + uint32(data[5])
 		if num >= packetSize {
 			data, err = m.transportInstance.Read(packetSize)
 			if err != nil {
@@ -97,12 +94,12 @@ func (m *KnxNetIpMessageCodec) Receive() (interface{}, error) {
 				return nil, nil
 			}
 			rb := utils.NewReadBuffer(data)
-			adu, err := model.KnxNetIpMessageParse(rb)
+			knxMessage, err := model.KnxNetIpMessageParse(rb)
 			if err != nil {
 				// TODO: Possibly clean up ...
 				return nil, nil
 			}
-			return adu, nil
+			return knxMessage, nil
 		}
 	}
 	return nil, nil

@@ -104,11 +104,14 @@ func (m APCI) LengthInBytes() uint16 {
 }
 
 func APCIParse(io *utils.ReadBuffer) (APCI, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(4)
+    if err != nil {
+        return 0, nil
+    }
+    return APCIValueOf(val), nil
 }
 
 func (e APCI) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(4, uint8(e))
+    return err
 }

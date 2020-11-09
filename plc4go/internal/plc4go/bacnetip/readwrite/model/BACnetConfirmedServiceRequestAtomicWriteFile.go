@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile() *BACnetConfirmedServiceRe
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
+func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicWriteFile {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicWriteFile {
         if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicWriteFile); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) BA
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAtomicWriteFile(casted.Child)
         }
-        return BACnetConfirmedServiceRequestAtomicWriteFile{}
+        return nil
     }
     return castFunc(structType)
 }

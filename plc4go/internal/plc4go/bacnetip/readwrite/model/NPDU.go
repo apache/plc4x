@@ -58,15 +58,15 @@ func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinat
     return &NPDU{ProtocolVersionNumber: protocolVersionNumber, MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu}
 }
 
-func CastNPDU(structType interface{}) NPDU {
-    castFunc := func(typ interface{}) NPDU {
+func CastNPDU(structType interface{}) *NPDU {
+    castFunc := func(typ interface{}) *NPDU {
         if casted, ok := typ.(NPDU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*NPDU); ok {
-            return *casted
+            return casted
         }
-        return NPDU{}
+        return nil
     }
     return castFunc(structType)
 }

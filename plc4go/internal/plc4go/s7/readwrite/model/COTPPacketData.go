@@ -64,13 +64,13 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []*COTPParameter, pay
     return child.Parent
 }
 
-func CastCOTPPacketData(structType interface{}) COTPPacketData {
-    castFunc := func(typ interface{}) COTPPacketData {
+func CastCOTPPacketData(structType interface{}) *COTPPacketData {
+    castFunc := func(typ interface{}) *COTPPacketData {
         if casted, ok := typ.(COTPPacketData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPPacketData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPPacket); ok {
             return CastCOTPPacketData(casted.Child)
@@ -78,7 +78,7 @@ func CastCOTPPacketData(structType interface{}) COTPPacketData {
         if casted, ok := typ.(*COTPPacket); ok {
             return CastCOTPPacketData(casted.Child)
         }
-        return COTPPacketData{}
+        return nil
     }
     return castFunc(structType)
 }

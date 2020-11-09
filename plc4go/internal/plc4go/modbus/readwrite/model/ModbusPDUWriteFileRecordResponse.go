@@ -68,13 +68,13 @@ func NewModbusPDUWriteFileRecordResponse(items []*ModbusPDUWriteFileRecordRespon
     return child.Parent
 }
 
-func CastModbusPDUWriteFileRecordResponse(structType interface{}) ModbusPDUWriteFileRecordResponse {
-    castFunc := func(typ interface{}) ModbusPDUWriteFileRecordResponse {
+func CastModbusPDUWriteFileRecordResponse(structType interface{}) *ModbusPDUWriteFileRecordResponse {
+    castFunc := func(typ interface{}) *ModbusPDUWriteFileRecordResponse {
         if casted, ok := typ.(ModbusPDUWriteFileRecordResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUWriteFileRecordResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUWriteFileRecordResponse(casted.Child)
@@ -82,7 +82,7 @@ func CastModbusPDUWriteFileRecordResponse(structType interface{}) ModbusPDUWrite
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUWriteFileRecordResponse(casted.Child)
         }
-        return ModbusPDUWriteFileRecordResponse{}
+        return nil
     }
     return castFunc(structType)
 }

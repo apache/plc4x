@@ -57,13 +57,13 @@ func NewBACnetServiceAckCreateObject() *BACnetServiceAck {
     return child.Parent
 }
 
-func CastBACnetServiceAckCreateObject(structType interface{}) BACnetServiceAckCreateObject {
-    castFunc := func(typ interface{}) BACnetServiceAckCreateObject {
+func CastBACnetServiceAckCreateObject(structType interface{}) *BACnetServiceAckCreateObject {
+    castFunc := func(typ interface{}) *BACnetServiceAckCreateObject {
         if casted, ok := typ.(BACnetServiceAckCreateObject); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckCreateObject); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckCreateObject(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetServiceAckCreateObject(structType interface{}) BACnetServiceAckCr
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckCreateObject(casted.Child)
         }
-        return BACnetServiceAckCreateObject{}
+        return nil
     }
     return castFunc(structType)
 }

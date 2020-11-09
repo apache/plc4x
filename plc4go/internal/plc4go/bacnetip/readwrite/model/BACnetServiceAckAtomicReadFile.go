@@ -57,13 +57,13 @@ func NewBACnetServiceAckAtomicReadFile() *BACnetServiceAck {
     return child.Parent
 }
 
-func CastBACnetServiceAckAtomicReadFile(structType interface{}) BACnetServiceAckAtomicReadFile {
-    castFunc := func(typ interface{}) BACnetServiceAckAtomicReadFile {
+func CastBACnetServiceAckAtomicReadFile(structType interface{}) *BACnetServiceAckAtomicReadFile {
+    castFunc := func(typ interface{}) *BACnetServiceAckAtomicReadFile {
         if casted, ok := typ.(BACnetServiceAckAtomicReadFile); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetServiceAckAtomicReadFile); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetServiceAck); ok {
             return CastBACnetServiceAckAtomicReadFile(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetServiceAckAtomicReadFile(structType interface{}) BACnetServiceAck
         if casted, ok := typ.(*BACnetServiceAck); ok {
             return CastBACnetServiceAckAtomicReadFile(casted.Child)
         }
-        return BACnetServiceAckAtomicReadFile{}
+        return nil
     }
     return castFunc(structType)
 }

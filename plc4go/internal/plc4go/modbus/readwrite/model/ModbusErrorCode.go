@@ -86,11 +86,14 @@ func (m ModbusErrorCode) LengthInBytes() uint16 {
 }
 
 func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return ModbusErrorCodeValueOf(val), nil
 }
 
 func (e ModbusErrorCode) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

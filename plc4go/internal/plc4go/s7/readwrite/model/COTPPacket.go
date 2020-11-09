@@ -59,15 +59,15 @@ func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message) *COTPPacket 
     return &COTPPacket{Parameters: parameters, Payload: payload}
 }
 
-func CastCOTPPacket(structType interface{}) COTPPacket {
-    castFunc := func(typ interface{}) COTPPacket {
+func CastCOTPPacket(structType interface{}) *COTPPacket {
+    castFunc := func(typ interface{}) *COTPPacket {
         if casted, ok := typ.(COTPPacket); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPPacket); ok {
-            return *casted
+            return casted
         }
-        return COTPPacket{}
+        return nil
     }
     return castFunc(structType)
 }

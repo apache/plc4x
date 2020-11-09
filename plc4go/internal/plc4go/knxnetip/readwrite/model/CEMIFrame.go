@@ -63,15 +63,15 @@ func NewCEMIFrame(repeated bool, priority CEMIPriority, acknowledgeRequested boo
     return &CEMIFrame{Repeated: repeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
 
-func CastCEMIFrame(structType interface{}) CEMIFrame {
-    castFunc := func(typ interface{}) CEMIFrame {
+func CastCEMIFrame(structType interface{}) *CEMIFrame {
+    castFunc := func(typ interface{}) *CEMIFrame {
         if casted, ok := typ.(CEMIFrame); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIFrame); ok {
-            return *casted
+            return casted
         }
-        return CEMIFrame{}
+        return nil
     }
     return castFunc(structType)
 }

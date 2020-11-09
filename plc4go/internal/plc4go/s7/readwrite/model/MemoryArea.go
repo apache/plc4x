@@ -119,11 +119,14 @@ func (m MemoryArea) LengthInBytes() uint16 {
 }
 
 func MemoryAreaParse(io *utils.ReadBuffer) (MemoryArea, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return MemoryAreaValueOf(val), nil
 }
 
 func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

@@ -60,13 +60,13 @@ func NewS7VarRequestParameterItemAddress(address *S7Address, ) *S7VarRequestPara
     return child.Parent
 }
 
-func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestParameterItemAddress {
-    castFunc := func(typ interface{}) S7VarRequestParameterItemAddress {
+func CastS7VarRequestParameterItemAddress(structType interface{}) *S7VarRequestParameterItemAddress {
+    castFunc := func(typ interface{}) *S7VarRequestParameterItemAddress {
         if casted, ok := typ.(S7VarRequestParameterItemAddress); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7VarRequestParameterItemAddress); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7VarRequestParameterItem); ok {
             return CastS7VarRequestParameterItemAddress(casted.Child)
@@ -74,7 +74,7 @@ func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestPa
         if casted, ok := typ.(*S7VarRequestParameterItem); ok {
             return CastS7VarRequestParameterItemAddress(casted.Child)
         }
-        return S7VarRequestParameterItemAddress{}
+        return nil
     }
     return castFunc(structType)
 }

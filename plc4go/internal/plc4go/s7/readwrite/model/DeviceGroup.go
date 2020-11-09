@@ -65,11 +65,14 @@ func (m DeviceGroup) LengthInBytes() uint16 {
 }
 
 func DeviceGroupParse(io *utils.ReadBuffer) (DeviceGroup, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadInt8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return DeviceGroupValueOf(val), nil
 }
 
 func (e DeviceGroup) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteInt8(8, int8(e))
+    return err
 }

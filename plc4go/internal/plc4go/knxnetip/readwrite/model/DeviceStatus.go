@@ -44,15 +44,15 @@ func NewDeviceStatus(programMode bool) *DeviceStatus {
     return &DeviceStatus{ProgramMode: programMode}
 }
 
-func CastDeviceStatus(structType interface{}) DeviceStatus {
-    castFunc := func(typ interface{}) DeviceStatus {
+func CastDeviceStatus(structType interface{}) *DeviceStatus {
+    castFunc := func(typ interface{}) *DeviceStatus {
         if casted, ok := typ.(DeviceStatus); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DeviceStatus); ok {
-            return *casted
+            return casted
         }
-        return DeviceStatus{}
+        return nil
     }
     return castFunc(structType)
 }

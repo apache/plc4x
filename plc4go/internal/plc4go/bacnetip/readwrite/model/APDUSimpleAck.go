@@ -63,13 +63,13 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8, ) *APDU {
     return child.Parent
 }
 
-func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
-    castFunc := func(typ interface{}) APDUSimpleAck {
+func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {
+    castFunc := func(typ interface{}) *APDUSimpleAck {
         if casted, ok := typ.(APDUSimpleAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUSimpleAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUSimpleAck(casted.Child)
@@ -77,7 +77,7 @@ func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUSimpleAck(casted.Child)
         }
-        return APDUSimpleAck{}
+        return nil
     }
     return castFunc(structType)
 }

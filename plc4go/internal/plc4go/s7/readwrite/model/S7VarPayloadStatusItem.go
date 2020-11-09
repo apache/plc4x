@@ -43,15 +43,15 @@ func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadS
     return &S7VarPayloadStatusItem{ReturnCode: returnCode}
 }
 
-func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
-    castFunc := func(typ interface{}) S7VarPayloadStatusItem {
+func CastS7VarPayloadStatusItem(structType interface{}) *S7VarPayloadStatusItem {
+    castFunc := func(typ interface{}) *S7VarPayloadStatusItem {
         if casted, ok := typ.(S7VarPayloadStatusItem); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7VarPayloadStatusItem); ok {
-            return *casted
+            return casted
         }
-        return S7VarPayloadStatusItem{}
+        return nil
     }
     return castFunc(structType)
 }

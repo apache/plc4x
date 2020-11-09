@@ -54,15 +54,15 @@ func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, le
     return &BACnetTagWithContent{TypeOrTagNumber: typeOrTagNumber, ContextSpecificTag: contextSpecificTag, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, PropertyIdentifier: propertyIdentifier, Value: value}
 }
 
-func CastBACnetTagWithContent(structType interface{}) BACnetTagWithContent {
-    castFunc := func(typ interface{}) BACnetTagWithContent {
+func CastBACnetTagWithContent(structType interface{}) *BACnetTagWithContent {
+    castFunc := func(typ interface{}) *BACnetTagWithContent {
         if casted, ok := typ.(BACnetTagWithContent); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagWithContent); ok {
-            return *casted
+            return casted
         }
-        return BACnetTagWithContent{}
+        return nil
     }
     return castFunc(structType)
 }

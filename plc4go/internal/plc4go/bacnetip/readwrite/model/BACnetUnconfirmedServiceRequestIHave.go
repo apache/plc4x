@@ -57,13 +57,13 @@ func NewBACnetUnconfirmedServiceRequestIHave() *BACnetUnconfirmedServiceRequest 
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIHave {
+func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) *BACnetUnconfirmedServiceRequestIHave {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestIHave {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIHave); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnco
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestIHave(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestIHave{}
+        return nil
     }
     return castFunc(structType)
 }

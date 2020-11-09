@@ -69,13 +69,13 @@ func NewCEMIFramePollingData(repeated bool, priority CEMIPriority, acknowledgeRe
     return child.Parent
 }
 
-func CastCEMIFramePollingData(structType interface{}) CEMIFramePollingData {
-    castFunc := func(typ interface{}) CEMIFramePollingData {
+func CastCEMIFramePollingData(structType interface{}) *CEMIFramePollingData {
+    castFunc := func(typ interface{}) *CEMIFramePollingData {
         if casted, ok := typ.(CEMIFramePollingData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIFramePollingData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMIFrame); ok {
             return CastCEMIFramePollingData(casted.Child)
@@ -83,7 +83,7 @@ func CastCEMIFramePollingData(structType interface{}) CEMIFramePollingData {
         if casted, ok := typ.(*CEMIFrame); ok {
             return CastCEMIFramePollingData(casted.Child)
         }
-        return CEMIFramePollingData{}
+        return nil
     }
     return castFunc(structType)
 }

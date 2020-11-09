@@ -64,9 +64,9 @@ package model
 
 import (
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
 )
 
 type ${protocolName?cap_first}ParserHelper struct {

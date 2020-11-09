@@ -57,15 +57,15 @@ func NewServiceId() *ServiceId {
     return &ServiceId{}
 }
 
-func CastServiceId(structType interface{}) ServiceId {
-    castFunc := func(typ interface{}) ServiceId {
+func CastServiceId(structType interface{}) *ServiceId {
+    castFunc := func(typ interface{}) *ServiceId {
         if casted, ok := typ.(ServiceId); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ServiceId); ok {
-            return *casted
+            return casted
         }
-        return ServiceId{}
+        return nil
     }
     return castFunc(structType)
 }

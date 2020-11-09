@@ -62,13 +62,13 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status, ) *KnxNe
     return child.Parent
 }
 
-func CastDisconnectResponse(structType interface{}) DisconnectResponse {
-    castFunc := func(typ interface{}) DisconnectResponse {
+func CastDisconnectResponse(structType interface{}) *DisconnectResponse {
+    castFunc := func(typ interface{}) *DisconnectResponse {
         if casted, ok := typ.(DisconnectResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DisconnectResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastDisconnectResponse(casted.Child)
@@ -76,7 +76,7 @@ func CastDisconnectResponse(structType interface{}) DisconnectResponse {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastDisconnectResponse(casted.Child)
         }
-        return DisconnectResponse{}
+        return nil
     }
     return castFunc(structType)
 }

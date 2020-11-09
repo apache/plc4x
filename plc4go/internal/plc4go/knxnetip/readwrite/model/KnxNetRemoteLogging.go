@@ -60,13 +60,13 @@ func NewKnxNetRemoteLogging(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetRemoteLogging(structType interface{}) KnxNetRemoteLogging {
-    castFunc := func(typ interface{}) KnxNetRemoteLogging {
+func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {
+    castFunc := func(typ interface{}) *KnxNetRemoteLogging {
         if casted, ok := typ.(KnxNetRemoteLogging); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetRemoteLogging); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetRemoteLogging(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetRemoteLogging(structType interface{}) KnxNetRemoteLogging {
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetRemoteLogging(casted.Child)
         }
-        return KnxNetRemoteLogging{}
+        return nil
     }
     return castFunc(structType)
 }

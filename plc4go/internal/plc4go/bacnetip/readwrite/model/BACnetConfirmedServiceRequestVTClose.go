@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestVTClose() *BACnetConfirmedServiceRequest {
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConfirmedServiceRequestVTClose {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestVTClose {
+func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) *BACnetConfirmedServiceRequestVTClose {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestVTClose {
         if casted, ok := typ.(BACnetConfirmedServiceRequestVTClose); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestVTClose); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConf
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestVTClose(casted.Child)
         }
-        return BACnetConfirmedServiceRequestVTClose{}
+        return nil
     }
     return castFunc(structType)
 }

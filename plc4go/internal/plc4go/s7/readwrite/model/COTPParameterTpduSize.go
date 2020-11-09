@@ -60,13 +60,13 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, ) *COTPParameter {
     return child.Parent
 }
 
-func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
-    castFunc := func(typ interface{}) COTPParameterTpduSize {
+func CastCOTPParameterTpduSize(structType interface{}) *COTPParameterTpduSize {
+    castFunc := func(typ interface{}) *COTPParameterTpduSize {
         if casted, ok := typ.(COTPParameterTpduSize); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPParameterTpduSize); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPParameter); ok {
             return CastCOTPParameterTpduSize(casted.Child)
@@ -74,7 +74,7 @@ func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
         if casted, ok := typ.(*COTPParameter); ok {
             return CastCOTPParameterTpduSize(casted.Child)
         }
-        return COTPParameterTpduSize{}
+        return nil
     }
     return castFunc(structType)
 }

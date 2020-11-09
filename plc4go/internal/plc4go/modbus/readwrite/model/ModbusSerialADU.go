@@ -47,15 +47,15 @@ func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu 
     return &ModbusSerialADU{TransactionId: transactionId, Length: length, Address: address, Pdu: pdu}
 }
 
-func CastModbusSerialADU(structType interface{}) ModbusSerialADU {
-    castFunc := func(typ interface{}) ModbusSerialADU {
+func CastModbusSerialADU(structType interface{}) *ModbusSerialADU {
+    castFunc := func(typ interface{}) *ModbusSerialADU {
         if casted, ok := typ.(ModbusSerialADU); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusSerialADU); ok {
-            return *casted
+            return casted
         }
-        return ModbusSerialADU{}
+        return nil
     }
     return castFunc(structType)
 }

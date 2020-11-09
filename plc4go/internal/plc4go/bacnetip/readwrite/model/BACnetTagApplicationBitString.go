@@ -67,13 +67,13 @@ func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8, typeOrTagNu
     return child.Parent
 }
 
-func CastBACnetTagApplicationBitString(structType interface{}) BACnetTagApplicationBitString {
-    castFunc := func(typ interface{}) BACnetTagApplicationBitString {
+func CastBACnetTagApplicationBitString(structType interface{}) *BACnetTagApplicationBitString {
+    castFunc := func(typ interface{}) *BACnetTagApplicationBitString {
         if casted, ok := typ.(BACnetTagApplicationBitString); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationBitString); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationBitString(casted.Child)
@@ -81,7 +81,7 @@ func CastBACnetTagApplicationBitString(structType interface{}) BACnetTagApplicat
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationBitString(casted.Child)
         }
-        return BACnetTagApplicationBitString{}
+        return nil
     }
     return castFunc(structType)
 }

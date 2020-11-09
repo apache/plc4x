@@ -64,13 +64,13 @@ func NewS7ParameterUserData(items []*S7ParameterUserDataItem, ) *S7Parameter {
     return child.Parent
 }
 
-func CastS7ParameterUserData(structType interface{}) S7ParameterUserData {
-    castFunc := func(typ interface{}) S7ParameterUserData {
+func CastS7ParameterUserData(structType interface{}) *S7ParameterUserData {
+    castFunc := func(typ interface{}) *S7ParameterUserData {
         if casted, ok := typ.(S7ParameterUserData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7ParameterUserData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Parameter); ok {
             return CastS7ParameterUserData(casted.Child)
@@ -78,7 +78,7 @@ func CastS7ParameterUserData(structType interface{}) S7ParameterUserData {
         if casted, ok := typ.(*S7Parameter); ok {
             return CastS7ParameterUserData(casted.Child)
         }
-        return S7ParameterUserData{}
+        return nil
     }
     return castFunc(structType)
 }

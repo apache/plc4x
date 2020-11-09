@@ -62,13 +62,13 @@ func NewDescriptionResponse(dibDeviceInfo *DIBDeviceInfo, dibSuppSvcFamilies *DI
     return child.Parent
 }
 
-func CastDescriptionResponse(structType interface{}) DescriptionResponse {
-    castFunc := func(typ interface{}) DescriptionResponse {
+func CastDescriptionResponse(structType interface{}) *DescriptionResponse {
+    castFunc := func(typ interface{}) *DescriptionResponse {
         if casted, ok := typ.(DescriptionResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DescriptionResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastDescriptionResponse(casted.Child)
@@ -76,7 +76,7 @@ func CastDescriptionResponse(structType interface{}) DescriptionResponse {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastDescriptionResponse(casted.Child)
         }
-        return DescriptionResponse{}
+        return nil
     }
     return castFunc(structType)
 }

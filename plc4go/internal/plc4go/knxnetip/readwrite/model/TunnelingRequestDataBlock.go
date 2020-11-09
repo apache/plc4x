@@ -45,15 +45,15 @@ func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter 
     return &TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
 }
 
-func CastTunnelingRequestDataBlock(structType interface{}) TunnelingRequestDataBlock {
-    castFunc := func(typ interface{}) TunnelingRequestDataBlock {
+func CastTunnelingRequestDataBlock(structType interface{}) *TunnelingRequestDataBlock {
+    castFunc := func(typ interface{}) *TunnelingRequestDataBlock {
         if casted, ok := typ.(TunnelingRequestDataBlock); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*TunnelingRequestDataBlock); ok {
-            return *casted
+            return casted
         }
-        return TunnelingRequestDataBlock{}
+        return nil
     }
     return castFunc(structType)
 }

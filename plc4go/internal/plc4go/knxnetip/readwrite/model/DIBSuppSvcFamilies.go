@@ -44,15 +44,15 @@ func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBS
     return &DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
 }
 
-func CastDIBSuppSvcFamilies(structType interface{}) DIBSuppSvcFamilies {
-    castFunc := func(typ interface{}) DIBSuppSvcFamilies {
+func CastDIBSuppSvcFamilies(structType interface{}) *DIBSuppSvcFamilies {
+    castFunc := func(typ interface{}) *DIBSuppSvcFamilies {
         if casted, ok := typ.(DIBSuppSvcFamilies); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DIBSuppSvcFamilies); ok {
-            return *casted
+            return casted
         }
-        return DIBSuppSvcFamilies{}
+        return nil
     }
     return castFunc(structType)
 }

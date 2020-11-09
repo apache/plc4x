@@ -57,13 +57,13 @@ func NewBVLCDistributeBroadcastToNetwork() *BVLC {
     return child.Parent
 }
 
-func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistributeBroadcastToNetwork {
-    castFunc := func(typ interface{}) BVLCDistributeBroadcastToNetwork {
+func CastBVLCDistributeBroadcastToNetwork(structType interface{}) *BVLCDistributeBroadcastToNetwork {
+    castFunc := func(typ interface{}) *BVLCDistributeBroadcastToNetwork {
         if casted, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCDistributeBroadcastToNetwork); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCDistributeBroadcastToNetwork(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistribute
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCDistributeBroadcastToNetwork(casted.Child)
         }
-        return BVLCDistributeBroadcastToNetwork{}
+        return nil
     }
     return castFunc(structType)
 }

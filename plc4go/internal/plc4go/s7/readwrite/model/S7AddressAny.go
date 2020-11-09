@@ -71,13 +71,13 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
     return child.Parent
 }
 
-func CastS7AddressAny(structType interface{}) S7AddressAny {
-    castFunc := func(typ interface{}) S7AddressAny {
+func CastS7AddressAny(structType interface{}) *S7AddressAny {
+    castFunc := func(typ interface{}) *S7AddressAny {
         if casted, ok := typ.(S7AddressAny); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7AddressAny); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Address); ok {
             return CastS7AddressAny(casted.Child)
@@ -85,7 +85,7 @@ func CastS7AddressAny(structType interface{}) S7AddressAny {
         if casted, ok := typ.(*S7Address); ok {
             return CastS7AddressAny(casted.Child)
         }
-        return S7AddressAny{}
+        return nil
     }
     return castFunc(structType)
 }

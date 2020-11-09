@@ -57,13 +57,13 @@ func NewRoutingIndication() *KnxNetIpMessage {
     return child.Parent
 }
 
-func CastRoutingIndication(structType interface{}) RoutingIndication {
-    castFunc := func(typ interface{}) RoutingIndication {
+func CastRoutingIndication(structType interface{}) *RoutingIndication {
+    castFunc := func(typ interface{}) *RoutingIndication {
         if casted, ok := typ.(RoutingIndication); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*RoutingIndication); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastRoutingIndication(casted.Child)
@@ -71,7 +71,7 @@ func CastRoutingIndication(structType interface{}) RoutingIndication {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastRoutingIndication(casted.Child)
         }
-        return RoutingIndication{}
+        return nil
     }
     return castFunc(structType)
 }

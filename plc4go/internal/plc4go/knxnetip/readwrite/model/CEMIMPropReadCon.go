@@ -70,13 +70,13 @@ func NewCEMIMPropReadCon(interfaceObjectType uint16, objectInstance uint8, prope
     return child.Parent
 }
 
-func CastCEMIMPropReadCon(structType interface{}) CEMIMPropReadCon {
-    castFunc := func(typ interface{}) CEMIMPropReadCon {
+func CastCEMIMPropReadCon(structType interface{}) *CEMIMPropReadCon {
+    castFunc := func(typ interface{}) *CEMIMPropReadCon {
         if casted, ok := typ.(CEMIMPropReadCon); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIMPropReadCon); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIMPropReadCon(casted.Child)
@@ -84,7 +84,7 @@ func CastCEMIMPropReadCon(structType interface{}) CEMIMPropReadCon {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIMPropReadCon(casted.Child)
         }
-        return CEMIMPropReadCon{}
+        return nil
     }
     return castFunc(structType)
 }

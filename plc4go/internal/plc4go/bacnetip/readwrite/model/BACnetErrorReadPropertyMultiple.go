@@ -57,13 +57,13 @@ func NewBACnetErrorReadPropertyMultiple() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorReadPropertyMultiple(structType interface{}) BACnetErrorReadPropertyMultiple {
-    castFunc := func(typ interface{}) BACnetErrorReadPropertyMultiple {
+func CastBACnetErrorReadPropertyMultiple(structType interface{}) *BACnetErrorReadPropertyMultiple {
+    castFunc := func(typ interface{}) *BACnetErrorReadPropertyMultiple {
         if casted, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorReadPropertyMultiple); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorReadPropertyMultiple(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorReadPropertyMultiple(structType interface{}) BACnetErrorRead
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorReadPropertyMultiple(casted.Child)
         }
-        return BACnetErrorReadPropertyMultiple{}
+        return nil
     }
     return castFunc(structType)
 }

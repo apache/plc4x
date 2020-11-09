@@ -77,13 +77,13 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
     return child.Parent
 }
 
-func CastAPDUConfirmedRequest(structType interface{}) APDUConfirmedRequest {
-    castFunc := func(typ interface{}) APDUConfirmedRequest {
+func CastAPDUConfirmedRequest(structType interface{}) *APDUConfirmedRequest {
+    castFunc := func(typ interface{}) *APDUConfirmedRequest {
         if casted, ok := typ.(APDUConfirmedRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUConfirmedRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUConfirmedRequest(casted.Child)
@@ -91,7 +91,7 @@ func CastAPDUConfirmedRequest(structType interface{}) APDUConfirmedRequest {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUConfirmedRequest(casted.Child)
         }
-        return APDUConfirmedRequest{}
+        return nil
     }
     return castFunc(structType)
 }

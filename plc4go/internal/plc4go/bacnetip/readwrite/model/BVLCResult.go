@@ -57,13 +57,13 @@ func NewBVLCResult() *BVLC {
     return child.Parent
 }
 
-func CastBVLCResult(structType interface{}) BVLCResult {
-    castFunc := func(typ interface{}) BVLCResult {
+func CastBVLCResult(structType interface{}) *BVLCResult {
+    castFunc := func(typ interface{}) *BVLCResult {
         if casted, ok := typ.(BVLCResult); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCResult); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCResult(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCResult(structType interface{}) BVLCResult {
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCResult(casted.Child)
         }
-        return BVLCResult{}
+        return nil
     }
     return castFunc(structType)
 }

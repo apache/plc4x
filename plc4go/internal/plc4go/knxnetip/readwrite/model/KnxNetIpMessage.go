@@ -61,15 +61,15 @@ func NewKnxNetIpMessage() *KnxNetIpMessage {
     return &KnxNetIpMessage{}
 }
 
-func CastKnxNetIpMessage(structType interface{}) KnxNetIpMessage {
-    castFunc := func(typ interface{}) KnxNetIpMessage {
+func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
+    castFunc := func(typ interface{}) *KnxNetIpMessage {
         if casted, ok := typ.(KnxNetIpMessage); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetIpMessage); ok {
-            return *casted
+            return casted
         }
-        return KnxNetIpMessage{}
+        return nil
     }
     return castFunc(structType)
 }

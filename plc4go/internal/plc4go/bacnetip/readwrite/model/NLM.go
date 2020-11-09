@@ -58,15 +58,15 @@ func NewNLM(vendorId *uint16) *NLM {
     return &NLM{VendorId: vendorId}
 }
 
-func CastNLM(structType interface{}) NLM {
-    castFunc := func(typ interface{}) NLM {
+func CastNLM(structType interface{}) *NLM {
+    castFunc := func(typ interface{}) *NLM {
         if casted, ok := typ.(NLM); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*NLM); ok {
-            return *casted
+            return casted
         }
-        return NLM{}
+        return nil
     }
     return castFunc(structType)
 }

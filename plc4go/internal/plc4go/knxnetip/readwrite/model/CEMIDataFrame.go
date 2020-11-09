@@ -61,15 +61,15 @@ func NewCEMIDataFrame(standardFrame bool, polling bool, notRepeated bool, notAck
     return &CEMIDataFrame{StandardFrame: standardFrame, Polling: polling, NotRepeated: notRepeated, NotAckFrame: notAckFrame, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag, GroupDestinationAddress: groupDestinationAddress, HopCount: hopCount, ExtendedFrameFormat: extendedFrameFormat, SourceAddress: sourceAddress, DestinationAddress: destinationAddress, DataLength: dataLength, Tcpi: tcpi, Counter: counter, Apci: apci, DataFirstByte: dataFirstByte, Data: data}
 }
 
-func CastCEMIDataFrame(structType interface{}) CEMIDataFrame {
-    castFunc := func(typ interface{}) CEMIDataFrame {
+func CastCEMIDataFrame(structType interface{}) *CEMIDataFrame {
+    castFunc := func(typ interface{}) *CEMIDataFrame {
         if casted, ok := typ.(CEMIDataFrame); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIDataFrame); ok {
-            return *casted
+            return casted
         }
-        return CEMIDataFrame{}
+        return nil
     }
     return castFunc(structType)
 }

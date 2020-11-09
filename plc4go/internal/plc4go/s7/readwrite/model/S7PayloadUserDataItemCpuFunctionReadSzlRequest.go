@@ -61,13 +61,13 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(returnCode DataTransportE
     return child.Parent
 }
 
-func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
-    castFunc := func(typ interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+    castFunc := func(typ interface{}) *S7PayloadUserDataItemCpuFunctionReadSzlRequest {
         if casted, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7PayloadUserDataItem); ok {
             return CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(casted.Child)
@@ -75,7 +75,7 @@ func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) 
         if casted, ok := typ.(*S7PayloadUserDataItem); ok {
             return CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(casted.Child)
         }
-        return S7PayloadUserDataItemCpuFunctionReadSzlRequest{}
+        return nil
     }
     return castFunc(structType)
 }

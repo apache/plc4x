@@ -57,13 +57,13 @@ func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() *BACnetUnconfirm
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) *BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interf
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}
+        return nil
     }
     return castFunc(structType)
 }

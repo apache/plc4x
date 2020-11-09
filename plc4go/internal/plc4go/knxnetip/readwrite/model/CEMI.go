@@ -57,15 +57,15 @@ func NewCEMI() *CEMI {
     return &CEMI{}
 }
 
-func CastCEMI(structType interface{}) CEMI {
-    castFunc := func(typ interface{}) CEMI {
+func CastCEMI(structType interface{}) *CEMI {
+    castFunc := func(typ interface{}) *CEMI {
         if casted, ok := typ.(CEMI); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMI); ok {
-            return *casted
+            return casted
         }
-        return CEMI{}
+        return nil
     }
     return castFunc(structType)
 }

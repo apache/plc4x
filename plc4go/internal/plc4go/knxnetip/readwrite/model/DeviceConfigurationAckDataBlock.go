@@ -45,15 +45,15 @@ func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCo
     return &DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
 
-func CastDeviceConfigurationAckDataBlock(structType interface{}) DeviceConfigurationAckDataBlock {
-    castFunc := func(typ interface{}) DeviceConfigurationAckDataBlock {
+func CastDeviceConfigurationAckDataBlock(structType interface{}) *DeviceConfigurationAckDataBlock {
+    castFunc := func(typ interface{}) *DeviceConfigurationAckDataBlock {
         if casted, ok := typ.(DeviceConfigurationAckDataBlock); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DeviceConfigurationAckDataBlock); ok {
-            return *casted
+            return casted
         }
-        return DeviceConfigurationAckDataBlock{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -78,13 +78,13 @@ func NewBACnetUnconfirmedServiceRequestIAm(objectType uint16, objectInstanceNumb
     return child.Parent
 }
 
-func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconfirmedServiceRequestIAm {
-    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIAm {
+func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) *BACnetUnconfirmedServiceRequestIAm {
+    castFunc := func(typ interface{}) *BACnetUnconfirmedServiceRequestIAm {
         if casted, ok := typ.(BACnetUnconfirmedServiceRequestIAm); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequestIAm); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
@@ -92,7 +92,7 @@ func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconf
         if casted, ok := typ.(*BACnetUnconfirmedServiceRequest); ok {
             return CastBACnetUnconfirmedServiceRequestIAm(casted.Child)
         }
-        return BACnetUnconfirmedServiceRequestIAm{}
+        return nil
     }
     return castFunc(structType)
 }

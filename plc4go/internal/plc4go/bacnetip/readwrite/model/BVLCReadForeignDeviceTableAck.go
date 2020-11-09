@@ -57,13 +57,13 @@ func NewBVLCReadForeignDeviceTableAck() *BVLC {
     return child.Parent
 }
 
-func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
-    castFunc := func(typ interface{}) BVLCReadForeignDeviceTableAck {
+func CastBVLCReadForeignDeviceTableAck(structType interface{}) *BVLCReadForeignDeviceTableAck {
+    castFunc := func(typ interface{}) *BVLCReadForeignDeviceTableAck {
         if casted, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCReadForeignDeviceTableAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCReadForeignDeviceTableAck(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDe
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCReadForeignDeviceTableAck(casted.Child)
         }
-        return BVLCReadForeignDeviceTableAck{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -60,13 +60,13 @@ func NewKnxNetIpDeviceManagement(version uint8, ) *ServiceId {
     return child.Parent
 }
 
-func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManagement {
-    castFunc := func(typ interface{}) KnxNetIpDeviceManagement {
+func CastKnxNetIpDeviceManagement(structType interface{}) *KnxNetIpDeviceManagement {
+    castFunc := func(typ interface{}) *KnxNetIpDeviceManagement {
         if casted, ok := typ.(KnxNetIpDeviceManagement); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxNetIpDeviceManagement); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ServiceId); ok {
             return CastKnxNetIpDeviceManagement(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManageme
         if casted, ok := typ.(*ServiceId); ok {
             return CastKnxNetIpDeviceManagement(casted.Child)
         }
-        return KnxNetIpDeviceManagement{}
+        return nil
     }
     return castFunc(structType)
 }

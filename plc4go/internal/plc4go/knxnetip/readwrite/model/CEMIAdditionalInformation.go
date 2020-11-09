@@ -57,15 +57,15 @@ func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
     return &CEMIAdditionalInformation{}
 }
 
-func CastCEMIAdditionalInformation(structType interface{}) CEMIAdditionalInformation {
-    castFunc := func(typ interface{}) CEMIAdditionalInformation {
+func CastCEMIAdditionalInformation(structType interface{}) *CEMIAdditionalInformation {
+    castFunc := func(typ interface{}) *CEMIAdditionalInformation {
         if casted, ok := typ.(CEMIAdditionalInformation); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIAdditionalInformation); ok {
-            return *casted
+            return casted
         }
-        return CEMIAdditionalInformation{}
+        return nil
     }
     return castFunc(structType)
 }

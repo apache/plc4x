@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestAddListElement() *BACnetConfirmedServiceReq
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) BACnetConfirmedServiceRequestAddListElement {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAddListElement {
+func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) *BACnetConfirmedServiceRequestAddListElement {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAddListElement {
         if casted, ok := typ.(BACnetConfirmedServiceRequestAddListElement); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestAddListElement); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAddListElement(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) BAC
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAddListElement(casted.Child)
         }
-        return BACnetConfirmedServiceRequestAddListElement{}
+        return nil
     }
     return castFunc(structType)
 }

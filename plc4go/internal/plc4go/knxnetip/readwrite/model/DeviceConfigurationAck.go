@@ -60,13 +60,13 @@ func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock *DeviceConfigurat
     return child.Parent
 }
 
-func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
-    castFunc := func(typ interface{}) DeviceConfigurationAck {
+func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck {
+    castFunc := func(typ interface{}) *DeviceConfigurationAck {
         if casted, ok := typ.(DeviceConfigurationAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DeviceConfigurationAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastDeviceConfigurationAck(casted.Child)
@@ -74,7 +74,7 @@ func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastDeviceConfigurationAck(casted.Child)
         }
-        return DeviceConfigurationAck{}
+        return nil
     }
     return castFunc(structType)
 }

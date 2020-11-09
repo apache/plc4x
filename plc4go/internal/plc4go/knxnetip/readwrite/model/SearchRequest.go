@@ -60,13 +60,13 @@ func NewSearchRequest(hpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint, ) *KnxNetIp
     return child.Parent
 }
 
-func CastSearchRequest(structType interface{}) SearchRequest {
-    castFunc := func(typ interface{}) SearchRequest {
+func CastSearchRequest(structType interface{}) *SearchRequest {
+    castFunc := func(typ interface{}) *SearchRequest {
         if casted, ok := typ.(SearchRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*SearchRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastSearchRequest(casted.Child)
@@ -74,7 +74,7 @@ func CastSearchRequest(structType interface{}) SearchRequest {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastSearchRequest(casted.Child)
         }
-        return SearchRequest{}
+        return nil
     }
     return castFunc(structType)
 }

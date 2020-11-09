@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceACKCreateObject() *BACnetConfirmedServiceACK {
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) BACnetConfirmedServiceACKCreateObject {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceACKCreateObject {
+func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) *BACnetConfirmedServiceACKCreateObject {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKCreateObject {
         if casted, ok := typ.(BACnetConfirmedServiceACKCreateObject); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceACKCreateObject); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceACKCreateObject(structType interface{}) BACnetCon
         if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKCreateObject(casted.Child)
         }
-        return BACnetConfirmedServiceACKCreateObject{}
+        return nil
     }
     return castFunc(structType)
 }

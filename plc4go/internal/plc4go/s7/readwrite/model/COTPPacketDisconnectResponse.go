@@ -64,13 +64,13 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
     return child.Parent
 }
 
-func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconnectResponse {
-    castFunc := func(typ interface{}) COTPPacketDisconnectResponse {
+func CastCOTPPacketDisconnectResponse(structType interface{}) *COTPPacketDisconnectResponse {
+    castFunc := func(typ interface{}) *COTPPacketDisconnectResponse {
         if casted, ok := typ.(COTPPacketDisconnectResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPPacketDisconnectResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(COTPPacket); ok {
             return CastCOTPPacketDisconnectResponse(casted.Child)
@@ -78,7 +78,7 @@ func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconne
         if casted, ok := typ.(*COTPPacket); ok {
             return CastCOTPPacketDisconnectResponse(casted.Child)
         }
-        return COTPPacketDisconnectResponse{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -74,11 +74,14 @@ func (m DataTransportErrorCode) LengthInBytes() uint16 {
 }
 
 func DataTransportErrorCodeParse(io *utils.ReadBuffer) (DataTransportErrorCode, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return DataTransportErrorCodeValueOf(val), nil
 }
 
 func (e DataTransportErrorCode) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

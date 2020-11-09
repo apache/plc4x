@@ -60,13 +60,13 @@ func NewDescriptionRequest(hpaiControlEndpoint *HPAIControlEndpoint, ) *KnxNetIp
     return child.Parent
 }
 
-func CastDescriptionRequest(structType interface{}) DescriptionRequest {
-    castFunc := func(typ interface{}) DescriptionRequest {
+func CastDescriptionRequest(structType interface{}) *DescriptionRequest {
+    castFunc := func(typ interface{}) *DescriptionRequest {
         if casted, ok := typ.(DescriptionRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*DescriptionRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastDescriptionRequest(casted.Child)
@@ -74,7 +74,7 @@ func CastDescriptionRequest(structType interface{}) DescriptionRequest {
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastDescriptionRequest(casted.Child)
         }
-        return DescriptionRequest{}
+        return nil
     }
     return castFunc(structType)
 }

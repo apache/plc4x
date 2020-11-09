@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestVTData() *BACnetConfirmedServiceRequest {
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestVTData(structType interface{}) BACnetConfirmedServiceRequestVTData {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestVTData {
+func CastBACnetConfirmedServiceRequestVTData(structType interface{}) *BACnetConfirmedServiceRequestVTData {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestVTData {
         if casted, ok := typ.(BACnetConfirmedServiceRequestVTData); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestVTData); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestVTData(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestVTData(structType interface{}) BACnetConfi
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestVTData(casted.Child)
         }
-        return BACnetConfirmedServiceRequestVTData{}
+        return nil
     }
     return castFunc(structType)
 }

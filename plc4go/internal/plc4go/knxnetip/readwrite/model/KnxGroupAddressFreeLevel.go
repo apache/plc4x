@@ -60,13 +60,13 @@ func NewKnxGroupAddressFreeLevel(subGroup uint16, ) *KnxGroupAddress {
     return child.Parent
 }
 
-func CastKnxGroupAddressFreeLevel(structType interface{}) KnxGroupAddressFreeLevel {
-    castFunc := func(typ interface{}) KnxGroupAddressFreeLevel {
+func CastKnxGroupAddressFreeLevel(structType interface{}) *KnxGroupAddressFreeLevel {
+    castFunc := func(typ interface{}) *KnxGroupAddressFreeLevel {
         if casted, ok := typ.(KnxGroupAddressFreeLevel); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxGroupAddressFreeLevel); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxGroupAddress); ok {
             return CastKnxGroupAddressFreeLevel(casted.Child)
@@ -74,7 +74,7 @@ func CastKnxGroupAddressFreeLevel(structType interface{}) KnxGroupAddressFreeLev
         if casted, ok := typ.(*KnxGroupAddress); ok {
             return CastKnxGroupAddressFreeLevel(casted.Child)
         }
-        return KnxGroupAddressFreeLevel{}
+        return nil
     }
     return castFunc(structType)
 }

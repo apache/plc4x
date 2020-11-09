@@ -47,15 +47,15 @@ func NewModbusPDUWriteFileRecordRequestItem(referenceType uint8, fileNumber uint
     return &ModbusPDUWriteFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
 }
 
-func CastModbusPDUWriteFileRecordRequestItem(structType interface{}) ModbusPDUWriteFileRecordRequestItem {
-    castFunc := func(typ interface{}) ModbusPDUWriteFileRecordRequestItem {
+func CastModbusPDUWriteFileRecordRequestItem(structType interface{}) *ModbusPDUWriteFileRecordRequestItem {
+    castFunc := func(typ interface{}) *ModbusPDUWriteFileRecordRequestItem {
         if casted, ok := typ.(ModbusPDUWriteFileRecordRequestItem); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUWriteFileRecordRequestItem); ok {
-            return *casted
+            return casted
         }
-        return ModbusPDUWriteFileRecordRequestItem{}
+        return nil
     }
     return castFunc(structType)
 }

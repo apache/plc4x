@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestReadRange() *BACnetConfirmedServiceRequest 
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) BACnetConfirmedServiceRequestReadRange {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadRange {
+func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) *BACnetConfirmedServiceRequestReadRange {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestReadRange {
         if casted, ok := typ.(BACnetConfirmedServiceRequestReadRange); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestReadRange); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestReadRange(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) BACnetCo
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestReadRange(casted.Child)
         }
-        return BACnetConfirmedServiceRequestReadRange{}
+        return nil
     }
     return castFunc(structType)
 }

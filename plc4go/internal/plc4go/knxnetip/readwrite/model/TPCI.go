@@ -68,11 +68,14 @@ func (m TPCI) LengthInBytes() uint16 {
 }
 
 func TPCIParse(io *utils.ReadBuffer) (TPCI, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(2)
+    if err != nil {
+        return 0, nil
+    }
+    return TPCIValueOf(val), nil
 }
 
 func (e TPCI) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(2, uint8(e))
+    return err
 }

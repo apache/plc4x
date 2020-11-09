@@ -64,13 +64,13 @@ func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8
     return child.Parent
 }
 
-func CastKnxGroupAddress3Level(structType interface{}) KnxGroupAddress3Level {
-    castFunc := func(typ interface{}) KnxGroupAddress3Level {
+func CastKnxGroupAddress3Level(structType interface{}) *KnxGroupAddress3Level {
+    castFunc := func(typ interface{}) *KnxGroupAddress3Level {
         if casted, ok := typ.(KnxGroupAddress3Level); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxGroupAddress3Level); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxGroupAddress); ok {
             return CastKnxGroupAddress3Level(casted.Child)
@@ -78,7 +78,7 @@ func CastKnxGroupAddress3Level(structType interface{}) KnxGroupAddress3Level {
         if casted, ok := typ.(*KnxGroupAddress); ok {
             return CastKnxGroupAddress3Level(casted.Child)
         }
-        return KnxGroupAddress3Level{}
+        return nil
     }
     return castFunc(structType)
 }

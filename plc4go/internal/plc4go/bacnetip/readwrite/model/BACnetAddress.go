@@ -44,15 +44,15 @@ func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
     return &BACnetAddress{Address: address, Port: port}
 }
 
-func CastBACnetAddress(structType interface{}) BACnetAddress {
-    castFunc := func(typ interface{}) BACnetAddress {
+func CastBACnetAddress(structType interface{}) *BACnetAddress {
+    castFunc := func(typ interface{}) *BACnetAddress {
         if casted, ok := typ.(BACnetAddress); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetAddress); ok {
-            return *casted
+            return casted
         }
-        return BACnetAddress{}
+        return nil
     }
     return castFunc(structType)
 }

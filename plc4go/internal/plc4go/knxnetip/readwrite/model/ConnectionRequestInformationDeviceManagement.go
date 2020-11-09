@@ -57,13 +57,13 @@ func NewConnectionRequestInformationDeviceManagement() *ConnectionRequestInforma
     return child.Parent
 }
 
-func CastConnectionRequestInformationDeviceManagement(structType interface{}) ConnectionRequestInformationDeviceManagement {
-    castFunc := func(typ interface{}) ConnectionRequestInformationDeviceManagement {
+func CastConnectionRequestInformationDeviceManagement(structType interface{}) *ConnectionRequestInformationDeviceManagement {
+    castFunc := func(typ interface{}) *ConnectionRequestInformationDeviceManagement {
         if casted, ok := typ.(ConnectionRequestInformationDeviceManagement); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionRequestInformationDeviceManagement); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ConnectionRequestInformation); ok {
             return CastConnectionRequestInformationDeviceManagement(casted.Child)
@@ -71,7 +71,7 @@ func CastConnectionRequestInformationDeviceManagement(structType interface{}) Co
         if casted, ok := typ.(*ConnectionRequestInformation); ok {
             return CastConnectionRequestInformationDeviceManagement(casted.Child)
         }
-        return ConnectionRequestInformationDeviceManagement{}
+        return nil
     }
     return castFunc(structType)
 }

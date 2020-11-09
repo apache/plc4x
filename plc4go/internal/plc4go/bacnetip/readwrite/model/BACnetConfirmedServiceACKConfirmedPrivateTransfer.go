@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceACKConfirmedPrivateTransfer() *BACnetConfirmedServ
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{}) BACnetConfirmedServiceACKConfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceACKConfirmedPrivateTransfer {
+func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{}) *BACnetConfirmedServiceACKConfirmedPrivateTransfer {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKConfirmedPrivateTransfer {
         if casted, ok := typ.(BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceACKConfirmedPrivateTransfer); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{
         if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(casted.Child)
         }
-        return BACnetConfirmedServiceACKConfirmedPrivateTransfer{}
+        return nil
     }
     return castFunc(structType)
 }

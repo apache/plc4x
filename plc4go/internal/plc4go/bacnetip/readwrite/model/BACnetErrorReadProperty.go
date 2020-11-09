@@ -72,13 +72,13 @@ func NewBACnetErrorReadProperty(errorClassLength uint8, errorClass []int8, error
     return child.Parent
 }
 
-func CastBACnetErrorReadProperty(structType interface{}) BACnetErrorReadProperty {
-    castFunc := func(typ interface{}) BACnetErrorReadProperty {
+func CastBACnetErrorReadProperty(structType interface{}) *BACnetErrorReadProperty {
+    castFunc := func(typ interface{}) *BACnetErrorReadProperty {
         if casted, ok := typ.(BACnetErrorReadProperty); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorReadProperty); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorReadProperty(casted.Child)
@@ -86,7 +86,7 @@ func CastBACnetErrorReadProperty(structType interface{}) BACnetErrorReadProperty
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorReadProperty(casted.Child)
         }
-        return BACnetErrorReadProperty{}
+        return nil
     }
     return castFunc(structType)
 }

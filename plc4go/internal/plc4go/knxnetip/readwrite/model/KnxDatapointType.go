@@ -4366,12 +4366,3 @@ func (m KnxDatapointType) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxDatapointTypeParse(io *utils.ReadBuffer) (KnxDatapointType, error) {
-    // TODO: Implement ...
-    return "", nil
-}
-
-func (e KnxDatapointType) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
-}

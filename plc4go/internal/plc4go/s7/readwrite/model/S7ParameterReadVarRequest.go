@@ -64,13 +64,13 @@ func NewS7ParameterReadVarRequest(items []*S7VarRequestParameterItem, ) *S7Param
     return child.Parent
 }
 
-func CastS7ParameterReadVarRequest(structType interface{}) S7ParameterReadVarRequest {
-    castFunc := func(typ interface{}) S7ParameterReadVarRequest {
+func CastS7ParameterReadVarRequest(structType interface{}) *S7ParameterReadVarRequest {
+    castFunc := func(typ interface{}) *S7ParameterReadVarRequest {
         if casted, ok := typ.(S7ParameterReadVarRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7ParameterReadVarRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Parameter); ok {
             return CastS7ParameterReadVarRequest(casted.Child)
@@ -78,7 +78,7 @@ func CastS7ParameterReadVarRequest(structType interface{}) S7ParameterReadVarReq
         if casted, ok := typ.(*S7Parameter); ok {
             return CastS7ParameterReadVarRequest(casted.Child)
         }
-        return S7ParameterReadVarRequest{}
+        return nil
     }
     return castFunc(structType)
 }

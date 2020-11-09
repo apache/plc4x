@@ -57,15 +57,15 @@ func NewKnxGroupAddress() *KnxGroupAddress {
     return &KnxGroupAddress{}
 }
 
-func CastKnxGroupAddress(structType interface{}) KnxGroupAddress {
-    castFunc := func(typ interface{}) KnxGroupAddress {
+func CastKnxGroupAddress(structType interface{}) *KnxGroupAddress {
+    castFunc := func(typ interface{}) *KnxGroupAddress {
         if casted, ok := typ.(KnxGroupAddress); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxGroupAddress); ok {
-            return *casted
+            return casted
         }
-        return KnxGroupAddress{}
+        return nil
     }
     return castFunc(structType)
 }

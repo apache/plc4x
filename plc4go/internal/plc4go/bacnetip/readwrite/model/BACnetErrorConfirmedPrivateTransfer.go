@@ -57,13 +57,13 @@ func NewBACnetErrorConfirmedPrivateTransfer() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) BACnetErrorConfirmedPrivateTransfer {
-    castFunc := func(typ interface{}) BACnetErrorConfirmedPrivateTransfer {
+func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) *BACnetErrorConfirmedPrivateTransfer {
+    castFunc := func(typ interface{}) *BACnetErrorConfirmedPrivateTransfer {
         if casted, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorConfirmedPrivateTransfer); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorConfirmedPrivateTransfer(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) BACnetError
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorConfirmedPrivateTransfer(casted.Child)
         }
-        return BACnetErrorConfirmedPrivateTransfer{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -63,13 +63,13 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason uint8, ) *APDU {
     return child.Parent
 }
 
-func CastAPDUReject(structType interface{}) APDUReject {
-    castFunc := func(typ interface{}) APDUReject {
+func CastAPDUReject(structType interface{}) *APDUReject {
+    castFunc := func(typ interface{}) *APDUReject {
         if casted, ok := typ.(APDUReject); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUReject); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUReject(casted.Child)
@@ -77,7 +77,7 @@ func CastAPDUReject(structType interface{}) APDUReject {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUReject(casted.Child)
         }
-        return APDUReject{}
+        return nil
     }
     return castFunc(structType)
 }

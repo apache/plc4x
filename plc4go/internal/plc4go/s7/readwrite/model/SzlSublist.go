@@ -113,11 +113,14 @@ func (m SzlSublist) LengthInBytes() uint16 {
 }
 
 func SzlSublistParse(io *utils.ReadBuffer) (SzlSublist, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(8)
+    if err != nil {
+        return 0, nil
+    }
+    return SzlSublistValueOf(val), nil
 }
 
 func (e SzlSublist) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(8, uint8(e))
+    return err
 }

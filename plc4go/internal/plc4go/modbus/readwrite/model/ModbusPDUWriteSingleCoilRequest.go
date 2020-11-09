@@ -70,13 +70,13 @@ func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16, ) *ModbusP
     return child.Parent
 }
 
-func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteSingleCoilRequest {
-    castFunc := func(typ interface{}) ModbusPDUWriteSingleCoilRequest {
+func CastModbusPDUWriteSingleCoilRequest(structType interface{}) *ModbusPDUWriteSingleCoilRequest {
+    castFunc := func(typ interface{}) *ModbusPDUWriteSingleCoilRequest {
         if casted, ok := typ.(ModbusPDUWriteSingleCoilRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUWriteSingleCoilRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUWriteSingleCoilRequest(casted.Child)
@@ -84,7 +84,7 @@ func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteS
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUWriteSingleCoilRequest(casted.Child)
         }
-        return ModbusPDUWriteSingleCoilRequest{}
+        return nil
     }
     return castFunc(structType)
 }

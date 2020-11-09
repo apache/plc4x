@@ -57,13 +57,13 @@ func NewBACnetErrorGetAlarmSummary() *BACnetError {
     return child.Parent
 }
 
-func CastBACnetErrorGetAlarmSummary(structType interface{}) BACnetErrorGetAlarmSummary {
-    castFunc := func(typ interface{}) BACnetErrorGetAlarmSummary {
+func CastBACnetErrorGetAlarmSummary(structType interface{}) *BACnetErrorGetAlarmSummary {
+    castFunc := func(typ interface{}) *BACnetErrorGetAlarmSummary {
         if casted, ok := typ.(BACnetErrorGetAlarmSummary); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetErrorGetAlarmSummary); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetError); ok {
             return CastBACnetErrorGetAlarmSummary(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetErrorGetAlarmSummary(structType interface{}) BACnetErrorGetAlarmS
         if casted, ok := typ.(*BACnetError); ok {
             return CastBACnetErrorGetAlarmSummary(casted.Child)
         }
-        return BACnetErrorGetAlarmSummary{}
+        return nil
     }
     return castFunc(structType)
 }

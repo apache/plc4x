@@ -45,15 +45,15 @@ func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress
     return &HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
-func CastHPAIDataEndpoint(structType interface{}) HPAIDataEndpoint {
-    castFunc := func(typ interface{}) HPAIDataEndpoint {
+func CastHPAIDataEndpoint(structType interface{}) *HPAIDataEndpoint {
+    castFunc := func(typ interface{}) *HPAIDataEndpoint {
         if casted, ok := typ.(HPAIDataEndpoint); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*HPAIDataEndpoint); ok {
-            return *casted
+            return casted
         }
-        return HPAIDataEndpoint{}
+        return nil
     }
     return castFunc(structType)
 }

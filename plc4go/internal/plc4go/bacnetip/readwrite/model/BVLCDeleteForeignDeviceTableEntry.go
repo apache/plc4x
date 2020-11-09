@@ -57,13 +57,13 @@ func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
     return child.Parent
 }
 
-func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteForeignDeviceTableEntry {
-    castFunc := func(typ interface{}) BVLCDeleteForeignDeviceTableEntry {
+func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteForeignDeviceTableEntry {
+    castFunc := func(typ interface{}) *BVLCDeleteForeignDeviceTableEntry {
         if casted, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BVLCDeleteForeignDeviceTableEntry); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BVLC); ok {
             return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
@@ -71,7 +71,7 @@ func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteFor
         if casted, ok := typ.(*BVLC); ok {
             return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
         }
-        return BVLCDeleteForeignDeviceTableEntry{}
+        return nil
     }
     return castFunc(structType)
 }

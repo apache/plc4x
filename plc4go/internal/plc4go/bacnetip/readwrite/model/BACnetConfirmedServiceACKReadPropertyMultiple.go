@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceACKReadPropertyMultiple() *BACnetConfirmedServiceA
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
+func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) *BACnetConfirmedServiceACKReadPropertyMultiple {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKReadPropertyMultiple {
         if casted, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) B
         if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
             return CastBACnetConfirmedServiceACKReadPropertyMultiple(casted.Child)
         }
-        return BACnetConfirmedServiceACKReadPropertyMultiple{}
+        return nil
     }
     return castFunc(structType)
 }

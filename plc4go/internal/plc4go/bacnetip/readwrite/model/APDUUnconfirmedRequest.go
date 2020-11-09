@@ -61,13 +61,13 @@ func NewAPDUUnconfirmedRequest(serviceRequest *BACnetUnconfirmedServiceRequest, 
     return child.Parent
 }
 
-func CastAPDUUnconfirmedRequest(structType interface{}) APDUUnconfirmedRequest {
-    castFunc := func(typ interface{}) APDUUnconfirmedRequest {
+func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest {
+    castFunc := func(typ interface{}) *APDUUnconfirmedRequest {
         if casted, ok := typ.(APDUUnconfirmedRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUUnconfirmedRequest); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUUnconfirmedRequest(casted.Child)
@@ -75,7 +75,7 @@ func CastAPDUUnconfirmedRequest(structType interface{}) APDUUnconfirmedRequest {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUUnconfirmedRequest(casted.Child)
         }
-        return APDUUnconfirmedRequest{}
+        return nil
     }
     return castFunc(structType)
 }

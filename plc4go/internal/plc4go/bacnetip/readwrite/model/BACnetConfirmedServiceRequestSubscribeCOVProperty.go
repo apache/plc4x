@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVProperty() *BACnetConfirmedServ
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
+func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) *BACnetConfirmedServiceRequestSubscribeCOVProperty {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestSubscribeCOVProperty {
         if casted, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestSubscribeCOVProperty(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestSubscribeCOVProperty(casted.Child)
         }
-        return BACnetConfirmedServiceRequestSubscribeCOVProperty{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -65,11 +65,14 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 }
 
 func BACnetNotifyTypeParse(io *utils.ReadBuffer) (BACnetNotifyType, error) {
-    // TODO: Implement ...
-    return 0, nil
+    val, err := io.ReadUint8(4)
+    if err != nil {
+        return 0, nil
+    }
+    return BACnetNotifyTypeValueOf(val), nil
 }
 
 func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
-    // TODO: Implement ...
-    return nil
+    err := io.WriteUint8(4, uint8(e))
+    return err
 }

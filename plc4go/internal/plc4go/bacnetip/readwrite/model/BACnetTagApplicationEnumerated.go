@@ -65,13 +65,13 @@ func NewBACnetTagApplicationEnumerated(data []int8, typeOrTagNumber uint8, lengt
     return child.Parent
 }
 
-func CastBACnetTagApplicationEnumerated(structType interface{}) BACnetTagApplicationEnumerated {
-    castFunc := func(typ interface{}) BACnetTagApplicationEnumerated {
+func CastBACnetTagApplicationEnumerated(structType interface{}) *BACnetTagApplicationEnumerated {
+    castFunc := func(typ interface{}) *BACnetTagApplicationEnumerated {
         if casted, ok := typ.(BACnetTagApplicationEnumerated); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationEnumerated); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationEnumerated(casted.Child)
@@ -79,7 +79,7 @@ func CastBACnetTagApplicationEnumerated(structType interface{}) BACnetTagApplica
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationEnumerated(casted.Child)
         }
-        return BACnetTagApplicationEnumerated{}
+        return nil
     }
     return castFunc(structType)
 }

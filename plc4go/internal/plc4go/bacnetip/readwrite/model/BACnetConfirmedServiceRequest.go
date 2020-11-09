@@ -57,15 +57,15 @@ func NewBACnetConfirmedServiceRequest() *BACnetConfirmedServiceRequest {
     return &BACnetConfirmedServiceRequest{}
 }
 
-func CastBACnetConfirmedServiceRequest(structType interface{}) BACnetConfirmedServiceRequest {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequest {
+func CastBACnetConfirmedServiceRequest(structType interface{}) *BACnetConfirmedServiceRequest {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequest {
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-            return *casted
+            return casted
         }
-        return BACnetConfirmedServiceRequest{}
+        return nil
     }
     return castFunc(structType)
 }

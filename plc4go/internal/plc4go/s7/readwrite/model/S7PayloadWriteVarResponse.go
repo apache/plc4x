@@ -64,13 +64,13 @@ func NewS7PayloadWriteVarResponse(items []*S7VarPayloadStatusItem, ) *S7Payload 
     return child.Parent
 }
 
-func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResponse {
-    castFunc := func(typ interface{}) S7PayloadWriteVarResponse {
+func CastS7PayloadWriteVarResponse(structType interface{}) *S7PayloadWriteVarResponse {
+    castFunc := func(typ interface{}) *S7PayloadWriteVarResponse {
         if casted, ok := typ.(S7PayloadWriteVarResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*S7PayloadWriteVarResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(S7Payload); ok {
             return CastS7PayloadWriteVarResponse(casted.Child)
@@ -78,7 +78,7 @@ func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResp
         if casted, ok := typ.(*S7Payload); ok {
             return CastS7PayloadWriteVarResponse(casted.Child)
         }
-        return S7PayloadWriteVarResponse{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -57,15 +57,15 @@ func NewCOTPParameter() *COTPParameter {
     return &COTPParameter{}
 }
 
-func CastCOTPParameter(structType interface{}) COTPParameter {
-    castFunc := func(typ interface{}) COTPParameter {
+func CastCOTPParameter(structType interface{}) *COTPParameter {
+    castFunc := func(typ interface{}) *COTPParameter {
         if casted, ok := typ.(COTPParameter); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*COTPParameter); ok {
-            return *casted
+            return casted
         }
-        return COTPParameter{}
+        return nil
     }
     return castFunc(structType)
 }

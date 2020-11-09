@@ -68,13 +68,13 @@ func NewModbusPDUError(exceptionCode ModbusErrorCode, ) *ModbusPDU {
     return child.Parent
 }
 
-func CastModbusPDUError(structType interface{}) ModbusPDUError {
-    castFunc := func(typ interface{}) ModbusPDUError {
+func CastModbusPDUError(structType interface{}) *ModbusPDUError {
+    castFunc := func(typ interface{}) *ModbusPDUError {
         if casted, ok := typ.(ModbusPDUError); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ModbusPDUError); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(ModbusPDU); ok {
             return CastModbusPDUError(casted.Child)
@@ -82,7 +82,7 @@ func CastModbusPDUError(structType interface{}) ModbusPDUError {
         if casted, ok := typ.(*ModbusPDU); ok {
             return CastModbusPDUError(casted.Child)
         }
-        return ModbusPDUError{}
+        return nil
     }
     return castFunc(structType)
 }

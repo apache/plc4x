@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl() *BACnetConfirm
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
         if casted, ok := typ.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType inte
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
         }
-        return BACnetConfirmedServiceRequestDeviceCommunicationControl{}
+        return nil
     }
     return castFunc(structType)
 }

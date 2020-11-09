@@ -61,15 +61,15 @@ func NewBACnetTag(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *ui
     return &BACnetTag{TypeOrTagNumber: typeOrTagNumber, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength}
 }
 
-func CastBACnetTag(structType interface{}) BACnetTag {
-    castFunc := func(typ interface{}) BACnetTag {
+func CastBACnetTag(structType interface{}) *BACnetTag {
+    castFunc := func(typ interface{}) *BACnetTag {
         if casted, ok := typ.(BACnetTag); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTag); ok {
-            return *casted
+            return casted
         }
-        return BACnetTag{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -62,13 +62,13 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status, ) *
     return child.Parent
 }
 
-func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse {
-    castFunc := func(typ interface{}) ConnectionStateResponse {
+func CastConnectionStateResponse(structType interface{}) *ConnectionStateResponse {
+    castFunc := func(typ interface{}) *ConnectionStateResponse {
         if casted, ok := typ.(ConnectionStateResponse); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*ConnectionStateResponse); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(KnxNetIpMessage); ok {
             return CastConnectionStateResponse(casted.Child)
@@ -76,7 +76,7 @@ func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse
         if casted, ok := typ.(*KnxNetIpMessage); ok {
             return CastConnectionStateResponse(casted.Child)
         }
-        return ConnectionStateResponse{}
+        return nil
     }
     return castFunc(structType)
 }

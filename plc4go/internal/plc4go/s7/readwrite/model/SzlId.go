@@ -45,15 +45,15 @@ func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList Sz
     return &SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
 }
 
-func CastSzlId(structType interface{}) SzlId {
-    castFunc := func(typ interface{}) SzlId {
+func CastSzlId(structType interface{}) *SzlId {
+    castFunc := func(typ interface{}) *SzlId {
         if casted, ok := typ.(SzlId); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*SzlId); ok {
-            return *casted
+            return casted
         }
-        return SzlId{}
+        return nil
     }
     return castFunc(structType)
 }

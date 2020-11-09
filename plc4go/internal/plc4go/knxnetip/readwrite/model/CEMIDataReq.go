@@ -64,13 +64,13 @@ func NewCEMIDataReq(additionalInformationLength uint8, additionalInformation []*
     return child.Parent
 }
 
-func CastCEMIDataReq(structType interface{}) CEMIDataReq {
-    castFunc := func(typ interface{}) CEMIDataReq {
+func CastCEMIDataReq(structType interface{}) *CEMIDataReq {
+    castFunc := func(typ interface{}) *CEMIDataReq {
         if casted, ok := typ.(CEMIDataReq); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*CEMIDataReq); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(CEMI); ok {
             return CastCEMIDataReq(casted.Child)
@@ -78,7 +78,7 @@ func CastCEMIDataReq(structType interface{}) CEMIDataReq {
         if casted, ok := typ.(*CEMI); ok {
             return CastCEMIDataReq(casted.Child)
         }
-        return CEMIDataReq{}
+        return nil
     }
     return castFunc(structType)
 }

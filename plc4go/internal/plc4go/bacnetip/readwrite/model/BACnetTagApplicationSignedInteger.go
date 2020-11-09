@@ -65,13 +65,13 @@ func NewBACnetTagApplicationSignedInteger(data []int8, typeOrTagNumber uint8, le
     return child.Parent
 }
 
-func CastBACnetTagApplicationSignedInteger(structType interface{}) BACnetTagApplicationSignedInteger {
-    castFunc := func(typ interface{}) BACnetTagApplicationSignedInteger {
+func CastBACnetTagApplicationSignedInteger(structType interface{}) *BACnetTagApplicationSignedInteger {
+    castFunc := func(typ interface{}) *BACnetTagApplicationSignedInteger {
         if casted, ok := typ.(BACnetTagApplicationSignedInteger); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetTagApplicationSignedInteger); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetTag); ok {
             return CastBACnetTagApplicationSignedInteger(casted.Child)
@@ -79,7 +79,7 @@ func CastBACnetTagApplicationSignedInteger(structType interface{}) BACnetTagAppl
         if casted, ok := typ.(*BACnetTag); ok {
             return CastBACnetTagApplicationSignedInteger(casted.Child)
         }
-        return BACnetTagApplicationSignedInteger{}
+        return nil
     }
     return castFunc(structType)
 }

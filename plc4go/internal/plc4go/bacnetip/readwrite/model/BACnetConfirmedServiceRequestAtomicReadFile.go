@@ -57,13 +57,13 @@ func NewBACnetConfirmedServiceRequestAtomicReadFile() *BACnetConfirmedServiceReq
     return child.Parent
 }
 
-func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) BACnetConfirmedServiceRequestAtomicReadFile {
-    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAtomicReadFile {
+func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) *BACnetConfirmedServiceRequestAtomicReadFile {
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestAtomicReadFile {
         if casted, ok := typ.(BACnetConfirmedServiceRequestAtomicReadFile); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*BACnetConfirmedServiceRequestAtomicReadFile); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
@@ -71,7 +71,7 @@ func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) BAC
         if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
             return CastBACnetConfirmedServiceRequestAtomicReadFile(casted.Child)
         }
-        return BACnetConfirmedServiceRequestAtomicReadFile{}
+        return nil
     }
     return castFunc(structType)
 }

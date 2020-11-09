@@ -44,15 +44,15 @@ func NewIPAddress(addr []int8) *IPAddress {
     return &IPAddress{Addr: addr}
 }
 
-func CastIPAddress(structType interface{}) IPAddress {
-    castFunc := func(typ interface{}) IPAddress {
+func CastIPAddress(structType interface{}) *IPAddress {
+    castFunc := func(typ interface{}) *IPAddress {
         if casted, ok := typ.(IPAddress); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*IPAddress); ok {
-            return *casted
+            return casted
         }
-        return IPAddress{}
+        return nil
     }
     return castFunc(structType)
 }

@@ -69,13 +69,13 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
     return child.Parent
 }
 
-func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
-    castFunc := func(typ interface{}) APDUSegmentAck {
+func CastAPDUSegmentAck(structType interface{}) *APDUSegmentAck {
+    castFunc := func(typ interface{}) *APDUSegmentAck {
         if casted, ok := typ.(APDUSegmentAck); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*APDUSegmentAck); ok {
-            return *casted
+            return casted
         }
         if casted, ok := typ.(APDU); ok {
             return CastAPDUSegmentAck(casted.Child)
@@ -83,7 +83,7 @@ func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
         if casted, ok := typ.(*APDU); ok {
             return CastAPDUSegmentAck(casted.Child)
         }
-        return APDUSegmentAck{}
+        return nil
     }
     return castFunc(structType)
 }

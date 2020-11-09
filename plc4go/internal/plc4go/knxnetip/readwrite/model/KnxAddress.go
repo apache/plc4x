@@ -45,15 +45,15 @@ func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxAddre
     return &KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
 }
 
-func CastKnxAddress(structType interface{}) KnxAddress {
-    castFunc := func(typ interface{}) KnxAddress {
+func CastKnxAddress(structType interface{}) *KnxAddress {
+    castFunc := func(typ interface{}) *KnxAddress {
         if casted, ok := typ.(KnxAddress); ok {
-            return casted
+            return &casted
         }
         if casted, ok := typ.(*KnxAddress); ok {
-            return *casted
+            return casted
         }
-        return KnxAddress{}
+        return nil
     }
     return castFunc(structType)
 }
