@@ -56,6 +56,12 @@ func (m KnxNetIpDriver) CheckQuery(query string) error {
 }
 
 func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+    // If the host is set to "discover", use the KNX discovery mechanism
+    if transportUrl.Host == "-discover-" {
+        // Multicast address every KNX gateway is required to respond to.
+        transportUrl.Host =  "224.0.23.12"
+    }
+
     // Get an the transport specified in the url
     transport, ok := transports[transportUrl.Scheme]
     if !ok {
