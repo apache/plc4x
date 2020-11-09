@@ -20,20 +20,23 @@ package model
 
 import "time"
 
+type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
+
 type PlcSubscriptionRequestBuilder interface {
-	AddCyclicItem(name string, query string, interval time.Duration)
-	AddChangeOfStateItem(name string, query string)
-	AddEventItem(name string, query string)
-	Build() (PlcSubscriptionRequest, error)
+    AddCyclicItem(name string, query string, interval time.Duration)
+    AddChangeOfStateItem(name string, query string)
+    AddEventItem(name string, query string)
+    AddItemHandler(handler PlcSubscriptionEventHandler)
+    Build() (PlcSubscriptionRequest, error)
 }
 
 type PlcSubscriptionRequestResult struct {
-	Request  PlcSubscriptionRequest
-	Response PlcSubscriptionResponse
-	Err      error
+    Request  PlcSubscriptionRequest
+    Response PlcSubscriptionResponse
+    Err      error
 }
 
 type PlcSubscriptionRequest interface {
-	Execute() <-chan PlcSubscriptionRequestResult
-	PlcRequest
+    Execute() <-chan PlcSubscriptionRequestResult
+    PlcRequest
 }

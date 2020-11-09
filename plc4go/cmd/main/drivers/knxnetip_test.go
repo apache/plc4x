@@ -20,12 +20,15 @@ package drivers
 
 import (
     "encoding/hex"
+    "fmt"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/transports/udp"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
     "plc4x.apache.org/plc4go/v0/pkg/plc4go"
+    apiModel "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
     "testing"
+    "time"
 )
 
 func KnxNetIp(t *testing.T) {
@@ -52,6 +55,7 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 
     // Get a connection to a remote PLC
     crc := driverManager.GetConnection("knxnet-ip://192.168.42.11")
+    //crc := driverManager.GetConnection("knxnet-ip://-discover-")
 
     // Wait for the driver to connect (or not)
     connectionResult := <-crc
@@ -75,9 +79,16 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     defer connection.Close()
 
     // Prepare a read-request
+    pollingInterval, err := time.ParseDuration("5s")
+    if err != nil {
+        t.Errorf("invalid format")
+        t.Fail()
+        return
+    }
     srb := connection.SubscriptionRequestBuilder()
     srb.AddChangeOfStateItem("field1", "*/*/*")
-    srb.AddChangeOfStateItem("field2", "holding-register:3:REAL")
+    srb.AddCyclicItem("field2", "holding-register:3:REAL", pollingInterval)
+    srb.AddItemHandler(knxEventHandler)
     subscriptionRequest, err := srb.Build()
     if err != nil {
         t.Errorf("error preparing subscription-request: %s", connectionResult.Err.Error())
@@ -128,3 +139,10 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))*/
 }
 
+func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
+    for _, fieldName := range event.GetFieldNames() {
+        if event.GetResponseCode(fieldName) == apiModel.PlcResponseCode_OK {
+            fmt.Printf("Got update for field %s with value %s", fieldName, event.GetValue(fieldName).GetString())
+        }
+    }
+}

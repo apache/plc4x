@@ -17,3 +17,14 @@
 // under the License.
 //
 package model
+
+import "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
+
+type PlcSubscriptionEvent interface {
+    GetRequest() PlcSubscriptionRequest
+    GetFieldNames() []string
+    GetResponseCode(name string) PlcResponseCode
+    GetValue(name string) values.PlcValue
+    PlcResponse
+}
+
