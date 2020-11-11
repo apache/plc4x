@@ -79,15 +79,16 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     defer connection.Close()
 
     // Prepare a read-request
-    pollingInterval, err := time.ParseDuration("5s")
+    /*pollingInterval, err := time.ParseDuration("5s")
     if err != nil {
         t.Errorf("invalid format")
         t.Fail()
         return
-    }
+    }*/
     srb := connection.SubscriptionRequestBuilder()
-    srb.AddChangeOfStateItem("field1", "*/*/*")
-    srb.AddCyclicItem("field2", "holding-register:3:REAL", pollingInterval)
+    srb.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
+    srb.AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp")
+    srb.AddChangeOfStateItem("heating-valve-open", "*/*/12:DPT_OpenClose")
     srb.AddItemHandler(knxEventHandler)
     subscriptionRequest, err := srb.Build()
     if err != nil {
@@ -106,6 +107,9 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
         t.Fail()
         return
     }
+
+    // Wait 2 minutes
+    time.Sleep(120 * time.Second)
 
     // Do something with the response
     /*value1 := rrr.Response.GetValue("field1")

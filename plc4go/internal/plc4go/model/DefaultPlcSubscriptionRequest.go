@@ -50,6 +50,8 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
         fieldHandler: fieldHandler,
         valueHandler: valueHandler,
         queries:      map[string]string{},
+        types:        map[string]SubscriptionType{},
+        intervals:    map[string]time.Duration{},
     }
 }
 
@@ -101,7 +103,7 @@ type DefaultPlcSubscriptionRequest struct {
 }
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
-    panic("implement me")
+    return m.subscriber.Subscribe(m)
 }
 
 func (m DefaultPlcSubscriptionRequest) GetFieldNames() []string {
@@ -114,6 +116,10 @@ func (m DefaultPlcSubscriptionRequest) GetFieldNames() []string {
 
 func (m DefaultPlcSubscriptionRequest) GetField(name string) model.PlcField {
     return m.fields[name]
+}
+
+func (m DefaultPlcSubscriptionRequest) GetEventHandler() model.PlcSubscriptionEventHandler {
+    return m.eventHandler
 }
 
 func (m DefaultPlcSubscriptionRequest) GetType(name string) SubscriptionType {

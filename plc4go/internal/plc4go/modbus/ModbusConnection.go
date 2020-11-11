@@ -99,10 +99,10 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 			return
 		}
 		// Register an expected response
-		check := func(response interface{}) bool {
+		check := func(response interface{}) (bool, bool) {
 			responseAdu := driverModel.CastModbusTcpADU(response)
 			return responseAdu.TransactionIdentifier == 1 &&
-				responseAdu.UnitIdentifier == m.unitIdentifier
+				responseAdu.UnitIdentifier == m.unitIdentifier, false
 		}
 		// Register a callback to handle the response
 		pingResponseChanel := m.messageCodec.Expect(check)

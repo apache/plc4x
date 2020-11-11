@@ -29,7 +29,7 @@ import (
 
 type KnxNetIpExpectation struct {
 	timestamp       time.Time
-	check           func(interface{}) bool
+	check           func(interface{}) (bool, bool)
 	responseChannel chan interface{}
 }
 
@@ -105,7 +105,7 @@ func (m *KnxNetIpMessageCodec) Receive() (interface{}, error) {
 	return nil, nil
 }
 
-func (m *KnxNetIpMessageCodec) Expect(check func(interface{}) bool) chan interface{} {
+func (m *KnxNetIpMessageCodec) Expect(check func(interface{}) (bool, bool)) chan interface{} {
 	responseChanel := make(chan interface{})
 	expectation := KnxNetIpExpectation{
 		timestamp:       time.Now(),
@@ -129,11 +129,14 @@ func work(codec *KnxNetIpMessageCodec) {
 				// Go through all expectations
 				for index, expectation := range codec.expectations {
 					// Check if the current message matches the expectations
-					if expectation.check(message) {
+					if match, keepExpectation := expectation.check(message); match {
 						// Send the decoded message back
 						expectation.responseChannel <- message
-						// Remove this expectation from the list.
-						codec.expectations = append(codec.expectations[:index], codec.expectations[index+1:]...)
+						// If the expectation doesn't want to keep the expectation active, remove it
+						if !keepExpectation {
+                            // Remove this expectation from the list.
+                            codec.expectations = append(codec.expectations[:index], codec.expectations[index+1:]...)
+                        }
 						messageHandled = true
 						break
 					}
