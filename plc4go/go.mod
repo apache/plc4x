@@ -26,5 +26,4 @@ require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/icza/bitio v1.0.0
 	github.com/subchen/go-xmldom v1.1.2
-	github.com/willf/bitset v1.1.11
 )
