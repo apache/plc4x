@@ -155,7 +155,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
         case dataProtocolId == "IEC61131_REAL": // REAL
 
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat32(32)
+            value, _valueErr := io.ReadFloat32(true, 8, 23)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
@@ -163,7 +163,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
         case dataProtocolId == "IEC61131_LREAL": // LREAL
 
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat64(64)
+            value, _valueErr := io.ReadFloat64(true, 11, 52)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }

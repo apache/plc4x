@@ -437,6 +437,7 @@
         ['V16' INT]
             [simple   int 16 'value']
         ['F16' REAL
+            [reserved uint 8     '0x0']
             [simple   float 4.11 'value']
         ]
         // TODO Not sure how to encode the day in this

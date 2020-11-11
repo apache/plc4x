@@ -99,7 +99,7 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
     // Simple Field (value)
-    value, _valueErr := io.ReadFloat64(64)
+    value, _valueErr := io.ReadFloat64(true, 11, 52)
     if _valueErr != nil {
         return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
     }

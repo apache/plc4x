@@ -301,10 +301,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadFloat32(" + floatTypeReference.getSizeInBits() + ")";
+                    return "io.ReadFloat32(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadFloat64(" + floatTypeReference.getSizeInBits() + ")";
+                    return "io.ReadFloat64(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
             }
             case STRING: {
