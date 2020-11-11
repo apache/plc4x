@@ -19,5 +19,4 @@
 package main
 
 func main() {
-    KnxMain()
 }
