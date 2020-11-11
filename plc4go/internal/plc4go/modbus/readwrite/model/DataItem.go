@@ -295,7 +295,7 @@ func DataItemParse(io *utils.ReadBuffer, dataType string, numberOfValues uint16)
         case dataType == "IEC61131_REAL" && numberOfValues == 1: // REAL
 
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat32(32)
+            value, _valueErr := io.ReadFloat32(true, 8, 23)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
@@ -305,7 +305,7 @@ func DataItemParse(io *utils.ReadBuffer, dataType string, numberOfValues uint16)
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := io.ReadFloat32(32)
+                _item, _itemErr := io.ReadFloat32(true, 8, 23)
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }
@@ -315,7 +315,7 @@ func DataItemParse(io *utils.ReadBuffer, dataType string, numberOfValues uint16)
         case dataType == "IEC61131_LREAL" && numberOfValues == 1: // LREAL
 
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat64(64)
+            value, _valueErr := io.ReadFloat64(true, 11, 52)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
@@ -325,7 +325,7 @@ func DataItemParse(io *utils.ReadBuffer, dataType string, numberOfValues uint16)
             // Array Field (value)
             var value []api.PlcValue
             for i := 0; i < int(numberOfValues); i++ {
-                _item, _itemErr := io.ReadFloat64(64)
+                _item, _itemErr := io.ReadFloat64(true, 11, 52)
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
                 }

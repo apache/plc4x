@@ -119,8 +119,13 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             return values.NewPlcSINT(value), nil
         case formatName == "F16": // REAL
 
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(8); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
+
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat32(16)
+            value, _valueErr := io.ReadFloat32(true, 4, 11)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
@@ -217,7 +222,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
         case formatName == "F32": // REAL
 
             // Simple Field (value)
-            value, _valueErr := io.ReadFloat32(32)
+            value, _valueErr := io.ReadFloat32(true, 8, 23)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
@@ -1343,7 +1348,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (tempFlowProdSegmH)
-            tempFlowProdSegmH, _tempFlowProdSegmHErr := io.ReadFloat32(16)
+            tempFlowProdSegmH, _tempFlowProdSegmHErr := io.ReadFloat32(true, 4, 11)
             if _tempFlowProdSegmHErr != nil {
                 return nil, errors.New("Error parsing 'tempFlowProdSegmH' field " + _tempFlowProdSegmHErr.Error())
             }
@@ -1393,7 +1398,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (roomTemperatureDemand)
-            roomTemperatureDemand, _roomTemperatureDemandErr := io.ReadFloat32(16)
+            roomTemperatureDemand, _roomTemperatureDemandErr := io.ReadFloat32(true, 4, 11)
             if _roomTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'roomTemperatureDemand' field " + _roomTemperatureDemandErr.Error())
             }
@@ -1436,7 +1441,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (flowTemperatureProdSegmC)
-            flowTemperatureProdSegmC, _flowTemperatureProdSegmCErr := io.ReadFloat32(16)
+            flowTemperatureProdSegmC, _flowTemperatureProdSegmCErr := io.ReadFloat32(true, 4, 11)
             if _flowTemperatureProdSegmCErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureProdSegmC' field " + _flowTemperatureProdSegmCErr.Error())
             }
@@ -1479,7 +1484,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (actualTemperature)
-            actualTemperature, _actualTemperatureErr := io.ReadFloat32(16)
+            actualTemperature, _actualTemperatureErr := io.ReadFloat32(true, 4, 11)
             if _actualTemperatureErr != nil {
                 return nil, errors.New("Error parsing 'actualTemperature' field " + _actualTemperatureErr.Error())
             }
@@ -1515,7 +1520,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (flowTemperatureDemand)
-            flowTemperatureDemand, _flowTemperatureDemandErr := io.ReadFloat32(16)
+            flowTemperatureDemand, _flowTemperatureDemandErr := io.ReadFloat32(true, 4, 11)
             if _flowTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemand' field " + _flowTemperatureDemandErr.Error())
             }
@@ -1631,21 +1636,21 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointComfort)
-            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(16)
+            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
             _map["Struct"] = temperatureSetpointComfort
 
             // Simple Field (temperatureSetpointStandby)
-            temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(16)
+            temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointStandby' field " + _temperatureSetpointStandbyErr.Error())
             }
             _map["Struct"] = temperatureSetpointStandby
 
             // Simple Field (temperatureSetpointEco)
-            temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(16)
+            temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointEco' field " + _temperatureSetpointEcoErr.Error())
             }
@@ -1655,21 +1660,21 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointShiftComfort)
-            temperatureSetpointShiftComfort, _temperatureSetpointShiftComfortErr := io.ReadFloat32(16)
+            temperatureSetpointShiftComfort, _temperatureSetpointShiftComfortErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftComfort' field " + _temperatureSetpointShiftComfortErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftComfort
 
             // Simple Field (temperatureSetpointShiftStandby)
-            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(16)
+            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftStandby
 
             // Simple Field (temperatureSetpointShiftEco)
-            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(16)
+            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
@@ -1679,28 +1684,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointComfort)
-            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(16)
+            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
             _map["Struct"] = temperatureSetpointComfort
 
             // Simple Field (temperatureSetpointStandby)
-            temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(16)
+            temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointStandby' field " + _temperatureSetpointStandbyErr.Error())
             }
             _map["Struct"] = temperatureSetpointStandby
 
             // Simple Field (temperatureSetpointEco)
-            temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(16)
+            temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointEco' field " + _temperatureSetpointEcoErr.Error())
             }
             _map["Struct"] = temperatureSetpointEco
 
             // Simple Field (temperatureSetpointBProt)
-            temperatureSetpointBProt, _temperatureSetpointBProtErr := io.ReadFloat32(16)
+            temperatureSetpointBProt, _temperatureSetpointBProtErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointBProtErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointBProt' field " + _temperatureSetpointBProtErr.Error())
             }
@@ -1710,28 +1715,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointLegioProtect)
-            temperatureSetpointLegioProtect, _temperatureSetpointLegioProtectErr := io.ReadFloat32(16)
+            temperatureSetpointLegioProtect, _temperatureSetpointLegioProtectErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointLegioProtectErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointLegioProtect' field " + _temperatureSetpointLegioProtectErr.Error())
             }
             _map["Struct"] = temperatureSetpointLegioProtect
 
             // Simple Field (temperatureSetpointNormal)
-            temperatureSetpointNormal, _temperatureSetpointNormalErr := io.ReadFloat32(16)
+            temperatureSetpointNormal, _temperatureSetpointNormalErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointNormalErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointNormal' field " + _temperatureSetpointNormalErr.Error())
             }
             _map["Struct"] = temperatureSetpointNormal
 
             // Simple Field (temperatureSetpointReduced)
-            temperatureSetpointReduced, _temperatureSetpointReducedErr := io.ReadFloat32(16)
+            temperatureSetpointReduced, _temperatureSetpointReducedErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointReducedErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointReduced' field " + _temperatureSetpointReducedErr.Error())
             }
             _map["Struct"] = temperatureSetpointReduced
 
             // Simple Field (temperatureSetpointFrostProtect)
-            temperatureSetpointFrostProtect, _temperatureSetpointFrostProtectErr := io.ReadFloat32(16)
+            temperatureSetpointFrostProtect, _temperatureSetpointFrostProtectErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointFrostProtectErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointFrostProtect' field " + _temperatureSetpointFrostProtectErr.Error())
             }
@@ -1741,28 +1746,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointShiftComfort)
-            temperatureSetpointShiftComfort, _temperatureSetpointShiftComfortErr := io.ReadFloat32(16)
+            temperatureSetpointShiftComfort, _temperatureSetpointShiftComfortErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftComfort' field " + _temperatureSetpointShiftComfortErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftComfort
 
             // Simple Field (temperatureSetpointShiftStandby)
-            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(16)
+            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftStandby
 
             // Simple Field (temperatureSetpointShiftEco)
-            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(16)
+            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftEco
 
             // Simple Field (temperatureSetpointShiftBProt)
-            temperatureSetpointShiftBProt, _temperatureSetpointShiftBProtErr := io.ReadFloat32(16)
+            temperatureSetpointShiftBProt, _temperatureSetpointShiftBProtErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftBProtErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftBProt' field " + _temperatureSetpointShiftBProtErr.Error())
             }
@@ -2295,21 +2300,21 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map := map[string]interface{}{}
 
             // Simple Field (temperatureSetpointComfort)
-            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(16)
+            temperatureSetpointComfort, _temperatureSetpointComfortErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
             _map["Struct"] = temperatureSetpointComfort
 
             // Simple Field (temperatureSetpointShiftStandby)
-            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(16)
+            temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
             _map["Struct"] = temperatureSetpointShiftStandby
 
             // Simple Field (temperatureSetpointShiftEco)
-            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(16)
+            temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
@@ -2899,6 +2904,11 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case formatName == "F16": // REAL
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(8, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
 
             // Simple Field (value)
             if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
