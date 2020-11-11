@@ -411,30 +411,37 @@
             [simple   uint 3 'value']
         ]
         ['A8_ASCII' STRING
+            [reserved uint 8   '0x0']
             [simple   string 8 'ASCII' 'value']
         ]
         ['A8_8859_1' STRING
+            [reserved uint 8   '0x0']
             [simple   string 8 'ISO-8859-1' 'value']
         ]
         ['U8' USINT
+            [reserved uint 8   '0x0']
             [simple   uint 8 'value']
         ]
         ['V8' SINT
+            [reserved uint 8   '0x0']
             [simple   int 8 'value']
         ]
         // TODO value should actually be an enum ...
         ['B5N3' Struct
-            [simple   bit   'a']
-            [simple   bit   'b']
-            [simple   bit   'c']
-            [simple   bit   'd']
-            [simple   bit   'e']
-            [simple   int 8 'value']
+            [reserved uint 3 '0x0']
+            [simple   bit    'a']
+            [simple   bit    'b']
+            [simple   bit    'c']
+            [simple   bit    'd']
+            [simple   bit    'e']
+            [simple   int 8  'value']
         ]
         ['U16' UINT
+            [reserved uint 8  '0x0']
             [simple   uint 16 'value']
         ]
         ['V16' INT]
+            [reserved uint 8  '0x0']
             [simple   int 16 'value']
         ['F16' REAL
             [reserved uint 8     '0x0']
@@ -442,6 +449,7 @@
         ]
         // TODO Not sure how to encode the day in this
         ['N3N5r2N6r2N6' TIME_OF_DAY
+            [reserved uint 8 '0x0']
             [simple   uint 3 'day']
             [simple   uint 5 'hour']
             [reserved uint 2 '0x00']
@@ -458,15 +466,19 @@
             [simple   uint 7 'year']
         ]
         ['U32' UDINT
+            [reserved uint 8  '0x0']
             [simple   uint 32 'value']
         ]
         ['V32' DINT
+            [reserved uint 8  '0x0']
             [simple   int 32 'value']
         ]
         ['F32' REAL
+            [reserved uint 8     '0x0']
             [simple   float 8.23 'value']
         ]
         ['U4U4U4U4U4U4B4N4' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 4 'd6']
             [simple   uint 4 'd5']
             [simple   uint 4 'd4']
@@ -480,9 +492,11 @@
             [simple   uint 4 'index']
         ]
         ['A112_ASCII' STRING
+            [reserved uint 8  '0x0']
             [simple   string 112 'ASCII' 'value']
         ]
         ['A112_8859_1' STRING
+            [reserved uint 8  '0x0']
             [simple   string 112 'ISO-8859-1' 'value']
         ]
         ['r2U6' USINT
@@ -490,11 +504,13 @@
             [simple   uint 6 'value']
         ]
         ['B1r1U6' Struct
+            [reserved uint 8  '0x0']
             [simple   bit    'learn']
             [reserved uint 1 '0x00']
             [simple   uint 6 'sceneNumber']
         ]
         ['U8r4U4r3U5U3U5r2U6r2U6B16' DATE_AND_TIME
+            [reserved uint 8  '0x0']
             [simple   uint 8 'year']
             [reserved uint 4 '0x00']
             [simple   uint 4 'month']
@@ -518,12 +534,15 @@
         ]
         // TODO This should actually be enums depending on their type
         ['N8' USINT
+            [reserved uint 8  '0x0']
             [simple   uint 8 'value']
         ]
         ['B8' BYTE
+            [reserved uint 8  '0x0']
             [simple uint 8 'value']
         ]
         ['B16' WORD
+            [reserved uint 8  '0x0']
             [simple uint 16 'value']
         ]
         // TODO Probably should be a 2-bit unsigned plc-value
@@ -533,28 +552,35 @@
             [simple   uint 2 'value']
         ]
         ['An_8859_1' STRING
+            [reserved uint 8  '0x0']
             [manual string 8 'ISO-8859-1' 'value' '' '' '']
         ]
         ['U4U4' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 4 'busy']
             [simple   uint 4 'nak']
         ]
         ['r1b1U6' Struct
+            [reserved uint 8  '0x0']
             [reserved uint 1 '0x00']
             [simple   bit    'sceneActive']
             [simple   uint 6 'sceneNumber']
         ]
         ['B32' DWORD
+            [reserved uint 8  '0x0']
             [simple uint 32 'value']
         ]
         // TODO UTF-8 chars can be two type values. probably better to do a "manual" element
         ['An_UTF_8' STRING
+            [reserved uint 8  '0x0']
             [manual string 8 'UTF-8' 'value' '' '' '']
         ]
         ['V64' LINT
+            [reserved uint 8  '0x0']
             [simple int 64 'value']
         ]
         ['B24' List
+            [reserved uint 8  '0x0']
             [array bit 'value' count '24']
         ]
         // TODO Probably should be a 3-bit unsigned plc-value
@@ -574,114 +600,142 @@
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8HvacOperatingMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'hvacOperatingMode']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8DhwMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'dhwMode']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8HvacControllingMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'hvacControllingMode']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8EnableHeatingOrCoolingStage' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'enableHeatingOrCoolingStage']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8BuildingMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'buildingMode']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8OccupancyMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'occupancyMode']
             [simple   uint 8 'statusCommand']
         ]
         ['N8Z8EmergencyMode' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'hvacEmergencyMode']
             [simple   uint 8 'statusCommand']
         ]
         ['U8Z8Rel' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'relValue']
             [simple   uint 8 'statusCommand']
         ]
         ['U8Z8Counter' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'counterValue']
             [simple   uint 8 'statusCommand']
         ]
         ['U16Z8TimePeriod' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'timePeriod']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8FlowRate' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'flowRate']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8Counter' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'counterValue']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8ElectricCurrent' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'electricalCurrent']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8Power' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'power']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8AtmPressure' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'atmPressure']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8PercentValue' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'percentValue']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8HvacAirQuality' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'ppmResolution']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8WindSpeed' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'windSpeed']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8SunIntensity' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'sunIntensity']
             [simple   uint 8  'statusCommand']
         ]
         ['U16Z8HvacAirFlow' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'airFlow']
             [simple   uint 8  'statusCommand']
         ]
         ['V8Z8RelSignedValue' Struct
+            [reserved uint 8  '0x0']
             [simple   int 8  'relSignedValue']
             [simple   uint 8 'statusCommand']
         ]
         ['V16Z8DeltaTime' Struct
+            [reserved uint 8  '0x0']
             [simple   int  16 'deltaTime']
             [simple   uint 8  'statusCommand']
         ]
         ['V16Z8RelSignedValue' Struct
+            [reserved uint 8  '0x0']
             [simple   int  16 'relSignedValue']
             [simple   uint 8  'statusCommand']
         ]
         ['U16N8HvacModeAndTimeDelay' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16   'delayTime']
             [simple   uint 8    'hvacMode']
         ]
         ['U16N8DhwModeAndTimeDelay' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16   'delayTime']
             [simple   uint 8    'dhwMode']
         ]
         ['U16N8OccupancyModeAndTimeDelay' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16   'delayTime']
             [simple   uint 8    'occupationMode']
         ]
         ['U16N8BuildingModeAndTimeDelay' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16   'delayTime']
             [simple   uint 8    'buildingMode']
         ]
         ['U8B8StatusBurnerController' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'actualRelativePower']
             [reserved uint 4    '0x00']
             [simple   bit       'stage2Active']
@@ -690,18 +744,21 @@
             [simple   bit       'actualRelativePowerValid']
         ]
         ['U8B8LockingSignal' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'requestedPowerReduction']
             [reserved uint 6    '0x00']
             [simple   bit       'critical']
             [simple   bit       'requestedPowerReductionValid']
         ]
         ['U8B8BoilerControllerDemandSignal' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'relativeDemand']
             [reserved uint 6    '0x00']
             [simple   bit       'controlsOperationStage2']
             [simple   bit       'controlsOperationStage1']
         ]
         ['U8B8ActuatorPositionDemand' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'actuatorPositionDemand']
             [reserved uint 4    '0x00']
             [simple   bit       'emergencyDemand']
@@ -710,6 +767,7 @@
             [simple   bit       'actuatorPositionDemandValid']
         ]
         ['U8B8ActuatorPositionStatus' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'actualActuatorPosition']
             [reserved uint 3    '0x00']
             [simple   bit       'synchronizationMode']
@@ -719,6 +777,7 @@
             [simple   bit       'failure']
         ]
         ['U8B8StatusLightingActuator' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8    'lightingLevel']
             [simple   bit       'failure']
             [simple   bit       'localOverride']
@@ -730,6 +789,7 @@
             [simple   bit       'lightingLevelValid']
         ]
         ['V16B8HeatProducerManagerStatus' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'tempFlowProdSegmH']
             [reserved uint 3     '0x00']
             [simple   bit        'temporarilyOff']
@@ -739,6 +799,7 @@
             [simple   bit        'tempFlowProdSegmHValid']
         ]
         ['V16B8RoomTemperatureDemand' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'roomTemperatureDemand']
             [reserved uint 4     '0x00']
             [simple   bit        'emergencyDemand']
@@ -747,6 +808,7 @@
             [simple   bit        'roomTemperatureDemandValid']
         ]
         ['V16B8ColdWaterProducerManagerStatus' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'flowTemperatureProdSegmC']
             [reserved uint 4     '0x00']
             [simple   bit        'temporarilyOff']
@@ -755,6 +817,7 @@
             [simple   bit        'flowTemperatureProdSegmCValid']
         ]
         ['V16B8WaterTemperatureControllerStatus' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'actualTemperature']
             [reserved uint 5     '0x00']
             [simple   bit        'controllerWorking']
@@ -762,6 +825,7 @@
             [simple   bit        'actualTemperatureValid']
         ]
         ['V16B16' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'flowTemperatureDemand']
             [reserved uint 4     '0x00']
             [simple   bit        'demandFromDhwWhileLegionellaFunctionIsActive']
@@ -778,38 +842,45 @@
             [simple   bit        'flowTemperatureDemandValid']
         ]
         ['U8N8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8  'energyDemand']
             [simple   uint 8  'actualControllerMode']
         ]
         ['V16V16V16RoomTemperature' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointComfort']
             [simple   float 4.11 'temperatureSetpointStandby']
             [simple   float 4.11 'temperatureSetpointEco']
         ]
         ['V16V16V16RoomTemperatureShift' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointShiftComfort']
             [simple   float 4.11 'temperatureSetpointShiftStandby']
             [simple   float 4.11 'temperatureSetpointShiftEco']
         ]
         ['V16V16V16V16RoomTemperature' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointComfort']
             [simple   float 4.11 'temperatureSetpointStandby']
             [simple   float 4.11 'temperatureSetpointEco']
             [simple   float 4.11 'temperatureSetpointBProt']
         ]
         ['V16V16V16V16DhwtTemperature' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointLegioProtect']
             [simple   float 4.11 'temperatureSetpointNormal']
             [simple   float 4.11 'temperatureSetpointReduced']
             [simple   float 4.11 'temperatureSetpointFrostProtect']
         ]
         ['V16V16V16V16RoomTemperatureShift' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointShiftComfort']
             [simple   float 4.11 'temperatureSetpointShiftStandby']
             [simple   float 4.11 'temperatureSetpointShiftEco']
             [simple   float 4.11 'temperatureSetpointShiftBProt']
         ]
         ['V16U8B8Heat' Struct
+            [reserved uint 8  '0x0']
             [simple   int 16  'flowTemperatureDemand']
             [simple   uint 8  'relativePower']
             [reserved uint 2  '0x00']
@@ -821,6 +892,7 @@
             [simple   bit     'flowTemperatureDemandValid']
         ]
         ['V16U8B8ChilledWater' Struct
+            [reserved uint 8  '0x0']
             [simple   int 16  'chilledWaterFlowTemperatureDemand']
             [simple   uint 8  'relativePower']
             [reserved uint 5  '0x00']
@@ -829,6 +901,7 @@
             [simple   bit     'chilledWaterFlowTemperatureDemandValid']
         ]
         ['V16U8B16Boiler' Struct
+            [reserved uint 8  '0x0']
             [simple   int 16  'tempBoiler']
             [simple   uint 8  'relativePower']
             [reserved uint 4  '0x00']
@@ -846,6 +919,7 @@
             [simple   bit     'tempBoilerValid']
         ]
         ['V16U8B16Chiller' Struct
+            [reserved uint 8  '0x0']
             [simple   int 16  'tempChiller']
             [simple   uint 8  'relativePower']
             [reserved uint 8  '0x00']
@@ -859,6 +933,7 @@
             [simple   bit     'tempChillerValid']
         ]
         ['U16U8N8B8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'nominalPower']
             [simple   uint 8  'relativePowerLimit']
             [simple   int  8  'burnerType']
@@ -868,19 +943,23 @@
             [simple   bit     'oil']
         ]
         ['U5U5U6' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 5 'magicNumber']
             [simple   uint 5 'versionNumber']
             [simple   uint 6 'revisionNumber']
         ]
         ['V32Z8VolumeLiter' Struct
+            [reserved uint 8  '0x0']
             [simple   int  32 'volumeLiter']
             [simple   uint 8  'statusCommand']
         ]
         ['V32Z8FlowRate' Struct
+            [reserved uint 8  '0x0']
             [simple   int  32 'flowRate']
             [simple   uint 8  'statusCommand']
         ]
         ['U8N8N8N8B8B8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8 'logNumber']
             [simple   uint 8 'alarmPriority']
             [simple   uint 8 'applicationArea']
@@ -896,43 +975,52 @@
             [simple   bit    'inAlarm']
         ]
         ['U16V16' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'delayTime']
             [simple   int  16 'temperature']
         ]
         ['N16U32' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'manufacturerCode']
             [simple   uint 32 'incrementedNumber']
         ]
         ['F16F16F16' Struct
+            [reserved uint 8  '0x0']
             [simple   float 4.11 'temperatureSetpointComfort']
             [simple   float 4.11 'temperatureSetpointShiftStandby']
             [simple   float 4.11 'temperatureSetpointShiftEco']
         ]
         ['V8N8N8' Struct
+            [reserved uint 8  '0x0']
             [simple   int  8  'energyDemand']
             [simple   uint 8  'hvacControllerMode']
             [simple   uint 8  'hvacEmergencyMode']
         ]
         ['V16V16N8N8' Struct
+            [reserved uint 8  '0x0']
             [simple   int  16 'tempSetpointCooling']
             [simple   int  16 'tempSetpointHeating']
             [simple   uint 8  'hvacControllerMode']
             [simple   uint 8  'hvacEmergencyMode']
         ]
         ['U16U8Scaling' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'timePeriod']
             [simple   uint 8  'percent']
         ]
         ['U16U8TariffNext' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16 'delayTime']
             [simple   uint 8  'tariff']
         ]
         ['V32N8Z8' Struct
+            [reserved uint 8  '0x0']
             [simple   int  32 'countVal']
             [simple   uint 8  'valInfField']
             [simple   uint 8  'statusOrCommand']
         ]
         ['U16U32U8N8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 16  'manufacturerId']
             [simple   uint 32  'identNumber']
             [simple   uint 8   'version']
@@ -940,21 +1028,26 @@
             [simple   int  8   'medium']
         ]
         ['A8A8A8A8' Struct
+            [reserved uint 8  '0x0']
             [simple   string 16 'ASCII' 'languageCode']
             [simple   string 16 'ASCII' 'regionCode']
         ]
         ['U8U8U8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8  'red']
             [simple   uint 8  'green']
             [simple   uint 8  'blue']
         ]
         ['A8A8Language' Struct
+            [reserved uint 8  '0x0']
             [simple   string 16 'ASCII' 'languageCode']
         ]
         ['A8A8Region' Struct
+            [reserved uint 8  '0x0']
             [simple   string 16 'ASCII' 'regionCode']
         ]
         ['V32U8B8' Struct
+            [reserved uint 8  '0x0']
             [simple   int  32 'activeElectricalEnergy']
             [simple   uint 8  'tariff']
             [reserved uint 6  '0x00']
@@ -962,6 +1055,7 @@
             [simple   bit     'noActiveElectricalEnergy']
         ]
         ['B1N3N4' Struct
+            [reserved uint 8  '0x0']
             [simple   bit     'deactivationOfPriority']
             [simple   uint 3  'priorityLevel']
             [simple   uint 4  'modeLevel']
@@ -976,16 +1070,19 @@
             [simple   uint 6  'address']
         ]
         ['B2U6' Struct
+            [reserved uint 8  '0x0']
             [simple   bit     'sceneActivationInactive']
             [simple   bit     'storageFunctionDisable']
             [simple   uint 6  'sceneNumber']
         ]
         ['U8r7B1' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8  'setValue']
             [reserved uint 7  '0x00']
             [simple   bit     'channelActivationActive']
         ]
         ['U8U8B8' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8  'heightPosition']
             [simple   uint 8  'slatsPosition']
             [reserved uint 6  '0x00']
@@ -993,6 +1090,7 @@
             [simple   bit     'validHeightPos']
         ]
         ['U8U8B16' Struct
+            [reserved uint 8  '0x0']
             [simple   uint 8  'heightPosition']
             [simple   uint 8  'slatsPosition']
             [simple   bit     'validSlatsPos']
