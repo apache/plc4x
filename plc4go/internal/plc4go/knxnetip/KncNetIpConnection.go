@@ -58,6 +58,7 @@ type KnxNetIpConnection struct {
     fieldHandler             spi.PlcFieldHandler
     valueHandler             spi.PlcValueHandler
     quitConnectionStateTimer chan struct{}
+    subscribers              []*KnxNetIpSubscriber
 
     GatewayKnxAddress      *driverModel.KnxAddress
     GatewayName            string
@@ -68,17 +69,18 @@ type KnxNetIpConnection struct {
     plc4go.PlcConnection
 }
 
-func NewKnxNetIpConnection(messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) KnxNetIpConnection {
-    return KnxNetIpConnection{
+func NewKnxNetIpConnection(messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *KnxNetIpConnection {
+    return &KnxNetIpConnection{
         messageCodec:       messageCodec,
         options:            options,
         fieldHandler:       fieldHandler,
         valueHandler:       NewValueHandler(),
         requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
+        subscribers:        []*KnxNetIpSubscriber{},
     }
 }
 
-func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
     ch := make(chan plc4go.PlcConnectionConnectResult)
     go func() {
         err := m.messageCodec.Connect()
@@ -113,9 +115,9 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
             return
         }
         // Register an expected response
-        check := func(response interface{}) bool {
+        check := func(response interface{}) (bool, bool) {
             searchResponse := driverModel.CastSearchResponse(response)
-            return searchResponse != nil
+            return searchResponse != nil, false
         }
 
         // Create a channel for async execution of the connection
@@ -144,12 +146,11 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
                 // As soon as we got a successful search-response back, send a connection request.
                 localAddress := m.castIpToKnxAddress(udpTransportInstance.LocalAddress.IP)
-                remoteAddress := m.castIpToKnxAddress(udpTransportInstance.RemoteAddress.IP)
                 connectionRequest := driverModel.NewConnectionRequest(
                     driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP,
                         localAddress, uint16(udpTransportInstance.LocalAddress.Port)),
                     driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP,
-                        remoteAddress, uint16(udpTransportInstance.RemoteAddress.Port)),
+                        localAddress, uint16(udpTransportInstance.LocalAddress.Port)),
                     driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
                 )
 
@@ -162,14 +163,10 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
                     return
                 }
                 // Register an expected response
-                check := func(response interface{}) bool {
+                check := func(response interface{}) (bool, bool) {
                     connectionResponse := driverModel.CastConnectionResponse(response)
-                    return connectionResponse != nil
+                    return connectionResponse != nil, false
                 }
-
-                // Expected:    06100205001a 0801c0a82a32c70e 0801c0a82a32c70e 04040200
-                //                      xxxx
-                // Got:         061002050026 0801c0a82a32fd37 140100000000000000000000ffffc0a82a0b0e57 04040200
 
                 // Register a callback to handle the response
                 connectionResponseChan := m.messageCodec.Expect(check)
@@ -179,6 +176,18 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
                     // Save the communication channel id
                     m.CommunicationChannelId = connectionResponse.CommunicationChannelId
                     if connectionResponse.Status == driverModel.Status_NO_ERROR {
+                        // Register a listener for incoming tunneling requests
+                        checkTunnelReq := func(response interface{}) (bool, bool) {
+                            tunnelingRequest := driverModel.CastTunnelingRequest(response)
+                            return (tunnelingRequest != nil) &&
+                                    (tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId == m.CommunicationChannelId),
+                                true
+                        }
+                        tunnelingRequestChan := m.messageCodec.Expect(checkTunnelReq)
+                        go func() {
+                            m.handleIncomingTunnelingRequest(tunnelingRequestChan)
+                        }()
+
                         tunnelConnectionDataBlock := connectionResponse.ConnectionResponseDataBlock.Child.(
                         *driverModel.ConnectionResponseDataBlockTunnelConnection)
                         // Save the KNX Address the Gateway assigned to this connection.
@@ -201,7 +210,7 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
                                 case <-connectionStateTimer.C:
                                     // We're using the connection-state-request as ping operation ...
                                     ping := m.Ping()
-                                    pingResult := <- ping
+                                    pingResult := <-ping
                                     if pingResult.Err != nil {
                                         // TODO: Do some error handling here ...
                                         connectionStateTimer.Stop()
@@ -215,7 +224,7 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
                         }()
                     } else {
                         ch <- plc4go.NewPlcConnectionConnectResult(m,
-                            errors.New("got a connection response with status " + strconv.Itoa(int(connectionResponse.Status))))
+                            errors.New("got a connection response with status "+strconv.Itoa(int(connectionResponse.Status))))
                     }
                 }()
             } else {
@@ -230,7 +239,7 @@ func (m KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
     return ch
 }
 
-func (m KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
     // TODO: Implement ...
     ch := make(chan plc4go.PlcConnectionCloseResult)
     go func() {
@@ -239,11 +248,11 @@ func (m KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
     return ch
 }
 
-func (m KnxNetIpConnection) IsConnected() bool {
+func (m *KnxNetIpConnection) IsConnected() bool {
     panic("implement me")
 }
 
-func (m KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
     result := make(chan plc4go.PlcConnectionPingResult)
     //	diagnosticRequestPdu := driverModel.NewModbusPDUDiagnosticRequest(0, 0x42)
     go func() {
@@ -277,9 +286,9 @@ func (m KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
             return
         }
         // Register an expected response
-        check := func(response interface{}) bool {
+        check := func(response interface{}) (bool, bool) {
             connectionStateResponse := driverModel.CastConnectionStateResponse(response)
-            return connectionStateResponse != nil
+            return connectionStateResponse != nil, false
         }
 
         // Register a callback to handle the response
@@ -298,44 +307,94 @@ func (m KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
     return result
 }
 
-func (m KnxNetIpConnection) GetMetadata() apiModel.PlcConnectionMetadata {
+func (m *KnxNetIpConnection) GetMetadata() apiModel.PlcConnectionMetadata {
     return ConnectionMetadata{}
 }
 
-func (m KnxNetIpConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+func (m *KnxNetIpConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
     panic("this connection doesn't support reading")
 }
 
-func (m KnxNetIpConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+func (m *KnxNetIpConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
     return internalModel.NewDefaultPlcWriteRequestBuilder(
         m.fieldHandler, m.valueHandler, NewKnxNetIpWriter(m.messageCodec))
 }
 
-func (m KnxNetIpConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-    return nil /*internalModel.NewDefaultPlcSubscriptionRequestBuilder(
-      m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m.unitIdentifier, m.messageCodec))*/
+func (m *KnxNetIpConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+    return internalModel.NewDefaultPlcSubscriptionRequestBuilder(
+        m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m))
 }
 
-func (m KnxNetIpConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+func (m *KnxNetIpConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
     return nil /*internalModel.NewDefaultPlcUnsubscriptionRequestBuilder(
-      m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m.unitIdentifier, m.messageCodec))*/
+      m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m.messageCodec))*/
 }
 
-func (m KnxNetIpConnection) GetTransportInstance() transports.TransportInstance {
+func (m *KnxNetIpConnection) GetTransportInstance() transports.TransportInstance {
     if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
         return mc.GetTransportInstance()
     }
     return nil
 }
 
-func (m KnxNetIpConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
+func (m *KnxNetIpConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
     return m.fieldHandler
 }
 
-func (m KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
+func (m *KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
     return m.valueHandler
 }
 
-func (m KnxNetIpConnection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
-    return driverModel.NewIPAddress(utils.ByteToInt8(ip)[len(ip) - 4:])
+func (m *KnxNetIpConnection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
+    return driverModel.NewIPAddress(utils.ByteToInt8(ip)[len(ip)-4:])
+}
+
+func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan chan interface{}) {
+    for {
+        msg := <-tunnelingRequestChan
+        tunnelingRequest := driverModel.CastTunnelingRequest(msg)
+        // Send a response for this message
+        tunnelingResponse := driverModel.NewTunnelingResponse(driverModel.NewTunnelingResponseDataBlock(
+            m.CommunicationChannelId, tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter,
+            driverModel.Status_NO_ERROR))
+        err := m.messageCodec.Send(tunnelingResponse)
+        if err != nil {
+            // TODO: Somehow react on this ...
+            break
+        }
+
+        cemiDataInd := driverModel.CastCEMIDataInd(tunnelingRequest.Cemi.Child)
+        if cemiDataInd != nil {
+            for _, subscriber := range m.subscribers {
+                subscriber.handle(cemiDataInd.CemiDataFrame)
+            }
+        }
+    }
+}
+
+func (m *KnxNetIpConnection) getGroupAddressNumLevels() uint8 {
+    if val, ok := m.options["group-address-num-levels"]; ok {
+        groupAddressNumLevels, err := strconv.Atoi(val[0])
+        if err == nil {
+            return uint8(groupAddressNumLevels)
+        }
+    }
+    return 3
+}
+
+func (m *KnxNetIpConnection) addSubscriber(subscriber *KnxNetIpSubscriber) {
+    for _, sub := range m.subscribers {
+        if sub == subscriber {
+            return
+        }
+    }
+    m.subscribers = append(m.subscribers, subscriber)
+}
+
+func (m *KnxNetIpConnection) removeSubscriber(subscriber *KnxNetIpSubscriber) {
+    for i, sub := range m.subscribers {
+        if sub == subscriber {
+            m.subscribers = append(m.subscribers[:i], m.subscribers[i+1:]...)
+        }
+    }
 }

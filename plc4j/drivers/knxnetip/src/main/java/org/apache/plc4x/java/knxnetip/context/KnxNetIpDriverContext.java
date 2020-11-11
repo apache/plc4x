@@ -56,7 +56,7 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
                     configuration.knxprojFilePath));
             }
         } else {
-            groupAddressType = (byte) configuration.groupAddressType;
+            groupAddressType = (byte) configuration.groupAddressNumLevels;
         }
         tunnelConnectionType = KnxLayer.valueOf("TUNNEL_" + configuration.getConnectionType());
     }

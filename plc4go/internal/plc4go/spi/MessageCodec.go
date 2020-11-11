@@ -25,6 +25,6 @@ type MessageCodec interface {
 
     Send(message interface{}) error
     Receive() (interface{},error)
-    Expect(check func(interface{}) bool) chan interface{}
+    Expect(check func(interface{}) (bool, bool)) chan interface{}
 
 }

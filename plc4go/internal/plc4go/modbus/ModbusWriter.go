@@ -132,10 +132,10 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		}
 
 		// Register an expected response
-		check := func(response interface{}) bool {
+		check := func(response interface{}) (bool, bool) {
 			responseAdu := modbusModel.CastModbusTcpADU(response)
 			return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
-				responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+				responseAdu.UnitIdentifier == requestAdu.UnitIdentifier, false
 		}
 		// Register a callback to handle the response
 		responseChan := m.messageCodec.Expect(check)

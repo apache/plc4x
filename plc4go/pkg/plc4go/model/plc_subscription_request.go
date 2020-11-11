@@ -38,5 +38,8 @@ type PlcSubscriptionRequestResult struct {
 
 type PlcSubscriptionRequest interface {
     Execute() <-chan PlcSubscriptionRequestResult
+    GetFieldNames() []string
+    GetField(name string) PlcField
+    GetEventHandler() PlcSubscriptionEventHandler
     PlcRequest
 }

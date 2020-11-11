@@ -21,11 +21,15 @@ package knxnetip
 import (
     "errors"
     "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
-    model2 "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+    driverModel "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
+    apiModel "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+    "strconv"
+    "strings"
 )
 
 type KnxNetIpField interface {
-     model2.PlcField
+    matches(knxGroupAddress driverModel.KnxGroupAddress) bool
+    apiModel.PlcField
 }
 
 type KnxNetIpGroupAddress3LevelPlcField struct {
@@ -56,6 +60,16 @@ func (k KnxNetIpGroupAddress3LevelPlcField) GetQuantity() uint16 {
     return 1
 }
 
+func (k KnxNetIpGroupAddress3LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
+    level3KnxGroupAddress := driverModel.CastKnxGroupAddress3Level(knxGroupAddress)
+    if level3KnxGroupAddress == nil {
+        return false
+    }
+    return matches(k.MainGroup, strconv.Itoa(int(level3KnxGroupAddress.MainGroup))) &&
+        matches(k.MiddleGroup, strconv.Itoa(int(level3KnxGroupAddress.MiddleGroup))) &&
+        matches(k.SubGroup, strconv.Itoa(int(level3KnxGroupAddress.SubGroup)))
+}
+
 type KnxNetIpGroupAddress2LevelPlcField struct {
     FieldType   *model.KnxDatapointType
     // 5 Bits: Values 0-31
@@ -81,6 +95,15 @@ func (k KnxNetIpGroupAddress2LevelPlcField) GetQuantity() uint16 {
     return 1
 }
 
+func (k KnxNetIpGroupAddress2LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
+    level2KnxGroupAddress := driverModel.CastKnxGroupAddress2Level(knxGroupAddress)
+    if level2KnxGroupAddress == nil {
+        return false
+    }
+    return matches(k.MainGroup, strconv.Itoa(int(level2KnxGroupAddress.MainGroup))) &&
+        matches(k.SubGroup, strconv.Itoa(int(level2KnxGroupAddress.SubGroup)))
+}
+
 type KnxNetIpGroupAddress1LevelPlcField struct {
     FieldType   *model.KnxDatapointType
     // 16 Bits
@@ -103,9 +126,61 @@ func (k KnxNetIpGroupAddress1LevelPlcField) GetQuantity() uint16 {
     return 1
 }
 
-func CastToKnxNetIpFieldFromPlcField(plcField model2.PlcField) (KnxNetIpField, error) {
+func (k KnxNetIpGroupAddress1LevelPlcField) matches(knxGroupAddress driverModel.KnxGroupAddress) bool {
+    level1KnxGroupAddress := driverModel.CastKnxGroupAddressFreeLevel(knxGroupAddress)
+    if level1KnxGroupAddress == nil {
+        return false
+    }
+    return matches(k.MainGroup, strconv.Itoa(int(level1KnxGroupAddress.SubGroup)))
+}
+
+func CastToKnxNetIpFieldFromPlcField(plcField apiModel.PlcField) (KnxNetIpField, error) {
     if knxNetIpField, ok := plcField.(KnxNetIpField); ok {
         return knxNetIpField, nil
     }
     return nil, errors.New("couldn't cast to KnxNetIpField")
+}
+
+func matches(pattern string, groupAddressPart string) bool {
+    // A "*" simply matches everything
+    if pattern == "*" {
+        return true
+    }
+    // If the pattern starts and ends with square brackets, it's a list of values or range queries
+    if strings.HasPrefix(pattern, "[") && strings.HasSuffix(pattern, "]") {
+        matches := true
+        for _, segment := range strings.Split(pattern, ",") {
+            if strings.Contains(segment, "-") {
+                // If the segment contains a "-", then it's a range query
+                split := strings.Split(segment, "-")
+                if len(split) == 2 {
+                    if val, err := strconv.Atoi(groupAddressPart); err != nil {
+                        var err error
+                        var from int
+                        if from, err = strconv.Atoi(split[0]); err != nil {
+                            continue
+                        }
+                        if val < from {
+                            continue
+                        }
+                        var to int
+                        if to, err = strconv.Atoi(split[1]); err == nil {
+                            continue
+                        }
+                        if val > to {
+                            continue
+                        }
+                        matches = true
+                    }
+                }
+            } else if segment == groupAddressPart {
+                // In all other cases it's an explicit value
+                matches = true
+            }
+        }
+        return matches
+    } else {
+        return pattern == groupAddressPart
+    }
+    return false
 }

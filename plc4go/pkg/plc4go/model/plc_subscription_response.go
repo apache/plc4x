@@ -18,5 +18,8 @@
 //
 package model
 
-type PlcSubscriptionResponse struct {
+type PlcSubscriptionResponse interface {
+    GetRequest() PlcSubscriptionRequest
+    GetFieldNames() []string
+    GetResponseCode(name string) PlcResponseCode
 }
