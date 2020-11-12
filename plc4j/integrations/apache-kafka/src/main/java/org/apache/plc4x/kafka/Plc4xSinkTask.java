@@ -55,16 +55,25 @@ public class Plc4xSinkTask extends SinkTask {
     static final String CONNECTION_NAME_CONFIG = "connection-name";
     private static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
 
-    static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
+    static final String PLC4X_CONNECTION_STRING_CONFIG = "connectionString";
     private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
 
     static final String PLC4X_TOPIC_CONFIG = "topic";
     private static final String PLC4X_TOPIC_DOC = "Task Topic";
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
-        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
-        .define(PLC4X_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_TOPIC_DOC);
+        .define(CONNECTION_NAME_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                CONNECTION_NAME_STRING_DOC)
+        .define(PLC4X_CONNECTION_STRING_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                PLC4X_CONNECTION_STRING_DOC)
+        .define(PLC4X_TOPIC_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                PLC4X_TOPIC_DOC);
 
     /*
      * Configuration of the output.
@@ -114,7 +123,7 @@ public class Plc4xSinkTask extends SinkTask {
             String value = record.getString("value");
             Long expires = record.getInt64("expires");
 
-            if (!topic.equals(plc4xTopic)) {
+            if (!topic.equals(plc4xTopic) || plc4xTopic.equals("")) {
                 log.debug("Ignoring write request recived on wrong topic");
                 return;
             }
@@ -156,11 +165,11 @@ public class Plc4xSinkTask extends SinkTask {
                 log.warn("Failed to Write to {}", plc4xConnectionString);
             }
 
-            try {
-                connection.close();
-            } catch (Exception e) {
-                log.warn("Failed to Close {}", plc4xConnectionString);
-            }
+            //try {
+            //    connection.close();
+            //} catch (Exception e) {
+            //    log.warn("Failed to Close {}", plc4xConnectionString);
+            //}
         }
         return;
     }

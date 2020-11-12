@@ -42,6 +42,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
@@ -62,25 +64,33 @@ public class Plc4xSourceTask extends SourceTask {
     static final String CONNECTION_NAME_CONFIG = "connection-name";
     private static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
 
-    static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
-    private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
-
-    static final String PLC4X_BUFFER_SIZE_CONFIG = "plc4x-buffer-size";
-    private static final String PLC4X_BUFFER_SIZE_DOC = "PLC4X Buffer Size";
-
-    static final String PLC4X_POLL_RETURN_CONFIG = "plc4x-poll-return";
-    private static final String PLC4X_POLL_RETURN_DOC = "PLC4X Poll Return Interval";
-
     // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
     static final String QUERIES_CONFIG = "queries";
     private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
-        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
-        .define(PLC4X_POLL_RETURN_CONFIG, ConfigDef.Type.INT, 5002, ConfigDef.Importance.HIGH, PLC4X_POLL_RETURN_DOC)
-        .define(PLC4X_BUFFER_SIZE_CONFIG, ConfigDef.Type.INT, 1002, ConfigDef.Importance.HIGH, PLC4X_BUFFER_SIZE_DOC)
-        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC);
+        .define(CONNECTION_NAME_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                CONNECTION_NAME_STRING_DOC)
+        .define(Plc4xSourceConnector.CONNECTION_STRING_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                Plc4xSourceConnector.CONNECTION_STRING_DOC)
+        .define(Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG,
+                ConfigDef.Type.INT,
+                Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT,
+                ConfigDef.Importance.HIGH,
+                Plc4xSourceConnector.KAFKA_POLL_RETURN_DOC)
+        .define(Plc4xSourceConnector.BUFFER_SIZE_CONFIG,
+                ConfigDef.Type.INT,
+                Plc4xSourceConnector.BUFFER_SIZE_DEFAULT,
+                ConfigDef.Importance.HIGH,
+                Plc4xSourceConnector.BUFFER_SIZE_DOC)
+        .define(QUERIES_CONFIG,
+                ConfigDef.Type.LIST,
+                ConfigDef.Importance.HIGH,
+                QUERIES_DOC);
 
     /*
      * Configuration of the output.
@@ -107,12 +117,12 @@ public class Plc4xSourceTask extends SourceTask {
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
-        String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
-        pollReturnInterval = config.getInt(PLC4X_POLL_RETURN_CONFIG);
-        Integer bufferSize = config.getInt(PLC4X_BUFFER_SIZE_CONFIG);
+        String plc4xConnectionString = config.getString(Plc4xSourceConnector.CONNECTION_STRING_CONFIG);
+        pollReturnInterval = config.getInt(Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG);
+        Integer bufferSize = config.getInt(Plc4xSourceConnector.BUFFER_SIZE_CONFIG);
 
         Map<String, String> topics = new HashMap<>();
-        // Create a buffer with a capacity of 1000 elements which schedules access in a fair way.
+        // Create a buffer with a capacity of BUFFER_SIZE_CONFIG elements which schedules access in a fair way.
         buffer = new ArrayBlockingQueue<>(bufferSize, true);
 
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
@@ -234,7 +244,11 @@ public class Plc4xSourceTask extends SourceTask {
         } else {
             try {
                 List<SourceRecord> result = new ArrayList<>(1);
-                result.add(buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS));
+                SourceRecord temp = buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS);
+                if (temp == null) {
+                    return null;
+                }
+                result.add(temp);
                 return result;
             } catch (InterruptedException e) {
                 return null;

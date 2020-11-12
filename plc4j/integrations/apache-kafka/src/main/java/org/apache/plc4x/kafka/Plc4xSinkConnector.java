@@ -68,12 +68,13 @@ public class Plc4xSinkConnector extends SinkConnector {
         // For each configured source we'll start a dedicated scraper instance collecting
         // all the scraper jobs enabled for this source.
         List<Map<String, String>> configs = new LinkedList<>();
+
         for (Sink sink : sinkConfig.getSinks()) {
             // Create a new task configuration.
             Map<String, String> taskConfig = new HashMap<>();
             taskConfig.put(Plc4xSinkTask.CONNECTION_NAME_CONFIG, sink.getName());
-            taskConfig.put(Plc4xSinkTask.PLC4X_CONNECTION_STRING_CONFIG, sink.getConnectionString());
-            taskConfig.put(Plc4xSinkTask.PLC4X_TOPIC_CONFIG, sink.getTopic());
+            taskConfig.put(CONNECTION_STRING_CONFIG, sink.getConnectionString());
+            taskConfig.put(TOPIC_CONFIG, sink.getTopic());
             configs.add(taskConfig);
         }
         return configs;
@@ -103,23 +104,26 @@ public class Plc4xSinkConnector extends SinkConnector {
         }
 
         // Configure the sinks
-        if(sinks != null) {
+        if (sinks != null) {
             final List<String> sinkNames = (List<String>) sinks.value();
-            for (String sinkName : sinkNames) {
-                String connectionStringConfig = SINK_CONFIG + "." + sinkName + "." + CONNECTION_STRING_CONFIG;
-                final ConfigValue sinkConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
-                config.configValues().add(sinkConnectionStringConfigValue);
-                String connectionString = connectorConfigs.get(connectionStringConfig);
-                sinkConnectionStringConfigValue.value();
-                if (connectionString == null) {
-                    sinkConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
-                } else {
-                    // TODO: Check if the connection string is valid.
-                    String sinkTopicConfig = SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG;
-                    final ConfigValue sinkTopicConfigValue = new ConfigValue(sinkTopicConfig);
-                    config.configValues().add(sinkTopicConfigValue);
-                    String sinkTopic = connectorConfigs.get(sinkTopicConfig);
-                    sinkTopicConfigValue.value(sinkTopic);
+
+            if (sinkNames != null) {
+                for (String sinkName : sinkNames) {
+                    String connectionStringConfig = SINK_CONFIG + "." + sinkName + "." + CONNECTION_STRING_CONFIG;
+                    final ConfigValue sinkConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
+                    config.configValues().add(sinkConnectionStringConfigValue);
+                    String connectionString = connectorConfigs.get(connectionStringConfig);
+                    sinkConnectionStringConfigValue.value(connectionString);
+                    if (connectionString == null) {
+                        sinkConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
+                    } else {
+                        // TODO: Check if the connection string is valid.
+                        String sinkTopicConfig = SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG;
+                        final ConfigValue sinkTopicConfigValue = new ConfigValue(sinkTopicConfig);
+                        config.configValues().add(sinkTopicConfigValue);
+                        String sinkTopic = connectorConfigs.get(sinkTopicConfig);
+                        sinkTopicConfigValue.value(sinkTopic);
+                    }
                 }
             }
         }
@@ -129,8 +133,13 @@ public class Plc4xSinkConnector extends SinkConnector {
 
     @Override
     public ConfigDef config() {
-        return new ConfigDef()
-            .define(SINK_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, SINK_DOC);
+        return new ConfigDef();
+            //[BUG] - When including this, confluent fails when adding new connectors.
+            //.define(SINK_CONFIG,
+            //        ConfigDef.Type.LIST,
+            //        new LinkedList<String>(),
+            //        ConfigDef.Importance.LOW,
+            //        SINK_DOC);
     }
 
     @Override

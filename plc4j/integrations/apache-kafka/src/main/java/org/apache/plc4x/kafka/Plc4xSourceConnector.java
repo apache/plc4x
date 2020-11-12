@@ -43,23 +43,28 @@ public class Plc4xSourceConnector extends SourceConnector {
 
     public static final String SOURCES_CONFIG = "sources";
     private static final String SOURCES_DOC = "List of source names that will be configured.";
+    public static final List<String> SOURCES_DEFAULT = new ArrayList<>();
 
     public static final String JOBS_CONFIG = "jobs";
     private static final String JOBS_DOC = "List of job names that will be configured.";
+    public static final List<String> JOBS_DEFAULT = new ArrayList<>();
 
-    private static final String CONNECTION_STRING_CONFIG = "connectionString";
+    public static final String CONNECTION_STRING_CONFIG = "connectionString";
+    public static final String CONNECTION_STRING_DOC = "PLC4X Connection String";
+
     private static final String JOB_REFERENCES_CONFIG = "jobReferences";
+
     private static final String TOPIC_CONFIG = "topic";
     private static final String INTERVAL_CONFIG = "interval";
     private static final String FIELDS_CONFIG = "fields";
 
     public static final String KAFKA_POLL_RETURN_CONFIG = "pollReturnInterval";
-    private static final String KAFKA_POLL_RETURN_DOC = "Default poll return interval to be used, if not otherwise configured.";
-    public static final String KAFKA_POLL_RETURN_DEFAULT = "5000";
+    public static final String KAFKA_POLL_RETURN_DOC = "Default poll return interval to be used, if not otherwise configured.";
+    public static final Integer KAFKA_POLL_RETURN_DEFAULT = 5000;
 
     public static final String BUFFER_SIZE_CONFIG = "bufferSize";
-    private static final String BUFFER_SIZE_DOC = "Default buffer size to be used, if not otherwise configured.";
-    public static final String BUFFER_SIZE_DEFAULT = "1000";
+    public static final String BUFFER_SIZE_DOC = "Default buffer size to be used, if not otherwise configured.";
+    public static final Integer BUFFER_SIZE_DEFAULT = 1000;
 
     private SourceConfig sourceConfig;
 
@@ -115,9 +120,9 @@ public class Plc4xSourceConnector extends SourceConnector {
             // Create a new task configuration.
             Map<String, String> taskConfig = new HashMap<>();
             taskConfig.put(Plc4xSourceTask.CONNECTION_NAME_CONFIG, source.getName());
-            taskConfig.put(Plc4xSourceTask.PLC4X_CONNECTION_STRING_CONFIG, source.getConnectionString());
-            taskConfig.put(Plc4xSourceTask.PLC4X_BUFFER_SIZE_CONFIG, source.getBufferSize().toString());
-            taskConfig.put(Plc4xSourceTask.PLC4X_POLL_RETURN_CONFIG, source.getPollReturnInterval().toString());
+            taskConfig.put(CONNECTION_STRING_CONFIG, source.getConnectionString());
+            taskConfig.put(BUFFER_SIZE_CONFIG, source.getBufferSize().toString());
+            taskConfig.put(KAFKA_POLL_RETURN_CONFIG, source.getPollReturnInterval().toString());
             taskConfig.put(Plc4xSourceTask.QUERIES_CONFIG, query.toString().substring(1));
             configs.add(taskConfig);
         }
@@ -216,7 +221,7 @@ public class Plc4xSourceConnector extends SourceConnector {
                 final ConfigValue sourceConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
                 config.configValues().add(sourceConnectionStringConfigValue);
                 String connectionString = connectorConfigs.get(connectionStringConfig);
-                sourceConnectionStringConfigValue.value();
+                sourceConnectionStringConfigValue.value(connectionString);
                 if (connectionString == null) {
                     sourceConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
                 } else {
@@ -273,9 +278,10 @@ public class Plc4xSourceConnector extends SourceConnector {
     @Override
     public ConfigDef config() {
         return new ConfigDef()
-            .define(DEFAULT_TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.LOW, DEFAULT_TOPIC_DOC)
-            .define(SOURCES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, SOURCES_DOC)
-            .define(JOBS_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, JOBS_DOC);
+            .define(DEFAULT_TOPIC_CONFIG,
+                    ConfigDef.Type.STRING,
+                    ConfigDef.Importance.LOW,
+                    DEFAULT_TOPIC_DOC);
     }
 
     @Override
