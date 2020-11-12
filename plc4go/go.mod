@@ -16,7 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go/v0
+module github.com/apache/plc4x/plc4go
 
 go 1.15
 
