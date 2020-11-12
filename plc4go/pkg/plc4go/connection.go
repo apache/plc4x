@@ -18,7 +18,7 @@
 //
 package plc4go
 
-import "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
 type PlcConnectionConnectResult struct {
 	Connection PlcConnection

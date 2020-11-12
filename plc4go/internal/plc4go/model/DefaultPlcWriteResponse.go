@@ -20,7 +20,7 @@ package model
 
 import (
 	"encoding/xml"
-	"plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type DefaultPlcWriteResponse struct {

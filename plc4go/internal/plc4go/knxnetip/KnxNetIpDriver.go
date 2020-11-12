@@ -22,9 +22,9 @@ import (
     "errors"
     "fmt"
     "net/url"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go/v0/pkg/plc4go"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 
 type KnxNetIpDriver struct {

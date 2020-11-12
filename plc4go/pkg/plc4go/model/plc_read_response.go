@@ -18,7 +18,7 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 
 type PlcReadResponse interface {
 	GetRequest() PlcReadRequest

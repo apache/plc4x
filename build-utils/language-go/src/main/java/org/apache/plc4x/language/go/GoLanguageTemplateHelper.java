@@ -798,7 +798,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"math\"");
         }
 
-        imports.add("\"plc4x.apache.org/plc4go/v0/internal/plc4go/utils\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/utils\"");
 
         // For Constant field: "strconv"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
@@ -821,9 +821,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         List<String> imports = new ArrayList<>();
 
         imports.add("\"errors\"");
-        imports.add("\"plc4x.apache.org/plc4go/v0/internal/plc4go/model/values\"");
-        imports.add("\"plc4x.apache.org/plc4go/v0/internal/plc4go/utils\"");
-        imports.add("api \"plc4x.apache.org/plc4go/v0/pkg/plc4go/values\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/model/values\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/utils\"");
+        imports.add("api \"github.com/apache/plc4x/plc4go/pkg/plc4go/values\"");
 
         if(dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->
             (typeCase.getName().equals("TIME_OF_DAY") && hasFieldsWithNames(typeCase.getFields(), "hour", "minutes", "seconds")) ||

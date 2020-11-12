@@ -48,7 +48,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
 )
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>

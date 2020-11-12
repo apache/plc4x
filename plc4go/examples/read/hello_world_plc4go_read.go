@@ -21,7 +21,7 @@ package read
 import (
 	"encoding/json"
 	"fmt"
-	"plc4x.apache.org/plc4go/v0/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 
 func main() int {
