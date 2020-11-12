@@ -41,7 +41,7 @@ type ConnectionMetadata struct {
 }
 
 func (m ConnectionMetadata) CanRead() bool {
-    return false
+    return true
 }
 
 func (m ConnectionMetadata) CanWrite() bool {
@@ -314,7 +314,8 @@ func (m *KnxNetIpConnection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m *KnxNetIpConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-    panic("this connection doesn't support reading")
+    return internalModel.NewDefaultPlcReadRequestBuilder(
+        m.fieldHandler, NewKnxNetIpReader(m))
 }
 
 func (m *KnxNetIpConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
@@ -371,8 +372,11 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
                 addressData := uint16(cemiDataInd.CemiDataFrame.DestinationAddress[0])<<8 | (uint16(cemiDataInd.CemiDataFrame.DestinationAddress[1]) & 0xFF)
                 val, ok := m.valueCache[addressData]
                 changed := false
-                if !ok || !m.sliceEqual(val, cemiDataInd.CemiDataFrame.Data) {
-                    m.valueCache[addressData] = cemiDataInd.CemiDataFrame.Data
+                var payload []int8
+                payload = append(payload, cemiDataInd.CemiDataFrame.DataFirstByte)
+                payload = append(payload, cemiDataInd.CemiDataFrame.Data...)
+                if !ok || !m.sliceEqual(val, payload) {
+                    m.valueCache[addressData] = payload
                     changed = true
                 }
                 for _, subscriber := range m.subscribers {
