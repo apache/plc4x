@@ -1,0 +1,31 @@
+{
+    "name": "plc-0",
+    "config": {
+        "connector.class": "org.apache.plc4x.kafka.Plc4xSourceConnector"
+        "default-topic": "machineData"
+        "tasks.max": 2
+
+        "sources": "machineA"
+
+        "sources.machineA.connectionString": "simulated://127.0.0.1"
+        "sources.machineA.pollReturnInterval": "5000"
+        "sources.machineA.bufferSize": "1000"
+        "sources.machineA.jobReferences": "simulated-dashboard"
+        "sources.machineA.jobReferences.simulated-dashboard.topic": "simulated-dashboard"
+
+        "jobs": "simulated-dashboard"
+
+        "jobs.simulated-dashboard.interval": "1000"
+        "jobs.simulated-dashboard.fields": "pv,sp"
+        "jobs.simulated-dashboard.fields.pv": "RANDOM/Temporary:Integer"
+        "jobs.simulated-dashboard.fields.sp": "RANDOM/Temporary:Integer"
+
+        "bootstrap.servers": "localhost:9092"
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter"
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+        "key.converter.schemas.enable": "true"
+        "value.converter.schemas.enable": "true"
+        "offset.storage.file.filename": "/tmp/connect.offsets"
+        "offset.flush.interval.ms": "10000"
+    }
+}
