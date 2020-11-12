@@ -35,7 +35,8 @@ type DefaultPlcSubscriptionEvent struct {
 }
 
 func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[string]SubscriptionType,
-    intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
+    intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
+    values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
     return DefaultPlcSubscriptionEvent{
         fields:        fields,
         types:         types,
@@ -67,6 +68,10 @@ func (m DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
 
 func (m DefaultPlcSubscriptionEvent) GetResponseCode(name string) model.PlcResponseCode {
     return m.responseCodes[name]
+}
+
+func (m DefaultPlcSubscriptionEvent) GetAddress(name string) string {
+    panic("GetAddress not implemented")
 }
 
 func (m DefaultPlcSubscriptionEvent) GetValue(name string) values.PlcValue {

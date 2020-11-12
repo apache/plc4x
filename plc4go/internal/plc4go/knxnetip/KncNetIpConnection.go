@@ -22,7 +22,6 @@ import (
     "bytes"
     "errors"
     "fmt"
-    "net"
     driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
     internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -32,6 +31,7 @@ import (
     "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
     "github.com/apache/plc4x/plc4go/pkg/plc4go"
     apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "net"
     "strconv"
     "time"
 )
@@ -59,6 +59,7 @@ type KnxNetIpConnection struct {
     valueHandler             spi.PlcValueHandler
     quitConnectionStateTimer chan struct{}
     subscribers              []*KnxNetIpSubscriber
+    valueCache               map[uint16][]int8
 
     GatewayKnxAddress      *driverModel.KnxAddress
     GatewayName            string
@@ -77,6 +78,7 @@ func NewKnxNetIpConnection(messageCodec spi.MessageCodec, options map[string][]s
         valueHandler:       NewValueHandler(),
         requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
         subscribers:        []*KnxNetIpSubscriber{},
+        valueCache:         map[uint16][]int8{},
     }
 }
 
@@ -193,7 +195,7 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
                         // Save the KNX Address the Gateway assigned to this connection.
                         m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
 
-                        fmt.Printf("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got assigned client KNX address '%d.%d.%d'",
+                        fmt.Printf("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got assigned client KNX address '%d.%d.%d'\n",
                             m.GatewayName,
                             m.GatewayKnxAddress.MainGroup, m.GatewayKnxAddress.MiddleGroup, m.GatewayKnxAddress.SubGroup,
                             m.ClientKnxAddress.MainGroup, m.ClientKnxAddress.MiddleGroup, m.ClientKnxAddress.SubGroup)
@@ -363,12 +365,21 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
             break
         }
 
-        cemiDataInd := driverModel.CastCEMIDataInd(tunnelingRequest.Cemi.Child)
-        if cemiDataInd != nil {
-            for _, subscriber := range m.subscribers {
-                subscriber.handle(cemiDataInd.CemiDataFrame)
+        go func() {
+            cemiDataInd := driverModel.CastCEMIDataInd(tunnelingRequest.Cemi.Child)
+            if cemiDataInd != nil {
+                addressData := uint16(cemiDataInd.CemiDataFrame.DestinationAddress[0])<<8 | (uint16(cemiDataInd.CemiDataFrame.DestinationAddress[1]) & 0xFF)
+                val, ok := m.valueCache[addressData]
+                changed := false
+                if !ok || !m.sliceEqual(val, cemiDataInd.CemiDataFrame.Data) {
+                    m.valueCache[addressData] = cemiDataInd.CemiDataFrame.Data
+                    changed = true
+                }
+                for _, subscriber := range m.subscribers {
+                    subscriber.handleValueChange(cemiDataInd.CemiDataFrame, changed)
+                }
             }
-        }
+        }()
     }
 }
 
@@ -397,4 +408,16 @@ func (m *KnxNetIpConnection) removeSubscriber(subscriber *KnxNetIpSubscriber) {
             m.subscribers = append(m.subscribers[:i], m.subscribers[i+1:]...)
         }
     }
+}
+
+func (m *KnxNetIpConnection) sliceEqual(a, b []int8) bool {
+    if len(a) != len(b) {
+        return false
+    }
+    for i, v := range a {
+        if v != b[i] {
+            return false
+        }
+    }
+    return true
 }

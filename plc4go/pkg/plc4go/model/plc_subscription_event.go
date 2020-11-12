@@ -24,6 +24,7 @@ type PlcSubscriptionEvent interface {
     GetRequest() PlcSubscriptionRequest
     GetFieldNames() []string
     GetResponseCode(name string) PlcResponseCode
+    GetAddress(name string) string
     GetValue(name string) values.PlcValue
     PlcResponse
 }

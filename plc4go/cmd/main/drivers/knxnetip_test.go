@@ -146,7 +146,9 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
     for _, fieldName := range event.GetFieldNames() {
         if event.GetResponseCode(fieldName) == apiModel.PlcResponseCode_OK {
-            fmt.Printf("Got update for field %s with value %s", fieldName, event.GetValue(fieldName).GetString())
+            groupAddress := event.GetAddress(fieldName)
+            fmt.Printf("Got update for field %s with address %s. Value changed to: %s\n",
+                fieldName, groupAddress, event.GetValue(fieldName).GetString())
         }
     }
 }
