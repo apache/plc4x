@@ -29,6 +29,7 @@ import (
 
 type KnxNetIpField interface {
     matches(knxGroupAddress driverModel.KnxGroupAddress) bool
+    toGroupAddress() *driverModel.KnxGroupAddress
     apiModel.PlcField
 }
 
@@ -70,6 +71,30 @@ func (k KnxNetIpGroupAddress3LevelPlcField) matches(knxGroupAddress driverModel.
         matches(k.SubGroup, strconv.Itoa(int(level3KnxGroupAddress.SubGroup)))
 }
 
+func (k KnxNetIpGroupAddress3LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
+    mainGroup, err := strconv.Atoi(k.MainGroup)
+    if err != nil {
+        return nil
+    }
+    midleGroup, err := strconv.Atoi(k.MiddleGroup)
+    if err != nil {
+        return nil
+    }
+    subGroup, err := strconv.Atoi(k.SubGroup)
+    if err != nil {
+        return nil
+    }
+    ga := &driverModel.KnxGroupAddress {}
+    l3 := &driverModel.KnxGroupAddress3Level{
+        MainGroup: uint8(mainGroup),
+        MiddleGroup: uint8(midleGroup),
+        SubGroup: uint8(subGroup),
+        Parent: ga,
+    }
+    ga.Child = l3
+    return ga
+}
+
 type KnxNetIpGroupAddress2LevelPlcField struct {
     FieldType   *model.KnxDatapointType
     // 5 Bits: Values 0-31
@@ -104,6 +129,25 @@ func (k KnxNetIpGroupAddress2LevelPlcField) matches(knxGroupAddress driverModel.
         matches(k.SubGroup, strconv.Itoa(int(level2KnxGroupAddress.SubGroup)))
 }
 
+func (k KnxNetIpGroupAddress2LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
+    mainGroup, err := strconv.Atoi(k.MainGroup)
+    if err != nil {
+        return nil
+    }
+    subGroup, err := strconv.Atoi(k.SubGroup)
+    if err != nil {
+        return nil
+    }
+    ga := &driverModel.KnxGroupAddress {}
+    l3 := &driverModel.KnxGroupAddress2Level{
+        MainGroup: uint8(mainGroup),
+        SubGroup: uint16(subGroup),
+        Parent: ga,
+    }
+    ga.Child = l3
+    return ga
+}
+
 type KnxNetIpGroupAddress1LevelPlcField struct {
     FieldType   *model.KnxDatapointType
     // 16 Bits
@@ -132,6 +176,20 @@ func (k KnxNetIpGroupAddress1LevelPlcField) matches(knxGroupAddress driverModel.
         return false
     }
     return matches(k.MainGroup, strconv.Itoa(int(level1KnxGroupAddress.SubGroup)))
+}
+
+func (k KnxNetIpGroupAddress1LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
+    mainGroup, err := strconv.Atoi(k.MainGroup)
+    if err != nil {
+        return nil
+    }
+    ga := &driverModel.KnxGroupAddress {}
+    l3 := &driverModel.KnxGroupAddressFreeLevel{
+        SubGroup: uint16(mainGroup),
+        Parent: ga,
+    }
+    ga.Child = l3
+    return ga
 }
 
 func CastToKnxNetIpFieldFromPlcField(plcField apiModel.PlcField) (KnxNetIpField, error) {

@@ -109,7 +109,7 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     }
 
     // Wait 2 minutes
-    time.Sleep(120 * time.Second)
+    time.Sleep(1200 * time.Second)
 
     // Do something with the response
     /*value1 := rrr.Response.GetValue("field1")
