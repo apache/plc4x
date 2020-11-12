@@ -20,10 +20,10 @@ package knxnetip
 
 import (
     "errors"
-    model2 "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
-    "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+    model2 "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "regexp"
 )
 

@@ -23,7 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
     "strconv"
     "reflect"
     "strings"

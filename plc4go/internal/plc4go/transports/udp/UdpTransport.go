@@ -23,8 +23,8 @@ import (
     "errors"
     "net"
     "net/url"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
     "regexp"
     "strconv"
 )

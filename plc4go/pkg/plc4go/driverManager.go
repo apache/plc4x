@@ -21,7 +21,7 @@ package plc4go
 import (
     "errors"
     "net/url"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
 )
 
 // This is the main entry point for PLC4Go applications

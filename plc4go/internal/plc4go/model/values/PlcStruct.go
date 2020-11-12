@@ -20,7 +20,7 @@ package values
 
 import (
 	"encoding/xml"
-	api "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
+	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type PlcStruct struct {

@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/xml"
 	"errors"
-	values2 "plc4x.apache.org/plc4go/v0/internal/plc4go/model/values"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
-	"plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
+	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type DefaultPlcWriteRequestBuilder struct {

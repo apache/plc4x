@@ -19,7 +19,7 @@
 package tests
 
 import (
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/testutils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/testutils"
     "testing"
 )
 

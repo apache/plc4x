@@ -65,8 +65,8 @@ package model
 import (
     "encoding/xml"
     "errors"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 )
 
 type ${protocolName?cap_first}XmlParserHelper struct {

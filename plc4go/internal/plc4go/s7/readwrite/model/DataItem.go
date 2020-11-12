@@ -20,9 +20,9 @@ package model
 
 import (
             "errors"
-            "plc4x.apache.org/plc4go/v0/internal/plc4go/model/values"
-            "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
-            api "plc4x.apache.org/plc4go/v0/pkg/plc4go/values"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+            api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int32) (api.PlcValue, error) {

@@ -21,9 +21,9 @@ package knxnetip
 import (
     "errors"
     "fmt"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
     "time"
 )
 

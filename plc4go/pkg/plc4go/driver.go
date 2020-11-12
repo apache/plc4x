@@ -20,7 +20,7 @@ package plc4go
 
 import (
     "net/url"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
 )
 
 type PlcDriverResult struct {

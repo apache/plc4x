@@ -20,13 +20,13 @@ package modbus
 
 import (
 	"errors"
-	driverModel "plc4x.apache.org/plc4go/v0/internal/plc4go/modbus/readwrite/model"
-	internalModel "plc4x.apache.org/plc4go/v0/internal/plc4go/model"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/spi/interceptors"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/transports"
-	"plc4x.apache.org/plc4go/v0/pkg/plc4go"
-	apiModel "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type ConnectionMetadata struct {

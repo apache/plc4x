@@ -21,12 +21,12 @@ package drivers
 import (
     "encoding/hex"
     "fmt"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/knxnetip/readwrite/model"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/transports/udp"
-    "plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
-    "plc4x.apache.org/plc4go/v0/pkg/plc4go"
-    apiModel "plc4x.apache.org/plc4go/v0/pkg/plc4go/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/transports/udp"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go"
+    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "testing"
     "time"
 )

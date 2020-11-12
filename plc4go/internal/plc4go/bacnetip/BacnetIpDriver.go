@@ -18,7 +18,7 @@
 //
 package bacnetip
 
-import "plc4x.apache.org/plc4go/v0/pkg/plc4go"
+import "github.com/apache/plc4x/plc4go/pkg/plc4go"
 
 func NewBacnetIpDriver() plc4go.PlcDriver {
 	return nil

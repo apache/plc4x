@@ -20,8 +20,8 @@ package drivers
 
 import (
 	"encoding/hex"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/s7/readwrite/model"
-	"plc4x.apache.org/plc4go/v0/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
 	"testing"
 )
 
