@@ -44,6 +44,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Source Connector Task polling the data source at a given rate.
@@ -64,6 +65,12 @@ public class Plc4xSourceTask extends SourceTask {
     static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
     private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
 
+    static final String PLC4X_BUFFER_SIZE_CONFIG = "plc4x-buffer-size";
+    private static final String PLC4X_BUFFER_SIZE_DOC = "PLC4X Buffer Size";
+
+    static final String PLC4X_POLL_RETURN_CONFIG = "plc4x-poll-return";
+    private static final String PLC4X_POLL_RETURN_DOC = "PLC4X Poll Return Interval";
+
     // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
     static final String QUERIES_CONFIG = "queries";
     private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
@@ -71,6 +78,8 @@ public class Plc4xSourceTask extends SourceTask {
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
         .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
+        .define(PLC4X_POLL_RETURN_CONFIG, ConfigDef.Type.INT, 5002, ConfigDef.Importance.HIGH, PLC4X_POLL_RETURN_DOC)
+        .define(PLC4X_BUFFER_SIZE_CONFIG, ConfigDef.Type.INT, 1002, ConfigDef.Importance.HIGH, PLC4X_BUFFER_SIZE_DOC)
         .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC);
 
     /*
@@ -87,6 +96,7 @@ public class Plc4xSourceTask extends SourceTask {
 
     // Internal buffer into which all incoming scraper responses are written to.
     private ArrayBlockingQueue<SourceRecord> buffer;
+    private Integer pollReturnInterval;
 
     @Override
     public String version() {
@@ -98,9 +108,12 @@ public class Plc4xSourceTask extends SourceTask {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
         String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
+        pollReturnInterval = config.getInt(PLC4X_POLL_RETURN_CONFIG);
+        Integer bufferSize = config.getInt(PLC4X_BUFFER_SIZE_CONFIG);
+
         Map<String, String> topics = new HashMap<>();
         // Create a buffer with a capacity of 1000 elements which schedules access in a fair way.
-        buffer = new ArrayBlockingQueue<>(1000, true);
+        buffer = new ArrayBlockingQueue<>(bufferSize, true);
 
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
         builder.addSource(connectionName, plc4xConnectionString);
@@ -219,7 +232,13 @@ public class Plc4xSourceTask extends SourceTask {
             buffer.drainTo(result, numElements);
             return result;
         } else {
-            return Collections.emptyList();
+            try {
+                List<SourceRecord> result = new ArrayList<>(1);
+                result.add(buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS));
+                return result;
+            } catch (InterruptedException e) {
+                return null;
+            }
         }
     }
 

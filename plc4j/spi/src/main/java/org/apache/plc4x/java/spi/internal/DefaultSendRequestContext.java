@@ -77,7 +77,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("can't expect class of type " + clazz + " as we already expecting clazz of type " + expectClazz);
         }
         expectClazz = clazz;
-        commands.addLast(Either.right(clazz::isInstance));
+        commands.addLast(Either.right(new TypePredicate<>(clazz)));
         return this;
     }
 
@@ -124,9 +124,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("expectResponse must be called before first unwrap");
         }
         if (onTimeoutConsumer == null) {
-            onTimeoutConsumer = e -> {
-                // NOOP
-            };
+            onTimeoutConsumer = new NoopTimeoutConsumer();
         }
         commands.addLast(Either.left(unwrapper));
         return new DefaultSendRequestContext<>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
@@ -134,8 +132,44 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     @Override
     public <R> ConversationContext.SendRequestContext<R> only(Class<R> clazz) {
-        this.check(clazz::isInstance);
-        return this.unwrap(clazz::cast);
+        this.check(new TypePredicate<>(clazz));
+        return this.unwrap(new CastFunction<>(clazz));
     }
 
+    static class TypePredicate<T, R> implements Predicate<R> {
+
+        private final Class<T> type;
+
+        TypePredicate(Class<T> type) {
+            this.type = type;
+        }
+
+        @Override
+        public boolean test(R value) {
+            return type.isInstance(value);
+        }
+    }
+
+    static class CastFunction<T, R> implements Function<R, T> {
+
+        private final Class<T> type;
+
+        CastFunction(Class<T> type) {
+            this.type = type;
+        }
+
+        @Override
+        public T apply(R value) {
+            return type.cast(value);
+        }
+
+    }
+
+    static class NoopTimeoutConsumer implements Consumer<TimeoutException> {
+
+        @Override
+        public void accept(TimeoutException e) {
+
+        }
+    }
 }

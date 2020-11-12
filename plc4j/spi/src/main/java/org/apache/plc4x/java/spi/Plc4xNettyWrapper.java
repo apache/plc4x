@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -141,6 +142,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             if (registration.getTimeoutAt().isBefore(now)) {
                 logger.debug("Removing {} as its timed out (timeout of {} was set till {} and now is {})",
                     registration, registration.getTimeout(), registration.getTimeoutAt(), now);
+                // pass timeout back to caller so it can do ie. transaction compensation
+                registration.getOnTimeoutConsumer().accept(new TimeoutException());
                 iter.remove();
                 continue;
             }
@@ -159,7 +162,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                         Predicate predicate = either.get();
                         if (predicate.test(instance) == false) {
                             // We do not match -> cannot handle
-                            logger.trace("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
+                            logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
+                                t.getClass().getSimpleName(), instance.getClass().getSimpleName());
                             continue registrations;
                         }
                     }
@@ -173,7 +177,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 return;
             }
         }
-        logger.trace("No registered handler found for message {}, using default decode method", t);
+        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
         protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, passive), t);
     }
 
