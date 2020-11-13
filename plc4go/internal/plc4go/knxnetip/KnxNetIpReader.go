@@ -21,10 +21,11 @@ package knxnetip
 import (
     driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
     internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
+    internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
     "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type KnxNetIpReader struct {
@@ -38,53 +39,117 @@ func NewKnxNetIpReader(connection *KnxNetIpConnection) *KnxNetIpReader {
     }
 }
 
-func (m KnxNetIpReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-    resultChan := make(chan model.PlcReadRequestResult)
+func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+    resultChan := make(chan apiModel.PlcReadRequestResult)
     go func() {
-        responseCodes := map[string]model.PlcResponseCode{}
-        plcValues := map[string]values.PlcValue{}
+        responseCodes := map[string]apiModel.PlcResponseCode{}
+        plcValues := map[string]apiValues.PlcValue{}
         for _, fieldName := range readRequest.GetFieldNames() {
+            // Get the knx field
             field, err := CastToKnxNetIpFieldFromPlcField(readRequest.GetField(fieldName))
             if err != nil {
-                responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
+                responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
                 plcValues[fieldName] = nil
                 continue
             }
 
-            // Serialize the field to an uint16
-            wb := utils.NewWriteBuffer()
-            err = field.toGroupAddress().Serialize(*wb)
-            if err != nil {
-                responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
-                plcValues[fieldName] = nil
-                continue
-            }
-            rawAddress := wb.GetBytes()
-            address := (uint16(rawAddress[0]) << 8) | uint16(rawAddress[1] & 0xFF)
+            // Pattern fields can match more than one value, therefore we have to handle things differently
+            if field.IsPatternField() {
+                // Depending on the type of field, get the uint16 ids of all values that match the current field
+                matchedAddresses := map[uint16]*driverModel.KnxGroupAddress{}
+                switch field.(type) {
+                case KnxNetIpGroupAddress3LevelPlcField:
+                    for key, value := range m.connection.leve3AddressCache {
+                        if field.matches(value.Parent) {
+                            matchedAddresses[key] = value.Parent
+                        }
+                    }
+                case KnxNetIpGroupAddress2LevelPlcField:
+                    for key, value := range m.connection.leve2AddressCache {
+                        if field.matches(value.Parent) {
+                            matchedAddresses[key] = value.Parent
+                        }
+                    }
+                case KnxNetIpGroupAddress1LevelPlcField:
+                    for key, value := range m.connection.leve1AddressCache {
+                        if field.matches(value.Parent) {
+                            matchedAddresses[key] = value.Parent
+                        }
+                    }
+                }
 
-            // Get the value form the cache
-            int8s, ok := m.connection.valueCache[address]
-            if !ok {
-                responseCodes[fieldName] = model.PlcResponseCode_NOT_FOUND
-                plcValues[fieldName] = nil
-                continue
-            }
+                // If not a single match was found, we'll return a "not found" message
+                if len(matchedAddresses) == 0 {
+                    responseCodes[fieldName] = apiModel.PlcResponseCode_NOT_FOUND
+                    plcValues[fieldName] = nil
+                    continue
+                }
 
-            // Decode the data according to the fields type
-            rb := utils.NewReadBuffer(utils.Int8ToUint8(int8s))
-            plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
-            if err != nil {
-                responseCodes[fieldName] = model.PlcResponseCode_INVALID_DATA
-                plcValues[fieldName] = nil
-                continue
-            }
+                // Go through all of the values and create a plc-struct from them
+                // where the string version of the address becomes the property name
+                // and the property value is the corresponding value (Other wise it
+                // would be impossible to know which of the fields the pattern matched
+                // a given value belongs to)
+                values := map[string]apiValues.PlcValue{}
+                for numericAddress, address := range matchedAddresses {
+                    // Get the raw data from the cache
+                    int8s := m.connection.valueCache[numericAddress]
 
-            // Add it to the result
-            responseCodes[fieldName] = model.PlcResponseCode_OK
-            plcValues[fieldName] = plcValue
+                    // Decode the data according to the fields type
+                    rb := utils.NewReadBuffer(utils.Int8ToUint8(int8s))
+                    plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
+                    // If any of the values doesn't decode correctly, we can't return any
+                    if err != nil {
+                        responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATA
+                        plcValues[fieldName] = nil
+                        continue
+                    }
+
+                    values[GroupAddressToString(address)] = plcValue
+                }
+
+                // Add it to the result
+                responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+                plcValues[fieldName] = internalValues.NewPlcStruct(values)
+                continue
+            } else {
+                // If it's not a pattern field, we can access the cached value a lot simpler
+
+                // Serialize the field to an uint16
+                wb := utils.NewWriteBuffer()
+                err = field.toGroupAddress().Serialize(*wb)
+                if err != nil {
+                    responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+                    plcValues[fieldName] = nil
+                    continue
+                }
+                rawAddress := wb.GetBytes()
+                address := (uint16(rawAddress[0]) << 8) | uint16(rawAddress[1] & 0xFF)
+
+                // Get the value form the cache
+                int8s, ok := m.connection.valueCache[address]
+                if !ok {
+                    responseCodes[fieldName] = apiModel.PlcResponseCode_NOT_FOUND
+                    plcValues[fieldName] = nil
+                    continue
+                }
+
+                // Decode the data according to the fields type
+                rb := utils.NewReadBuffer(utils.Int8ToUint8(int8s))
+                plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
+                if err != nil {
+                    responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATA
+                    plcValues[fieldName] = nil
+                    continue
+                }
+
+                // Add it to the result
+                responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+                plcValues[fieldName] = plcValue
+            }
         }
         result := internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-        resultChan <- model.PlcReadRequestResult{
+        resultChan <- apiModel.PlcReadRequestResult{
             Request:  readRequest,
             Response: result,
             Err:      nil,
@@ -92,8 +157,3 @@ func (m KnxNetIpReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcR
     }()
     return resultChan
 }
-
-
-
-
-

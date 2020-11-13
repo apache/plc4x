@@ -109,9 +109,22 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     }
 
     // Wait 2 minutes
-    time.Sleep(1200 * time.Second)
+    time.Sleep(120 * time.Second)
 
-    // Do something with the response
+    // Execute a read request
+    rrb := connection.ReadRequestBuilder()
+    rrb.AddItem("energy-consumption", "1/1/211:DPT_Value_Power")
+    rrb.AddItem("actual-temperatures", "*/*/10:DPT_Value_Temp")
+    readRequest, err := rrb.Build()
+    if err == nil {
+        rrr := readRequest.Execute()
+        readRequestResult := <-rrr
+        if readRequestResult.Err == nil {
+            for _, fieldName := range readRequestResult.Response.GetFieldNames() {
+                fmt.Printf(" - Field %s Value %s\n", fieldName, readRequestResult.Response.GetValue(fieldName).GetString())
+            }
+        }
+    }
     /*value1 := rrr.Response.GetValue("field1")
     value2 := rrr.Response.GetValue("field2")
     fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())

@@ -41,6 +41,10 @@ func NewReadBuffer(data []uint8) *ReadBuffer {
 	}
 }
 
+func (rb ReadBuffer) Reset() {
+    rb.pos = uint64(0)
+}
+
 func (rb ReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }

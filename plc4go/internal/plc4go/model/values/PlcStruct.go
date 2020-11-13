@@ -21,6 +21,7 @@ package values
 import (
 	"encoding/xml"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+    "strings"
 )
 
 type PlcStruct struct {
@@ -28,9 +29,9 @@ type PlcStruct struct {
 	PlcValueAdapter
 }
 
-func NewPlcStruct(value map[string]interface{}) PlcStruct {
+func NewPlcStruct(value map[string]api.PlcValue) PlcStruct {
 	return PlcStruct{
-		values: map[string]api.PlcValue{},
+		values: value,
 	}
 }
 
@@ -62,6 +63,20 @@ func (m PlcStruct) GetValue(key string) api.PlcValue {
 
 func (m PlcStruct) GetStruct() map[string]api.PlcValue {
 	return m.values
+}
+
+func (m PlcStruct) GetString() string {
+    var sb strings.Builder
+    sb.WriteString("PlcStruct{\n")
+    for fieldName, fieldValue := range m.values {
+        sb.WriteString("  ")
+        sb.WriteString(fieldName)
+        sb.WriteString(": \"")
+        sb.WriteString(fieldValue.GetString())
+        sb.WriteString("\"\n")
+    }
+    sb.WriteString("}")
+    return sb.String()
 }
 
 func (m PlcStruct) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

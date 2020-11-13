@@ -42,7 +42,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             }
             return values.NewPlcBOOL(value), nil
         case formatName == "B2": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -54,17 +54,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _controlErr != nil {
                 return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
             }
-            _map["Struct"] = control
+            _map["Struct"] = values.NewPlcBOOL(control)
 
             // Simple Field (value)
             value, _valueErr := io.ReadBit()
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            _map["Struct"] = value
+            _map["Struct"] = values.NewPlcBOOL(value)
             return values.NewPlcStruct(_map), nil
         case formatName == "B1U3": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -76,14 +76,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _controlErr != nil {
                 return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
             }
-            _map["Struct"] = control
+            _map["Struct"] = values.NewPlcBOOL(control)
 
             // Simple Field (value)
             value, _valueErr := io.ReadUint8(3)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            _map["Struct"] = value
+            _map["Struct"] = values.NewPlcUSINT(value)
             return values.NewPlcStruct(_map), nil
         case formatName == "A8_ASCII": // STRING
 
@@ -268,7 +268,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             }
             return values.NewPlcREAL(value), nil
         case formatName == "U4U4U4U4U4U4B4N4": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -280,77 +280,77 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _d6Err != nil {
                 return nil, errors.New("Error parsing 'd6' field " + _d6Err.Error())
             }
-            _map["Struct"] = d6
+            _map["Struct"] = values.NewPlcUSINT(d6)
 
             // Simple Field (d5)
             d5, _d5Err := io.ReadUint8(4)
             if _d5Err != nil {
                 return nil, errors.New("Error parsing 'd5' field " + _d5Err.Error())
             }
-            _map["Struct"] = d5
+            _map["Struct"] = values.NewPlcUSINT(d5)
 
             // Simple Field (d4)
             d4, _d4Err := io.ReadUint8(4)
             if _d4Err != nil {
                 return nil, errors.New("Error parsing 'd4' field " + _d4Err.Error())
             }
-            _map["Struct"] = d4
+            _map["Struct"] = values.NewPlcUSINT(d4)
 
             // Simple Field (d3)
             d3, _d3Err := io.ReadUint8(4)
             if _d3Err != nil {
                 return nil, errors.New("Error parsing 'd3' field " + _d3Err.Error())
             }
-            _map["Struct"] = d3
+            _map["Struct"] = values.NewPlcUSINT(d3)
 
             // Simple Field (d2)
             d2, _d2Err := io.ReadUint8(4)
             if _d2Err != nil {
                 return nil, errors.New("Error parsing 'd2' field " + _d2Err.Error())
             }
-            _map["Struct"] = d2
+            _map["Struct"] = values.NewPlcUSINT(d2)
 
             // Simple Field (d1)
             d1, _d1Err := io.ReadUint8(4)
             if _d1Err != nil {
                 return nil, errors.New("Error parsing 'd1' field " + _d1Err.Error())
             }
-            _map["Struct"] = d1
+            _map["Struct"] = values.NewPlcUSINT(d1)
 
             // Simple Field (e)
             e, _eErr := io.ReadBit()
             if _eErr != nil {
                 return nil, errors.New("Error parsing 'e' field " + _eErr.Error())
             }
-            _map["Struct"] = e
+            _map["Struct"] = values.NewPlcBOOL(e)
 
             // Simple Field (p)
             p, _pErr := io.ReadBit()
             if _pErr != nil {
                 return nil, errors.New("Error parsing 'p' field " + _pErr.Error())
             }
-            _map["Struct"] = p
+            _map["Struct"] = values.NewPlcBOOL(p)
 
             // Simple Field (d)
             d, _dErr := io.ReadBit()
             if _dErr != nil {
                 return nil, errors.New("Error parsing 'd' field " + _dErr.Error())
             }
-            _map["Struct"] = d
+            _map["Struct"] = values.NewPlcBOOL(d)
 
             // Simple Field (c)
             c, _cErr := io.ReadBit()
             if _cErr != nil {
                 return nil, errors.New("Error parsing 'c' field " + _cErr.Error())
             }
-            _map["Struct"] = c
+            _map["Struct"] = values.NewPlcBOOL(c)
 
             // Simple Field (index)
             index, _indexErr := io.ReadUint8(4)
             if _indexErr != nil {
                 return nil, errors.New("Error parsing 'index' field " + _indexErr.Error())
             }
-            _map["Struct"] = index
+            _map["Struct"] = values.NewPlcUSINT(index)
             return values.NewPlcStruct(_map), nil
         case formatName == "A112_ASCII": // STRING
 
@@ -392,7 +392,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             }
             return values.NewPlcUSINT(value), nil
         case formatName == "B1r1U6": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -404,7 +404,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _learnErr != nil {
                 return nil, errors.New("Error parsing 'learn' field " + _learnErr.Error())
             }
-            _map["Struct"] = learn
+            _map["Struct"] = values.NewPlcBOOL(learn)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(1); _err != nil {
@@ -416,7 +416,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _sceneNumberErr != nil {
                 return nil, errors.New("Error parsing 'sceneNumber' field " + _sceneNumberErr.Error())
             }
-            _map["Struct"] = sceneNumber
+            _map["Struct"] = values.NewPlcUSINT(sceneNumber)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8r4U4r3U5U3U5r2U6r2U6B16": // DATE_AND_TIME
 
@@ -582,7 +582,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             }
             return values.NewPlcWORD(value), nil
         case formatName == "U4U4": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -594,17 +594,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _busyErr != nil {
                 return nil, errors.New("Error parsing 'busy' field " + _busyErr.Error())
             }
-            _map["Struct"] = busy
+            _map["Struct"] = values.NewPlcUSINT(busy)
 
             // Simple Field (nak)
             nak, _nakErr := io.ReadUint8(4)
             if _nakErr != nil {
                 return nil, errors.New("Error parsing 'nak' field " + _nakErr.Error())
             }
-            _map["Struct"] = nak
+            _map["Struct"] = values.NewPlcUSINT(nak)
             return values.NewPlcStruct(_map), nil
         case formatName == "r1b1U6": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -621,14 +621,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _sceneActiveErr != nil {
                 return nil, errors.New("Error parsing 'sceneActive' field " + _sceneActiveErr.Error())
             }
-            _map["Struct"] = sceneActive
+            _map["Struct"] = values.NewPlcBOOL(sceneActive)
 
             // Simple Field (sceneNumber)
             sceneNumber, _sceneNumberErr := io.ReadUint8(6)
             if _sceneNumberErr != nil {
                 return nil, errors.New("Error parsing 'sceneNumber' field " + _sceneNumberErr.Error())
             }
-            _map["Struct"] = sceneNumber
+            _map["Struct"] = values.NewPlcUSINT(sceneNumber)
             return values.NewPlcStruct(_map), nil
         case formatName == "B32": // DWORD
 
@@ -687,7 +687,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             }
             return values.NewPlcUSINT(value), nil
         case formatName == "B1Z8HeatingOrCoolingZ": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(7); _err != nil {
@@ -699,17 +699,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _heatingErr != nil {
                 return nil, errors.New("Error parsing 'heating' field " + _heatingErr.Error())
             }
-            _map["Struct"] = heating
+            _map["Struct"] = values.NewPlcBOOL(heating)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "B1Z8BinaryValueZ": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(7); _err != nil {
@@ -721,17 +721,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _highErr != nil {
                 return nil, errors.New("Error parsing 'high' field " + _highErr.Error())
             }
-            _map["Struct"] = high
+            _map["Struct"] = values.NewPlcBOOL(high)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8HvacOperatingMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -743,17 +743,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _hvacOperatingModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacOperatingMode' field " + _hvacOperatingModeErr.Error())
             }
-            _map["Struct"] = hvacOperatingMode
+            _map["Struct"] = values.NewPlcUSINT(hvacOperatingMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8DhwMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -765,17 +765,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _dhwModeErr != nil {
                 return nil, errors.New("Error parsing 'dhwMode' field " + _dhwModeErr.Error())
             }
-            _map["Struct"] = dhwMode
+            _map["Struct"] = values.NewPlcUSINT(dhwMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8HvacControllingMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -787,17 +787,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _hvacControllingModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacControllingMode' field " + _hvacControllingModeErr.Error())
             }
-            _map["Struct"] = hvacControllingMode
+            _map["Struct"] = values.NewPlcUSINT(hvacControllingMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8EnableHeatingOrCoolingStage": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -809,17 +809,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _enableHeatingOrCoolingStageErr != nil {
                 return nil, errors.New("Error parsing 'enableHeatingOrCoolingStage' field " + _enableHeatingOrCoolingStageErr.Error())
             }
-            _map["Struct"] = enableHeatingOrCoolingStage
+            _map["Struct"] = values.NewPlcUSINT(enableHeatingOrCoolingStage)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8BuildingMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -831,17 +831,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _buildingModeErr != nil {
                 return nil, errors.New("Error parsing 'buildingMode' field " + _buildingModeErr.Error())
             }
-            _map["Struct"] = buildingMode
+            _map["Struct"] = values.NewPlcUSINT(buildingMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8OccupancyMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -853,17 +853,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _occupancyModeErr != nil {
                 return nil, errors.New("Error parsing 'occupancyMode' field " + _occupancyModeErr.Error())
             }
-            _map["Struct"] = occupancyMode
+            _map["Struct"] = values.NewPlcUSINT(occupancyMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "N8Z8EmergencyMode": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -875,17 +875,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _hvacEmergencyModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacEmergencyMode' field " + _hvacEmergencyModeErr.Error())
             }
-            _map["Struct"] = hvacEmergencyMode
+            _map["Struct"] = values.NewPlcUSINT(hvacEmergencyMode)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8Z8Rel": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -897,17 +897,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _relValueErr != nil {
                 return nil, errors.New("Error parsing 'relValue' field " + _relValueErr.Error())
             }
-            _map["Struct"] = relValue
+            _map["Struct"] = values.NewPlcUSINT(relValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8Z8Counter": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -919,17 +919,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _counterValueErr != nil {
                 return nil, errors.New("Error parsing 'counterValue' field " + _counterValueErr.Error())
             }
-            _map["Struct"] = counterValue
+            _map["Struct"] = values.NewPlcUSINT(counterValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8TimePeriod": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -941,17 +941,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _timePeriodErr != nil {
                 return nil, errors.New("Error parsing 'timePeriod' field " + _timePeriodErr.Error())
             }
-            _map["Struct"] = timePeriod
+            _map["Struct"] = values.NewPlcUINT(timePeriod)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8FlowRate": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -963,17 +963,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _flowRateErr != nil {
                 return nil, errors.New("Error parsing 'flowRate' field " + _flowRateErr.Error())
             }
-            _map["Struct"] = flowRate
+            _map["Struct"] = values.NewPlcUINT(flowRate)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8Counter": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -985,17 +985,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _counterValueErr != nil {
                 return nil, errors.New("Error parsing 'counterValue' field " + _counterValueErr.Error())
             }
-            _map["Struct"] = counterValue
+            _map["Struct"] = values.NewPlcUINT(counterValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8ElectricCurrent": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1007,17 +1007,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _electricalCurrentErr != nil {
                 return nil, errors.New("Error parsing 'electricalCurrent' field " + _electricalCurrentErr.Error())
             }
-            _map["Struct"] = electricalCurrent
+            _map["Struct"] = values.NewPlcUINT(electricalCurrent)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8Power": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1029,17 +1029,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _powerErr != nil {
                 return nil, errors.New("Error parsing 'power' field " + _powerErr.Error())
             }
-            _map["Struct"] = power
+            _map["Struct"] = values.NewPlcUINT(power)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8AtmPressure": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1051,17 +1051,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _atmPressureErr != nil {
                 return nil, errors.New("Error parsing 'atmPressure' field " + _atmPressureErr.Error())
             }
-            _map["Struct"] = atmPressure
+            _map["Struct"] = values.NewPlcUINT(atmPressure)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8PercentValue": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1073,17 +1073,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _percentValueErr != nil {
                 return nil, errors.New("Error parsing 'percentValue' field " + _percentValueErr.Error())
             }
-            _map["Struct"] = percentValue
+            _map["Struct"] = values.NewPlcUINT(percentValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8HvacAirQuality": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1095,17 +1095,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _ppmResolutionErr != nil {
                 return nil, errors.New("Error parsing 'ppmResolution' field " + _ppmResolutionErr.Error())
             }
-            _map["Struct"] = ppmResolution
+            _map["Struct"] = values.NewPlcUINT(ppmResolution)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8WindSpeed": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1117,17 +1117,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _windSpeedErr != nil {
                 return nil, errors.New("Error parsing 'windSpeed' field " + _windSpeedErr.Error())
             }
-            _map["Struct"] = windSpeed
+            _map["Struct"] = values.NewPlcUINT(windSpeed)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8SunIntensity": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1139,17 +1139,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _sunIntensityErr != nil {
                 return nil, errors.New("Error parsing 'sunIntensity' field " + _sunIntensityErr.Error())
             }
-            _map["Struct"] = sunIntensity
+            _map["Struct"] = values.NewPlcUINT(sunIntensity)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16Z8HvacAirFlow": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1161,17 +1161,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _airFlowErr != nil {
                 return nil, errors.New("Error parsing 'airFlow' field " + _airFlowErr.Error())
             }
-            _map["Struct"] = airFlow
+            _map["Struct"] = values.NewPlcUINT(airFlow)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "V8Z8RelSignedValue": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1183,17 +1183,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _relSignedValueErr != nil {
                 return nil, errors.New("Error parsing 'relSignedValue' field " + _relSignedValueErr.Error())
             }
-            _map["Struct"] = relSignedValue
+            _map["Struct"] = values.NewPlcSINT(relSignedValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16Z8DeltaTime": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1205,17 +1205,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _deltaTimeErr != nil {
                 return nil, errors.New("Error parsing 'deltaTime' field " + _deltaTimeErr.Error())
             }
-            _map["Struct"] = deltaTime
+            _map["Struct"] = values.NewPlcINT(deltaTime)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16Z8RelSignedValue": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1227,17 +1227,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _relSignedValueErr != nil {
                 return nil, errors.New("Error parsing 'relSignedValue' field " + _relSignedValueErr.Error())
             }
-            _map["Struct"] = relSignedValue
+            _map["Struct"] = values.NewPlcINT(relSignedValue)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16N8HvacModeAndTimeDelay": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1249,17 +1249,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (hvacMode)
             hvacMode, _hvacModeErr := io.ReadUint8(8)
             if _hvacModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacMode' field " + _hvacModeErr.Error())
             }
-            _map["Struct"] = hvacMode
+            _map["Struct"] = values.NewPlcUSINT(hvacMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16N8DhwModeAndTimeDelay": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1271,17 +1271,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (dhwMode)
             dhwMode, _dhwModeErr := io.ReadUint8(8)
             if _dhwModeErr != nil {
                 return nil, errors.New("Error parsing 'dhwMode' field " + _dhwModeErr.Error())
             }
-            _map["Struct"] = dhwMode
+            _map["Struct"] = values.NewPlcUSINT(dhwMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16N8OccupancyModeAndTimeDelay": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1293,17 +1293,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (occupationMode)
             occupationMode, _occupationModeErr := io.ReadUint8(8)
             if _occupationModeErr != nil {
                 return nil, errors.New("Error parsing 'occupationMode' field " + _occupationModeErr.Error())
             }
-            _map["Struct"] = occupationMode
+            _map["Struct"] = values.NewPlcUSINT(occupationMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16N8BuildingModeAndTimeDelay": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1315,17 +1315,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (buildingMode)
             buildingMode, _buildingModeErr := io.ReadUint8(8)
             if _buildingModeErr != nil {
                 return nil, errors.New("Error parsing 'buildingMode' field " + _buildingModeErr.Error())
             }
-            _map["Struct"] = buildingMode
+            _map["Struct"] = values.NewPlcUSINT(buildingMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8StatusBurnerController": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1337,7 +1337,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _actualRelativePowerErr != nil {
                 return nil, errors.New("Error parsing 'actualRelativePower' field " + _actualRelativePowerErr.Error())
             }
-            _map["Struct"] = actualRelativePower
+            _map["Struct"] = values.NewPlcUSINT(actualRelativePower)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -1349,31 +1349,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _stage2ActiveErr != nil {
                 return nil, errors.New("Error parsing 'stage2Active' field " + _stage2ActiveErr.Error())
             }
-            _map["Struct"] = stage2Active
+            _map["Struct"] = values.NewPlcBOOL(stage2Active)
 
             // Simple Field (stage1Active)
             stage1Active, _stage1ActiveErr := io.ReadBit()
             if _stage1ActiveErr != nil {
                 return nil, errors.New("Error parsing 'stage1Active' field " + _stage1ActiveErr.Error())
             }
-            _map["Struct"] = stage1Active
+            _map["Struct"] = values.NewPlcBOOL(stage1Active)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (actualRelativePowerValid)
             actualRelativePowerValid, _actualRelativePowerValidErr := io.ReadBit()
             if _actualRelativePowerValidErr != nil {
                 return nil, errors.New("Error parsing 'actualRelativePowerValid' field " + _actualRelativePowerValidErr.Error())
             }
-            _map["Struct"] = actualRelativePowerValid
+            _map["Struct"] = values.NewPlcBOOL(actualRelativePowerValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8LockingSignal": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1385,7 +1385,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _requestedPowerReductionErr != nil {
                 return nil, errors.New("Error parsing 'requestedPowerReduction' field " + _requestedPowerReductionErr.Error())
             }
-            _map["Struct"] = requestedPowerReduction
+            _map["Struct"] = values.NewPlcUSINT(requestedPowerReduction)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -1397,17 +1397,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _criticalErr != nil {
                 return nil, errors.New("Error parsing 'critical' field " + _criticalErr.Error())
             }
-            _map["Struct"] = critical
+            _map["Struct"] = values.NewPlcBOOL(critical)
 
             // Simple Field (requestedPowerReductionValid)
             requestedPowerReductionValid, _requestedPowerReductionValidErr := io.ReadBit()
             if _requestedPowerReductionValidErr != nil {
                 return nil, errors.New("Error parsing 'requestedPowerReductionValid' field " + _requestedPowerReductionValidErr.Error())
             }
-            _map["Struct"] = requestedPowerReductionValid
+            _map["Struct"] = values.NewPlcBOOL(requestedPowerReductionValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8BoilerControllerDemandSignal": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1419,7 +1419,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _relativeDemandErr != nil {
                 return nil, errors.New("Error parsing 'relativeDemand' field " + _relativeDemandErr.Error())
             }
-            _map["Struct"] = relativeDemand
+            _map["Struct"] = values.NewPlcUSINT(relativeDemand)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -1431,17 +1431,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _controlsOperationStage2Err != nil {
                 return nil, errors.New("Error parsing 'controlsOperationStage2' field " + _controlsOperationStage2Err.Error())
             }
-            _map["Struct"] = controlsOperationStage2
+            _map["Struct"] = values.NewPlcBOOL(controlsOperationStage2)
 
             // Simple Field (controlsOperationStage1)
             controlsOperationStage1, _controlsOperationStage1Err := io.ReadBit()
             if _controlsOperationStage1Err != nil {
                 return nil, errors.New("Error parsing 'controlsOperationStage1' field " + _controlsOperationStage1Err.Error())
             }
-            _map["Struct"] = controlsOperationStage1
+            _map["Struct"] = values.NewPlcBOOL(controlsOperationStage1)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8ActuatorPositionDemand": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1453,7 +1453,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _actuatorPositionDemandErr != nil {
                 return nil, errors.New("Error parsing 'actuatorPositionDemand' field " + _actuatorPositionDemandErr.Error())
             }
-            _map["Struct"] = actuatorPositionDemand
+            _map["Struct"] = values.NewPlcUSINT(actuatorPositionDemand)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -1465,31 +1465,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _emergencyDemandErr != nil {
                 return nil, errors.New("Error parsing 'emergencyDemand' field " + _emergencyDemandErr.Error())
             }
-            _map["Struct"] = emergencyDemand
+            _map["Struct"] = values.NewPlcBOOL(emergencyDemand)
 
             // Simple Field (shiftLoadPriority)
             shiftLoadPriority, _shiftLoadPriorityErr := io.ReadBit()
             if _shiftLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'shiftLoadPriority' field " + _shiftLoadPriorityErr.Error())
             }
-            _map["Struct"] = shiftLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(shiftLoadPriority)
 
             // Simple Field (absoluteLoadPriority)
             absoluteLoadPriority, _absoluteLoadPriorityErr := io.ReadBit()
             if _absoluteLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'absoluteLoadPriority' field " + _absoluteLoadPriorityErr.Error())
             }
-            _map["Struct"] = absoluteLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(absoluteLoadPriority)
 
             // Simple Field (actuatorPositionDemandValid)
             actuatorPositionDemandValid, _actuatorPositionDemandValidErr := io.ReadBit()
             if _actuatorPositionDemandValidErr != nil {
                 return nil, errors.New("Error parsing 'actuatorPositionDemandValid' field " + _actuatorPositionDemandValidErr.Error())
             }
-            _map["Struct"] = actuatorPositionDemandValid
+            _map["Struct"] = values.NewPlcBOOL(actuatorPositionDemandValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8ActuatorPositionStatus": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1501,7 +1501,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _actualActuatorPositionErr != nil {
                 return nil, errors.New("Error parsing 'actualActuatorPosition' field " + _actualActuatorPositionErr.Error())
             }
-            _map["Struct"] = actualActuatorPosition
+            _map["Struct"] = values.NewPlcUSINT(actualActuatorPosition)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(3); _err != nil {
@@ -1513,38 +1513,38 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _synchronizationModeErr != nil {
                 return nil, errors.New("Error parsing 'synchronizationMode' field " + _synchronizationModeErr.Error())
             }
-            _map["Struct"] = synchronizationMode
+            _map["Struct"] = values.NewPlcBOOL(synchronizationMode)
 
             // Simple Field (valveKick)
             valveKick, _valveKickErr := io.ReadBit()
             if _valveKickErr != nil {
                 return nil, errors.New("Error parsing 'valveKick' field " + _valveKickErr.Error())
             }
-            _map["Struct"] = valveKick
+            _map["Struct"] = values.NewPlcBOOL(valveKick)
 
             // Simple Field (callibrationMode)
             callibrationMode, _callibrationModeErr := io.ReadBit()
             if _callibrationModeErr != nil {
                 return nil, errors.New("Error parsing 'callibrationMode' field " + _callibrationModeErr.Error())
             }
-            _map["Struct"] = callibrationMode
+            _map["Struct"] = values.NewPlcBOOL(callibrationMode)
 
             // Simple Field (positionManuallyOverridden)
             positionManuallyOverridden, _positionManuallyOverriddenErr := io.ReadBit()
             if _positionManuallyOverriddenErr != nil {
                 return nil, errors.New("Error parsing 'positionManuallyOverridden' field " + _positionManuallyOverriddenErr.Error())
             }
-            _map["Struct"] = positionManuallyOverridden
+            _map["Struct"] = values.NewPlcBOOL(positionManuallyOverridden)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8B8StatusLightingActuator": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1556,66 +1556,66 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _lightingLevelErr != nil {
                 return nil, errors.New("Error parsing 'lightingLevel' field " + _lightingLevelErr.Error())
             }
-            _map["Struct"] = lightingLevel
+            _map["Struct"] = values.NewPlcUSINT(lightingLevel)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (localOverride)
             localOverride, _localOverrideErr := io.ReadBit()
             if _localOverrideErr != nil {
                 return nil, errors.New("Error parsing 'localOverride' field " + _localOverrideErr.Error())
             }
-            _map["Struct"] = localOverride
+            _map["Struct"] = values.NewPlcBOOL(localOverride)
 
             // Simple Field (dimming)
             dimming, _dimmingErr := io.ReadBit()
             if _dimmingErr != nil {
                 return nil, errors.New("Error parsing 'dimming' field " + _dimmingErr.Error())
             }
-            _map["Struct"] = dimming
+            _map["Struct"] = values.NewPlcBOOL(dimming)
 
             // Simple Field (staircaseLightingFunction)
             staircaseLightingFunction, _staircaseLightingFunctionErr := io.ReadBit()
             if _staircaseLightingFunctionErr != nil {
                 return nil, errors.New("Error parsing 'staircaseLightingFunction' field " + _staircaseLightingFunctionErr.Error())
             }
-            _map["Struct"] = staircaseLightingFunction
+            _map["Struct"] = values.NewPlcBOOL(staircaseLightingFunction)
 
             // Simple Field (nightMode)
             nightMode, _nightModeErr := io.ReadBit()
             if _nightModeErr != nil {
                 return nil, errors.New("Error parsing 'nightMode' field " + _nightModeErr.Error())
             }
-            _map["Struct"] = nightMode
+            _map["Struct"] = values.NewPlcBOOL(nightMode)
 
             // Simple Field (forced)
             forced, _forcedErr := io.ReadBit()
             if _forcedErr != nil {
                 return nil, errors.New("Error parsing 'forced' field " + _forcedErr.Error())
             }
-            _map["Struct"] = forced
+            _map["Struct"] = values.NewPlcBOOL(forced)
 
             // Simple Field (locked)
             locked, _lockedErr := io.ReadBit()
             if _lockedErr != nil {
                 return nil, errors.New("Error parsing 'locked' field " + _lockedErr.Error())
             }
-            _map["Struct"] = locked
+            _map["Struct"] = values.NewPlcBOOL(locked)
 
             // Simple Field (lightingLevelValid)
             lightingLevelValid, _lightingLevelValidErr := io.ReadBit()
             if _lightingLevelValidErr != nil {
                 return nil, errors.New("Error parsing 'lightingLevelValid' field " + _lightingLevelValidErr.Error())
             }
-            _map["Struct"] = lightingLevelValid
+            _map["Struct"] = values.NewPlcBOOL(lightingLevelValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16B8HeatProducerManagerStatus": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1627,7 +1627,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _tempFlowProdSegmHErr != nil {
                 return nil, errors.New("Error parsing 'tempFlowProdSegmH' field " + _tempFlowProdSegmHErr.Error())
             }
-            _map["Struct"] = tempFlowProdSegmH
+            _map["Struct"] = values.NewPlcREAL(tempFlowProdSegmH)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(3); _err != nil {
@@ -1639,38 +1639,38 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temporarilyOffErr != nil {
                 return nil, errors.New("Error parsing 'temporarilyOff' field " + _temporarilyOffErr.Error())
             }
-            _map["Struct"] = temporarilyOff
+            _map["Struct"] = values.NewPlcBOOL(temporarilyOff)
 
             // Simple Field (permanentlyOff)
             permanentlyOff, _permanentlyOffErr := io.ReadBit()
             if _permanentlyOffErr != nil {
                 return nil, errors.New("Error parsing 'permanentlyOff' field " + _permanentlyOffErr.Error())
             }
-            _map["Struct"] = permanentlyOff
+            _map["Struct"] = values.NewPlcBOOL(permanentlyOff)
 
             // Simple Field (switchedOffSummerMode)
             switchedOffSummerMode, _switchedOffSummerModeErr := io.ReadBit()
             if _switchedOffSummerModeErr != nil {
                 return nil, errors.New("Error parsing 'switchedOffSummerMode' field " + _switchedOffSummerModeErr.Error())
             }
-            _map["Struct"] = switchedOffSummerMode
+            _map["Struct"] = values.NewPlcBOOL(switchedOffSummerMode)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (tempFlowProdSegmHValid)
             tempFlowProdSegmHValid, _tempFlowProdSegmHValidErr := io.ReadBit()
             if _tempFlowProdSegmHValidErr != nil {
                 return nil, errors.New("Error parsing 'tempFlowProdSegmHValid' field " + _tempFlowProdSegmHValidErr.Error())
             }
-            _map["Struct"] = tempFlowProdSegmHValid
+            _map["Struct"] = values.NewPlcBOOL(tempFlowProdSegmHValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16B8RoomTemperatureDemand": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1682,7 +1682,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _roomTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'roomTemperatureDemand' field " + _roomTemperatureDemandErr.Error())
             }
-            _map["Struct"] = roomTemperatureDemand
+            _map["Struct"] = values.NewPlcREAL(roomTemperatureDemand)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -1694,31 +1694,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _emergencyDemandErr != nil {
                 return nil, errors.New("Error parsing 'emergencyDemand' field " + _emergencyDemandErr.Error())
             }
-            _map["Struct"] = emergencyDemand
+            _map["Struct"] = values.NewPlcBOOL(emergencyDemand)
 
             // Simple Field (shiftLoadPriority)
             shiftLoadPriority, _shiftLoadPriorityErr := io.ReadBit()
             if _shiftLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'shiftLoadPriority' field " + _shiftLoadPriorityErr.Error())
             }
-            _map["Struct"] = shiftLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(shiftLoadPriority)
 
             // Simple Field (absoluteLoadPriority)
             absoluteLoadPriority, _absoluteLoadPriorityErr := io.ReadBit()
             if _absoluteLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'absoluteLoadPriority' field " + _absoluteLoadPriorityErr.Error())
             }
-            _map["Struct"] = absoluteLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(absoluteLoadPriority)
 
             // Simple Field (roomTemperatureDemandValid)
             roomTemperatureDemandValid, _roomTemperatureDemandValidErr := io.ReadBit()
             if _roomTemperatureDemandValidErr != nil {
                 return nil, errors.New("Error parsing 'roomTemperatureDemandValid' field " + _roomTemperatureDemandValidErr.Error())
             }
-            _map["Struct"] = roomTemperatureDemandValid
+            _map["Struct"] = values.NewPlcBOOL(roomTemperatureDemandValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16B8ColdWaterProducerManagerStatus": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1730,7 +1730,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _flowTemperatureProdSegmCErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureProdSegmC' field " + _flowTemperatureProdSegmCErr.Error())
             }
-            _map["Struct"] = flowTemperatureProdSegmC
+            _map["Struct"] = values.NewPlcREAL(flowTemperatureProdSegmC)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -1742,31 +1742,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temporarilyOffErr != nil {
                 return nil, errors.New("Error parsing 'temporarilyOff' field " + _temporarilyOffErr.Error())
             }
-            _map["Struct"] = temporarilyOff
+            _map["Struct"] = values.NewPlcBOOL(temporarilyOff)
 
             // Simple Field (permanentlyOff)
             permanentlyOff, _permanentlyOffErr := io.ReadBit()
             if _permanentlyOffErr != nil {
                 return nil, errors.New("Error parsing 'permanentlyOff' field " + _permanentlyOffErr.Error())
             }
-            _map["Struct"] = permanentlyOff
+            _map["Struct"] = values.NewPlcBOOL(permanentlyOff)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (flowTemperatureProdSegmCValid)
             flowTemperatureProdSegmCValid, _flowTemperatureProdSegmCValidErr := io.ReadBit()
             if _flowTemperatureProdSegmCValidErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureProdSegmCValid' field " + _flowTemperatureProdSegmCValidErr.Error())
             }
-            _map["Struct"] = flowTemperatureProdSegmCValid
+            _map["Struct"] = values.NewPlcBOOL(flowTemperatureProdSegmCValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16B8WaterTemperatureControllerStatus": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1778,7 +1778,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _actualTemperatureErr != nil {
                 return nil, errors.New("Error parsing 'actualTemperature' field " + _actualTemperatureErr.Error())
             }
-            _map["Struct"] = actualTemperature
+            _map["Struct"] = values.NewPlcREAL(actualTemperature)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(5); _err != nil {
@@ -1790,24 +1790,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _controllerWorkingErr != nil {
                 return nil, errors.New("Error parsing 'controllerWorking' field " + _controllerWorkingErr.Error())
             }
-            _map["Struct"] = controllerWorking
+            _map["Struct"] = values.NewPlcBOOL(controllerWorking)
 
             // Simple Field (failure)
             failure, _failureErr := io.ReadBit()
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (actualTemperatureValid)
             actualTemperatureValid, _actualTemperatureValidErr := io.ReadBit()
             if _actualTemperatureValidErr != nil {
                 return nil, errors.New("Error parsing 'actualTemperatureValid' field " + _actualTemperatureValidErr.Error())
             }
-            _map["Struct"] = actualTemperatureValid
+            _map["Struct"] = values.NewPlcBOOL(actualTemperatureValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16B16": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1819,7 +1819,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _flowTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemand' field " + _flowTemperatureDemandErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemand
+            _map["Struct"] = values.NewPlcREAL(flowTemperatureDemand)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -1831,87 +1831,87 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _demandFromDhwWhileLegionellaFunctionIsActiveErr != nil {
                 return nil, errors.New("Error parsing 'demandFromDhwWhileLegionellaFunctionIsActive' field " + _demandFromDhwWhileLegionellaFunctionIsActiveErr.Error())
             }
-            _map["Struct"] = demandFromDhwWhileLegionellaFunctionIsActive
+            _map["Struct"] = values.NewPlcBOOL(demandFromDhwWhileLegionellaFunctionIsActive)
 
             // Simple Field (emergencyDemandForFrostProtection)
             emergencyDemandForFrostProtection, _emergencyDemandForFrostProtectionErr := io.ReadBit()
             if _emergencyDemandForFrostProtectionErr != nil {
                 return nil, errors.New("Error parsing 'emergencyDemandForFrostProtection' field " + _emergencyDemandForFrostProtectionErr.Error())
             }
-            _map["Struct"] = emergencyDemandForFrostProtection
+            _map["Struct"] = values.NewPlcBOOL(emergencyDemandForFrostProtection)
 
             // Simple Field (requestForWaterCirculationInPrimaryDistributionSegment)
             requestForWaterCirculationInPrimaryDistributionSegment, _requestForWaterCirculationInPrimaryDistributionSegmentErr := io.ReadBit()
             if _requestForWaterCirculationInPrimaryDistributionSegmentErr != nil {
                 return nil, errors.New("Error parsing 'requestForWaterCirculationInPrimaryDistributionSegment' field " + _requestForWaterCirculationInPrimaryDistributionSegmentErr.Error())
             }
-            _map["Struct"] = requestForWaterCirculationInPrimaryDistributionSegment
+            _map["Struct"] = values.NewPlcBOOL(requestForWaterCirculationInPrimaryDistributionSegment)
 
             // Simple Field (demandFromAuxillaryHeatOrCoolConsumer)
             demandFromAuxillaryHeatOrCoolConsumer, _demandFromAuxillaryHeatOrCoolConsumerErr := io.ReadBit()
             if _demandFromAuxillaryHeatOrCoolConsumerErr != nil {
                 return nil, errors.New("Error parsing 'demandFromAuxillaryHeatOrCoolConsumer' field " + _demandFromAuxillaryHeatOrCoolConsumerErr.Error())
             }
-            _map["Struct"] = demandFromAuxillaryHeatOrCoolConsumer
+            _map["Struct"] = values.NewPlcBOOL(demandFromAuxillaryHeatOrCoolConsumer)
 
             // Simple Field (demandFromVentilation)
             demandFromVentilation, _demandFromVentilationErr := io.ReadBit()
             if _demandFromVentilationErr != nil {
                 return nil, errors.New("Error parsing 'demandFromVentilation' field " + _demandFromVentilationErr.Error())
             }
-            _map["Struct"] = demandFromVentilation
+            _map["Struct"] = values.NewPlcBOOL(demandFromVentilation)
 
             // Simple Field (demandForRoomHeatingOrCooling)
             demandForRoomHeatingOrCooling, _demandForRoomHeatingOrCoolingErr := io.ReadBit()
             if _demandForRoomHeatingOrCoolingErr != nil {
                 return nil, errors.New("Error parsing 'demandForRoomHeatingOrCooling' field " + _demandForRoomHeatingOrCoolingErr.Error())
             }
-            _map["Struct"] = demandForRoomHeatingOrCooling
+            _map["Struct"] = values.NewPlcBOOL(demandForRoomHeatingOrCooling)
 
             // Simple Field (heatDemandFromDhw)
             heatDemandFromDhw, _heatDemandFromDhwErr := io.ReadBit()
             if _heatDemandFromDhwErr != nil {
                 return nil, errors.New("Error parsing 'heatDemandFromDhw' field " + _heatDemandFromDhwErr.Error())
             }
-            _map["Struct"] = heatDemandFromDhw
+            _map["Struct"] = values.NewPlcBOOL(heatDemandFromDhw)
 
             // Simple Field (flowTemperatureDemandIsMin)
             flowTemperatureDemandIsMin, _flowTemperatureDemandIsMinErr := io.ReadBit()
             if _flowTemperatureDemandIsMinErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemandIsMin' field " + _flowTemperatureDemandIsMinErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemandIsMin
+            _map["Struct"] = values.NewPlcBOOL(flowTemperatureDemandIsMin)
 
             // Simple Field (flowTemperatureDemandIsMax)
             flowTemperatureDemandIsMax, _flowTemperatureDemandIsMaxErr := io.ReadBit()
             if _flowTemperatureDemandIsMaxErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemandIsMax' field " + _flowTemperatureDemandIsMaxErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemandIsMax
+            _map["Struct"] = values.NewPlcBOOL(flowTemperatureDemandIsMax)
 
             // Simple Field (shiftLoadPriority)
             shiftLoadPriority, _shiftLoadPriorityErr := io.ReadBit()
             if _shiftLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'shiftLoadPriority' field " + _shiftLoadPriorityErr.Error())
             }
-            _map["Struct"] = shiftLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(shiftLoadPriority)
 
             // Simple Field (absoluteLoadPriority)
             absoluteLoadPriority, _absoluteLoadPriorityErr := io.ReadBit()
             if _absoluteLoadPriorityErr != nil {
                 return nil, errors.New("Error parsing 'absoluteLoadPriority' field " + _absoluteLoadPriorityErr.Error())
             }
-            _map["Struct"] = absoluteLoadPriority
+            _map["Struct"] = values.NewPlcBOOL(absoluteLoadPriority)
 
             // Simple Field (flowTemperatureDemandValid)
             flowTemperatureDemandValid, _flowTemperatureDemandValidErr := io.ReadBit()
             if _flowTemperatureDemandValidErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemandValid' field " + _flowTemperatureDemandValidErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemandValid
+            _map["Struct"] = values.NewPlcBOOL(flowTemperatureDemandValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8N8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1923,17 +1923,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _energyDemandErr != nil {
                 return nil, errors.New("Error parsing 'energyDemand' field " + _energyDemandErr.Error())
             }
-            _map["Struct"] = energyDemand
+            _map["Struct"] = values.NewPlcUSINT(energyDemand)
 
             // Simple Field (actualControllerMode)
             actualControllerMode, _actualControllerModeErr := io.ReadUint8(8)
             if _actualControllerModeErr != nil {
                 return nil, errors.New("Error parsing 'actualControllerMode' field " + _actualControllerModeErr.Error())
             }
-            _map["Struct"] = actualControllerMode
+            _map["Struct"] = values.NewPlcUSINT(actualControllerMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16V16RoomTemperature": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1945,24 +1945,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
-            _map["Struct"] = temperatureSetpointComfort
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointComfort)
 
             // Simple Field (temperatureSetpointStandby)
             temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointStandby' field " + _temperatureSetpointStandbyErr.Error())
             }
-            _map["Struct"] = temperatureSetpointStandby
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointStandby)
 
             // Simple Field (temperatureSetpointEco)
             temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointEco' field " + _temperatureSetpointEcoErr.Error())
             }
-            _map["Struct"] = temperatureSetpointEco
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointEco)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16V16RoomTemperatureShift": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -1974,24 +1974,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointShiftComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftComfort' field " + _temperatureSetpointShiftComfortErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftComfort
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftComfort)
 
             // Simple Field (temperatureSetpointShiftStandby)
             temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftStandby
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftStandby)
 
             // Simple Field (temperatureSetpointShiftEco)
             temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftEco
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftEco)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16V16V16RoomTemperature": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2003,31 +2003,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
-            _map["Struct"] = temperatureSetpointComfort
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointComfort)
 
             // Simple Field (temperatureSetpointStandby)
             temperatureSetpointStandby, _temperatureSetpointStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointStandby' field " + _temperatureSetpointStandbyErr.Error())
             }
-            _map["Struct"] = temperatureSetpointStandby
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointStandby)
 
             // Simple Field (temperatureSetpointEco)
             temperatureSetpointEco, _temperatureSetpointEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointEco' field " + _temperatureSetpointEcoErr.Error())
             }
-            _map["Struct"] = temperatureSetpointEco
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointEco)
 
             // Simple Field (temperatureSetpointBProt)
             temperatureSetpointBProt, _temperatureSetpointBProtErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointBProtErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointBProt' field " + _temperatureSetpointBProtErr.Error())
             }
-            _map["Struct"] = temperatureSetpointBProt
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointBProt)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16V16V16DhwtTemperature": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2039,31 +2039,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointLegioProtectErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointLegioProtect' field " + _temperatureSetpointLegioProtectErr.Error())
             }
-            _map["Struct"] = temperatureSetpointLegioProtect
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointLegioProtect)
 
             // Simple Field (temperatureSetpointNormal)
             temperatureSetpointNormal, _temperatureSetpointNormalErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointNormalErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointNormal' field " + _temperatureSetpointNormalErr.Error())
             }
-            _map["Struct"] = temperatureSetpointNormal
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointNormal)
 
             // Simple Field (temperatureSetpointReduced)
             temperatureSetpointReduced, _temperatureSetpointReducedErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointReducedErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointReduced' field " + _temperatureSetpointReducedErr.Error())
             }
-            _map["Struct"] = temperatureSetpointReduced
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointReduced)
 
             // Simple Field (temperatureSetpointFrostProtect)
             temperatureSetpointFrostProtect, _temperatureSetpointFrostProtectErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointFrostProtectErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointFrostProtect' field " + _temperatureSetpointFrostProtectErr.Error())
             }
-            _map["Struct"] = temperatureSetpointFrostProtect
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointFrostProtect)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16V16V16RoomTemperatureShift": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2075,31 +2075,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointShiftComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftComfort' field " + _temperatureSetpointShiftComfortErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftComfort
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftComfort)
 
             // Simple Field (temperatureSetpointShiftStandby)
             temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftStandby
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftStandby)
 
             // Simple Field (temperatureSetpointShiftEco)
             temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftEco
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftEco)
 
             // Simple Field (temperatureSetpointShiftBProt)
             temperatureSetpointShiftBProt, _temperatureSetpointShiftBProtErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftBProtErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftBProt' field " + _temperatureSetpointShiftBProtErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftBProt
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftBProt)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16U8B8Heat": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2111,14 +2111,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _flowTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemand' field " + _flowTemperatureDemandErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemand
+            _map["Struct"] = values.NewPlcINT(flowTemperatureDemand)
 
             // Simple Field (relativePower)
             relativePower, _relativePowerErr := io.ReadUint8(8)
             if _relativePowerErr != nil {
                 return nil, errors.New("Error parsing 'relativePower' field " + _relativePowerErr.Error())
             }
-            _map["Struct"] = relativePower
+            _map["Struct"] = values.NewPlcUSINT(relativePower)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(2); _err != nil {
@@ -2130,45 +2130,45 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _boilerEnabledErr != nil {
                 return nil, errors.New("Error parsing 'boilerEnabled' field " + _boilerEnabledErr.Error())
             }
-            _map["Struct"] = boilerEnabled
+            _map["Struct"] = values.NewPlcBOOL(boilerEnabled)
 
             // Simple Field (stage2Forced)
             stage2Forced, _stage2ForcedErr := io.ReadBit()
             if _stage2ForcedErr != nil {
                 return nil, errors.New("Error parsing 'stage2Forced' field " + _stage2ForcedErr.Error())
             }
-            _map["Struct"] = stage2Forced
+            _map["Struct"] = values.NewPlcBOOL(stage2Forced)
 
             // Simple Field (stage2Enabled)
             stage2Enabled, _stage2EnabledErr := io.ReadBit()
             if _stage2EnabledErr != nil {
                 return nil, errors.New("Error parsing 'stage2Enabled' field " + _stage2EnabledErr.Error())
             }
-            _map["Struct"] = stage2Enabled
+            _map["Struct"] = values.NewPlcBOOL(stage2Enabled)
 
             // Simple Field (stage1Forced)
             stage1Forced, _stage1ForcedErr := io.ReadBit()
             if _stage1ForcedErr != nil {
                 return nil, errors.New("Error parsing 'stage1Forced' field " + _stage1ForcedErr.Error())
             }
-            _map["Struct"] = stage1Forced
+            _map["Struct"] = values.NewPlcBOOL(stage1Forced)
 
             // Simple Field (stage1Enabled)
             stage1Enabled, _stage1EnabledErr := io.ReadBit()
             if _stage1EnabledErr != nil {
                 return nil, errors.New("Error parsing 'stage1Enabled' field " + _stage1EnabledErr.Error())
             }
-            _map["Struct"] = stage1Enabled
+            _map["Struct"] = values.NewPlcBOOL(stage1Enabled)
 
             // Simple Field (flowTemperatureDemandValid)
             flowTemperatureDemandValid, _flowTemperatureDemandValidErr := io.ReadBit()
             if _flowTemperatureDemandValidErr != nil {
                 return nil, errors.New("Error parsing 'flowTemperatureDemandValid' field " + _flowTemperatureDemandValidErr.Error())
             }
-            _map["Struct"] = flowTemperatureDemandValid
+            _map["Struct"] = values.NewPlcBOOL(flowTemperatureDemandValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16U8B8ChilledWater": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2180,14 +2180,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _chilledWaterFlowTemperatureDemandErr != nil {
                 return nil, errors.New("Error parsing 'chilledWaterFlowTemperatureDemand' field " + _chilledWaterFlowTemperatureDemandErr.Error())
             }
-            _map["Struct"] = chilledWaterFlowTemperatureDemand
+            _map["Struct"] = values.NewPlcINT(chilledWaterFlowTemperatureDemand)
 
             // Simple Field (relativePower)
             relativePower, _relativePowerErr := io.ReadUint8(8)
             if _relativePowerErr != nil {
                 return nil, errors.New("Error parsing 'relativePower' field " + _relativePowerErr.Error())
             }
-            _map["Struct"] = relativePower
+            _map["Struct"] = values.NewPlcUSINT(relativePower)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(5); _err != nil {
@@ -2199,24 +2199,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _chilledWaterPumpEnabledErr != nil {
                 return nil, errors.New("Error parsing 'chilledWaterPumpEnabled' field " + _chilledWaterPumpEnabledErr.Error())
             }
-            _map["Struct"] = chilledWaterPumpEnabled
+            _map["Struct"] = values.NewPlcBOOL(chilledWaterPumpEnabled)
 
             // Simple Field (relativePowerValid)
             relativePowerValid, _relativePowerValidErr := io.ReadBit()
             if _relativePowerValidErr != nil {
                 return nil, errors.New("Error parsing 'relativePowerValid' field " + _relativePowerValidErr.Error())
             }
-            _map["Struct"] = relativePowerValid
+            _map["Struct"] = values.NewPlcBOOL(relativePowerValid)
 
             // Simple Field (chilledWaterFlowTemperatureDemandValid)
             chilledWaterFlowTemperatureDemandValid, _chilledWaterFlowTemperatureDemandValidErr := io.ReadBit()
             if _chilledWaterFlowTemperatureDemandValidErr != nil {
                 return nil, errors.New("Error parsing 'chilledWaterFlowTemperatureDemandValid' field " + _chilledWaterFlowTemperatureDemandValidErr.Error())
             }
-            _map["Struct"] = chilledWaterFlowTemperatureDemandValid
+            _map["Struct"] = values.NewPlcBOOL(chilledWaterFlowTemperatureDemandValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16U8B16Boiler": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2228,14 +2228,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _tempBoilerErr != nil {
                 return nil, errors.New("Error parsing 'tempBoiler' field " + _tempBoilerErr.Error())
             }
-            _map["Struct"] = tempBoiler
+            _map["Struct"] = values.NewPlcINT(tempBoiler)
 
             // Simple Field (relativePower)
             relativePower, _relativePowerErr := io.ReadUint8(8)
             if _relativePowerErr != nil {
                 return nil, errors.New("Error parsing 'relativePower' field " + _relativePowerErr.Error())
             }
-            _map["Struct"] = relativePower
+            _map["Struct"] = values.NewPlcUSINT(relativePower)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -2247,87 +2247,87 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _chimneySweepFunctionActiveErr != nil {
                 return nil, errors.New("Error parsing 'chimneySweepFunctionActive' field " + _chimneySweepFunctionActiveErr.Error())
             }
-            _map["Struct"] = chimneySweepFunctionActive
+            _map["Struct"] = values.NewPlcBOOL(chimneySweepFunctionActive)
 
             // Simple Field (reducedAvailability)
             reducedAvailability, _reducedAvailabilityErr := io.ReadBit()
             if _reducedAvailabilityErr != nil {
                 return nil, errors.New("Error parsing 'reducedAvailability' field " + _reducedAvailabilityErr.Error())
             }
-            _map["Struct"] = reducedAvailability
+            _map["Struct"] = values.NewPlcBOOL(reducedAvailability)
 
             // Simple Field (powerLimitBoilerReached)
             powerLimitBoilerReached, _powerLimitBoilerReachedErr := io.ReadBit()
             if _powerLimitBoilerReachedErr != nil {
                 return nil, errors.New("Error parsing 'powerLimitBoilerReached' field " + _powerLimitBoilerReachedErr.Error())
             }
-            _map["Struct"] = powerLimitBoilerReached
+            _map["Struct"] = values.NewPlcBOOL(powerLimitBoilerReached)
 
             // Simple Field (powerLimitStage1Reached)
             powerLimitStage1Reached, _powerLimitStage1ReachedErr := io.ReadBit()
             if _powerLimitStage1ReachedErr != nil {
                 return nil, errors.New("Error parsing 'powerLimitStage1Reached' field " + _powerLimitStage1ReachedErr.Error())
             }
-            _map["Struct"] = powerLimitStage1Reached
+            _map["Struct"] = values.NewPlcBOOL(powerLimitStage1Reached)
 
             // Simple Field (stage2Enabled)
             stage2Enabled, _stage2EnabledErr := io.ReadBit()
             if _stage2EnabledErr != nil {
                 return nil, errors.New("Error parsing 'stage2Enabled' field " + _stage2EnabledErr.Error())
             }
-            _map["Struct"] = stage2Enabled
+            _map["Struct"] = values.NewPlcBOOL(stage2Enabled)
 
             // Simple Field (stage1Enabled)
             stage1Enabled, _stage1EnabledErr := io.ReadBit()
             if _stage1EnabledErr != nil {
                 return nil, errors.New("Error parsing 'stage1Enabled' field " + _stage1EnabledErr.Error())
             }
-            _map["Struct"] = stage1Enabled
+            _map["Struct"] = values.NewPlcBOOL(stage1Enabled)
 
             // Simple Field (boilerTemporarilyNotProvidingHeat)
             boilerTemporarilyNotProvidingHeat, _boilerTemporarilyNotProvidingHeatErr := io.ReadBit()
             if _boilerTemporarilyNotProvidingHeatErr != nil {
                 return nil, errors.New("Error parsing 'boilerTemporarilyNotProvidingHeat' field " + _boilerTemporarilyNotProvidingHeatErr.Error())
             }
-            _map["Struct"] = boilerTemporarilyNotProvidingHeat
+            _map["Struct"] = values.NewPlcBOOL(boilerTemporarilyNotProvidingHeat)
 
             // Simple Field (permanentlyOff)
             permanentlyOff, _permanentlyOffErr := io.ReadBit()
             if _permanentlyOffErr != nil {
                 return nil, errors.New("Error parsing 'permanentlyOff' field " + _permanentlyOffErr.Error())
             }
-            _map["Struct"] = permanentlyOff
+            _map["Struct"] = values.NewPlcBOOL(permanentlyOff)
 
             // Simple Field (boilerSwitchedOffWinterSummerMode)
             boilerSwitchedOffWinterSummerMode, _boilerSwitchedOffWinterSummerModeErr := io.ReadBit()
             if _boilerSwitchedOffWinterSummerModeErr != nil {
                 return nil, errors.New("Error parsing 'boilerSwitchedOffWinterSummerMode' field " + _boilerSwitchedOffWinterSummerModeErr.Error())
             }
-            _map["Struct"] = boilerSwitchedOffWinterSummerMode
+            _map["Struct"] = values.NewPlcBOOL(boilerSwitchedOffWinterSummerMode)
 
             // Simple Field (boilerFailure)
             boilerFailure, _boilerFailureErr := io.ReadBit()
             if _boilerFailureErr != nil {
                 return nil, errors.New("Error parsing 'boilerFailure' field " + _boilerFailureErr.Error())
             }
-            _map["Struct"] = boilerFailure
+            _map["Struct"] = values.NewPlcBOOL(boilerFailure)
 
             // Simple Field (relativePowerValid)
             relativePowerValid, _relativePowerValidErr := io.ReadBit()
             if _relativePowerValidErr != nil {
                 return nil, errors.New("Error parsing 'relativePowerValid' field " + _relativePowerValidErr.Error())
             }
-            _map["Struct"] = relativePowerValid
+            _map["Struct"] = values.NewPlcBOOL(relativePowerValid)
 
             // Simple Field (tempBoilerValid)
             tempBoilerValid, _tempBoilerValidErr := io.ReadBit()
             if _tempBoilerValidErr != nil {
                 return nil, errors.New("Error parsing 'tempBoilerValid' field " + _tempBoilerValidErr.Error())
             }
-            _map["Struct"] = tempBoilerValid
+            _map["Struct"] = values.NewPlcBOOL(tempBoilerValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16U8B16Chiller": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2339,14 +2339,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _tempChillerErr != nil {
                 return nil, errors.New("Error parsing 'tempChiller' field " + _tempChillerErr.Error())
             }
-            _map["Struct"] = tempChiller
+            _map["Struct"] = values.NewPlcINT(tempChiller)
 
             // Simple Field (relativePower)
             relativePower, _relativePowerErr := io.ReadUint8(8)
             if _relativePowerErr != nil {
                 return nil, errors.New("Error parsing 'relativePower' field " + _relativePowerErr.Error())
             }
-            _map["Struct"] = relativePower
+            _map["Struct"] = values.NewPlcUSINT(relativePower)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2358,59 +2358,59 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _reducedAvailabilityErr != nil {
                 return nil, errors.New("Error parsing 'reducedAvailability' field " + _reducedAvailabilityErr.Error())
             }
-            _map["Struct"] = reducedAvailability
+            _map["Struct"] = values.NewPlcBOOL(reducedAvailability)
 
             // Simple Field (powerLimitChillerReached)
             powerLimitChillerReached, _powerLimitChillerReachedErr := io.ReadBit()
             if _powerLimitChillerReachedErr != nil {
                 return nil, errors.New("Error parsing 'powerLimitChillerReached' field " + _powerLimitChillerReachedErr.Error())
             }
-            _map["Struct"] = powerLimitChillerReached
+            _map["Struct"] = values.NewPlcBOOL(powerLimitChillerReached)
 
             // Simple Field (powerLimitCurrentStageReached)
             powerLimitCurrentStageReached, _powerLimitCurrentStageReachedErr := io.ReadBit()
             if _powerLimitCurrentStageReachedErr != nil {
                 return nil, errors.New("Error parsing 'powerLimitCurrentStageReached' field " + _powerLimitCurrentStageReachedErr.Error())
             }
-            _map["Struct"] = powerLimitCurrentStageReached
+            _map["Struct"] = values.NewPlcBOOL(powerLimitCurrentStageReached)
 
             // Simple Field (permanentlyOff)
             permanentlyOff, _permanentlyOffErr := io.ReadBit()
             if _permanentlyOffErr != nil {
                 return nil, errors.New("Error parsing 'permanentlyOff' field " + _permanentlyOffErr.Error())
             }
-            _map["Struct"] = permanentlyOff
+            _map["Struct"] = values.NewPlcBOOL(permanentlyOff)
 
             // Simple Field (chillerFailure)
             chillerFailure, _chillerFailureErr := io.ReadBit()
             if _chillerFailureErr != nil {
                 return nil, errors.New("Error parsing 'chillerFailure' field " + _chillerFailureErr.Error())
             }
-            _map["Struct"] = chillerFailure
+            _map["Struct"] = values.NewPlcBOOL(chillerFailure)
 
             // Simple Field (chillerRunningStatus)
             chillerRunningStatus, _chillerRunningStatusErr := io.ReadBit()
             if _chillerRunningStatusErr != nil {
                 return nil, errors.New("Error parsing 'chillerRunningStatus' field " + _chillerRunningStatusErr.Error())
             }
-            _map["Struct"] = chillerRunningStatus
+            _map["Struct"] = values.NewPlcBOOL(chillerRunningStatus)
 
             // Simple Field (relativePowerValid)
             relativePowerValid, _relativePowerValidErr := io.ReadBit()
             if _relativePowerValidErr != nil {
                 return nil, errors.New("Error parsing 'relativePowerValid' field " + _relativePowerValidErr.Error())
             }
-            _map["Struct"] = relativePowerValid
+            _map["Struct"] = values.NewPlcBOOL(relativePowerValid)
 
             // Simple Field (tempChillerValid)
             tempChillerValid, _tempChillerValidErr := io.ReadBit()
             if _tempChillerValidErr != nil {
                 return nil, errors.New("Error parsing 'tempChillerValid' field " + _tempChillerValidErr.Error())
             }
-            _map["Struct"] = tempChillerValid
+            _map["Struct"] = values.NewPlcBOOL(tempChillerValid)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16U8N8B8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2422,21 +2422,21 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _nominalPowerErr != nil {
                 return nil, errors.New("Error parsing 'nominalPower' field " + _nominalPowerErr.Error())
             }
-            _map["Struct"] = nominalPower
+            _map["Struct"] = values.NewPlcUINT(nominalPower)
 
             // Simple Field (relativePowerLimit)
             relativePowerLimit, _relativePowerLimitErr := io.ReadUint8(8)
             if _relativePowerLimitErr != nil {
                 return nil, errors.New("Error parsing 'relativePowerLimit' field " + _relativePowerLimitErr.Error())
             }
-            _map["Struct"] = relativePowerLimit
+            _map["Struct"] = values.NewPlcUSINT(relativePowerLimit)
 
             // Simple Field (burnerType)
             burnerType, _burnerTypeErr := io.ReadInt8(8)
             if _burnerTypeErr != nil {
                 return nil, errors.New("Error parsing 'burnerType' field " + _burnerTypeErr.Error())
             }
-            _map["Struct"] = burnerType
+            _map["Struct"] = values.NewPlcSINT(burnerType)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(5); _err != nil {
@@ -2448,24 +2448,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _solidStateErr != nil {
                 return nil, errors.New("Error parsing 'solidState' field " + _solidStateErr.Error())
             }
-            _map["Struct"] = solidState
+            _map["Struct"] = values.NewPlcBOOL(solidState)
 
             // Simple Field (gas)
             gas, _gasErr := io.ReadBit()
             if _gasErr != nil {
                 return nil, errors.New("Error parsing 'gas' field " + _gasErr.Error())
             }
-            _map["Struct"] = gas
+            _map["Struct"] = values.NewPlcBOOL(gas)
 
             // Simple Field (oil)
             oil, _oilErr := io.ReadBit()
             if _oilErr != nil {
                 return nil, errors.New("Error parsing 'oil' field " + _oilErr.Error())
             }
-            _map["Struct"] = oil
+            _map["Struct"] = values.NewPlcBOOL(oil)
             return values.NewPlcStruct(_map), nil
         case formatName == "U5U5U6": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2477,24 +2477,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _magicNumberErr != nil {
                 return nil, errors.New("Error parsing 'magicNumber' field " + _magicNumberErr.Error())
             }
-            _map["Struct"] = magicNumber
+            _map["Struct"] = values.NewPlcUSINT(magicNumber)
 
             // Simple Field (versionNumber)
             versionNumber, _versionNumberErr := io.ReadUint8(5)
             if _versionNumberErr != nil {
                 return nil, errors.New("Error parsing 'versionNumber' field " + _versionNumberErr.Error())
             }
-            _map["Struct"] = versionNumber
+            _map["Struct"] = values.NewPlcUSINT(versionNumber)
 
             // Simple Field (revisionNumber)
             revisionNumber, _revisionNumberErr := io.ReadUint8(6)
             if _revisionNumberErr != nil {
                 return nil, errors.New("Error parsing 'revisionNumber' field " + _revisionNumberErr.Error())
             }
-            _map["Struct"] = revisionNumber
+            _map["Struct"] = values.NewPlcUSINT(revisionNumber)
             return values.NewPlcStruct(_map), nil
         case formatName == "V32Z8VolumeLiter": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2506,17 +2506,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _volumeLiterErr != nil {
                 return nil, errors.New("Error parsing 'volumeLiter' field " + _volumeLiterErr.Error())
             }
-            _map["Struct"] = volumeLiter
+            _map["Struct"] = values.NewPlcDINT(volumeLiter)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "V32Z8FlowRate": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2528,17 +2528,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _flowRateErr != nil {
                 return nil, errors.New("Error parsing 'flowRate' field " + _flowRateErr.Error())
             }
-            _map["Struct"] = flowRate
+            _map["Struct"] = values.NewPlcDINT(flowRate)
 
             // Simple Field (statusCommand)
             statusCommand, _statusCommandErr := io.ReadUint8(8)
             if _statusCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusCommand' field " + _statusCommandErr.Error())
             }
-            _map["Struct"] = statusCommand
+            _map["Struct"] = values.NewPlcUSINT(statusCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8N8N8N8B8B8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2550,28 +2550,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _logNumberErr != nil {
                 return nil, errors.New("Error parsing 'logNumber' field " + _logNumberErr.Error())
             }
-            _map["Struct"] = logNumber
+            _map["Struct"] = values.NewPlcUSINT(logNumber)
 
             // Simple Field (alarmPriority)
             alarmPriority, _alarmPriorityErr := io.ReadUint8(8)
             if _alarmPriorityErr != nil {
                 return nil, errors.New("Error parsing 'alarmPriority' field " + _alarmPriorityErr.Error())
             }
-            _map["Struct"] = alarmPriority
+            _map["Struct"] = values.NewPlcUSINT(alarmPriority)
 
             // Simple Field (applicationArea)
             applicationArea, _applicationAreaErr := io.ReadUint8(8)
             if _applicationAreaErr != nil {
                 return nil, errors.New("Error parsing 'applicationArea' field " + _applicationAreaErr.Error())
             }
-            _map["Struct"] = applicationArea
+            _map["Struct"] = values.NewPlcUSINT(applicationArea)
 
             // Simple Field (errorClass)
             errorClass, _errorClassErr := io.ReadUint8(8)
             if _errorClassErr != nil {
                 return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
             }
-            _map["Struct"] = errorClass
+            _map["Struct"] = values.NewPlcUSINT(errorClass)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(4); _err != nil {
@@ -2583,28 +2583,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _errorCode_SupErr != nil {
                 return nil, errors.New("Error parsing 'errorCode_Sup' field " + _errorCode_SupErr.Error())
             }
-            _map["Struct"] = errorCode_Sup
+            _map["Struct"] = values.NewPlcBOOL(errorCode_Sup)
 
             // Simple Field (alarmText_Sup)
             alarmText_Sup, _alarmText_SupErr := io.ReadBit()
             if _alarmText_SupErr != nil {
                 return nil, errors.New("Error parsing 'alarmText_Sup' field " + _alarmText_SupErr.Error())
             }
-            _map["Struct"] = alarmText_Sup
+            _map["Struct"] = values.NewPlcBOOL(alarmText_Sup)
 
             // Simple Field (timeStamp_Sup)
             timeStamp_Sup, _timeStamp_SupErr := io.ReadBit()
             if _timeStamp_SupErr != nil {
                 return nil, errors.New("Error parsing 'timeStamp_Sup' field " + _timeStamp_SupErr.Error())
             }
-            _map["Struct"] = timeStamp_Sup
+            _map["Struct"] = values.NewPlcBOOL(timeStamp_Sup)
 
             // Simple Field (ack_Sup)
             ack_Sup, _ack_SupErr := io.ReadBit()
             if _ack_SupErr != nil {
                 return nil, errors.New("Error parsing 'ack_Sup' field " + _ack_SupErr.Error())
             }
-            _map["Struct"] = ack_Sup
+            _map["Struct"] = values.NewPlcBOOL(ack_Sup)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(5); _err != nil {
@@ -2616,24 +2616,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _alarmUnAckErr != nil {
                 return nil, errors.New("Error parsing 'alarmUnAck' field " + _alarmUnAckErr.Error())
             }
-            _map["Struct"] = alarmUnAck
+            _map["Struct"] = values.NewPlcBOOL(alarmUnAck)
 
             // Simple Field (locked)
             locked, _lockedErr := io.ReadBit()
             if _lockedErr != nil {
                 return nil, errors.New("Error parsing 'locked' field " + _lockedErr.Error())
             }
-            _map["Struct"] = locked
+            _map["Struct"] = values.NewPlcBOOL(locked)
 
             // Simple Field (inAlarm)
             inAlarm, _inAlarmErr := io.ReadBit()
             if _inAlarmErr != nil {
                 return nil, errors.New("Error parsing 'inAlarm' field " + _inAlarmErr.Error())
             }
-            _map["Struct"] = inAlarm
+            _map["Struct"] = values.NewPlcBOOL(inAlarm)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16V16": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2645,17 +2645,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (temperature)
             temperature, _temperatureErr := io.ReadInt16(16)
             if _temperatureErr != nil {
                 return nil, errors.New("Error parsing 'temperature' field " + _temperatureErr.Error())
             }
-            _map["Struct"] = temperature
+            _map["Struct"] = values.NewPlcINT(temperature)
             return values.NewPlcStruct(_map), nil
         case formatName == "N16U32": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2667,17 +2667,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _manufacturerCodeErr != nil {
                 return nil, errors.New("Error parsing 'manufacturerCode' field " + _manufacturerCodeErr.Error())
             }
-            _map["Struct"] = manufacturerCode
+            _map["Struct"] = values.NewPlcUINT(manufacturerCode)
 
             // Simple Field (incrementedNumber)
             incrementedNumber, _incrementedNumberErr := io.ReadUint32(32)
             if _incrementedNumberErr != nil {
                 return nil, errors.New("Error parsing 'incrementedNumber' field " + _incrementedNumberErr.Error())
             }
-            _map["Struct"] = incrementedNumber
+            _map["Struct"] = values.NewPlcUDINT(incrementedNumber)
             return values.NewPlcStruct(_map), nil
         case formatName == "F16F16F16": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2689,24 +2689,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _temperatureSetpointComfortErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointComfort' field " + _temperatureSetpointComfortErr.Error())
             }
-            _map["Struct"] = temperatureSetpointComfort
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointComfort)
 
             // Simple Field (temperatureSetpointShiftStandby)
             temperatureSetpointShiftStandby, _temperatureSetpointShiftStandbyErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftStandbyErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftStandby' field " + _temperatureSetpointShiftStandbyErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftStandby
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftStandby)
 
             // Simple Field (temperatureSetpointShiftEco)
             temperatureSetpointShiftEco, _temperatureSetpointShiftEcoErr := io.ReadFloat32(true, 4, 11)
             if _temperatureSetpointShiftEcoErr != nil {
                 return nil, errors.New("Error parsing 'temperatureSetpointShiftEco' field " + _temperatureSetpointShiftEcoErr.Error())
             }
-            _map["Struct"] = temperatureSetpointShiftEco
+            _map["Struct"] = values.NewPlcREAL(temperatureSetpointShiftEco)
             return values.NewPlcStruct(_map), nil
         case formatName == "V8N8N8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2718,24 +2718,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _energyDemandErr != nil {
                 return nil, errors.New("Error parsing 'energyDemand' field " + _energyDemandErr.Error())
             }
-            _map["Struct"] = energyDemand
+            _map["Struct"] = values.NewPlcSINT(energyDemand)
 
             // Simple Field (hvacControllerMode)
             hvacControllerMode, _hvacControllerModeErr := io.ReadUint8(8)
             if _hvacControllerModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacControllerMode' field " + _hvacControllerModeErr.Error())
             }
-            _map["Struct"] = hvacControllerMode
+            _map["Struct"] = values.NewPlcUSINT(hvacControllerMode)
 
             // Simple Field (hvacEmergencyMode)
             hvacEmergencyMode, _hvacEmergencyModeErr := io.ReadUint8(8)
             if _hvacEmergencyModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacEmergencyMode' field " + _hvacEmergencyModeErr.Error())
             }
-            _map["Struct"] = hvacEmergencyMode
+            _map["Struct"] = values.NewPlcUSINT(hvacEmergencyMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "V16V16N8N8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2747,31 +2747,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _tempSetpointCoolingErr != nil {
                 return nil, errors.New("Error parsing 'tempSetpointCooling' field " + _tempSetpointCoolingErr.Error())
             }
-            _map["Struct"] = tempSetpointCooling
+            _map["Struct"] = values.NewPlcINT(tempSetpointCooling)
 
             // Simple Field (tempSetpointHeating)
             tempSetpointHeating, _tempSetpointHeatingErr := io.ReadInt16(16)
             if _tempSetpointHeatingErr != nil {
                 return nil, errors.New("Error parsing 'tempSetpointHeating' field " + _tempSetpointHeatingErr.Error())
             }
-            _map["Struct"] = tempSetpointHeating
+            _map["Struct"] = values.NewPlcINT(tempSetpointHeating)
 
             // Simple Field (hvacControllerMode)
             hvacControllerMode, _hvacControllerModeErr := io.ReadUint8(8)
             if _hvacControllerModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacControllerMode' field " + _hvacControllerModeErr.Error())
             }
-            _map["Struct"] = hvacControllerMode
+            _map["Struct"] = values.NewPlcUSINT(hvacControllerMode)
 
             // Simple Field (hvacEmergencyMode)
             hvacEmergencyMode, _hvacEmergencyModeErr := io.ReadUint8(8)
             if _hvacEmergencyModeErr != nil {
                 return nil, errors.New("Error parsing 'hvacEmergencyMode' field " + _hvacEmergencyModeErr.Error())
             }
-            _map["Struct"] = hvacEmergencyMode
+            _map["Struct"] = values.NewPlcUSINT(hvacEmergencyMode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16U8Scaling": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2783,17 +2783,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _timePeriodErr != nil {
                 return nil, errors.New("Error parsing 'timePeriod' field " + _timePeriodErr.Error())
             }
-            _map["Struct"] = timePeriod
+            _map["Struct"] = values.NewPlcUINT(timePeriod)
 
             // Simple Field (percent)
             percent, _percentErr := io.ReadUint8(8)
             if _percentErr != nil {
                 return nil, errors.New("Error parsing 'percent' field " + _percentErr.Error())
             }
-            _map["Struct"] = percent
+            _map["Struct"] = values.NewPlcUSINT(percent)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16U8TariffNext": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2805,17 +2805,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _delayTimeErr != nil {
                 return nil, errors.New("Error parsing 'delayTime' field " + _delayTimeErr.Error())
             }
-            _map["Struct"] = delayTime
+            _map["Struct"] = values.NewPlcUINT(delayTime)
 
             // Simple Field (tariff)
             tariff, _tariffErr := io.ReadUint8(8)
             if _tariffErr != nil {
                 return nil, errors.New("Error parsing 'tariff' field " + _tariffErr.Error())
             }
-            _map["Struct"] = tariff
+            _map["Struct"] = values.NewPlcUSINT(tariff)
             return values.NewPlcStruct(_map), nil
         case formatName == "V32N8Z8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2827,24 +2827,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _countValErr != nil {
                 return nil, errors.New("Error parsing 'countVal' field " + _countValErr.Error())
             }
-            _map["Struct"] = countVal
+            _map["Struct"] = values.NewPlcDINT(countVal)
 
             // Simple Field (valInfField)
             valInfField, _valInfFieldErr := io.ReadUint8(8)
             if _valInfFieldErr != nil {
                 return nil, errors.New("Error parsing 'valInfField' field " + _valInfFieldErr.Error())
             }
-            _map["Struct"] = valInfField
+            _map["Struct"] = values.NewPlcUSINT(valInfField)
 
             // Simple Field (statusOrCommand)
             statusOrCommand, _statusOrCommandErr := io.ReadUint8(8)
             if _statusOrCommandErr != nil {
                 return nil, errors.New("Error parsing 'statusOrCommand' field " + _statusOrCommandErr.Error())
             }
-            _map["Struct"] = statusOrCommand
+            _map["Struct"] = values.NewPlcUSINT(statusOrCommand)
             return values.NewPlcStruct(_map), nil
         case formatName == "U16U32U8N8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2856,31 +2856,31 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _manufacturerIdErr != nil {
                 return nil, errors.New("Error parsing 'manufacturerId' field " + _manufacturerIdErr.Error())
             }
-            _map["Struct"] = manufacturerId
+            _map["Struct"] = values.NewPlcUINT(manufacturerId)
 
             // Simple Field (identNumber)
             identNumber, _identNumberErr := io.ReadUint32(32)
             if _identNumberErr != nil {
                 return nil, errors.New("Error parsing 'identNumber' field " + _identNumberErr.Error())
             }
-            _map["Struct"] = identNumber
+            _map["Struct"] = values.NewPlcUDINT(identNumber)
 
             // Simple Field (version)
             version, _versionErr := io.ReadUint8(8)
             if _versionErr != nil {
                 return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
             }
-            _map["Struct"] = version
+            _map["Struct"] = values.NewPlcUSINT(version)
 
             // Simple Field (medium)
             medium, _mediumErr := io.ReadInt8(8)
             if _mediumErr != nil {
                 return nil, errors.New("Error parsing 'medium' field " + _mediumErr.Error())
             }
-            _map["Struct"] = medium
+            _map["Struct"] = values.NewPlcSINT(medium)
             return values.NewPlcStruct(_map), nil
         case formatName == "A8A8A8A8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2892,17 +2892,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _languageCodeErr != nil {
                 return nil, errors.New("Error parsing 'languageCode' field " + _languageCodeErr.Error())
             }
-            _map["Struct"] = languageCode
+            _map["Struct"] = values.NewPlcSTRING(languageCode)
 
             // Simple Field (regionCode)
             regionCode, _regionCodeErr := io.ReadString(16)
             if _regionCodeErr != nil {
                 return nil, errors.New("Error parsing 'regionCode' field " + _regionCodeErr.Error())
             }
-            _map["Struct"] = regionCode
+            _map["Struct"] = values.NewPlcSTRING(regionCode)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8U8U8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2914,24 +2914,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _redErr != nil {
                 return nil, errors.New("Error parsing 'red' field " + _redErr.Error())
             }
-            _map["Struct"] = red
+            _map["Struct"] = values.NewPlcUSINT(red)
 
             // Simple Field (green)
             green, _greenErr := io.ReadUint8(8)
             if _greenErr != nil {
                 return nil, errors.New("Error parsing 'green' field " + _greenErr.Error())
             }
-            _map["Struct"] = green
+            _map["Struct"] = values.NewPlcUSINT(green)
 
             // Simple Field (blue)
             blue, _blueErr := io.ReadUint8(8)
             if _blueErr != nil {
                 return nil, errors.New("Error parsing 'blue' field " + _blueErr.Error())
             }
-            _map["Struct"] = blue
+            _map["Struct"] = values.NewPlcUSINT(blue)
             return values.NewPlcStruct(_map), nil
         case formatName == "A8A8Language": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2943,10 +2943,10 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _languageCodeErr != nil {
                 return nil, errors.New("Error parsing 'languageCode' field " + _languageCodeErr.Error())
             }
-            _map["Struct"] = languageCode
+            _map["Struct"] = values.NewPlcSTRING(languageCode)
             return values.NewPlcStruct(_map), nil
         case formatName == "A8A8Region": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2958,10 +2958,10 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _regionCodeErr != nil {
                 return nil, errors.New("Error parsing 'regionCode' field " + _regionCodeErr.Error())
             }
-            _map["Struct"] = regionCode
+            _map["Struct"] = values.NewPlcSTRING(regionCode)
             return values.NewPlcStruct(_map), nil
         case formatName == "V32U8B8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -2973,14 +2973,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _activeElectricalEnergyErr != nil {
                 return nil, errors.New("Error parsing 'activeElectricalEnergy' field " + _activeElectricalEnergyErr.Error())
             }
-            _map["Struct"] = activeElectricalEnergy
+            _map["Struct"] = values.NewPlcDINT(activeElectricalEnergy)
 
             // Simple Field (tariff)
             tariff, _tariffErr := io.ReadUint8(8)
             if _tariffErr != nil {
                 return nil, errors.New("Error parsing 'tariff' field " + _tariffErr.Error())
             }
-            _map["Struct"] = tariff
+            _map["Struct"] = values.NewPlcUSINT(tariff)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -2992,17 +2992,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _noTariffErr != nil {
                 return nil, errors.New("Error parsing 'noTariff' field " + _noTariffErr.Error())
             }
-            _map["Struct"] = noTariff
+            _map["Struct"] = values.NewPlcBOOL(noTariff)
 
             // Simple Field (noActiveElectricalEnergy)
             noActiveElectricalEnergy, _noActiveElectricalEnergyErr := io.ReadBit()
             if _noActiveElectricalEnergyErr != nil {
                 return nil, errors.New("Error parsing 'noActiveElectricalEnergy' field " + _noActiveElectricalEnergyErr.Error())
             }
-            _map["Struct"] = noActiveElectricalEnergy
+            _map["Struct"] = values.NewPlcBOOL(noActiveElectricalEnergy)
             return values.NewPlcStruct(_map), nil
         case formatName == "B1N3N4": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -3014,24 +3014,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _deactivationOfPriorityErr != nil {
                 return nil, errors.New("Error parsing 'deactivationOfPriority' field " + _deactivationOfPriorityErr.Error())
             }
-            _map["Struct"] = deactivationOfPriority
+            _map["Struct"] = values.NewPlcBOOL(deactivationOfPriority)
 
             // Simple Field (priorityLevel)
             priorityLevel, _priorityLevelErr := io.ReadUint8(3)
             if _priorityLevelErr != nil {
                 return nil, errors.New("Error parsing 'priorityLevel' field " + _priorityLevelErr.Error())
             }
-            _map["Struct"] = priorityLevel
+            _map["Struct"] = values.NewPlcUSINT(priorityLevel)
 
             // Simple Field (modeLevel)
             modeLevel, _modeLevelErr := io.ReadUint8(4)
             if _modeLevelErr != nil {
                 return nil, errors.New("Error parsing 'modeLevel' field " + _modeLevelErr.Error())
             }
-            _map["Struct"] = modeLevel
+            _map["Struct"] = values.NewPlcUSINT(modeLevel)
             return values.NewPlcStruct(_map), nil
         case formatName == "B10U6": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(5); _err != nil {
@@ -3043,45 +3043,45 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _convertorErrorErr != nil {
                 return nil, errors.New("Error parsing 'convertorError' field " + _convertorErrorErr.Error())
             }
-            _map["Struct"] = convertorError
+            _map["Struct"] = values.NewPlcBOOL(convertorError)
 
             // Simple Field (ballastFailure)
             ballastFailure, _ballastFailureErr := io.ReadBit()
             if _ballastFailureErr != nil {
                 return nil, errors.New("Error parsing 'ballastFailure' field " + _ballastFailureErr.Error())
             }
-            _map["Struct"] = ballastFailure
+            _map["Struct"] = values.NewPlcBOOL(ballastFailure)
 
             // Simple Field (lampError)
             lampError, _lampErrorErr := io.ReadBit()
             if _lampErrorErr != nil {
                 return nil, errors.New("Error parsing 'lampError' field " + _lampErrorErr.Error())
             }
-            _map["Struct"] = lampError
+            _map["Struct"] = values.NewPlcBOOL(lampError)
 
             // Simple Field (read)
             read, _readErr := io.ReadBit()
             if _readErr != nil {
                 return nil, errors.New("Error parsing 'read' field " + _readErr.Error())
             }
-            _map["Struct"] = read
+            _map["Struct"] = values.NewPlcBOOL(read)
 
             // Simple Field (groupAddress)
             groupAddress, _groupAddressErr := io.ReadBit()
             if _groupAddressErr != nil {
                 return nil, errors.New("Error parsing 'groupAddress' field " + _groupAddressErr.Error())
             }
-            _map["Struct"] = groupAddress
+            _map["Struct"] = values.NewPlcBOOL(groupAddress)
 
             // Simple Field (address)
             address, _addressErr := io.ReadUint8(6)
             if _addressErr != nil {
                 return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
             }
-            _map["Struct"] = address
+            _map["Struct"] = values.NewPlcUSINT(address)
             return values.NewPlcStruct(_map), nil
         case formatName == "B2U6": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -3093,24 +3093,24 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _sceneActivationInactiveErr != nil {
                 return nil, errors.New("Error parsing 'sceneActivationInactive' field " + _sceneActivationInactiveErr.Error())
             }
-            _map["Struct"] = sceneActivationInactive
+            _map["Struct"] = values.NewPlcBOOL(sceneActivationInactive)
 
             // Simple Field (storageFunctionDisable)
             storageFunctionDisable, _storageFunctionDisableErr := io.ReadBit()
             if _storageFunctionDisableErr != nil {
                 return nil, errors.New("Error parsing 'storageFunctionDisable' field " + _storageFunctionDisableErr.Error())
             }
-            _map["Struct"] = storageFunctionDisable
+            _map["Struct"] = values.NewPlcBOOL(storageFunctionDisable)
 
             // Simple Field (sceneNumber)
             sceneNumber, _sceneNumberErr := io.ReadUint8(6)
             if _sceneNumberErr != nil {
                 return nil, errors.New("Error parsing 'sceneNumber' field " + _sceneNumberErr.Error())
             }
-            _map["Struct"] = sceneNumber
+            _map["Struct"] = values.NewPlcUSINT(sceneNumber)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8r7B1": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -3122,7 +3122,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _setValueErr != nil {
                 return nil, errors.New("Error parsing 'setValue' field " + _setValueErr.Error())
             }
-            _map["Struct"] = setValue
+            _map["Struct"] = values.NewPlcUSINT(setValue)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(7); _err != nil {
@@ -3134,10 +3134,10 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _channelActivationActiveErr != nil {
                 return nil, errors.New("Error parsing 'channelActivationActive' field " + _channelActivationActiveErr.Error())
             }
-            _map["Struct"] = channelActivationActive
+            _map["Struct"] = values.NewPlcBOOL(channelActivationActive)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8U8B8": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -3149,14 +3149,14 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _heightPositionErr != nil {
                 return nil, errors.New("Error parsing 'heightPosition' field " + _heightPositionErr.Error())
             }
-            _map["Struct"] = heightPosition
+            _map["Struct"] = values.NewPlcUSINT(heightPosition)
 
             // Simple Field (slatsPosition)
             slatsPosition, _slatsPositionErr := io.ReadUint8(8)
             if _slatsPositionErr != nil {
                 return nil, errors.New("Error parsing 'slatsPosition' field " + _slatsPositionErr.Error())
             }
-            _map["Struct"] = slatsPosition
+            _map["Struct"] = values.NewPlcUSINT(slatsPosition)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(6); _err != nil {
@@ -3168,17 +3168,17 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _validSlatsPosErr != nil {
                 return nil, errors.New("Error parsing 'validSlatsPos' field " + _validSlatsPosErr.Error())
             }
-            _map["Struct"] = validSlatsPos
+            _map["Struct"] = values.NewPlcBOOL(validSlatsPos)
 
             // Simple Field (validHeightPos)
             validHeightPos, _validHeightPosErr := io.ReadBit()
             if _validHeightPosErr != nil {
                 return nil, errors.New("Error parsing 'validHeightPos' field " + _validHeightPosErr.Error())
             }
-            _map["Struct"] = validHeightPos
+            _map["Struct"] = values.NewPlcBOOL(validHeightPos)
             return values.NewPlcStruct(_map), nil
         case formatName == "U8U8B16": // Struct
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(8); _err != nil {
@@ -3190,28 +3190,28 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _heightPositionErr != nil {
                 return nil, errors.New("Error parsing 'heightPosition' field " + _heightPositionErr.Error())
             }
-            _map["Struct"] = heightPosition
+            _map["Struct"] = values.NewPlcUSINT(heightPosition)
 
             // Simple Field (slatsPosition)
             slatsPosition, _slatsPositionErr := io.ReadUint8(8)
             if _slatsPositionErr != nil {
                 return nil, errors.New("Error parsing 'slatsPosition' field " + _slatsPositionErr.Error())
             }
-            _map["Struct"] = slatsPosition
+            _map["Struct"] = values.NewPlcUSINT(slatsPosition)
 
             // Simple Field (validSlatsPos)
             validSlatsPos, _validSlatsPosErr := io.ReadBit()
             if _validSlatsPosErr != nil {
                 return nil, errors.New("Error parsing 'validSlatsPos' field " + _validSlatsPosErr.Error())
             }
-            _map["Struct"] = validSlatsPos
+            _map["Struct"] = values.NewPlcBOOL(validSlatsPos)
 
             // Simple Field (validHeightPos)
             validHeightPos, _validHeightPosErr := io.ReadBit()
             if _validHeightPosErr != nil {
                 return nil, errors.New("Error parsing 'validHeightPos' field " + _validHeightPosErr.Error())
             }
-            _map["Struct"] = validHeightPos
+            _map["Struct"] = values.NewPlcBOOL(validHeightPos)
 
             // Reserved Field (Just skip the bytes)
             if _, _err := io.ReadUint8(3); _err != nil {
@@ -3223,77 +3223,77 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             if _failureErr != nil {
                 return nil, errors.New("Error parsing 'failure' field " + _failureErr.Error())
             }
-            _map["Struct"] = failure
+            _map["Struct"] = values.NewPlcBOOL(failure)
 
             // Simple Field (localOverride)
             localOverride, _localOverrideErr := io.ReadBit()
             if _localOverrideErr != nil {
                 return nil, errors.New("Error parsing 'localOverride' field " + _localOverrideErr.Error())
             }
-            _map["Struct"] = localOverride
+            _map["Struct"] = values.NewPlcBOOL(localOverride)
 
             // Simple Field (locked)
             locked, _lockedErr := io.ReadBit()
             if _lockedErr != nil {
                 return nil, errors.New("Error parsing 'locked' field " + _lockedErr.Error())
             }
-            _map["Struct"] = locked
+            _map["Struct"] = values.NewPlcBOOL(locked)
 
             // Simple Field (forced)
             forced, _forcedErr := io.ReadBit()
             if _forcedErr != nil {
                 return nil, errors.New("Error parsing 'forced' field " + _forcedErr.Error())
             }
-            _map["Struct"] = forced
+            _map["Struct"] = values.NewPlcBOOL(forced)
 
             // Simple Field (weatherAlarm)
             weatherAlarm, _weatherAlarmErr := io.ReadBit()
             if _weatherAlarmErr != nil {
                 return nil, errors.New("Error parsing 'weatherAlarm' field " + _weatherAlarmErr.Error())
             }
-            _map["Struct"] = weatherAlarm
+            _map["Struct"] = values.NewPlcBOOL(weatherAlarm)
 
             // Simple Field (targetSPosRestrict)
             targetSPosRestrict, _targetSPosRestrictErr := io.ReadBit()
             if _targetSPosRestrictErr != nil {
                 return nil, errors.New("Error parsing 'targetSPosRestrict' field " + _targetSPosRestrictErr.Error())
             }
-            _map["Struct"] = targetSPosRestrict
+            _map["Struct"] = values.NewPlcBOOL(targetSPosRestrict)
 
             // Simple Field (targetHPosRestrict)
             targetHPosRestrict, _targetHPosRestrictErr := io.ReadBit()
             if _targetHPosRestrictErr != nil {
                 return nil, errors.New("Error parsing 'targetHPosRestrict' field " + _targetHPosRestrictErr.Error())
             }
-            _map["Struct"] = targetHPosRestrict
+            _map["Struct"] = values.NewPlcBOOL(targetHPosRestrict)
 
             // Simple Field (driveState)
             driveState, _driveStateErr := io.ReadBit()
             if _driveStateErr != nil {
                 return nil, errors.New("Error parsing 'driveState' field " + _driveStateErr.Error())
             }
-            _map["Struct"] = driveState
+            _map["Struct"] = values.NewPlcBOOL(driveState)
 
             // Simple Field (lowerPredefPos)
             lowerPredefPos, _lowerPredefPosErr := io.ReadBit()
             if _lowerPredefPosErr != nil {
                 return nil, errors.New("Error parsing 'lowerPredefPos' field " + _lowerPredefPosErr.Error())
             }
-            _map["Struct"] = lowerPredefPos
+            _map["Struct"] = values.NewPlcBOOL(lowerPredefPos)
 
             // Simple Field (lowerEndPos)
             lowerEndPos, _lowerEndPosErr := io.ReadBit()
             if _lowerEndPosErr != nil {
                 return nil, errors.New("Error parsing 'lowerEndPos' field " + _lowerEndPosErr.Error())
             }
-            _map["Struct"] = lowerEndPos
+            _map["Struct"] = values.NewPlcBOOL(lowerEndPos)
 
             // Simple Field (upperEndPos)
             upperEndPos, _upperEndPosErr := io.ReadBit()
             if _upperEndPosErr != nil {
                 return nil, errors.New("Error parsing 'upperEndPos' field " + _upperEndPosErr.Error())
             }
-            _map["Struct"] = upperEndPos
+            _map["Struct"] = values.NewPlcBOOL(upperEndPos)
             return values.NewPlcStruct(_map), nil
     }
     return nil, errors.New("unsupported type")
