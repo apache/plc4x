@@ -33,11 +33,13 @@ public class SinkConfig {
 
     private static final String CONNECTION_STRING_CONFIG = "connectionString";
     private static final String TOPIC_CONFIG = "topic";
+    private static final String RETRIES_CONFIG = "retries";
+    private static final String TIMEOUT_CONFIG = "timeout";
+    private static final String FIELDS_CONFIG = "fields";
 
     private final List<Sink> sinks;
 
     public static SinkConfig fromPropertyMap(Map<String, String> properties) {
-
         String[] sinkNames = properties.getOrDefault(Plc4xSinkConnector.SINK_CONFIG, "").split(",");
         List<Sink> sinks = new ArrayList<>(sinkNames.length);
         for (String sinkName : sinkNames) {
@@ -45,7 +47,19 @@ public class SinkConfig {
                 Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + CONNECTION_STRING_CONFIG);
             String sinkTopic = properties.get(
                 Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG);
-            Sink sink = new Sink(sinkName, connectionString, sinkTopic);
+            String sinkRetries = properties.get(
+                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + RETRIES_CONFIG);
+            String sinkTimeout = properties.get(
+                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TIMEOUT_CONFIG);
+            String[] fieldNames = properties.get(
+                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG).split(",");
+            Map<String, String> fields = new HashMap<>();
+            for (String fieldName : fieldNames) {
+                String fieldAddress = properties.get(
+                    Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG + "." + fieldName);
+                fields.put(fieldName, fieldAddress);
+            }
+            Sink sink = new Sink(sinkName, connectionString, sinkTopic, fields, Integer.parseInt(sinkRetries), Integer.parseInt(sinkTimeout));
             sinks.add(sink);
         }
 

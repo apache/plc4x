@@ -43,7 +43,9 @@ public class Plc4xSinkConnector extends SinkConnector {
 
     private static final String CONNECTION_STRING_CONFIG = "connectionString";
     private static final String TOPIC_CONFIG = "topic";
-
+    private static final String RETRIES_CONFIG = "retries";
+    private static final String TIMEOUT_CONFIG = "timeout";
+    private static final String FIELDS_CONFIG = "fields";
 
     private SinkConfig sinkConfig;
 
@@ -64,17 +66,26 @@ public class Plc4xSinkConnector extends SinkConnector {
 
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
-
-        // For each configured source we'll start a dedicated scraper instance collecting
-        // all the scraper jobs enabled for this source.
         List<Map<String, String>> configs = new LinkedList<>();
 
         for (Sink sink : sinkConfig.getSinks()) {
+
+            StringBuilder query = new StringBuilder();
+
+            for (Map.Entry<String, String> field : sink.getFields().entrySet()) {
+                String fieldName = field.getKey();
+                String fieldAddress = field.getValue();
+                query.append("|").append(fieldName).append("#").append(fieldAddress);
+            }
+
             // Create a new task configuration.
             Map<String, String> taskConfig = new HashMap<>();
             taskConfig.put(Plc4xSinkTask.CONNECTION_NAME_CONFIG, sink.getName());
             taskConfig.put(CONNECTION_STRING_CONFIG, sink.getConnectionString());
             taskConfig.put(TOPIC_CONFIG, sink.getTopic());
+            taskConfig.put(RETRIES_CONFIG, sink.getRetries().toString());
+            taskConfig.put(TIMEOUT_CONFIG, sink.getTimeout().toString());
+            taskConfig.put(Plc4xSinkTask.QUERIES_CONFIG, query.toString().substring(1));
             configs.add(taskConfig);
         }
         return configs;
@@ -123,6 +134,41 @@ public class Plc4xSinkConnector extends SinkConnector {
                         config.configValues().add(sinkTopicConfigValue);
                         String sinkTopic = connectorConfigs.get(sinkTopicConfig);
                         sinkTopicConfigValue.value(sinkTopic);
+
+                        String sinkRetriesConfig = SINK_CONFIG + "." + sinkName + "." + RETRIES_CONFIG;
+                        final ConfigValue sinkRetriesConfigValue = new ConfigValue(sinkRetriesConfig);
+                        config.configValues().add(sinkRetriesConfigValue);
+                        String sinkRetries = connectorConfigs.get(sinkRetriesConfig);
+                        sinkRetriesConfigValue.value(sinkRetries);
+
+                        String sinkTimeoutConfig = SINK_CONFIG + "." + sinkName + "." + TIMEOUT_CONFIG;
+                        final ConfigValue sinkTimeoutConfigValue = new ConfigValue(sinkTimeoutConfig);
+                        config.configValues().add(sinkTimeoutConfigValue);
+                        String sinkTimeout = connectorConfigs.get(sinkTimeoutConfig);
+                        sinkTimeoutConfigValue.value(sinkTimeout);
+
+                        String sinkFieldsConfig = SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG;
+                        final ConfigValue sinkFieldsConfigValue = new ConfigValue(sinkFieldsConfig);
+                        if (!connectorConfigs.containsKey(sinkFieldsConfig)) {
+                            sinkFieldsConfigValue.value(null);
+                            sinkFieldsConfigValue.addErrorMessage(sinkFieldsConfig + " is mandatory");
+                        } else {
+                            String[] sinkFieldNames = connectorConfigs.getOrDefault(sinkFieldsConfig, "").split(",");
+                            sinkFieldsConfigValue.value(sinkFieldNames);
+                            for (String sinkFieldName : sinkFieldNames) {
+                                String sinkFieldAddressConfig =
+                                    SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG + "." + sinkFieldName;
+                                final ConfigValue sinkFieldAddressConfigValue = new ConfigValue(sinkFieldAddressConfig);
+                                config.configValues().add(sinkFieldAddressConfigValue);
+                                String sinkFieldAddress = connectorConfigs.get(sinkFieldAddressConfig);
+                                sinkFieldAddressConfigValue.value(sinkFieldAddress);
+                                if ((sinkFieldAddress == null) || sinkFieldAddress.isEmpty()) {
+                                    sinkFieldAddressConfigValue.addErrorMessage(sinkFieldAddressConfig + " is mandatory");
+                                }
+                                // TODO: Validate the address ...
+                            }
+
+                        }
                     }
                 }
             }

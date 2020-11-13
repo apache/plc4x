@@ -25,6 +25,7 @@ import org.apache.kafka.connect.data.*;
 import org.apache.kafka.connect.transforms.Transformation;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
+import org.apache.kafka.connect.errors.RetriableException;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -61,6 +62,16 @@ public class Plc4xSinkTask extends SinkTask {
     static final String PLC4X_TOPIC_CONFIG = "topic";
     private static final String PLC4X_TOPIC_DOC = "Task Topic";
 
+    private static final String PLC4X_RETRIES_CONFIG = "retries";
+    private static final String PLC4X_RETRIES_DOC = "Number of times to retry after failed write";
+
+    private static final String PLC4X_TIMEOUT_CONFIG = "timeout";
+    private static final String PLC4X_TIMEOUT_DOC = "Time between retries";
+
+    // Syntax for the queries: {field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
+    static final String QUERIES_CONFIG = "queries";
+    private static final String QUERIES_DOC = "Fields to be sent to the PLC";
+
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(CONNECTION_NAME_CONFIG,
                 ConfigDef.Type.STRING,
@@ -73,7 +84,19 @@ public class Plc4xSinkTask extends SinkTask {
         .define(PLC4X_TOPIC_CONFIG,
                 ConfigDef.Type.STRING,
                 ConfigDef.Importance.HIGH,
-                PLC4X_TOPIC_DOC);
+                PLC4X_TOPIC_DOC)
+        .define(PLC4X_RETRIES_CONFIG,
+                ConfigDef.Type.INT,
+                ConfigDef.Importance.HIGH,
+                PLC4X_RETRIES_DOC)
+        .define(PLC4X_TIMEOUT_CONFIG,
+                ConfigDef.Type.INT,
+                ConfigDef.Importance.HIGH,
+                PLC4X_TIMEOUT_DOC)
+        .define(QUERIES_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                QUERIES_DOC);
 
     /*
      * Configuration of the output.
@@ -91,14 +114,40 @@ public class Plc4xSinkTask extends SinkTask {
     private Transformation<SinkRecord> transformation;
     private String plc4xConnectionString;
     private String plc4xTopic;
+    private Integer plc4xRetries;
+    private Integer plc4xTimeout;
+    private Integer remainingRetries;
+    private AbstractConfig config;
+    private Map<String, String> fields;
 
     @Override
     public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
+        config = new AbstractConfig(CONFIG_DEF, props);
         String connectionName = config.getString(CONNECTION_NAME_CONFIG);
         plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
         plc4xTopic = config.getString(PLC4X_TOPIC_CONFIG);
-        Map<String, String> topics = new HashMap<>();
+        plc4xRetries = config.getInt(PLC4X_RETRIES_CONFIG);
+        remainingRetries = plc4xRetries;
+        plc4xTimeout = config.getInt(PLC4X_TIMEOUT_CONFIG);
+
+        String queries = config.getString(QUERIES_CONFIG);
+        fields = new HashMap<>();
+
+        String[] fieldsConfigSegments = queries.split("\\|");
+        for(int i = 0; i < fieldsConfigSegments.length; i++) {
+            String[] fieldSegments = fieldsConfigSegments[i].split("#");
+            if(fieldSegments.length != 2) {
+                log.warn(String.format("Error in field configuration. " +
+                        "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
+                    fieldsConfigSegments[i]));
+                continue;
+            }
+            String fieldAlias = fieldSegments[0];
+            String fieldAddress = fieldSegments[1];
+
+            fields.put(fieldAlias, fieldAddress);
+        }
+
         log.info("Creating Pooled PLC4x driver manager");
         driverManager = new PooledPlcDriverManager();
     }
@@ -116,61 +165,85 @@ public class Plc4xSinkTask extends SinkTask {
             return;
         }
 
+        PlcConnection connection = null;
+        try {
+            connection = driverManager.getConnection(plc4xConnectionString);
+        } catch (PlcConnectionException e) {
+            log.warn("Failed to Open Connection {}", plc4xConnectionString);
+            remainingRetries--;
+            if (remainingRetries > 0) {
+                context.timeout(plc4xTimeout);
+                throw new RetriableException("Failed to Write to " + plc4xConnectionString + " retrying records that haven't expired");
+            }
+            log.warn("Failed to write after {} retries", plc4xRetries);
+            return;
+        }
+
+        PlcWriteRequest writeRequest;
+        final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+        int validCount = 0;
         for (SinkRecord r: records) {
             Struct record = (Struct) r.value();
             String topic = r.topic();
-            String address = record.getString("address");
+            String field = record.getString("field");
             String value = record.getString("value");
-            Long expires = record.getInt64("expires");
+            Long timestamp = r.timestamp();
+            Long expires = record.getInt64("expires") + timestamp;
 
+            //Discard records we are not or no longer interested in.
             if (!topic.equals(plc4xTopic) || plc4xTopic.equals("")) {
-                log.debug("Ignoring write request recived on wrong topic");
-                return;
-            }
-
-            if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
-                log.warn("Write request has expired {}, discarding {}", System.currentTimeMillis(), address);
-                return;
-            }
-
-            PlcConnection connection = null;
-            try {
-                connection = driverManager.getConnection(plc4xConnectionString);
-            } catch (PlcConnectionException e) {
-                log.warn("Failed to Open Connection {}", plc4xConnectionString);
-            }
-
-            final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            PlcWriteRequest writeRequest;
-            try {
-                //If an array value is passed instead of a single value then convert to a String array
-                if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
-                    String[] values = value.substring(1,value.length() - 1).split(",");
-                    builder.addItem(address, address, values);
-                } else {
-                    builder.addItem(address, address, value);
+                log.debug("Ignoring write request received on wrong topic");
+            } else if (!fields.containsKey(field)) {
+                log.warn("Unable to find address for field " + field);
+            } else if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
+                log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), field);
+            } else {
+                String address = fields.get(field);
+                log.info(field);
+                log.info(address);
+                try {
+                    //If an array value is passed instead of a single value then convert to a String array
+                    if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
+                        String[] values = value.substring(1,value.length() - 1).split(",");
+                        builder.addItem(address, address, values);
+                    } else {
+                        builder.addItem(address, address, value);
+                    }
+                    validCount += 1;
+                } catch (Exception e) {
+                    //When building a request we want to discard the write if there is an error.
+                    log.warn("Invalid Address format for protocol {}", address);
                 }
-
-                writeRequest = builder.build();
-            } catch (Exception e) {
-                //When building a request we want to discard the write if there is an error.
-                log.warn("Failed to Write to {}", plc4xConnectionString);
-                return;
             }
-
-            try {
-                writeRequest.execute().get();
-                log.info("Wrote {} to device {}", address, plc4xConnectionString);
-            } catch (InterruptedException | ExecutionException e) {
-                log.warn("Failed to Write to {}", plc4xConnectionString);
-            }
-
-            //try {
-            //    connection.close();
-            //} catch (Exception e) {
-            //    log.warn("Failed to Close {}", plc4xConnectionString);
-            //}
         }
+
+        if (validCount > 0) {
+            try {
+                writeRequest = builder.build();
+                writeRequest.execute().get();
+                log.debug("Wrote records to {}", plc4xConnectionString);
+            } catch (Exception e) {
+                remainingRetries--;
+                if (remainingRetries > 0) {
+                    context.timeout(plc4xTimeout);
+                    try {
+                        connection.close();
+                    } catch (Exception f) {
+                        log.warn("Failed to Close {} on RetriableException", plc4xConnectionString);
+                    }
+                    throw new RetriableException("Failed to Write to " + plc4xConnectionString + " retrying records that haven't expired");
+                }
+                log.warn("Failed to write after {} retries", plc4xRetries);
+            }
+        }
+
+        try {
+            connection.close();
+        } catch (Exception e) {
+            log.warn("Failed to Close {}", plc4xConnectionString);
+        }
+
+        remainingRetries = plc4xRetries;
         return;
     }
 }

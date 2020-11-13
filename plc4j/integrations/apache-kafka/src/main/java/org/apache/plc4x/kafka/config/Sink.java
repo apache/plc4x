@@ -18,16 +18,24 @@ under the License.
 */
 package org.apache.plc4x.kafka.config;
 
+import java.util.Map;
+
 public class Sink {
 
     private final String name;
     private final String connectionString;
     private final String topic;
+    private final Integer retries;
+    private final Integer timeout;
+    private final Map<String, String> fields;
 
-    public Sink(String name, String connectionString, String topic) {
+    public Sink(String name, String connectionString, String topic, Map<String, String> fields, Integer retries, Integer timeout) {
         this.name = name;
         this.connectionString = connectionString;
         this.topic = topic;
+        this.fields = fields;
+        this.retries = retries;
+        this.timeout = timeout;
     }
 
     public String getName() {
@@ -40,6 +48,18 @@ public class Sink {
 
     public String getTopic() {
         return topic;
+    }
+
+    public Integer getRetries() {
+        return retries;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public Map<String, String> getFields() {
+        return fields;
     }
 
 }

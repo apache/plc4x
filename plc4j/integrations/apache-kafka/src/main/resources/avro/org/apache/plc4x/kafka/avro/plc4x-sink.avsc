@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "name": "PlcSinkRecord",
+  "namespace": "org.apache.plc4x.kafka.avro",
+  "fields": [
+    {
+      "name": "address",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "name": "expires",
+      "type": "int",
+      "default": 0
+    }
+  ]
+}
