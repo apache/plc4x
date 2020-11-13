@@ -104,7 +104,7 @@ func (m *KnxNetIpSubscriber) handleValueChange(cemiDataFrame *driverModel.CEMIDa
             }
             subscriptionType := subscriptionRequest.GetType(fieldName)
             // If it matches, take the datatype of each matching field and try to decode the payload
-            if field.matches(*groupAddress) {
+            if field.matches(groupAddress) {
                 // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
                 if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
                     var payload []uint8

@@ -76,7 +76,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
         case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
         <#assign valueDefined=false>
         <#if case.name == "Struct">
-            _map := map[string]interface{}{}
+            _map := map[string]api.PlcValue{}
             <#assign valueDefined=true>
         </#if>
         <#list case.fields as field>
@@ -126,7 +126,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
                 return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
             }
                     <#if case.name == "Struct">
-            _map["${case.name}"] = ${field.name}
+            _map["${case.name}"] = ${helper.getPlcValueTypeForTypeReference(field.type)}(${field.name})
                     </#if>
                     <#assign valueDefined=true>
                     <#break>

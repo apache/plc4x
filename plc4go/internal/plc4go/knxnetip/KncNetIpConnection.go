@@ -59,6 +59,9 @@ type KnxNetIpConnection struct {
     valueHandler             spi.PlcValueHandler
     quitConnectionStateTimer chan struct{}
     subscribers              []*KnxNetIpSubscriber
+    leve3AddressCache        map[uint16]*driverModel.KnxGroupAddress3Level
+    leve2AddressCache        map[uint16]*driverModel.KnxGroupAddress2Level
+    leve1AddressCache        map[uint16]*driverModel.KnxGroupAddressFreeLevel
     valueCache               map[uint16][]int8
 
     GatewayKnxAddress      *driverModel.KnxAddress
@@ -78,6 +81,9 @@ func NewKnxNetIpConnection(messageCodec spi.MessageCodec, options map[string][]s
         valueHandler:       NewValueHandler(),
         requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
         subscribers:        []*KnxNetIpSubscriber{},
+        leve3AddressCache:  map[uint16]*driverModel.KnxGroupAddress3Level{},
+        leve2AddressCache:  map[uint16]*driverModel.KnxGroupAddress2Level{},
+        leve1AddressCache:  map[uint16]*driverModel.KnxGroupAddressFreeLevel{},
         valueCache:         map[uint16][]int8{},
     }
 }
@@ -377,6 +383,22 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
                 payload = append(payload, cemiDataInd.CemiDataFrame.Data...)
                 if !ok || !m.sliceEqual(val, payload) {
                     m.valueCache[addressData] = payload
+                    // If this is a new value, we have to also provide the 3 different types of addresses.
+                    if !ok {
+                        destinationAddress := cemiDataInd.CemiDataFrame.DestinationAddress
+                        arb := utils.NewReadBuffer(utils.Int8ToUint8(destinationAddress))
+                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
+                            m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
+                        }
+                        arb.Reset()
+                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
+                            m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
+                        }
+                        arb.Reset()
+                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
+                            m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
+                        }
+                    }
                     changed = true
                 }
                 for _, subscriber := range m.subscribers {
