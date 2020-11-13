@@ -36,6 +36,14 @@
     <kafka.connect.maven.plugin.version>0.11.3</kafka.connect.maven.plugin.version>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
   <!-- Build a fat jar so the user only needs to drop in this one jar -->
   <build>
     <plugins>
@@ -68,9 +76,6 @@
           </usedDependencies>
         </configuration>
       </plugin>
-
-
-
       <plugin>
         <groupId>io.confluent</groupId>
         <version>${kafka.connect.maven.plugin.version}</version>
@@ -133,7 +138,6 @@
             </execution>
         </executions>
     </plugin>
-
     </plugins>
   </build>
 

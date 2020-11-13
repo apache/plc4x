@@ -939,6 +939,7 @@
 
             <!-- JSON doesn't like comments -->
             <exclude>**/*.json</exclude>
+            <exclude>**/*.avsc</exclude>
 
             <!-- Output of the profiler maven extension -->
             <exclude>**/.profiler/**</exclude>

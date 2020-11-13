@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "PlcSourceRecord",
+  "namespace": "org.apache.plc4x.kafka.config",
+  "fields": [
+    {
+      "name": "running",
+      "type": "int16"
+    },
+    {
+      "name": "conveyorLeft",
+      "type": "int16"
+    },
+    ....
+  ]
+}
+
+
+{
+  "type": "record",
+  "name": "source-connector",
+  "namespace": "com.apache.plc4x.kafka.config",
+  "fields": [
+    {
+      "name": "tag",
+      "type":{
+                "type": "array",
+                "items":{
+                    "name":"tag",
+                    "type":"record",
+                    "fields":[
+                        {"name":"name", "type":"string"},
+                        {"name":"value", "type":"string"}
+                    ]
+                }
+            }
+    }
+    {
+      "name": "timestamp",
+      "type": "string"
+    }
+  ]
+}

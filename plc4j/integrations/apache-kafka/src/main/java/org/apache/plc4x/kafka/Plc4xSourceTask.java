@@ -95,8 +95,8 @@ public class Plc4xSourceTask extends SourceTask {
     /*
      * Configuration of the output.
      */
-    private static final String SOURCE_NAME_FIELD = "source-name";
-    private static final String JOB_NAME_FIELD = "job-name";
+    private static final String SOURCE_NAME_FIELD = "sourceName";
+    private static final String JOB_NAME_FIELD = "jobName";
 
     private static final Schema KEY_SCHEMA =
         new SchemaBuilder(Schema.Type.STRUCT)
