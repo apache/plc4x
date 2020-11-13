@@ -41,20 +41,7 @@ public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }
-
-    @Override
-    public PlcValue encodeString(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == String.class) {
-            if(values.length == 1) {
-                return new PlcString((String) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
+    
     @Override
     public PlcValue encodeTime(PlcField field, Object[] values) {
         SimulatedField testField = (SimulatedField) field;

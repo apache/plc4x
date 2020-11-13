@@ -102,7 +102,7 @@ class SimularedFieldHandlerTest implements WithAssertions {
 
     @Test
     void encodeString() {
-        when(plcField.getDataType()).thenReturn((Class) String.class);
+        when(plcField.getPlcDataType()).thenReturn("String");
         assertThat(SUT.encodeString(plcField, new String[0])).isNotNull();
     }
 

@@ -41,14 +41,14 @@ public class SimulatedField implements PlcField {
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;
-    private final Class<?> dataType;
+    private final String dataType;
     private final int numElements;
 
-    private SimulatedField(SimulatedFieldType type, String name, Class<?> dataType, int numElements) {
+    private SimulatedField(SimulatedFieldType type, String name, String dataType, int numElements) {
         this.type = type;
         this.name = name;
         this.dataType = dataType;
@@ -65,13 +65,8 @@ public class SimulatedField implements PlcField {
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
-            try {
-                Class<?> dataType = Class.forName("java.lang." + dataTypeName);
-                return new SimulatedField(type, name, dataType, numElements);
-            } catch (ClassNotFoundException e) {
-                logger.error("Unsupported type: " + dataTypeName, e);
-                throw new PlcInvalidFieldException("Unsupported type: " + dataTypeName);
-            }
+
+            return new SimulatedField(type, name, dataTypeName, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -85,14 +80,14 @@ public class SimulatedField implements PlcField {
     }
 
     public String getPlcDataType() {
-        return dataType.getSimpleName();
+        return dataType;
     }
 
     public String getName() {
         return name;
     }
 
-    public Class<?> getDataType() {
+    public String getDataType() {
         return dataType;
     }
 

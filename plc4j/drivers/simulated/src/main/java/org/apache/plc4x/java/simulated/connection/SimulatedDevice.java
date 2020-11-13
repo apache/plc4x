@@ -23,6 +23,10 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
+import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
 import java.time.Duration;
@@ -62,7 +66,7 @@ public class SimulatedDevice {
             case STATE:
                 return Optional.ofNullable(state.get(field));
             case RANDOM:
-                return Optional.of(randomValue(field.getDataType()));
+                return Optional.of(randomValue(field));
             case STDOUT:
                 return Optional.empty();
         }
@@ -90,48 +94,22 @@ public class SimulatedDevice {
     }
 
     @SuppressWarnings("unchecked")
-    private PlcValue randomValue(Class<?> type) {
+    private PlcValue randomValue(SimulatedField field) {
         Object result = null;
 
-        if (type.equals(Byte.class)) {
-            return PlcValues.of((byte) random.nextInt(1 << 8));
+        Short fieldDataType = SimulatedDataType.valueOf(field.getPlcDataType()).getValue();
+        Short fieldDataTypeSize = SimulatedDataType.valueOf(field.getPlcDataType()).getDataTypeSize();
+
+        byte[] b = new byte[fieldDataTypeSize];
+        new Random().nextBytes(b);
+
+        ReadBuffer io = new ReadBuffer(b);
+        try {
+            return DataItemIO.staticParse(io, fieldDataType, (short) 1);
+        } catch (ParseException e) {
+            return null;
         }
 
-        if (type.equals(Short.class)) {
-            return PlcValues.of((short) random.nextInt(1 << 16));
-        }
-
-        if (type.equals(Integer.class)) {
-            return PlcValues.of(random.nextInt());
-        }
-
-        if (type.equals(Long.class)) {
-            return PlcValues.of(random.nextLong());
-        }
-
-        if (type.equals(Float.class)) {
-            return PlcValues.of(random.nextFloat());
-        }
-
-        if (type.equals(Double.class)) {
-            return PlcValues.of(random.nextDouble());
-        }
-
-        if (type.equals(Boolean.class)) {
-            return PlcValues.of(random.nextBoolean());
-        }
-
-        if (type.equals(String.class)) {
-            int length = random.nextInt(100);
-            StringBuilder sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                char c = (char) ('a' + random.nextInt(26));
-                sb.append(c);
-            }
-            return PlcValues.of(sb.toString());
-        }
-
-        return null;
     }
 
     @Override
