@@ -21,6 +21,7 @@ package org.apache.plc4x.java.simulated.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
+public class SimulatedFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -40,63 +41,6 @@ public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
             return SimulatedField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
-    }
-
-    @Override
-    public PlcValue encodeTime(PlcField field, Object[] values) {
-        switch (field.getPlcDataType().toUpperCase()) {
-            case "LOCALTIME":
-            case "TIME":
-                if(values.length == 1) {
-                    return new PlcTime((LocalTime) values[0]);
-                } else {
-                    List<PlcTime> plcValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcValues.add(new PlcTime((LocalTime) values[i]));
-                    }
-                    return new PlcList(plcValues);
-                }
-            default:
-                throw new PlcRuntimeException("Invalid encoder for type " + field.getPlcDataType());
-        }
-    }
-
-    @Override
-    public PlcValue encodeDate(PlcField field, Object[] values) {
-        switch (field.getPlcDataType().toUpperCase()) {
-            case "LOCALDATE":
-            case "DATE":
-                if(values.length == 1) {
-                    return new PlcDate((LocalDate) values[0]);
-                } else {
-                    List<PlcDate> plcValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcValues.add(new PlcDate((LocalDate) values[i]));
-                    }
-                    return new PlcList(plcValues);
-                }
-            default:
-                throw new PlcRuntimeException("Invalid encoder for type " + field.getPlcDataType());
-        }
-    }
-
-    @Override
-    public PlcValue encodeDateTime(PlcField field, Object[] values) {
-        switch (field.getPlcDataType().toUpperCase()) {
-            case "LOCALDATETIME":
-            case "DATETIME":
-                if(values.length == 1) {
-                    return new PlcDateTime((LocalDateTime) values[0]);
-                } else {
-                    List<PlcDateTime> plcValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcValues.add(new PlcDateTime((LocalDateTime) values[i]));
-                    }
-                    return new PlcList(plcValues);
-                }
-            default:
-                throw new PlcRuntimeException("Invalid encoder for type " + field.getPlcDataType());
-        }
     }
 
 }

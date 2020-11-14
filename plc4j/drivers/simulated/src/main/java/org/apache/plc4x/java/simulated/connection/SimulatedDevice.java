@@ -24,10 +24,10 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
@@ -101,21 +101,14 @@ public class SimulatedDevice {
     private PlcValue randomValue(SimulatedField field) {
         Object result = null;
 
-        Short fieldDataType = SimulatedDataType.valueOf(field.getPlcDataType()).getValue();
-        Short fieldDataTypeSize = SimulatedDataType.valueOf(field.getPlcDataType()).getDataTypeSize();
+        Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
 
         byte[] b = new byte[fieldDataTypeSize];
         new Random().nextBytes(b);
 
         ReadBuffer io = new ReadBuffer(b);
         try {
-            if (field.getPlcDataType().toUpperCase().equals("STRING")) {
-                return new PlcString(new String(b, StandardCharsets.UTF_8));
-            } else if (field.getPlcDataType().toUpperCase().equals("WSTRING")) {
-                return new PlcString(new String(b, StandardCharsets.UTF_16));
-            } else {
-                return DataItemIO.staticParse(io, fieldDataType, (short) 1);
-            }
+            return DataItemIO.staticParse(io, field.getPlcDataType(), 1);
         } catch (ParseException e) {
             return null;
         }

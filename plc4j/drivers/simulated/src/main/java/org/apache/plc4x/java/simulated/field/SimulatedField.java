@@ -21,7 +21,7 @@ package org.apache.plc4x.java.simulated.field;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.types.SimulatedFieldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,29 +61,18 @@ public class SimulatedField implements PlcField {
         if (matcher.matches()) {
             SimulatedFieldType type = SimulatedFieldType.valueOf(matcher.group("type"));
             String name = matcher.group("name");
-            //[TODO] Fix when plc4go is merged
-            String dataTypeProper = WordUtils.capitalizeFully(matcher.group("dataType"));
-            String dataTypeName = matcher.group("dataType").toUpperCase();
+            String dataType = "IEC61131_" + matcher.group("dataType").toUpperCase();
             try {
-                if (dataTypeName.equals("STRING")) {
-                    SimulatedDataType.valueOf(dataTypeProper);
-                } else {
-                    SimulatedDataType.valueOf(dataTypeName);
-                }
-            } catch (IllegalArgumentException e) {
-                throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+                SimulatedDataTypeSizes.enumForValue(dataType).getDataTypeSize();
+            } catch (NullPointerException e) {
+                throw new PlcInvalidFieldException("Invalid data type: " + dataType);
             }
 
             int numElements = 1;
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
-            if (dataTypeName.equals("STRING")) {
-                return new SimulatedField(type, name, dataTypeProper, numElements);
-            } else {
-                return new SimulatedField(type, name, dataTypeName, numElements);
-            }
-
+            return new SimulatedField(type, name, dataType, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
