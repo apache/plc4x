@@ -21,4 +21,165 @@
 
 Website: https://kafka.apache.org/[Apache Kafka]
 
-Apache Kafka® is a distributed streaming platform.
+Apache Kafka is an open-source distributed event streaming platform used by thousands of
+companies for high-performance data pipelines, streaming analytics, data integration, and
+mission-critical applications.
+
+# PLC4X Kafka Connectors
+
+The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
+The connectors can be built from source from the latest 0.8 https://plc4x.apache.org/users/download.html[release] of
+PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github]. They can also be downloaded from
+the confluent https://www.confluent.io/hub/[hub].
+
+## Introduction
+
+A connect worker is basically a producer or consumer process with a standard api that Kafka can use to manage it. It is
+able to be run in two modes:-
+
+- Standalone
+- Distributed
+
+Standalone allows you to run the connector locally from the command line without having to install the jar file on your
+Kafka brokers.
+In distributed mode the connector runs on the Kafka brokers. This requires you to install the jar file on all of your
+brokers. It allows the worker to be distrubuted across the Kafka brokers to provide redundancy and load balancing.
+
+## Quickstart
+
+In order to start a Kafka Connect system the following steps have to be performed:
+
+1) Download the latest version of Apache Kafka binaries from here: https://kafka.apache.org/downloads.
+
+2) Unpack the archive.
+
+3) Copy the `target/plc4j-apache-kafka-0.8.0-uber-jar.jar` to the Kafka `libs` or plugin directory specified
+in the config/connect-distributed.properties file.
+
+4) Copy the files in the `config` to Kafka's `config` directory.
+
+### Start a Kafka Broker
+
+1) Open 4 console windows and change directory into that directory
+2) Start Zookeeper:
+
+        bin/zookeeper-server-start.sh config/zookeeper.properties
+
+3) Start Kafka:
+
+        bin/kafka-server-start.sh config/server.properties
+
+4) Create the "test" topic:
+
+        bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
+
+5) Start the consumer:
+
+        bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+
+## Source Connector
+
+The starting configuration for you connect worker is provided by the plc4x-source.properties file. Once the worker has
+started the configuration can be changed using the connect REST API which is generally available on
+http://localhost:8083/connectors. When running in distributed mode all the configuration needs to be done via the REST API.
+
+A sample configuration file is provided in the PLC4X repository `config/plc4x-source.properties`. This includes comments
+as well as meaningful properties that can be used with the worker.
+
+The configuration of the connectors via the REST interface expects the same properties as are specified within the
+example `config/plc4x-source.properties` file. These will need to be in JSON format and included with a couple of headers.
+An example below shows the format it expects:-
+
+    curl -X POST -H "Content-Type: application/json" --data '{"name": "plc-source-test", "config": {"connector.class":"org.apache.plc4x.kafka.Plc4xSourceConnector",
+    // TODO: Continue here ...
+    "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
+
+
+### Start a Kafka Source Connect Worker (Standalone)
+
+Ideal for testing.
+
+1) Start Kafka connect:
+
+        bin/connect-standalone.sh config/connect-standalone.properties config/plc4x-source.properties
+
+Now watch the console window with the "kafka-console-consumer".
+
+If you want to debug the connector, be sure to set some environment variables before starting Kafka-Connect:
+
+        export KAFKA_DEBUG=y; export DEBUG_SUSPEND_FLAG=y;
+
+In this case the startup will suspend till an IDE is connected via a remote-debugging session.
+
+### Start Kafka Source Connect Worker (Distributed Mode)
+
+Ideal for production.
+
+In this case the state of the node is handled by Zookeeper and the configuration of the connectors are distributed via Kafka topics.
+
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-configs --replication-factor 3 --partitions 1 --config cleanup.policy=compact
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-offsets --replication-factor 3 --partitions 50 --config cleanup.policy=compact
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-status --replication-factor 3 --partitions 10 --config cleanup.policy=compact
+
+Starting the worker is then as simple as this:
+
+    bin /connect-distributed.sh config/connect-distributed.properties
+
+The configuration of the Connectors is then provided via REST interface:
+
+    curl -X POST -H "Content-Type: application/json" --data '{"name": "plc-source-test", "config": {"connector.class":"org.apache.plc4x.kafka.Plc4xSourceConnector",
+    // TODO: Continue here ...
+    "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
+
+## Sink Connector
+
+See `config/sink.properties` for example configuration.
+
+### Start a Kafka Sink Connect Worker (Standalone)
+
+Ideal for testing.
+
+1) Start Kafka connect:
+
+        bin/connect-standalone.sh config/connect-standalone.properties config/plc4x-sink.properties
+
+Now open console window with "kafka-console-producer".
+
+Producing to the kafka topic using the sample packet shown below should result in the array being sent to the modbus device.
+
+    {"schema":{"type":"struct",
+               "fields":[
+                   {"type":"string","optional":false,"field":"address"},
+                   {"type":"string","optional":false,"field":"value"},
+                   {"type":"int64","optional":true,"default":0,"field":"expires"}]},
+     "payload":{
+         "address":"400001:INT[2]",
+         "value":"[655,9]",
+         "expires":1605575611044}}
+
+If you want to debug the connector, be sure to set some environment variables before starting Kafka-Connect:
+
+        export KAFKA_DEBUG=y; export DEBUG_SUSPEND_FLAG=y;
+
+In this case the startup will suspend till an IDE is connected via a remote-debugging session.
+
+### Start Kafka Sink Connect Worker (Distributed Mode)
+
+Ideal for production.
+
+In this case the state of the node is handled by Zookeeper and the configuration of the connectors are distributed via Kafka topics.
+
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-configs --replication-factor 3 --partitions 1 --config cleanup.policy=compact
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-offsets --replication-factor 3 --partitions 50 --config cleanup.policy=compact
+    bin/kafka-topics --create --zookeeper localhost:2181 --topic connect-status --replication-factor 3 --partitions 10 --config cleanup.policy=compact
+
+Starting the worker is then as simple as this:
+
+    bin /connect-distributed.sh config/connect-distributed.properties
+
+The configuration of the Connectors is then provided via REST interface:
+
+    curl -X POST -H "Content-Type: application/json" --data '{"name": "plc-sink-test", "config": {"connector.class":"org.apache.plc4x.kafka.Plc4xSinkConnector",
+    // TODO: Continue here ...
+    "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
+
