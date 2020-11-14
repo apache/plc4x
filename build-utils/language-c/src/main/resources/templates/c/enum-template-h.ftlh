@@ -59,7 +59,7 @@ extern "C" {
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = ${enumValue.value}<#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if helper.isStringTypeReference(type.type)>${enumValue?index}<#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };

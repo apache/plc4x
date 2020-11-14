@@ -36,7 +36,9 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcDINT;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +100,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             for (String fieldName : writeRequest.getFieldNames()) {
                 result.put(fieldName, PlcResponseCode.OK);
             }
-            future.complete(new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, result));
+            future.complete(new DefaultPlcWriteResponse(writeRequest, result));
         } catch (PlcRuntimeException e) {
             future.completeExceptionally(e);
         }
@@ -120,7 +122,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                 result.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
                     new FirmataSubscriptionHandle(this, fieldName, field)));
             }
-            future.complete(new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, result));
+            future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, result));
         } catch (PlcRuntimeException e) {
             future.completeExceptionally(e);
         }
@@ -180,7 +182,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
         final DefaultPlcConsumerRegistration consumerRegistration =
-            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new InternalPlcSubscriptionHandle[0]));
+            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new PlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }
@@ -197,7 +199,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             final DefaultPlcConsumerRegistration registration = entry.getKey();
             final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
             // Only if the current data point matches the subscription, publish the event to it.
-            for (InternalPlcSubscriptionHandle handle : registration.getAssociatedHandles()) {
+            for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 if (handle instanceof FirmataSubscriptionHandle) {
                     FirmataSubscriptionHandle subscriptionHandle = (FirmataSubscriptionHandle) handle;
                     // Check if the subscription matches this current event
@@ -236,7 +238,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             final DefaultPlcConsumerRegistration registration = entry.getKey();
             final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
             // Only if the current data point matches the subscription, publish the event to it.
-            for (InternalPlcSubscriptionHandle handle : registration.getAssociatedHandles()) {
+            for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 if(handle instanceof FirmataSubscriptionHandle) {
                     FirmataSubscriptionHandle subscriptionHandle = (FirmataSubscriptionHandle) handle;
                     // Check if the subscription matches this current event

@@ -30,19 +30,19 @@ plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_
 
 plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_of(char* value_string) {
     if(strcmp(value_string, "CLASS_0") == 0) {
-        return 0x00;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
     }
     if(strcmp(value_string, "CLASS_1") == 0) {
-        return 0x10;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_1;
     }
     if(strcmp(value_string, "CLASS_2") == 0) {
-        return 0x20;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_2;
     }
     if(strcmp(value_string, "CLASS_3") == 0) {
-        return 0x30;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_3;
     }
     if(strcmp(value_string, "CLASS_4") == 0) {
-        return 0x40;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_4;
     }
     return -1;
 }
@@ -54,19 +54,19 @@ int plc4c_s7_read_write_cotp_protocol_class_num_values() {
 plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x00;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
       }
       case 1: {
-        return 0x10;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_1;
       }
       case 2: {
-        return 0x20;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_2;
       }
       case 3: {
-        return 0x30;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_3;
       }
       case 4: {
-        return 0x40;
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_4;
       }
       default: {
         return -1;

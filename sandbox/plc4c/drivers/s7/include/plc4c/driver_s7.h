@@ -73,6 +73,8 @@ plc4c_driver *plc4c_driver_s7_create();
 
 char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io, int32_t stringLength, char* encoding);
 
+char* plc4c_s7_read_write_parse_s7_char(plc4c_spi_read_buffer* io, char* encoding);
+
 time_t plc4c_s7_read_write_parse_tia_time(plc4c_spi_read_buffer* io);
 
 time_t plc4c_s7_read_write_parse_s5_time(plc4c_spi_read_buffer* io);

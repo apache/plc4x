@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class TcpTransport implements Transport, HasConfiguration<TcpTransportConfiguration> {
 
     private static final Pattern TRANSPORT_TCP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9\\.\\-]+))(:(?<port>[0-9]{1,5}))?");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?");
 
     private TcpTransportConfiguration configuration;
 

@@ -142,11 +142,7 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
-/* For the following types the parsing/serialization has to be handled manually */
- /* Fixed length string parsing */
- | base='string' size=INTEGER_LITERAL encoding=idExpression
- /* Variable length string parsing */
- | base='string' encoding=idExpression
+ | base='string' (size=INTEGER_LITERAL)? (encoding=idExpression)?
  | base='time'
  | base='date'
  | base='dateTime'

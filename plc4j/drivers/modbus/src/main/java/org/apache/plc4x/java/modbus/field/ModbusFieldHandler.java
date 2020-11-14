@@ -19,21 +19,10 @@ under the License.
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.modbus.readwrite.*;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-import java.math.BigInteger;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
-
-public class ModbusFieldHandler extends DefaultPlcFieldHandler {
+public class ModbusFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {

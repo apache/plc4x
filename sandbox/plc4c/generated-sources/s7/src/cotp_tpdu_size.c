@@ -30,25 +30,25 @@ plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null() {
 
 plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_of(char* value_string) {
     if(strcmp(value_string, "SIZE_128") == 0) {
-        return 0x07;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_128;
     }
     if(strcmp(value_string, "SIZE_256") == 0) {
-        return 0x08;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_256;
     }
     if(strcmp(value_string, "SIZE_512") == 0) {
-        return 0x09;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_512;
     }
     if(strcmp(value_string, "SIZE_1024") == 0) {
-        return 0x0a;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_1024;
     }
     if(strcmp(value_string, "SIZE_2048") == 0) {
-        return 0x0b;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_2048;
     }
     if(strcmp(value_string, "SIZE_4096") == 0) {
-        return 0x0c;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_4096;
     }
     if(strcmp(value_string, "SIZE_8192") == 0) {
-        return 0x0d;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_8192;
     }
     return -1;
 }
@@ -60,25 +60,25 @@ int plc4c_s7_read_write_cotp_tpdu_size_num_values() {
 plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x07;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_128;
       }
       case 1: {
-        return 0x08;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_256;
       }
       case 2: {
-        return 0x09;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_512;
       }
       case 3: {
-        return 0x0a;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_1024;
       }
       case 4: {
-        return 0x0b;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_2048;
       }
       case 5: {
-        return 0x0c;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_4096;
       }
       case 6: {
-        return 0x0d;
+        return plc4c_s7_read_write_cotp_tpdu_size_SIZE_8192;
       }
       default: {
         return -1;
@@ -88,25 +88,25 @@ plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_for_
 
 uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
   switch(value) {
-    case 7: { /* '0x07' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_128: { /* '0x07' */
       return 128;
     }
-    case 8: { /* '0x08' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_256: { /* '0x08' */
       return 256;
     }
-    case 9: { /* '0x09' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_512: { /* '0x09' */
       return 512;
     }
-    case 10: { /* '0x0a' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_1024: { /* '0x0a' */
       return 1024;
     }
-    case 11: { /* '0x0b' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_2048: { /* '0x0b' */
       return 2048;
     }
-    case 12: { /* '0x0c' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_4096: { /* '0x0c' */
       return 4096;
     }
-    case 13: { /* '0x0d' */
+    case plc4c_s7_read_write_cotp_tpdu_size_SIZE_8192: { /* '0x0d' */
       return 8192;
     }
     default: {

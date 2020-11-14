@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import org.apache.plc4x.java.api.messages.PlcRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
  * @param <T> type of request.
  * @param <R> type of response.
  */
-public class PlcRequestContainer<T extends InternalPlcRequest, R extends InternalPlcResponse> implements PlcProtocolMessage {
+public class PlcRequestContainer<T extends PlcRequest, R extends PlcResponse> implements PlcProtocolMessage {
 
     private final T request;
     private final CompletableFuture<R> responseFuture;

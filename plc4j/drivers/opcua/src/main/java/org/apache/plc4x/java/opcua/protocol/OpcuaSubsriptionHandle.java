@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
@@ -41,6 +42,7 @@ import java.util.function.Consumer;
 /**
  */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
+
     private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
     private String fieldName;
     private UInteger clientHandle;
@@ -83,7 +85,8 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
         consumers.add(consumer);
-        return () -> consumers.remove(consumer);
+        return null;
+//        return () -> consumers.remove(consumer);
     }
 
 }

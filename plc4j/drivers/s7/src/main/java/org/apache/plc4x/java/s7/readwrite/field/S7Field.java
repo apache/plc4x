@@ -33,6 +33,9 @@ import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,7 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class S7Field implements PlcField {
+public class S7Field implements PlcField, XmlSerializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
@@ -120,12 +123,13 @@ public class S7Field implements PlcField {
     }
 
     public static boolean matches(String fieldString) {
-        return ADDRESS_PATTERN.matcher(fieldString).matches() ||
+        return
             DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString).matches() ||
             DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString).matches() ||
             DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
             DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
-            PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches();
+            PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches() ||
+            ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
     /**
@@ -166,32 +170,7 @@ public class S7Field implements PlcField {
 
     public static S7Field of(String fieldString) {
         Matcher matcher;
-        if ((matcher = ADDRESS_PATTERN.matcher(fieldString)).matches()) {
-            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
-            MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
-            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
-            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
-            byte bitOffset = 0;
-            if (matcher.group(BIT_OFFSET) != null) {
-                bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
-            }
-            int numElements = 1;
-            if (matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
-            }
-
-            if ((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
-                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
-                    "' doesn't match specified data type '" + dataType.name() + "'");
-            }
-            if ((dataType != TransportSize.BOOL) && bitOffset != 0) {
-                throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
-            }
-
-            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
-        } else if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
+        if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.STRING;
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
@@ -309,6 +288,31 @@ public class S7Field implements PlcField {
             } catch (ParseException | DecoderException e) {
                 throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
             }
+        } else if ((matcher = ADDRESS_PATTERN.matcher(fieldString)).matches()) {
+            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
+            MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
+            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
+            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+            byte bitOffset = 0;
+            if (matcher.group(BIT_OFFSET) != null) {
+                bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
+            } else if (dataType == TransportSize.BOOL) {
+                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+            }
+            int numElements = 1;
+            if (matcher.group(NUM_ELEMENTS) != null) {
+                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+            }
+
+            if ((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
+                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
+                    "' doesn't match specified data type '" + dataType.name() + "'");
+            }
+            if ((dataType != TransportSize.BOOL) && bitOffset != 0) {
+                throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
+            }
+
+            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -369,4 +373,36 @@ public class S7Field implements PlcField {
             ", numElements=" + numElements +
             '}';
     }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+
+        Element memoryAreaElement = doc.createElement("memoryArea");
+        memoryAreaElement.appendChild(doc.createTextNode(getMemoryArea().name()));
+        messageElement.appendChild(memoryAreaElement);
+
+        Element blockNumberElement = doc.createElement("blockNumber");
+        blockNumberElement.appendChild(doc.createTextNode(Integer.toString(getBlockNumber())));
+        messageElement.appendChild(blockNumberElement);
+
+        Element byteOffsetElement = doc.createElement("byteOffset");
+        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getByteOffset())));
+        messageElement.appendChild(byteOffsetElement);
+
+        Element bitOffsetElement = doc.createElement("bitOffset");
+        bitOffsetElement.appendChild(doc.createTextNode(Integer.toString(getBitOffset())));
+        messageElement.appendChild(bitOffsetElement);
+
+        Element numElementsElement = doc.createElement("numElements");
+        numElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(numElementsElement);
+
+        Element dataTypeElement = doc.createElement("dataType");
+        dataTypeElement.appendChild(doc.createTextNode(getDataType().name()));
+        messageElement.appendChild(dataTypeElement);
+    }
+
 }

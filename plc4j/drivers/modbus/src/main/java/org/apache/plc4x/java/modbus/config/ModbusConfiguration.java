@@ -27,7 +27,7 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 public class ModbusConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter("request-timeout")
-    @IntDefaultValue(1_000)
+    @IntDefaultValue(5_000)
     private int requestTimeout;
 
     @ConfigurationParameter("unit-identifier")

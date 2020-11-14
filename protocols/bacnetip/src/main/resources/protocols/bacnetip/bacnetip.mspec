@@ -170,16 +170,10 @@
             [array  BACnetTagWithContent 'notifications'                             length 'len - 18'      ]
             [const  uint 8               'listOfValuesClosingTag'                    '0x4F'                 ]
         ]
-        ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-        ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification
         ]
 
         ['0x04' BACnetConfirmedServiceRequestGetEnrollmentSummary
-        ]
-        ['0x1D' BACnetConfirmedServiceRequestGetEventInformation
-        ]
-        ['0x1B' BACnetConfirmedServiceRequestLifeSafetyOperation
         ]
         ['0x05' BACnetConfirmedServiceRequestSubscribeCOV
             [const  uint 8  'subscriberProcessIdentifierHeader'   '0x09'                ]
@@ -193,10 +187,6 @@
             [const  uint 5  'lifetimeHeader'                      '0x07'                ]
             [simple uint 3  'lifetimeLength'                                            ]
             [array  int 8   'lifetimeSeconds'                     count 'lifetimeLength']
-        ]
-        ['0x1C' BACnetConfirmedServiceRequestSubscribeCOVProperty
-        ]
-        ['0x1E' BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         ]
 
         ['0x06' BACnetConfirmedServiceRequestAtomicReadFile
@@ -221,8 +211,6 @@
             [array  int 8   'propertyIdentifier'       count 'propertyIdentifierLength']
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
-        ]
-        ['0x1A' BACnetConfirmedServiceRequestReadRange
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty [uint 16 'len']
             [const    uint 8    'objectIdentifierHeader'    '0x0C'                          ]

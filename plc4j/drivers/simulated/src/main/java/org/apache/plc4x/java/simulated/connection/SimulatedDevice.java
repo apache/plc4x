@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
@@ -27,6 +28,9 @@ import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.simulated.field.SimulatedField;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -123,9 +127,9 @@ public class SimulatedDevice {
         return name;
     }
 
-    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField, Duration duration) {
+    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField, Duration duration) {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            PlcValue baseDefaultPlcValue = state.get(plcField);
+            PlcValue baseDefaultPlcValue = state.get(((DefaultPlcSubscriptionField) plcField).getPlcField());
             if (baseDefaultPlcValue == null) {
                 return;
             }
@@ -134,14 +138,14 @@ public class SimulatedDevice {
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
 
-    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField) {
-        changeOfStateSubscriptions.put(handle, Pair.of(plcField, consumer));
+    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
+        changeOfStateSubscriptions.put(handle, Pair.of((SimulatedField) ((DefaultPlcSubscriptionField) plcField).getPlcField(), consumer));
     }
 
-    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField) {
+    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
         Future<?> submit = pool.submit(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                PlcValue baseDefaultPlcValue = state.get(plcField);
+                PlcValue baseDefaultPlcValue = state.get(((DefaultPlcSubscriptionField) plcField).getPlcField());
                 if (baseDefaultPlcValue == null) {
                     continue;
                 }
@@ -158,7 +162,7 @@ public class SimulatedDevice {
         eventSubscriptions.put(handle, submit);
     }
 
-    public void removeHandles(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+    public void removeHandles(Collection<? extends PlcSubscriptionHandle> internalPlcSubscriptionHandles) {
         internalPlcSubscriptionHandles.forEach(handle -> {
             ScheduledFuture<?> remove = cyclicSubscriptions.remove(handle);
             if (remove == null) {

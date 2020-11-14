@@ -138,8 +138,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 continue;
             }
             // Timeout?
-            if (registration.getTimeout().isBefore(Instant.now())) {
-                logger.debug("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
+            final Instant now = Instant.now();
+            if (registration.getTimeoutAt().isBefore(now)) {
+                logger.debug("Removing {} as its timed out (timeout of {} was set till {} and now is {})",
+                    registration, registration.getTimeout(), registration.getTimeoutAt(), now);
                 // pass timeout back to caller so it can do ie. transaction compensation
                 registration.getOnTimeoutConsumer().accept(new TimeoutException());
                 iter.remove();

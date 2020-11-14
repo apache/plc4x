@@ -112,7 +112,7 @@ public class Ets5Model {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("groupAddressType", groupAddressType)
+            .append("groupAddressNumLevels", groupAddressType)
             .append("groupAddresses", groupAddresses)
             .toString();
     }

@@ -24,7 +24,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class AdsDiscoverySerializerParserTest extends ParserSerializerTestsuiteRunner {
 
     public AdsDiscoverySerializerParserTest() {
-        super("/testsuite/AdsDiscoverySerializerTest.xml");
+        super("/protocols/ads/AdsDiscoverySerializerTest.xml");
     }
 
 }

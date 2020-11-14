@@ -30,31 +30,31 @@ plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null() {
 
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_of(char* value_string) {
     if(strcmp(value_string, "COUNTERS") == 0) {
-        return 0x1C;
+        return plc4c_s7_read_write_memory_area_COUNTERS;
     }
     if(strcmp(value_string, "TIMERS") == 0) {
-        return 0x1D;
+        return plc4c_s7_read_write_memory_area_TIMERS;
     }
     if(strcmp(value_string, "DIRECT_PERIPHERAL_ACCESS") == 0) {
-        return 0x80;
+        return plc4c_s7_read_write_memory_area_DIRECT_PERIPHERAL_ACCESS;
     }
     if(strcmp(value_string, "INPUTS") == 0) {
-        return 0x81;
+        return plc4c_s7_read_write_memory_area_INPUTS;
     }
     if(strcmp(value_string, "OUTPUTS") == 0) {
-        return 0x82;
+        return plc4c_s7_read_write_memory_area_OUTPUTS;
     }
     if(strcmp(value_string, "FLAGS_MARKERS") == 0) {
-        return 0x83;
+        return plc4c_s7_read_write_memory_area_FLAGS_MARKERS;
     }
     if(strcmp(value_string, "DATA_BLOCKS") == 0) {
-        return 0x84;
+        return plc4c_s7_read_write_memory_area_DATA_BLOCKS;
     }
     if(strcmp(value_string, "INSTANCE_DATA_BLOCKS") == 0) {
-        return 0x85;
+        return plc4c_s7_read_write_memory_area_INSTANCE_DATA_BLOCKS;
     }
     if(strcmp(value_string, "LOCAL_DATA") == 0) {
-        return 0x86;
+        return plc4c_s7_read_write_memory_area_LOCAL_DATA;
     }
     return -1;
 }
@@ -66,31 +66,31 @@ int plc4c_s7_read_write_memory_area_num_values() {
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x1C;
+        return plc4c_s7_read_write_memory_area_COUNTERS;
       }
       case 1: {
-        return 0x1D;
+        return plc4c_s7_read_write_memory_area_TIMERS;
       }
       case 2: {
-        return 0x80;
+        return plc4c_s7_read_write_memory_area_DIRECT_PERIPHERAL_ACCESS;
       }
       case 3: {
-        return 0x81;
+        return plc4c_s7_read_write_memory_area_INPUTS;
       }
       case 4: {
-        return 0x82;
+        return plc4c_s7_read_write_memory_area_OUTPUTS;
       }
       case 5: {
-        return 0x83;
+        return plc4c_s7_read_write_memory_area_FLAGS_MARKERS;
       }
       case 6: {
-        return 0x84;
+        return plc4c_s7_read_write_memory_area_DATA_BLOCKS;
       }
       case 7: {
-        return 0x85;
+        return plc4c_s7_read_write_memory_area_INSTANCE_DATA_BLOCKS;
       }
       case 8: {
-        return 0x86;
+        return plc4c_s7_read_write_memory_area_LOCAL_DATA;
       }
       default: {
         return -1;
@@ -100,31 +100,31 @@ plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_for_index(
 
 char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value) {
   switch(value) {
-    case 28: { /* '0x1C' */
+    case plc4c_s7_read_write_memory_area_COUNTERS: { /* '0x1C' */
       return "C";
     }
-    case 29: { /* '0x1D' */
+    case plc4c_s7_read_write_memory_area_TIMERS: { /* '0x1D' */
       return "T";
     }
-    case 128: { /* '0x80' */
+    case plc4c_s7_read_write_memory_area_DIRECT_PERIPHERAL_ACCESS: { /* '0x80' */
       return "D";
     }
-    case 129: { /* '0x81' */
+    case plc4c_s7_read_write_memory_area_INPUTS: { /* '0x81' */
       return "I";
     }
-    case 130: { /* '0x82' */
+    case plc4c_s7_read_write_memory_area_OUTPUTS: { /* '0x82' */
       return "Q";
     }
-    case 131: { /* '0x83' */
+    case plc4c_s7_read_write_memory_area_FLAGS_MARKERS: { /* '0x83' */
       return "M";
     }
-    case 132: { /* '0x84' */
+    case plc4c_s7_read_write_memory_area_DATA_BLOCKS: { /* '0x84' */
       return "DB";
     }
-    case 133: { /* '0x85' */
+    case plc4c_s7_read_write_memory_area_INSTANCE_DATA_BLOCKS: { /* '0x85' */
       return "DBI";
     }
-    case 134: { /* '0x86' */
+    case plc4c_s7_read_write_memory_area_LOCAL_DATA: { /* '0x86' */
       return "LD";
     }
     default: {

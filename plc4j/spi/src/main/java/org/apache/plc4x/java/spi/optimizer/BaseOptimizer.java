@@ -26,8 +26,6 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.*;
@@ -58,7 +56,7 @@ public abstract class BaseOptimizer {
                 }
             }
         }
-        return new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, fields);
+        return new DefaultPlcReadResponse(readRequest, fields);
     }
 
     protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
@@ -80,7 +78,7 @@ public abstract class BaseOptimizer {
                 }
             }
         }
-        return new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, fields);
+        return new DefaultPlcWriteResponse(writeRequest, fields);
     }
 
     protected List<PlcRequest> processSubscriptionRequest(PlcSubscriptionRequest subscriptionRequest,

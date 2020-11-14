@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.df1;
 
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.df1.configuration.Df1Configuration;
 import org.apache.plc4x.java.df1.field.Df1FieldHandler;
 import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;
@@ -28,6 +29,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.osgi.service.component.annotations.Component;
 
 @Component(service = PlcDriver.class, immediate = true)
@@ -56,6 +58,11 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
     @Override
     protected Df1FieldHandler getFieldHandler() {
         return new Df1FieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
     }
 
     @Override

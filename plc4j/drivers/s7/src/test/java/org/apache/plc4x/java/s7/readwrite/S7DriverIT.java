@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class S7DriverIT extends DriverTestsuiteRunner {
 
     public S7DriverIT() {
-        super("/testsuite/S7DriverIT.xml");
+        super("/protocols/s7/DriverTestsuite.xml");
     }
 
 }

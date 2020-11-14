@@ -18,14 +18,18 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.modbus.readwrite.types.*;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public abstract class ModbusField implements PlcField {
+public abstract class ModbusField implements PlcField, XmlSerializable {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
     public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
@@ -60,14 +64,14 @@ public abstract class ModbusField implements PlcField {
     protected ModbusField(int address, Integer quantity, String dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
-            throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
+            throw new IllegalArgumentException("address must be greater than zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
         }
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
+            throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : "INT";
-        ModbusDataType.valueOf(this.dataType);
+        ModbusDataTypeSizes.enumForValue(this.dataType);
     }
 
     public int getAddress() {
@@ -79,11 +83,12 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getLengthBytes() {
-        return quantity * ModbusDataType.valueOf(dataType).getDataTypeSize();
+        return quantity * ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
     }
 
+    @JsonIgnore
     public int getLengthWords() {
-        return (int) (quantity * ((float) ModbusDataType.valueOf(dataType).getDataTypeSize())/2.0f);
+        return (int) (quantity * ((float) ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize())/2.0f);
     }
 
     public String getDataType() {
@@ -96,7 +101,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getDataTypeSize() {
-        return ModbusDataType.valueOf(dataType).getDataTypeSize();
+        return ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
     }
 
     @Override
@@ -123,6 +128,24 @@ public abstract class ModbusField implements PlcField {
             "datatype=" + dataType +
             "quantity=" + quantity +
             '}';
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+        Element addressElement = doc.createElement("address");
+        addressElement.appendChild(doc.createTextNode(Integer.toString(getAddress())));
+        messageElement.appendChild(addressElement);
+
+        Element quantityElement = doc.createElement("numberOfElements");
+        quantityElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(quantityElement);
+
+        Element datatypeElement = doc.createElement("dataType");
+        datatypeElement.appendChild(doc.createTextNode(getDataType()));
+        messageElement.appendChild(datatypeElement);
     }
 
 }

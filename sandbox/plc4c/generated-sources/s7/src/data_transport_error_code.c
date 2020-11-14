@@ -30,22 +30,22 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
 
 plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_of(char* value_string) {
     if(strcmp(value_string, "RESERVED") == 0) {
-        return 0x00;
+        return plc4c_s7_read_write_data_transport_error_code_RESERVED;
     }
     if(strcmp(value_string, "ACCESS_DENIED") == 0) {
-        return 0x03;
+        return plc4c_s7_read_write_data_transport_error_code_ACCESS_DENIED;
     }
     if(strcmp(value_string, "INVALID_ADDRESS") == 0) {
-        return 0x05;
+        return plc4c_s7_read_write_data_transport_error_code_INVALID_ADDRESS;
     }
     if(strcmp(value_string, "DATA_TYPE_NOT_SUPPORTED") == 0) {
-        return 0x06;
+        return plc4c_s7_read_write_data_transport_error_code_DATA_TYPE_NOT_SUPPORTED;
     }
     if(strcmp(value_string, "NOT_FOUND") == 0) {
-        return 0x0A;
+        return plc4c_s7_read_write_data_transport_error_code_NOT_FOUND;
     }
     if(strcmp(value_string, "OK") == 0) {
-        return 0xFF;
+        return plc4c_s7_read_write_data_transport_error_code_OK;
     }
     return -1;
 }
@@ -57,22 +57,22 @@ int plc4c_s7_read_write_data_transport_error_code_num_values() {
 plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x00;
+        return plc4c_s7_read_write_data_transport_error_code_RESERVED;
       }
       case 1: {
-        return 0x03;
+        return plc4c_s7_read_write_data_transport_error_code_ACCESS_DENIED;
       }
       case 2: {
-        return 0x05;
+        return plc4c_s7_read_write_data_transport_error_code_INVALID_ADDRESS;
       }
       case 3: {
-        return 0x06;
+        return plc4c_s7_read_write_data_transport_error_code_DATA_TYPE_NOT_SUPPORTED;
       }
       case 4: {
-        return 0x0A;
+        return plc4c_s7_read_write_data_transport_error_code_NOT_FOUND;
       }
       case 5: {
-        return 0xFF;
+        return plc4c_s7_read_write_data_transport_error_code_OK;
       }
       default: {
         return -1;

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.api.value.PlcLINT;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.junit.jupiter.api.Test;

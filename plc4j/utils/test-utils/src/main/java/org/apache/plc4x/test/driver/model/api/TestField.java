@@ -18,18 +18,12 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class TestField {
 
     private final String name;
     private final String address;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public TestField(@JsonProperty("name") String name, @JsonProperty("address") String address) {
+    public TestField(String name, String address) {
         this.name = name;
         this.address = address;
     }

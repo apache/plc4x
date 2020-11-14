@@ -19,8 +19,10 @@ under the License.
 package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Element;
 
-public class ResponseItem<T> {
+public class ResponseItem<T> implements XmlSerializable {
 
     private final PlcResponseCode code;
     private final T value;
@@ -36,6 +38,17 @@ public class ResponseItem<T> {
 
     public T getValue() {
         return value;
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        parent.setAttribute("result", code.name());
+        if(value != null) {
+            if (!(value instanceof XmlSerializable)) {
+                throw new RuntimeException("Error serializing. Field value doesn't implement XmlSerializable");
+            }
+            ((XmlSerializable) value).xmlSerialize(parent);
+        }
     }
 
 }

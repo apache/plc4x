@@ -30,13 +30,13 @@ plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null() {
 
 plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_value_of(char* value_string) {
     if(strcmp(value_string, "PG_OR_PC") == 0) {
-        return 0x01;
+        return plc4c_s7_read_write_device_group_PG_OR_PC;
     }
     if(strcmp(value_string, "OS") == 0) {
-        return 0x02;
+        return plc4c_s7_read_write_device_group_OS;
     }
     if(strcmp(value_string, "OTHERS") == 0) {
-        return 0x03;
+        return plc4c_s7_read_write_device_group_OTHERS;
     }
     return -1;
 }
@@ -48,13 +48,13 @@ int plc4c_s7_read_write_device_group_num_values() {
 plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x01;
+        return plc4c_s7_read_write_device_group_PG_OR_PC;
       }
       case 1: {
-        return 0x02;
+        return plc4c_s7_read_write_device_group_OS;
       }
       case 2: {
-        return 0x03;
+        return plc4c_s7_read_write_device_group_OTHERS;
       }
       default: {
         return -1;

@@ -23,14 +23,13 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.firmata.readwrite.*;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldAnalog;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldDigital;
 import org.apache.plc4x.java.firmata.readwrite.types.PinMode;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 
 import java.util.*;
 
@@ -49,14 +48,13 @@ public class FirmataDriverContext implements DriverContext {
     public List<FirmataMessage> processWriteRequest(PlcWriteRequest writeRequest) {
         List<FirmataMessage> messages = new LinkedList<>();
 
-        InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) writeRequest;
         for (String fieldName : writeRequest.getFieldNames()) {
             if(!(writeRequest.getField(fieldName) instanceof FirmataFieldDigital)) {
                 throw new PlcRuntimeException("Writing only supported for digital pins");
             }
 
             FirmataFieldDigital digitalField = (FirmataFieldDigital) writeRequest.getField(fieldName);
-            final PlcValue plcValue = internalPlcWriteRequest.getPlcValue(fieldName);
+            final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
             if((digitalField.getNumberOfElements() > 1) && plcValue.isList()) {
                 final PlcList plcList = (PlcList) plcValue;
                 if(plcList.getList().size() != digitalField.getNumberOfElements()) {
