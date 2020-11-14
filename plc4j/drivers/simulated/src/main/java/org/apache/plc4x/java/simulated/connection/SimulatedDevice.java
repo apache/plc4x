@@ -20,8 +20,7 @@ package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
@@ -29,6 +28,7 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -105,7 +105,13 @@ public class SimulatedDevice {
 
         ReadBuffer io = new ReadBuffer(b);
         try {
-            return DataItemIO.staticParse(io, fieldDataType, (short) 1);
+            if (field.getPlcDataType().toUpperCase().equals("STRING")) {
+                return new PlcString(new String(b, StandardCharsets.UTF_8));
+            } else if (field.getPlcDataType().toUpperCase().equals("WSTRING")) {
+                return new PlcString(new String(b, StandardCharsets.UTF_16));
+            } else {
+                return DataItemIO.staticParse(io, fieldDataType, (short) 1);
+            }
         } catch (ParseException e) {
             return null;
         }
