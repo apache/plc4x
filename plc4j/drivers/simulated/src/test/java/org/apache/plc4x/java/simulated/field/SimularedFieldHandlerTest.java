@@ -44,7 +44,7 @@ class SimularedFieldHandlerTest implements WithAssertions {
 
     @Test
     void createField() {
-        assertThat(SUT.createField("STATE/bar:INTEGER")).isNotNull();
+        assertThat(SUT.createField("STATE/bar:INT")).isNotNull();
     }
 
     /*@Test
@@ -108,19 +108,19 @@ class SimularedFieldHandlerTest implements WithAssertions {
 
     @Test
     void encodeTime() {
-        when(plcField.getDataType()).thenReturn((Class) LocalTime.class);
+        when(plcField.getPlcDataType()).thenReturn("LocalTime");
         assertThat(SUT.encodeTime(plcField, new LocalTime[0])).isNotNull();
     }
 
     @Test
     void encodeDate() {
-        when(plcField.getDataType()).thenReturn((Class) LocalDate.class);
+        when(plcField.getPlcDataType()).thenReturn("LocalDate");
         assertThat(SUT.encodeDate(plcField, new LocalDate[0])).isNotNull();
     }
 
     @Test
     void encodeDateTime() {
-        when(plcField.getDataType()).thenReturn((Class) LocalDateTime.class);
+        when(plcField.getPlcDataType()).thenReturn("LocalDateTime");
         assertThat(SUT.encodeDateTime(plcField, new LocalDateTime[0])).isNotNull();
     }*/
 

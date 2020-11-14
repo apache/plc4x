@@ -21,6 +21,7 @@ package org.apache.plc4x.java.simulated.field;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataType;
 import org.apache.plc4x.java.simulated.types.SimulatedFieldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class SimulatedField implements PlcField {
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z0-9\\.]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;
@@ -60,13 +61,29 @@ public class SimulatedField implements PlcField {
         if (matcher.matches()) {
             SimulatedFieldType type = SimulatedFieldType.valueOf(matcher.group("type"));
             String name = matcher.group("name");
-            String dataTypeName = WordUtils.capitalizeFully(matcher.group("dataType"));
+            //[TODO] Fix when plc4go is merged
+            String dataTypeProper = WordUtils.capitalizeFully(matcher.group("dataType"));
+            String dataTypeName = matcher.group("dataType").toUpperCase();
+            try {
+                if (dataTypeName.equals("STRING")) {
+                    SimulatedDataType.valueOf(dataTypeProper);
+                } else {
+                    SimulatedDataType.valueOf(dataTypeName);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+            }
+
             int numElements = 1;
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
+            if (dataTypeName.equals("STRING")) {
+                return new SimulatedField(type, name, dataTypeProper, numElements);
+            } else {
+                return new SimulatedField(type, name, dataTypeName, numElements);
+            }
 
-            return new SimulatedField(type, name, dataTypeName, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -120,7 +137,7 @@ public class SimulatedField implements PlcField {
         return "TestField{" +
             "type=" + type +
             ", name='" + name + '\'' +
-            ", dataType=" + dataType +
+            ", dataType='" + dataType + '\'' +
             ", numElements=" + numElements +
             '}';
     }

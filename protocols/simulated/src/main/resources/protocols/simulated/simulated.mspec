@@ -124,6 +124,12 @@
         ['81' WCHAR
             [array uint 16 'value' count 'numberOfValues']
         ]
+        ['82' String
+            [array string 'UTF-8' 'value' count 'numberOfValues']
+        ]
+        ['83' String
+            [array string 'UTF-16' 'value' count 'numberOfValues']
+        ]
     ]
 ]
 
@@ -154,6 +160,6 @@
     ['71' LDATE_AND_TIME ['8']]
     ['80' CHAR ['1']]
     ['81' WCHAR ['2']]
-    ['82' STRING ['1']]
-    ['83' WSTRING ['2']]
+    ['82' String ['254']]
+    ['83' WString ['254']]
 ]
