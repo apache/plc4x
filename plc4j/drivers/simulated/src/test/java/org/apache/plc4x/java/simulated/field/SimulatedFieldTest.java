@@ -36,10 +36,10 @@ public class SimulatedFieldTest {
         SimulatedField field = SimulatedField.of("RANDOM/test:Int[2]");
         assertThat(field.getType(), equalTo(SimulatedFieldType.RANDOM));
         assertThat(field.getName(), equalTo("test"));
-        assertThat(field.getPlcDataType(), equalTo("INT"));
+        assertThat(field.getPlcDataType(), equalTo("IEC61131_INT"));
         assertThat(field.getNumberOfElements(), equalTo(2));
         assertThat(field.toString(),
-            equalTo("TestField{type=RANDOM, name='test', dataType='INT', numElements=2}"));
+            equalTo("TestField{type=RANDOM, name='test', dataType='IEC61131_INT', numElements=2}"));
     }
 
     /*[TODO] Add support for Full Java Type Names back in after plc4go changes have merged
