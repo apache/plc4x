@@ -42,7 +42,7 @@ public class SimulatedField implements PlcField {
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z0-9\\.]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;
@@ -61,7 +61,32 @@ public class SimulatedField implements PlcField {
         if (matcher.matches()) {
             SimulatedFieldType type = SimulatedFieldType.valueOf(matcher.group("type"));
             String name = matcher.group("name");
-            String dataType = "IEC61131_" + matcher.group("dataType").toUpperCase();
+            String dataType;
+            switch (matcher.group("dataType").toUpperCase()) {
+                case "INTEGER":
+                    dataType = "IEC61131_DINT";
+                    break;
+                case "BYTE":
+                    dataType = "IEC61131_BYTE";
+                    break;
+                case "SHORT":
+                    dataType = "IEC61131_INT";
+                    break;
+                case "LONG":
+                    dataType = "IEC61131_LINT";
+                    break;
+                case "FLOAT":
+                    dataType = "IEC61131_REAL";
+                    break;
+                case "DOUBLE":
+                    dataType = "IEC61131_LREAL";
+                    break;
+                case "BOOLEAN":
+                    dataType = "IEC61131_BOOL";
+                    break;
+                default:
+                    dataType = "IEC61131_" + matcher.group("dataType").toUpperCase();
+            }
             try {
                 SimulatedDataTypeSizes.enumForValue(dataType).getDataTypeSize();
             } catch (NullPointerException e) {

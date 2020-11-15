@@ -44,7 +44,7 @@ class SimularedFieldHandlerTest implements WithAssertions {
 
     @Test
     void createField() {
-        assertThat(SUT.createField("STATE/bar:INT")).isNotNull();
+        assertThat(SUT.createField("STATE/bar:Integer")).isNotNull();
     }
 
     /*@Test
