@@ -84,6 +84,17 @@ public class SimulatedDevice {
                 System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), value.getString());
                 return;
             case RANDOM:
+                switch (field.getPlcDataType()) {
+                    case "IEC61131_STRING":
+                    case "IEC61131_WSTRING":
+                        break;
+                    default:
+                        try {
+                            DataItemIO.staticSerialize(value, field.getPlcDataType(), 1, false);
+                        } catch (ParseException e) {
+                            System.out.printf("Write failed");
+                        }
+                }
                 System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.getString());
                 return;
         }

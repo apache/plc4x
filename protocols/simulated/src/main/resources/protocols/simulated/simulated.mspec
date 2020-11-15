@@ -124,6 +124,12 @@
         ['IEC61131_WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
+        ['IEC61131_STRING' STRING
+            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '_value.length + 2']
+        ]
+        ['IEC61131_WSTRING' STRING
+            [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '(_value.length * 2) + 2']
+        ]
     ]
 ]
 
@@ -153,6 +159,6 @@
     ['IEC61131_LDATE_AND_TIME' LDATE_AND_TIME ['8']]
     ['IEC61131_CHAR' CHAR ['1']]
     ['IEC61131_WCHAR' WCHAR ['2']]
-    ['IEC61131_STRING' STRING ['1']]
-    ['IEC61131_WSTRING' WSTRING ['2']]
+    ['IEC61131_STRING' STRING ['256']]
+    ['IEC61131_WSTRING' WSTRING ['127']]
 ]

@@ -28,5 +28,5 @@ jobs:
     - test
     - test2
     fields:
-      test: 'RANDOM/test:INT'
-      test2: 'RANDOM/test:STRING'
+      test: 'RANDOM/test:Integer'
+      test2: 'RANDOM/test:String'

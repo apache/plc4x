@@ -73,7 +73,7 @@ public class DriverManagerTest implements WithAssertions {
         // Column types
         assertThat(metadata.getColumnTypeName(1)).isEqualTo("TIMESTAMP");
         assertThat(metadata.getColumnTypeName(2)).isEqualTo("VARCHAR");
-        assertThat(metadata.getColumnTypeName(3)).isEqualTo("SMALLINT");
+        assertThat(metadata.getColumnTypeName(3)).isEqualTo("INTEGER");
         assertThat(metadata.getColumnTypeName(4)).isEqualTo("VARCHAR");
 
         int rowCount = 0;

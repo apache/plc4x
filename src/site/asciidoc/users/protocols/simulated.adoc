@@ -89,7 +89,7 @@ If the data-type part is omitted, it defaults to STRING.
 
 The simulation device supports 3 different simulation types
 
-- STATE - This holds in memory a value for athe given alias. This value can be read or written to, however this
+- STATE - This holds in memory a value for a given alias. This value can be read or written to, however this
 should only be used in conjunction with a persistent connection. Once the connection is closed the memory area is cleared.
 - RANDOM - This provides a new random value for each read. When writing, a log message is recorded and the value is discarded.
 - STDOUT - Always returns a null value when reading. When writing, a log message is recorded and the value is discarded.
@@ -138,4 +138,3 @@ All of these address formats are valid:-
 - RANDOM/device1.machineA.sensor1:STRING
 - STATE/device1.machineA.sensor1:INT
 - STDOUT/device1.machineA.sensor1:INT
-
