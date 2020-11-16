@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-test-junit5</artifactId>      
+      <artifactId>groovy-test-junit5</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -58,11 +58,19 @@
     <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>sdk-server</artifactId>
+        <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-core</artifactId>
+        <scope>compile</scope>
     </dependency>
 
     <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>dictionary-manager</artifactId>
+        <scope>compile</scope>
     </dependency>
 
 <!-- Parsing Libraries -->
@@ -190,6 +198,30 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
     </dependency>
+
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>      
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -227,6 +259,8 @@
           <configuration>
             <usedDependencies combine.children="append">
                 <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+                <usedDependency>org.eclipse.milo:sdk-server</usedDependency>
+                <usedDependency>org.eclipse.milo:stack-core</usedDependency>
                 <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
                 <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->
                 <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>

@@ -223,7 +223,6 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -274,7 +273,6 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.tdunning</groupId>
@@ -410,7 +408,6 @@
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>net.sf.jopt-simple</groupId>
@@ -604,13 +601,11 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcpkix-jdk15on</artifactId>
         <version>${bouncycastle.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>${bouncycastle.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>

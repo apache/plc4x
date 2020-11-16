@@ -24,6 +24,8 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.kafka.config.Job;
 import org.apache.plc4x.kafka.config.JobReference;
 import org.apache.plc4x.kafka.config.Source;
@@ -135,7 +137,7 @@ public class Plc4xSourceConnector extends SourceConnector {
         ////////////////////////////////////////////////////
         // Get the static part of the config
         Config config = super.validate(connectorConfigs);
-
+        log.info("Validating PLC4X Source Connector Configuration");
         ////////////////////////////////////////////////////
         // Add the dynamic parts of the config
 
@@ -144,6 +146,7 @@ public class Plc4xSourceConnector extends SourceConnector {
         ConfigValue sources = null;
         ConfigValue jobs = null;
         for (ConfigValue configValue : config.configValues()) {
+            log.info("PLC4X Source Connector Validation, " + configValue.toString());
             switch (configValue.name()) {
                 case DEFAULT_TOPIC_CONFIG:
                     defaultTopic = (String) configValue.value();
@@ -215,65 +218,82 @@ public class Plc4xSourceConnector extends SourceConnector {
 
         // Configure the sources
         if(sources != null) {
+            log.info("Found Sources " +  sources.toString());
             final List<String> sourceNames = (List<String>) sources.value();
             for (String sourceName : sourceNames) {
-                String connectionStringConfig = SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG;
-                final ConfigValue sourceConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
-                config.configValues().add(sourceConnectionStringConfigValue);
-                String connectionString = connectorConfigs.get(connectionStringConfig);
-                sourceConnectionStringConfigValue.value(connectionString);
-                if (connectionString == null) {
-                    sourceConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is mandatory");
+
+                config.configValues().add(validateConnectionString(connectorConfigs, sourceName));
+                config.configValues().add(validateSourcesTopicConfig(connectorConfigs, sourceName));
+
+                String jobReferenceNamesConfig = SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG;
+                final ConfigValue jobReferenceNamesConfigValue = new ConfigValue(jobReferenceNamesConfig);
+                jobReferenceNamesConfigValue.recommendedValues(foundJobs);
+                config.configValues().add(jobReferenceNamesConfigValue);
+                if(!connectorConfigs.containsKey(jobReferenceNamesConfig)) {
+                    jobReferenceNamesConfigValue.value(null);
+                    jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig + " is mandatory");
                 } else {
-                    // TODO: Check if the connection string is valid.
-
-                    String sourceTopicConfig = SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG;
-                    final ConfigValue sourceTopicConfigValue = new ConfigValue(sourceTopicConfig);
-                    config.configValues().add(sourceTopicConfigValue);
-                    String sourceTopic = connectorConfigs.get(sourceTopicConfig);
-                    sourceTopicConfigValue.value(sourceTopic);
-
-                    String jobReferenceNamesConfig = SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG;
-                    final ConfigValue jobReferenceNamesConfigValue = new ConfigValue(jobReferenceNamesConfig);
-                    jobReferenceNamesConfigValue.recommendedValues(foundJobs);
-                    config.configValues().add(jobReferenceNamesConfigValue);
-                    if(!connectorConfigs.containsKey(jobReferenceNamesConfig)) {
-                        jobReferenceNamesConfigValue.value(null);
+                    String[] jobReferenceNames = connectorConfigs.getOrDefault(jobReferenceNamesConfig, "").split(",");
+                    jobReferenceNamesConfigValue.value(jobReferenceNames);
+                    // Check at least one job is referenced
+                    if (jobReferenceNames.length == 0) {
                         jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig + " is mandatory");
-                    } else {
-                        String[] jobReferenceNames = connectorConfigs.getOrDefault(jobReferenceNamesConfig, "").split(",");
-                        jobReferenceNamesConfigValue.value(jobReferenceNames);
-                        // Check at least one job is referenced
-                        if (jobReferenceNames.length == 0) {
-                            jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig + " is mandatory");
+                    }
+                    for (String jobReferenceName : jobReferenceNames) {
+                        // Check the references reference configured jobs
+                        if (!foundJobs.contains(jobReferenceName)) {
+                            jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig +
+                                " references non-existent job " + jobReferenceName);
                         }
-                        for (String jobReferenceName : jobReferenceNames) {
-                            // Check the references reference configured jobs
-                            if (!foundJobs.contains(jobReferenceName)) {
-                                jobReferenceNamesConfigValue.addErrorMessage(jobReferenceNamesConfig +
-                                    " references non-existent job " + jobReferenceName);
-                            }
-                            // Check if a topic is specified at some level
-                            else {
-                                String jobReferenceTopicNameConfig = SOURCES_CONFIG + "." + sourceName + "." +
-                                    JOB_REFERENCES_CONFIG + "." + jobReferenceName + TOPIC_CONFIG;
-                                final ConfigValue jobReferenceTopicNameConfigValue = new ConfigValue(jobReferenceTopicNameConfig);
-                                config.configValues().add(jobReferenceTopicNameConfigValue);
-                                String jobReferenceTopic = connectorConfigs.get(jobReferenceTopicNameConfig);
-                                jobReferenceTopicNameConfigValue.value(jobReferenceTopic);
-                                if ((jobReferenceTopic == null) && (sourceTopic == null) && (defaultTopic == null)) {
-                                    jobReferenceTopicNameConfigValue.addErrorMessage(
-                                        "No topic definition found at any level for " + jobReferenceTopicNameConfig);
-                                }
-                            }
+                        // Check if a topic is specified at some level
+                        else {
+                            String jobReferenceTopicNameConfig = SOURCES_CONFIG + "." + sourceName + "." +
+                                JOB_REFERENCES_CONFIG + "." + jobReferenceName + TOPIC_CONFIG;
+                            log.info(jobReferenceTopicNameConfig);
+                            final ConfigValue jobReferenceTopicNameConfigValue = new ConfigValue(jobReferenceTopicNameConfig);
+                            config.configValues().add(jobReferenceTopicNameConfigValue);
+                            String jobReferenceTopic = connectorConfigs.get(jobReferenceTopicNameConfig);
+                            jobReferenceTopicNameConfigValue.value(jobReferenceTopic);
+                            /*if ((jobReferenceTopic == null) && (sourceTopic == null) && (defaultTopic == null)) {
+                                jobReferenceTopicNameConfigValue.addErrorMessage(
+                                    "No topic definition found at any level for " + jobReferenceTopicNameConfig);
+                            }*/
                         }
                     }
                 }
             }
         }
-
         return config;
     }
+
+    private ConfigValue validateConnectionString(Map<String, String> connectorConfigs, String sourceName) {
+        String connectionStringConfig = SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG;
+        final ConfigValue sourceConnectionStringConfigValue = new ConfigValue(connectionStringConfig);
+        try {
+            String connectionString = connectorConfigs.get(connectionStringConfig);
+            sourceConnectionStringConfigValue.value(connectionString);
+            new PlcDriverManager().getDriver(connectionString);
+        } catch (Exception e) {
+            log.warn("PLC4X Source Connector, " + connectionStringConfig + " is not found");
+            sourceConnectionStringConfigValue.addErrorMessage(connectionStringConfig + " is invalid or not found");
+        }
+        return sourceConnectionStringConfigValue;
+    }
+
+    private ConfigValue validateSourcesTopicConfig(Map<String, String> connectorConfigs, String sourceName) {
+        String sourceTopicConfig = SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG;
+        final ConfigValue sourceTopicConfigValue = new ConfigValue(sourceTopicConfig);
+        try {
+            String sourceTopic = connectorConfigs.get(sourceTopicConfig);
+            sourceTopicConfigValue.value(sourceTopic);
+        } catch (Exception e) {
+            log.warn("PLC4X Source Connector, " + sourceTopicConfig + " is not found");
+            sourceTopicConfigValue.addErrorMessage(sourceTopicConfig + " is not found");
+        }
+        return sourceTopicConfigValue;
+    }
+
+
 
     @Override
     public ConfigDef config() {
@@ -281,7 +301,12 @@ public class Plc4xSourceConnector extends SourceConnector {
             .define(DEFAULT_TOPIC_CONFIG,
                     ConfigDef.Type.STRING,
                     ConfigDef.Importance.LOW,
-                    DEFAULT_TOPIC_DOC);
+                    DEFAULT_TOPIC_DOC)
+            .define(SOURCES_CONFIG,
+                    ConfigDef.Type.LIST,
+                    new LinkedList<String>(),
+                    ConfigDef.Importance.LOW,
+                    SOURCES_DOC);
     }
 
     @Override
