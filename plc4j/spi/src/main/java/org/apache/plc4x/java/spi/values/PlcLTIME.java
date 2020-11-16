@@ -26,36 +26,33 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcTIME extends PlcSimpleValue<Duration> {
+public class PlcLTIME extends PlcSimpleValue<Duration> {
 
-    public static PlcTIME of(Object value) {
+    public static PlcLTIME of(Object value) {
         if (value instanceof Duration) {
-            return new PlcTIME((Duration) value);
+            return new PlcLTIME((Duration) value);
         } else if(value instanceof Integer) {
-            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcLTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if(value instanceof Long) {
-            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcLTIME(Duration.of((long) value, ChronoUnit.NANOS));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME(@JsonProperty("value") Duration value) {
+    public PlcLTIME(@JsonProperty("value") Duration value) {
         super(value, true);
     }
 
-    public PlcTIME(@JsonProperty("value") Integer value) {
-        super(Duration.of((long) value, ChronoUnit.MILLIS), true);
+    public PlcLTIME(@JsonProperty("value") Integer value) {
+        super(Duration.of((long) value, ChronoUnit.NANOS), true);
     }
 
-    public PlcTIME(@JsonProperty("value") Long value) {
-        super(Duration.of(value, ChronoUnit.MILLIS), true);
+    public PlcLTIME(@JsonProperty("value") Long value) {
+        super(Duration.of(value, ChronoUnit.NANOS), true);
     }
 
     @Override

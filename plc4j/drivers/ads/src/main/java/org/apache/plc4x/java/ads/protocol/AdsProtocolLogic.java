@@ -302,12 +302,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         try {
             if (field.getNumberOfElements() == 1) {
                 return new ResponseItem<>(PlcResponseCode.OK,
-                    DataItemIO.staticParse(readBuffer, field.getAdsDataType()));
+                    DataItemIO.staticParse(readBuffer, field.getAdsDataType().getDataFormatName()));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
-                        return DataItemIO.staticParse(readBuffer, field.getAdsDataType());
+                        return DataItemIO.staticParse(readBuffer, field.getAdsDataType().getDataFormatName());
                     } catch (ParseException e) {
                         LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getAdsDataType(), i, e);
                     }
@@ -388,7 +388,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
         final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
         try {
-            WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, plcField.getAdsDataType(), true);
+            WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, plcField.getAdsDataType().getDataFormatName(), true);
             AdsData adsData = new AdsWriteRequest(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
             AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -435,7 +435,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             final AdsField field = (AdsField) writeRequest.getField(fieldName);
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
             try {
-                final WriteBuffer itemWriteBuffer = DataItemIO.staticSerialize(plcValue, field.getAdsDataType(), true);
+                final WriteBuffer itemWriteBuffer = DataItemIO.staticSerialize(plcValue, field.getAdsDataType().getDataFormatName(), true);
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
@@ -557,13 +557,19 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
             // Complete the future asynchronously as soon as all fields are resolved.
             resolutionComplete.handleAsync((unused, throwable) -> {
-                return future.complete(fields.stream().map(plcField -> {
-                    if (plcField instanceof SymbolicAdsField) {
-                        return symbolicFieldMapping.get(plcField);
-                    } else {
-                        return (DirectAdsField) plcField;
+                if(throwable != null) {
+                    return future.completeExceptionally(throwable.getCause());
+                } else {
+                    List<DirectAdsField> directAdsFields = new ArrayList<>(fields.size());
+                    for (PlcField field : fields) {
+                        if (field instanceof SymbolicAdsField) {
+                            directAdsFields.add(symbolicFieldMapping.get(field));
+                        } else {
+                            directAdsFields.add((DirectAdsField) field);
+                        }
                     }
-                }).collect(Collectors.toList()));
+                    return future.complete(directAdsFields);
+                }
             });
         } else {
             // If all fields were resolved, we can continue instantly.

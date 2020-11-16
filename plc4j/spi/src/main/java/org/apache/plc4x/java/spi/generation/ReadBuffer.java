@@ -160,9 +160,10 @@ public class ReadBuffer {
             throw new ParseException("unsigned long can only contain max 64 bits");
         }
         try {
+            // Read as signed value
             Long val = bi.readLong(false, bitLength);
             if (littleEndian) {
-                throw new UnsupportedOperationException("not implemented yet");
+                val = Long.reverseBytes(val);
             }
             if (val >= 0) {
                 return BigInteger.valueOf(val);
@@ -269,12 +270,8 @@ public class ReadBuffer {
                     throw new NumberFormatException();
                 }
             } else if (bitLength == 32) {
-                byte[] buffer = new byte[4];
-                buffer[0] = bi.readByte(false, 8);
-                buffer[1] = bi.readByte(false, 8);
-                buffer[2] = bi.readByte(false, 8);
-                buffer[3] = bi.readByte(false, 8);
-                return Float.intBitsToFloat((buffer[0] & 0xff) ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
+                int intValue = readInt(32);
+                return Float.intBitsToFloat(intValue);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
             }
@@ -284,7 +281,12 @@ public class ReadBuffer {
     }
 
     public double readDouble(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        if(bitLength == 64) {
+            long longValue = readLong(64);
+            return Double.longBitsToDouble(longValue);
+        } else {
+            throw new UnsupportedOperationException("unsupported bit length (only 64 supported)");
+        }
     }
 
     public BigDecimal readBigDecimal(int bitLength) throws ParseException {

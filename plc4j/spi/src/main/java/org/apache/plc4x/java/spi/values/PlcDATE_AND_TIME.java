@@ -26,9 +26,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
@@ -36,6 +34,9 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     public static PlcDATE_AND_TIME of(Object value) {
         if (value instanceof LocalDateTime) {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
+        } else if (value instanceof Long) {
+            return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
+                Instant.ofEpochSecond((long) value), ZoneId.of("UTC")));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -43,6 +44,12 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
         super(value, true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
+        super(LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
     }
 
     @Override

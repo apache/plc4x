@@ -114,14 +114,20 @@ public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable 
     @Override
     @JsonIgnore
     public Object getObject(String name) {
-        return getFieldInternal(name).getObject();
+        if(getFieldInternal(name) != null) {
+            return getFieldInternal(name).getObject();
+        }
+        return null;
     }
 
     @Override
     @JsonIgnore
     public Object getObject(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getObject();
+        if(fieldInternal != null) {
+            return fieldInternal.getObject();
+        }
+        return null;
     }
 
     @Override
