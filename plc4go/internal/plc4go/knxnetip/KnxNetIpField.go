@@ -240,7 +240,7 @@ func matches(pattern string, groupAddressPart string) bool {
     }
     // If the pattern starts and ends with square brackets, it's a list of values or range queries
     if strings.HasPrefix(pattern, "[") && strings.HasSuffix(pattern, "]") {
-        matches := true
+        matches := false
         for _, segment := range strings.Split(pattern, ",") {
             if strings.Contains(segment, "-") {
                 // If the segment contains a "-", then it's a range query

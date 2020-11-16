@@ -115,13 +115,18 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     rrb := connection.ReadRequestBuilder()
     rrb.AddItem("energy-consumption", "1/1/211:DPT_Value_Power")
     rrb.AddItem("actual-temperatures", "*/*/10:DPT_Value_Temp")
+    rrb.AddItem("set-temperatures", "*/*/11:DPT_Value_Temp")
+    rrb.AddItem("window-status", "*/*/[60,64]:DPT_Value_Temp")
+    rrb.AddItem("power-consumption", "*/*/[111,121,131,141]:DPT_Value_Temp")
     readRequest, err := rrb.Build()
     if err == nil {
         rrr := readRequest.Execute()
         readRequestResult := <-rrr
         if readRequestResult.Err == nil {
             for _, fieldName := range readRequestResult.Response.GetFieldNames() {
-                fmt.Printf(" - Field %s Value %s\n", fieldName, readRequestResult.Response.GetValue(fieldName).GetString())
+                if readRequestResult.Response.GetResponseCode(fieldName) == apiModel.PlcResponseCode_OK {
+                    fmt.Printf(" - Field %s Value %s\n", fieldName, readRequestResult.Response.GetValue(fieldName).GetString())
+                }
             }
         }
     }
