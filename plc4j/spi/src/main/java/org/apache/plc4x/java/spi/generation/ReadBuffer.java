@@ -302,6 +302,7 @@ public class ReadBuffer {
                 throw new PlcRuntimeException(e);
             }
         }
+        //replaceAll function removes and leading ' char or hypens.
         return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
     }
 

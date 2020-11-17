@@ -292,8 +292,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return floatTypeReference.getSizeInBits();
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return integerTypeReference.getSizeInBits();
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return stringTypeReference.getSizeInBits();
             }
             default: {
                 return 0;
