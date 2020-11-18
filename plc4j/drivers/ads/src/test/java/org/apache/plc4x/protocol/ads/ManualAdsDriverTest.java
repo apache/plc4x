@@ -24,6 +24,45 @@ import java.util.Arrays;
 
 public class ManualAdsDriverTest extends ManualTest {
 
+    /*
+     * Test program code on the PLC with the test-data.
+     *
+     * Located in "main"
+     *
+
+    hurz_BOOL  := TRUE;
+	hurz_BYTE  := 42;
+	hurz_WORD  := 42424;
+	hurz_DWORD := 4242442424;
+	hurz_LWORD := 4242442424242424242;
+	hurz_SINT  := -42;
+	hurz_USINT := 42;
+	hurz_INT   := -2424;
+	hurz_UINT  := 42424;
+	hurz_DINT  := -242442424;
+	hurz_UDINT := 4242442424;
+	hurz_LINT  := -4242442424242424242;
+	hurz_ULINT := 4242442424242424242;
+	hurz_REAL  := 3.14159265359;
+	hurz_LREAL := 2.71828182846;
+	hurz_TIME  := T#1S234MS;
+	hurz_LTIME := LTIME#1000D15H23M12S34MS2US44NS;
+	hurz_DATE  := D#1978-03-28;
+	//hurz_LDATE:LDATE;
+	hurz_TIME_OF_DAY 	:= TIME_OF_DAY#15:36:30.123;
+	hurz_TOD         	:= TOD#16:17:18.123;
+	//hurz_LTIME_OF_DAY:LTIME_OF_DAY;
+	//hurz_LTOD:LTOD;
+	hurz_DATE_AND_TIME 	:= DATE_AND_TIME#1996-05-06-15:36:30;
+	hurz_DT				:= DT#1972-03-29-00:00:00;
+	//hurz_LDATE_AND_TIME:LDATE_AND_TIME;
+	//hurz_LDT:LDT;
+	hurz_STRING			:= 'hurz';
+	hurz_WSTRING		:= "wolf";
+
+     *
+     */
+
     public ManualAdsDriverTest(String connectionString) {
         super(connectionString);
     }
