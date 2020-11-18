@@ -279,25 +279,25 @@
         ['IEC61131_BOOL' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['IEC61131_BYTE','1' BYTE
+        ['IEC61131_BYTE','1' BitString
             [simple uint 8 'value']
         ]
         ['IEC61131_BYTE' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['IEC61131_WORD','1' WORD
+        ['IEC61131_WORD','1' BitString
             [simple uint 16 'value']
         ]
         ['IEC61131_WORD' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['IEC61131_DWORD','1' DWORD
+        ['IEC61131_DWORD','1' BitString
             [simple uint 32 'value']
         ]
         ['IEC61131_DWORD' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['IEC61131_LWORD','1' LWORD
+        ['IEC61131_LWORD','1' BitString
             [simple uint 64 'value']
         ]
         ['IEC61131_LWORD' List
