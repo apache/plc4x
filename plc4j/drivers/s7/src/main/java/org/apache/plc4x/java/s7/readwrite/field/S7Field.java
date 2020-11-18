@@ -58,10 +58,10 @@ public class S7Field implements PlcField, XmlSerializable {
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:STRING\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:STRING\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -171,7 +171,7 @@ public class S7Field implements PlcField, XmlSerializable {
     public static S7Field of(String fieldString) {
         Matcher matcher;
         if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
-            TransportSize dataType = TransportSize.STRING;
+            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
@@ -192,29 +192,9 @@ public class S7Field implements PlcField, XmlSerializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
-        } else if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
-            TransportSize dataType = TransportSize.STRING;
-            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
-            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
-            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
-            byte bitOffset = 0;
-            int numElements = 1;
-            if(matcher.group(NUM_ELEMENTS) != null) {
-                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
-            }
-
-            if((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
-                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
-                    "' doesn't match specified data type '" + dataType.name() + "'");
-            }
-
-            return new S7StringField(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements, stringLength);
+            return new S7StringField(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, stringLength);
         } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString)).matches()) {
-            TransportSize dataType = TransportSize.STRING;
+            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
