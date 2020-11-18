@@ -39,6 +39,11 @@ public class StaticHelper {
                     if (curByte != 0) {
                         bytes.add(curByte);
                     } else {
+                        // Gobble up the remaining data, which is not added to the string.
+                        i++;
+                        for(; (i < stringLength) && io.hasMore(8); i++) {
+                            io.readByte(8);
+                        }
                         break;
                     }
                 }
@@ -55,6 +60,11 @@ public class StaticHelper {
                         bytes.add((byte) (curShort >>> 8));
                         bytes.add((byte) (curShort & 0xFF));
                     } else {
+                        // Gobble up the remaining data, which is not added to the string.
+                        i++;
+                        for(; (i < stringLength) && io.hasMore(16); i++) {
+                            io.readShort(16);
+                        }
                         break;
                     }
                 }

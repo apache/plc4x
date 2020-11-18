@@ -40,8 +40,8 @@ public abstract class ManualTest {
         testCases = new ArrayList<>();
     }
 
-    public void addTestCase(String address, Object expectedValue) {
-        testCases.add(new TestCase(address, expectedValue));
+    public void addTestCase(String address, Object expectedReadValue) {
+        testCases.add(new TestCase(address, expectedReadValue, null));
     }
 
     public void run() throws Exception {
@@ -63,13 +63,13 @@ public abstract class ManualTest {
                 Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
                 if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
-                    List<Object> expectedValues = (List<Object>) testCase.expectedValue;
+                    List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                     for (int j = 0; j < expectedValues.size(); j++) {
                         Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject());
                     }
                 } else {
                     Assertions.assertEquals(
-                        testCase.expectedValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
+                        testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
                 }
             }
             System.out.println("Success");
@@ -107,13 +107,13 @@ public abstract class ManualTest {
                     Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
                     if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
                         PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
-                        List<Object> expectedValues = (List<Object>) testCase.expectedValue;
+                        List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                         for (int j = 0; j < expectedValues.size(); j++) {
                             Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject());
                         }
                     } else {
                         Assertions.assertEquals(
-                            testCase.expectedValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
+                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
                     }
                 }
             }
@@ -123,19 +123,25 @@ public abstract class ManualTest {
 
     public static class TestCase {
         private final String address;
-        private final Object expectedValue;
+        private final Object expectedReadValue;
+        private final Object writeValue;
 
-        public TestCase(String address, Object expectedValue) {
+        public TestCase(String address, Object expectedReadValue, Object writeValue) {
             this.address = address;
-            this.expectedValue = expectedValue;
+            this.expectedReadValue = expectedReadValue;
+            this.writeValue = writeValue;
         }
 
         public String getAddress() {
             return address;
         }
 
-        public Object getExpectedValue() {
-            return expectedValue;
+        public Object getExpectedReadValue() {
+            return expectedReadValue;
+        }
+
+        public Object getWriteValue() {
+            return writeValue;
         }
     }
 
