@@ -234,15 +234,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 if (field.getAdsDataType() == AdsDataType.STRING) {
                     // If an explicit size is given with the string, use this, if not use 256
                     size = (field instanceof  AdsStringField) ?
-                        ((AdsStringField) field).getStringLength() + 1 : 81;
+                        ((AdsStringField) field).getStringLength() + 1 : 256;
                 } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
                     // If an explicit size is given with the string, use this, if not use 512
                     size = (field instanceof  AdsStringField) ?
-                        ((long) ((AdsStringField) field).getStringLength() + 1) * 2: 162;
+                        ((long) ((AdsStringField) field).getStringLength() + 1) * 2: 512;
                 } else {
                     size = field.getAdsDataType().getNumBytes();
                 }
-                return (size * field.getNumberOfElements()) + 4;
+                // Status code + payload size
+                return 4 + (size * field.getNumberOfElements());
             }).sum();
 
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
@@ -272,8 +273,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     // Convert the response from the PLC into a PLC4X Response ...
                     future.complete(plcReadResponse);
                 } else {
-                    // TODO: Implement this correctly.
-                    future.completeExceptionally(new PlcException("Error"));
+                    switch (responseAdsData.getResult()) {
+                        case ADSERR_DEVICE_INVALIDSIZE:
+                            future.completeExceptionally(
+                                new PlcException("The parameter size was not correct (Internal error)"));
+                            break;
+                        default:
+                            future.completeExceptionally(new PlcException("Error"));
+                    }
                 }
                 // Finish the request-transaction.
                 transaction.endRequest();
@@ -336,7 +343,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             if (field.getAdsDataType() == AdsDataType.STRING) {
                 strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 256;
             } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
-                strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 512;
+                strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 256;
             }
             final int stringLength = strLen;
             if (field.getNumberOfElements() == 1) {
