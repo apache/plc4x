@@ -34,6 +34,7 @@ import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,50 +59,36 @@ public class Plc4xSourceTask extends SourceTask {
 
     private static final Logger log = LoggerFactory.getLogger(Plc4xSourceTask.class);
 
-    /*
-     * Config of the task.
-     */
-    static final String CONNECTION_NAME_CONFIG = "connection-name";
-    private static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
-
-    // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
-    static final String QUERIES_CONFIG = "queries";
-    private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
-
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(CONNECTION_NAME_CONFIG,
+        .define(Constants.CONNECTION_NAME_CONFIG,
                 ConfigDef.Type.STRING,
                 ConfigDef.Importance.HIGH,
-                CONNECTION_NAME_STRING_DOC)
-        .define(Plc4xSourceConnector.CONNECTION_STRING_CONFIG,
+                Constants.CONNECTION_NAME_STRING_DOC)
+        .define(Constants.CONNECTION_STRING_CONFIG,
                 ConfigDef.Type.STRING,
                 ConfigDef.Importance.HIGH,
-                Plc4xSourceConnector.CONNECTION_STRING_DOC)
-        .define(Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG,
+                Constants.CONNECTION_STRING_DOC)
+        .define(Constants.KAFKA_POLL_RETURN_CONFIG,
                 ConfigDef.Type.INT,
-                Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT,
+                Constants.KAFKA_POLL_RETURN_DEFAULT,
                 ConfigDef.Importance.HIGH,
-                Plc4xSourceConnector.KAFKA_POLL_RETURN_DOC)
-        .define(Plc4xSourceConnector.BUFFER_SIZE_CONFIG,
+                Constants.KAFKA_POLL_RETURN_DOC)
+        .define(Constants.BUFFER_SIZE_CONFIG,
                 ConfigDef.Type.INT,
-                Plc4xSourceConnector.BUFFER_SIZE_DEFAULT,
+                Constants.BUFFER_SIZE_DEFAULT,
                 ConfigDef.Importance.HIGH,
-                Plc4xSourceConnector.BUFFER_SIZE_DOC)
-        .define(QUERIES_CONFIG,
+                Constants.BUFFER_SIZE_DOC)
+        .define(Constants.QUERIES_CONFIG,
                 ConfigDef.Type.LIST,
                 ConfigDef.Importance.HIGH,
-                QUERIES_DOC);
+                Constants.QUERIES_DOC);
 
-    /*
-     * Configuration of the output.
-     */
-    private static final String SOURCE_NAME_FIELD = "sourceName";
-    private static final String JOB_NAME_FIELD = "jobName";
+
 
     private static final Schema KEY_SCHEMA =
         new SchemaBuilder(Schema.Type.STRUCT)
-            .field(SOURCE_NAME_FIELD, Schema.STRING_SCHEMA)
-            .field(JOB_NAME_FIELD, Schema.STRING_SCHEMA)
+            .field(Constants.SOURCE_NAME_FIELD, Schema.STRING_SCHEMA)
+            .field(Constants.JOB_NAME_FIELD, Schema.STRING_SCHEMA)
             .build();
 
     // Internal buffer into which all incoming scraper responses are written to.
@@ -116,10 +103,10 @@ public class Plc4xSourceTask extends SourceTask {
     @Override
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
-        String connectionName = config.getString(CONNECTION_NAME_CONFIG);
-        String plc4xConnectionString = config.getString(Plc4xSourceConnector.CONNECTION_STRING_CONFIG);
-        pollReturnInterval = config.getInt(Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG);
-        Integer bufferSize = config.getInt(Plc4xSourceConnector.BUFFER_SIZE_CONFIG);
+        String connectionName = config.getString(Constants.CONNECTION_NAME_CONFIG);
+        String plc4xConnectionString = config.getString(Constants.CONNECTION_STRING_CONFIG);
+        pollReturnInterval = config.getInt(Constants.KAFKA_POLL_RETURN_CONFIG);
+        Integer bufferSize = config.getInt(Constants.BUFFER_SIZE_CONFIG);
 
         Map<String, String> topics = new HashMap<>();
         // Create a buffer with a capacity of BUFFER_SIZE_CONFIG elements which schedules access in a fair way.
@@ -128,7 +115,7 @@ public class Plc4xSourceTask extends SourceTask {
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
         builder.addSource(connectionName, plc4xConnectionString);
 
-        List<String> jobConfigs = config.getList(QUERIES_CONFIG);
+        List<String> jobConfigs = config.getList(Constants.QUERIES_CONFIG);
         for (String jobConfig : jobConfigs) {
             String[] jobConfigSegments = jobConfig.split("\\|");
             if(jobConfigSegments.length < 4) {
@@ -177,8 +164,8 @@ public class Plc4xSourceTask extends SourceTask {
 
                 // Prepare the key structure.
                 Struct key = new Struct(KEY_SCHEMA)
-                    .put(SOURCE_NAME_FIELD, sourceName)
-                    .put(JOB_NAME_FIELD, jobName);
+                    .put(Constants.SOURCE_NAME_FIELD, sourceName)
+                    .put(Constants.JOB_NAME_FIELD, jobName);
 
                 // Build the Schema for the result struct.
                 SchemaBuilder recordSchemaBuilder = SchemaBuilder.struct().name("org.apache.plc4x.kafka.JobResult");
@@ -256,7 +243,7 @@ public class Plc4xSourceTask extends SourceTask {
         }
     }
 
-    private Schema getSchema(Object value) {
+    private Schema getSchema(Object value) {        
         Objects.requireNonNull(value);
 
         if(value instanceof List) {
