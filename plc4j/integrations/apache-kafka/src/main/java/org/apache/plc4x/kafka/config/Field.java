@@ -20,52 +20,46 @@ package org.apache.plc4x.kafka.config;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.Config;
+import org.apache.kafka.common.config.ConfigException;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class JobReference extends AbstractConfig{
-
-    private static final Logger log = LoggerFactory.getLogger(JobReference.class);
+public class Field {
 
     private final String name;
-    private final String topic;
+    private final String address;
+    private List<Config> configs;
 
-    private static final String TOPIC_CONFIG = "topic";
-    private static final String TOPIC_DOC = "Topic to Assign to Job Reference";
-    private static final String TOPIC_DEFAULT = null;
+    private static final String FIELD_DOC = "Field Address";
 
-    public JobReference(String name, String defaultTopic, Map originals) {
-        super(configDef(), originals);
+    public Field(String name, String address) {
         this.name = name;
-        this.topic = getString(TOPIC_CONFIG) == null ? defaultTopic : getString(TOPIC_CONFIG);
+        this.address = address;
     }
 
-    public void validate() {
-        return;
+    public void validate() throws ConfigException {
+        if (this.address == null) {
+            throw new ConfigException(
+                String.format("Field Address for field '%s' is missing", this.name));
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public String getTopic() {
-        return topic;
-    }
-
-    protected static ConfigDef configDef() {
-        return new ConfigDef()
-            .define(TOPIC_CONFIG,
-                    ConfigDef.Type.STRING,
-                    TOPIC_DEFAULT,
-                    ConfigDef.Importance.LOW,
-                    TOPIC_DOC);
+    public String getAddress() {
+        return address;
     }
 
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append("\t\t" + name + "." + TOPIC_CONFIG + "=" + topic + ",\n");
+        query.append("\t\t\t" + name + "=" + address + ",\n");
         return query.toString();
     }
+
 }

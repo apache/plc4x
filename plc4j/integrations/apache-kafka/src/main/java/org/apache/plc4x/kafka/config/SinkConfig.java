@@ -40,6 +40,7 @@ public class SinkConfig {
     private final List<Sink> sinks;
 
     public static SinkConfig fromPropertyMap(Map<String, String> properties) {
+        log.info("SinkConfigof");
         String[] sinkNames = properties.getOrDefault(Plc4xSinkConnector.SINK_CONFIG, "").split(",");
         List<Sink> sinks = new ArrayList<>(sinkNames.length);
         for (String sinkName : sinkNames) {
@@ -67,6 +68,7 @@ public class SinkConfig {
     }
 
     public SinkConfig(List<Sink> sinks) {
+        log.info("TaskConfig constructr");
         this.sinks = sinks;
     }
 
