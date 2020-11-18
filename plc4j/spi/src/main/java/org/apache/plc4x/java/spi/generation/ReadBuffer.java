@@ -126,7 +126,8 @@ public class ReadBuffer {
         }
         try {
             if (littleEndian) {
-                return (Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16) & 0xFFFF;
+                int intValue = bi.readInt(true, bitLength);
+                return Integer.reverseBytes(intValue) >>> 16;
             }
             return bi.readInt(true, bitLength);
         } catch (IOException e) {
@@ -143,7 +144,8 @@ public class ReadBuffer {
         }
         try {
             if (littleEndian) {
-                return Long.reverseBytes(bi.readLong(true, bitLength)) >> 32;
+                final long longValue = bi.readLong(true, bitLength);
+                return Long.reverseBytes(longValue) >>> 32;
             }
             return bi.readLong(true, bitLength);
         } catch (IOException e) {

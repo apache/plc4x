@@ -400,16 +400,16 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['IEC61131_BYTE' List
-            [array bit 'value' count '8']
+        ['IEC61131_BYTE' BitString
+            [simple uint 8 'value']
         ]
         // 2 byte (16 bit)
-        ['IEC61131_WORD' List
-            [array bit 'value' count '16']
+        ['IEC61131_WORD' BitString
+            [simple uint 16 'value']
         ]
         // 4 byte (32 bit)
-        ['IEC61131_DWORD' List
-            [array bit 'value' count '32']
+        ['IEC61131_DWORD' BitString
+            [simple uint 32 'value']
         ]
 
         // -----------------------------------------
@@ -464,10 +464,12 @@
 //            [simple string 16 'UTF-16' 'value']
         ]
         ['IEC61131_STRING' STRING
-//            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
+            [manual   string  'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
+            [reserved uint 32 '0x00000000']
         ]
         ['IEC61131_WSTRING' STRING
-//            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
+            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
+            [reserved uint 64 '0x00000000']
         ]
 
         // -----------------------------------------

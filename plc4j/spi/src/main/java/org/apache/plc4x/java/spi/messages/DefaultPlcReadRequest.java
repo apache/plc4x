@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, XmlSerializable {
 
     private final PlcReader reader;
+    // This is intentionally a linked hash map in order to keep the order of how elements were added.
     private LinkedHashMap<String, PlcField> fields;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -135,7 +136,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, X
         public Builder(PlcReader reader, PlcFieldHandler fieldHandler) {
             this.reader = reader;
             this.fieldHandler = fieldHandler;
-            fields = new TreeMap<>();
+            fields = new LinkedHashMap<>();
         }
 
         @Override
