@@ -19,10 +19,7 @@ under the License.
 package org.apache.plc4x.java.ads.protocol;
 
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
-import org.apache.plc4x.java.ads.field.AdsField;
-import org.apache.plc4x.java.ads.field.AdsStringField;
-import org.apache.plc4x.java.ads.field.DirectAdsField;
-import org.apache.plc4x.java.ads.field.SymbolicAdsField;
+import org.apache.plc4x.java.ads.field.*;
 import org.apache.plc4x.java.ads.readwrite.*;
 import org.apache.plc4x.java.ads.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
@@ -340,9 +337,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private ResponseItem<PlcValue> parsePlcValue(AdsField field, ReadBuffer readBuffer) {
         try {
             int strLen = 0;
-            if (field.getAdsDataType() == AdsDataType.STRING) {
-                strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 256;
-            } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
+            if ((field.getAdsDataType() == AdsDataType.STRING) || (field.getAdsDataType() == AdsDataType.WSTRING)) {
                 strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 256;
             }
             final int stringLength = strLen;

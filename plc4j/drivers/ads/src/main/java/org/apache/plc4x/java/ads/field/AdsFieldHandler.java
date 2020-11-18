@@ -29,7 +29,7 @@ public class AdsFieldHandler implements PlcFieldHandler {
         if (DirectAdsStringField.matches(fieldQuery)) {
             return DirectAdsStringField.of(fieldQuery);
         } else if (DirectAdsField.matches(fieldQuery)) {
-            return SymbolicAdsField.of(fieldQuery);
+            return DirectAdsField.of(fieldQuery);
         } else if (SymbolicAdsStringField.matches(fieldQuery)) {
             return SymbolicAdsStringField.of(fieldQuery);
         } else if (SymbolicAdsField.matches(fieldQuery)) {
