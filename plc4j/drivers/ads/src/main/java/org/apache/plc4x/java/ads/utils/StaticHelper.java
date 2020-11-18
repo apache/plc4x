@@ -30,39 +30,39 @@ import java.util.List;
 
 public class StaticHelper {
 
-    public static String parseAmsString(ReadBuffer io, String encoding) {
+    public static String parseAmsString(ReadBuffer io, int stringLength, String encoding) {
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
-                while (io.hasMore(8)) {
+                for(int i = 0; (i < stringLength) && io.hasMore(8); i++) {
                     final byte curByte = io.readByte(8);
                     if (curByte != 0) {
                         bytes.add(curByte);
                     } else {
-                        final byte[] byteArray = new byte[bytes.size()];
-                        for (int i = 0; i < bytes.size(); i++) {
-                            byteArray[i] = bytes.get(i);
-                        }
-                        return new String(byteArray, StandardCharsets.UTF_8);
+                        break;
                     }
                 }
-                throw new PlcRuntimeException("Reached the end of the input without finishing the string");
+                final byte[] byteArray = new byte[bytes.size()];
+                for (int i = 0; i < bytes.size(); i++) {
+                    byteArray[i] = bytes.get(i);
+                }
+                return new String(byteArray, StandardCharsets.UTF_8);
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
-                while (io.hasMore(16)) {
+                for(int i = 0; (i < stringLength) && io.hasMore(16); i++) {
                     final short curShort = io.readShort(16);
                     if (curShort != 0) {
                         bytes.add((byte) (curShort >>> 8));
                         bytes.add((byte) (curShort & 0xFF));
                     } else {
-                        final byte[] byteArray = new byte[bytes.size()];
-                        for (int i = 0; i < bytes.size(); i++) {
-                            byteArray[i] = bytes.get(i);
-                        }
-                        return new String(byteArray, StandardCharsets.UTF_16);
+                        break;
                     }
                 }
-                throw new PlcRuntimeException("Reached the end of the input without finishing the string");
+                final byte[] byteArray = new byte[bytes.size()];
+                for (int i = 0; i < bytes.size(); i++) {
+                    byteArray[i] = bytes.get(i);
+                }
+                return new String(byteArray, StandardCharsets.UTF_16);
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
@@ -71,7 +71,7 @@ public class StaticHelper {
         }
     }
 
-    public static void serializeAmsString(WriteBuffer io, PlcValue value, Object encoding) {
+    public static void serializeAmsString(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {
         // TODO: Need to implement the serialization or we can't write strings
         throw new PlcRuntimeException("Not implemented yet");
     }

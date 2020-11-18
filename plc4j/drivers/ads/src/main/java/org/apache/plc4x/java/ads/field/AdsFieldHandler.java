@@ -26,8 +26,12 @@ public class AdsFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        if (DirectAdsField.matches(fieldQuery)) {
-            return DirectAdsField.of(fieldQuery);
+        if (DirectAdsStringField.matches(fieldQuery)) {
+            return DirectAdsStringField.of(fieldQuery);
+        } else if (DirectAdsField.matches(fieldQuery)) {
+            return SymbolicAdsField.of(fieldQuery);
+        } else if (SymbolicAdsStringField.matches(fieldQuery)) {
+            return SymbolicAdsStringField.of(fieldQuery);
         } else if (SymbolicAdsField.matches(fieldQuery)) {
             return SymbolicAdsField.of(fieldQuery);
         }

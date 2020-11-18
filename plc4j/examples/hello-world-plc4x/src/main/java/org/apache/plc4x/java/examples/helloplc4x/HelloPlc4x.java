@@ -60,7 +60,7 @@ public class HelloPlc4x {
             // - Give the single item requested the alias name "value"
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + i, options.getFieldAddress()[i]);
+                builder.addItem("value-" + options.getFieldAddress()[i], options.getFieldAddress()[i]);
             }
             PlcReadRequest readRequest = builder.build();
 
@@ -73,13 +73,13 @@ public class HelloPlc4x {
             // Simply iterating over the field names returned in the response.
             printResponse(syncResponse);
 
-            PlcValue asPlcValue = syncResponse.getAsPlcValue();
-            System.out.println(asPlcValue.toString());
+            /*PlcValue asPlcValue = syncResponse.getAsPlcValue();
+            System.out.println(asPlcValue.toString());*/
 
             //////////////////////////////////////////////////////////
             // Read asynchronously ...
             // Register a callback executed as soon as a response arrives.
-            logger.info("Asynchronous request ...");
+            /*logger.info("Asynchronous request ...");
             CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
             asyncResponse.whenComplete((readResponse, throwable) -> {
                 if (readResponse != null) {
@@ -87,7 +87,7 @@ public class HelloPlc4x {
                 } else {
                     logger.error("An error occurred: " + throwable.getMessage(), throwable);
                 }
-            });
+            });*/
 
             // Give the async request a little time...
             TimeUnit.MILLISECONDS.sleep(1000);

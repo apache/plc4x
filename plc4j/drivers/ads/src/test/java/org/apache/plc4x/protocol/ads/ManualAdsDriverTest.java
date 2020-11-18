@@ -69,7 +69,7 @@ public class ManualAdsDriverTest extends ManualTest {
 
     public static void main(String[] args) throws Exception {
         ManualAdsDriverTest test = new ManualAdsDriverTest("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851");
-        test.addTestCase("main.hurz_BOOL:BOOL", true);
+        /*test.addTestCase("main.hurz_BOOL:BOOL", true);
         test.addTestCase("main.hurz_BYTE:BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
         test.addTestCase("main.hurz_WORD:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));
         test.addTestCase("main.hurz_DWORD:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false));
@@ -83,15 +83,15 @@ public class ManualAdsDriverTest extends ManualTest {
         test.addTestCase("main.hurz_ULINT:ULINT", 4242442424242424242L);
         test.addTestCase("main.hurz_REAL:REAL", 3.14159265359F);
         test.addTestCase("main.hurz_LREAL:LREAL", 2.71828182846D);
-        test.addTestCase("main.hurz_STRING:STRING", "hurz");
+        test.addTestCase("main.hurz_STRING:STRING", "hurz");*/
         test.addTestCase("main.hurz_WSTRING:WSTRING", "wolf");
-        test.addTestCase("main.hurz_TIME:TIME", "PT1.234S");
+        /*test.addTestCase("main.hurz_TIME:TIME", "PT1.234S");
         test.addTestCase("main.hurz_LTIME:LTIME", "PT24015H23M12.034002044S");
         test.addTestCase("main.hurz_DATE:DATE", "1978-03-28");
         test.addTestCase("main.hurz_TIME_OF_DAY:TIME_OF_DAY", "15:36:30.123");
         test.addTestCase("main.hurz_TOD:TOD", "16:17:18.123");
         test.addTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30");
-        test.addTestCase("main.hurz_DT:DT", "1972-03-29T00:00");
+        test.addTestCase("main.hurz_DT:DT", "1972-03-29T00:00");*/
         test.run();
     }
 
