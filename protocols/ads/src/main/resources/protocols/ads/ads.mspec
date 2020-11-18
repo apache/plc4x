@@ -386,7 +386,7 @@
     [array int 8 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' [string 'dataFormatName']
+[dataIo 'DataItem' [string 'dataFormatName', int 32 'stringLength']
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -464,12 +464,10 @@
 //            [simple string 16 'UTF-16' 'value']
         ]
         ['IEC61131_STRING' STRING
-            [manual   string  'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
-            [reserved uint 32 '0x00000000']
+            [manual   string  'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
-            [reserved uint 64 '0x00000000']
+            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -547,10 +545,10 @@
     // -----------------------------------------
     // Characters & Strings
     // -----------------------------------------
-    [CHAR       ['1',  'IEC61131_CHAR']]
-    [WCHAR      ['2',  'IEC61131_WCHAR']]
-    [STRING     ['9',  'IEC61131_STRING']]
-    [WSTRING    ['18', 'IEC61131_WSTRING']]
+    [CHAR       ['1',   'IEC61131_CHAR']]
+    [WCHAR      ['2',   'IEC61131_WCHAR']]
+    [STRING     ['256', 'IEC61131_STRING']]
+    [WSTRING    ['512', 'IEC61131_WSTRING']]
     // -----------------------------------------
     // Dates & Times
     // -----------------------------------------

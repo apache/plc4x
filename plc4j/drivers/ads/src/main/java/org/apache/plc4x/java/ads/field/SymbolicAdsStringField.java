@@ -30,86 +30,50 @@ import java.util.regex.Pattern;
 /**
  * ADS address witch is defined by symbolic name (e.g. {@code Main.items[0]}).
  */
-public class SymbolicAdsField implements AdsField {
+public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStringField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_STRING_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>'STRING'|'WSTRING')\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d)])?");
 
-    private final String symbolicAddress;
+    private final int stringLength;
 
-    private final AdsDataType adsDataType;
-
-    private final int numberOfElements;
-
-    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
-        this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
-        this.adsDataType = Objects.requireNonNull(adsDataType);
-        this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
-        if (this.numberOfElements <= 0) {
-            throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
-        }
-
+    private SymbolicAdsStringField(String symbolicAddress, AdsDataType adsDataType, int stringLength, Integer numberOfElements) {
+        super(symbolicAddress, adsDataType, numberOfElements);
+        this.stringLength = stringLength;
     }
 
-    public static SymbolicAdsField of(String address) {
-        Matcher matcher = SYMBOLIC_ADDRESS_PATTERN.matcher(address);
+    public static SymbolicAdsStringField of(String address) {
+        Matcher matcher = SYMBOLIC_ADDRESS_STRING_PATTERN.matcher(address);
         if (!matcher.matches()) {
-            throw new PlcInvalidFieldException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
+            throw new PlcInvalidFieldException(address, SYMBOLIC_ADDRESS_STRING_PATTERN, "{address}");
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
         String adsDataTypeString = matcher.group("adsDataType");
         AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
 
+        String stringLengthString = matcher.group("stringLength");
+        Integer stringLength = stringLengthString != null ? Integer.valueOf(stringLengthString) : null;
+
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
 
-        return new SymbolicAdsField(symbolicAddress, adsDataType, numberOfElements);
+        return new SymbolicAdsStringField(symbolicAddress, adsDataType, stringLength, numberOfElements);
     }
 
     public static boolean matches(String address) {
-        return SYMBOLIC_ADDRESS_PATTERN.matcher(address).matches();
-    }
-
-    public String getSymbolicAddress() {
-        return symbolicAddress;
+        return SYMBOLIC_ADDRESS_STRING_PATTERN.matcher(address).matches();
     }
 
     @Override
-    public AdsDataType getAdsDataType() {
-        return adsDataType;
-    }
-
-    @Override
-    public String getPlcDataType() {
-        return adsDataType.toString();
-    }
-
-    @Override
-    public int getNumberOfElements() {
-        return numberOfElements;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SymbolicAdsField)) {
-            return false;
-        }
-        SymbolicAdsField that = (SymbolicAdsField) o;
-        return Objects.equals(symbolicAddress, that.symbolicAddress);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(symbolicAddress);
+    public int getStringLength() {
+        return stringLength;
     }
 
     @Override
     public String toString() {
-        return "SymbolicAdsField{" +
-            "symbolicAddress='" + symbolicAddress + '\'' +
+        return "SymbolicAdsStringField{" +
+            "symbolicAddress='" + getSymbolicAddress() + '\'' +
+            ", stringLength=" + stringLength +
             '}';
     }
 
