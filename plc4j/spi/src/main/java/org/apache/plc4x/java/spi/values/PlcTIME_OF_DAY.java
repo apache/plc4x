@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -48,7 +47,7 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcTIME_OF_DAY(@JsonProperty("value") Long value) {
-        super(LocalTime.ofSecondOfDay(value / 1000), true);
+        super(LocalTime.ofNanoOfDay(value * 1000000), true);
     }
 
     @Override
