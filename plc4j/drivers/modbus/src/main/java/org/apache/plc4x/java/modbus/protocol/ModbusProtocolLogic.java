@@ -367,6 +367,9 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
+            if(fieldDataTypeSize < 2) {
+                io.readByte(8);
+            }
             return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
@@ -376,6 +379,9 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
+            if(fieldDataTypeSize < 2) {
+                io.readByte(8);
+            }
             return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
@@ -399,7 +405,9 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
               throw new PlcRuntimeException("Unexpected number of groups in response. " +
                   "Expected " + req.getItems().length + ", but got " + resp.getItems().length);
             }
-
+            if(fieldDataTypeSize < 2) {
+                io.readByte(8);
+            }
             return DataItemIO.staticParse(io, dataType, Math.round(Math.max(dataLength/2.0f, 1)/Math.max(fieldDataTypeSize/2.0f, 1)));
         }
         return null;
