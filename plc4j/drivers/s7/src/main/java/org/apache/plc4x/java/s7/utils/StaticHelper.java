@@ -19,15 +19,19 @@ under the License.
 package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StaticHelper {
 
@@ -119,23 +123,66 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
-    public static String parseS7Char(ReadBuffer io, Object encoding) {
-        // Read the full size of the string.
-        return io.readString(8, (String) encoding);
+    public static String parseS7Char(ReadBuffer io, String encoding) {
+        if("UTF-8".equalsIgnoreCase(encoding)) {
+            return io.readString(8, encoding);
+        } else if("UTF-16".equalsIgnoreCase(encoding)) {
+            return io.readString(16, encoding);
+        } else {
+            throw new PlcRuntimeException("Unsupported encoding");
+        }
     }
 
-    public static String parseS7String(ReadBuffer io, int stringLength, Object encoding) {
+    public static String parseS7String(ReadBuffer io, int stringLength, String encoding) {
         try {
-            // This is the maximum number of bytes a string can be long.
-            short maxLength = io.readUnsignedShort(8);
-            // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-            short totalStringLength = io.readUnsignedShort(8);
-            // Read the full size of the string.
-            String str = io.readString(stringLength * 8, (String) encoding);
-            // Cut off the parts that don't belong to it.
-            return str.substring(0, totalStringLength);
+            if ("UTF-8".equalsIgnoreCase(encoding)) {
+                // This is the maximum number of bytes a string can be long.
+                short maxLength = io.readUnsignedShort(8);
+                // This is the total length of the string on the PLC (Not necessarily the number of characters read)
+                short totalStringLength = io.readUnsignedShort(8);
+
+                final byte[] byteArray = new byte[totalStringLength];
+                for(int i = 0; (i < stringLength) && io.hasMore(8); i++) {
+                    final byte curByte = io.readByte(8);
+                    if (i < totalStringLength) {
+                        byteArray[i] = curByte;
+                    } else {
+                        // Gobble up the remaining data, which is not added to the string.
+                        i++;
+                        for(; (i < stringLength) && io.hasMore(8); i++) {
+                            io.readByte(8);
+                        }
+                        break;
+                    }
+                }
+                return new String(byteArray, StandardCharsets.UTF_8);
+            } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+                // This is the maximum number of bytes a string can be long.
+                int maxLength = io.readUnsignedInt(16);
+                // This is the total length of the string on the PLC (Not necessarily the number of characters read)
+                int totalStringLength = io.readUnsignedInt(16);
+
+                final byte[] byteArray = new byte[totalStringLength * 2];
+                for(int i = 0; (i < stringLength) && io.hasMore(16); i++) {
+                    final short curShort = io.readShort(16);
+                    if (i < totalStringLength) {
+                        byteArray[i*2] = (byte) (curShort >>> 8);
+                        byteArray[(i*2) + 1] = (byte) (curShort & 0xFF);
+                    } else {
+                        // Gobble up the remaining data, which is not added to the string.
+                        i++;
+                        for(; (i < stringLength) && io.hasMore(16); i++) {
+                            io.readShort(16);
+                        }
+                        break;
+                    }
+                }
+                return new String(byteArray, StandardCharsets.UTF_16);
+            } else {
+                throw new PlcRuntimeException("Unsupported string encoding " + encoding);
+            }
         } catch (ParseException e) {
-            return null;
+            throw new PlcRuntimeException("Error parsing string", e);
         }
     }
 

@@ -63,7 +63,9 @@ const(
     TransportSize_LTIME TransportSize = 0x00
     TransportSize_DATE TransportSize = 0x09
     TransportSize_TIME_OF_DAY TransportSize = 0x0A
+    TransportSize_TOD TransportSize = 0x0A
     TransportSize_DATE_AND_TIME TransportSize = 0x0F
+    TransportSize_DT TransportSize = 0x0F
 )
 
 

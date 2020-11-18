@@ -51,6 +51,15 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcDATE(@JsonProperty("value") Integer value) {
+        // In this case the date is the number of days since 1990-01-01
+        // So we gotta add 7305 days to the value to have it relative to epoch
+        // Then we also need to transform it from days to seconds by multiplying by 86400
+        super(LocalDateTime.ofInstant(Instant.ofEpochSecond((value + 7305) * 86400),
+            ZoneId.systemDefault()).toLocalDate(), true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE(@JsonProperty("value") Long value) {
         super(LocalDateTime.ofInstant(Instant.ofEpochSecond(value), ZoneId.systemDefault()).toLocalDate(), true);
     }
