@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+    "strconv"
 )
 
 type ModbusDriver struct {
@@ -91,7 +92,17 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 	}()
 	codec := NewModbusMessageCodec(transportInstance, nil)
 
+	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
+	unitIdentifier := uint8(1)
+	if value, ok := options["unit-identifier"]; ok {
+	    var intValue int
+        intValue, err = strconv.Atoi(value[0])
+        if err == nil {
+            unitIdentifier = uint8(intValue)
+        }
+    }
+
 	// Create the new connection
-	connection := NewModbusConnection(uint8(1), codec, options, m.fieldHandler)
+	connection := NewModbusConnection(unitIdentifier, codec, options, m.fieldHandler)
 	return connection.Connect()
 }
