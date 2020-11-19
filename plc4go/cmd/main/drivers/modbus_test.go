@@ -85,7 +85,7 @@ func Connection(t *testing.T) {
 	wb := utils.NewWriteBuffer()
 	adu.Serialize(*wb)
 
-	servAddr := "192.168.23.30:502"
+	servAddr := "192.168.23.30:502?unit-identifier=1"
 	tcpAddr, err := net.ResolveTCPAddr("tcp", servAddr)
 	if err != nil {
 		println("ResolveTCPAddr failed:", err.Error())
@@ -130,7 +130,7 @@ func TestPlc4goDriver(t *testing.T) {
 	driverManager.RegisterTransport(tcp.NewTcpTransport())
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus://192.168.23.30")
+	crc := driverManager.GetConnection("modbus://192.168.23.30?unit-identifier=1")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
