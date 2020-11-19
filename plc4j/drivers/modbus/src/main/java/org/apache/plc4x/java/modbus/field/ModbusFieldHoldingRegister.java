@@ -70,8 +70,7 @@ public class ModbusFieldHoldingRegister extends ModbusField {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
 
-        String datatypeTemp = matcher.group("datatype");
-        String datatype = datatypeTemp != null ? datatypeTemp : "INT";
+        String datatype = "IEC61131_" + ((matcher.group("datatype") != null) ? matcher.group("datatype") : "INT");
 
         return new ModbusFieldHoldingRegister(address, quantity, datatype.toUpperCase());
     }

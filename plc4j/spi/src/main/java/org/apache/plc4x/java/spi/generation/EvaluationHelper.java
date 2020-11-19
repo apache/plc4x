@@ -38,6 +38,11 @@ public class EvaluationHelper {
             Boolean boolean2 = (Boolean) val2;
             return boolean1.equals(boolean2);
         }
+        if(val1 instanceof String && val2 instanceof String) {
+            String string1 = (String) val1;
+            String string2 = (String) val2;
+            return string1.equals(string2);
+        }
         if(val1.getClass().isEnum() && val2.getClass().isEnum()) {
             return val1.equals(val2);
         }

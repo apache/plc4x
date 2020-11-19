@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.Collection;
 
-public interface PlcSubscriptionResponse extends PlcFieldResponse {
+public interface PlcSubscriptionResponse extends PlcSubscriptionFieldResponse {
 
     @Override
     PlcSubscriptionRequest getRequest();

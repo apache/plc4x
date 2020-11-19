@@ -22,11 +22,13 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KnxNetIpMessageIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -36,7 +38,7 @@ import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 
 import java.util.function.ToIntFunction;
 
-public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
+public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
 
     public static final int KNXNET_IP_PORT = 3671;
 
@@ -86,8 +88,13 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class, KNXNetIPMessageIO.class)
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<KnxNetIpMessage> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(KnxNetIpMessage.class, KnxNetIpMessageIO.class)
             .withProtocol(KnxNetIpProtocolLogic.class)
             .withDriverContext(KnxNetIpDriverContext.class)
             .withPacketSizeEstimator(PacketSizeEstimator.class)

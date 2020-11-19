@@ -21,7 +21,7 @@ package org.apache.plc4x.java.opm;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcString;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
@@ -57,7 +57,7 @@ public class ConnectedEntityTest {
         driverManager = new PlcDriverManager();
         connection = (MockConnection) driverManager.getConnection("mock:cached");
         when(mockDevice.read(any()))
-            .thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcString("hallo")));
+            .thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("hallo")));
         connection.setDevice(mockDevice);
         entityManager = new PlcEntityManager(driverManager);
     }

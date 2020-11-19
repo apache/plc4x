@@ -106,6 +106,8 @@ public class StaticHelper {
             int minute = io.readByte(8);
             int second = io.readByte(8);
             int nanosecond = io.readUnsignedInt(24);
+            // Skip day-of-week
+            io.readByte(8);
 
             return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
         } catch (Exception e) {
@@ -117,12 +119,17 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
+    public static String parseS7Char(ReadBuffer io, Object encoding) {
+        // Read the full size of the string.
+        return io.readString(8, (String) encoding);
+    }
+
     public static String parseS7String(ReadBuffer io, int stringLength, Object encoding) {
         try {
             // This is the maximum number of bytes a string can be long.
             short maxLength = io.readUnsignedShort(8);
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-            short totalStringLength = io.readShort(8);
+            short totalStringLength = io.readUnsignedShort(8);
             // Read the full size of the string.
             String str = io.readString(stringLength * 8, (String) encoding);
             // Cut off the parts that don't belong to it.
@@ -130,6 +137,11 @@ public class StaticHelper {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static void serializeS7Char(WriteBuffer io, PlcValue value, Object encoding) {
+        // TODO: Need to implement the serialization or we can't write strings
+        throw new NotImplementedException("Serializing STRING not implemented");
     }
 
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {

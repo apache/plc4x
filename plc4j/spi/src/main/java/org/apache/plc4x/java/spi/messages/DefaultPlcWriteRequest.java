@@ -24,35 +24,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
+public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable {
 
     private final PlcWriter writer;
     private final LinkedHashMap<String, FieldValueItem> fields;
@@ -100,13 +95,11 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         return fields.get(name).getValue();
     }
 
-    @Override
     @JsonIgnore
     public List<PlcValue> getPlcValues() {
         return fields.values().stream().map(FieldValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    @Override
     @JsonIgnore
     public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
@@ -124,7 +117,6 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         return writer;
     }
 
-    @Override
     @JsonIgnore
     public List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples() {
         return fields.entrySet()
@@ -149,234 +141,72 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         return 1;
     }
 
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcWriteRequest");
+        Element fieldsElement = doc.createElement("fields");
+        messageElement.appendChild(fieldsElement);
+        for (Map.Entry<String, FieldValueItem> fieldEntry : fields.entrySet()) {
+            FieldValueItem fieldValueItem = fieldEntry.getValue();
+            String fieldName = fieldEntry.getKey();
+            Element fieldNameElement = doc.createElement(fieldName);
+            fieldsElement.appendChild(fieldNameElement);
+            PlcField field = fieldValueItem.getField();
+            if(!(field instanceof XmlSerializable)) {
+                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+            }
+            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
+            final PlcValue value = fieldValueItem.getValue();
+            if(value instanceof PlcList) {
+                PlcList list = (PlcList) value;
+                for (PlcValue plcValue : list.getList()) {
+                    Element fieldValueElement = doc.createElement("value");
+                    fieldValueElement.setTextContent(plcValue.getString());
+                    fieldNameElement.appendChild(fieldValueElement);
+                }
+            } else {
+                Element fieldValueElement = doc.createElement("value");
+                fieldValueElement.setTextContent(value.getString());
+                fieldNameElement.appendChild(fieldValueElement);
+            }
+        }
+        parent.appendChild(messageElement);
+    }
+
     public static class Builder implements PlcWriteRequest.Builder {
 
         private final PlcWriter writer;
         private final PlcFieldHandler fieldHandler;
-        private final Map<String, BuilderItem<Object>> fields;
-        private final Map<Class<?>, BiFunction<PlcField, Object[], PlcValue>> handlerMap;
+        private final PlcValueHandler valueHandler;
+        private final Map<String, Pair<String, Object[]>> fields;
 
-        public Builder(PlcWriter writer, PlcFieldHandler fieldHandler) {
+        public Builder(PlcWriter writer, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler) {
             this.writer = writer;
             this.fieldHandler = fieldHandler;
+            this.valueHandler = valueHandler;
             fields = new TreeMap<>();
-            handlerMap = new HashMap<>();
-            handlerMap.put(Boolean.class, fieldHandler::encodeBoolean);
-            handlerMap.put(Byte.class, fieldHandler::encodeByte);
-            handlerMap.put(Short.class, fieldHandler::encodeShort);
-            handlerMap.put(Integer.class, fieldHandler::encodeInteger);
-            handlerMap.put(BigInteger.class, fieldHandler::encodeBigInteger);
-            handlerMap.put(Long.class, fieldHandler::encodeLong);
-            handlerMap.put(Float.class, fieldHandler::encodeFloat);
-            handlerMap.put(Double.class, fieldHandler::encodeDouble);
-            handlerMap.put(BigDecimal.class, fieldHandler::encodeBigDecimal);
-            handlerMap.put(String.class, fieldHandler::encodeString);
-            handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
-            handlerMap.put(LocalDate.class, fieldHandler::encodeDate);
-            handlerMap.put(LocalDateTime.class, fieldHandler::encodeDateTime);
         }
 
         @Override
-        public Builder addItem(String name, String fieldQuery, Boolean... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBoolean);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Boolean... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBoolean);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Byte... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeByte);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Byte... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeByte);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Short... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeShort);
-        }
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Short... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeShort);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Integer... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeInteger);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Integer... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeInteger);
-        }
-
-        @Override
-        public PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigInteger... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBigInteger);
-        }
-
-        @Override
-        public PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, BigInteger... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBigInteger);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Long... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeLong);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Long... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeLong);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Float... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeFloat);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Float... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeFloat);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Double... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDouble);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, Double... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDouble);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, BigDecimal... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBigDecimal);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, BigDecimal... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeBigDecimal);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, String... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeString);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, String... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeString);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, LocalTime... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeTime);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, LocalTime... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeTime);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, LocalDate... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDate);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, LocalDate... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDate);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, LocalDateTime... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
-        }
-
-        @Override
-        public Builder addItem(String name, PlcField fieldQuery, LocalDateTime... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
-        }
-
-        @Override
-        public <T> Builder addItem(String name, String fieldQuery, T... values) {
-            BiFunction<PlcField, Object[], PlcValue> plcFieldPlcValueBiFunction = validateArray(values);
-            return addItem(name, fieldQuery, values, plcFieldPlcValueBiFunction);
-        }
-
-        @Override
-        public <T> Builder addItem(String name, PlcField fieldQuery, T... values) {
-            BiFunction<PlcField, Object[], PlcValue> plcFieldPlcValueBiFunction = validateArray(values);
-            return addItem(name, fieldQuery, values, plcFieldPlcValueBiFunction);
-        }
-
-        private <T> BiFunction<PlcField, Object[], PlcValue> validateArray(T[] values) {
-            Objects.requireNonNull(values);
-            Class<?> checkedClazz = null;
-            for (T value : values) {
-                if (checkedClazz == null) {
-                    checkedClazz = value.getClass();
-                }
-                if (value.getClass() != checkedClazz) {
-                    throw new IllegalArgumentException("Invalid class found " + value.getClass() + ". should all be " + checkedClazz);
-                }
-            }
-            BiFunction<PlcField, Object[], PlcValue> plcFieldPlcValueBiFunction = handlerMap.get(checkedClazz);
-            if (plcFieldPlcValueBiFunction == null) {
-                throw new IllegalArgumentException("no field handler for " + checkedClazz + " found");
-            }
-            return plcFieldPlcValueBiFunction;
+        public Builder addItem(String name, String fieldQuery, Object... values) {
+            fields.put(name, Pair.of(fieldQuery, values));
+            return this;
         }
 
         @Override
         public PlcWriteRequest build() {
             LinkedHashMap<String, FieldValueItem> parsedFields = new LinkedHashMap<>();
-            fields.forEach((name, builderItem) -> {
+            fields.forEach((name, fieldValues) -> {
                 // Compile the query string.
-                PlcField parsedField = builderItem.fieldQuery.get();
-                // Encode the payload.
-                // TODO: Depending on the field type, handle the PlcValue creation differently.
-                PlcValue value = builderItem.encoder.apply(parsedField, builderItem.values);
-                parsedFields.put(name, new FieldValueItem(parsedField, value));
+                String fieldQuery = fieldValues.getLeft();
+                PlcField field = fieldHandler.createField(fieldQuery);
+                Object[] value = fieldValues.getRight();
+                PlcValue plcValue = valueHandler.newPlcValue(field, value);
+                parsedFields.put(name, new FieldValueItem(field, plcValue));
             });
             return new DefaultPlcWriteRequest(writer, parsedFields);
         }
-
-        private Builder addItem(String name, String fieldQuery, Object[] values, BiFunction<PlcField, Object[], PlcValue> encoder) {
-            if (fields.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
-            }
-            fields.put(name, new BuilderItem<>(() -> fieldHandler.createField(fieldQuery), values, encoder));
-            return this;
-        }
-
-        private Builder addItem(String name, PlcField field, Object[] values, BiFunction<PlcField, Object[], PlcValue> encoder) {
-            if (fields.containsKey(name)) {
-                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
-            }
-            fields.put(name, new BuilderItem<>(() -> field, values, encoder));
-            return this;
-        }
-
-        private static class BuilderItem<T> {
-            private final Supplier<PlcField> fieldQuery;
-            private final T[] values;
-            private final BiFunction<PlcField, T[], PlcValue> encoder;
-
-            private BuilderItem(Supplier<PlcField> fieldQuery, T[] values, BiFunction<PlcField, T[], PlcValue> encoder) {
-                this.fieldQuery = fieldQuery;
-                this.values = values;
-                this.encoder = encoder;
-            }
-        }
-
     }
 
 }

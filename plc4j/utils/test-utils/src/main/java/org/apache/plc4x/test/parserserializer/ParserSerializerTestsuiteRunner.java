@@ -59,6 +59,9 @@ public class ParserSerializerTestsuiteRunner {
     @TestFactory
     public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
         ParserSerializerTestsuite testSuite = parseTestsuite(ParserSerializerTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
+        if(testSuite == null) {
+            throw new ParserSerializerTestsuiteException("Couldn't find testsuite document");
+        }
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for(Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();

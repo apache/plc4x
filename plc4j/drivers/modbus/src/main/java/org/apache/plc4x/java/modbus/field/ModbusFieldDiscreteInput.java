@@ -71,8 +71,7 @@ public class ModbusFieldDiscreteInput extends ModbusField {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
 
-        String datatypeTemp = matcher.group("datatype");
-        String datatype = datatypeTemp != null ? datatypeTemp : "BOOL";
+        String datatype = "IEC61131_" + ((matcher.group("datatype") != null) ? matcher.group("datatype") : "BOOL");
 
         return new ModbusFieldDiscreteInput(address, quantity, datatype.toUpperCase());
     }

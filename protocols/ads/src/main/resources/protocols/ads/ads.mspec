@@ -408,24 +408,24 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['AdsDataType.BYTE' BOOL
+        ['AdsDataType.BYTE' List
             [array bit 'value' count '8']
         ]
-        ['AdsDataType.BITARR8' BOOL
+        ['AdsDataType.BITARR8' List
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['AdsDataType.WORD' BOOL
+        ['AdsDataType.WORD' List
             [array bit 'value' count '16']
         ]
-        ['AdsDataType.BITARR16' BOOL
+        ['AdsDataType.BITARR16' List
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['AdsDataType.DWORD' BOOL
+        ['AdsDataType.DWORD' List
             [array bit 'value' count '32']
         ]
-        ['AdsDataType.BITARR32' BOOL
+        ['AdsDataType.BITARR32' List
             [array bit 'value' count '32']
         ]
 
@@ -504,7 +504,7 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['AdsDataType.STRING' String
+        ['AdsDataType.STRING' STRING
 //            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
         ]
     ]

@@ -20,19 +20,10 @@
 package org.apache.plc4x.java.simulated.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-
-public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
+public class SimulatedFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -40,58 +31,6 @@ public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
             return SimulatedField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
-    }
-
-    @Override
-    public PlcValue encodeString(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == String.class) {
-            if(values.length == 1) {
-                return new PlcString((String) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeTime(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == LocalTime.class) {
-            if(values.length == 1) {
-                return new PlcTime((LocalTime) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeDate(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == LocalDate.class) {
-            if(values.length == 1) {
-                return new PlcDate((LocalDate) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeDateTime(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == LocalDateTime.class) {
-            if(values.length == 1) {
-                return new PlcDateTime((LocalDateTime) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
 
 }

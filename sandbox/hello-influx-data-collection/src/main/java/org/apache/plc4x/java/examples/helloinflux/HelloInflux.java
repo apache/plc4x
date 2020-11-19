@@ -36,6 +36,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +122,7 @@ public class HelloInflux {
                 point.addField(contextName, plcValue.getFloat());
             } else if (plcValue instanceof PlcLREAL) {
                 point.addField(contextName, plcValue.getDouble());
-            } else if (plcValue instanceof PlcString) {
+            } else if (plcValue instanceof PlcSTRING) {
                 point.addField(contextName, plcValue.getString());
             } else if (plcValue instanceof PlcStruct) {
                 PlcStruct structValue = (PlcStruct) plcValue;

@@ -22,10 +22,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,17 +37,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcRequest {
+public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest, PlcRequest, XmlSerializable {
 
     private final PlcSubscriber subscriber;
 
-    private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
+    private final List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcUnsubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
-                                           @JsonProperty("internalPlcSubscriptionHandles") Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+                                           @JsonProperty("internalPlcSubscriptionHandles") List<PlcSubscriptionHandle> plcSubscriptionHandles) {
         this.subscriber = subscriber;
-        this.internalPlcSubscriptionHandles = internalPlcSubscriptionHandles;
+        this.plcSubscriptionHandles = plcSubscriptionHandles;
     }
 
     @Override
@@ -54,19 +56,28 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
         return subscriber.unsubscribe(this);
     }
 
+    @Override
+    public List<PlcSubscriptionHandle> getSubscriptionHandles() {
+        return plcSubscriptionHandles;
+    }
+
     public PlcSubscriber getSubscriber() {
         return subscriber;
     }
 
+    public Collection<PlcSubscriptionHandle> getPlcSubscriptionHandles() {
+        return plcSubscriptionHandles;
+    }
+
     @Override
-    public Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles() {
-        return internalPlcSubscriptionHandles;
+    public void xmlSerialize(Element parent) {
+        // TODO: Implement
     }
 
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
         private final PlcSubscriber subscriber;
-        private List<InternalPlcSubscriptionHandle> plcSubscriptionHandles;
+        private List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
         public Builder(PlcSubscriber subscriber) {
             this.subscriber = subscriber;
@@ -74,20 +85,20 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
         }
 
         public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
-            plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle);
+            plcSubscriptionHandles.add(plcSubscriptionHandle);
             return this;
         }
 
         @Override
         public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
-            this.plcSubscriptionHandles.add((InternalPlcSubscriptionHandle) plcSubscriptionHandle1);
-            this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
+            this.plcSubscriptionHandles.add(plcSubscriptionHandle1);
+            this.plcSubscriptionHandles.addAll(Arrays.stream(plcSubscriptionHandles).map(PlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
             return this;
         }
 
         @Override
         public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandles) {
-            this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(InternalPlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
+            this.plcSubscriptionHandles.addAll(plcSubscriptionHandles.stream().map(PlcSubscriptionHandle.class::cast).collect(Collectors.toList()));
             return this;
         }
 

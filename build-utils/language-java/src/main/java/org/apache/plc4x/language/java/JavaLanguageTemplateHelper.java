@@ -144,6 +144,74 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
+    public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
+        if(typeReference instanceof SimpleTypeReference) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            switch (simpleTypeReference.getBaseType()) {
+                case BIT: {
+                    return "PlcBOOL";
+                }
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 4) {
+                        return "PlcUSINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "PlcUINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "PlcUDINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "PlcULINT";
+                    }
+                }
+                case INT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "PlcSINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "PlcINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "PlcDINT";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "PlcLINT";
+                    }
+                }
+                case FLOAT:
+                case UFLOAT: {
+                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
+                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    if (sizeInBits <= 32) {
+                        return "PlcREAL";
+                    }
+                    if (sizeInBits <= 64) {
+                        return "PlcLREAL";
+                    }
+                }
+                case STRING: {
+                    return "PlcSTRING";
+                }
+                case TIME: {
+                    return "PlcTIME";
+                }
+                case DATE: {
+                    return "PlcTIME";
+                }
+                case DATETIME: {
+                    return "PlcTIME";
+                }
+            }
+            throw new RuntimeException("Unsupported simple type");
+        } else {
+            return "PlcStruct";
+        }
+    }
+
     @Override
     public String getNullValueForTypeReference(TypeReference typeReference) {
         if(typeReference instanceof SimpleTypeReference) {
@@ -334,10 +402,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
 
-                if (floatTypeReference.getSizeInBits() == 32) {
+                if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
-                } else if (floatTypeReference.getSizeInBits() == 64) {
+                } else if (floatTypeReference.getSizeInBits() <= 64) {
                     return "io.writeDouble(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
+                } else {
+                    throw new RuntimeException("Unsupported float type");
                 }
             }
             case STRING: {

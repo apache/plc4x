@@ -64,7 +64,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
-  _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &returnCode);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -72,7 +72,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Enum field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null();
-  _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &transportSize);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -160,13 +160,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   plc4c_return_code _res = OK;
 
   // Enum field (returnCode)
-  _res = plc4c_spi_write_signed_byte(io, 8, _message->return_code);
+  _res = plc4c_spi_write_unsigned_byte(io, 8, _message->return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Enum field (transportSize)
-  _res = plc4c_spi_write_signed_byte(io, 8, _message->transport_size);
+  _res = plc4c_spi_write_unsigned_byte(io, 8, _message->transport_size);
   if(_res != OK) {
     return _res;
   }

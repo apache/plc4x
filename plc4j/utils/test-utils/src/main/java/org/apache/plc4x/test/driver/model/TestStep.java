@@ -20,15 +20,19 @@ package org.apache.plc4x.test.driver.model;
 
 import org.dom4j.Element;
 
+import java.util.List;
+
 public class TestStep {
 
     private final StepType type;
     private final String name;
+    private final List<String> parserArguments;
     private final Element payload;
 
-    public TestStep(StepType type, String name, Element payload) {
+    public TestStep(StepType type, String name, List<String> parserArguments, Element payload) {
         this.type = type;
         this.name = name;
+        this.parserArguments = parserArguments;
         this.payload = payload;
     }
 
@@ -38,6 +42,10 @@ public class TestStep {
 
     public String getName() {
         return name;
+    }
+
+    public List<String> getParserArguments() {
+        return parserArguments;
     }
 
     public Element getPayload() {

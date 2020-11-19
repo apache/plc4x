@@ -137,4 +137,14 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing STRING not implemented");
     }
 
+    public static String parseS7Char(ReadBuffer io, Object encoding) {
+        // Read the full size of the string.
+        return io.readString(8, (String) encoding);
+    }
+
+    public static void serializeS7Char(WriteBuffer io, PlcValue value, Object encoding) {
+        // TODO: Need to implement the serialization or we can't write strings
+        throw new NotImplementedException("Serializing STRING not implemented");
+    }
+
 }

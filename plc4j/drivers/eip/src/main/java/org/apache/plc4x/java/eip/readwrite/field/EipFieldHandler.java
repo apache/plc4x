@@ -19,21 +19,11 @@
 package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
+public class EipFieldHandler implements PlcFieldHandler {
 
-public class EipFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
        if(EipField.matches(fieldQuery)){

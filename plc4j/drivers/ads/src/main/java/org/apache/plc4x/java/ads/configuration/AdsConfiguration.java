@@ -57,11 +57,11 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
     protected int sourceAmsPort;
 
     @ConfigurationParameter("timeout-symbolic-address-resolution")
-    @IntDefaultValue(1000)
+    @IntDefaultValue(2000)
     protected int timeoutSymbolicAddressResolution;
 
     @ConfigurationParameter("timeout-request")
-    @IntDefaultValue(2000)
+    @IntDefaultValue(4000)
     protected int timeoutRequest;
 
     public AmsNetId getTargetAmsNetId() {

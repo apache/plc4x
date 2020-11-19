@@ -57,7 +57,7 @@ import java.util.Map;
 public enum ${type.name} {
 
 <#list type.enumValues as enumValue>
-    ${enumValue.name}(<#if type.type?has_content>(${helper.getLanguageTypeNameForTypeReference(type.type, true)}) ${enumValue.value}</#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#sep>, </#sep></#list></#if>)<#sep>,
+    ${enumValue.name}(<#if type.type?has_content>(${helper.getLanguageTypeNameForTypeReference(type.type, true)}) <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if></#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#sep>, </#sep></#list></#if>)<#sep>,
 </#sep></#list>;
 
 <#if type.type?has_content>
@@ -103,7 +103,7 @@ public enum ${type.name} {
     </#list>
 </#if>
 <#if type.type?has_content>
-    public static ${type.name} valueOf(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
+    public static ${type.name} enumForValue(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
         if (!map.containsKey(value)) {
             logger.error("No ${type.name} for value {}", value);
         }

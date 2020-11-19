@@ -21,10 +21,14 @@ package org.apache.plc4x.java.spi.messages;
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -37,7 +41,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPlcFieldRequest {
+public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, XmlSerializable {
 
     private final PlcReader reader;
     private LinkedHashMap<String, PlcField> fields;
@@ -80,7 +84,6 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
         return new LinkedList<>(fields.values());
     }
 
-    @Override
     @JsonIgnore
     public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
@@ -102,6 +105,25 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
     @JsonAnyGetter
     public Map<String, PlcField> getMap() {
         return fields;
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcReadRequest");
+        Element fieldsElement = doc.createElement("fields");
+        messageElement.appendChild(fieldsElement);
+        for (Map.Entry<String, PlcField> fieldEntry : fields.entrySet()) {
+            String fieldName = fieldEntry.getKey();
+            Element fieldNameElement = doc.createElement(fieldName);
+            fieldsElement.appendChild(fieldNameElement);
+            PlcField field = fieldEntry.getValue();
+            if(!(field instanceof XmlSerializable)) {
+                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+            }
+            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
+        }
+        parent.appendChild(messageElement);
     }
 
     public static class Builder implements PlcReadRequest.Builder {

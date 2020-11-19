@@ -51,9 +51,10 @@
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
       <item name="Getting Started" href="users/gettingstarted.html">
-        <item name="Java" href="users/plc4j/gettingstarted.html"/>
-        <item name="General Concepts" href="users/plc4j/general-concepts.html"/>
-        <item name="Virtual Modbus" href="users/plc4j/virtual-modbus.html"/>
+        <!--item name="Go" href="users/getting-started/plc4go.html"/-->
+        <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
+        <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
       </item>
       <item name="Blogs, Videos and Slides" href="users/blogs-videos-and-slides.html"/>
       <item name="Protocols" href="users/protocols/index.html">

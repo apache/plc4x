@@ -20,6 +20,10 @@ package org.apache.plc4x.java.bacnetip.ede.model;
 
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcDINT;
+import org.apache.plc4x.java.spi.values.PlcLREAL;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -122,9 +126,9 @@ public class Datapoint {
 
     public Map<String, PlcValue> toPlcValues() {
         Map<String, PlcValue> values = new HashMap<>();
-        values.put("keyName", (keyName == null) ? null : new PlcString(keyName));
-        values.put("objectName", (objectName == null) ? null : new PlcString(objectName));
-        values.put("description", (description == null) ? null : new PlcString(description));
+        values.put("keyName", (keyName == null) ? null : new PlcSTRING(keyName));
+        values.put("objectName", (objectName == null) ? null : new PlcSTRING(objectName));
+        values.put("description", (description == null) ? null : new PlcSTRING(description));
         values.put("defaultValue", (defaultValue == null) ? null : new PlcLREAL(defaultValue));
         values.put("minValue", (minValue == null) ? null : new PlcLREAL(minValue));
         values.put("maxValue", (maxValue == null) ? null : new PlcLREAL(maxValue));
@@ -132,7 +136,7 @@ public class Datapoint {
         values.put("supportsCov", (supportsCov == null) ? null : new PlcBOOL(supportsCov));
         values.put("hiLimit", (hiLimit == null) ? null : new PlcLREAL(hiLimit));
         values.put("lowLimit", (lowLimit == null) ? null : new PlcLREAL(lowLimit));
-        values.put("stateTextReference", (stateTextReference == null) ? null : new PlcString(stateTextReference));
+        values.put("stateTextReference", (stateTextReference == null) ? null : new PlcSTRING(stateTextReference));
         values.put("unitCode", (unitCode == null) ? null : new PlcDINT(unitCode));
         values.put("vendorSpecificAddress", (vendorSpecificAddress == null) ? null : new PlcDINT(vendorSpecificAddress));
         values.put("notificationClass", (notificationClass == null) ? null : new PlcDINT(notificationClass));

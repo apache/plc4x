@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class S7StringField extends S7Field {
 
@@ -38,6 +40,16 @@ public class S7StringField extends S7Field {
 
     public int getStringLength() {
         return stringLength;
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        super.xmlSerialize(parent);
+
+        Document doc = parent.getOwnerDocument();
+        Element byteOffsetElement = doc.createElement("byteOffset");
+        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getByteOffset())));
+        parent.getFirstChild().appendChild(byteOffsetElement);
     }
 
 }
