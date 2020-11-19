@@ -33,6 +33,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -62,7 +63,9 @@ type KnxNetIpConnection struct {
 	leve3AddressCache        map[uint16]*driverModel.KnxGroupAddress3Level
 	leve2AddressCache        map[uint16]*driverModel.KnxGroupAddress2Level
 	leve1AddressCache        map[uint16]*driverModel.KnxGroupAddressFreeLevel
-	valueCache               map[uint16][]int8
+
+	valueCache      map[uint16][]int8
+	valueCacheMutex sync.RWMutex
 
 	GatewayKnxAddress      *driverModel.KnxAddress
 	GatewayName            string
@@ -85,6 +88,7 @@ func NewKnxNetIpConnection(messageCodec spi.MessageCodec, options map[string][]s
 		leve2AddressCache:  map[uint16]*driverModel.KnxGroupAddress2Level{},
 		leve1AddressCache:  map[uint16]*driverModel.KnxGroupAddressFreeLevel{},
 		valueCache:         map[uint16][]int8{},
+		valueCacheMutex:    sync.RWMutex{},
 	}
 }
 
@@ -378,13 +382,17 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
 			cemiDataInd := driverModel.CastCEMIDataInd(tunnelingRequest.Cemi.Child)
 			if cemiDataInd != nil {
 				addressData := uint16(cemiDataInd.CemiDataFrame.DestinationAddress[0])<<8 | (uint16(cemiDataInd.CemiDataFrame.DestinationAddress[1]) & 0xFF)
+				m.valueCacheMutex.RLock()
 				val, ok := m.valueCache[addressData]
+				m.valueCacheMutex.RUnlock()
 				changed := false
 				var payload []int8
 				payload = append(payload, cemiDataInd.CemiDataFrame.DataFirstByte)
 				payload = append(payload, cemiDataInd.CemiDataFrame.Data...)
 				if !ok || !m.sliceEqual(val, payload) {
+					m.valueCacheMutex.Lock()
 					m.valueCache[addressData] = payload
+					m.valueCacheMutex.Unlock()
 					// If this is a new value, we have to also provide the 3 different types of addresses.
 					if !ok {
 						destinationAddress := cemiDataInd.CemiDataFrame.DestinationAddress
