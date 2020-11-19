@@ -56,6 +56,7 @@
                   <classifier>tests</classifier>
                   <type>test-jar</type>
                   <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
                   <excludes>META-INF/**</excludes>
                 </artifactItem>
                 <artifactItem>
@@ -64,6 +65,7 @@
                   <classifier>tests</classifier>
                   <type>test-jar</type>
                   <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
                   <excludes>META-INF/**,org/**</excludes>
                 </artifactItem>
                 <artifactItem>
@@ -72,6 +74,7 @@
                   <classifier>tests</classifier>
                   <type>test-jar</type>
                   <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
                   <excludes>META-INF/**</excludes>
                 </artifactItem>
                 <artifactItem>
@@ -80,6 +83,7 @@
                   <classifier>tests</classifier>
                   <type>test-jar</type>
                   <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
                   <excludes>META-INF/**,org/**</excludes>
                 </artifactItem>
               </artifactItems>
