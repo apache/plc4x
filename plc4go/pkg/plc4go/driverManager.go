@@ -57,6 +57,12 @@ func NewPlcDriverManager() PlcDriverManager {
 }
 
 func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
+    // If this driver is already registered, just skip resetting it
+    for driverName, _ := range m.drivers{
+        if driverName == driver.GetProtocolCode() {
+            return
+        }
+    }
     m.drivers[driver.GetProtocolCode()] = driver
 }
 
@@ -76,6 +82,12 @@ func (m PlcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 }
 
 func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
+    // If this transport is already registered, just skip resetting it
+    for transportName, _ := range m.transports{
+        if transportName == transport.GetTransportCode() {
+            return
+        }
+    }
     m.transports[transport.GetTransportCode()] = transport
 }
 
