@@ -172,7 +172,9 @@ public class Plc4xSinkTask extends SinkTask {
             log.warn("Failed to Open Connection {}", plc4xConnectionString);
             remainingRetries--;
             if (remainingRetries > 0) {
-                context.timeout(plc4xTimeout);
+                if (context != null) {
+                    context.timeout(plc4xTimeout);
+                }
                 throw new RetriableException("Failed to Write to " + plc4xConnectionString + " retrying records that haven't expired");
             }
             log.warn("Failed to write after {} retries", plc4xRetries);
@@ -199,14 +201,12 @@ public class Plc4xSinkTask extends SinkTask {
                 log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), field);
             } else {
                 String address = fields.get(field);
-                log.info(field);
-                log.info(address);
                 try {
                     //If an array value is passed instead of a single value then convert to a String array
                     if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
                         String[] values = value.substring(1,value.length() - 1).split(",");
                         builder.addItem(address, address, values);
-                    } else {
+                    } else {                        
                         builder.addItem(address, address, value);
                     }
                     validCount += 1;
@@ -225,7 +225,9 @@ public class Plc4xSinkTask extends SinkTask {
             } catch (Exception e) {
                 remainingRetries--;
                 if (remainingRetries > 0) {
-                    context.timeout(plc4xTimeout);
+                    if (context != null) {
+                        context.timeout(plc4xTimeout);
+                    }
                     try {
                         connection.close();
                     } catch (Exception f) {

@@ -83,7 +83,7 @@ public class SinkTaskTest {
         assertEquals("machineSinkA", config.get(0).get(Constants.TOPIC_CONFIG));
         assertEquals("5", config.get(0).get(Constants.RETRIES_CONFIG));
         assertEquals("5000", config.get(0).get(Constants.TIMEOUT_CONFIG));
-        assertEquals("running#RANDOM/Temporary:Boolean|conveyorEntry#RANDOM/Temporary:Boolean|load#RANDOM/Temporary:Boolean|unload#RANDOM/Temporary:Boolean|transferLeft#RANDOM/Temporary:Boolean|transferRight#RANDOM/Temporary:Boolean|conveyorLeft#RANDOM/Temporary:Boolean|conveyorRight#RANDOM/Temporary:Boolean|numLargeBoxes#RANDOM/Temporary:Integer|numSmallBoxes#RANDOM/Temporary:Integer",
+        assertEquals("running#RANDOM/Temporary:Boolean|conveyorEntry#RANDOM/Temporary:Boolean|load#RANDOM/Temporary:Boolean|unload#RANDOM/Temporary:Boolean|transferLeft#RANDOM/Temporary:Boolean|transferRight#RANDOM/Temporary:Boolean|conveyorLeft#RANDOM/Temporary:Boolean|conveyorRight#RANDOM/Temporary:Boolean|numLargeBoxes#STATE/Temporary:Integer|numSmallBoxes#RANDOM/Temporary:Integer",
                     config.get(0).get(Constants.QUERIES_CONFIG));
     }
 
@@ -96,10 +96,6 @@ public class SinkTaskTest {
         for (Map<String, String> taskConfig : config) {
             log.info("Starting Sink Task");
             Plc4xSinkTask sinkTask = new Plc4xSinkTask();
-            sinkList.add(sinkTask);
-            sinkTask.start(taskConfig);
-        }
-        for (Plc4xSinkTask sinkTask : sinkList) {
             List<SinkRecord> records = new ArrayList<>(1);
             Schema schema = SchemaBuilder.struct()
                             .name("org.apache.plc4x")
@@ -108,7 +104,7 @@ public class SinkTaskTest {
                             .field("expires", Schema.INT64_SCHEMA)
                             .build();
              Struct struct = new Struct(schema)
-                                    .put("field", "running")
+                                    .put("field", "numLargeBoxes")
                                     .put("value", "1")
                                     .put("expires", 0L);
 
@@ -123,14 +119,10 @@ public class SinkTaskTest {
                           TimestampType.CREATE_TIME));
             log.info("Sending Record to Sink task");
             log.info(records.get(0).toString());
-            sinkTask.put(records);
+            sinkTask.start(taskConfig);
+            //sinkTask.put(records);
         }
     }
-
-
-
-
-
 
     private static Map<String, String> toStringMap(Properties properties) {
         Map<String, String> map = new HashMap<>();
