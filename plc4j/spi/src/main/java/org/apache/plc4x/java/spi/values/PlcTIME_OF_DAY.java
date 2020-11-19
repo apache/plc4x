@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -35,6 +34,8 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     public static PlcTIME_OF_DAY of(Object value) {
         if (value instanceof LocalTime) {
             return new PlcTIME_OF_DAY((LocalTime) value);
+        } else if (value instanceof Long) {
+            return new PlcTIME_OF_DAY(LocalTime.ofSecondOfDay(((long) value) / 1000));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -42,6 +43,11 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcTIME_OF_DAY(@JsonProperty("value") LocalTime value) {
         super(value, true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcTIME_OF_DAY(@JsonProperty("value") Long value) {
+        super(LocalTime.ofNanoOfDay(value * 1000000), true);
     }
 
     @Override

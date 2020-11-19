@@ -28,8 +28,23 @@ type PlcTIME_OF_DAY struct {
 	PlcSimpleValueAdapter
 }
 
-func NewPlcTIME_OF_DAY(value time.Time) PlcTIME_OF_DAY {
-	safeValue := time.Date(0, 0, 0, value.Hour(), value.Minute(), value.Second(), value.Nanosecond(), value.Location())
+func NewPlcTIME_OF_DAY(value interface{}) PlcTIME_OF_DAY {
+    var safeValue time.Time
+    switch value.(type) {
+    case time.Time:
+        castedValue := value.(time.Time)
+        safeValue = time.Date(0, 0, 0, castedValue.Hour(), castedValue.Minute(), castedValue.Second(),
+            castedValue.Nanosecond(), castedValue.Location())
+    case uint32:
+        // Interpreted as milliseconds since midnight
+        castedValue := value.(uint32)
+        seconds := castedValue / 1000
+        nanoseconds := (castedValue % 1000) * 1000000
+        epochTime := time.Unix(int64(seconds), int64(nanoseconds))
+        safeValue = time.Date(0, 0, 0, epochTime.Hour(), epochTime.Minute(), epochTime.Second(),
+            epochTime.Nanosecond(), epochTime.Location())
+    }
+
 	return PlcTIME_OF_DAY{
 		value: safeValue,
 	}

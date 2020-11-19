@@ -28,6 +28,8 @@ import org.w3c.dom.Element;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
@@ -35,6 +37,10 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     public static PlcTIME of(Object value) {
         if (value instanceof Duration) {
             return new PlcTIME((Duration) value);
+        } else if(value instanceof Integer) {
+            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+        } else if(value instanceof Long) {
+            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -42,6 +48,14 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcTIME(@JsonProperty("value") Duration value) {
         super(value, true);
+    }
+
+    public PlcTIME(@JsonProperty("value") Integer value) {
+        super(Duration.of((long) value, ChronoUnit.MILLIS), true);
+    }
+
+    public PlcTIME(@JsonProperty("value") Long value) {
+        super(Duration.of(value, ChronoUnit.MILLIS), true);
     }
 
     @Override

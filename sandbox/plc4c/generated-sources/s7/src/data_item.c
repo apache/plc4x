@@ -212,14 +212,44 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-16"));
         } else 
         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
+
+                // Simple Field (value)
+                uint32_t value = 0;
+                _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint32_t_data(value);
+
         } else 
         if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
         } else 
         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
         } else 
         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
+
+                // Simple Field (value)
+                uint16_t value = 0;
+                _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint16_t_data(value);
+
         } else 
         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
+
+                // Simple Field (value)
+                uint32_t value = 0;
+                _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint32_t_data(value);
+
         } else 
         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
         }

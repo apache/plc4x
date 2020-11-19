@@ -26,7 +26,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE extends PlcSimpleValue<LocalDate> {
@@ -34,6 +38,9 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     public static PlcDATE of(Object value) {
         if (value instanceof LocalDate) {
             return new PlcDATE((LocalDate) value);
+        } else if(value instanceof Long) {
+            return new PlcDATE(LocalDateTime.ofInstant(
+                Instant.ofEpochSecond((long) value), ZoneId.systemDefault()).toLocalDate());
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -41,6 +48,20 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcDATE(@JsonProperty("value") LocalDate value) {
         super(value, true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcDATE(@JsonProperty("value") Integer value) {
+        // In this case the date is the number of days since 1990-01-01
+        // So we gotta add 7305 days to the value to have it relative to epoch
+        // Then we also need to transform it from days to seconds by multiplying by 86400
+        super(LocalDateTime.ofInstant(Instant.ofEpochSecond((value + 7305) * 86400),
+            ZoneId.systemDefault()).toLocalDate(), true);
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcDATE(@JsonProperty("value") Long value) {
+        super(LocalDateTime.ofInstant(Instant.ofEpochSecond(value), ZoneId.systemDefault()).toLocalDate(), true);
     }
 
     @Override

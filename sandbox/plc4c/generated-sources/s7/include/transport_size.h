@@ -53,8 +53,10 @@ enum plc4c_s7_read_write_transport_size {
   plc4c_s7_read_write_transport_size_S5TIME = 0x0C,
   plc4c_s7_read_write_transport_size_LTIME = 0x00,
   plc4c_s7_read_write_transport_size_DATE = 0x09,
-  plc4c_s7_read_write_transport_size_TIME_OF_DAY = 0x0A,
-  plc4c_s7_read_write_transport_size_DATE_AND_TIME = 0x0F
+  plc4c_s7_read_write_transport_size_TIME_OF_DAY = 0x06,
+  plc4c_s7_read_write_transport_size_TOD = 0x06,
+  plc4c_s7_read_write_transport_size_DATE_AND_TIME = 0x0F,
+  plc4c_s7_read_write_transport_size_DT = 0x0F
 };
 typedef enum plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size;
 

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.simulated.field;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.types.SimulatedFieldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,14 +42,14 @@ public class SimulatedField implements PlcField {
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>\\w+):(?<dataType>[a-zA-Z]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;
-    private final Class<?> dataType;
+    private final String dataType;
     private final int numElements;
 
-    private SimulatedField(SimulatedFieldType type, String name, Class<?> dataType, int numElements) {
+    private SimulatedField(SimulatedFieldType type, String name, String dataType, int numElements) {
         this.type = type;
         this.name = name;
         this.dataType = dataType;
@@ -60,18 +61,43 @@ public class SimulatedField implements PlcField {
         if (matcher.matches()) {
             SimulatedFieldType type = SimulatedFieldType.valueOf(matcher.group("type"));
             String name = matcher.group("name");
-            String dataTypeName = WordUtils.capitalizeFully(matcher.group("dataType"));
+            String dataType;
+            switch (matcher.group("dataType").toUpperCase()) {
+                case "INTEGER":
+                    dataType = "IEC61131_DINT";
+                    break;
+                case "BYTE":
+                    dataType = "IEC61131_BYTE";
+                    break;
+                case "SHORT":
+                    dataType = "IEC61131_INT";
+                    break;
+                case "LONG":
+                    dataType = "IEC61131_LINT";
+                    break;
+                case "FLOAT":
+                    dataType = "IEC61131_REAL";
+                    break;
+                case "DOUBLE":
+                    dataType = "IEC61131_LREAL";
+                    break;
+                case "BOOLEAN":
+                    dataType = "IEC61131_BOOL";
+                    break;
+                default:
+                    dataType = "IEC61131_" + matcher.group("dataType").toUpperCase();
+            }
+            try {
+                SimulatedDataTypeSizes.enumForValue(dataType).getDataTypeSize();
+            } catch (NullPointerException e) {
+                throw new PlcInvalidFieldException("Invalid data type: " + dataType);
+            }
+
             int numElements = 1;
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
-            try {
-                Class<?> dataType = Class.forName("java.lang." + dataTypeName);
-                return new SimulatedField(type, name, dataType, numElements);
-            } catch (ClassNotFoundException e) {
-                logger.error("Unsupported type: " + dataTypeName, e);
-                throw new PlcInvalidFieldException("Unsupported type: " + dataTypeName);
-            }
+            return new SimulatedField(type, name, dataType, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -85,14 +111,14 @@ public class SimulatedField implements PlcField {
     }
 
     public String getPlcDataType() {
-        return dataType.getSimpleName();
+        return dataType;
     }
 
     public String getName() {
         return name;
     }
 
-    public Class<?> getDataType() {
+    public String getDataType() {
         return dataType;
     }
 
@@ -125,7 +151,7 @@ public class SimulatedField implements PlcField {
         return "TestField{" +
             "type=" + type +
             ", name='" + name + '\'' +
-            ", dataType=" + dataType +
+            ", dataType='" + dataType + '\'' +
             ", numElements=" + numElements +
             '}';
     }

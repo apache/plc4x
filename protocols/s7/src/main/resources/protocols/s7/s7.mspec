@@ -334,30 +334,35 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' CHAR
-            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '1']
+            [manual string 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '1']
         ]
         ['IEC61131_WCHAR' CHAR
             [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '2']
         ]
         ['IEC61131_STRING' STRING
-            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
+            [manual string 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '(_value.length * 2) + 2']
+            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '(_value.length * 2) + 2']
         ]
 
         // -----------------------------------------
         // TIA Date-Formats
         // -----------------------------------------
+        // Interpreted as "milliseconds"
         ['IEC61131_TIME' TIME
+            [simple uint 32 'value']
         ]
         ['S7_S5TIME' TIME
         ]
         ['IEC61131_LTIME' LTIME
         ]
+        // Interpreted as "number of days since 1990-01-01"
         ['IEC61131_DATE' DATE
+            [simple uint 16 'value']
         ]
         ['IEC61131_TIME_OF_DAY' TIME_OF_DAY
+            [simple uint 32 'value']
         ]
         ['IEC61131_DATE_AND_TIME' DATE_AND_TIME
         ]
@@ -428,13 +433,15 @@
     ['0x03' STRING           ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_STRING'       , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x00' WSTRING          ['X'              , '2'                 , 'null'                  , 'null'                               , 'IEC61131_WSTRING'      , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
 
-    // Dates and time values (Please note that we seem to have to reqite queries for these types to reading bytes or we'll get "Data type not supported" errors)
+    // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
     ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , 'IEC61131_TIME'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0C' S5TIME           ['X'              , '4'                 , 'null'                  , 'null'                               , 'S7_S5TIME'             , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x00' LTIME            ['X'              , '8'                 , 'TransportSize.TIME'    , 'null'                               , 'IEC61131_LTIME'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
     ['0x09' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_DATE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x0A' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_TIME_OF_DAY'  , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x06' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_TIME_OF_DAY'  , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x06' TOD              ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_TIME_OF_DAY'  , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0F' DATE_AND_TIME    ['X'              , '12'                , 'null'                  , 'null'                               , 'IEC61131_DATE_AND_TIME', 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
+    ['0x0F' DT               ['X'              , '12'                , 'null'                  , 'null'                               , 'IEC61131_DATE_AND_TIME', 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
 [enum uint 8 'MemoryArea'             [string 24 'shortName']

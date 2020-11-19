@@ -59,7 +59,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                     // Array field (value)
         } else 
-        if((strcmp(dataType, "IEC61131_BYTE") == 0) && (numberOfValues == 1)) { /* BYTE */
+        if((strcmp(dataType, "IEC61131_BYTE") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -75,7 +75,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                     // Array field (value)
         } else 
-        if((strcmp(dataType, "IEC61131_WORD") == 0) && (numberOfValues == 1)) { /* WORD */
+        if((strcmp(dataType, "IEC61131_WORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -91,7 +91,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                     // Array field (value)
         } else 
-        if((strcmp(dataType, "IEC61131_DWORD") == 0) && (numberOfValues == 1)) { /* DWORD */
+        if((strcmp(dataType, "IEC61131_DWORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -107,7 +107,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                     // Array field (value)
         } else 
-        if((strcmp(dataType, "IEC61131_LWORD") == 0) && (numberOfValues == 1)) { /* LWORD */
+        if((strcmp(dataType, "IEC61131_LWORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint64_t value = 0;

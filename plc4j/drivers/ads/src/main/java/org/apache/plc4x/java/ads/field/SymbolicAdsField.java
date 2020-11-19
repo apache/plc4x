@@ -40,13 +40,14 @@ public class SymbolicAdsField implements AdsField {
 
     private final int numberOfElements;
 
-    private SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
+    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
         this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
+
     }
 
     public static SymbolicAdsField of(String address) {
@@ -69,7 +70,7 @@ public class SymbolicAdsField implements AdsField {
         return SYMBOLIC_ADDRESS_PATTERN.matcher(address).matches();
     }
 
-    public String getSymbolicField() {
+    public String getSymbolicAddress() {
         return symbolicAddress;
     }
 
@@ -119,7 +120,7 @@ public class SymbolicAdsField implements AdsField {
         parent.appendChild(messageElement);
 
         Element symbolicAddressElement = doc.createElement("symbolicAddress");
-        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicField()));
+        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicAddress()));
         messageElement.appendChild(symbolicAddressElement);
 
         Element numberOfElementsElement = doc.createElement("numberOfElements");
