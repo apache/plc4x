@@ -97,12 +97,12 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItemIO.staticSerialize(value, field.getPlcDataType(), 1, false);
+                            DataItemIO.staticSerialize(value, field.getPlcDataType(), value.getLength(), false);
                         } catch (ParseException e) {
                             System.out.printf("Write failed");
                         }
                 }
-                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.getString());
+                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.toString());
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
@@ -119,7 +119,7 @@ public class SimulatedDevice {
 
         ReadBuffer io = new ReadBuffer(b);
         try {
-            return DataItemIO.staticParse(io, field.getPlcDataType(), 1);
+            return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {
             return null;
         }
