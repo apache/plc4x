@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public class SourceConfigTest {
 
-    private static final Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
+    private static final Logger log = LoggerFactory.getLogger(SourceConfigTest.class);
 
     @Test
     public void parseConfig() throws Exception {
@@ -180,11 +180,6 @@ public class SourceConfigTest {
         for (ConfigValue cValue : configs) {
             log.info(cValue.toString());
         }
-
-        /*for (ConfigValue value : config.configValues()) {
-            log.info(value.name() + " = " + value.value());
-            assertEquals(value.errorMessages(), new ArrayList());
-        }*/
     }
 
     @Test
@@ -220,7 +215,12 @@ public class SourceConfigTest {
         assertThrows(NullPointerException.class, () -> sourceConnector.toString());
     }
 
-
+    @Test
+    public void checkVersionString() throws Exception {
+        log.info("-----------------CheckVersionString----------------");
+        Plc4xSourceConnector sourceConnector = new Plc4xSourceConnector();
+        assertNotEquals("0.0.0.0", sourceConnector.version());
+    }
 
     private static Map<String, String> toStringMap(Properties properties) {
         Map<String, String> map = new HashMap<>();
