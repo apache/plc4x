@@ -103,7 +103,7 @@ public class SinkTaskTest {
                             .field("value", Schema.STRING_SCHEMA)
                             .field("expires", Schema.INT64_SCHEMA)
                             .build();
-             Struct struct = new Struct(schema)
+            Struct struct = new Struct(schema)
                                     .put("field", "numLargeBoxes")
                                     .put("value", "1")
                                     .put("expires", 0L);
@@ -117,10 +117,23 @@ public class SinkTaskTest {
                           1,
                           0L,
                           TimestampType.CREATE_TIME));
-            log.info("Sending Record to Sink task");
-            log.info(records.get(0).toString());
+            struct = new Struct(schema)
+                                     .put("field", "running")
+                                     .put("value", "1")
+                                     .put("expires", 0L);
+
+             records.add(new SinkRecord("machineSinkA",
+                           1,
+                           schema,
+                           struct,
+                           schema,
+                           struct,
+                           1,
+                           0L,
+                           TimestampType.CREATE_TIME));
+            log.info("Sending Records to Sink task");
             sinkTask.start(taskConfig);
-            //sinkTask.put(records);
+            sinkTask.put(records);
         }
     }
 

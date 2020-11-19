@@ -206,7 +206,7 @@ public class Plc4xSinkTask extends SinkTask {
                     if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
                         String[] values = value.substring(1,value.length() - 1).split(",");
                         builder.addItem(address, address, values);
-                    } else {                        
+                    } else {
                         builder.addItem(address, address, value);
                     }
                     validCount += 1;
