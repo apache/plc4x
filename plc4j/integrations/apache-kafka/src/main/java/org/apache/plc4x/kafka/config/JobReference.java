@@ -31,14 +31,10 @@ public class JobReference extends AbstractConfig{
     private final String name;
     private final String topic;
 
-    private static final String TOPIC_CONFIG = "topic";
-    private static final String TOPIC_DOC = "Topic to Assign to Job Reference";
-    private static final String TOPIC_DEFAULT = null;
-
     public JobReference(String name, String defaultTopic, Map originals) {
         super(configDef(), originals);
         this.name = name;
-        this.topic = getString(TOPIC_CONFIG) == null ? defaultTopic : getString(TOPIC_CONFIG);
+        this.topic = getString(Constants.TOPIC_CONFIG) == null ? defaultTopic : getString(Constants.TOPIC_CONFIG);
     }
 
     public void validate() {
@@ -55,17 +51,17 @@ public class JobReference extends AbstractConfig{
 
     protected static ConfigDef configDef() {
         return new ConfigDef()
-            .define(TOPIC_CONFIG,
+            .define(Constants.TOPIC_CONFIG,
                     ConfigDef.Type.STRING,
-                    TOPIC_DEFAULT,
+                    Constants.TOPIC_DEFAULT,
                     ConfigDef.Importance.LOW,
-                    TOPIC_DOC);
+                    Constants.TOPIC_DOC);
     }
 
     @Override
     public String toString() {
         StringBuilder query = new StringBuilder();
-        query.append("\t\t" + name + "." + TOPIC_CONFIG + "=" + topic + ",\n");
+        query.append("\t\t" + name + "." + Constants.TOPIC_CONFIG + "=" + topic + ",\n");
         return query.toString();
     }
 }

@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public class SourceTaskTest {
 
-    private static final Logger log = LoggerFactory.getLogger(Plc4xSourceConnector.class);
+    private static final Logger log = LoggerFactory.getLogger(SourceTaskTest.class);
     private Plc4xSourceConnector sourceConnector;
 
     @BeforeEach
@@ -81,15 +81,18 @@ public class SourceTaskTest {
         log.info("-----------------SourceTaskTest----------------");
         log.info(sourceConnector.toString());
         List<Map<String, String>> config = sourceConnector.taskConfigs(2);
+        List<Plc4xSourceTask> sourceList = new ArrayList<>(config.size());
         for (Map<String, String> taskConfig : config) {
             log.info("Starting Source Task");
-            new Plc4xSourceTask().start(taskConfig);
+            Plc4xSourceTask sourceTask = new Plc4xSourceTask();
+            sourceList.add(sourceTask);
+            sourceTask.start(taskConfig);
         }
-        Thread.sleep(5000);
+        Thread.sleep(5);
+        for (Plc4xSourceTask sourceTask : sourceList) {
+            assertNotNull(sourceTask.poll());
+        }
     }
-
-
-
 
     private static Map<String, String> toStringMap(Properties properties) {
         Map<String, String> map = new HashMap<>();

@@ -19,6 +19,11 @@ under the License.
 package org.apache.plc4x.kafka.config;
 
 import org.apache.plc4x.kafka.Plc4xSinkConnector;
+import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.Config;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigException;
+import org.apache.kafka.common.config.ConfigValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,49 +32,25 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SinkConfig {
+public class SinkConfig extends AbstractConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SinkConfig.class);
 
-    private static final String CONNECTION_STRING_CONFIG = "connectionString";
-    private static final String TOPIC_CONFIG = "topic";
-    private static final String RETRIES_CONFIG = "retries";
-    private static final String TIMEOUT_CONFIG = "timeout";
-    private static final String FIELDS_CONFIG = "fields";
-
     private final List<Sink> sinks;
 
-    public static SinkConfig fromPropertyMap(Map<String, String> properties) {
-        log.info("SinkConfigof");
-        String[] sinkNames = properties.getOrDefault(Plc4xSinkConnector.SINK_CONFIG, "").split(",");
-        List<Sink> sinks = new ArrayList<>(sinkNames.length);
-        for (String sinkName : sinkNames) {
-            String connectionString = properties.get(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + CONNECTION_STRING_CONFIG);
-            String sinkTopic = properties.get(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TOPIC_CONFIG);
-            String sinkRetries = properties.get(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + RETRIES_CONFIG);
-            String sinkTimeout = properties.get(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + TIMEOUT_CONFIG);
-            String[] fieldNames = properties.get(
-                Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG).split(",");
-            Map<String, String> fields = new HashMap<>();
-            for (String fieldName : fieldNames) {
-                String fieldAddress = properties.get(
-                    Plc4xSinkConnector.SINK_CONFIG + "." + sinkName + "." + FIELDS_CONFIG + "." + fieldName);
-                fields.put(fieldName, fieldAddress);
-            }
-            Sink sink = new Sink(sinkName, connectionString, sinkTopic, fields, Integer.parseInt(sinkRetries), Integer.parseInt(sinkTimeout));
-            sinks.add(sink);
-        }
+    public SinkConfig(Map originals) {
+        super(configDef(), originals);
 
-        return new SinkConfig(sinks);
+        sinks = new ArrayList<>(getList(Constants.SINKS_CONFIG).size());
+        for (String sink : getList(Constants.SINKS_CONFIG)) {
+            sinks.add(new Sink(sink, originalsWithPrefix(Constants.SINKS_CONFIG + "." + sink + ".")));
+        }
     }
 
-    public SinkConfig(List<Sink> sinks) {
-        log.info("TaskConfig constructr");
-        this.sinks = sinks;
+    public void validate() throws ConfigException {
+        for (Sink sink : sinks) {
+            sink.validate();
+        }
     }
 
     public List<Sink> getSinks() {
@@ -82,4 +63,22 @@ public class SinkConfig {
         }
         return sinks.stream().filter(sink -> sink.getName().equals(sinkName)).findFirst().orElse(null);
     }
+
+    public static ConfigDef configDef() {
+        return new ConfigDef()
+            .define(Constants.SINKS_CONFIG,
+                    ConfigDef.Type.LIST,
+                    ConfigDef.Importance.HIGH,
+                    Constants.SINKS_DOC);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder query = new StringBuilder();
+        for (Sink sink : sinks) {
+            query.append(sink.toString());
+        }
+        return query.toString();
+    }
+
 }

@@ -32,8 +32,14 @@ public class Constants {
     public static final String JOBS_DEFAULT = "";
 
     public static final String TOPIC_CONFIG = "topic";
+    public static final String TOPIC_DOC = "Kafka topic to be used";
+    public static final String TOPIC_DEFAULT = null;
+
     public static final String INTERVAL_CONFIG = "interval";
+
     public static final String FIELDS_CONFIG = "fields";
+    public static final String FIELDS_DOC = "PLC4X fields";
+    public static final String FIELDS_DEFAULT = "";
 
     public static final String CONNECTION_STRING_CONFIG = "connectionString";
     public static final String CONNECTION_STRING_DOC = "PLC4X Connection String";
@@ -63,5 +69,17 @@ public class Constants {
      */
     public static final String SOURCE_NAME_FIELD = "sourceName";
     public static final String JOB_NAME_FIELD = "jobName";
+
+    public static final String RETRIES_CONFIG = "retries";
+    public static final String RETRIES_DOC = "PLC4X Sink write retries";
+    public static final Integer RETRIES_DEFAULT = 3;
+
+    public static final String TIMEOUT_CONFIG = "timeout";
+    public static final String TIMEOUT_DOC = "PLC4X Sink write timeout";
+    public static final Integer TIMEOUT_DEFAULT = 5000;
+
+    public static final String SINKS_CONFIG = "sinks";
+    public static final String SINKS_DOC = "List of sink names that will be configured.";
+    public static final String SINKS_DEFAULT = "";
 
 }

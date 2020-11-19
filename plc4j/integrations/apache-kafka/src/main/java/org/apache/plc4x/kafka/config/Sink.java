@@ -18,24 +18,54 @@ under the License.
 */
 package org.apache.plc4x.kafka.config;
 
-import java.util.Map;
+import org.apache.plc4x.java.PlcDriverManager;
 
-public class Sink {
+import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigException;
+
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class Sink extends AbstractConfig{
 
     private final String name;
     private final String connectionString;
     private final String topic;
     private final Integer retries;
     private final Integer timeout;
-    private final Map<String, String> fields;
+    private final List<Field> fields;
 
-    public Sink(String name, String connectionString, String topic, Map<String, String> fields, Integer retries, Integer timeout) {
+    public Sink(String name, Map originals) {
+        super(configDef(), originals);
         this.name = name;
-        this.connectionString = connectionString;
-        this.topic = topic;
-        this.fields = fields;
-        this.retries = retries;
-        this.timeout = timeout;
+        this.connectionString = getString(Constants.CONNECTION_STRING_CONFIG);
+        this.topic = getString(Constants.TOPIC_CONFIG);
+        this.retries = getInt(Constants.RETRIES_CONFIG);
+        this.timeout = getInt(Constants.TIMEOUT_CONFIG);
+
+        fields = new ArrayList<>(getList(Constants.FIELDS_CONFIG).size());
+        for (String field : getList(Constants.FIELDS_CONFIG)) {
+            fields.add(new Field(field, (String) originals.get(Constants.FIELDS_CONFIG + "." + field)));
+        }
+    }
+
+    public void validate() throws ConfigException {
+        if (this.connectionString == null) {
+            throw new ConfigException(
+                String.format("Connection string shouldn't be null for source %s ", this.name));
+        }
+        try {
+            new PlcDriverManager().getDriver(connectionString);
+        } catch (Exception e) {
+            throw new ConfigException(
+                String.format("Connection String format is incorrect %s ", Constants.SINKS_CONFIG + "." + this.name + "." + Constants.CONNECTION_STRING_CONFIG + "=" + connectionString));
+        }
+        for (Field field : fields) {
+            field.validate();
+        }
     }
 
     public String getName() {
@@ -58,8 +88,48 @@ public class Sink {
         return timeout;
     }
 
-    public Map<String, String> getFields() {
+    public List<Field> getFields() {
         return fields;
+    }
+
+    public static ConfigDef configDef() {
+        return new ConfigDef()
+            .define(Constants.CONNECTION_STRING_CONFIG,
+                    ConfigDef.Type.STRING,
+                    ConfigDef.Importance.HIGH,
+                    Constants.CONNECTION_STRING_DOC)
+            .define(Constants.TOPIC_CONFIG,
+                    ConfigDef.Type.STRING,
+                    ConfigDef.Importance.LOW,
+                    Constants.TOPIC_DOC)
+            .define(Constants.RETRIES_CONFIG,
+                    ConfigDef.Type.INT,
+                    Constants.RETRIES_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.RETRIES_CONFIG)
+            .define(Constants.TIMEOUT_CONFIG,
+                    ConfigDef.Type.INT,
+                    Constants.TIMEOUT_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.JOBS_DOC)
+            .define(Constants.FIELDS_CONFIG,
+                    ConfigDef.Type.LIST,
+                    Constants.FIELDS_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.FIELDS_CONFIG);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder query = new StringBuilder();
+        query.append(Constants.CONNECTION_STRING_CONFIG + "=" + connectionString + ",\n");
+        query.append(Constants.TOPIC_CONFIG + "=" + topic + ",\n");
+        query.append(Constants.RETRIES_CONFIG + "=" + retries + ",\n");
+        query.append(Constants.TIMEOUT_CONFIG + "=" + timeout + ",\n");
+        for (Field field : fields) {
+            query.append(field.toString());
+        }
+        return query.toString();
     }
 
 }

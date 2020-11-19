@@ -48,7 +48,7 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
-    public void stop() {        
+    public void stop() {
         sourceConfig = null;
     }
 
@@ -104,6 +104,7 @@ public class Plc4xSourceConnector extends SourceConnector {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Config validate(Map<String, String> connectorConfigs) {
         /////////////////////////////////////////////////////
         // Get the static part of the config
