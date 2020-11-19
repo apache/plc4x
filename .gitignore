@@ -179,3 +179,4 @@ build-iPhoneSimulator/
 
 # Temp stuff ...
 /sandbox/plc4go/temp/
+/plc4go/.idea/
