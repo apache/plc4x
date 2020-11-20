@@ -66,6 +66,12 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
     }
     connection := connectionResult.Connection
 
+    attributes := connection.GetMetadata().GetConnectionAttributes()
+    fmt.Printf("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%s' got assigned client KNX address '%s'\n",
+        attributes["GatewayName"],
+        attributes["GatewayKnxAddress"],
+        attributes["ClientKnxAddress"])
+
     // Try to ping the remote device
     pingResultChannel := connection.Ping()
     pingResult := <-pingResultChannel

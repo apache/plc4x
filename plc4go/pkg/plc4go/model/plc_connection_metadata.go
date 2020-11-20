@@ -21,10 +21,15 @@ package model
 // Information about connection capabilities.
 // This includes connection and driver specific metadata.
 type PlcConnectionMetadata interface {
+
+    // Gives access to a map of additional information the driver might be able to provide.
+    GetConnectionAttributes() map[string]string
+
 	// Indicates that the connection supports reading.
 	CanRead() bool
 	// Indicates that the connection supports writing.
 	CanWrite() bool
 	// Indicates that the connection supports subscription.
 	CanSubscribe() bool
+
 }

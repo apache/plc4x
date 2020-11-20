@@ -33,6 +33,11 @@ type ConnectionMetadata struct {
     apiModel.PlcConnectionMetadata
 }
 
+func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
+    return map[string]string {
+    }
+}
+
 func (m ConnectionMetadata) CanRead() bool {
 	return true
 }
