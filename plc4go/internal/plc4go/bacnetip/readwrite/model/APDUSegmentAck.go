@@ -88,6 +88,10 @@ func CastAPDUSegmentAck(structType interface{}) *APDUSegmentAck {
     return castFunc(structType)
 }
 
+func (m *APDUSegmentAck) GetTypeName() string {
+    return "APDUSegmentAck"
+}
+
 func (m *APDUSegmentAck) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

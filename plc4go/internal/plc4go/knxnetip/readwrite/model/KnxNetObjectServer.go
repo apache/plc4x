@@ -79,6 +79,10 @@ func CastKnxNetObjectServer(structType interface{}) *KnxNetObjectServer {
     return castFunc(structType)
 }
 
+func (m *KnxNetObjectServer) GetTypeName() string {
+    return "KnxNetObjectServer"
+}
+
 func (m *KnxNetObjectServer) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

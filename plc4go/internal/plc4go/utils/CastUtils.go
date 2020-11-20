@@ -18,9 +18,12 @@
 //
 package utils
 
-import "strconv"
+import (
+    "strconv"
+    "strings"
+)
 
-func Int8ToUint8(input []int8) []uint8 {
+func Int8ArrayToUint8Array(input []int8) []uint8 {
 	output := make([]uint8, len(input))
 	for i, _val := range input {
 		output[i] = uint8(_val)
@@ -28,7 +31,18 @@ func Int8ToUint8(input []int8) []uint8 {
 	return output
 }
 
-func Uint8ToInt8(input []uint8) []int8 {
+func Int8ArrayToString(data []int8, separator string) string {
+    var sb strings.Builder
+    for i, element := range data {
+        sb.WriteString(strconv.Itoa(int(uint8(element))))
+        if i < (len(data) - 1) {
+            sb.WriteString(separator)
+        }
+    }
+    return sb.String()
+}
+
+func Uint8ArrayToInt8Array(input []uint8) []int8 {
 	output := make([]int8, len(input))
 	for i, _val := range input {
 		output[i] = int8(_val)
@@ -36,7 +50,7 @@ func Uint8ToInt8(input []uint8) []int8 {
 	return output
 }
 
-func Int8ToByte(input []int8) []byte {
+func Int8ArrayToByteArray(input []int8) []byte {
 	output := make([]byte, len(input))
 	for i, _val := range input {
 		output[i] = byte(_val)
@@ -44,7 +58,7 @@ func Int8ToByte(input []int8) []byte {
 	return output
 }
 
-func ByteToInt8(input []byte) []int8 {
+func ByteArrayToInt8Array(input []byte) []int8 {
 	output := make([]int8, len(input))
 	for i, _val := range input {
 		output[i] = int8(_val)

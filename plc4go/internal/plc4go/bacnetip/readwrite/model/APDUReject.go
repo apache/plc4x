@@ -82,6 +82,10 @@ func CastAPDUReject(structType interface{}) *APDUReject {
     return castFunc(structType)
 }
 
+func (m *APDUReject) GetTypeName() string {
+    return "APDUReject"
+}
+
 func (m *APDUReject) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

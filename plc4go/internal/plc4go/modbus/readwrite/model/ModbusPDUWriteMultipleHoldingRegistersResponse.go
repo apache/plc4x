@@ -89,6 +89,10 @@ func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) 
     return castFunc(structType)
 }
 
+func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
+    return "ModbusPDUWriteMultipleHoldingRegistersResponse"
+}
+
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

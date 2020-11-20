@@ -49,11 +49,13 @@ type IKnxNetIpMessage interface {
 
 type IKnxNetIpMessageParent interface {
     SerializeParent(io utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IKnxNetIpMessageChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *KnxNetIpMessage)
+    GetTypeName() string
     IKnxNetIpMessage
 }
 
@@ -72,6 +74,10 @@ func CastKnxNetIpMessage(structType interface{}) *KnxNetIpMessage {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *KnxNetIpMessage) GetTypeName() string {
+    return "KnxNetIpMessage"
 }
 
 func (m *KnxNetIpMessage) LengthInBits() uint16 {

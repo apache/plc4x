@@ -80,7 +80,7 @@ func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsub
 func (m *KnxNetIpSubscriber) handleValueChange(cemiDataFrame *driverModel.CEMIDataFrame, changed bool) {
     // Decode the group-address according to the settings in the driver
     // Group addresses can be 1, 2 or 3 levels (3 being the default)
-    garb := utils.NewReadBuffer(utils.Int8ToUint8(cemiDataFrame.DestinationAddress))
+    garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(cemiDataFrame.DestinationAddress))
     groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
     if err != nil {
         return
@@ -109,7 +109,7 @@ func (m *KnxNetIpSubscriber) handleValueChange(cemiDataFrame *driverModel.CEMIDa
                 if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
                     var payload []uint8
                     payload = append(payload, uint8(cemiDataFrame.DataFirstByte))
-                    payload = append(payload, utils.Int8ToByte(cemiDataFrame.Data)...)
+                    payload = append(payload, utils.Int8ArrayToByteArray(cemiDataFrame.Data)...)
                     rb := utils.NewReadBuffer(payload)
                     plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
                     fields[fieldName] = field

@@ -45,11 +45,13 @@ type ICOTPParameter interface {
 
 type ICOTPParameterParent interface {
     SerializeParent(io utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type ICOTPParameterChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *COTPParameter)
+    GetTypeName() string
     ICOTPParameter
 }
 
@@ -68,6 +70,10 @@ func CastCOTPParameter(structType interface{}) *COTPParameter {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *COTPParameter) GetTypeName() string {
+    return "COTPParameter"
 }
 
 func (m *COTPParameter) LengthInBits() uint16 {

@@ -45,11 +45,13 @@ type ICEMI interface {
 
 type ICEMIParent interface {
     SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type ICEMIChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *CEMI)
+    GetTypeName() string
     ICEMI
 }
 
@@ -68,6 +70,10 @@ func CastCEMI(structType interface{}) *CEMI {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *CEMI) GetTypeName() string {
+    return "CEMI"
 }
 
 func (m *CEMI) LengthInBits() uint16 {

@@ -56,6 +56,10 @@ func CastRelativeTimestamp(structType interface{}) *RelativeTimestamp {
     return castFunc(structType)
 }
 
+func (m *RelativeTimestamp) GetTypeName() string {
+    return "RelativeTimestamp"
+}
+
 func (m *RelativeTimestamp) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

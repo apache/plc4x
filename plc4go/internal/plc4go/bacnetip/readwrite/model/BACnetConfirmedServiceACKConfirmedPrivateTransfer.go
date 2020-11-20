@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceACKConfirmedPrivateTransfer(structType interface{
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) GetTypeName() string {
+    return "BACnetConfirmedServiceACKConfirmedPrivateTransfer"
+}
+
 func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

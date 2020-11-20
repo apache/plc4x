@@ -45,11 +45,13 @@ type IConnectionRequestInformation interface {
 
 type IConnectionRequestInformationParent interface {
     SerializeParent(io utils.WriteBuffer, child IConnectionRequestInformation, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IConnectionRequestInformationChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *ConnectionRequestInformation)
+    GetTypeName() string
     IConnectionRequestInformation
 }
 
@@ -68,6 +70,10 @@ func CastConnectionRequestInformation(structType interface{}) *ConnectionRequest
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *ConnectionRequestInformation) GetTypeName() string {
+    return "ConnectionRequestInformation"
 }
 
 func (m *ConnectionRequestInformation) LengthInBits() uint16 {

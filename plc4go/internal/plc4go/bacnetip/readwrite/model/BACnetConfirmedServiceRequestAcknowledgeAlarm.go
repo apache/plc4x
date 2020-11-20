@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) *
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestAcknowledgeAlarm"
+}
+
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -76,6 +76,10 @@ func CastBACnetServiceAckCreateObject(structType interface{}) *BACnetServiceAckC
     return castFunc(structType)
 }
 
+func (m *BACnetServiceAckCreateObject) GetTypeName() string {
+    return "BACnetServiceAckCreateObject"
+}
+
 func (m *BACnetServiceAckCreateObject) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

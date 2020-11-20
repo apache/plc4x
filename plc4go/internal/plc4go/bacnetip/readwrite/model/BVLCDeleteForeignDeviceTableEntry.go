@@ -76,6 +76,10 @@ func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteFo
     return castFunc(structType)
 }
 
+func (m *BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
+    return "BVLCDeleteForeignDeviceTableEntry"
+}
+
 func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -79,6 +79,10 @@ func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {
     return castFunc(structType)
 }
 
+func (m *KnxNetRemoteLogging) GetTypeName() string {
+    return "KnxNetRemoteLogging"
+}
+
 func (m *KnxNetRemoteLogging) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

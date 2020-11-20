@@ -91,6 +91,10 @@ func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) *Modb
     return castFunc(structType)
 }
 
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetTypeName() string {
+    return "ModbusPDUMaskWriteHoldingRegisterResponse"
+}
+
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

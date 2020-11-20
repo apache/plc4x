@@ -79,6 +79,10 @@ func CastKnxNetIpCore(structType interface{}) *KnxNetIpCore {
     return castFunc(structType)
 }
 
+func (m *KnxNetIpCore) GetTypeName() string {
+    return "KnxNetIpCore"
+}
+
 func (m *KnxNetIpCore) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

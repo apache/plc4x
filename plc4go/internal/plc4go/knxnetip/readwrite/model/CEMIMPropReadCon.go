@@ -89,6 +89,10 @@ func CastCEMIMPropReadCon(structType interface{}) *CEMIMPropReadCon {
     return castFunc(structType)
 }
 
+func (m *CEMIMPropReadCon) GetTypeName() string {
+    return "CEMIMPropReadCon"
+}
+
 func (m *CEMIMPropReadCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

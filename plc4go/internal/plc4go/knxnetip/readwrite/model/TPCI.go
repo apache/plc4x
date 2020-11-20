@@ -79,3 +79,17 @@ func (e TPCI) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(2, uint8(e))
     return err
 }
+
+func (e TPCI) String() string {
+    switch e {
+    case TPCI_UNNUMBERED_DATA_PACKET:
+        return "UNNUMBERED_DATA_PACKET"
+    case TPCI_UNNUMBERED:
+        return "UNNUMBERED"
+    case TPCI_NUMBERED_DATA_PACKET:
+        return "NUMBERED_DATA_PACKET"
+    case TPCI_NUMBERED_CONTROL_DATA:
+        return "NUMBERED_CONTROL_DATA"
+    }
+    return ""
+}

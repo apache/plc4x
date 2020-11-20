@@ -76,6 +76,10 @@ func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interf
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestUTCTimeSynchronization"
+}
+
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

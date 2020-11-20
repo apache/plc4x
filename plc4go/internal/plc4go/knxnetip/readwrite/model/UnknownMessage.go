@@ -80,6 +80,10 @@ func CastUnknownMessage(structType interface{}) *UnknownMessage {
     return castFunc(structType)
 }
 
+func (m *UnknownMessage) GetTypeName() string {
+    return "UnknownMessage"
+}
+
 func (m *UnknownMessage) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -154,7 +158,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
                 if err != nil {
                     return err
                 }
-                m.UnknownData = utils.ByteToInt8(_decoded[0:_len])
+                m.UnknownData = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -169,7 +173,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 
 func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     _encodedUnknownData := make([]byte, base64.StdEncoding.EncodedLen(len(m.UnknownData)))
-    base64.StdEncoding.Encode(_encodedUnknownData, utils.Int8ToByte(m.UnknownData))
+    base64.StdEncoding.Encode(_encodedUnknownData, utils.Int8ArrayToByteArray(m.UnknownData))
     if err := e.EncodeElement(_encodedUnknownData, xml.StartElement{Name: xml.Name{Local: "unknownData"}}); err != nil {
         return err
     }

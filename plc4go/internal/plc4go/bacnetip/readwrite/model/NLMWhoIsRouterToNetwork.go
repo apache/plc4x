@@ -80,6 +80,10 @@ func CastNLMWhoIsRouterToNetwork(structType interface{}) *NLMWhoIsRouterToNetwor
     return castFunc(structType)
 }
 
+func (m *NLMWhoIsRouterToNetwork) GetTypeName() string {
+    return "NLMWhoIsRouterToNetwork"
+}
+
 func (m *NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

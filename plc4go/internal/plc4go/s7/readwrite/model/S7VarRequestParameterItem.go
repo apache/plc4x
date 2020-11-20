@@ -45,11 +45,13 @@ type IS7VarRequestParameterItem interface {
 
 type IS7VarRequestParameterItemParent interface {
     SerializeParent(io utils.WriteBuffer, child IS7VarRequestParameterItem, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IS7VarRequestParameterItemChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *S7VarRequestParameterItem)
+    GetTypeName() string
     IS7VarRequestParameterItem
 }
 
@@ -68,6 +70,10 @@ func CastS7VarRequestParameterItem(structType interface{}) *S7VarRequestParamete
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *S7VarRequestParameterItem) GetTypeName() string {
+    return "S7VarRequestParameterItem"
 }
 
 func (m *S7VarRequestParameterItem) LengthInBits() uint16 {

@@ -114,6 +114,10 @@ func CastCEMIFrameDataExt(structType interface{}) *CEMIFrameDataExt {
     return castFunc(structType)
 }
 
+func (m *CEMIFrameDataExt) GetTypeName() string {
+    return "CEMIFrameDataExt"
+}
+
 func (m *CEMIFrameDataExt) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -408,7 +412,7 @@ func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                 if err != nil {
                     return err
                 }
-                m.DestinationAddress = utils.ByteToInt8(_decoded[0:_len])
+                m.DestinationAddress = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "dataLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -449,7 +453,7 @@ func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                 if err != nil {
                     return err
                 }
-                m.Data = utils.ByteToInt8(_decoded[0:_len])
+                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "crc":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -482,7 +486,7 @@ func (m *CEMIFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) er
         return err
     }
     _encodedDestinationAddress := make([]byte, base64.StdEncoding.EncodedLen(len(m.DestinationAddress)))
-    base64.StdEncoding.Encode(_encodedDestinationAddress, utils.Int8ToByte(m.DestinationAddress))
+    base64.StdEncoding.Encode(_encodedDestinationAddress, utils.Int8ArrayToByteArray(m.DestinationAddress))
     if err := e.EncodeElement(_encodedDestinationAddress, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
         return err
     }
@@ -502,7 +506,7 @@ func (m *CEMIFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) er
         return err
     }
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
         return err
     }

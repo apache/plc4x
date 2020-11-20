@@ -87,6 +87,10 @@ func CastCEMIMPropReadReq(structType interface{}) *CEMIMPropReadReq {
     return castFunc(structType)
 }
 
+func (m *CEMIMPropReadReq) GetTypeName() string {
+    return "CEMIMPropReadReq"
+}
+
 func (m *CEMIMPropReadReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

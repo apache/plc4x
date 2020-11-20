@@ -82,6 +82,10 @@ func CastAPDUSimpleAck(structType interface{}) *APDUSimpleAck {
     return castFunc(structType)
 }
 
+func (m *APDUSimpleAck) GetTypeName() string {
+    return "APDUSimpleAck"
+}
+
 func (m *APDUSimpleAck) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

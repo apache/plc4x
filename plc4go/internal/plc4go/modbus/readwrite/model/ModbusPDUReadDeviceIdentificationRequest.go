@@ -84,6 +84,10 @@ func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) *Modbu
     return castFunc(structType)
 }
 
+func (m *ModbusPDUReadDeviceIdentificationRequest) GetTypeName() string {
+    return "ModbusPDUReadDeviceIdentificationRequest"
+}
+
 func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -76,6 +76,10 @@ func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) *BACnetErro
     return castFunc(structType)
 }
 
+func (m *BACnetErrorConfirmedPrivateTransfer) GetTypeName() string {
+    return "BACnetErrorConfirmedPrivateTransfer"
+}
+
 func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

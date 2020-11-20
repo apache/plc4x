@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceACKGetEventInformation(structType interface{}) *B
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceACKGetEventInformation) GetTypeName() string {
+    return "BACnetConfirmedServiceACKGetEventInformation"
+}
+
 func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

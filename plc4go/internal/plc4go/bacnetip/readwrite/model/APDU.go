@@ -45,11 +45,13 @@ type IAPDU interface {
 
 type IAPDUParent interface {
     SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IAPDUChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *APDU)
+    GetTypeName() string
     IAPDU
 }
 
@@ -68,6 +70,10 @@ func CastAPDU(structType interface{}) *APDU {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *APDU) GetTypeName() string {
+    return "APDU"
 }
 
 func (m *APDU) LengthInBits() uint16 {

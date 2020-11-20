@@ -79,6 +79,10 @@ func CastBVLCOriginalUnicastNPDU(structType interface{}) *BVLCOriginalUnicastNPD
     return castFunc(structType)
 }
 
+func (m *BVLCOriginalUnicastNPDU) GetTypeName() string {
+    return "BVLCOriginalUnicastNPDU"
+}
+
 func (m *BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

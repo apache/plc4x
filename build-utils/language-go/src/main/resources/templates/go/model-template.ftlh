@@ -136,11 +136,13 @@ func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageType
 
 type I${type.name}Parent interface {
     SerializeParent(io utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+    GetTypeName() string
 }
 
 type I${type.name}Child interface {
     Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
     InitializeParent(parent *${type.name}<#if type.getPropertyFields()?has_content>, <#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list></#if>)
+    GetTypeName() string
     I${type.name}
 }
     <#--list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
@@ -194,6 +196,10 @@ func Cast${type.name}(structType interface{}) *${type.name} {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *${type.name}) GetTypeName() string {
+    return "${type.name}"
 }
 
 func (m *${type.name}) LengthInBits() uint16 {
@@ -895,7 +901,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
                 if err != nil {
                     return err
                 }
-                m.${field.name?cap_first} = utils.ByteToInt8(_decoded[0:_len])
+                m.${field.name?cap_first} = utils.ByteArrayToInt8Array(_decoded[0:_len])
                 <#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
                     <#if helper.isArrayField(field)>
                 var _values []<#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
@@ -989,7 +995,7 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
             <#-- int8 arrays are serialized in Base64 encoding -->
                 <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
     _encoded${field.name?cap_first} := make([]byte, base64.StdEncoding.EncodedLen(len(m.${field.name?cap_first})))
-    base64.StdEncoding.Encode(_encoded${field.name?cap_first}, utils.Int8ToByte(m.${field.name?cap_first}))
+    base64.StdEncoding.Encode(_encoded${field.name?cap_first}, utils.Int8ArrayToByteArray(m.${field.name?cap_first}))
     if err := e.EncodeElement(_encoded${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
         return err
     }

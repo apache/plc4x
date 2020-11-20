@@ -45,11 +45,13 @@ type ICEMIAdditionalInformation interface {
 
 type ICEMIAdditionalInformationParent interface {
     SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type ICEMIAdditionalInformationChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *CEMIAdditionalInformation)
+    GetTypeName() string
     ICEMIAdditionalInformation
 }
 
@@ -68,6 +70,10 @@ func CastCEMIAdditionalInformation(structType interface{}) *CEMIAdditionalInform
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *CEMIAdditionalInformation) GetTypeName() string {
+    return "CEMIAdditionalInformation"
 }
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {

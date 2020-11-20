@@ -73,3 +73,13 @@ func (e HostProtocolCode) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e HostProtocolCode) String() string {
+    switch e {
+    case HostProtocolCode_IPV4_UDP:
+        return "IPV4_UDP"
+    case HostProtocolCode_IPV4_TCP:
+        return "IPV4_TCP"
+    }
+    return ""
+}

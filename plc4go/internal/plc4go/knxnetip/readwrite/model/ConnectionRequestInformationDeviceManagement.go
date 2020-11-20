@@ -76,6 +76,10 @@ func CastConnectionRequestInformationDeviceManagement(structType interface{}) *C
     return castFunc(structType)
 }
 
+func (m *ConnectionRequestInformationDeviceManagement) GetTypeName() string {
+    return "ConnectionRequestInformationDeviceManagement"
+}
+
 func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

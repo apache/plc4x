@@ -88,6 +88,10 @@ func CastModbusPDUReportServerIdResponse(structType interface{}) *ModbusPDURepor
     return castFunc(structType)
 }
 
+func (m *ModbusPDUReportServerIdResponse) GetTypeName() string {
+    return "ModbusPDUReportServerIdResponse"
+}
+
 func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -178,7 +182,7 @@ func (m *ModbusPDUReportServerIdResponse) UnmarshalXML(d *xml.Decoder, start xml
                 if err != nil {
                     return err
                 }
-                m.Value = utils.ByteToInt8(_decoded[0:_len])
+                m.Value = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -193,7 +197,7 @@ func (m *ModbusPDUReportServerIdResponse) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *ModbusPDUReportServerIdResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     _encodedValue := make([]byte, base64.StdEncoding.EncodedLen(len(m.Value)))
-    base64.StdEncoding.Encode(_encodedValue, utils.Int8ToByte(m.Value))
+    base64.StdEncoding.Encode(_encodedValue, utils.Int8ArrayToByteArray(m.Value))
     if err := e.EncodeElement(_encodedValue, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
         return err
     }

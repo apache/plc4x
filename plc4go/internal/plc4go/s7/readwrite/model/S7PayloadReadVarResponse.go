@@ -83,6 +83,10 @@ func CastS7PayloadReadVarResponse(structType interface{}) *S7PayloadReadVarRespo
     return castFunc(structType)
 }
 
+func (m *S7PayloadReadVarResponse) GetTypeName() string {
+    return "S7PayloadReadVarResponse"
+}
+
 func (m *S7PayloadReadVarResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

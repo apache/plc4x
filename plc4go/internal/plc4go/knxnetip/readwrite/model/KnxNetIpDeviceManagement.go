@@ -79,6 +79,10 @@ func CastKnxNetIpDeviceManagement(structType interface{}) *KnxNetIpDeviceManagem
     return castFunc(structType)
 }
 
+func (m *KnxNetIpDeviceManagement) GetTypeName() string {
+    return "KnxNetIpDeviceManagement"
+}
+
 func (m *KnxNetIpDeviceManagement) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

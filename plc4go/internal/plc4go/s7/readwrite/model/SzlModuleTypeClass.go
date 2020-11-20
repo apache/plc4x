@@ -79,3 +79,17 @@ func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(4, uint8(e))
     return err
 }
+
+func (e SzlModuleTypeClass) String() string {
+    switch e {
+    case SzlModuleTypeClass_CPU:
+        return "CPU"
+    case SzlModuleTypeClass_IM:
+        return "IM"
+    case SzlModuleTypeClass_FM:
+        return "FM"
+    case SzlModuleTypeClass_CP:
+        return "CP"
+    }
+    return ""
+}

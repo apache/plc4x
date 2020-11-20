@@ -45,11 +45,13 @@ type IS7Address interface {
 
 type IS7AddressParent interface {
     SerializeParent(io utils.WriteBuffer, child IS7Address, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IS7AddressChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *S7Address)
+    GetTypeName() string
     IS7Address
 }
 
@@ -68,6 +70,10 @@ func CastS7Address(structType interface{}) *S7Address {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *S7Address) GetTypeName() string {
+    return "S7Address"
 }
 
 func (m *S7Address) LengthInBits() uint16 {

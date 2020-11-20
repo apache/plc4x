@@ -124,3 +124,47 @@ func (e SzlSublist) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e SzlSublist) String() string {
+    switch e {
+    case SzlSublist_MODULE_IDENTIFICATION:
+        return "MODULE_IDENTIFICATION"
+    case SzlSublist_CPU_FEATURES:
+        return "CPU_FEATURES"
+    case SzlSublist_USER_MEMORY_AREA:
+        return "USER_MEMORY_AREA"
+    case SzlSublist_SYSTEM_AREAS:
+        return "SYSTEM_AREAS"
+    case SzlSublist_BLOCK_TYPES:
+        return "BLOCK_TYPES"
+    case SzlSublist_STATUS_MODULE_LEDS:
+        return "STATUS_MODULE_LEDS"
+    case SzlSublist_COMPONENT_IDENTIFICATION:
+        return "COMPONENT_IDENTIFICATION"
+    case SzlSublist_INTERRUPT_STATUS:
+        return "INTERRUPT_STATUS"
+    case SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS:
+        return "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS"
+    case SzlSublist_COMMUNICATION_STATUS_DATA:
+        return "COMMUNICATION_STATUS_DATA"
+    case SzlSublist_STATUS_SINGLE_MODULE_LED:
+        return "STATUS_SINGLE_MODULE_LED"
+    case SzlSublist_DP_MASTER_SYSTEM_INFORMATION:
+        return "DP_MASTER_SYSTEM_INFORMATION"
+    case SzlSublist_MODULE_STATUS_INFORMATION:
+        return "MODULE_STATUS_INFORMATION"
+    case SzlSublist_RACK_OR_STATION_STATUS_INFORMATION:
+        return "RACK_OR_STATION_STATUS_INFORMATION"
+    case SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2:
+        return "RACK_OR_STATION_STATUS_INFORMATION_2"
+    case SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION:
+        return "ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION"
+    case SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP:
+        return "MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP"
+    case SzlSublist_DIAGNOSTIC_BUFFER:
+        return "DIAGNOSTIC_BUFFER"
+    case SzlSublist_MODULE_DIAGNOSTIC_DATA:
+        return "MODULE_DIAGNOSTIC_DATA"
+    }
+    return ""
+}

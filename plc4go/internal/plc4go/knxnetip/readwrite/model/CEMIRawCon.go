@@ -76,6 +76,10 @@ func CastCEMIRawCon(structType interface{}) *CEMIRawCon {
     return castFunc(structType)
 }
 
+func (m *CEMIRawCon) GetTypeName() string {
+    return "CEMIRawCon"
+}
+
 func (m *CEMIRawCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

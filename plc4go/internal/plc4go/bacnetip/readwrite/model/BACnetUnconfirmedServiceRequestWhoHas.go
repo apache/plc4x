@@ -92,6 +92,10 @@ func CastBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) *BACnetUn
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestWhoHas) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestWhoHas"
+}
+
 func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -307,7 +311,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, sta
                 if err != nil {
                     return err
                 }
-                m.ObjectName = utils.ByteToInt8(_decoded[0:_len])
+                m.ObjectName = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -331,7 +335,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start
         return err
     }
     _encodedObjectName := make([]byte, base64.StdEncoding.EncodedLen(len(m.ObjectName)))
-    base64.StdEncoding.Encode(_encodedObjectName, utils.Int8ToByte(m.ObjectName))
+    base64.StdEncoding.Encode(_encodedObjectName, utils.Int8ArrayToByteArray(m.ObjectName))
     if err := e.EncodeElement(_encodedObjectName, xml.StartElement{Name: xml.Name{Local: "objectName"}}); err != nil {
         return err
     }

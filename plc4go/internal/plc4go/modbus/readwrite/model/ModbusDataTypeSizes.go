@@ -226,3 +226,63 @@ func (m ModbusDataTypeSizes) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
+
+func (e ModbusDataTypeSizes) String() string {
+    switch e {
+    case ModbusDataTypeSizes_BOOL:
+        return "BOOL"
+    case ModbusDataTypeSizes_BYTE:
+        return "BYTE"
+    case ModbusDataTypeSizes_CHAR:
+        return "CHAR"
+    case ModbusDataTypeSizes_DATE:
+        return "DATE"
+    case ModbusDataTypeSizes_DATE_AND_TIME:
+        return "DATE_AND_TIME"
+    case ModbusDataTypeSizes_DINT:
+        return "DINT"
+    case ModbusDataTypeSizes_DWORD:
+        return "DWORD"
+    case ModbusDataTypeSizes_INT:
+        return "INT"
+    case ModbusDataTypeSizes_LDATE:
+        return "LDATE"
+    case ModbusDataTypeSizes_LDATE_AND_TIME:
+        return "LDATE_AND_TIME"
+    case ModbusDataTypeSizes_LINT:
+        return "LINT"
+    case ModbusDataTypeSizes_LREAL:
+        return "LREAL"
+    case ModbusDataTypeSizes_LTIME:
+        return "LTIME"
+    case ModbusDataTypeSizes_LTIME_OF_DAY:
+        return "LTIME_OF_DAY"
+    case ModbusDataTypeSizes_LWORD:
+        return "LWORD"
+    case ModbusDataTypeSizes_REAL:
+        return "REAL"
+    case ModbusDataTypeSizes_SINT:
+        return "SINT"
+    case ModbusDataTypeSizes_STRING:
+        return "STRING"
+    case ModbusDataTypeSizes_TIME:
+        return "TIME"
+    case ModbusDataTypeSizes_TIME_OF_DAY:
+        return "TIME_OF_DAY"
+    case ModbusDataTypeSizes_UDINT:
+        return "UDINT"
+    case ModbusDataTypeSizes_UINT:
+        return "UINT"
+    case ModbusDataTypeSizes_ULINT:
+        return "ULINT"
+    case ModbusDataTypeSizes_USINT:
+        return "USINT"
+    case ModbusDataTypeSizes_WCHAR:
+        return "WCHAR"
+    case ModbusDataTypeSizes_WORD:
+        return "WORD"
+    case ModbusDataTypeSizes_WSTRING:
+        return "WSTRING"
+    }
+    return ""
+}

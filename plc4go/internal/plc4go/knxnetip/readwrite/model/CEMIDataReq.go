@@ -83,6 +83,10 @@ func CastCEMIDataReq(structType interface{}) *CEMIDataReq {
     return castFunc(structType)
 }
 
+func (m *CEMIDataReq) GetTypeName() string {
+    return "CEMIDataReq"
+}
+
 func (m *CEMIDataReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

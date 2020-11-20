@@ -79,6 +79,10 @@ func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) *KnxNetRe
     return castFunc(structType)
 }
 
+func (m *KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
+    return "KnxNetRemoteConfigurationAndDiagnosis"
+}
+
 func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

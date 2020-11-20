@@ -82,6 +82,10 @@ func CastConnectionStateRequest(structType interface{}) *ConnectionStateRequest 
     return castFunc(structType)
 }
 
+func (m *ConnectionStateRequest) GetTypeName() string {
+    return "ConnectionStateRequest"
+}
+
 func (m *ConnectionStateRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

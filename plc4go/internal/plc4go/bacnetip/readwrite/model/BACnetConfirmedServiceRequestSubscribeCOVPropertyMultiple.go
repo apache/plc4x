@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType in
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
+}
+
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

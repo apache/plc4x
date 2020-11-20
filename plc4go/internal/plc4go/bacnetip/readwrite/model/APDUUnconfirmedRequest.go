@@ -80,6 +80,10 @@ func CastAPDUUnconfirmedRequest(structType interface{}) *APDUUnconfirmedRequest 
     return castFunc(structType)
 }
 
+func (m *APDUUnconfirmedRequest) GetTypeName() string {
+    return "APDUUnconfirmedRequest"
+}
+
 func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -130,3 +130,27 @@ func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e MemoryArea) String() string {
+    switch e {
+    case MemoryArea_COUNTERS:
+        return "COUNTERS"
+    case MemoryArea_TIMERS:
+        return "TIMERS"
+    case MemoryArea_DIRECT_PERIPHERAL_ACCESS:
+        return "DIRECT_PERIPHERAL_ACCESS"
+    case MemoryArea_INPUTS:
+        return "INPUTS"
+    case MemoryArea_OUTPUTS:
+        return "OUTPUTS"
+    case MemoryArea_FLAGS_MARKERS:
+        return "FLAGS_MARKERS"
+    case MemoryArea_DATA_BLOCKS:
+        return "DATA_BLOCKS"
+    case MemoryArea_INSTANCE_DATA_BLOCKS:
+        return "INSTANCE_DATA_BLOCKS"
+    case MemoryArea_LOCAL_DATA:
+        return "LOCAL_DATA"
+    }
+    return ""
+}

@@ -76,6 +76,10 @@ func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) *BACnetSer
     return castFunc(structType)
 }
 
+func (m *BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
+    return "BACnetServiceAckGetEnrollmentSummary"
+}
+
 func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

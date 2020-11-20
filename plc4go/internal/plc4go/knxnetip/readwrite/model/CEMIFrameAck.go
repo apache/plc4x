@@ -88,6 +88,10 @@ func CastCEMIFrameAck(structType interface{}) *CEMIFrameAck {
     return castFunc(structType)
 }
 
+func (m *CEMIFrameAck) GetTypeName() string {
+    return "CEMIFrameAck"
+}
+
 func (m *CEMIFrameAck) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

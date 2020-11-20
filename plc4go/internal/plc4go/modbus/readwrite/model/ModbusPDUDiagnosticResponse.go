@@ -89,6 +89,10 @@ func CastModbusPDUDiagnosticResponse(structType interface{}) *ModbusPDUDiagnosti
     return castFunc(structType)
 }
 
+func (m *ModbusPDUDiagnosticResponse) GetTypeName() string {
+    return "ModbusPDUDiagnosticResponse"
+}
+
 func (m *ModbusPDUDiagnosticResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

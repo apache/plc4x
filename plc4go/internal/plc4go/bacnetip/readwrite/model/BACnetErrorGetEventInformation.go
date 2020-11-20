@@ -76,6 +76,10 @@ func CastBACnetErrorGetEventInformation(structType interface{}) *BACnetErrorGetE
     return castFunc(structType)
 }
 
+func (m *BACnetErrorGetEventInformation) GetTypeName() string {
+    return "BACnetErrorGetEventInformation"
+}
+
 func (m *BACnetErrorGetEventInformation) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

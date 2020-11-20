@@ -97,3 +97,29 @@ func (e ModbusErrorCode) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e ModbusErrorCode) String() string {
+    switch e {
+    case ModbusErrorCode_ILLEGAL_FUNCTION:
+        return "ILLEGAL_FUNCTION"
+    case ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
+        return "GATEWAY_PATH_UNAVAILABLE"
+    case ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
+        return "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND"
+    case ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
+        return "ILLEGAL_DATA_ADDRESS"
+    case ModbusErrorCode_ILLEGAL_DATA_VALUE:
+        return "ILLEGAL_DATA_VALUE"
+    case ModbusErrorCode_SLAVE_DEVICE_FAILURE:
+        return "SLAVE_DEVICE_FAILURE"
+    case ModbusErrorCode_ACKNOWLEDGE:
+        return "ACKNOWLEDGE"
+    case ModbusErrorCode_SLAVE_DEVICE_BUSY:
+        return "SLAVE_DEVICE_BUSY"
+    case ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
+        return "NEGATIVE_ACKNOWLEDGE"
+    case ModbusErrorCode_MEMORY_PARITY_ERROR:
+        return "MEMORY_PARITY_ERROR"
+    }
+    return ""
+}

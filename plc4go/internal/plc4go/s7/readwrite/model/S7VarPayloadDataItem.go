@@ -60,6 +60,10 @@ func CastS7VarPayloadDataItem(structType interface{}) *S7VarPayloadDataItem {
     return castFunc(structType)
 }
 
+func (m *S7VarPayloadDataItem) GetTypeName() string {
+    return "S7VarPayloadDataItem"
+}
+
 func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -222,7 +226,7 @@ func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
                 if err != nil {
                     return err
                 }
-                m.Data = utils.ByteToInt8(_decoded[0:_len])
+                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
     }
@@ -242,7 +246,7 @@ func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement
         return err
     }
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
         return err
     }

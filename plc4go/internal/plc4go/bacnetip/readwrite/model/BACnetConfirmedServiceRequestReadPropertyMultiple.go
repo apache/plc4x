@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType interface{
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestReadPropertyMultiple"
+}
+
 func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

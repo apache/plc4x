@@ -80,6 +80,10 @@ func CastBACnetTagApplicationDate(structType interface{}) *BACnetTagApplicationD
     return castFunc(structType)
 }
 
+func (m *BACnetTagApplicationDate) GetTypeName() string {
+    return "BACnetTagApplicationDate"
+}
+
 func (m *BACnetTagApplicationDate) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

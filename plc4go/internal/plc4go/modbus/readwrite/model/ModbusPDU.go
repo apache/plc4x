@@ -47,11 +47,13 @@ type IModbusPDU interface {
 
 type IModbusPDUParent interface {
     SerializeParent(io utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IModbusPDUChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *ModbusPDU)
+    GetTypeName() string
     IModbusPDU
 }
 
@@ -70,6 +72,10 @@ func CastModbusPDU(structType interface{}) *ModbusPDU {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *ModbusPDU) GetTypeName() string {
+    return "ModbusPDU"
 }
 
 func (m *ModbusPDU) LengthInBits() uint16 {

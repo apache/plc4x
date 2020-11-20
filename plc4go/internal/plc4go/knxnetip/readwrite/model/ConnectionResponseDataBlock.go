@@ -45,11 +45,13 @@ type IConnectionResponseDataBlock interface {
 
 type IConnectionResponseDataBlockParent interface {
     SerializeParent(io utils.WriteBuffer, child IConnectionResponseDataBlock, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IConnectionResponseDataBlockChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *ConnectionResponseDataBlock)
+    GetTypeName() string
     IConnectionResponseDataBlock
 }
 
@@ -68,6 +70,10 @@ func CastConnectionResponseDataBlock(structType interface{}) *ConnectionResponse
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *ConnectionResponseDataBlock) GetTypeName() string {
+    return "ConnectionResponseDataBlock"
 }
 
 func (m *ConnectionResponseDataBlock) LengthInBits() uint16 {

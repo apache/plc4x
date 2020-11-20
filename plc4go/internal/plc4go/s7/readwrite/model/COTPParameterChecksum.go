@@ -79,6 +79,10 @@ func CastCOTPParameterChecksum(structType interface{}) *COTPParameterChecksum {
     return castFunc(structType)
 }
 
+func (m *COTPParameterChecksum) GetTypeName() string {
+    return "COTPParameterChecksum"
+}
+
 func (m *COTPParameterChecksum) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

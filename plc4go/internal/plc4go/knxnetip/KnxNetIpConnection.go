@@ -31,14 +31,14 @@ import (
     "github.com/apache/plc4x/plc4go/pkg/plc4go"
     apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "net"
-    "reflect"
     "strconv"
+    "strings"
     "sync"
     "time"
 )
 
 type ConnectionMetadata struct {
-    KnxMedium         string
+    KnxMedium         driverModel.KnxMedium
     GatewayName       string
     GatewayKnxAddress string
     ClientKnxAddress  string
@@ -55,9 +55,17 @@ type ConnectionMetadata struct {
 
 func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
     return map[string]string{
+        "KnxMedium":         m.KnxMedium.String(),
         "GatewayName":       m.GatewayName,
         "GatewayKnxAddress": m.GatewayKnxAddress,
         "ClientKnxAddress":  m.ClientKnxAddress,
+
+        "ProjectNumber":          strconv.Itoa(int(m.ProjectNumber)),
+        "InstallationNumber":     strconv.Itoa(int(m.InstallationNumber)),
+        "DeviceSerialNumber":     utils.Int8ArrayToString(m.DeviceSerialNumber, " "),
+        "DeviceMulticastAddress": utils.Int8ArrayToString(m.DeviceSerialNumber, "."),
+        "DeviceMacAddress":       utils.Int8ArrayToString(m.DeviceSerialNumber, ":"),
+        "SupportedServices":      strings.Join(m.SupportedServices, ", "),
     }
 }
 
@@ -136,7 +144,7 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
                 "used transport, is not a UdpTransportInstance"))
             return
         }
-        localAddress := driverModel.NewIPAddress(utils.ByteToInt8(udpTransportInstance.LocalAddress.IP))
+        localAddress := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(udpTransportInstance.LocalAddress.IP))
         discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
             driverModel.HostProtocolCode_IPV4_UDP, localAddress, uint16(udpTransportInstance.LocalAddress.Port))
         searchRequest := driverModel.NewSearchRequest(discoveryEndpoint)
@@ -173,8 +181,11 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
                 }
                 if supportsTunneling {
                     // Save some important information
-                    m.metadata.GatewayName = string(bytes.Trim(utils.Int8ToByte(
+                    m.metadata.KnxMedium = searchResponse.DibDeviceInfo.KnxMedium
+                    m.metadata.GatewayName = string(bytes.Trim(utils.Int8ArrayToByteArray(
                         searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+                    m.GatewayKnxAddress = searchResponse.DibDeviceInfo.KnxAddress
+                    m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
                     m.metadata.ProjectNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.ProjectNumber
                     m.metadata.InstallationNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.InstallationNumber
                     m.metadata.DeviceSerialNumber = searchResponse.DibDeviceInfo.KnxNetIpDeviceSerialNumber
@@ -182,9 +193,8 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
                     m.metadata.DeviceMacAddress = searchResponse.DibDeviceInfo.KnxNetIpDeviceMacAddress.Addr
                     m.metadata.SupportedServices = []string{}
                     for _, serviceId := range searchResponse.DibSuppSvcFamilies.ServiceIds {
-                        m.metadata.SupportedServices = append(m.metadata.SupportedServices, reflect.TypeOf(serviceId).Name())
+                        m.metadata.SupportedServices = append(m.metadata.SupportedServices, serviceId.Child.GetTypeName())
                     }
-                    m.GatewayKnxAddress = searchResponse.DibDeviceInfo.KnxAddress
 
                     // As soon as we got a successful search-response back, send a connection request.
                     localAddress := m.castIpToKnxAddress(udpTransportInstance.LocalAddress.IP)
@@ -386,7 +396,7 @@ func (m *KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
 }
 
 func (m *KnxNetIpConnection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
-    return driverModel.NewIPAddress(utils.ByteToInt8(ip)[len(ip)-4:])
+    return driverModel.NewIPAddress(utils.ByteArrayToInt8Array(ip)[len(ip)-4:])
 }
 
 func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan chan interface{}) {
@@ -421,7 +431,7 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
                     // If this is a new value, we have to also provide the 3 different types of addresses.
                     if !ok {
                         destinationAddress := cemiDataInd.CemiDataFrame.DestinationAddress
-                        arb := utils.NewReadBuffer(utils.Int8ToUint8(destinationAddress))
+                        arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
                         if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
                             m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
                         }
@@ -483,6 +493,6 @@ func (m *KnxNetIpConnection) sliceEqual(a, b []int8) bool {
     return true
 }
 
-func (m *KnxNetIpConnection) knxAddressToString(knxAddress *driverModel.KnxAddress) string {
+func KnxAddressToString(knxAddress *driverModel.KnxAddress) string {
     return strconv.Itoa(int(knxAddress.MainGroup)) + "." + strconv.Itoa(int(knxAddress.MiddleGroup)) + "." + strconv.Itoa(int(knxAddress.SubGroup))
 }

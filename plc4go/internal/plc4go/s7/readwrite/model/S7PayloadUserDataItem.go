@@ -49,11 +49,13 @@ type IS7PayloadUserDataItem interface {
 
 type IS7PayloadUserDataItemParent interface {
     SerializeParent(io utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IS7PayloadUserDataItemChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16)
+    GetTypeName() string
     IS7PayloadUserDataItem
 }
 
@@ -72,6 +74,10 @@ func CastS7PayloadUserDataItem(structType interface{}) *S7PayloadUserDataItem {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *S7PayloadUserDataItem) GetTypeName() string {
+    return "S7PayloadUserDataItem"
 }
 
 func (m *S7PayloadUserDataItem) LengthInBits() uint16 {

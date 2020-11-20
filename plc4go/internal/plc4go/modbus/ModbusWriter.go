@@ -74,7 +74,7 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 			}
 			return result
 		}
-		data := utils.Uint8ToInt8(io.GetBytes())
+		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
 
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))

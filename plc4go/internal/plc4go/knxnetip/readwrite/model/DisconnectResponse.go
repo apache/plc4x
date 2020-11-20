@@ -81,6 +81,10 @@ func CastDisconnectResponse(structType interface{}) *DisconnectResponse {
     return castFunc(structType)
 }
 
+func (m *DisconnectResponse) GetTypeName() string {
+    return "DisconnectResponse"
+}
+
 func (m *DisconnectResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

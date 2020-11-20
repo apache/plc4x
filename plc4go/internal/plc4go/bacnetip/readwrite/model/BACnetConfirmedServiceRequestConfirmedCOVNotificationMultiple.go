@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structTyp
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

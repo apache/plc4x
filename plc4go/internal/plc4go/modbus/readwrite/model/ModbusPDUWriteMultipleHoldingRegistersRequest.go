@@ -92,6 +92,10 @@ func CastModbusPDUWriteMultipleHoldingRegistersRequest(structType interface{}) *
     return castFunc(structType)
 }
 
+func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetTypeName() string {
+    return "ModbusPDUWriteMultipleHoldingRegistersRequest"
+}
+
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -228,7 +232,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) UnmarshalXML(d *xml.Deco
                 if err != nil {
                     return err
                 }
-                m.Value = utils.ByteToInt8(_decoded[0:_len])
+                m.Value = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -249,7 +253,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) MarshalXML(e *xml.Encode
         return err
     }
     _encodedValue := make([]byte, base64.StdEncoding.EncodedLen(len(m.Value)))
-    base64.StdEncoding.Encode(_encodedValue, utils.Int8ToByte(m.Value))
+    base64.StdEncoding.Encode(_encodedValue, utils.Int8ArrayToByteArray(m.Value))
     if err := e.EncodeElement(_encodedValue, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
         return err
     }

@@ -81,6 +81,10 @@ func CastTunnelingRequest(structType interface{}) *TunnelingRequest {
     return castFunc(structType)
 }
 
+func (m *TunnelingRequest) GetTypeName() string {
+    return "TunnelingRequest"
+}
+
 func (m *TunnelingRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

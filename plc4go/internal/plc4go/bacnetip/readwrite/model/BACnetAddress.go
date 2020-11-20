@@ -57,6 +57,10 @@ func CastBACnetAddress(structType interface{}) *BACnetAddress {
     return castFunc(structType)
 }
 
+func (m *BACnetAddress) GetTypeName() string {
+    return "BACnetAddress"
+}
+
 func (m *BACnetAddress) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

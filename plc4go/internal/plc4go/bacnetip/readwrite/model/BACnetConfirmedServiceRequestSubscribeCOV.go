@@ -98,6 +98,10 @@ func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) *BACn
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestSubscribeCOV"
+}
+
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -377,7 +381,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) UnmarshalXML(d *xml.Decoder,
                 if err != nil {
                     return err
                 }
-                m.LifetimeSeconds = utils.ByteToInt8(_decoded[0:_len])
+                m.LifetimeSeconds = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -407,7 +411,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) MarshalXML(e *xml.Encoder, s
         return err
     }
     _encodedLifetimeSeconds := make([]byte, base64.StdEncoding.EncodedLen(len(m.LifetimeSeconds)))
-    base64.StdEncoding.Encode(_encodedLifetimeSeconds, utils.Int8ToByte(m.LifetimeSeconds))
+    base64.StdEncoding.Encode(_encodedLifetimeSeconds, utils.Int8ArrayToByteArray(m.LifetimeSeconds))
     if err := e.EncodeElement(_encodedLifetimeSeconds, xml.StartElement{Name: xml.Name{Local: "lifetimeSeconds"}}); err != nil {
         return err
     }

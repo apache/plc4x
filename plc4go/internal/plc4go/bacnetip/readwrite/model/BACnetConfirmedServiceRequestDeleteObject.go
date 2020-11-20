@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) *BACn
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestDeleteObject) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestDeleteObject"
+}
+
 func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

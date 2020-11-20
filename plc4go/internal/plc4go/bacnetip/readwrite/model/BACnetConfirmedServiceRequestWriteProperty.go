@@ -97,6 +97,10 @@ func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) *BAC
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestWriteProperty) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestWriteProperty"
+}
+
 func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -357,7 +361,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder
                 if err != nil {
                     return err
                 }
-                m.PropertyIdentifier = utils.ByteToInt8(_decoded[0:_len])
+                m.PropertyIdentifier = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "value":
                 var dt *BACnetTag
                 if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -393,7 +397,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) MarshalXML(e *xml.Encoder, 
         return err
     }
     _encodedPropertyIdentifier := make([]byte, base64.StdEncoding.EncodedLen(len(m.PropertyIdentifier)))
-    base64.StdEncoding.Encode(_encodedPropertyIdentifier, utils.Int8ToByte(m.PropertyIdentifier))
+    base64.StdEncoding.Encode(_encodedPropertyIdentifier, utils.Int8ArrayToByteArray(m.PropertyIdentifier))
     if err := e.EncodeElement(_encodedPropertyIdentifier, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
         return err
     }

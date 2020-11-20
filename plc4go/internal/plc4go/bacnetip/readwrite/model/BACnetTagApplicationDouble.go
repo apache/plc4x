@@ -83,6 +83,10 @@ func CastBACnetTagApplicationDouble(structType interface{}) *BACnetTagApplicatio
     return castFunc(structType)
 }
 
+func (m *BACnetTagApplicationDouble) GetTypeName() string {
+    return "BACnetTagApplicationDouble"
+}
+
 func (m *BACnetTagApplicationDouble) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -76,6 +76,10 @@ func CastBACnetErrorGetAlarmSummary(structType interface{}) *BACnetErrorGetAlarm
     return castFunc(structType)
 }
 
+func (m *BACnetErrorGetAlarmSummary) GetTypeName() string {
+    return "BACnetErrorGetAlarmSummary"
+}
+
 func (m *BACnetErrorGetAlarmSummary) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

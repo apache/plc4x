@@ -93,6 +93,10 @@ func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) *S7Paramete
     return castFunc(structType)
 }
 
+func (m *S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
+    return "S7ParameterUserDataItemCPUFunctions"
+}
+
 func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

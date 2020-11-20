@@ -94,6 +94,10 @@ func CastModbusPDUGetComEventLogResponse(structType interface{}) *ModbusPDUGetCo
     return castFunc(structType)
 }
 
+func (m *ModbusPDUGetComEventLogResponse) GetTypeName() string {
+    return "ModbusPDUGetComEventLogResponse"
+}
+
 func (m *ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -253,7 +257,7 @@ func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml
                 if err != nil {
                     return err
                 }
-                m.Events = utils.ByteToInt8(_decoded[0:_len])
+                m.Events = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -277,7 +281,7 @@ func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.S
         return err
     }
     _encodedEvents := make([]byte, base64.StdEncoding.EncodedLen(len(m.Events)))
-    base64.StdEncoding.Encode(_encodedEvents, utils.Int8ToByte(m.Events))
+    base64.StdEncoding.Encode(_encodedEvents, utils.Int8ArrayToByteArray(m.Events))
     if err := e.EncodeElement(_encodedEvents, xml.StartElement{Name: xml.Name{Local: "events"}}); err != nil {
         return err
     }

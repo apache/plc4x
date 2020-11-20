@@ -58,6 +58,10 @@ func CastKnxAddress(structType interface{}) *KnxAddress {
     return castFunc(structType)
 }
 
+func (m *KnxAddress) GetTypeName() string {
+    return "KnxAddress"
+}
+
 func (m *KnxAddress) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

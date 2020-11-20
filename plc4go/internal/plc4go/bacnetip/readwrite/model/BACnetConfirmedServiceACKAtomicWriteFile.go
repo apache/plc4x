@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceACKAtomicWriteFile(structType interface{}) *BACne
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetTypeName() string {
+    return "BACnetConfirmedServiceACKAtomicWriteFile"
+}
+
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

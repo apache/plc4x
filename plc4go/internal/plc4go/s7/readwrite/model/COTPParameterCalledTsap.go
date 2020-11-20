@@ -79,6 +79,10 @@ func CastCOTPParameterCalledTsap(structType interface{}) *COTPParameterCalledTsa
     return castFunc(structType)
 }
 
+func (m *COTPParameterCalledTsap) GetTypeName() string {
+    return "COTPParameterCalledTsap"
+}
+
 func (m *COTPParameterCalledTsap) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

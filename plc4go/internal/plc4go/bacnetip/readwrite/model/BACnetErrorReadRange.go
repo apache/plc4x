@@ -76,6 +76,10 @@ func CastBACnetErrorReadRange(structType interface{}) *BACnetErrorReadRange {
     return castFunc(structType)
 }
 
+func (m *BACnetErrorReadRange) GetTypeName() string {
+    return "BACnetErrorReadRange"
+}
+
 func (m *BACnetErrorReadRange) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

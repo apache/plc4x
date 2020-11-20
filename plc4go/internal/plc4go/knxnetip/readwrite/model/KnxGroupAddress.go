@@ -45,11 +45,13 @@ type IKnxGroupAddress interface {
 
 type IKnxGroupAddressParent interface {
     SerializeParent(io utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IKnxGroupAddressChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *KnxGroupAddress)
+    GetTypeName() string
     IKnxGroupAddress
 }
 
@@ -68,6 +70,10 @@ func CastKnxGroupAddress(structType interface{}) *KnxGroupAddress {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *KnxGroupAddress) GetTypeName() string {
+    return "KnxGroupAddress"
 }
 
 func (m *KnxGroupAddress) LengthInBits() uint16 {

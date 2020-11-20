@@ -76,6 +76,10 @@ func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) 
     return castFunc(structType)
 }
 
+func (m *BACnetServiceAckRemovedReadPropertyConditional) GetTypeName() string {
+    return "BACnetServiceAckRemovedReadPropertyConditional"
+}
+
 func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

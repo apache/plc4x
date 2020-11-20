@@ -83,6 +83,10 @@ func CastKnxGroupAddress3Level(structType interface{}) *KnxGroupAddress3Level {
     return castFunc(structType)
 }
 
+func (m *KnxGroupAddress3Level) GetTypeName() string {
+    return "KnxGroupAddress3Level"
+}
+
 func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

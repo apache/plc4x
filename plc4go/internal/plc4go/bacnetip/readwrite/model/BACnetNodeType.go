@@ -133,3 +133,53 @@ func (e BACnetNodeType) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e BACnetNodeType) String() string {
+    switch e {
+    case BACnetNodeType_UNKNOWN:
+        return "UNKNOWN"
+    case BACnetNodeType_SYSTEM:
+        return "SYSTEM"
+    case BACnetNodeType_NETWORK:
+        return "NETWORK"
+    case BACnetNodeType_DEVICE:
+        return "DEVICE"
+    case BACnetNodeType_ORGANIZATIONAL:
+        return "ORGANIZATIONAL"
+    case BACnetNodeType_AREA:
+        return "AREA"
+    case BACnetNodeType_EQUIPMENT:
+        return "EQUIPMENT"
+    case BACnetNodeType_POINT:
+        return "POINT"
+    case BACnetNodeType_COLLECTION:
+        return "COLLECTION"
+    case BACnetNodeType_PROPERTY:
+        return "PROPERTY"
+    case BACnetNodeType_FUNCTIONAL:
+        return "FUNCTIONAL"
+    case BACnetNodeType_OTHER:
+        return "OTHER"
+    case BACnetNodeType_SUBSYSTEM:
+        return "SUBSYSTEM"
+    case BACnetNodeType_BUILDING:
+        return "BUILDING"
+    case BACnetNodeType_FLOOR:
+        return "FLOOR"
+    case BACnetNodeType_SECTION:
+        return "SECTION"
+    case BACnetNodeType_MODULE:
+        return "MODULE"
+    case BACnetNodeType_TREE:
+        return "TREE"
+    case BACnetNodeType_MEMBER:
+        return "MEMBER"
+    case BACnetNodeType_PROTOCOL:
+        return "PROTOCOL"
+    case BACnetNodeType_ROOM:
+        return "ROOM"
+    case BACnetNodeType_ZONE:
+        return "ZONE"
+    }
+    return ""
+}

@@ -76,6 +76,10 @@ func CastBACnetErrorCreateObject(structType interface{}) *BACnetErrorCreateObjec
     return castFunc(structType)
 }
 
+func (m *BACnetErrorCreateObject) GetTypeName() string {
+    return "BACnetErrorCreateObject"
+}
+
 func (m *BACnetErrorCreateObject) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

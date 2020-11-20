@@ -45,11 +45,13 @@ type IS7ParameterUserDataItem interface {
 
 type IS7ParameterUserDataItemParent interface {
     SerializeParent(io utils.WriteBuffer, child IS7ParameterUserDataItem, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IS7ParameterUserDataItemChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *S7ParameterUserDataItem)
+    GetTypeName() string
     IS7ParameterUserDataItem
 }
 
@@ -68,6 +70,10 @@ func CastS7ParameterUserDataItem(structType interface{}) *S7ParameterUserDataIte
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *S7ParameterUserDataItem) GetTypeName() string {
+    return "S7ParameterUserDataItem"
 }
 
 func (m *S7ParameterUserDataItem) LengthInBits() uint16 {

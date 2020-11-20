@@ -65,6 +65,10 @@ func CastDIBDeviceInfo(structType interface{}) *DIBDeviceInfo {
     return castFunc(structType)
 }
 
+func (m *DIBDeviceInfo) GetTypeName() string {
+    return "DIBDeviceInfo"
+}
+
 func (m *DIBDeviceInfo) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -316,7 +320,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 if err != nil {
                     return err
                 }
-                m.KnxNetIpDeviceSerialNumber = utils.ByteToInt8(_decoded[0:_len])
+                m.KnxNetIpDeviceSerialNumber = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "knxNetIpDeviceMulticastAddress":
                 var data *IPAddress
                 if err := d.DecodeElement(data, &tok); err != nil {
@@ -339,7 +343,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 if err != nil {
                     return err
                 }
-                m.DeviceFriendlyName = utils.ByteToInt8(_decoded[0:_len])
+                m.DeviceFriendlyName = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
     }
@@ -368,7 +372,7 @@ func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error
         return err
     }
     _encodedKnxNetIpDeviceSerialNumber := make([]byte, base64.StdEncoding.EncodedLen(len(m.KnxNetIpDeviceSerialNumber)))
-    base64.StdEncoding.Encode(_encodedKnxNetIpDeviceSerialNumber, utils.Int8ToByte(m.KnxNetIpDeviceSerialNumber))
+    base64.StdEncoding.Encode(_encodedKnxNetIpDeviceSerialNumber, utils.Int8ArrayToByteArray(m.KnxNetIpDeviceSerialNumber))
     if err := e.EncodeElement(_encodedKnxNetIpDeviceSerialNumber, xml.StartElement{Name: xml.Name{Local: "knxNetIpDeviceSerialNumber"}}); err != nil {
         return err
     }
@@ -379,7 +383,7 @@ func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error
         return err
     }
     _encodedDeviceFriendlyName := make([]byte, base64.StdEncoding.EncodedLen(len(m.DeviceFriendlyName)))
-    base64.StdEncoding.Encode(_encodedDeviceFriendlyName, utils.Int8ToByte(m.DeviceFriendlyName))
+    base64.StdEncoding.Encode(_encodedDeviceFriendlyName, utils.Int8ArrayToByteArray(m.DeviceFriendlyName))
     if err := e.EncodeElement(_encodedDeviceFriendlyName, xml.StartElement{Name: xml.Name{Local: "deviceFriendlyName"}}); err != nil {
         return err
     }

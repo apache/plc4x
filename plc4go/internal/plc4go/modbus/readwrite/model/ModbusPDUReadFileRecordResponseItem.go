@@ -58,6 +58,10 @@ func CastModbusPDUReadFileRecordResponseItem(structType interface{}) *ModbusPDUR
     return castFunc(structType)
 }
 
+func (m *ModbusPDUReadFileRecordResponseItem) GetTypeName() string {
+    return "ModbusPDUReadFileRecordResponseItem"
+}
+
 func (m *ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -170,7 +174,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) UnmarshalXML(d *xml.Decoder, start
                 if err != nil {
                     return err
                 }
-                m.Data = utils.ByteToInt8(_decoded[0:_len])
+                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
     }
@@ -187,7 +191,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) MarshalXML(e *xml.Encoder, start x
         return err
     }
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
         return err
     }

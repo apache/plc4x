@@ -58,6 +58,10 @@ func CastHPAIDiscoveryEndpoint(structType interface{}) *HPAIDiscoveryEndpoint {
     return castFunc(structType)
 }
 
+func (m *HPAIDiscoveryEndpoint) GetTypeName() string {
+    return "HPAIDiscoveryEndpoint"
+}
+
 func (m *HPAIDiscoveryEndpoint) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

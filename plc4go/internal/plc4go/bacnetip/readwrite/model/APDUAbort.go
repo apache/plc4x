@@ -84,6 +84,10 @@ func CastAPDUAbort(structType interface{}) *APDUAbort {
     return castFunc(structType)
 }
 
+func (m *APDUAbort) GetTypeName() string {
+    return "APDUAbort"
+}
+
 func (m *APDUAbort) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

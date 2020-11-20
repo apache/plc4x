@@ -76,6 +76,10 @@ func CastBVLCDistributeBroadcastToNetwork(structType interface{}) *BVLCDistribut
     return castFunc(structType)
 }
 
+func (m *BVLCDistributeBroadcastToNetwork) GetTypeName() string {
+    return "BVLCDistributeBroadcastToNetwork"
+}
+
 func (m *BVLCDistributeBroadcastToNetwork) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

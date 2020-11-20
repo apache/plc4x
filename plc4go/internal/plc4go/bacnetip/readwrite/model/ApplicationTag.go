@@ -106,3 +106,35 @@ func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
     err := io.WriteInt8(4, int8(e))
     return err
 }
+
+func (e ApplicationTag) String() string {
+    switch e {
+    case ApplicationTag_NULL:
+        return "NULL"
+    case ApplicationTag_BOOLEAN:
+        return "BOOLEAN"
+    case ApplicationTag_UNSIGNED_INTEGER:
+        return "UNSIGNED_INTEGER"
+    case ApplicationTag_SIGNED_INTEGER:
+        return "SIGNED_INTEGER"
+    case ApplicationTag_REAL:
+        return "REAL"
+    case ApplicationTag_DOUBLE:
+        return "DOUBLE"
+    case ApplicationTag_OCTET_STRING:
+        return "OCTET_STRING"
+    case ApplicationTag_CHARACTER_STRING:
+        return "CHARACTER_STRING"
+    case ApplicationTag_BIT_STRING:
+        return "BIT_STRING"
+    case ApplicationTag_ENUMERATED:
+        return "ENUMERATED"
+    case ApplicationTag_DATE:
+        return "DATE"
+    case ApplicationTag_TIME:
+        return "TIME"
+    case ApplicationTag_BACNET_OBJECT_IDENTIFIER:
+        return "BACNET_OBJECT_IDENTIFIER"
+    }
+    return ""
+}

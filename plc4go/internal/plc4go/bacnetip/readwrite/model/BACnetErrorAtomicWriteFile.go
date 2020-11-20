@@ -76,6 +76,10 @@ func CastBACnetErrorAtomicWriteFile(structType interface{}) *BACnetErrorAtomicWr
     return castFunc(structType)
 }
 
+func (m *BACnetErrorAtomicWriteFile) GetTypeName() string {
+    return "BACnetErrorAtomicWriteFile"
+}
+
 func (m *BACnetErrorAtomicWriteFile) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

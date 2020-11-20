@@ -87,6 +87,10 @@ func CastModbusPDUWriteFileRecordRequest(structType interface{}) *ModbusPDUWrite
     return castFunc(structType)
 }
 
+func (m *ModbusPDUWriteFileRecordRequest) GetTypeName() string {
+    return "ModbusPDUWriteFileRecordRequest"
+}
+
 func (m *ModbusPDUWriteFileRecordRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

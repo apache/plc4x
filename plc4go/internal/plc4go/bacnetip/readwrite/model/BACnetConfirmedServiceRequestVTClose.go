@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) *BACnetCon
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestVTClose"
+}
+
 func (m *BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

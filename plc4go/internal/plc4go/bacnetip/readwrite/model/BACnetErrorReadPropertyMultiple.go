@@ -76,6 +76,10 @@ func CastBACnetErrorReadPropertyMultiple(structType interface{}) *BACnetErrorRea
     return castFunc(structType)
 }
 
+func (m *BACnetErrorReadPropertyMultiple) GetTypeName() string {
+    return "BACnetErrorReadPropertyMultiple"
+}
+
 func (m *BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -79,6 +79,10 @@ func CastSearchRequest(structType interface{}) *SearchRequest {
     return castFunc(structType)
 }
 
+func (m *SearchRequest) GetTypeName() string {
+    return "SearchRequest"
+}
+
 func (m *SearchRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

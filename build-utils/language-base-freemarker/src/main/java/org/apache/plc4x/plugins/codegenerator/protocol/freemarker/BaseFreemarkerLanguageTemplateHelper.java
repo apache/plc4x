@@ -21,6 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
@@ -835,6 +836,16 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         return false;
+    }
+
+    public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
+        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
+        for (EnumValue enumValue : enumValues) {
+            if (!filteredEnumValues.containsKey(enumValue.getValue())) {
+                filteredEnumValues.put(enumValue.getValue(), enumValue);
+            }
+        }
+        return filteredEnumValues.values();
     }
 
 }

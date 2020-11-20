@@ -83,6 +83,10 @@ func CastConnectionRequest(structType interface{}) *ConnectionRequest {
     return castFunc(structType)
 }
 
+func (m *ConnectionRequest) GetTypeName() string {
+    return "ConnectionRequest"
+}
+
 func (m *ConnectionRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
