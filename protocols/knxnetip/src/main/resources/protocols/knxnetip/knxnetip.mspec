@@ -1022,11 +1022,11 @@
             [simple   uint 8  'statusOrCommand']
         ]
         ['U16U32U8N8' Struct
-            [reserved uint 8                    '0x0']
-            [simple   uint 16                   'manufacturerId']
-            [simple   uint 32                   'identNumber']
-            [simple   uint 8                    'version']
-            [enum     SupportedPhysicalMedia    'medium']
+            [reserved uint 8  '0x0']
+            [simple   uint 16 'manufacturerId']
+            [simple   uint 32 'identNumber']
+            [simple   uint 8  'version']
+            [simple   uint 8  'medium']
         ]
         ['A8A8A8A8' Struct
             [reserved uint 8  '0x0']

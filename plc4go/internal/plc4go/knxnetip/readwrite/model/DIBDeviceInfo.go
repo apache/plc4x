@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type DIBDeviceInfo struct {
     DescriptionType uint8
-    KnxMedium uint8
+    KnxMedium KnxMedium
     DeviceStatus *DeviceStatus
     KnxAddress *KnxAddress
     ProjectInstallationIdentifier *ProjectInstallationIdentifier
@@ -48,7 +48,7 @@ type IDIBDeviceInfo interface {
     xml.Marshaler
 }
 
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
     return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
@@ -74,7 +74,7 @@ func (m *DIBDeviceInfo) LengthInBits() uint16 {
     // Simple field (descriptionType)
     lengthInBits += 8
 
-    // Simple field (knxMedium)
+    // Enum Field (knxMedium)
     lengthInBits += 8
 
     // Simple field (deviceStatus)
@@ -123,8 +123,8 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
         return nil, errors.New("Error parsing 'descriptionType' field " + _descriptionTypeErr.Error())
     }
 
-    // Simple Field (knxMedium)
-    knxMedium, _knxMediumErr := io.ReadUint8(8)
+    // Enum field (knxMedium)
+    knxMedium, _knxMediumErr := KnxMediumParse(io)
     if _knxMediumErr != nil {
         return nil, errors.New("Error parsing 'knxMedium' field " + _knxMediumErr.Error())
     }
@@ -201,9 +201,9 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
     }
 
-    // Simple Field (knxMedium)
-    knxMedium := uint8(m.KnxMedium)
-    _knxMediumErr := io.WriteUint8(8, (knxMedium))
+    // Enum field (knxMedium)
+    knxMedium := CastKnxMedium(m.KnxMedium)
+    _knxMediumErr := knxMedium.Serialize(io)
     if _knxMediumErr != nil {
         return errors.New("Error serializing 'knxMedium' field " + _knxMediumErr.Error())
     }
@@ -283,7 +283,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.DescriptionType = data
             case "knxMedium":
-                var data uint8
+                var data KnxMedium
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }

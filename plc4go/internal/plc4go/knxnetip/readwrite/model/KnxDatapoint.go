@@ -137,6 +137,82 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcSINT(value), nil
+        case formatName == "B5N3": // Struct
+            _map := map[string]api.PlcValue{}
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(3); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
+
+            // Simple Field (a)
+            a, _aErr := io.ReadBit()
+            if _aErr != nil {
+                return nil, errors.New("Error parsing 'a' field " + _aErr.Error())
+            }
+            _map["Struct"] = values.NewPlcBOOL(a)
+
+            // Simple Field (b)
+            b, _bErr := io.ReadBit()
+            if _bErr != nil {
+                return nil, errors.New("Error parsing 'b' field " + _bErr.Error())
+            }
+            _map["Struct"] = values.NewPlcBOOL(b)
+
+            // Simple Field (c)
+            c, _cErr := io.ReadBit()
+            if _cErr != nil {
+                return nil, errors.New("Error parsing 'c' field " + _cErr.Error())
+            }
+            _map["Struct"] = values.NewPlcBOOL(c)
+
+            // Simple Field (d)
+            d, _dErr := io.ReadBit()
+            if _dErr != nil {
+                return nil, errors.New("Error parsing 'd' field " + _dErr.Error())
+            }
+            _map["Struct"] = values.NewPlcBOOL(d)
+
+            // Simple Field (e)
+            e, _eErr := io.ReadBit()
+            if _eErr != nil {
+                return nil, errors.New("Error parsing 'e' field " + _eErr.Error())
+            }
+            _map["Struct"] = values.NewPlcBOOL(e)
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadInt8(8)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            _map["Struct"] = values.NewPlcSINT(value)
+            return values.NewPlcStruct(_map), nil
+        case formatName == "U16": // UINT
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(8); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadUint16(16)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcUINT(value), nil
+        case formatName == "V16": // INT
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(8); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadInt16(16)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcINT(value), nil
         case formatName == "F16": // REAL
 
             // Reserved Field (Just skip the bytes)
@@ -203,6 +279,11 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             day, _dayErr := io.ReadUint8(5)
             if _dayErr != nil {
                 return nil, errors.New("Error parsing 'day' field " + _dayErr.Error())
+            }
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(4); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
             }
 
             // Reserved Field (Just skip the bytes)
@@ -2873,11 +2954,11 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
             _map["Struct"] = values.NewPlcUSINT(version)
 
             // Simple Field (medium)
-            medium, _mediumErr := io.ReadInt8(8)
+            medium, _mediumErr := io.ReadUint8(8)
             if _mediumErr != nil {
                 return nil, errors.New("Error parsing 'medium' field " + _mediumErr.Error())
             }
-            _map["Struct"] = values.NewPlcSINT(medium)
+            _map["Struct"] = values.NewPlcUSINT(medium)
             return values.NewPlcStruct(_map), nil
         case formatName == "A8A8A8A8": // Struct
             _map := map[string]api.PlcValue{}
@@ -3388,6 +3469,64 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
             if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
+        case formatName == "B5N3": // Struct
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(3, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
+
+            // Simple Field (a)
+            if _err := io.WriteBit(value.GetBool()); _err != nil {
+                return errors.New("Error serializing 'a' field " + _err.Error())
+            }
+
+            // Simple Field (b)
+            if _err := io.WriteBit(value.GetBool()); _err != nil {
+                return errors.New("Error serializing 'b' field " + _err.Error())
+            }
+
+            // Simple Field (c)
+            if _err := io.WriteBit(value.GetBool()); _err != nil {
+                return errors.New("Error serializing 'c' field " + _err.Error())
+            }
+
+            // Simple Field (d)
+            if _err := io.WriteBit(value.GetBool()); _err != nil {
+                return errors.New("Error serializing 'd' field " + _err.Error())
+            }
+
+            // Simple Field (e)
+            if _err := io.WriteBit(value.GetBool()); _err != nil {
+                return errors.New("Error serializing 'e' field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
+        case formatName == "U16": // UINT
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(8, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
+        case formatName == "V16": // INT
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(8, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
         case formatName == "F16": // REAL
 
             // Reserved Field (Just skip the bytes)
@@ -3445,6 +3584,11 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
             // Simple Field (day)
             if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
                 return errors.New("Error serializing 'day' field " + _err.Error())
+            }
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
             }
 
             // Reserved Field (Just skip the bytes)
@@ -5443,7 +5587,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
             }
 
             // Simple Field (medium)
-            if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
                 return errors.New("Error serializing 'medium' field " + _err.Error())
             }
         case formatName == "A8A8A8A8": // Struct
