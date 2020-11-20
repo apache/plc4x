@@ -30,26 +30,12 @@ type KnxnetipParserHelper struct {
 
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
     switch typeName {
-    case "CEMIAdditionalInformation":
-        return model.CEMIAdditionalInformationParse(io)
     case "HPAIControlEndpoint":
         return model.HPAIControlEndpointParse(io)
     case "TunnelingResponseDataBlock":
         return model.TunnelingResponseDataBlockParse(io)
-    case "KnxAddress":
-        return model.KnxAddressParse(io)
-    case "ConnectionResponseDataBlock":
-        return model.ConnectionResponseDataBlockParse(io)
-    case "TunnelingRequestDataBlock":
-        return model.TunnelingRequestDataBlockParse(io)
-    case "DIBDeviceInfo":
-        return model.DIBDeviceInfoParse(io)
-    case "DeviceConfigurationRequestDataBlock":
-        return model.DeviceConfigurationRequestDataBlockParse(io)
     case "DeviceConfigurationAckDataBlock":
         return model.DeviceConfigurationAckDataBlockParse(io)
-    case "DIBSuppSvcFamilies":
-        return model.DIBSuppSvcFamiliesParse(io)
     case "ConnectionRequestInformation":
         return model.ConnectionRequestInformationParse(io)
     case "HPAIDiscoveryEndpoint":
@@ -70,6 +56,26 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
             return nil, err
         }
         return model.CEMIParse(io, size)
+    case "KnxNetIpMessage":
+        return model.KnxNetIpMessageParse(io)
+    case "DeviceStatus":
+        return model.DeviceStatusParse(io)
+    case "IPAddress":
+        return model.IPAddressParse(io)
+    case "CEMIAdditionalInformation":
+        return model.CEMIAdditionalInformationParse(io)
+    case "KnxAddress":
+        return model.KnxAddressParse(io)
+    case "ConnectionResponseDataBlock":
+        return model.ConnectionResponseDataBlockParse(io)
+    case "TunnelingRequestDataBlock":
+        return model.TunnelingRequestDataBlockParse(io)
+    case "DIBDeviceInfo":
+        return model.DIBDeviceInfoParse(io)
+    case "DeviceConfigurationRequestDataBlock":
+        return model.DeviceConfigurationRequestDataBlockParse(io)
+    case "DIBSuppSvcFamilies":
+        return model.DIBSuppSvcFamiliesParse(io)
     case "KnxGroupAddress":
         numLevels, err := utils.StrToUint8(arguments[0])
         if err != nil {
@@ -78,14 +84,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.KnxGroupAddressParse(io, numLevels)
     case "MACAddress":
         return model.MACAddressParse(io)
-    case "KnxNetIpMessage":
-        return model.KnxNetIpMessageParse(io)
     case "CEMIFrame":
         return model.CEMIFrameParse(io)
-    case "DeviceStatus":
-        return model.DeviceStatusParse(io)
-    case "IPAddress":
-        return model.IPAddressParse(io)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

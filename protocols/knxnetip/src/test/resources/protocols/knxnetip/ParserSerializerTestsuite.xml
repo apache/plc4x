@@ -146,7 +146,7 @@
         </hpaiControlEndpoint>
         <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
           <descriptionType>1</descriptionType>
-          <knxMedium>2</knxMedium>
+          <knxMedium>MEDIUM_TP1</knxMedium>
           <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
@@ -211,7 +211,7 @@
       <DescriptionResponse className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse">
         <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
           <descriptionType>1</descriptionType>
-          <knxMedium>2</knxMedium>
+          <knxMedium>MEDIUM_TP1</knxMedium>
           <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
