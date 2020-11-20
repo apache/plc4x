@@ -17,9 +17,7 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Apache Kafka
-
-Website: https://kafka.apache.org/[Apache Kafka]
+== https://kafka.apache.org/[Apache Kafka]
 
 Apache Kafka is an open-source distributed event streaming platform used by thousands of
 companies for high-performance data pipelines, streaming analytics, data integration, and
@@ -28,7 +26,7 @@ mission-critical applications.
 # PLC4X Kafka Connectors
 
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
-The connectors can be built from source from the latest 0.8 https://plc4x.apache.org/users/download.html[release] of
+They can be built from source from the latest 0.8 https://plc4x.apache.org/users/download.html[release] of
 PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github]. They can also be downloaded from
 the confluent https://www.confluent.io/hub/[hub].
 
@@ -42,7 +40,7 @@ able to be run in two modes:-
 
 Standalone allows you to run the connector locally from the command line without having to install the jar file on your
 Kafka brokers.
-In distributed mode the connector runs on the Kafka brokers. This requires you to install the jar file on all of your
+In distributed mode the connector runs on the Kafka brokers, which requires you to install the jar file on all of your
 brokers. It allows the worker to be distrubuted across the Kafka brokers to provide redundancy and load balancing.
 
 ## Quickstart
@@ -79,12 +77,12 @@ in the config/connect-distributed.properties file.
 
 ## Source Connector
 
-The starting configuration for you connect worker is provided by the plc4x-source.properties file. Once the worker has
+The starting configuration for your connect worker is provided by a configuration file. However, once the worker has
 started the configuration can be changed using the connect REST API which is generally available on
 http://localhost:8083/connectors. When running in distributed mode all the configuration needs to be done via the REST API.
 
-A sample configuration file is provided in the PLC4X repository `config/plc4x-source.properties`. This includes comments
-as well as meaningful properties that can be used with the worker.
+A sample configuration file is provided in the PLC4X Kafka integration repository in the `config/plc4x-source.properties` directory..
+This includes comments as well as meaningful properties that can be used with the worker.
 
 The configuration of the connectors via the REST interface expects the same properties as are specified within the
 example `config/plc4x-source.properties` file. These will need to be in JSON format and included with a couple of headers.
@@ -133,7 +131,7 @@ The configuration of the Connectors is then provided via REST interface:
 
 ## Sink Connector
 
-See `config/sink.properties` for example configuration.
+See `config/sink.properties` for an example configuration.
 
 ### Start a Kafka Sink Connect Worker (Standalone)
 
@@ -145,17 +143,25 @@ Ideal for testing.
 
 Now open console window with "kafka-console-producer".
 
-Producing to the kafka topic using the sample packet shown below should result in the array being sent to the modbus device.
+Producing to the kafka topic using the sample packet shown below should result in the value 655 being sent to the
+tag 'running' PLC field which is mapped to the address 'RANDOM/Temporary:Integer'.
 
     {"schema":{"type":"struct",
                "fields":[
-                   {"type":"string","optional":false,"field":"address"},
+                   {"type":"string","optional":false,"field":"field"},
                    {"type":"string","optional":false,"field":"value"},
                    {"type":"int64","optional":true,"default":0,"field":"expires"}]},
      "payload":{
-         "address":"400001:INT[2]",
-         "value":"[655,9]",
-         "expires":1605575611044}}
+         "address":"RANDOM/Temporary:Integer",
+         "value":"655",
+         "expires":5000}}
+
+The field value holds an alias for the PLC address. The field-alias mapping is handled in the connector configuration.
+
+'value' holds the value that is being sent to the field.
+
+'expires' is used to discard a record if it has taken too long to be sent to the PLC. It is a duration in milliseconds.
+It will be dicarded upon being recieved by the sink task if the record timestamp + 'expires' > current time.
 
 If you want to debug the connector, be sure to set some environment variables before starting Kafka-Connect:
 
@@ -183,3 +189,21 @@ The configuration of the Connectors is then provided via REST interface:
     // TODO: Continue here ...
     "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
 
+## Graceful Backoff
+
+If an error occurs when reading or writing PLC addresses a graceful backoff has been implemented so that the PLC isn't
+bombarded with requests. However as the number of connectors for each PLC should be limited to reduce the load on the PLC,
+the graceful backoff shouldn't have a major impact.
+
+For the source connector the PLC4X scraper logic is able to handle randomized polling rates on failures, this is buffered within the
+connector, the poll rate of the connector has no affect on the PLC poll rate.
+
+For the sink connector, if a write fails it is retried a configurable number of times with a timeout between each time.
+A Retriable Exception is raised which provides jitter for the timing of the retries.
+
+## Schema Compatability
+
+This is the second release of the source Kafka connector and the first release of the sink connector. Between the
+previous release and this one no Schema changes have occurred.
+
+Going forward we expect that the Schema compatibility will remain backward compatible.

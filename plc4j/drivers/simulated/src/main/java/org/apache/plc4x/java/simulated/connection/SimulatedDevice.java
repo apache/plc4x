@@ -97,7 +97,7 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItemIO.staticSerialize(value, field.getPlcDataType(), value.getLength(), false);
+                            DataItemIO.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), false);
                         } catch (ParseException e) {
                             System.out.printf("Write failed");
                         }
@@ -114,7 +114,7 @@ public class SimulatedDevice {
 
         Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
 
-        byte[] b = new byte[fieldDataTypeSize];
+        byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
         new Random().nextBytes(b);
 
         ReadBuffer io = new ReadBuffer(b);
