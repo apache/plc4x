@@ -79,6 +79,10 @@ func CastDeviceConfigurationAck(structType interface{}) *DeviceConfigurationAck 
     return castFunc(structType)
 }
 
+func (m *DeviceConfigurationAck) GetTypeName() string {
+    return "DeviceConfigurationAck"
+}
+
 func (m *DeviceConfigurationAck) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

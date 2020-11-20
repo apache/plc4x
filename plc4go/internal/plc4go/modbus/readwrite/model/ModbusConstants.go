@@ -59,6 +59,10 @@ func CastModbusConstants(structType interface{}) *ModbusConstants {
     return castFunc(structType)
 }
 
+func (m *ModbusConstants) GetTypeName() string {
+    return "ModbusConstants"
+}
+
 func (m *ModbusConstants) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

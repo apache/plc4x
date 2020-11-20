@@ -83,6 +83,10 @@ func CastS7PayloadWriteVarRequest(structType interface{}) *S7PayloadWriteVarRequ
     return castFunc(structType)
 }
 
+func (m *S7PayloadWriteVarRequest) GetTypeName() string {
+    return "S7PayloadWriteVarRequest"
+}
+
 func (m *S7PayloadWriteVarRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -45,11 +45,13 @@ type IBACnetError interface {
 
 type IBACnetErrorParent interface {
     SerializeParent(io utils.WriteBuffer, child IBACnetError, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IBACnetErrorChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *BACnetError)
+    GetTypeName() string
     IBACnetError
 }
 
@@ -68,6 +70,10 @@ func CastBACnetError(structType interface{}) *BACnetError {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *BACnetError) GetTypeName() string {
+    return "BACnetError"
 }
 
 func (m *BACnetError) LengthInBits() uint16 {

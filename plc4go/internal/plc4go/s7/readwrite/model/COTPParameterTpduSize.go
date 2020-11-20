@@ -79,6 +79,10 @@ func CastCOTPParameterTpduSize(structType interface{}) *COTPParameterTpduSize {
     return castFunc(structType)
 }
 
+func (m *COTPParameterTpduSize) GetTypeName() string {
+    return "COTPParameterTpduSize"
+}
+
 func (m *COTPParameterTpduSize) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

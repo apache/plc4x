@@ -91,6 +91,10 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType in
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -285,7 +289,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML
                 if err != nil {
                     return err
                 }
-                m.Values = utils.ByteToInt8(_decoded[0:_len])
+                m.Values = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -306,7 +310,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e
         return err
     }
     _encodedValues := make([]byte, base64.StdEncoding.EncodedLen(len(m.Values)))
-    base64.StdEncoding.Encode(_encodedValues, utils.Int8ToByte(m.Values))
+    base64.StdEncoding.Encode(_encodedValues, utils.Int8ArrayToByteArray(m.Values))
     if err := e.EncodeElement(_encodedValues, xml.StartElement{Name: xml.Name{Local: "values"}}); err != nil {
         return err
     }

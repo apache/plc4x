@@ -57,6 +57,10 @@ func CastIPAddress(structType interface{}) *IPAddress {
     return castFunc(structType)
 }
 
+func (m *IPAddress) GetTypeName() string {
+    return "IPAddress"
+}
+
 func (m *IPAddress) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -129,7 +133,7 @@ func (m *IPAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 if err != nil {
                     return err
                 }
-                m.Addr = utils.ByteToInt8(_decoded[0:_len])
+                m.Addr = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
     }
@@ -143,7 +147,7 @@ func (m *IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
         return err
     }
     _encodedAddr := make([]byte, base64.StdEncoding.EncodedLen(len(m.Addr)))
-    base64.StdEncoding.Encode(_encodedAddr, utils.Int8ToByte(m.Addr))
+    base64.StdEncoding.Encode(_encodedAddr, utils.Int8ArrayToByteArray(m.Addr))
     if err := e.EncodeElement(_encodedAddr, xml.StartElement{Name: xml.Name{Local: "addr"}}); err != nil {
         return err
     }

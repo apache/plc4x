@@ -58,6 +58,10 @@ func CastHPAIDataEndpoint(structType interface{}) *HPAIDataEndpoint {
     return castFunc(structType)
 }
 
+func (m *HPAIDataEndpoint) GetTypeName() string {
+    return "HPAIDataEndpoint"
+}
+
 func (m *HPAIDataEndpoint) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

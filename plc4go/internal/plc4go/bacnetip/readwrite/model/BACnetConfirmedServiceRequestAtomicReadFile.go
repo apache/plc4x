@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestAtomicReadFile(structType interface{}) *BA
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestAtomicReadFile"
+}
+
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

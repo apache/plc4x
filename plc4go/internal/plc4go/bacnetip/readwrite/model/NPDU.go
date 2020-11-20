@@ -71,6 +71,10 @@ func CastNPDU(structType interface{}) *NPDU {
     return castFunc(structType)
 }
 
+func (m *NPDU) GetTypeName() string {
+    return "NPDU"
+}
+
 func (m *NPDU) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

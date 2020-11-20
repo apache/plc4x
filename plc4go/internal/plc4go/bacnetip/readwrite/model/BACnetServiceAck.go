@@ -45,11 +45,13 @@ type IBACnetServiceAck interface {
 
 type IBACnetServiceAckParent interface {
     SerializeParent(io utils.WriteBuffer, child IBACnetServiceAck, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IBACnetServiceAckChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *BACnetServiceAck)
+    GetTypeName() string
     IBACnetServiceAck
 }
 
@@ -68,6 +70,10 @@ func CastBACnetServiceAck(structType interface{}) *BACnetServiceAck {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *BACnetServiceAck) GetTypeName() string {
+    return "BACnetServiceAck"
 }
 
 func (m *BACnetServiceAck) LengthInBits() uint16 {

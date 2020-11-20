@@ -49,11 +49,13 @@ type IBACnetTag interface {
 
 type IBACnetTagParent interface {
     SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IBACnetTagChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8)
+    GetTypeName() string
     IBACnetTag
 }
 
@@ -72,6 +74,10 @@ func CastBACnetTag(structType interface{}) *BACnetTag {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *BACnetTag) GetTypeName() string {
+    return "BACnetTag"
 }
 
 func (m *BACnetTag) LengthInBits() uint16 {

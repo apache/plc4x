@@ -103,6 +103,10 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interf
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestConfirmedCOVNotification"
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -454,7 +458,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
                 if err != nil {
                     return err
                 }
-                m.LifetimeSeconds = utils.ByteToInt8(_decoded[0:_len])
+                m.LifetimeSeconds = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "notifications":
                 var data []*BACnetTagWithContent
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -493,7 +497,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xm
         return err
     }
     _encodedLifetimeSeconds := make([]byte, base64.StdEncoding.EncodedLen(len(m.LifetimeSeconds)))
-    base64.StdEncoding.Encode(_encodedLifetimeSeconds, utils.Int8ToByte(m.LifetimeSeconds))
+    base64.StdEncoding.Encode(_encodedLifetimeSeconds, utils.Int8ArrayToByteArray(m.LifetimeSeconds))
     if err := e.EncodeElement(_encodedLifetimeSeconds, xml.StartElement{Name: xml.Name{Local: "lifetimeSeconds"}}); err != nil {
         return err
     }

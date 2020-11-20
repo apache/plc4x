@@ -89,6 +89,10 @@ func CastModbusPDUWriteSingleCoilRequest(structType interface{}) *ModbusPDUWrite
     return castFunc(structType)
 }
 
+func (m *ModbusPDUWriteSingleCoilRequest) GetTypeName() string {
+    return "ModbusPDUWriteSingleCoilRequest"
+}
+
 func (m *ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

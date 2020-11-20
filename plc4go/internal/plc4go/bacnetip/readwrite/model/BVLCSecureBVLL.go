@@ -76,6 +76,10 @@ func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {
     return castFunc(structType)
 }
 
+func (m *BVLCSecureBVLL) GetTypeName() string {
+    return "BVLCSecureBVLL"
+}
+
 func (m *BVLCSecureBVLL) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

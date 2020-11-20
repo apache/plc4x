@@ -58,6 +58,10 @@ func CastSzlId(structType interface{}) *SzlId {
     return castFunc(structType)
 }
 
+func (m *SzlId) GetTypeName() string {
+    return "SzlId"
+}
+
 func (m *SzlId) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

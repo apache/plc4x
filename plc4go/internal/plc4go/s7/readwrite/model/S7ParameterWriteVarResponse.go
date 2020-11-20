@@ -83,6 +83,10 @@ func CastS7ParameterWriteVarResponse(structType interface{}) *S7ParameterWriteVa
     return castFunc(structType)
 }
 
+func (m *S7ParameterWriteVarResponse) GetTypeName() string {
+    return "S7ParameterWriteVarResponse"
+}
+
 func (m *S7ParameterWriteVarResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -47,11 +47,13 @@ type ICOTPPacket interface {
 
 type ICOTPPacketParent interface {
     SerializeParent(io utils.WriteBuffer, child ICOTPPacket, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type ICOTPPacketChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message)
+    GetTypeName() string
     ICOTPPacket
 }
 
@@ -70,6 +72,10 @@ func CastCOTPPacket(structType interface{}) *COTPPacket {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *COTPPacket) GetTypeName() string {
+    return "COTPPacket"
 }
 
 func (m *COTPPacket) LengthInBits() uint16 {

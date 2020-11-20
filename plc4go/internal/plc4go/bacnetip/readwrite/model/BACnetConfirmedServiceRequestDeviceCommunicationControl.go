@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType inte
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
+}
+
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

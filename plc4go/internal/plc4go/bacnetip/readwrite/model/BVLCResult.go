@@ -76,6 +76,10 @@ func CastBVLCResult(structType interface{}) *BVLCResult {
     return castFunc(structType)
 }
 
+func (m *BVLCResult) GetTypeName() string {
+    return "BVLCResult"
+}
+
 func (m *BVLCResult) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

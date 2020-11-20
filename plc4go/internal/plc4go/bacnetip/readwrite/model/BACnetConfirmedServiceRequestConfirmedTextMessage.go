@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType interface{
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestConfirmedTextMessage"
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

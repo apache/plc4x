@@ -79,6 +79,10 @@ func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) *C
     return castFunc(structType)
 }
 
+func (m *COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
+    return "COTPParameterDisconnectAdditionalInformation"
+}
+
 func (m *COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

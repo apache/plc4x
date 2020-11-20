@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType interface
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestWritePropertyMultiple"
+}
+
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

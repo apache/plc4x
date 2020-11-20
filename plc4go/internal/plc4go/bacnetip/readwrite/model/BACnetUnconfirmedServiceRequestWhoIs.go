@@ -91,6 +91,10 @@ func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) *BACnetUnc
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestWhoIs) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestWhoIs"
+}
+
 func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -268,7 +272,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
                 if err != nil {
                     return err
                 }
-                m.DeviceInstanceRangeLowLimit = utils.ByteToInt8(_decoded[0:_len])
+                m.DeviceInstanceRangeLowLimit = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "deviceInstanceRangeHighLimitLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -285,7 +289,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
                 if err != nil {
                     return err
                 }
-                m.DeviceInstanceRangeHighLimit = utils.ByteToInt8(_decoded[0:_len])
+                m.DeviceInstanceRangeHighLimit = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -303,7 +307,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start 
         return err
     }
     _encodedDeviceInstanceRangeLowLimit := make([]byte, base64.StdEncoding.EncodedLen(len(m.DeviceInstanceRangeLowLimit)))
-    base64.StdEncoding.Encode(_encodedDeviceInstanceRangeLowLimit, utils.Int8ToByte(m.DeviceInstanceRangeLowLimit))
+    base64.StdEncoding.Encode(_encodedDeviceInstanceRangeLowLimit, utils.Int8ArrayToByteArray(m.DeviceInstanceRangeLowLimit))
     if err := e.EncodeElement(_encodedDeviceInstanceRangeLowLimit, xml.StartElement{Name: xml.Name{Local: "deviceInstanceRangeLowLimit"}}); err != nil {
         return err
     }
@@ -311,7 +315,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start 
         return err
     }
     _encodedDeviceInstanceRangeHighLimit := make([]byte, base64.StdEncoding.EncodedLen(len(m.DeviceInstanceRangeHighLimit)))
-    base64.StdEncoding.Encode(_encodedDeviceInstanceRangeHighLimit, utils.Int8ToByte(m.DeviceInstanceRangeHighLimit))
+    base64.StdEncoding.Encode(_encodedDeviceInstanceRangeHighLimit, utils.Int8ArrayToByteArray(m.DeviceInstanceRangeHighLimit))
     if err := e.EncodeElement(_encodedDeviceInstanceRangeHighLimit, xml.StartElement{Name: xml.Name{Local: "deviceInstanceRangeHighLimit"}}); err != nil {
         return err
     }

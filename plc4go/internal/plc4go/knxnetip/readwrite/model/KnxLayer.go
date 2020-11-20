@@ -76,3 +76,15 @@ func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e KnxLayer) String() string {
+    switch e {
+    case KnxLayer_TUNNEL_LINK_LAYER:
+        return "TUNNEL_LINK_LAYER"
+    case KnxLayer_TUNNEL_RAW:
+        return "TUNNEL_RAW"
+    case KnxLayer_TUNNEL_BUSMONITOR:
+        return "TUNNEL_BUSMONITOR"
+    }
+    return ""
+}

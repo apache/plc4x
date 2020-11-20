@@ -48,7 +48,7 @@ func NewKnxNetIpSubscriptionEvent(fields map[string]apiModel.PlcField, types map
  */
 func (m KnxNetIpSubscriptionEvent) GetAddress(name string) string {
     rawAddress := m.addresses[name]
-    rawAddressReadBuffer := utils.NewReadBuffer(utils.Int8ToUint8(rawAddress))
+    rawAddressReadBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(rawAddress))
     field := m.DefaultPlcSubscriptionEvent.GetField(name)
     var groupAddress *driverModel.KnxGroupAddress
     var err error

@@ -76,6 +76,10 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interf
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

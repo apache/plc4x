@@ -82,3 +82,19 @@ func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
     err := io.WriteInt8(8, int8(e))
     return err
 }
+
+func (e COTPProtocolClass) String() string {
+    switch e {
+    case COTPProtocolClass_CLASS_0:
+        return "CLASS_0"
+    case COTPProtocolClass_CLASS_1:
+        return "CLASS_1"
+    case COTPProtocolClass_CLASS_2:
+        return "CLASS_2"
+    case COTPProtocolClass_CLASS_3:
+        return "CLASS_3"
+    case COTPProtocolClass_CLASS_4:
+        return "CLASS_4"
+    }
+    return ""
+}

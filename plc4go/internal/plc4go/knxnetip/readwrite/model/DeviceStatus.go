@@ -57,6 +57,10 @@ func CastDeviceStatus(structType interface{}) *DeviceStatus {
     return castFunc(structType)
 }
 
+func (m *DeviceStatus) GetTypeName() string {
+    return "DeviceStatus"
+}
+
 func (m *DeviceStatus) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

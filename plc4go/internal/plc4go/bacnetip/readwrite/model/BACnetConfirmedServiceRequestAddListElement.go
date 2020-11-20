@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) *BA
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestAddListElement) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestAddListElement"
+}
+
 func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

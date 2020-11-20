@@ -83,6 +83,10 @@ func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) *CEM
     return castFunc(structType)
 }
 
+func (m *CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
+    return "CEMIAdditionalInformationRelativeTimestamp"
+}
+
 func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

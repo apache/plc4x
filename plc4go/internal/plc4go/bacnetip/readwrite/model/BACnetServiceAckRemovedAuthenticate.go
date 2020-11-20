@@ -76,6 +76,10 @@ func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) *BACnetServ
     return castFunc(structType)
 }
 
+func (m *BACnetServiceAckRemovedAuthenticate) GetTypeName() string {
+    return "BACnetServiceAckRemovedAuthenticate"
+}
+
 func (m *BACnetServiceAckRemovedAuthenticate) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

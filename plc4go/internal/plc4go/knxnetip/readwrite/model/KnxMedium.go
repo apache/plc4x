@@ -85,3 +85,21 @@ func (e KnxMedium) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e KnxMedium) String() string {
+    switch e {
+    case KnxMedium_MEDIUM_RESERVED_1:
+        return "MEDIUM_RESERVED_1"
+    case KnxMedium_MEDIUM_TP1:
+        return "MEDIUM_TP1"
+    case KnxMedium_MEDIUM_PL110:
+        return "MEDIUM_PL110"
+    case KnxMedium_MEDIUM_RESERVED_2:
+        return "MEDIUM_RESERVED_2"
+    case KnxMedium_MEDIUM_RF:
+        return "MEDIUM_RF"
+    case KnxMedium_MEDIUM_KNX_IP:
+        return "MEDIUM_KNX_IP"
+    }
+    return ""
+}

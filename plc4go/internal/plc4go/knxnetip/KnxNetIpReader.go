@@ -98,7 +98,7 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 					m.connection.valueCacheMutex.RUnlock()
 
 					// Decode the data according to the fields type
-					rb := utils.NewReadBuffer(utils.Int8ToUint8(int8s))
+					rb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(int8s))
 					plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
 					// If any of the values doesn't decode correctly, we can't return any
 					if err != nil {
@@ -139,7 +139,7 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 				}
 
 				// Decode the data according to the fields type
-				rb := utils.NewReadBuffer(utils.Int8ToUint8(int8s))
+				rb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(int8s))
 				plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
 				if err != nil {
 					responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATA

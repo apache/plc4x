@@ -79,6 +79,10 @@ func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) *Co
     return castFunc(structType)
 }
 
+func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
+    return "ConnectionResponseDataBlockTunnelConnection"
+}
+
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

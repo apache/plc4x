@@ -91,6 +91,10 @@ func CastBACnetErrorReadProperty(structType interface{}) *BACnetErrorReadPropert
     return castFunc(structType)
 }
 
+func (m *BACnetErrorReadProperty) GetTypeName() string {
+    return "BACnetErrorReadProperty"
+}
+
 func (m *BACnetErrorReadProperty) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -268,7 +272,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 if err != nil {
                     return err
                 }
-                m.ErrorClass = utils.ByteToInt8(_decoded[0:_len])
+                m.ErrorClass = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "errorCodeLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -285,7 +289,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 if err != nil {
                     return err
                 }
-                m.ErrorCode = utils.ByteToInt8(_decoded[0:_len])
+                m.ErrorCode = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -303,7 +307,7 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
         return err
     }
     _encodedErrorClass := make([]byte, base64.StdEncoding.EncodedLen(len(m.ErrorClass)))
-    base64.StdEncoding.Encode(_encodedErrorClass, utils.Int8ToByte(m.ErrorClass))
+    base64.StdEncoding.Encode(_encodedErrorClass, utils.Int8ArrayToByteArray(m.ErrorClass))
     if err := e.EncodeElement(_encodedErrorClass, xml.StartElement{Name: xml.Name{Local: "errorClass"}}); err != nil {
         return err
     }
@@ -311,7 +315,7 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
         return err
     }
     _encodedErrorCode := make([]byte, base64.StdEncoding.EncodedLen(len(m.ErrorCode)))
-    base64.StdEncoding.Encode(_encodedErrorCode, utils.Int8ToByte(m.ErrorCode))
+    base64.StdEncoding.Encode(_encodedErrorCode, utils.Int8ArrayToByteArray(m.ErrorCode))
     if err := e.EncodeElement(_encodedErrorCode, xml.StartElement{Name: xml.Name{Local: "errorCode"}}); err != nil {
         return err
     }

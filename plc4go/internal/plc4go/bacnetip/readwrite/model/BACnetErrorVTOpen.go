@@ -76,6 +76,10 @@ func CastBACnetErrorVTOpen(structType interface{}) *BACnetErrorVTOpen {
     return castFunc(structType)
 }
 
+func (m *BACnetErrorVTOpen) GetTypeName() string {
+    return "BACnetErrorVTOpen"
+}
+
 func (m *BACnetErrorVTOpen) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

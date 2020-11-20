@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceACKVTData(structType interface{}) *BACnetConfirme
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceACKVTData) GetTypeName() string {
+    return "BACnetConfirmedServiceACKVTData"
+}
+
 func (m *BACnetConfirmedServiceACKVTData) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

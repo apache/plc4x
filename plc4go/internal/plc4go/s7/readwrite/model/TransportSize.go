@@ -664,3 +664,39 @@ func (e TransportSize) Serialize(io utils.WriteBuffer) error {
     err := io.WriteInt8(8, int8(e))
     return err
 }
+
+func (e TransportSize) String() string {
+    switch e {
+    case TransportSize_LWORD:
+        return "LWORD"
+    case TransportSize_BOOL:
+        return "BOOL"
+    case TransportSize_BYTE:
+        return "BYTE"
+    case TransportSize_CHAR:
+        return "CHAR"
+    case TransportSize_WORD:
+        return "WORD"
+    case TransportSize_INT:
+        return "INT"
+    case TransportSize_DWORD:
+        return "DWORD"
+    case TransportSize_DINT:
+        return "DINT"
+    case TransportSize_REAL:
+        return "REAL"
+    case TransportSize_DATE:
+        return "DATE"
+    case TransportSize_TIME:
+        return "TIME"
+    case TransportSize_S5TIME:
+        return "S5TIME"
+    case TransportSize_DATE_AND_TIME:
+        return "DATE_AND_TIME"
+    case TransportSize_WCHAR:
+        return "WCHAR"
+    case TransportSize_LREAL:
+        return "LREAL"
+    }
+    return ""
+}

@@ -45,11 +45,13 @@ type IServiceId interface {
 
 type IServiceIdParent interface {
     SerializeParent(io utils.WriteBuffer, child IServiceId, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IServiceIdChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *ServiceId)
+    GetTypeName() string
     IServiceId
 }
 
@@ -68,6 +70,10 @@ func CastServiceId(structType interface{}) *ServiceId {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *ServiceId) GetTypeName() string {
+    return "ServiceId"
 }
 
 func (m *ServiceId) LengthInBits() uint16 {

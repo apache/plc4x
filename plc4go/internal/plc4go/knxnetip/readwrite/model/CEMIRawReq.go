@@ -76,6 +76,10 @@ func CastCEMIRawReq(structType interface{}) *CEMIRawReq {
     return castFunc(structType)
 }
 
+func (m *CEMIRawReq) GetTypeName() string {
+    return "CEMIRawReq"
+}
+
 func (m *CEMIRawReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

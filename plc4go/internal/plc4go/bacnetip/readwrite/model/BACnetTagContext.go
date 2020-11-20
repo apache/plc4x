@@ -84,6 +84,10 @@ func CastBACnetTagContext(structType interface{}) *BACnetTagContext {
     return castFunc(structType)
 }
 
+func (m *BACnetTagContext) GetTypeName() string {
+    return "BACnetTagContext"
+}
+
 func (m *BACnetTagContext) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -160,7 +164,7 @@ func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                 if err != nil {
                     return err
                 }
-                m.Data = utils.ByteToInt8(_decoded[0:_len])
+                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
             }
         }
         token, err = d.Token()
@@ -175,7 +179,7 @@ func (m *BACnetTagContext) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 
 func (m *BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
         return err
     }

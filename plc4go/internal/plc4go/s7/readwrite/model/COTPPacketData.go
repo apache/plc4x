@@ -83,6 +83,10 @@ func CastCOTPPacketData(structType interface{}) *COTPPacketData {
     return castFunc(structType)
 }
 
+func (m *COTPPacketData) GetTypeName() string {
+    return "COTPPacketData"
+}
+
 func (m *COTPPacketData) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

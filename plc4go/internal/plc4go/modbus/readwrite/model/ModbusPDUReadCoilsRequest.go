@@ -89,6 +89,10 @@ func CastModbusPDUReadCoilsRequest(structType interface{}) *ModbusPDUReadCoilsRe
     return castFunc(structType)
 }
 
+func (m *ModbusPDUReadCoilsRequest) GetTypeName() string {
+    return "ModbusPDUReadCoilsRequest"
+}
+
 func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

@@ -103,3 +103,33 @@ func (e Status) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(8, uint8(e))
     return err
 }
+
+func (e Status) String() string {
+    switch e {
+    case Status_NO_ERROR:
+        return "NO_ERROR"
+    case Status_PROTOCOL_TYPE_NOT_SUPPORTED:
+        return "PROTOCOL_TYPE_NOT_SUPPORTED"
+    case Status_UNSUPPORTED_PROTOCOL_VERSION:
+        return "UNSUPPORTED_PROTOCOL_VERSION"
+    case Status_OUT_OF_ORDER_SEQUENCE_NUMBER:
+        return "OUT_OF_ORDER_SEQUENCE_NUMBER"
+    case Status_INVALID_CONNECTION_ID:
+        return "INVALID_CONNECTION_ID"
+    case Status_CONNECTION_TYPE_NOT_SUPPORTED:
+        return "CONNECTION_TYPE_NOT_SUPPORTED"
+    case Status_CONNECTION_OPTION_NOT_SUPPORTED:
+        return "CONNECTION_OPTION_NOT_SUPPORTED"
+    case Status_NO_MORE_CONNECTIONS:
+        return "NO_MORE_CONNECTIONS"
+    case Status_NO_MORE_UNIQUE_CONNECTIONS:
+        return "NO_MORE_UNIQUE_CONNECTIONS"
+    case Status_DATA_CONNECTION:
+        return "DATA_CONNECTION"
+    case Status_KNX_CONNECTION:
+        return "KNX_CONNECTION"
+    case Status_TUNNELLING_LAYER_NOT_SUPPORTED:
+        return "TUNNELLING_LAYER_NOT_SUPPORTED"
+    }
+    return ""
+}

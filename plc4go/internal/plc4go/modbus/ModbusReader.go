@@ -153,19 +153,19 @@ func (m *ModbusReader) ToPlc4xReadResponse(responseAdu modbusModel.ModbusTcpADU,
 	switch responseAdu.Pdu.Child.(type) {
 	case *modbusModel.ModbusPDUReadDiscreteInputsResponse:
 		pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
-		data = utils.Int8ToUint8(pdu.Value)
+		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// Pure Boolean ...
 	case *modbusModel.ModbusPDUReadCoilsResponse:
 		pdu := modbusModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
-		data = utils.Int8ToUint8(pdu.Value)
+		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// Pure Boolean ...
 	case *modbusModel.ModbusPDUReadInputRegistersResponse:
 		pdu := modbusModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ToUint8(pdu.Value)
+		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// DataIo ...
 	case *modbusModel.ModbusPDUReadHoldingRegistersResponse:
 		pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ToUint8(pdu.Value)
+		data = utils.Int8ArrayToUint8Array(pdu.Value)
 	case *modbusModel.ModbusPDUError:
 		return nil, errors.New("got an error from remote")
 	default:

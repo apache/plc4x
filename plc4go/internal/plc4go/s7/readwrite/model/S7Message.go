@@ -53,11 +53,13 @@ type IS7Message interface {
 
 type IS7MessageParent interface {
     SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IS7MessageChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload)
+    GetTypeName() string
     IS7Message
 }
 
@@ -76,6 +78,10 @@ func CastS7Message(structType interface{}) *S7Message {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *S7Message) GetTypeName() string {
+    return "S7Message"
 }
 
 func (m *S7Message) LengthInBits() uint16 {

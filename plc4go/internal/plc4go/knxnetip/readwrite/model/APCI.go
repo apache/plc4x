@@ -115,3 +115,41 @@ func (e APCI) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(4, uint8(e))
     return err
 }
+
+func (e APCI) String() string {
+    switch e {
+    case APCI_GROUP_VALUE_READ_PDU:
+        return "GROUP_VALUE_READ_PDU"
+    case APCI_GROUP_VALUE_RESPONSE_PDU:
+        return "GROUP_VALUE_RESPONSE_PDU"
+    case APCI_GROUP_VALUE_WRITE_PDU:
+        return "GROUP_VALUE_WRITE_PDU"
+    case APCI_INDIVIDUAL_ADDRESS_WRITE_PDU:
+        return "INDIVIDUAL_ADDRESS_WRITE_PDU"
+    case APCI_INDIVIDUAL_ADDRESS_READ_PDU:
+        return "INDIVIDUAL_ADDRESS_READ_PDU"
+    case APCI_INDIVIDUAL_ADDRESS_RESPONSE_PDU:
+        return "INDIVIDUAL_ADDRESS_RESPONSE_PDU"
+    case APCI_ADC_READ_PDU:
+        return "ADC_READ_PDU"
+    case APCI_ADC_RESPONSE_PDU:
+        return "ADC_RESPONSE_PDU"
+    case APCI_MEMORY_READ_PDU:
+        return "MEMORY_READ_PDU"
+    case APCI_MEMORY_RESPONSE_PDU:
+        return "MEMORY_RESPONSE_PDU"
+    case APCI_MEMORY_WRITE_PDU:
+        return "MEMORY_WRITE_PDU"
+    case APCI_USER_MESSAGE_PDU:
+        return "USER_MESSAGE_PDU"
+    case APCI_DEVICE_DESCRIPTOR_READ_PDU:
+        return "DEVICE_DESCRIPTOR_READ_PDU"
+    case APCI_DEVICE_DESCRIPTOR_RESPONSE_PDU:
+        return "DEVICE_DESCRIPTOR_RESPONSE_PDU"
+    case APCI_RESTART_PDU:
+        return "RESTART_PDU"
+    case APCI_OTHER_PDU:
+        return "OTHER_PDU"
+    }
+    return ""
+}

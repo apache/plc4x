@@ -85,6 +85,10 @@ func CastCOTPPacketDisconnectRequest(structType interface{}) *COTPPacketDisconne
     return castFunc(structType)
 }
 
+func (m *COTPPacketDisconnectRequest) GetTypeName() string {
+    return "COTPPacketDisconnectRequest"
+}
+
 func (m *COTPPacketDisconnectRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

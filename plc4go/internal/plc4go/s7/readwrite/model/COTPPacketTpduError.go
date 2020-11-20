@@ -83,6 +83,10 @@ func CastCOTPPacketTpduError(structType interface{}) *COTPPacketTpduError {
     return castFunc(structType)
 }
 
+func (m *COTPPacketTpduError) GetTypeName() string {
+    return "COTPPacketTpduError"
+}
+
 func (m *COTPPacketTpduError) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

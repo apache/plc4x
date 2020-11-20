@@ -100,3 +100,31 @@ func (e BACnetNetworkType) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(4, uint8(e))
     return err
 }
+
+func (e BACnetNetworkType) String() string {
+    switch e {
+    case BACnetNetworkType_ETHERNET:
+        return "ETHERNET"
+    case BACnetNetworkType_ARCNET:
+        return "ARCNET"
+    case BACnetNetworkType_MSTP:
+        return "MSTP"
+    case BACnetNetworkType_PTP:
+        return "PTP"
+    case BACnetNetworkType_LONTALK:
+        return "LONTALK"
+    case BACnetNetworkType_IPV4:
+        return "IPV4"
+    case BACnetNetworkType_ZIGBEE:
+        return "ZIGBEE"
+    case BACnetNetworkType_VIRTUAL:
+        return "VIRTUAL"
+    case BACnetNetworkType_REMOVED_NON_BACNET:
+        return "REMOVED_NON_BACNET"
+    case BACnetNetworkType_IPV6:
+        return "IPV6"
+    case BACnetNetworkType_SERIAL:
+        return "SERIAL"
+    }
+    return ""
+}

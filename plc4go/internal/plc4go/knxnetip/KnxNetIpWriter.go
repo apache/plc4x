@@ -66,7 +66,6 @@ func (m KnxNetIpWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.P
             }
             return result
         }
-        //data := utils.Uint8ToInt8(io.GetBytes())
     }
 	return result
 }

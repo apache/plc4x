@@ -118,3 +118,23 @@ func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {
     err := io.WriteInt8(8, int8(e))
     return err
 }
+
+func (e COTPTpduSize) String() string {
+    switch e {
+    case COTPTpduSize_SIZE_128:
+        return "SIZE_128"
+    case COTPTpduSize_SIZE_256:
+        return "SIZE_256"
+    case COTPTpduSize_SIZE_512:
+        return "SIZE_512"
+    case COTPTpduSize_SIZE_1024:
+        return "SIZE_1024"
+    case COTPTpduSize_SIZE_2048:
+        return "SIZE_2048"
+    case COTPTpduSize_SIZE_4096:
+        return "SIZE_4096"
+    case COTPTpduSize_SIZE_8192:
+        return "SIZE_8192"
+    }
+    return ""
+}

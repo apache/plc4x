@@ -61,6 +61,10 @@ func CastSzlDataTreeItem(structType interface{}) *SzlDataTreeItem {
     return castFunc(structType)
 }
 
+func (m *SzlDataTreeItem) GetTypeName() string {
+    return "SzlDataTreeItem"
+}
+
 func (m *SzlDataTreeItem) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -203,7 +207,7 @@ func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
                 if err != nil {
                     return err
                 }
-                m.Mlfb = utils.ByteToInt8(_decoded[0:_len])
+                m.Mlfb = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "moduleTypeId":
                 var data uint16
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -238,7 +242,7 @@ func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) err
         return err
     }
     _encodedMlfb := make([]byte, base64.StdEncoding.EncodedLen(len(m.Mlfb)))
-    base64.StdEncoding.Encode(_encodedMlfb, utils.Int8ToByte(m.Mlfb))
+    base64.StdEncoding.Encode(_encodedMlfb, utils.Int8ArrayToByteArray(m.Mlfb))
     if err := e.EncodeElement(_encodedMlfb, xml.StartElement{Name: xml.Name{Local: "mlfb"}}); err != nil {
         return err
     }

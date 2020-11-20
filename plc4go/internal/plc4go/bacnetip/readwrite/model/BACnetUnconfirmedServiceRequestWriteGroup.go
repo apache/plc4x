@@ -76,6 +76,10 @@ func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) *BACn
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestWriteGroup) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestWriteGroup"
+}
+
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

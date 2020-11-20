@@ -76,3 +76,15 @@ func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(4, uint8(e))
     return err
 }
+
+func (e BACnetNotifyType) String() string {
+    switch e {
+    case BACnetNotifyType_ALARM:
+        return "ALARM"
+    case BACnetNotifyType_EVENT:
+        return "EVENT"
+    case BACnetNotifyType_ACK_NOTIFICATION:
+        return "ACK_NOTIFICATION"
+    }
+    return ""
+}

@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType inte
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) GetTypeName() string {
+    return "BACnetConfirmedServiceRequestConfirmedEventNotification"
+}
+
 func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

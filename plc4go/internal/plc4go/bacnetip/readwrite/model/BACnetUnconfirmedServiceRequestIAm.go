@@ -97,6 +97,10 @@ func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) *BACnetUncon
     return castFunc(structType)
 }
 
+func (m *BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
+    return "BACnetUnconfirmedServiceRequestIAm"
+}
+
 func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
@@ -346,7 +350,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start 
                 if err != nil {
                     return err
                 }
-                m.MaximumApduLengthAccepted = utils.ByteToInt8(_decoded[0:_len])
+                m.MaximumApduLengthAccepted = utils.ByteArrayToInt8Array(_decoded[0:_len])
             case "segmentationSupported":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -382,7 +386,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xm
         return err
     }
     _encodedMaximumApduLengthAccepted := make([]byte, base64.StdEncoding.EncodedLen(len(m.MaximumApduLengthAccepted)))
-    base64.StdEncoding.Encode(_encodedMaximumApduLengthAccepted, utils.Int8ToByte(m.MaximumApduLengthAccepted))
+    base64.StdEncoding.Encode(_encodedMaximumApduLengthAccepted, utils.Int8ArrayToByteArray(m.MaximumApduLengthAccepted))
     if err := e.EncodeElement(_encodedMaximumApduLengthAccepted, xml.StartElement{Name: xml.Name{Local: "maximumApduLengthAccepted"}}); err != nil {
         return err
     }

@@ -76,6 +76,10 @@ func CastBACnetConfirmedServiceACKReadRange(structType interface{}) *BACnetConfi
     return castFunc(structType)
 }
 
+func (m *BACnetConfirmedServiceACKReadRange) GetTypeName() string {
+    return "BACnetConfirmedServiceACKReadRange"
+}
+
 func (m *BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

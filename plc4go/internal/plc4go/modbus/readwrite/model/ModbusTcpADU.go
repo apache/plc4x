@@ -62,6 +62,10 @@ func CastModbusTcpADU(structType interface{}) *ModbusTcpADU {
     return castFunc(structType)
 }
 
+func (m *ModbusTcpADU) GetTypeName() string {
+    return "ModbusTcpADU"
+}
+
 func (m *ModbusTcpADU) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

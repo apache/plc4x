@@ -335,16 +335,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
-    public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
-        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
-        for (EnumValue enumValue : enumValues) {
-            if (!filteredEnumValues.containsKey(enumValue.getValue())) {
-                filteredEnumValues.put(enumValue.getValue(), enumValue);
-            }
-        }
-        return filteredEnumValues.values();
-    }
-
     @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
         switch (simpleTypeReference.getBaseType()) {

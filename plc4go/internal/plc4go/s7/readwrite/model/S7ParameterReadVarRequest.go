@@ -83,6 +83,10 @@ func CastS7ParameterReadVarRequest(structType interface{}) *S7ParameterReadVarRe
     return castFunc(structType)
 }
 
+func (m *S7ParameterReadVarRequest) GetTypeName() string {
+    return "S7ParameterReadVarRequest"
+}
+
 func (m *S7ParameterReadVarRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

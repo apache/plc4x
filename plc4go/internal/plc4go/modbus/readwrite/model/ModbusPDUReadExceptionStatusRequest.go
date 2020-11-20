@@ -84,6 +84,10 @@ func CastModbusPDUReadExceptionStatusRequest(structType interface{}) *ModbusPDUR
     return castFunc(structType)
 }
 
+func (m *ModbusPDUReadExceptionStatusRequest) GetTypeName() string {
+    return "ModbusPDUReadExceptionStatusRequest"
+}
+
 func (m *ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

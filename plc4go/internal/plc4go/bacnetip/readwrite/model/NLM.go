@@ -46,11 +46,13 @@ type INLM interface {
 
 type INLMParent interface {
     SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type INLMChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *NLM, vendorId *uint16)
+    GetTypeName() string
     INLM
 }
 
@@ -69,6 +71,10 @@ func CastNLM(structType interface{}) *NLM {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *NLM) GetTypeName() string {
+    return "NLM"
 }
 
 func (m *NLM) LengthInBits() uint16 {

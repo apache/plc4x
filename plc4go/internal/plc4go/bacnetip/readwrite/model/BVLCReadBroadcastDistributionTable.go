@@ -76,6 +76,10 @@ func CastBVLCReadBroadcastDistributionTable(structType interface{}) *BVLCReadBro
     return castFunc(structType)
 }
 
+func (m *BVLCReadBroadcastDistributionTable) GetTypeName() string {
+    return "BVLCReadBroadcastDistributionTable"
+}
+
 func (m *BVLCReadBroadcastDistributionTable) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 

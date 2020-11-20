@@ -136,4 +136,14 @@ func (e ${type.name}) Serialize(io utils.WriteBuffer) error {
 }
     </#if>
 </#if>
+
+func (e ${type.name}) String() string {
+    switch e {
+    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    case ${type.name}_${enumValue.name}:
+        return "${enumValue.name}"
+    </#list>
+    }
+    return ""
+}
 </#outputformat>

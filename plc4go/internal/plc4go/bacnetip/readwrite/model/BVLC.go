@@ -49,11 +49,13 @@ type IBVLC interface {
 
 type IBVLCParent interface {
     SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error
+    GetTypeName() string
 }
 
 type IBVLCChild interface {
     Serialize(io utils.WriteBuffer) error
     InitializeParent(parent *BVLC)
+    GetTypeName() string
     IBVLC
 }
 
@@ -72,6 +74,10 @@ func CastBVLC(structType interface{}) *BVLC {
         return nil
     }
     return castFunc(structType)
+}
+
+func (m *BVLC) GetTypeName() string {
+    return "BVLC"
 }
 
 func (m *BVLC) LengthInBits() uint16 {

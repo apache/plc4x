@@ -79,6 +79,10 @@ func CastS7MessageUserData(structType interface{}) *S7MessageUserData {
     return castFunc(structType)
 }
 
+func (m *S7MessageUserData) GetTypeName() string {
+    return "S7MessageUserData"
+}
+
 func (m *S7MessageUserData) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
