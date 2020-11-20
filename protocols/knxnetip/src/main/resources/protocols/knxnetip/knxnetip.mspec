@@ -106,7 +106,7 @@
 [type 'DIBDeviceInfo'
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
-    [simple   uint 8       'knxMedium']
+    [enum     KnxMedium    'knxMedium']
     [simple   DeviceStatus 'deviceStatus']
     [simple   KnxAddress   'knxAddress']
     [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
@@ -230,7 +230,7 @@
     ]
 ]
 
-/* The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" */
+// The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS"
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
@@ -326,8 +326,8 @@
     [array         int 8        'data' count 'dataLength - 1']
 ]
 
-/* The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
-"03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27 */
+// The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
+// "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
 [discriminatedType 'CEMIFrame'
     [discriminator bit          'standardFrame']
     [discriminator bit          'polling']
@@ -440,9 +440,10 @@
             [reserved uint 8  '0x0']
             [simple   uint 16 'value']
         ]
-        ['V16' INT]
+        ['V16' INT
             [reserved uint 8  '0x0']
             [simple   int 16 'value']
+        ]
         ['F16' REAL
             [reserved uint 8     '0x0']
             [simple   float 4.11 'value']
@@ -460,6 +461,7 @@
         ['r3N5r4N4r1U7' DATE
             [reserved uint 3 '0x00']
             [simple   uint 5 'day']
+            [reserved uint 4 '0x00']
             [reserved uint 4 '0x00']
             [simple   uint 4 'month']
             [reserved uint 1 '0x00']
@@ -1020,12 +1022,11 @@
             [simple   uint 8  'statusOrCommand']
         ]
         ['U16U32U8N8' Struct
-            [reserved uint 8  '0x0']
-            [simple   uint 16  'manufacturerId']
-            [simple   uint 32  'identNumber']
-            [simple   uint 8   'version']
-            // TODO This should be an enum
-            [simple   int  8   'medium']
+            [reserved uint 8                    '0x0']
+            [simple   uint 16                   'manufacturerId']
+            [simple   uint 32                   'identNumber']
+            [simple   uint 8                    'version']
+            [enum     SupportedPhysicalMedia    'medium']
         ]
         ['A8A8A8A8' Struct
             [reserved uint 8  '0x0']
@@ -1498,22 +1499,29 @@
     ['0x02' IPV4_TCP]
 ]
 
-/*
- The mode in which the connection should be established:
- TUNNEL_LINK_LAYER: The gateway assigns a unique KNX address to the client.
-                    The client can then actively participate in communicating
-                    with other KNX devices.
- TUNNEL_RAW:        The gateway will just pass along the packets and not
-                    automatically generate Ack frames for the packets it
-                    receives for a given client.
- TUNNEL_BUSMONITOR: The client becomes a passive participant and all frames
-                    on the KNX bus get forwarded to the client. Only one
-                    Busmonitor connection is allowed at any given time.
-*/
+// The mode in which the connection should be established:
+// TUNNEL_LINK_LAYER The gateway assigns a unique KNX address to the client.
+//                   The client can then actively participate in communicating
+//                   with other KNX devices.
+// TUNNEL_RAW        The gateway will just pass along the packets and not
+//                   automatically generate Ack frames for the packets it
+//                   receives for a given client.
+// TUNNEL_BUSMONITOR The client becomes a passive participant and all frames
+//                   on the KNX bus get forwarded to the client. Only one
+//                   Busmonitor connection is allowed at any given time.
 [enum uint 8 'KnxLayer'
     ['0x02' TUNNEL_LINK_LAYER]
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
+]
+
+[enum uint 8 'KnxMedium'
+    ['0x01' MEDIUM_RESERVED_1]
+    ['0x02' MEDIUM_TP1]
+    ['0x04' MEDIUM_PL110]
+    ['0x08' MEDIUM_RESERVED_2]
+    ['0x10' MEDIUM_RF]
+    ['0x20' MEDIUM_KNX_IP]
 ]
 
 [enum uint 2 'TPCI'
@@ -1540,6 +1548,30 @@
     ['0xD' DEVICE_DESCRIPTOR_RESPONSE_PDU]
     ['0xE' RESTART_PDU]
     ['0xF' OTHER_PDU]
+]
+
+[enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']
+    ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
+    ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
+    ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
+    ['0x03' GAS_METER                 ['measures_volume_of_gaseous_energy',                                     'true']]
+    ['0x04' HEAT_METER                ['heat_energy_measured_in_outlet_pipe',                                   'true']]
+    ['0x05' STEAM_METER               ['measures_weight_of_hot_steam',                                          'true']]
+    ['0x06' WARM_WATER_METER          ['measured_heated_water_volume',                                          'true']]
+    ['0x07' WATER_METER               ['measured_water_volume',                                                 'true']]
+    ['0x08' HEAT_COST_ALLOCATOR       ['measured_relative_cumulated_heat_consumption',                          'true']]
+    ['0x09' COMPRESSED_AIR            ['measures_weight_of_compressed_air',                                     'false']]
+    ['0x0A' COOLING_LOAD_METER_INLET  ['cooling_energy_measured_in_inlet_pipe',                                 'true']]
+    ['0x0B' COOLING_LOAD_METER_OUTLET ['cooling_energy_measured_in_outlet_pipe',                                'true']]
+    ['0x0C' HEAT_INLET                ['heat_energy_measured_in_inlet_pipe',                                    'true']]
+    ['0x0D' HEAT_AND_COOL             ['measures_both_heat_and_cool',                                           'true']]
+    ['0x0E' BUS_OR_SYSTEM             ['no_meter',                                                              'false']]
+    ['0x0F' UNKNOWN_DEVICE_TYPE       ['used_for_undefined_physical_medium',                                    'false']]
+    ['0x20' BREAKER                   ['status_of_electric_energy_supply',                                      'true']]
+    ['0x21' VALVE                     ['status_of_supply_of_Gas_or_water',                                      'true']]
+    ['0x28' WASTE_WATER_METER         ['measured_volume_of_disposed_water',                                     'true']]
+    ['0x29' GARBAGE                   ['measured_weight_of_disposed_rubbish',                                   'true']]
+    ['0x37' RADIO_CONVERTER           ['enables_the_radio_transmission_of_a_meter_without_a_radio_interface',   'false']]
 ]
 
 
