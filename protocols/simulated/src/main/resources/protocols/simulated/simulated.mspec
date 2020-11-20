@@ -22,7 +22,6 @@
 [dataIo 'DataItem' [string 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['IEC61131_BOOL','1' BOOL
-            [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
         ['IEC61131_BOOL' List
