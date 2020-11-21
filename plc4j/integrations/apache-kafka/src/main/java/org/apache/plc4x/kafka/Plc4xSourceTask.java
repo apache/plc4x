@@ -243,7 +243,7 @@ public class Plc4xSourceTask extends SourceTask {
         }
     }
 
-    private Schema getSchema(Object value) {        
+    private Schema getSchema(Object value) {
         Objects.requireNonNull(value);
 
         if(value instanceof List) {
@@ -260,40 +260,40 @@ public class Plc4xSourceTask extends SourceTask {
 
         }
         if (value instanceof Boolean) {
-            return Schema.BOOLEAN_SCHEMA;
+            return Schema.OPTIONAL_BOOLEAN_SCHEMA;
         }
         if (value instanceof byte[]) {
-            return Schema.BYTES_SCHEMA;
+            return Schema.OPTIONAL_BYTES_SCHEMA;
         }
         if (value instanceof Byte) {
-            return Schema.INT8_SCHEMA;
+            return Schema.OPTIONAL_INT8_SCHEMA;
         }
         if (value instanceof Double) {
-            return Schema.FLOAT64_SCHEMA;
+            return Schema.OPTIONAL_FLOAT64_SCHEMA;
         }
         if (value instanceof Float) {
-            return Schema.FLOAT32_SCHEMA;
+            return Schema.OPTIONAL_FLOAT32_SCHEMA;
         }
         if (value instanceof Integer) {
-            return Schema.INT32_SCHEMA;
+            return Schema.OPTIONAL_INT32_SCHEMA;
         }
         if (value instanceof LocalDate) {
-            return Date.SCHEMA;
+            return Date.builder().optional().build();
         }
         if (value instanceof LocalDateTime) {
-            return Timestamp.SCHEMA;
+            return Timestamp.builder().optional().build();
         }
         if (value instanceof LocalTime) {
-            return Time.SCHEMA;
+            return Time.builder().optional().build();
         }
         if (value instanceof Long) {
-            return Schema.INT64_SCHEMA;
+            return Schema.OPTIONAL_INT64_SCHEMA;
         }
         if (value instanceof Short) {
-            return Schema.INT16_SCHEMA;
+            return Schema.OPTIONAL_INT16_SCHEMA;
         }
         if (value instanceof String) {
-            return Schema.STRING_SCHEMA;
+            return Schema.OPTIONAL_STRING_SCHEMA;
         }
         // TODO: add support for collective and complex types
         throw new ConnectException(String.format("Unsupported data type %s", value.getClass().getName()));

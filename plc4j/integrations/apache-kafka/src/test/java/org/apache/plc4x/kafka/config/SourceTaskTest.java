@@ -88,7 +88,7 @@ public class SourceTaskTest {
             sourceList.add(sourceTask);
             sourceTask.start(taskConfig);
         }
-        Thread.sleep(5);
+        Thread.sleep(5000);
         for (Plc4xSourceTask sourceTask : sourceList) {
             assertNotNull(sourceTask.poll());
         }
