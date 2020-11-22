@@ -97,15 +97,29 @@ public class SinkTaskTest {
             log.info("Starting Sink Task");
             Plc4xSinkTask sinkTask = new Plc4xSinkTask();
             List<SinkRecord> records = new ArrayList<>(1);
+
+            // Build the Schema for the result struct.
+            Schema fieldSchema = SchemaBuilder.struct()
+                .name("org.apache.plc4x.kafka.schema.Field")
+                .field("running", Schema.BOOLEAN_SCHEMA)
+                .field("numLargeBoxes", Schema.INT32_SCHEMA)
+                .build();
+
+
             Schema schema = SchemaBuilder.struct()
-                            .name("org.apache.plc4x")
-                            .field("field", Schema.STRING_SCHEMA)
-                            .field("value", Schema.STRING_SCHEMA)
-                            .field("expires", Schema.INT64_SCHEMA)
+                            .name("org.apache.plc4x.kafka.schema.JobResult")
+                            .field(Constants.FIELDS_CONFIG, fieldSchema)
+                            .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
+                            .field("expires", Schema.OPTIONAL_INT64_SCHEMA)
                             .build();
+
+            Struct fieldsStruct = new Struct(fieldSchema)
+                                    .put("running", false)
+                                    .put("numLargeBoxes", 765);
+
             Struct struct = new Struct(schema)
-                                    .put("field", "numLargeBoxes")
-                                    .put("value", "1")
+                                    .put("fields", fieldsStruct)
+                                    .put(Constants.TIMESTAMP_CONFIG, System.currentTimeMillis())
                                     .put("expires", 0L);
 
             records.add(new SinkRecord("machineSinkA",
@@ -117,20 +131,7 @@ public class SinkTaskTest {
                           1,
                           0L,
                           TimestampType.CREATE_TIME));
-            struct = new Struct(schema)
-                                     .put("field", "running")
-                                     .put("value", "1")
-                                     .put("expires", 0L);
-
-             records.add(new SinkRecord("machineSinkA",
-                           1,
-                           schema,
-                           struct,
-                           schema,
-                           struct,
-                           1,
-                           0L,
-                           TimestampType.CREATE_TIME));
+                                      
             log.info("Sending Records to Sink task");
             sinkTask.start(taskConfig);
             sinkTask.put(records);
