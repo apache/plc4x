@@ -31,6 +31,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 
 import java.util.concurrent.ExecutionException;
@@ -187,33 +188,52 @@ public class Plc4xSinkTask extends SinkTask {
         for (SinkRecord r: records) {
             Struct record = (Struct) r.value();
             String topic = r.topic();
-            String field = record.getString("field");
-            String value = record.getString("value");
-            Long timestamp = r.timestamp();
-            Long expires = record.getInt64("expires") + timestamp;
 
-            //Discard records we are not or no longer interested in.
-            if (!topic.equals(plc4xTopic) || plc4xTopic.equals("")) {
-                log.debug("Ignoring write request received on wrong topic");
-            } else if (!fields.containsKey(field)) {
-                log.warn("Unable to find address for field " + field);
-            } else if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
-                log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), field);
-            } else {
-                String address = fields.get(field);
-                try {
-                    //If an array value is passed instead of a single value then convert to a String array
-                    if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
-                        String[] values = value.substring(1,value.length() - 1).split(",");
-                        builder.addItem(address, address, values);
-                    } else {
-                        builder.addItem(address, address, value);
+            Struct plcFields = record.getStruct(Constants.FIELDS_CONFIG);
+            Schema plcFieldsSchema = plcFields.schema();
+
+            for (Field plcField : plcFieldsSchema.fields()) {
+                String field = plcField.name();
+                Object value = plcFields.get(field);
+                if (value != null) {
+                    Long timestamp = record.getInt64("timestamp");
+                    Long expiresOffset = record.getInt64("expires");
+                    Long expires = 0L;
+                    if (expiresOffset != null) {
+                        expires = expiresOffset + timestamp;
                     }
-                    validCount += 1;
-                } catch (Exception e) {
-                    //When building a request we want to discard the write if there is an error.
-                    log.warn("Invalid Address format for protocol {}", address);
+
+                    //Discard records we are not or no longer interested in.
+                    if (!topic.equals(plc4xTopic) || plc4xTopic.equals("")) {
+                        log.debug("Ignoring write request received on wrong topic");
+                    } else if (!fields.containsKey(field)) {
+                        log.warn("Unable to find address for field " + field);
+                    } else if ((System.currentTimeMillis() > expires) & !(expires == 0)) {
+                        log.warn("Write request has expired {} - {}, discarding {}", expires, System.currentTimeMillis(), field);
+                    } else {
+                        String address = fields.get(field);
+                        try {
+                            //If an array value is passed instead of a single value then convert to a String array
+                            if (value instanceof String) {
+                                String sValue = (String) value;
+                                if ((sValue.charAt(0) == '[') && (sValue.charAt(sValue.length() - 1) == ']')) {
+                                    String[] values = sValue.substring(1,sValue.length() - 1).split(",");
+                                    builder.addItem(address, address, values);
+                                } else {
+                                    builder.addItem(address, address, value);
+                                }
+                            } else {
+                                builder.addItem(address, address, value);
+                            }
+
+                            validCount += 1;
+                        } catch (Exception e) {
+                            //When building a request we want to discard the write if there is an error.
+                            log.warn("Invalid Address format for protocol {}", address);
+                        }
+                    }
                 }
+
             }
         }
 

@@ -168,7 +168,10 @@ public class Plc4xSourceTask extends SourceTask {
                     .put(Constants.JOB_NAME_FIELD, jobName);
 
                 // Build the Schema for the result struct.
-                SchemaBuilder recordSchemaBuilder = SchemaBuilder.struct().name("org.apache.plc4x.kafka.JobResult");
+                SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
+                    .name("org.apache.plc4x.kafka.schema.Field");
+
+
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
@@ -178,22 +181,30 @@ public class Plc4xSourceTask extends SourceTask {
                     Schema valueSchema = getSchema(fieldValue);
 
                     // Add the schema description for the current field.
-                    recordSchemaBuilder.field(fieldName, valueSchema);
+                    fieldSchemaBuilder.field(fieldName, valueSchema);
                 }
-                // Add a timestamp
-                Schema valueSchema = Schema.STRING_SCHEMA;
-                recordSchemaBuilder.field("timestamp", valueSchema);
-                Schema recordSchema = recordSchemaBuilder.build();
+                Schema fieldSchema = fieldSchemaBuilder.build();
+
+                Schema recordSchema = SchemaBuilder.struct()
+                    .name("org.apache.plc4x.kafka.schema.JobResult")
+                    .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
+                    .field(Constants.FIELDS_CONFIG, fieldSchema)
+                    .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
+                    .field("expires", Schema.OPTIONAL_INT64_SCHEMA)
+                    .build();
 
                 // Build the struct itself.
-                Struct recordStruct = new Struct(recordSchema);
+                Struct fieldStruct = new Struct(fieldSchema);
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
                     Object fieldValue = result.getValue();
-                    recordStruct.put(fieldName, fieldValue);
+                    fieldStruct.put(fieldName, fieldValue);
                 }
-                recordStruct.put("timestamp", LocalDateTime.now().toString());
+
+                Struct recordStruct = new Struct(recordSchema)
+                    .put(Constants.FIELDS_CONFIG, fieldStruct)
+                    .put(Constants.TIMESTAMP_CONFIG, timestamp);
 
                 // Prepare the source-record element.
                 SourceRecord record = new SourceRecord(

@@ -78,6 +78,10 @@ public class Constants {
     public static final String TIMEOUT_DOC = "PLC4X Sink write timeout";
     public static final Integer TIMEOUT_DEFAULT = 5000;
 
+    public static final String TIMESTAMP_CONFIG = "timestamp";
+    public static final String TIMESTAMP_DOC = "PLC value timestamp. This is the time that the PLC value is placed in the buffer";
+    public static final Integer TIMESTAMP_DEFAULT = 5000;
+
     public static final String SINKS_CONFIG = "sinks";
     public static final String SINKS_DOC = "List of sink names that will be configured.";
     public static final String SINKS_DEFAULT = "";
