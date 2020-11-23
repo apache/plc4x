@@ -34,6 +34,7 @@ import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.util.VersionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
@@ -56,47 +59,42 @@ public class Plc4xSourceTask extends SourceTask {
 
     private static final Logger log = LoggerFactory.getLogger(Plc4xSourceTask.class);
 
-    /*
-     * Config of the task.
-     */
-    static final String CONNECTION_NAME_CONFIG = "connection-name";
-    private static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
-
-    static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
-    private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
-
-    static final String PLC4X_BUFFER_SIZE_CONFIG = "plc4x-buffer-size";
-    private static final String PLC4X_BUFFER_SIZE_DOC = "PLC4X Buffer Size";
-
-    static final String PLC4X_POLL_RETURN_CONFIG = "plc4x-poll-return";
-    private static final String PLC4X_POLL_RETURN_DOC = "PLC4X Poll Return Interval";
-
-    // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
-    static final String QUERIES_CONFIG = "queries";
-    private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
-
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
-        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
-        .define(PLC4X_POLL_RETURN_CONFIG, ConfigDef.Type.INT, 5002, ConfigDef.Importance.HIGH, PLC4X_POLL_RETURN_DOC)
-        .define(PLC4X_BUFFER_SIZE_CONFIG, ConfigDef.Type.INT, 1002, ConfigDef.Importance.HIGH, PLC4X_BUFFER_SIZE_DOC)
-        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC);
+        .define(Constants.CONNECTION_NAME_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                Constants.CONNECTION_NAME_STRING_DOC)
+        .define(Constants.CONNECTION_STRING_CONFIG,
+                ConfigDef.Type.STRING,
+                ConfigDef.Importance.HIGH,
+                Constants.CONNECTION_STRING_DOC)
+        .define(Constants.KAFKA_POLL_RETURN_CONFIG,
+                ConfigDef.Type.INT,
+                Constants.KAFKA_POLL_RETURN_DEFAULT,
+                ConfigDef.Importance.HIGH,
+                Constants.KAFKA_POLL_RETURN_DOC)
+        .define(Constants.BUFFER_SIZE_CONFIG,
+                ConfigDef.Type.INT,
+                Constants.BUFFER_SIZE_DEFAULT,
+                ConfigDef.Importance.HIGH,
+                Constants.BUFFER_SIZE_DOC)
+        .define(Constants.QUERIES_CONFIG,
+                ConfigDef.Type.LIST,
+                ConfigDef.Importance.HIGH,
+                Constants.QUERIES_DOC);
 
-    /*
-     * Configuration of the output.
-     */
-    private static final String SOURCE_NAME_FIELD = "source-name";
-    private static final String JOB_NAME_FIELD = "job-name";
+
 
     private static final Schema KEY_SCHEMA =
         new SchemaBuilder(Schema.Type.STRUCT)
-            .field(SOURCE_NAME_FIELD, Schema.STRING_SCHEMA)
-            .field(JOB_NAME_FIELD, Schema.STRING_SCHEMA)
+            .field(Constants.SOURCE_NAME_FIELD, Schema.STRING_SCHEMA)
+            .field(Constants.JOB_NAME_FIELD, Schema.STRING_SCHEMA)
             .build();
 
     // Internal buffer into which all incoming scraper responses are written to.
     private ArrayBlockingQueue<SourceRecord> buffer;
     private Integer pollReturnInterval;
+    private TriggeredScraperImpl scraper;
 
     @Override
     public String version() {
@@ -106,19 +104,19 @@ public class Plc4xSourceTask extends SourceTask {
     @Override
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
-        String connectionName = config.getString(CONNECTION_NAME_CONFIG);
-        String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
-        pollReturnInterval = config.getInt(PLC4X_POLL_RETURN_CONFIG);
-        Integer bufferSize = config.getInt(PLC4X_BUFFER_SIZE_CONFIG);
+        String connectionName = config.getString(Constants.CONNECTION_NAME_CONFIG);
+        String plc4xConnectionString = config.getString(Constants.CONNECTION_STRING_CONFIG);
+        pollReturnInterval = config.getInt(Constants.KAFKA_POLL_RETURN_CONFIG);
+        Integer bufferSize = config.getInt(Constants.BUFFER_SIZE_CONFIG);
 
         Map<String, String> topics = new HashMap<>();
-        // Create a buffer with a capacity of 1000 elements which schedules access in a fair way.
+        // Create a buffer with a capacity of BUFFER_SIZE_CONFIG elements which schedules access in a fair way.
         buffer = new ArrayBlockingQueue<>(bufferSize, true);
 
         ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
         builder.addSource(connectionName, plc4xConnectionString);
 
-        List<String> jobConfigs = config.getList(QUERIES_CONFIG);
+        List<String> jobConfigs = config.getList(Constants.QUERIES_CONFIG);
         for (String jobConfig : jobConfigs) {
             String[] jobConfigSegments = jobConfig.split("\\|");
             if(jobConfigSegments.length < 4) {
@@ -154,7 +152,7 @@ public class Plc4xSourceTask extends SourceTask {
         try {
             PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
-            TriggeredScraperImpl scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+            scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 Long timestamp = System.currentTimeMillis();
 
                 Map<String, String> sourcePartition = new HashMap<>();
@@ -167,11 +165,14 @@ public class Plc4xSourceTask extends SourceTask {
 
                 // Prepare the key structure.
                 Struct key = new Struct(KEY_SCHEMA)
-                    .put(SOURCE_NAME_FIELD, sourceName)
-                    .put(JOB_NAME_FIELD, jobName);
+                    .put(Constants.SOURCE_NAME_FIELD, sourceName)
+                    .put(Constants.JOB_NAME_FIELD, jobName);
 
                 // Build the Schema for the result struct.
-                SchemaBuilder recordSchemaBuilder = SchemaBuilder.struct().name("org.apache.plc4x.kafka.JobResult");
+                SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
+                    .name("org.apache.plc4x.kafka.schema.Field");
+
+
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
@@ -181,22 +182,30 @@ public class Plc4xSourceTask extends SourceTask {
                     Schema valueSchema = getSchema(fieldValue);
 
                     // Add the schema description for the current field.
-                    recordSchemaBuilder.field(fieldName, valueSchema);
+                    fieldSchemaBuilder.field(fieldName, valueSchema);
                 }
-                // Add a timestamp
-                Schema valueSchema = Schema.STRING_SCHEMA;
-                recordSchemaBuilder.field("timestamp", valueSchema);
-                Schema recordSchema = recordSchemaBuilder.build();
+                Schema fieldSchema = fieldSchemaBuilder.build();
+
+                Schema recordSchema = SchemaBuilder.struct()
+                    .name("org.apache.plc4x.kafka.schema.JobResult")
+                    .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
+                    .field(Constants.FIELDS_CONFIG, fieldSchema)
+                    .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
+                    .field("expires", Schema.OPTIONAL_INT64_SCHEMA)
+                    .build();
 
                 // Build the struct itself.
-                Struct recordStruct = new Struct(recordSchema);
+                Struct fieldStruct = new Struct(fieldSchema);
                 for (Map.Entry<String, Object> result : results.entrySet()) {
                     // Get field-name and -value from the results.
                     String fieldName = result.getKey();
                     Object fieldValue = result.getValue();
-                    recordStruct.put(fieldName, fieldValue);
+                    fieldStruct.put(fieldName, fieldValue);
                 }
-                recordStruct.put("timestamp", LocalDateTime.now().toString());
+
+                Struct recordStruct = new Struct(recordSchema)
+                    .put(Constants.FIELDS_CONFIG, fieldStruct)
+                    .put(Constants.TIMESTAMP_CONFIG, timestamp);
 
                 // Prepare the source-record element.
                 SourceRecord record = new SourceRecord(
@@ -218,8 +227,8 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void stop() {
-        synchronized (this) {
-            // TODO: Correctly shutdown the scraper.
+        synchronized (this) {            
+            scraper.stop();
             notifyAll(); // wake up thread waiting in awaitFetch
         }
     }
@@ -234,7 +243,11 @@ public class Plc4xSourceTask extends SourceTask {
         } else {
             try {
                 List<SourceRecord> result = new ArrayList<>(1);
-                result.add(buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS));
+                SourceRecord temp = buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS);
+                if (temp == null) {
+                    return null;
+                }
+                result.add(temp);
                 return result;
             } catch (InterruptedException e) {
                 return null;
@@ -259,40 +272,40 @@ public class Plc4xSourceTask extends SourceTask {
 
         }
         if (value instanceof Boolean) {
-            return Schema.BOOLEAN_SCHEMA;
+            return Schema.OPTIONAL_BOOLEAN_SCHEMA;
         }
         if (value instanceof byte[]) {
-            return Schema.BYTES_SCHEMA;
+            return Schema.OPTIONAL_BYTES_SCHEMA;
         }
         if (value instanceof Byte) {
-            return Schema.INT8_SCHEMA;
+            return Schema.OPTIONAL_INT8_SCHEMA;
         }
         if (value instanceof Double) {
-            return Schema.FLOAT64_SCHEMA;
+            return Schema.OPTIONAL_FLOAT64_SCHEMA;
         }
         if (value instanceof Float) {
-            return Schema.FLOAT32_SCHEMA;
+            return Schema.OPTIONAL_FLOAT32_SCHEMA;
         }
         if (value instanceof Integer) {
-            return Schema.INT32_SCHEMA;
+            return Schema.OPTIONAL_INT32_SCHEMA;
         }
         if (value instanceof LocalDate) {
-            return Date.SCHEMA;
+            return Date.builder().optional().build();
         }
         if (value instanceof LocalDateTime) {
-            return Timestamp.SCHEMA;
+            return Timestamp.builder().optional().build();
         }
         if (value instanceof LocalTime) {
-            return Time.SCHEMA;
+            return Time.builder().optional().build();
         }
         if (value instanceof Long) {
-            return Schema.INT64_SCHEMA;
+            return Schema.OPTIONAL_INT64_SCHEMA;
         }
         if (value instanceof Short) {
-            return Schema.INT16_SCHEMA;
+            return Schema.OPTIONAL_INT16_SCHEMA;
         }
         if (value instanceof String) {
-            return Schema.STRING_SCHEMA;
+            return Schema.OPTIONAL_STRING_SCHEMA;
         }
         // TODO: add support for collective and complex types
         throw new ConnectException(String.format("Unsupported data type %s", value.getClass().getName()));

@@ -19,81 +19,61 @@ under the License.
 package org.apache.plc4x.kafka.config;
 
 import org.apache.plc4x.kafka.Plc4xSourceConnector;
+import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.Config;
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigException;
+import org.apache.kafka.common.config.ConfigValue;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class SourceConfig {
+public class SourceConfig extends AbstractConfig{
 
-    private static final String CONNECTION_STRING_CONFIG = "connectionString";
-    private static final String JOB_REFERENCES_CONFIG = "jobReferences";
-    private static final String TOPIC_CONFIG = "topic";
-    private static final String INTERVAL_CONFIG = "interval";
-    private static final String FIELDS_CONFIG = "fields";
-    private static final String KAFKA_POLL_RETURN_CONFIG = "pollReturnInterval";
-    private static final String BUFFER_SIZE_CONFIG = "bufferSize";
+    private static final Logger log = LoggerFactory.getLogger(SourceConfig.class);
 
+    private final String defaultTopic;
     private final List<Source> sources;
     private final List<Job> jobs;
 
-    public static SourceConfig fromPropertyMap(Map<String, String> properties) {
-        String defaultTopic = properties.getOrDefault(Plc4xSourceConnector.DEFAULT_TOPIC_CONFIG, null);
+    public SourceConfig(Map originals) {
+        super(configDef(), originals);
+        defaultTopic = getString(Constants.DEFAULT_TOPIC_CONFIG);
 
-        String[] sourceNames = properties.getOrDefault(Plc4xSourceConnector.SOURCES_CONFIG, "").split(",");
-        List<Source> sources = new ArrayList<>(sourceNames.length);
-        for (String sourceName : sourceNames) {
-            String connectionString = properties.get(
-                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + CONNECTION_STRING_CONFIG);
-            String sourceTopic = properties.getOrDefault(
-                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + TOPIC_CONFIG, defaultTopic);
-
-            String sBufferSize = properties.getOrDefault(
-                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + Plc4xSourceConnector.BUFFER_SIZE_CONFIG, Plc4xSourceConnector.BUFFER_SIZE_DEFAULT);
-            Integer bufferSize = StringUtils.isNumeric(sBufferSize) ? Integer.parseInt(sBufferSize) : Integer.parseInt(Plc4xSourceConnector.BUFFER_SIZE_DEFAULT);
-
-            String sPollReturnInterval = properties.getOrDefault(
-                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + Plc4xSourceConnector.KAFKA_POLL_RETURN_CONFIG, Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT);
-            Integer pollReturnInterval = StringUtils.isNumeric(sPollReturnInterval) ? Integer.parseInt(sPollReturnInterval) : Integer.parseInt(Plc4xSourceConnector.KAFKA_POLL_RETURN_DEFAULT);
-
-            String[] jobReferenceNames = properties.get(
-                Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG).split(",");
-            JobReference[] jobReferences = new JobReference[jobReferenceNames.length];
-            for (int i = 0; i < jobReferenceNames.length; i++) {
-                String jobReferenceName = jobReferenceNames[i];
-                String topic = properties.getOrDefault(Plc4xSourceConnector.SOURCES_CONFIG + "." + sourceName + "." + JOB_REFERENCES_CONFIG +
-                    "." + jobReferenceName + "." + TOPIC_CONFIG, sourceTopic);
-                JobReference jobReference = new JobReference(jobReferenceName, topic);
-                jobReferences[i] = jobReference;
-            }
-
-            Source source = new Source(sourceName, connectionString, bufferSize, jobReferences, pollReturnInterval);
-            sources.add(source);
+        sources = new ArrayList<>(getList(Constants.SOURCES_CONFIG).size());
+        for (String source : getList(Constants.SOURCES_CONFIG)) {
+            sources.add(new Source(source, defaultTopic, originalsWithPrefix(Constants.SOURCES_CONFIG + "." + source + ".")));
         }
 
-        String[] jobNames = properties.getOrDefault(Plc4xSourceConnector.JOBS_CONFIG, "").split(",");
-        List<Job> jobs = new ArrayList<>(jobNames.length);
-        for (String jobName : jobNames) {
-            int interval = Integer.parseInt(properties.get(
-                Plc4xSourceConnector.JOBS_CONFIG + "." + jobName + "." + INTERVAL_CONFIG));
-            String[] fieldNames = properties.get(
-                Plc4xSourceConnector.JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG).split(",");
-            Map<String, String> fields = new HashMap<>();
-            for (String fieldName : fieldNames) {
-                String fieldAddress = properties.get(
-                    Plc4xSourceConnector.JOBS_CONFIG + "." + jobName + "." + FIELDS_CONFIG + "." + fieldName);
-                fields.put(fieldName, fieldAddress);
-            }
-            Job job = new Job(jobName, interval, fields);
-            jobs.add(job);
+        jobs = new ArrayList<>(getList(Constants.JOBS_CONFIG).size());
+        for (String job : getList(Constants.JOBS_CONFIG)) {
+            jobs.add(new Job(job, originalsWithPrefix(Constants.JOBS_CONFIG + "." + job + ".")));
         }
-
-        return new SourceConfig(sources, jobs);
     }
 
-    public SourceConfig(List<Source> sources, List<Job> jobs) {
-        this.sources = sources;
-        this.jobs = jobs;
+    public void validate() throws ConfigException {
+        for (Source source : sources) {
+            source.validate();
+            for (JobReference jobReference : source.getJobReferences()) {
+                Boolean found = false;
+                for (Job job : jobs) {                    
+                    if (jobReference.getName().equals(job.getName())) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    throw new ConfigException(
+                        String.format("Couldn't find a matching job for job reference %s in source %s ", jobReference.getName(), source.getName()));
+                }
+            }
+        }
+        for (Job job : jobs) {
+            job.validate();
+        }
     }
 
     public List<Source> getSources() {
@@ -116,6 +96,37 @@ public class SourceConfig {
             return null;
         }
         return jobs.stream().filter(job -> job.getName().equals(jobName)).findFirst().orElse(null);
+    }
+
+    public static ConfigDef configDef() {
+        return new ConfigDef()
+            .define(Constants.DEFAULT_TOPIC_CONFIG,
+                    ConfigDef.Type.STRING,
+                    ConfigDef.Importance.LOW,
+                    Constants.DEFAULT_TOPIC_DOC)
+            .define(Constants.SOURCES_CONFIG,
+                    ConfigDef.Type.LIST,
+                    Constants.SOURCES_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.SOURCES_DOC)
+            .define(Constants.JOBS_CONFIG,
+                    ConfigDef.Type.LIST,
+                    Constants.JOBS_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.JOBS_DOC);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder query = new StringBuilder();
+        query.append(Constants.DEFAULT_TOPIC_CONFIG + "=" + defaultTopic + ",\n");
+        for (Source source : sources) {
+            query.append(source.toString());
+        }
+        for (Job job : jobs) {
+            query.append(job.toString());
+        }
+        return query.toString();
     }
 
 }

@@ -32,6 +32,9 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
@@ -43,6 +46,8 @@ import java.util.function.Consumer;
  * Values are stored in a HashMap.
  */
 public class SimulatedDevice {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimulatedDevice.class);
 
     private final Random random = new Random();
 
@@ -88,7 +93,7 @@ public class SimulatedDevice {
                 state.put(field, value);
                 return;
             case STDOUT:
-                System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), value.getString());
+                logger.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.getString());
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
@@ -97,12 +102,12 @@ public class SimulatedDevice {
                         break;
                     default:
                         try {
-                            DataItemIO.staticSerialize(value, field.getPlcDataType(), 1, false);
+                            DataItemIO.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), false);
                         } catch (ParseException e) {
-                            System.out.printf("Write failed");
+                            logger.info("Write failed");
                         }
                 }
-                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.getString());
+                logger.info("TEST PLC RANDOM [{}]: {}", field.getName(), value.toString());
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
@@ -114,12 +119,12 @@ public class SimulatedDevice {
 
         Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
 
-        byte[] b = new byte[fieldDataTypeSize];
+        byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
         new Random().nextBytes(b);
 
         ReadBuffer io = new ReadBuffer(b);
         try {
-            return DataItemIO.staticParse(io, field.getPlcDataType(), 1);
+            return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {
             return null;
         }

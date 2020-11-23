@@ -595,6 +595,7 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcmail-jdk15on</artifactId>
         <version>${bouncycastle.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -668,6 +669,7 @@
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
         <version>${milo.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -778,6 +780,7 @@
         <groupId>org.pcap4j</groupId>
         <artifactId>pcap4j-core</artifactId>
         <version>${pcap4j.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.pcap4j</groupId>
@@ -931,6 +934,7 @@
 
             <!-- JSON doesn't like comments -->
             <exclude>**/*.json</exclude>
+            <exclude>**/*.avsc</exclude>
 
             <!-- Output of the profiler maven extension -->
             <exclude>**/.profiler/**</exclude>
