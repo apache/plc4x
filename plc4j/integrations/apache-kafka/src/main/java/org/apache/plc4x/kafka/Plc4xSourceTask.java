@@ -94,6 +94,7 @@ public class Plc4xSourceTask extends SourceTask {
     // Internal buffer into which all incoming scraper responses are written to.
     private ArrayBlockingQueue<SourceRecord> buffer;
     private Integer pollReturnInterval;
+    private TriggeredScraperImpl scraper;
 
     @Override
     public String version() {
@@ -151,7 +152,7 @@ public class Plc4xSourceTask extends SourceTask {
         try {
             PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
-            TriggeredScraperImpl scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+            scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
                 Long timestamp = System.currentTimeMillis();
 
                 Map<String, String> sourcePartition = new HashMap<>();
@@ -226,8 +227,8 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void stop() {
-        synchronized (this) {
-            // TODO: Correctly shutdown the scraper.
+        synchronized (this) {            
+            scraper.stop();
             notifyAll(); // wake up thread waiting in awaitFetch
         }
     }
