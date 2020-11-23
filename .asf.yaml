@@ -22,16 +22,12 @@ github:
   labels:
     - java
     - cpp
-    - cplusplus
     - c
     - go
-    - golang
     - python
     - net
-    - abeth
     - ab
     - ads
-    - eip
     - ethernetip
     - firmata
     - knx
@@ -41,14 +37,7 @@ github:
     - siemens
     - bacnet
     - can
-    - calcite
-    - camel
-    - kafka
-    - nifi
-    - logstash
     - iot
-    - iiot
-    - plc4x
 
   features:
     wiki: false
