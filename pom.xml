@@ -70,7 +70,7 @@
     </mailingList>
     <mailingList>
       <name>PLC4X Commits List</name>
-      <subscribe>mailto:commit-subscribe@plc4x.apache.org</subscribe>
+      <subscribe>mailto:commits-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:commits@plc4x.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
