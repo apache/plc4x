@@ -20,10 +20,9 @@ module github.com/apache/plc4x/plc4go
 
 go 1.15
 
-require github.com/sirupsen/logrus v1.7.0
-
 require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/icza/bitio v1.0.0
+	github.com/sirupsen/logrus v1.7.0
 	github.com/subchen/go-xmldom v1.1.2
 )
