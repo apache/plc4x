@@ -23,7 +23,9 @@ github:
     - java
     - cpp
     - cplusplus
+    - C
     - go
+    - golang
     - python
     - .net
     - ab-eth
@@ -56,11 +58,11 @@ github:
 
   enabled_merge_buttons:
     squash: true
-    merge: false
+    merge: true
     rebase: false
 
 notifications:
   commits:              commits@plc4x.apache.org
   issues:               issues@plc4x.apache.org
-  pullrequests_status:  issues@plc4x.apache.org
-  pullrequests_comment: issues@plc4x.apache.org
+  pullrequests_status:  dev@plc4x.apache.org
+  pullrequests_comment: dev@plc4x.apache.org
