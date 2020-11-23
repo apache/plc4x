@@ -17,235 +17,212 @@
 
 == Getting Started
 
+=== Initializing a dummy project
+
+Just in case you want to get started with `Go`. In this part we'll setup a new `Go` project.
+If you are familiar with this, you can go to the next chapter.
+
+Be sure to have installed `Go` on your system by downloading and installing it from https://golang.org/[https://golang.org/].
+
+Now that that's done, create a new directory and console execute the following command:
+
+   go mod init main
+
+This will effectively only create a `go.mod` file, which is sort of like Go's counterpart to a Maven pom.xml.
+
+This should look like this:
+
+```
+module main
+
+go 1.14
+```
+
+Now we need to create a `app.go` file which will be our main program.
+
+Create a file `app.go` with the following content:
+
+----
+package main
+
+func main() {
+
+}
+----
+
+By executing the command:
+
+   go run app.go
+
+You will execute your first `Go` progran ... however the output is rather underwhelming ;-)
+
+You're now ready to continue.
+
 === Using the PLC4Go API directly
 
 In order to write a valid PLC4X Go application, all you need, is to add a dependency to the `plc4go module`.
-When using Go, all you need to do is add the following line to your `go.mod` file:
+Now all you need to do, is execute the following command:
 
-[subs=attributes+]
-----
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>{current-last-released-version}</version>
-    </dependency>
-----
+   go get github.com/apache/plc4x/plc4go
 
-This will allow you to write a valid application, that compiles fine.
-However, in order to actually connect to a device using a given protocol, you need to add this protocol implementation to the classpath.
+This will checkout the latest version of the Apache PLC4X `PLC4Go` module.
+As soon as we have released a PLC4Go version by adding the name of the release-tag will use an explicit version.
 
-For example in order to communicate with an `S7 device` using the `S7 Protocol`, you would need to add the following dependency:
+This will be checked out in our home directory in
 
-[subs=attributes+]
-----
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-s7</artifactId>
-      <version>{current-last-released-version}</version>
-      <scope>runtime</scope>
-    </dependency>
-----
+   ⁓/go/pkg/mod/github.com/apache/plc4/plc4go@v0.0.0-{some-commit-hash}
 
-So as soon as your project has the API and a driver implementation available, you first need to get a `PlcConnection` instance.
-This is done via the `PlcDriverManager` by asking this to create an instance for a given `PLC4X connection string`.
+In contrast to the PLC4J version this already contains all supported drivers.
+Perhaps we'll change this in the future, but for now all comes in one bundle.
+
+Now you're generally set to start writing your first `PLC4Go` program.
+
+==== Connecting to a PLC
+
+In contrast to PLC4J, which uses the service lookup to find the `transports` and the `drivers` automatically, in `PLC4Go` they need to be manually registered at the driver manager.
+
+First we need to initialize the `PlcDriverManager` by registering the transports and drivers with it.
 
 ----
-String connectionString = "s7://10.10.64.20";
+    // Create a new instance of the PlcDriverManager
+	driverManager := plc4go.NewPlcDriverManager()
 
-try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+    // Register the Transports
+    transports.RegisterTcpTransport(driverManager)
+    transports.RegisterUdpTransport(driverManager)
 
-  ... do something with the connection here ...
-
-}
+    // Register the Drivers
+	drivers.RegisterKnxDriver(driverManager)
+	drivers.RegisterModbusDriver(driverManager)
 ----
 
-PLC4X generally supports a very limited set of functions, which is not due to the fact, that we didn't implement things, but that PLCs generally support a very limited set of functions.
+Now that the `PlcDriverManager` is configured, we can use it to get a new connection.
 
-The basic functions supported by PLCs and therefore supported by PLC4X are:
+----
+   	// Get a connection to a remote PLC
+	connectionRequestChanel := driverManager.GetConnection("modbus://192.168.23.30?unit-identifier=1")
 
-* Read data
-* Write data
-* Subscribe for data
-* Execute functions in the PLC
-* List resources in the PLC
+	// Wait for the driver to connect (or not)
+	connectionResult := <-connectionRequestChanel
 
-In general we will try to offer as many features as possible.
-So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background so it is transparent for the users.
+    // Check if something went wrong
+    if connectionResult.Err != nil {
+	    fmt.Printf("Error connecting to PLC: %s", connectionResult.Err.Error())
+		return
+	}
 
-But there are some cases in which we can't simulate or features are simply disabled intentionally:
+    // If all was ok, get the connection instance
+	connection := connectionResult.Connection
 
-* If a PLC and/or protocol don't support executing of functions, we simply can't provide this functionality.
-* We will be providing stripped down versions of drivers, that for example intentionally don't support any writing of data and executing of functions.
+	// Make sure the connection is closed at the end
+	defer connection.Close()
+----
 
-Therefore we use metadata to check programmatically, if a given feature is available.
+In PLC4Go we make heavy use of Go `channels`, which are similar to `Futures` or `Promisses`.
+
+And please pay attention to the `defer` command.
+This adds a call to a stack of things that need to be called as soon as the program terminates.
+However in contrast to Java's `try-finally` blocks, this isn't executed at the end of the code-block, but really when the program terminates.
+So when working with many connections or when using connections in loops (if for example you are polling), then this will keep on piling up active connections, till either you are no longer able to connect cause your PLC denies connections or till you run out of memory.
+
+So if you only need the connection in a code block, be sure to explicitly close it after usage.
+
+After this code block we should be in possession of a `connection` instance.
+
+If we simply want to check the connectivity, we can use the `Ping` function on the connection object.
+Depending on the protocol used, it will exeute a command which only will complete if the connection is available.
+
+----
+	// Try to ping the remote device
+	pingResultChannel := connection.Ping()
+
+    // Wait for the Ping operation to finsh
+	pingResult := <-pingResultChannel
+	if pingResult.Err != nil {
+	    fmt.Printf("Couldn't ping device: %s", pingResult.Err.Error())
+		return
+	}
+----
 
 ==== Reading Data
 
-----
-// Check if this connection support reading of data.
-if (!plcConnection.getMetadata().canRead()) {
-  logger.error("This connection doesn't support reading.");
-  return;
-}
-----
+Most probably you will want to read something from a PLC.
+This is done by a `PlcReadRequest`.
 
-As soon as you have ensured that a feature is available, you are ready to build a first request.
-This is done by getting a `PlcReadRequest.Builder`:
+First off all, it's probably a good idea to check if this connection supports reading:
 
 ----
-// Create a new read request:
-// - Give the single item requested an alias name
-PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-builder.addItem("value-1", "%Q0.4:BOOL");
-builder.addItem("value-2", "%Q0:BYTE");
-builder.addItem("value-3", "%I0.2:BOOL");
-builder.addItem("value-4", "%DB.DB1.4:INT");
-PlcReadRequest readRequest = builder.build();
-----
-
-So, as you can see, you prepare a request, by adding items to the request and in the end by calling the `build` method.
-
-The request is sent to the PLC by issuing the `execute` method on the request object:
-
-----
-CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-asyncResponse.whenComplete((response, throwable) -> {
-  ... process the response ...
-});
-----
-
-In general all requests are executed asynchronously.
-So as soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or a `throwable` if there were problems.
-
-However if you want to write your code in a more synchronous fashion, the following alternative will provide this:
-
-----
-PlcReadResponse response = readRequest.execute().get();
-----
-
-Processing of the responses is identical in both cases.
-The following example will demonstrate some of the options you have:
-
-----
-for (String fieldName : response.getFieldNames()) {
-    if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-        int numValues = response.getNumberOfValues(fieldName);
-        // If it's just one element, output just one single line.
-        if(numValues == 1) {
-            logger.info("Value[" + fieldName + "]: " + response.getObject(fieldName));
-        }
-        // If it's more than one element, output each in a single row.
-        else {
-            logger.info("Value[" + fieldName + "]:");
-            for(int i = 0; i < numValues; i++) {
-                logger.info(" - " + response.getObject(fieldName, i));
-            }
-        }
+	if !connection.GetMetadata().CanRead() {
+	    fmt.Printf("This connection doesn't support read operations")
+        return
     }
-    // Something went wrong, to output an error message instead.
-    else {
-        logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
-    }
-}
 ----
 
-In the for loop, we are demonstrating how the user can iterate over the address aliases in the response.
-In case of an ordinary read request, this will be predefined by the items in the request, however in case of a subscription response, the response might only contain some of the items that were subscribed.
+In order to create and run such a `PlcReadRequest`, please add the following code:
 
-Before accessing the data, it is advisable to check if an item was correctly returned.
-This is done by the `getResponseCode` method for a given alias.
-If this is `PlcResponseCode.OK`, everything is ok, however it could be one of the following:
+----
+	// Prepare a read-request
+	readRequestBuilder := connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("field1", "holding-register:1:REAL")
+	readRequestBuilder.AddItem("field2", "holding-register:3:REAL")
+	readRequest, err := readRequestBuilder.Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+----
 
-- NOT_FOUND
-- ACCESS_DENIED
-- INVALID_ADDRESS
-- INVALID_DATATYPE
-- INTERNAL_ERROR
-- RESPONSE_PENDING
+If you have any errors in the addresses or whatever, you will get an `err` instead of a `readRequest`.
 
-Assuming the return code was `OK`, we can continue accessing the data.
+For now, let's assume you got all addresses correctly.
 
-As some addresses support reading arrays, with the method `getNumberOfValues` the user can check how many items of a given type are returned.
-For convenience the response object has single-argument methods for accessing the data, which default to returning the first element.
+----
+	// Execute a read-request
+	readResponseChanel := readRequest.Execute()
 
-    response.getObject(fieldName)
+	// Wait for the response to finish
+	readRequestResult := <-readResponseChanel
+	if readRequestResult.Err != nil {
+		t.Errorf("error executing read-request: %s", readRequestResult.Err.Error())
+		return
+	}
+----
 
-If you want to access a given element number, please use the two-argument version instead:
+Please note that in this case we want to return a triple: `PlcReadRequest`, `PlcReadResponse`, `err`.
+As this is not supported in `Go`, the `PlcReadRequestResult` will contain all of these 3 elements.
 
-    response.getObject(fieldName, 42)
+NOTE: This will probably change soon. The API is still a bit in flux.
 
-PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
-However when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
-In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
+Now in order to do something with the response:
+
+----
+	// Do something with the response
+	value1 := readRequestResult.Response.GetValue("field1")
+	value2 := readRequestResult.Response.GetValue("field2")
+	fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
+	fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+----
+
+The `GetValue` function returns a `PlcValue` instance, this had accessors for the most general `Go` types.
 
 ==== Writing Data
 
-In general the structure of code for writing data is extremely similar to that of reading data.
-
-So first it is advisable to check if this connection is even able to write data:
-
-----
-// Check if this connection support writing of data.
-if (!plcConnection.getMetadata().canWrite()) {
-  logger.error("This connection doesn't support writing.");
-  return;
-}
-----
-
-As soon as we are sure that we can write, we create a new `PlcWriteRequest.Builder`:
-
-----
-// Create a new write request:
-// - Give the single item requested an alias name
-// - Pass in the data you want to write (for arrays, pass in one value for every element)
-PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-builder.addItem("value-1", "%Q0.4:BOOL", true);
-builder.addItem("value-2", "%Q0:BYTE", (byte) 0xFF);
-builder.addItem("value-4", "%DB.DB1.4:INT[3]", 7, 23, 42);
-PlcWriteRequest writeRequest = builder.build();
-----
-
-The same way read requests are sent to the PLC by issuing the `execute` method on the request object:
-
-----
-CompletableFuture<? extends PlcWriteResponse> asyncResponse = writeRequest.execute();
-asyncResponse.whenComplete((response, throwable) -> {
-  ... process the response ...
-});
-----
-
-You could here also use the blocking option:
-
-----
-PlcWriteResponse response = writeRequest.execute().get();
-----
-
-As we don't have to process the data itself, for the write request, it's enough to simply check the return code for each field.
-
-----
-for (String fieldName : response.getFieldNames()) {
-    if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-        logger.info("Value[" + fieldName + "]: updated");
-    }
-    // Something went wrong, to output an error message instead.
-    else {
-        logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
-    }
-}
-----
+NOTE: Not implemented yet
 
 ==== Subscribing to Data
 
+As the `Modbus` protocol, which we used in the above examples, doesn't support subscriptions, we are uing the `KNX` protocol for a demonstration on the subscription API.
+
 Subscribing to data can be considered similar to reading data, at least the subscription itself if very similar to reading of data.
 
-First of all we first have to check if the connection supports this:
+We first have to check if the connection supports this:
 
 ----
-// Check if this connection support subscribing to data.
-if (!plcConnection.getMetadata().canSubscribe()) {
-    logger.error("This connection doesn't support subscribing.");
-    return;
-}
+	if !connection.GetMetadata().CanSubscribe() {
+	    fmt.Printf("This connection doesn't support subscriptions operations")
+        return
+    }
 ----
 
 Now we'll create the subscription request.
@@ -256,39 +233,51 @@ The main difference is that while reading there is only one form how you could r
 - Cyclic (The Event is sent in regular cyclic intervals)
 - Event (The Event is usually explicitly sent form the PLC as a signal)
 
-Therefore instead of using a normal `addItem`, there are tree different methods as you can see in the following examples.
+Therefore instead of using a normal `AddItem`, there are tree different functions as you can see in the following examples.
 
 ----
-// Create a new subscription request:
-// - Give the single item requested an alias name
-PlcSubscriptionRequest.Builder builder = plcConnection.subscriptionRequestBuilder();
-builder.addChangeOfStateField("value-1", "{some address}");
-builder.addCyclicField("value-2", "{some address}", Duration.ofMillis(1000));
-builder.addEventField("value-3", "{some alarm address}");
-PlcSubscriptionRequest subscriptionRequest = builder.build();
+	// Prepare a subscription-request
+    subscriptionRequestBuilder := connection.SubscriptionRequestBuilder()
+    subscriptionRequestBuilder.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
+    subscriptionRequestBuilder.AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp")
+    subscriptionRequestBuilder.AddCyclicItem("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond)
+    subscriptionRequestBuilder.AddItemHandler(knxEventHandler)
+    subscriptionRequest, err := subscriptionRequestBuilder.Build()
+    if err != nil {
+	    fmt.Printf("Error preparing subscription-request: %s", connectionResult.Err.Error())
+        return
+    }
 ----
 
-NOTE: The `addCyclicField` method requires a third parameter `duration`.
-
-The request itself is executed exactly the same way the read and write operations are executed, using the `execute` method, therefore just the short synchronous version here (The async version works just as good)
+The `Event hadnler` for intercepting incoming events could look like this:
 
 ----
-PlcSubscriptionResponse response = subscriptionRequest.execute().get();
-----
-
-Now comes the little more tricky part, as subscriptions are always asynchronous, we have to register a callback for the connection to call as soon as there is news available:
-
-In general you can't say how many of your subscribed fields will be available in every callback so it is double important to check or iterate over the field names.
-
-----
-for (String subscriptionName : response.getFieldNames()) {
-    final PlcSubscriptionHandle subscriptionHandle = response.getSubscriptionHandle(subscriptionName);
-    subscriptionHandle.register(plcSubscriptionEvent -> {
-        for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
-            System.out.println(plcSubscriptionEvent.getPlcValue(fieldName));
+func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
+    for _, fieldName := range event.GetFieldNames() {
+        if event.GetResponseCode(fieldName) == apiModel.PlcResponseCode_OK {
+            groupAddress := event.GetAddress(fieldName)
+            fmt.Printf("Got update for field %s with address %s. Value changed to: %s\n",
+                fieldName, groupAddress, event.GetValue(fieldName).GetString())
         }
-    });
+    }
 }
 ----
 
-NOTE: Here there currently is a double iteration over the field names, this will probably change soon.
+NOTE: The `AddCyclicField` method requires a third parameter `duration` which specifies the interval, in which a given value is sent (even if it has not changed).
+
+NOTE: Here the API differs slightly form the Java version, as in the request-builder itself you specify the reference to the callback handler which should be notified on incoming data. Howerver, we will be alliging all API variants as much as possible in the near future.
+
+The request itself is executed exactly the same way the read and write operations are executed, using the `Execute` function.
+
+----
+    // Execute a subscription-request
+    subscriptionRequestResultChanel := subscriptionRequest.Execute()
+
+    // Wait for the response to finish
+    subscriptionRequestResult := <-subscriptionRequestResultChanel
+    if subscriptionRequestResult.Err != nil {
+	    fmt.Printf("Error executing read-request: %s", subscriptionRequestResult.Err.Error())
+        return
+    }
+----
+
