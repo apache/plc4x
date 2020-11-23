@@ -93,7 +93,7 @@ public class SimulatedDevice {
                 state.put(field, value);
                 return;
             case STDOUT:
-                logger.info("TEST PLC STDOUT [%s]: %s%n", field.getName(), value.getString());
+                logger.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.getString());
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
@@ -107,7 +107,7 @@ public class SimulatedDevice {
                             logger.info("Write failed");
                         }
                 }
-                logger.info("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.toString());
+                logger.info("TEST PLC RANDOM [{}]: {}", field.getName(), value.toString());
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
