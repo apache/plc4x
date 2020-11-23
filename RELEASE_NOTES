@@ -14,9 +14,11 @@ New Features
 - The Modbus driver now supports more common notations of
   Modbus addresses using a pure-numeric notation.
 
-- Especially the Modbus driver has been enhanced to read
-  more complex types such as REAL, DINT, ... not just BOOL
-  and INT
+- The ADS, KNX, Modbus, S7 and simulated drivers have been
+  updated to support the IEC 61131-3 data-types.
+
+- We are now including PLC4Go as PLC4X implementation in
+  the programming language Go(lang)
 
 Incompatible changes
 --------------------
@@ -41,6 +43,9 @@ Incompatible changes
 
 Bug Fixes
 ---------
+
+A lot of testing was done regarding the IEC 61131-3 data-types.
+This resulted in numerous bugfixes in many protocols.
 
 PLC4X-132   [S7] Communication to S7 PLC dies in some situations
 PLC4X-206   When writing short values exceptions are thrown
