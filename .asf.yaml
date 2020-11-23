@@ -27,17 +27,16 @@ github:
     - go
     - golang
     - python
-    - .net
-    - ab-eth
+    - net
+    - abeth
     - ab
     - ads
     - eip
-    - ethernet/ip
+    - ethernetip
     - firmata
     - knx
     - modbus
     - opcua
-    - opc-ua
     - s7
     - siemens
     - bacnet
