@@ -51,9 +51,10 @@ Apache PLC4X is an effort to create a set of libraries for communicating with in
 We are planning on shipping libraries for usage in:
 
 1. Java
-2. C/C++ (not ready for usage)
-3. C# (.Net) (not ready for usage)
+2. Go
+3. C/C++ (not ready for usage)
 4. Python (not ready for usage)
+5. C# (.Net) (not ready for usage)
 
 PLC4X also integrates with other Apache projects, such as:
 
