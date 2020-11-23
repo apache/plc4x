@@ -93,7 +93,7 @@ An example below shows the format it expects:-
     "tasks.max":"1", "file":"test.sink.txt", "topics":"connect-test" }}' http://localhost:8083/connectors
 
 
-### Start a Kafka Source Connect Worker (Standalone)
+### Start a Kafka Connect Source Worker (Standalone)
 
 Ideal for testing.
 
@@ -109,7 +109,7 @@ If you want to debug the connector, be sure to set some environment variables be
 
 In this case the startup will suspend till an IDE is connected via a remote-debugging session.
 
-### Start Kafka Source Connect Worker (Distributed Mode)
+### Start Kafka Connect Source Worker (Distributed Mode)
 
 Ideal for production.
 
@@ -133,7 +133,7 @@ The configuration of the Connectors is then provided via REST interface:
 
 See `config/sink.properties` for an example configuration.
 
-### Start a Kafka Sink Connect Worker (Standalone)
+### Start a Kafka Connect Sink Worker (Standalone)
 
 Ideal for testing.
 
@@ -184,7 +184,7 @@ If you want to debug the connector, be sure to set some environment variables be
 
 In this case the startup will suspend till an IDE is connected via a remote-debugging session.
 
-### Start Kafka Sink Connect Worker (Distributed Mode)
+### Start Kafka Connect Sink Worker (Distributed Mode)
 
 Ideal for production.
 

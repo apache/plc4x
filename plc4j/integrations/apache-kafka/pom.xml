@@ -44,6 +44,14 @@
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+  </pluginRepository>
+</pluginRepositories>
+
   <!-- Build a fat jar so the user only needs to drop in this one jar -->
   <build>
     <plugins>
