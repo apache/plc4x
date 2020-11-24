@@ -21,9 +21,6 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.plc4x.language.go.hack.DefaultBooleanTypeReference;
-import org.apache.plc4x.language.go.hack.DefaultFloatTypeReference;
-import org.apache.plc4x.language.go.hack.DefaultIntegerTypeReference;
 import org.apache.plc4x.language.go.utils.FieldUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
@@ -394,11 +391,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String toIntegerParseExpression(int sizeInBits, Term term, Argument[] parserArguments) {
-        return toTypedParseExpression(new DefaultIntegerTypeReference(sizeInBits), term, parserArguments);
+        return toTypedParseExpression(new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, parserArguments);
     }
 
     public String toIntegerSerializationExpression(int sizeInBits, Term term, Argument[] serializerArguments) {
-        return toTypedSerializationExpression(new DefaultIntegerTypeReference(sizeInBits), term, serializerArguments);
+        return toTypedSerializationExpression(new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.UINT, sizeInBits), term, serializerArguments);
     }
 
     public String toTypedParseExpression(TypeReference fieldType, Term term, Argument[] parserArguments) {
@@ -633,7 +630,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         else if("CEIL".equals(vl.getName())) {
             Term va = vl.getArgs().get(0);
             // The Ceil function expects 64 bit floating point values.
-            TypeReference tr = new DefaultFloatTypeReference();
+            TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 11, 52);
             return "math.Ceil(" + toExpression(tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
         }
         // All uppercase names are not fields, but utility methods.

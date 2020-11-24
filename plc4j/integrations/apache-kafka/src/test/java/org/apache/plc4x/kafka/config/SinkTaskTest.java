@@ -27,17 +27,13 @@ import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.data.SchemaBuilder;
 
-import org.apache.plc4x.kafka.config.Constants;
 import org.apache.plc4x.kafka.Plc4xSinkConnector;
 import org.apache.plc4x.kafka.Plc4xSinkTask;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import org.apache.kafka.common.config.*;
-
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +57,7 @@ public class SinkTaskTest {
         Path path = FileSystems.getDefault().getPath(
             "src/test/java/org/apache/plc4x/kafka/properties/",
             "sink_task_no_error.properties");
-        properties.load((new StringReader(Files.readString(path, StandardCharsets.US_ASCII))));
+        properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
         Map<String, String> map = new HashMap<String, String>();
         for (final String name: properties.stringPropertyNames())

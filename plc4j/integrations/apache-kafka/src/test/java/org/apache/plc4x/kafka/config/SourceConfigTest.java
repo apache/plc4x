@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.apache.kafka.common.config.*;
 
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,9 +145,9 @@ public class SourceConfigTest {
         log.info("-----------------Validate Example Config----------------");
         Properties properties = new Properties();
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
-        properties.load((new StringReader(Files.readString(path, StandardCharsets.US_ASCII))));
+        properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -166,7 +165,7 @@ public class SourceConfigTest {
         log.info("-----------------Validate Example Config 2----------------");
         Properties properties = new Properties();
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
-        properties.load((new StringReader(Files.readString(path, StandardCharsets.US_ASCII))));
+        properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
         Map<String, String> map = new HashMap<String, String>();
         for (final String name: properties.stringPropertyNames())
@@ -187,7 +186,7 @@ public class SourceConfigTest {
         log.info("-----------------CheckTaskClass----------------");
         Properties properties = new Properties();
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
-        properties.load((new StringReader(Files.readString(path, StandardCharsets.US_ASCII))));
+        properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
         Map<String, String> map = new HashMap<String, String>();
         for (final String name: properties.stringPropertyNames())
@@ -202,7 +201,7 @@ public class SourceConfigTest {
         log.info("-----------------CheckConnectorStartStop----------------");
         Properties properties = new Properties();
         Path path = FileSystems.getDefault().getPath("config/", "plc4x-source.properties");
-        properties.load((new StringReader(Files.readString(path, StandardCharsets.US_ASCII))));
+        properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
         Map<String, String> map = new HashMap<String, String>();
         for (final String name: properties.stringPropertyNames())
