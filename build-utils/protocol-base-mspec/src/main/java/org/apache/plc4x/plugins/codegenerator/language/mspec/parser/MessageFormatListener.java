@@ -25,7 +25,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -34,9 +33,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
-import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.io.InputStream;

@@ -141,6 +141,11 @@ func TestPlc4goDriver(t *testing.T) {
 	}
 	connection := connectionResult.Connection
 
+	if !connection.GetMetadata().CanRead() {
+	    fmt.Printf("This connection doesn't support read operations")
+        return
+    }
+
 	// Try to ping the remote device
 	pingResultChannel := connection.Ping()
 	pingResult := <-pingResultChannel
