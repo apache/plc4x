@@ -206,7 +206,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                     filter,
                     AttributeFilters.getValue(
                         ctx ->
-                            new DataValue(plc4xServer.getValue(tag, connectionString))
+                            new DataValue(plc4xServer.getValue(ctx, tag, connectionString))
                     )
                 );
 
@@ -237,21 +237,35 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
     @Override
     public void onDataItemsCreated(List<DataItem> dataItems) {
+        for (DataItem item : dataItems) {
+            plc4xServer.addField(item);
+        }
+
         subscriptionModel.onDataItemsCreated(dataItems);
     }
 
     @Override
     public void onDataItemsModified(List<DataItem> dataItems) {
+        for (DataItem item : dataItems) {
+            plc4xServer.addField(item);
+        }
         subscriptionModel.onDataItemsModified(dataItems);
     }
 
     @Override
     public void onDataItemsDeleted(List<DataItem> dataItems) {
+        for (DataItem item : dataItems) {
+            plc4xServer.removeField(item);
+        }
         subscriptionModel.onDataItemsDeleted(dataItems);
     }
 
     @Override
     public void onMonitoringModeChanged(List<MonitoredItem> monitoredItems) {
+        logger.info(" 4 - " + monitoredItems.toString());
+        for (MonitoredItem item : monitoredItems) {
+            logger.info(" 4 - " + item.toString());
+        }
         subscriptionModel.onMonitoringModeChanged(monitoredItems);
     }
 
