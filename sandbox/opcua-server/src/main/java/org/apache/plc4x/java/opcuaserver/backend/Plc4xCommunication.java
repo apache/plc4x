@@ -39,6 +39,7 @@ import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.BaseEventTypeNode;
 import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.ServerTypeNode;
 import org.eclipse.milo.opcua.sdk.server.model.nodes.variables.AnalogItemTypeNode;
+import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaNode;
@@ -70,6 +71,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.Range;
 import org.eclipse.milo.opcua.stack.core.types.structured.StructureDefinition;
 import org.eclipse.milo.opcua.stack.core.types.structured.StructureDescription;
 import org.eclipse.milo.opcua.stack.core.types.structured.StructureField;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +86,15 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.utils.connectionpool.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
+
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
@@ -100,12 +106,24 @@ public class Plc4xCommunication {
     private PlcDriverManager driverManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    Map<NodeId, DataItem> monitoredList = new HashMap<>();
+
     public Plc4xCommunication () {
         driverManager = new PooledPlcDriverManager();
     }
 
     public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
         return driverManager.getDriver(connectionString).prepareField(tag);
+    }
+
+    public void addField(DataItem item) {
+        logger.info("Adding item to monitored list " + item.getReadValueId());
+        monitoredList.put(item.getReadValueId().getNodeId(), item);
+    }
+
+    public void removeField(DataItem item) {
+        logger.info("Removing item from monitored list " + item.getReadValueId());
+        monitoredList.remove(item.getReadValueId().getNodeId());
     }
 
     public static NodeId getNodeId(String plcValue) {
@@ -170,12 +188,18 @@ public class Plc4xCommunication {
         }
     }
 
-    public Variant getValue(String tag, String connectionString) {
+    public Variant getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
         PlcConnection connection = null;
         try {
           connection = driverManager.getConnection(connectionString);
         } catch (PlcConnectionException e) {
-          System.out.println("Failed" + e);
+          logger.warn("Failed" + e);
+        }
+        logger.info(ctx.getNode().getNodeId().toString());
+
+        long timeout = 1000000;
+        if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
+            timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval()*1000;
         }
 
         // Create a new read request:
@@ -186,9 +210,14 @@ public class Plc4xCommunication {
 
         PlcReadResponse response = null;
         try {
-          response = readRequest.execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-          System.out.println("Failed" + e);
+          response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
+      } catch (InterruptedException | ExecutionException | TimeoutException e) {
+          logger.warn("Failed" + e);
+          try {
+            connection.close();
+        } catch (Exception exception) {
+            logger.warn("Close Failed" + exception);
+          }
         }
 
         Variant resp = null;
@@ -210,7 +239,7 @@ public class Plc4xCommunication {
         try {
           connection.close();
         } catch (Exception e) {
-          System.out.println("Close Failed" + e);
+          logger.warn("Close Failed" + e);
         }
         return resp;
     }
@@ -220,7 +249,7 @@ public class Plc4xCommunication {
         try {
           connection = driverManager.getConnection(connectionString);
         } catch (PlcConnectionException e) {
-          System.out.println("Failed" + e);
+          logger.warn("Failed" + e);
         }
 
         // Create a new read request:
@@ -241,13 +270,13 @@ public class Plc4xCommunication {
         try {
           writeRequest.execute().get();
         } catch (InterruptedException | ExecutionException e) {
-          System.out.println("Failed" + e);
+          logger.warn("Failed" + e);
         }
 
         try {
           connection.close();
         } catch (Exception e) {
-          System.out.println("Close Failed" + e);
+          logger.warn("Close Failed" + e);
         }
         return;
     }
