@@ -48,7 +48,7 @@ public class AttributeLoggingFilter implements AttributeFilter {
 
         // only log external reads
         if (attributePredicate.test(attributeId) && ctx.getSession().isPresent()) {
-            logger.info(
+            logger.debug(
                 "get nodeId={} attributeId={} value={}",
                 ctx.getNode().getNodeId(), attributeId, value
             );
@@ -61,7 +61,7 @@ public class AttributeLoggingFilter implements AttributeFilter {
     public void setAttribute(SetAttributeContext ctx, AttributeId attributeId, Object value) {
         // only log external writes
         if (attributePredicate.test(attributeId) && ctx.getSession().isPresent()) {
-            logger.info(
+            logger.debug(
                 "set nodeId={} attributeId={} value={}",
                 ctx.getNode().getNodeId(), attributeId, value
             );
