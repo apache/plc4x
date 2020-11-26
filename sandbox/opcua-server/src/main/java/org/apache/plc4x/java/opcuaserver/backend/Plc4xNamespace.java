@@ -60,6 +60,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.ExtensionObject;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
+import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.XmlElement;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
@@ -205,8 +206,14 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                 node.getFilterChain().addLast(
                     filter,
                     AttributeFilters.getValue(
-                        ctx ->
-                            new DataValue(plc4xServer.getValue(ctx, tag, connectionString))
+                        ctx -> {
+                            Variant retValue = plc4xServer.getValue(ctx, tag, connectionString);
+                            if (retValue == null) {
+                                return new DataValue(new Variant(null), StatusCode.BAD);
+                            } else {
+                                return new DataValue(retValue, StatusCode.GOOD);
+                            }
+                        }
                     )
                 );
 

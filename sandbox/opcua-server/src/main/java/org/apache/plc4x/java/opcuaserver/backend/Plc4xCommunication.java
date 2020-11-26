@@ -95,6 +95,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.math.BigInteger;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
@@ -105,6 +106,10 @@ public class Plc4xCommunication {
 
     private PlcDriverManager driverManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Integer DEFAULT_TIMEOUT = 1000000;
+    private final Integer DEFAULT_RETRY_BACKOFF = 5000;
+
+    private Map<String, Long> failedConnectionList = new HashMap<>();
 
     Map<NodeId, DataItem> monitoredList = new HashMap<>();
 
@@ -117,12 +122,12 @@ public class Plc4xCommunication {
     }
 
     public void addField(DataItem item) {
-        logger.info("Adding item to monitored list " + item.getReadValueId());
+        logger.info("Adding item to OPC UA monitored list " + item.getReadValueId());
         monitoredList.put(item.getReadValueId().getNodeId(), item);
     }
 
     public void removeField(DataItem item) {
-        logger.info("Removing item from monitored list " + item.getReadValueId());
+        logger.info("Removing item from OPC UA monitored list " + item.getReadValueId());
         monitoredList.remove(item.getReadValueId().getNodeId());
     }
 
@@ -190,14 +195,43 @@ public class Plc4xCommunication {
 
     public Variant getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
         PlcConnection connection = null;
-        try {
-          connection = driverManager.getConnection(connectionString);
-        } catch (PlcConnectionException e) {
-          logger.warn("Failed" + e);
-        }
-        logger.info(ctx.getNode().getNodeId().toString());
+        Variant resp = null;
 
-        long timeout = 1000000;
+        //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
+        if (failedConnectionList.containsKey(connectionString)) {
+            if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
+                failedConnectionList.remove(connectionString);
+            } else {
+                logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
+                return resp;
+            }
+        }
+
+        try {
+            connection = driverManager.getConnection(connectionString);
+            if (connection.isConnected() == false) {
+                logger.error("Get Connection returned a connection that isn't connected");
+                try {
+                  connection.close();
+                } catch (Exception e) {
+                  failedConnectionList.put(connectionString, System.currentTimeMillis());
+                  logger.warn("Close Failed" + e);
+                }
+                return resp;
+            }
+            logger.debug(connectionString + " Connected");
+        } catch (PlcConnectionException e) {
+            logger.error("Failed to connect to device, error raised - " + e);
+            failedConnectionList.put(connectionString, System.currentTimeMillis());
+            return resp;
+        }
+
+        if (!connection.getMetadata().canRead()) {
+            logger.error("This connection doesn't support reading.");
+            return resp;
+        }
+
+        long timeout = DEFAULT_TIMEOUT;
         if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
             timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval()*1000;
         }
@@ -210,35 +244,44 @@ public class Plc4xCommunication {
 
         PlcReadResponse response = null;
         try {
-          response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
-      } catch (InterruptedException | ExecutionException | TimeoutException e) {
-          logger.warn("Failed" + e);
-          try {
-            connection.close();
-        } catch (Exception exception) {
-            logger.warn("Close Failed" + exception);
-          }
+            response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            logger.warn(e + " Occurred while reading value, using timeout of " + timeout);
+            try {
+                connection.close();
+            } catch (Exception exception) {
+                logger.warn("Closing Connection Failed with error - " + exception);
+            }
+            return resp;
         }
-
-        Variant resp = null;
 
         for (String fieldName : response.getFieldNames()) {
           if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
               int numValues = response.getNumberOfValues(fieldName);
               if(numValues == 1) {
-                  resp = new Variant(response.getObject(fieldName));
+                  if (response.getObject(fieldName) instanceof BigInteger) {
+                      resp = new Variant(ulong((BigInteger) response.getObject(fieldName)));
+                  } else {
+                      resp = new Variant(response.getObject(fieldName));
+                  }
               } else {
                 Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
                 for (int i = 0; i < numValues; i++) {
-                    Array.set(array, i, response.getObject(fieldName, i));
+                    if (response.getObject(fieldName, i) instanceof BigInteger) {
+                        Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                    } else {
+                        Array.set(array, i, response.getObject(fieldName, i));
+                    }
                 }
                 resp = new Variant(array);
               }
           }
         }
+
         try {
           connection.close();
         } catch (Exception e) {
+          failedConnectionList.put(connectionString, System.currentTimeMillis());
           logger.warn("Close Failed" + e);
         }
         return resp;
