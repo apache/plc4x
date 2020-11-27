@@ -19,6 +19,7 @@
 version: 0.1
 #dir: {directory.here}
 name: Plc4x.OPC.UA.Server
+disableInsecureEndpoint: true
 tcpPort: 12687
 httpPort: 8445
 devices:

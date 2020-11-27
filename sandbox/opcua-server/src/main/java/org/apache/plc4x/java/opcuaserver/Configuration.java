@@ -44,6 +44,9 @@ public class Configuration {
     private String name;
 
     @JsonProperty
+    private Boolean disableInsecureEndpoint = true;
+
+    @JsonProperty
     private List<DeviceConfiguration> devices;
 
     @JsonProperty
@@ -61,6 +64,10 @@ public class Configuration {
 
     public String getName() {
         return name;
+    }
+
+    public boolean getDisableInsecureEndpoint() {
+        return disableInsecureEndpoint;
     }
 
     public String getDir() {

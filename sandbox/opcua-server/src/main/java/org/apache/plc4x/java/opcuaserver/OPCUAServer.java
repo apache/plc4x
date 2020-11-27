@@ -23,6 +23,7 @@ import java.io.File;
 import java.security.KeyPair;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -275,6 +276,8 @@ public class OPCUAServer {
         List<String> bindAddresses = newArrayList();
         bindAddresses.add("0.0.0.0");
 
+        List<String> localAddresses = new ArrayList<>(bindAddresses);
+
         Set<String> hostnames = new LinkedHashSet<>();
         hostnames.add(HostnameUtil.getHostname());
         hostnames.addAll(HostnameUtil.getHostnames("0.0.0.0"));
@@ -292,12 +295,22 @@ public class OPCUAServer {
                         USER_TOKEN_POLICY_X509);
 
 
-                EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
-                    .setSecurityPolicy(SecurityPolicy.None)
-                    .setSecurityMode(MessageSecurityMode.None);
-
-                endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
-                endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
+                if (!config.getDisableInsecureEndpoint()) {
+                    EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
+                        .setSecurityPolicy(SecurityPolicy.None)
+                        .setSecurityMode(MessageSecurityMode.None);
+                        endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
+                        endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
+                } else {
+                    //Always add an unsecured endpoint to localhost, this is a work around for Milo throughing an exception if it isn't here.
+                    if (hostname.equals("127.0.0.1")) {
+                        EndpointConfiguration.Builder noSecurityBuilder = builder.copy()
+                            .setSecurityPolicy(SecurityPolicy.None)
+                            .setSecurityMode(MessageSecurityMode.None);
+                            endpointConfigurations.add(buildTcpEndpoint(noSecurityBuilder));
+                            endpointConfigurations.add(buildHttpsEndpoint(noSecurityBuilder));
+                    }
+                }
 
                 // TCP Basic256Sha256 / SignAndEncrypt
                 endpointConfigurations.add(buildTcpEndpoint(
@@ -317,6 +330,7 @@ public class OPCUAServer {
                     .setPath("/discovery")
                     .setSecurityPolicy(SecurityPolicy.None)
                     .setSecurityMode(MessageSecurityMode.None);
+
 
                 endpointConfigurations.add(buildTcpEndpoint(discoveryBuilder));
                 endpointConfigurations.add(buildHttpsEndpoint(discoveryBuilder));
