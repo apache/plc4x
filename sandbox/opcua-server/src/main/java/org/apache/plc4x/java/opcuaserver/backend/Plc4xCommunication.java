@@ -216,7 +216,7 @@ public class Plc4xCommunication {
                 connection.connect();
             }
             logger.debug(connectionString + " Connected");
-        } catch (Exception e) {
+        } catch (PlcConnectionException e) {
             logger.error("Failed to connect to device, error raised - " + e);
             failedConnectionList.put(connectionString, System.currentTimeMillis());
             return resp;
@@ -224,6 +224,11 @@ public class Plc4xCommunication {
 
         if (!connection.getMetadata().canRead()) {
             logger.error("This connection doesn't support reading.");
+            try {
+                connection.close();
+            } catch (Exception exception) {
+                logger.warn("Closing connection failed with error - " + exception);
+            }
             return resp;
         }
 
@@ -246,7 +251,7 @@ public class Plc4xCommunication {
             try {
                 connection.close();
             } catch (Exception exception) {
-                logger.warn("Closing Connection Failed with error - " + exception);
+                logger.warn("Closing connection failed with error - " + exception);
             }
             return resp;
         }
@@ -278,7 +283,7 @@ public class Plc4xCommunication {
           connection.close();
         } catch (Exception e) {
           failedConnectionList.put(connectionString, System.currentTimeMillis());
-          logger.warn("Close Failed" + e);
+          logger.warn("Closing connection failed with error " + e);
         }
         return resp;
     }
@@ -287,8 +292,22 @@ public class Plc4xCommunication {
         PlcConnection connection = null;
         try {
           connection = driverManager.getConnection(connectionString);
+          if (connection.isConnected() == false) {
+              logger.debug("getConnection() returned a connection that isn't connected");
+              connection.connect();
+          }
         } catch (PlcConnectionException e) {
           logger.warn("Failed" + e);
+        }
+
+        if (!connection.getMetadata().canWrite()) {
+            logger.error("This connection doesn't support writing.");
+            try {
+              connection.close();
+            } catch (Exception e) {
+              logger.warn("Closing connection failed with error " + e);
+            }
+            return;
         }
 
         // Create a new read request:
@@ -315,7 +334,7 @@ public class Plc4xCommunication {
         try {
           connection.close();
         } catch (Exception e) {
-          logger.warn("Close Failed" + e);
+          logger.warn("Closing Connection Failed with error " + e);
         }
         return;
     }
