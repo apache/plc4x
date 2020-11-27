@@ -30,9 +30,7 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.osgi.service.component.annotations.Component;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
 
     @Override

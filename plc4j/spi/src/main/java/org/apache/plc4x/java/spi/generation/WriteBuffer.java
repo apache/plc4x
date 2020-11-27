@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
 public class WriteBuffer {
 
     private final ByteBuffer bb;
-    private final BufferByteOutput<ByteBuffer> bbo;
+    private final BufferByteOutput bbo;
     private final MyDefaultBitOutput bo;
     private final boolean littleEndian;
 
@@ -41,7 +41,7 @@ public class WriteBuffer {
 
     public WriteBuffer(int size, boolean littleEndian) {
         bb = ByteBuffer.allocate(size);
-        bbo = new BufferByteOutput<>(bb);
+        bbo = new BufferByteOutput(bb);
         bo = new MyDefaultBitOutput(bbo);
         this.littleEndian = littleEndian;
     }
