@@ -141,7 +141,6 @@
     <dependency>
       <groupId>com.github.purejavacomm</groupId>
       <artifactId>purejavacomm</artifactId>
-      <version>1.0.2.RELEASE</version>
     </dependency>
 
     <dependency>

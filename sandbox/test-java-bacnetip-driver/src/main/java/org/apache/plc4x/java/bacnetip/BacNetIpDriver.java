@@ -31,12 +31,10 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     public static final int BACNET_IP_PORT = 47808;

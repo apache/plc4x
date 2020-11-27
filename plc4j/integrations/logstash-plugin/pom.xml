@@ -17,7 +17,8 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -58,7 +59,7 @@
                 def currentVersion = project.version as String
                 def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
                 print "\nCurrent version:                  " + currentVersion
-                if(match.count &gt;= 1) {
+                if (match.count &gt;= 1) {
                   def majorVersion = match[0][1] as Integer
                   def minorVersion = match[0][2] as Integer
                   def bugfixVersion = match[0][3] as Integer
@@ -88,7 +89,9 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://repo1.maven.org/maven2/org/jruby/jruby-dist/${jruby.version}/jruby-dist-${jruby.version}-bin.tar.gz</url>
+              <url>
+                https://repo1.maven.org/maven2/org/jruby/jruby-dist/${jruby.version}/jruby-dist-${jruby.version}-bin.tar.gz
+              </url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/jruby</outputDirectory>
             </configuration>
@@ -130,7 +133,9 @@
             </goals>
             <configuration>
               <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
-              <outputFile>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}/logstash-input-plc4x-${current-full-version}.jar</outputFile>
+              <outputFile>
+                ${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}/logstash-input-plc4x-${current-full-version}.jar
+              </outputFile>
               <!-- The output is just an intermediate file, so make sure it's not installed or deployed -->
               <shadedArtifactAttached>false</shadedArtifactAttached>
             </configuration>
@@ -237,18 +242,24 @@
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-    <!--dependency>
-        <groupId>org.apache.plc4x</groupId>
-        <artifactId>plc4j-driver-ads</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.plc4x</groupId>
-        <artifactId>plc4j-driver-ethernet-ip</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
-        <scope>runtime</scope>
-      </dependency-->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
