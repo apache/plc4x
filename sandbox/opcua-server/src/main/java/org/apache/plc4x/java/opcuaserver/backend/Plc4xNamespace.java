@@ -206,14 +206,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                 node.getFilterChain().addLast(
                     filter,
                     AttributeFilters.getValue(
-                        ctx -> {
-                            Variant retValue = plc4xServer.getValue(ctx, tag, connectionString);
-                            if (retValue == null) {
-                                return new DataValue(new Variant(null), StatusCode.BAD);
-                            } else {
-                                return new DataValue(retValue, StatusCode.GOOD);
-                            }
-                        }
+                        ctx -> plc4xServer.getValue(ctx, tag, connectionString)
                     )
                 );
 

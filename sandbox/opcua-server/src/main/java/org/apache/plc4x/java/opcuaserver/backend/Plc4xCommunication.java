@@ -60,6 +60,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.ExtensionObject;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
+import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.XmlElement;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
@@ -193,9 +194,9 @@ public class Plc4xCommunication {
         }
     }
 
-    public Variant getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
+    public DataValue getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
         PlcConnection connection = null;
-        Variant resp = null;
+        DataValue resp = new DataValue(new Variant(null), StatusCode.BAD);
 
         //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
         if (failedConnectionList.containsKey(connectionString)) {
@@ -207,20 +208,15 @@ public class Plc4xCommunication {
             }
         }
 
+        //Try to connect to PLC
         try {
             connection = driverManager.getConnection(connectionString);
             if (connection.isConnected() == false) {
-                logger.error("Get Connection returned a connection that isn't connected");
-                try {
-                  connection.close();
-                } catch (Exception e) {
-                  failedConnectionList.put(connectionString, System.currentTimeMillis());
-                  logger.warn("Close Failed" + e);
-                }
-                return resp;
+                logger.debug("getConnection() returned a connection that isn't connected");
+                connection.connect();
             }
             logger.debug(connectionString + " Connected");
-        } catch (PlcConnectionException e) {
+        } catch (Exception e) {
             logger.error("Failed to connect to device, error raised - " + e);
             failedConnectionList.put(connectionString, System.currentTimeMillis());
             return resp;
@@ -246,7 +242,7 @@ public class Plc4xCommunication {
         try {
             response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.warn(e + " Occurred while reading value, using timeout of " + timeout);
+            logger.warn(e + " Occurred while reading value, using timeout of " + timeout/1000 + "ms");
             try {
                 connection.close();
             } catch (Exception exception) {
@@ -260,9 +256,9 @@ public class Plc4xCommunication {
               int numValues = response.getNumberOfValues(fieldName);
               if(numValues == 1) {
                   if (response.getObject(fieldName) instanceof BigInteger) {
-                      resp = new Variant(ulong((BigInteger) response.getObject(fieldName)));
+                      resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
                   } else {
-                      resp = new Variant(response.getObject(fieldName));
+                      resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
                   }
               } else {
                 Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
@@ -273,7 +269,7 @@ public class Plc4xCommunication {
                         Array.set(array, i, response.getObject(fieldName, i));
                     }
                 }
-                resp = new Variant(array);
+                resp = new DataValue(new Variant(array), StatusCode.GOOD);
               }
           }
         }
