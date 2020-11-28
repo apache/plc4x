@@ -95,10 +95,16 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
         }
         <#list type.parserArguments as parserArgument>
-        if(!(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)})) {
-            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} but was " + args[${parserArgument?index}].getClass().getName());
+        ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name};
+        if(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) {
+            ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
+            <#if helper.isSimpleTypeReference(parserArgument.type)>
+        } else if (args[${parserArgument?index}] instanceof String) {
+            ${parserArgument.name} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}.valueOf((String) args[${parserArgument?index}]);
+            </#if>
+        } else {
+            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} or a string which is parseable but was " + args[${parserArgument?index}].getClass().getName());
         }
-        ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
         </#list>
         </#if>
         return ${type.name}IO.staticParse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
@@ -246,7 +252,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign enumField = field>
 
         // Enum field (${enumField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
         <#break>
     <#case "implicit">
         <#assign implicitField = field>
@@ -338,8 +344,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            boolean _needsPadding = (boolean) ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)}));
-            if(_needsPadding) {
+            int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            while ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
                 ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
             }
@@ -369,7 +375,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${type.name}Builder builder = null;
         <#list switchField.cases as case>
-        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
+        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{
             builder = ${case.name}IO.staticParse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
@@ -505,8 +511,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            boolean _needsPadding = (boolean) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
-            if(_needsPadding) {
+            int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            while (_timesPadding-- > 0) {
                 ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
                 ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
             }

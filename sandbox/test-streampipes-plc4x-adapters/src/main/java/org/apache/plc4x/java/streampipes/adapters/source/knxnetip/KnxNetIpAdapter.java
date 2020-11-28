@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.streampipes.adapters.source.knxnetip;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxAddress;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.slf4j.Logger;
@@ -215,7 +215,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         return Constants.KNXNET_ID;
     }
 
-    private String addressToString(KNXAddress knxAddress) {
+    private String addressToString(KnxAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
     }
 

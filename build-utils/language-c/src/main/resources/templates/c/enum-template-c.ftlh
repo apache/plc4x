@@ -37,6 +37,7 @@ ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(t
 */
 
 #include "${helper.camelCaseToSnakeCase(typeName)}.h"
+#include <string.h>
 
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
@@ -54,18 +55,43 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
   return ${helper.getCTypeName(type.name)}_null_const;
 }
 
-<#--
-    If this enum also defines constant values, output one function for each.
-    Each of these functions consist of a simple switch statement using the enum as switch-value
-    returning the constant for a given enum value.
--->
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string) {
+<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    if(strcmp(value_string, "${enumValue.name}") == 0) {
+        return ${helper.getCTypeName(type.name)}_${enumValue.name};
+    }
+</#list>
+    return -1;
+}
+
+int ${helper.getCTypeName(type.name)}_num_values() {
+  return ${type.enumValues?size};
+}
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_index(int index) {
+    switch(index) {
+    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+      case ${enumValue?index}: {
+        return ${helper.getCTypeName(type.name)}_${enumValue.name};
+      }
+    </#list>
+      default: {
+        return -1;
+      }
+    }
+}
+    <#--
+        If this enum also defines constant values, output one function for each.
+        Each of these functions consist of a simple switch statement using the enum as switch-value
+        returning the constant for a given enum value.
+    -->
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
 
 ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} ${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(${helper.getCTypeName(type.name)} value) {
   switch(value) {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
-    case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */
+    case ${helper.getCTypeName(type.name)}_${enumValue.name}: { /* '${enumValue.value}' */
       return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc};
     }<#sep>
     </#sep></#list>

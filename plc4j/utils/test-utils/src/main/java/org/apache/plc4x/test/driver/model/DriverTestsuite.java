@@ -22,20 +22,24 @@ import org.apache.plc4x.java.api.PlcConnection;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class DriverTestsuite {
 
     private final String name;
-    private final PlcConnection connection;
+    private final String driverName;
+    private final Map<String, String> driverParameters;
     private final List<TestStep> setupSteps;
     private final List<TestStep> teardownSteps;
     private final List<Testcase> testcases;
     private final boolean bigEndian;
 
-    public DriverTestsuite(String name, PlcConnection connection, List<TestStep> setupSteps,
-                           List<TestStep> teardownSteps, List<Testcase> testcases, boolean bigEndian) {
+    public DriverTestsuite(String name, String driverName, Map<String, String> driverParameters,
+                           List<TestStep> setupSteps, List<TestStep> teardownSteps,
+                           List<Testcase> testcases, boolean bigEndian) {
         this.name = name;
-        this.connection = connection;
+        this.driverName = driverName;
+        this.driverParameters = driverParameters;
         this.setupSteps = setupSteps;
         this.teardownSteps = teardownSteps;
         this.testcases = testcases;
@@ -46,8 +50,12 @@ public class DriverTestsuite {
         return name;
     }
 
-    public PlcConnection getConnection() {
-        return connection;
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public Map<String, String>  getDriverParameters() {
+        return driverParameters;
     }
 
     public List<TestStep> getSetupSteps() {

@@ -252,6 +252,7 @@
             </goals>
             <configuration>
               <failOnWarning>true</failOnWarning>
+              <ignoreNonCompile>true</ignoreNonCompile>
               <ignoredDependencies>
                 <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>

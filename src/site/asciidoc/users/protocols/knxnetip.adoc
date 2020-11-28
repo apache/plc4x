@@ -64,9 +64,10 @@
 |
 | `knxproj-file-path`
 | Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages. For this the user needs to provide the project file created in the KNX IDE `ETS5` to provide the missing information. Only if this file is provided, will the driver be able to decode the data entirely. If this parameter is omitted, only raw KNX payload will be returned.
+NOTE: This setting is currently only supported in the Java implementation
 
 |
-| `group-address-type` (3)
+| `group-address-num-levels` (3)
 | KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:
 
 - 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}

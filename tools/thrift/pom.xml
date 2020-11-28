@@ -397,7 +397,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-boost</artifactId>
-      <version>${project.version}</version>
+      <version>0.8.0-SNAPSHOT</version>
       <type>zip</type>
       <classifier>lib-${os.classifier}</classifier>
       <scope>provided</scope>

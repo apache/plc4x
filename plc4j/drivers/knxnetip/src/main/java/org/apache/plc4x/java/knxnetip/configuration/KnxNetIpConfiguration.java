@@ -38,9 +38,9 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
 
-    @ConfigurationParameter("group-address-type")
+    @ConfigurationParameter("group-address-num-levels")
     @IntDefaultValue(3)
-    public int groupAddressType = 3;
+    public int groupAddressNumLevels = 3;
 
     @ConfigurationParameter("connection-type")
     @StringDefaultValue("LINK_LAYER")
@@ -62,12 +62,12 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
         this.knxprojFilePath = knxprojFilePath;
     }
 
-    public int getGroupAddressType() {
-        return groupAddressType;
+    public int getGroupAddressNumLevels() {
+        return groupAddressNumLevels;
     }
 
-    public void setGroupAddressType(int groupAddressType) {
-        this.groupAddressType = groupAddressType;
+    public void setGroupAddressNumLevels(int groupAddressNumLevels) {
+        this.groupAddressNumLevels = groupAddressNumLevels;
     }
 
     public String getConnectionType() {
@@ -122,7 +122,7 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     public String toString() {
         return "Configuration{" +
             "knxprojFilePath=" + knxprojFilePath + ", " +
-            "groupAddressType=" + groupAddressType +
+            "groupAddressNumLevels=" + groupAddressNumLevels +
             '}';
     }
 

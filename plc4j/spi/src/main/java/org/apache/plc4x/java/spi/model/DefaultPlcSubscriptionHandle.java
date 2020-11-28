@@ -21,13 +21,14 @@ package org.apache.plc4x.java.spi.model;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 
 import java.util.Collections;
 import java.util.function.Consumer;
 
 // Warning: do not override equals and hashCode as these should not include the plcSubscriber.
-public class DefaultPlcSubscriptionHandle implements InternalPlcSubscriptionHandle {
+public class DefaultPlcSubscriptionHandle implements PlcSubscriptionHandle {
 
     private final PlcSubscriber plcSubscriber;
 

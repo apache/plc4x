@@ -64,7 +64,7 @@ public class OpcuaPlcDriverTest {
     private static final String DATE_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/DateTime";
     private static final String DURATION_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Duration";
     private static final String GUID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Guid";
-    private static final String LOCALICED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
+    private static final String LOCALISED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
     private static final String NODE_ID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/NodeId";
     private static final String QUALIFIED_NAM_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/QualifiedName";
     private static final String UTC_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/UtcTime";
@@ -251,7 +251,7 @@ public class OpcuaPlcDriverTest {
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
         } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+            fail("Exception during writeVariables Test EXCEPTION: " + e.getMessage());
         }
     }
 

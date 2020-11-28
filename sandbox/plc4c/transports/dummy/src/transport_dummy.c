@@ -25,5 +25,10 @@ plc4c_transport *plc4c_transport_dummy_create() {
   plc4c_transport *transport =
       (plc4c_transport *)malloc(sizeof(plc4c_transport));
   transport->transport_code = "dummy";
+  transport->transport_name = "Dummy driver not actually doing any IO";
+  transport->open = NULL;
+  transport->close = NULL;
+  transport->send_message = NULL;
+  transport->select_message = NULL;
   return transport;
 }

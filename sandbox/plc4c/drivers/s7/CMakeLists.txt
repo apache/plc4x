@@ -18,13 +18,19 @@
 ]]
 
 include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/s7/includes")
+    "../../generated-sources/s7/include")
 
 # Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/generated-sources/s7/src/*.c")
+file(GLOB generatedSources "../../generated-sources/s7/src/*.c")
 
 add_library(plc4c-driver-s7
         src/driver_s7.c
+        src/driver_s7_encode_decode.c
+        src/driver_s7_packets.c
+        src/driver_s7_sm_connect.c
+        src/driver_s7_sm_disconnect.c
+        src/driver_s7_sm_read.c
+        src/driver_s7_sm_write.c
         ${generatedSources})
 
 target_link_libraries(plc4c-driver-s7
@@ -32,6 +38,7 @@ target_link_libraries(plc4c-driver-s7
 
 if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-driver-s7-test
+            test/s7_address_parser_test.c
             test/s7_test.c
             )
     target_link_libraries(plc4c-driver-s7-test

@@ -24,6 +24,7 @@ import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,6 +73,13 @@ public class Ets5Parser {
                 Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
                 NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
+
+                // Build an index of the internal data-types.
+                Map<String, KnxDatapointType> knxDatapointTypeMap = new HashMap<>();
+                for (KnxDatapointType value : KnxDatapointType.values()) {
+                    knxDatapointTypeMap.put(value.getMainNumber() + "#" + value.getSubNumber(), value);
+                }
+
                 Map<String, AddressType> addressTypes = new HashMap<>();
                 for (int i = 0; i < datapointSubtypeNodes.getLength(); i++) {
                     final Element datapointSubtypeNode = (Element) datapointSubtypeNodes.item(i);
@@ -92,7 +100,24 @@ public class Ets5Parser {
                 }
                 Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
 
-                final Map<String, Function> groupAddressRefs = new HashMap();
+                final Map<String, String> topologyNames = new HashMap<>();
+                final XPathExpression topology = xPath.compile("//Topology");
+                final Element topologyElement = (Element) topology.evaluate(projectDoc, XPathConstants.NODE);
+                final NodeList areas = topologyElement.getElementsByTagName("Area");
+                for (int a = 0; a < areas.getLength(); a++) {
+                    final Element areaNode = (Element) areas.item(a);
+                    final String curAreaAddress = areaNode.getAttribute("Address");
+                    topologyNames.put(curAreaAddress, areaNode.getAttribute("Name"));
+
+                    final NodeList lines = areaNode.getElementsByTagName("Line");
+                    for(int l = 0; l < lines.getLength(); l++) {
+                        final Element lineNode = (Element) lines.item(l);
+                        final String curLineAddress = curAreaAddress + "/" + lineNode.getAttribute("Address");
+                        topologyNames.put(curLineAddress, lineNode.getAttribute("Name"));
+                    }
+                }
+
+                final Map<String, Function> groupAddressRefs = new HashMap<>();
                 final XPathExpression xpathGroupAddressRef = xPath.compile("//GroupAddressRef");
                 NodeList groupAddressRefNodes = (NodeList) xpathGroupAddressRef.evaluate(projectDoc, XPathConstants.NODESET);
                 for (int i = 0; i < groupAddressRefNodes.getLength(); i++) {
@@ -126,10 +151,14 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, addressType, function);
+                    // Lookup the driver internal data-type.
+                    final KnxDatapointType datapointType = knxDatapointTypeMap.get(
+                        addressType.getMainType() + "#" + addressType.getSubType());
+
+                    GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, datapointType, function);
                     groupAddresses.put(knxGroupAddress, groupAddress);
                 }
-                return new Ets5Model(groupAddressStyleCode, groupAddresses);
+                return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }
         } catch (IOException e) {
             // Zip and Xml Stuff

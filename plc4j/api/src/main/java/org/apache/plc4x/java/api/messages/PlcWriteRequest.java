@@ -18,11 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import org.apache.plc4x.java.api.value.PlcValue;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcWriteRequest extends PlcFieldRequest {
@@ -32,38 +29,15 @@ public interface PlcWriteRequest extends PlcFieldRequest {
 
     int getNumberOfValues(String name);
 
+    PlcValue getPlcValue(String name);
+
     interface Builder extends PlcRequestBuilder {
 
         @Override
         PlcWriteRequest build();
 
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values);
 
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Byte... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Short... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Integer... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigInteger... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Long... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Float... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Double... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigDecimal... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, String... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
-
-        PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
-
-        <T> PlcWriteRequest.Builder addItem(String name, String fieldQuery, T... values);
     }
 
 }

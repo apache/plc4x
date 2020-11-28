@@ -32,7 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcShort;
+import org.apache.plc4x.java.spi.values.PlcINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
@@ -136,7 +136,7 @@ public class WaterTankService {
 
                     short value = (short) new Random().nextInt(1024);
                     Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-                    values.put("waterLevel", new ResponseItem<>(PlcResponseCode.OK, new PlcShort(value)));
+                    values.put("waterLevel", new ResponseItem<>(PlcResponseCode.OK, new PlcINT(value)));
                     DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), values);
 
                     handler.accept(event);

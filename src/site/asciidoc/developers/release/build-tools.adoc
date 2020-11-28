@@ -45,14 +45,14 @@ This can and should be automated by the `maven-release-plugin`.
 Per default the plugin will ask for the working copy version during the build execution.
 This is the version the `develop` branch will be changed to.
 
-   mvn release:branch -DbranchName=release/code-generation/{minor-version}
+   mvn release:branch -DbranchName=releases/code-generation/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{project.version}` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -DbranchName=release/code-generation/{current-short-version}
+   mvn release:branch -DbranchName=releases/code-generation/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -66,7 +66,7 @@ Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `release/code-generation/{current-short-version}` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `releases/code-generation/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
@@ -122,7 +122,7 @@ After that, the following command will to all preparation steps for the release:
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/code-generation/{release-version}` (`release/code-generation/{current-full-version}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/{release-version}` (`releases/code-generation/{current-full-version}` in our case)
 3. The next development version (The version present in the pom after the release) (`{current-next-minor-version}` in our case)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -134,7 +134,7 @@ What the plugin now does, is automatically execute the following operations:
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (commit message: `[maven-release-plugin] prepare release release/code-generation/{current-full-version}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release releases/code-generation/{current-full-version}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
@@ -148,7 +148,7 @@ is in the correct state. Please select the release branch and verify the commit 
 
 image::release-git-history.png[]
 
-It is important that the commit with the message "[maven-release-plugin] prepare release release/code-generation/{current-full-version}" is tagged with the release tag (in this case release/code-generation/{current-full-version})
+It is important that the commit with the message "[maven-release-plugin] prepare release releases/code-generation/{current-full-version}" is tagged with the release tag (in this case releases/code-generation/{current-full-version})
 
 If you check the commit itself, it should mainly consist of version updates like this:
 
@@ -222,13 +222,19 @@ The directory structure of this directory is as follows:
 [subs="verbatim,attributes"]
 ----
    ./KEYS
-   ./{current-full-version}/build-tools/code-generation
-   ./{current-full-version}/build-tools/code-generation/rc1
-   ./{current-full-version}/build-tools/code-generation/rc1/README
-   ./{current-full-version}/build-tools/code-generation/rc1/RELEASE_NOTES
-   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip
-   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.asc
-   ./{current-full-version}/build-tools/code-generation/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.sha512
+   ./build-tools/code-generation/{current-full-version}
+   ./build-tools/code-generation/{current-full-version}/rc1
+   ./build-tools/code-generation/{current-full-version}/rc1/README
+   ./build-tools/code-generation/{current-full-version}/rc1/RELEASE_NOTES
+   ./build-tools/code-generation/{current-full-version}/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip
+   ./build-tools/code-generation/{current-full-version}/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.asc
+   ./build-tools/code-generation/{current-full-version}/rc1/apache-plc4x-code-generation-{current-full-version}-source-release.zip.sha512
+----
+
+I usually prepare exactly the same directory structure, starting with the {current-full-version} locally and then just import everything using the following command:
+
+----
+svn import {current-full-version} https://dist.apache.org/repos/dist/dev/plc4x/build-tools/code-generation/{current-full-version} -m"Staging of rc1 of PLC4X Build-Tools (Code-Generation) {current-full-version}"
 ----
 
 The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
@@ -240,7 +246,7 @@ It should contain all the information needed.
 Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
 Ideally you just copy them there from there.
 
-All of the three `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
+All of the three `*-source-relese.zip*` artifacts should be located in the directory: `code-generation/target/checkout/code-generation/target`
 
 So after committing these files to SVN you are ready to start the vote.
 
@@ -266,7 +272,7 @@ The following would be the one used to do our first TLP release:
    are required to pass.
 
    Repository: https://gitbox.apache.org/repos/asf/plc4x-build-tools.git
-   Release tag: release/code-generation/{current-full-version}
+   Release tag: releases/code-generation/{current-full-version}
    Hash for the release tag: {replacethiswiththerealgitcommittag}
 
    Per [3] "Before voting +1 PMC members are required to download

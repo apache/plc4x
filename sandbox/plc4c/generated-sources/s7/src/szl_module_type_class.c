@@ -18,6 +18,7 @@
 */
 
 #include "szl_module_type_class.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,3 +28,42 @@ plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_cl
   return plc4c_s7_read_write_szl_module_type_class_null_const;
 }
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_of(char* value_string) {
+    if(strcmp(value_string, "CPU") == 0) {
+        return plc4c_s7_read_write_szl_module_type_class_CPU;
+    }
+    if(strcmp(value_string, "IM") == 0) {
+        return plc4c_s7_read_write_szl_module_type_class_IM;
+    }
+    if(strcmp(value_string, "FM") == 0) {
+        return plc4c_s7_read_write_szl_module_type_class_FM;
+    }
+    if(strcmp(value_string, "CP") == 0) {
+        return plc4c_s7_read_write_szl_module_type_class_CP;
+    }
+    return -1;
+}
+
+int plc4c_s7_read_write_szl_module_type_class_num_values() {
+  return 4;
+}
+
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return plc4c_s7_read_write_szl_module_type_class_CPU;
+      }
+      case 1: {
+        return plc4c_s7_read_write_szl_module_type_class_IM;
+      }
+      case 2: {
+        return plc4c_s7_read_write_szl_module_type_class_FM;
+      }
+      case 3: {
+        return plc4c_s7_read_write_szl_module_type_class_CP;
+      }
+      default: {
+        return -1;
+      }
+    }
+}

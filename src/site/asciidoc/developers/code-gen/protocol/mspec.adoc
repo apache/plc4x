@@ -230,11 +230,13 @@ See also:
 
 ==== padding Field
 
-A padding field outputs additional padding data, if an expression evaluates to `true`.
+A padding field allows aligning of data blocks.
+It outputs additional padding data, given amount of times specified by padding expression.
+Padding is added only when result of expression is bigger than zero.
 
     [padding {simple-type} {size} '{pading-value}' '{padding-expression}']
 
-When parsing a `padding` field is just consumed without being made available as property or local valiable if the `padding-expression` evaluates to true.
+When parsing a `padding` field is just consumed without being made available as property or local variable if the `padding-expression` evaluates to value greater than zero.
 If it doesn't, it is just skipped.
 
 This field doesn't keep any data in memory.

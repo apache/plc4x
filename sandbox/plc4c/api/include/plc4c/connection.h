@@ -186,11 +186,19 @@ plc4c_driver *plc4c_connection_get_driver(plc4c_connection *connection);
 /**
  * Sets a plc4c_driver for a given connection
  * @param connection plc4c_connection
- * @param plc4c_driver
+ * @param plc4c_driver driver
  */
 void plc4c_connection_set_driver(plc4c_connection *connection,
                                  plc4c_driver *driver);
 
+/**
+ * Sets the configuration for a given connection.
+ *
+ * @param connection plc4c connection
+ * @param configuration configuration
+ */
+void plc4c_connection_set_configuration(plc4c_connection *connection,
+                                        void *configuration);
 /**
  * Check if an error occurred while connecting.
  *

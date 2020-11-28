@@ -22,15 +22,16 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
 
 public class GroupAddress {
 
     private final String groupAddress;
     private final String name;
-    private final AddressType type;
+    private final KnxDatapointType type;
     private final Function function;
 
-    public GroupAddress(String groupAddress, String name, AddressType type, Function function) {
+    public GroupAddress(String groupAddress, String name, KnxDatapointType type, Function function) {
         this.groupAddress = groupAddress;
         this.name = name;
         this.type = type;
@@ -45,7 +46,7 @@ public class GroupAddress {
         return name;
     }
 
-    public AddressType getType() {
+    public KnxDatapointType getType() {
         return type;
     }
 

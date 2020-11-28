@@ -31,8 +31,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-
-import java.util.concurrent.CompletableFuture;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -51,30 +50,35 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         }
 
         // Get an instance of a component able to write to a PLC.
-        PlcConnection connection = getConnection();
-        if (!connection.getMetadata().canWrite()) {
-            throw new ProcessException("Writing not supported by connection");
-        }
-
-        // Prepare the request.
-        PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-        flowFile.getAttributes().forEach((field, value) -> {
-            String address = getAddress(field);
-            if(address != null) {
-                // TODO: Convert the String into the right type ...
-                builder.addItem(field, address, Boolean.valueOf(value));
+        try(PlcConnection connection = new PooledPlcDriverManager().getConnection(getConnectionString())) {
+            if (!connection.getMetadata().canWrite()) {
+                throw new ProcessException("Writing not supported by connection");
             }
-        });
-        PlcWriteRequest writeRequest = builder.build();
 
-        // Send the request to the PLC.
-        try {
-            final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
-            // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
-            session.transfer(flowFile, SUCCESS);
+            // Prepare the request.
+            PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            flowFile.getAttributes().forEach((field, value) -> {
+                String address = getAddress(field);
+                if (address != null) {
+                    // TODO: Convert the String into the right type ...
+                    builder.addItem(field, address, Boolean.valueOf(value));
+                }
+            });
+            PlcWriteRequest writeRequest = builder.build();
+
+            // Send the request to the PLC.
+            try {
+                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
+                // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
+                session.transfer(flowFile, SUCCESS);
+            } catch (Exception e) {
+                flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
+                session.transfer(flowFile, FAILURE);
+            }
+        } catch (ProcessException e) {
+            throw e;
         } catch (Exception e) {
-            flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
-            session.transfer(flowFile, FAILURE);
+            throw new ProcessException("Got an error while trying to get a connection", e);
         }
     }
 

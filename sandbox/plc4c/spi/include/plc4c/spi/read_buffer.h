@@ -88,4 +88,11 @@ plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_
 
 plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf, uint8_t num_bits, char* encoding, char** value);
 
+/**
+ * Converts the bytes contained in a list into a '\0' terminated string.
+ * @param list of bytes
+ * @return '\0' terminated string
+ */
+char* list_to_string(plc4c_list* list);
+
 #endif  // PLC4C_READ_BUFFER_H_

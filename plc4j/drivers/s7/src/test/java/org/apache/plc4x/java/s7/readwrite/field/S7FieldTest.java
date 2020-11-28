@@ -29,7 +29,7 @@ public class S7FieldTest {
     public void testPlcProxyAddress() {
         final S7Field s7Field = S7Field.of("10-01-00-01-00-2D-84-00-00-08");
         Assertions.assertEquals(TransportSize.BOOL, s7Field.getDataType());
-        Assertions.assertEquals(1, s7Field.getNumElements());
+        Assertions.assertEquals(1, s7Field.getNumberOfElements());
         Assertions.assertEquals(45, s7Field.getBlockNumber());
         Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Field.getMemoryArea());
         Assertions.assertEquals(1, s7Field.getByteOffset());

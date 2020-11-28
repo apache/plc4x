@@ -21,7 +21,6 @@ package org.apache.plc4x.java.examples.helloplc4x.write;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.value.PlcString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,13 @@ public class HelloPlc4xWrite {
             // - Give the single item requested the alias name "value"
             final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
             for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + i, options.getFieldAddress()[i], options.getFieldValues()[i]);
+                //If an array value is passed instead of a single value then convert to a String array
+                if ((options.getFieldValues()[i].charAt(0) == '[') && (options.getFieldValues()[i].charAt(options.getFieldValues()[i].length() - 1) == ']')) {
+                    String[] values = options.getFieldValues()[i].substring(1,options.getFieldValues()[i].length() - 1).split(",");
+                    builder.addItem("value-" + i, options.getFieldAddress()[i], values);
+                } else {
+                    builder.addItem("value-" + i, options.getFieldAddress()[i], options.getFieldValues()[i]);
+                }
             }
             PlcWriteRequest writeRequest = builder.build();
 

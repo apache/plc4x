@@ -25,7 +25,6 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -34,9 +33,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
-import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.io.InputStream;
@@ -432,9 +429,9 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional "encoding" field and an optional size.
-        if (ctx.encoding != null) {
+        if(simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
             int size = (ctx.size != null) ? Integer.parseInt(ctx.size.getText()) : -1;
-            String encoding = ctx.encoding.getText();
+            String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
             return new DefaultStringTypeReference(simpleBaseType, size, encoding);
         }
         // If a size it specified its a simple integer length based type.
@@ -452,6 +449,9 @@ public class MessageFormatListener extends MSpecBaseListener {
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATE) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
             return new DefaultTemporalTypeReference(simpleBaseType);
+        }
+        else if(simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
+            return new DefaultBooleanTypeReference();
         }
         // In all other cases (bit) it's just assume it's length it 1.
         else {

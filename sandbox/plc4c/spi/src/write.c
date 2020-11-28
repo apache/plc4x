@@ -36,8 +36,13 @@ plc4c_return_code plc4c_write_request_add_item(
     plc4c_write_request *write_request, char *address, plc4c_data *value) {
   // Parse an address string and get a driver-dependent data-structure
   // representing the address back.
-  plc4c_item *address_item =
-      write_request->connection->driver->parse_address_function(address);
+  plc4c_item *address_item = malloc(sizeof(plc4c_item));
+  if(address_item == NULL) {
+    return NO_MEMORY;
+  }
+
+  plc4c_return_code result =
+      write_request->connection->driver->parse_address_function(address, &(address_item->address));
 
   // Create a new value item, binding an address item to a value.
   plc4c_request_value_item *value_item =

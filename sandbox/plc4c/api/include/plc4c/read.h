@@ -37,6 +37,7 @@ void plc4c_read_request_destroy(plc4c_read_request *read_request);
  * @return return code
  */
 plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
+                                              char *field_name,
                                               char *address);
 
 /**

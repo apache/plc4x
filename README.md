@@ -51,9 +51,10 @@ Apache PLC4X is an effort to create a set of libraries for communicating with in
 We are planning on shipping libraries for usage in:
 
 1. Java
-2. C/C++ (not ready for usage)
-3. C# (.Net) (not ready for usage)
+2. Go
+3. C/C++ (not ready for usage)
 4. Python (not ready for usage)
+5. C# (.Net) (not ready for usage)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -71,6 +72,9 @@ Depending on the programming language, the usage will differ, therefore please g
 the language of choice.
 
 ### Java
+
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is exactly Java 11
+(Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/plc4j/gettingstarted.html](https://plc4x.apache.org/users/plc4j/gettingstarted.html)
@@ -194,14 +198,16 @@ If you don't want to bother setting up the environment on your normal system and
 ```
    docker build -t plc4x .
 
+   // Run a demo application (optional) ...
    docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
 ```
 
 ### Getting Started
 
-You must have Java 8 installed on your system and connectivity to Maven Central
-(for downloading external third party dependencies). Maven will be automatically
-downloaded and installed by the maven wrapper `mvnw`.
+You must have at least Java 8 installed on your system and connectivity to Maven Central
+(for downloading external third party dependencies). However in order to build all parts
+of PLC4X exactly Java 11 is required. Maven will be automatically downloaded and
+installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
@@ -212,6 +218,12 @@ Build PLC4X Java jars and install them in your local maven repository
 You can now construct Java applications that use PLC4X. The PLC4X examples
 are a good place to start and are available inside the `plc4j/examples`
 directory.
+
+The `Go` drivers can be built by enabling the `with-go` profile:
+
+```
+./mvnw -P with-go install  # add -DskipTests to omit running the tests
+```
 
 The `C++` drivers are still under development and still not really usable. 
 Therefore they are located in the so-called `sandbox`. 
@@ -238,7 +250,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
+./mvnw -P with-go,with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community
@@ -249,7 +261,7 @@ Join the PLC4X community by using one of the following channels. We'll be glad t
 
 Subscribe to the following mailing lists: 
 * Apache PLC4X Developer List: [dev-subscribe@plc4x.apache.org](mailto:dev-subscribe@plc4x.apache.org)
-* Apache PLC4X Commits List: [commit-subscribe@plc4x.apache.org](mailto:commit-subscribe@plc4x.apache.org)
+* Apache PLC4X Commits List: [commits-subscribe@plc4x.apache.org](mailto:commits-subscribe@plc4x.apache.org)
 * Apache PLC4X Jira Notification List: [issues-subscribe@plc4x.apache.org](mailto:issues-subscribe@plc4x.apache.org)
 
 See also: [https://plc4x.apache.org/mailing-lists.html](https://plc4x.apache.org/mailing-lists.html)
