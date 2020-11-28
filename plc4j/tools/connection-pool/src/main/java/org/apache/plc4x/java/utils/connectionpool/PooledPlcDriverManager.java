@@ -113,6 +113,10 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         PlcConnection plcConnection;
         try {
             plcConnection = keyedObjectPool.borrowObject(poolKey);
+            if (plcConnection.isConnected() == false) {
+                LOGGER.debug("Attempting to reconnect to device");
+                plcConnection.connect();
+            }
         } catch (Exception e) {
             throw new PlcConnectionException(e);
         }
