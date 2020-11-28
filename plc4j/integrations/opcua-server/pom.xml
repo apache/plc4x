@@ -22,14 +22,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.sandbox</groupId>
-    <artifactId>plc4x-sandbox</artifactId>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-integrations</artifactId>
     <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-opcua-server</artifactId>
 
-  <name>Sandbox: OPC UA Server</name>
+  <name>PLC4J: Integrations: Eclipse Milo OPC UA Server</name>
 
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
@@ -54,10 +54,28 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>dictionary-manager</artifactId>
+        <scope>compile</scope>
+    </dependency>
+
 <!-- Milo OPC UA Dependencies -->
     <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>sdk-server</artifactId>
+        <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-server</artifactId>
         <scope>compile</scope>
     </dependency>
 
@@ -69,7 +87,7 @@
 
     <dependency>
         <groupId>org.eclipse.milo</groupId>
-        <artifactId>dictionary-manager</artifactId>
+        <artifactId>sdk-core</artifactId>
         <scope>compile</scope>
     </dependency>
 
@@ -85,8 +103,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-csv</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
 
     <dependency>
@@ -103,11 +121,6 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
     </dependency>
 
 <!-- PLC4X Dependencies -->
@@ -173,33 +186,6 @@
       <scope>runtime</scope>
     </dependency>
 
-<!-- Logging dependancies -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-
-
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
@@ -217,9 +203,17 @@
     </dependency>
 
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>      
-      <scope>compile</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
   </dependencies>
@@ -258,9 +252,10 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <configuration>
             <usedDependencies combine.children="append">
-                <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-                <usedDependency>org.eclipse.milo:sdk-server</usedDependency>
-                <usedDependency>org.eclipse.milo:stack-core</usedDependency>
+                <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+                <usedDependency>org.apache.commons:commons-lang3</usedDependency>
+                <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
+                <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
                 <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
                 <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->
                 <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>

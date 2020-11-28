@@ -667,7 +667,18 @@
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
+        <artifactId>sdk-core</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
+        <version>${milo.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-server</artifactId>
         <version>${milo.version}</version>
         <scope>provided</scope>
       </dependency>
