@@ -210,11 +210,7 @@ public class Plc4xCommunication {
 
         //Try to connect to PLC
         try {
-            connection = driverManager.getConnection(connectionString);
-            if (connection.isConnected() == false) {
-                logger.debug("getConnection() returned a connection that isn't connected");
-                connection.connect();
-            }
+            connection = driverManager.getConnection(connectionString);            
             logger.debug(connectionString + " Connected");
         } catch (PlcConnectionException e) {
             logger.error("Failed to connect to device, error raised - " + e);
