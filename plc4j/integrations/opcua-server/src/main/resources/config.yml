@@ -17,7 +17,7 @@
 #under the License.
 
 version: 0.8
-dir: "./security"
+#dir: "./security"
 name: Plc4x.OPC.UA.Server
 disableInsecureEndpoint: true
 tcpPort: 12687
