@@ -35,6 +35,7 @@
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
     <plc4x.version>0.8.0-SNAPSHOT</plc4x.version>
+    <guava.version>30.0-jre</guava.version>
   </properties>
 
   <dependencies>
