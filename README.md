@@ -73,6 +73,9 @@ the language of choice.
 
 ### Java
 
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is exactly Java 11
+(Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
+
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/plc4j/gettingstarted.html](https://plc4x.apache.org/users/plc4j/gettingstarted.html)
 
@@ -195,14 +198,16 @@ If you don't want to bother setting up the environment on your normal system and
 ```
    docker build -t plc4x .
 
+   // Run a demo application (optional) ...
    docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
 ```
 
 ### Getting Started
 
-You must have Java 8 installed on your system and connectivity to Maven Central
-(for downloading external third party dependencies). Maven will be automatically
-downloaded and installed by the maven wrapper `mvnw`.
+You must have at least Java 8 installed on your system and connectivity to Maven Central
+(for downloading external third party dependencies). However in order to build all parts
+of PLC4X exactly Java 11 is required. Maven will be automatically downloaded and
+installed by the maven wrapper `mvnw`.
 
 Build PLC4X Java jars and install them in your local maven repository
 
@@ -213,6 +218,12 @@ Build PLC4X Java jars and install them in your local maven repository
 You can now construct Java applications that use PLC4X. The PLC4X examples
 are a good place to start and are available inside the `plc4j/examples`
 directory.
+
+The `Go` drivers can be built by enabling the `with-go` profile:
+
+```
+./mvnw -P with-go install  # add -DskipTests to omit running the tests
+```
 
 The `C++` drivers are still under development and still not really usable. 
 Therefore they are located in the so-called `sandbox`. 
@@ -239,7 +250,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
+./mvnw -P with-go,with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community

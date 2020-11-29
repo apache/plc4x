@@ -96,6 +96,7 @@
 
     <!-- Explicitly override the scope to compile to include these -->
 
+    <!-- TODO: We shouldn't be using this -->
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>

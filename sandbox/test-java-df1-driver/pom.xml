@@ -81,12 +81,12 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
 
-    <dependency>
+    <!--dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi.cmpn</artifactId>
       <version>6.0.0</version>
       <scope>provided</scope>
-    </dependency>
+    </dependency-->
 
   <!--  &lt;!&ndash; https://mvnrepository.com/artifact/org.rxtx/rxtx &ndash;&gt;
     <dependency>
@@ -98,7 +98,6 @@
     <dependency>
       <groupId>com.github.purejavacomm</groupId>
       <artifactId>purejavacomm</artifactId>
-      <version>1.0.2.RELEASE</version>
     </dependency>
 
     <!-- Logging -->
