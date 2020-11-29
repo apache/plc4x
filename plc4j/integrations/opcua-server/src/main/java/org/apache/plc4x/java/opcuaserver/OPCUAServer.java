@@ -60,9 +60,11 @@ import org.eclipse.milo.opcua.stack.core.util.SelfSignedCertificateGenerator;
 import org.eclipse.milo.opcua.stack.core.util.SelfSignedHttpsCertificateBuilder;
 import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
 import org.eclipse.milo.opcua.stack.server.security.DefaultServerCertificateValidator;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.collect.Lists.newArrayList;
+import org.apache.commons.lang3.RandomStringUtils;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_ANONYMOUS;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_USERNAME;
 import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USER_TOKEN_POLICY_X509;
@@ -70,8 +72,11 @@ import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USE
 import org.apache.commons.cli.*;
 
 import org.apache.plc4x.java.opcuaserver.backend.Plc4xNamespace;
+import org.apache.plc4x.java.opcuaserver.configuration.*;
 
 public class OPCUAServer {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Configuration config;
     private PasswordConfiguration passwordConfig;
@@ -82,26 +87,35 @@ public class OPCUAServer {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private void setPasswords() {
+    protected String[] setPasswords() {
         Console cnsl = System.console();
+        String[] ret = new String[3];
 
         System.out.println("Please enter password for certificate:- ");
-        try {
-            passwordConfig.setSecurityPassword(String.valueOf(cnsl.readPassword()));
-        } catch (IOException e) {
-            System.out.println("Unable to save config file after setting security password");
-        }
+        ret[0] = String.valueOf(cnsl.readPassword());
 
         System.out.println("Please enter a username for the OPC UA server admin account:- ");
-        try {
-            String username = String.valueOf(cnsl.readLine());
-            System.out.println("Please enter a password for the OPC UA server admin account:- ");
-            String password = String.valueOf(cnsl.readPassword());
-            passwordConfig.createUser(username, password, "admin-group");
-        } catch (IOException e) {
-            System.out.println("Unable to save config file after setting admin username");
-        }
+        ret[1] = String.valueOf(cnsl.readLine());
 
+        System.out.println("Please enter a password for the OPC UA server admin account:- ");
+        ret[2] = String.valueOf(cnsl.readPassword());
+
+        return ret;
+    }
+
+    private void setPasswordWrapper() {
+        String[] ret;
+        if (cmd.hasOption("test")) {
+            ret = new String[] {"password", "admin", "password"};
+        } else {
+            ret = setPasswords();
+        }
+        try {
+            passwordConfig.setSecurityPassword(ret[0]);
+            passwordConfig.createUser(ret[1], ret[2], "admin-group");
+        } catch (IOException e) {
+            logger.error("Unable to save config file");
+        }
     }
 
     private void readPasswordConfig() {
@@ -117,16 +131,16 @@ public class OPCUAServer {
             } else {
                 if (cmd.hasOption("interactive")) {
                     passwordConfig = new PasswordConfiguration();
-                    passwordConfig.setVersion("0.1");
+                    passwordConfig.setVersion("0.8");
                     passwordConfig.setPasswordConfigFile(path);
-                    setPasswords();
+                    setPasswordWrapper();
                 } else {
-                    LoggerFactory.getLogger(getClass()).info("Please re-run with the -i switch to setup the config file");
+                    logger.info("Please re-run with the -i switch to setup the config file");
                     System.exit(1);
                 }
             }
             if (cmd.hasOption("set-passwords")) {
-                setPasswords();
+                setPasswordWrapper();
             }
         } catch (IOException e) {
             System.out.println("Error parsing password file " + e);
@@ -148,6 +162,10 @@ public class OPCUAServer {
         interactive.setRequired(false);
         options.addOption(interactive);
 
+        Option test = new Option("t", "test", false, "Used for testing the OPC UA Server");
+        test.setRequired(false);
+        options.addOption(test);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         cmd = null;
@@ -161,7 +179,7 @@ public class OPCUAServer {
         }
 
         String configFile = cmd.getOptionValue("configfile");
-        LoggerFactory.getLogger(getClass()).info("Reading configuration file: {}", configFile);
+        logger.info("Reading configuration file: {}", configFile);
 
         //Read Config File
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -204,7 +222,7 @@ public class OPCUAServer {
 
         File pkiDir = FileSystems.getDefault().getPath(config.getDir()).resolve("pki").toFile();
         DefaultTrustListManager trustListManager = new DefaultTrustListManager(pkiDir);
-        LoggerFactory.getLogger(getClass()).info("pki dir: {}", pkiDir.getAbsolutePath());
+        logger.info("pki dir: {}", pkiDir.getAbsolutePath());
 
         DefaultServerCertificateValidator certificateValidator =
             new DefaultServerCertificateValidator(trustListManager);
@@ -221,7 +239,7 @@ public class OPCUAServer {
             authChallenge -> {
                 boolean check = passwordConfig.checkPassword(authChallenge.getUsername(), authChallenge.getPassword());
                 if (!check) {
-                    LoggerFactory.getLogger(getClass()).info("Invalid password for user:- " + authChallenge.getUsername());
+                    logger.info("Invalid password for user:- " + authChallenge.getUsername());
                 }
                 return check;
             }
