@@ -69,20 +69,18 @@ class KeyStoreLoader {
 
         File securityTempDir = new File(config.getDir(), "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
-            System.out.println("Unable to create directory please confirm folder permissions on " + securityTempDir.toString());
+            logger.error("Unable to create directory please confirm folder permissions on " + securityTempDir.toString());
             System.exit(1);
         }
-        LoggerFactory.getLogger(getClass()).info("security dir: {}", securityTempDir.getAbsolutePath());
+        logger.info("security dir: {}", securityTempDir.getAbsolutePath());
 
         try {
             load(securityTempDir, interactive);
         } catch (Exception e) {
-            System.out.println("Error loading the key store " + e);
+            logger.error("Error loading the key store " + e);
             System.exit(1);
         }
     }
-
-
 
     public KeyStoreLoader load(File baseDir, boolean interactive) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
