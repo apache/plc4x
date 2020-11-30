@@ -138,7 +138,7 @@ public class Plc4xCommon {
 	public static PLC4X_PROTOCOL getConnectionProtocol(String connectionString) {
 		if (connectionString != null && !connectionString.isEmpty()) {
 			String protocolId = connectionString.split(":")[0];
-			PLC4X_PROTOCOL protocol = PLC4X_PROTOCOL.qualifierValueOf(protocolId);
+			PLC4X_PROTOCOL protocol = PLC4X_PROTOCOL.valueOfByName(protocolId);
 			return protocol;
 		}
 		return null;

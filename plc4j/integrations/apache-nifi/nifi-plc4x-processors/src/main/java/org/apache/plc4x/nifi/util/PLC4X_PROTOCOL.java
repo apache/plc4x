@@ -14,9 +14,9 @@ public enum PLC4X_PROTOCOL {
 			return this.protocolId;
 		}
 		
-		public static PLC4X_PROTOCOL qualifierValueOf(String qualifierValue) {
+		public static PLC4X_PROTOCOL valueOfByName(String name) {
 			for (PLC4X_PROTOCOL v : values()) {
-				if (v.getProtocolId().equals(qualifierValue)) {
+				if (v.getProtocolId().equals(name)) {
 					return v;
 				}
 			}
