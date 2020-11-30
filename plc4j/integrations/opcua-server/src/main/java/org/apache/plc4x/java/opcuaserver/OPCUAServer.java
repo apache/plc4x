@@ -198,6 +198,7 @@ public class OPCUAServer {
             readPasswordConfig();
         } catch (IOException e) {
             logger.info("Error parsing config file " + e);
+            System.exit(1);
         }
     }
 

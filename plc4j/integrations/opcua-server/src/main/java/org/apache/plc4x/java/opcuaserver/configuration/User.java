@@ -34,6 +34,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
+
 public class User {
 
     @JsonProperty
@@ -52,9 +54,6 @@ public class User {
     private static final SecureRandom randomGen = new SecureRandom();
 
     public User() {
-        if (this.salt == null) {
-            this.salt = generateSalt();
-        }
     }
 
     private byte[] generateSalt() {
@@ -64,16 +63,16 @@ public class User {
     }
 
     public User(String username, String password, String security) {
-        if (this.salt == null) {            
+        if (this.salt == null) {
             this.salt = generateSalt();
         }
         this.username = username;
-        this.password = DigestUtils.sha256Hex(this.salt + ":" + password);
+        this.password = DigestUtils.sha256Hex(Base64.getEncoder().encodeToString(this.salt) + ":" + password);
         this.security = security;
     }
 
-    public boolean checkPassword(String password) {
-        if (this.password.equals((DigestUtils.sha256Hex(this.salt + ":" + password)))) {
+    public boolean checkPassword(String password) {        
+        if (this.password.equals((DigestUtils.sha256Hex(Base64.getEncoder().encodeToString(this.salt) + ":" + password)))) {
             return true;
         }
         return false;
@@ -93,7 +92,7 @@ public class User {
 
     @JsonIgnore
     public void setPassword(String password) {
-        this.password = this.salt + ":" + DigestUtils.sha256Hex(password);
+        this.password = Base64.getEncoder().encodeToString(this.salt) + ":" + DigestUtils.sha256Hex(password);
     }
 
     public void setSecurity(String security) {
