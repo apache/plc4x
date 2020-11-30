@@ -114,7 +114,8 @@ public class OPCUAServer {
             passwordConfig.setSecurityPassword(ret[0]);
             passwordConfig.createUser(ret[1], ret[2], "admin-group");
         } catch (IOException e) {
-            logger.error("Unable to save config file");
+            logger.error("Unable to save config file, please check folder permissions. " + e);
+            System.exit(1);
         }
     }
 
@@ -125,11 +126,16 @@ public class OPCUAServer {
         try {
             Path path = FileSystems.getDefault().getPath(config.getDir()).resolve("security/.jibberish");
             File file = path.toFile();
-            if (file.isFile()) {
+            if (file.isFile() && !cmd.hasOption("set-passwords")) {
                 passwordConfig = mapper.readValue(file, PasswordConfiguration.class);
                 passwordConfig.setPasswordConfigFile(path);
+            } else if (file.isFile() && cmd.hasOption("set-passwords")) {
+                passwordConfig = mapper.readValue(file, PasswordConfiguration.class);
+                passwordConfig.setPasswordConfigFile(path);
+                setPasswordWrapper();
             } else {
-                if (cmd.hasOption("interactive")) {
+                if (cmd.hasOption("interactive") || cmd.hasOption("set-passwords")) {
+                    file.getParentFile().mkdirs();
                     passwordConfig = new PasswordConfiguration();
                     passwordConfig.setVersion("0.8");
                     passwordConfig.setPasswordConfigFile(path);
@@ -139,11 +145,8 @@ public class OPCUAServer {
                     System.exit(1);
                 }
             }
-            if (cmd.hasOption("set-passwords")) {
-                setPasswordWrapper();
-            }
         } catch (IOException e) {
-            System.out.println("Error parsing password file " + e);
+            logger.info("Error parsing password file " + e);
         }
     }
 
@@ -173,7 +176,7 @@ public class OPCUAServer {
         try {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
             formatter.printHelp("Plc4x OPC UA Server", options);
             System.exit(1);
         }
@@ -194,7 +197,7 @@ public class OPCUAServer {
 
             readPasswordConfig();
         } catch (IOException e) {
-            System.out.println("Error parsing config file " + e);
+            logger.info("Error parsing config file " + e);
         }
     }
 

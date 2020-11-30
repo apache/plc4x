@@ -39,7 +39,6 @@ public class User {
     @JsonProperty
     private String username;
 
-    //TODO: These need to be hashed
     @JsonProperty
     private String password;
 
@@ -65,6 +64,9 @@ public class User {
     }
 
     public User(String username, String password, String security) {
+        if (this.salt == null) {            
+            this.salt = generateSalt();
+        }
         this.username = username;
         this.password = DigestUtils.sha256Hex(this.salt + ":" + password);
         this.security = security;
