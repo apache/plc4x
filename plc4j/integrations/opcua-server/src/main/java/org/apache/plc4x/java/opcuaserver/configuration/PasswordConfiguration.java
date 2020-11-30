@@ -45,7 +45,6 @@ public class PasswordConfiguration {
     @JsonProperty
     private String version;
 
-    //TODO: This needs to be encrypted
     @JsonProperty
     private String securityPassword;
 
@@ -55,7 +54,7 @@ public class PasswordConfiguration {
     public PasswordConfiguration() {
     }
 
-    public boolean checkPassword(String username, String password) {        
+    public boolean checkPassword(String username, String password) {
         if (users.containsKey(username)) {
             return users.get(username).checkPassword(password);
         }
