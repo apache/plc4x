@@ -197,9 +197,6 @@ If you don't want to bother setting up the environment on your normal system and
 
 ```
    docker build -t plc4x .
-
-   // Run a demo application (optional) ...
-   docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
 ```
 
 ### Getting Started
