@@ -448,7 +448,7 @@
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
         <scope>provided</scope>
-      </dependency>    
+      </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
@@ -480,7 +480,6 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcmail-jdk15on</artifactId>
         <version>${bouncycastle.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -581,13 +580,11 @@
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
         <version>${milo.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-server</artifactId>
         <version>${milo.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>

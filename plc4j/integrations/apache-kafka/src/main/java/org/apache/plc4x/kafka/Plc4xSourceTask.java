@@ -191,7 +191,7 @@ public class Plc4xSourceTask extends SourceTask {
                     .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
                     .field(Constants.FIELDS_CONFIG, fieldSchema)
                     .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
-                    .field("expires", Schema.OPTIONAL_INT64_SCHEMA)
+                    .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
                     .build();
 
                 // Build the struct itself.
