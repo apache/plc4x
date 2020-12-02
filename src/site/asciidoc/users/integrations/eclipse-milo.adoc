@@ -1,0 +1,123 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Introduction
+
+The PLC4X OPC UA server integration is based around the Eclipse Milo OPC UA server. It uses PLC4X to communicate with
+industrial devices effectively acting as a industrial OPC UA gateway.
+
+== Building the server
+
+The OPC UA server can be built using maven as part of the PLC4X build.
+```
+mvn install
+```
+
+This creates a target directory within plc4x/plc4j/integrations/opcua-server containing a jar file which is the main java
+executable.
+
+== Configuration File
+
+The config.yml file is used to configure the server. The following root level settings should be configured.
+
+- *version:* The version is just an internal check to confirm that the right version of the configuration file
+is being used.
+- *dir:* This is the directory to the security directory. This is where all configuration is stored including certificates.
+Be sure to secure this directory with the correct permissions.
+- *name:* This is the name of the OPC UA server. It can be anything but shouldn't contain spaces.
+- *disableInsecureEndpoint:* This is used to disable the remote insecure OPC UA endpoint.
+- *tcpPort:* this can be used to change the opc.tcp port.
+- *httpPort:* this can be used to change the http.tcp port.
+- *devices:* is a list of PLC's or devices that the server should communicate with. Each device should include a
+name:, connectionString:, and a list of tags:.
+
+For each device within devices the following settings should be configured.
+
+- *name:* This is the name of the device. It can anything as long as it doesn't contain spaces.
+- *connectionString:* Can be any valid PLC4X connection string.
+
+For each tag with tags the following settings should be configured:-
+
+- *alias:* This is the name of tag it can be anything but shouldn't have spaces. This will be shown as the tag name within
+the OPC UA server tree. Be sure that this is unique within the configuration file.
+- *address:* This is any valid PLC4X address that matches the connection type.
+
+An example configuration file is shown below.
+
+```
+---
+version: "0.8"
+dir: {path-to-security-dir}
+name: "Plc4xOPCUAServer"
+disableInsecureEndpoint: true
+devices:
+    - name: "ModbusDevice"
+      connectionString: "modbus://127.0.0.1:502"
+      tags:
+        - alias: "TemporaryBOOLARRAY"
+          address: "000001:BOOL[10]"
+        - alias: "TemporaryWORD2"
+          address: "400002:WORD"
+        - alias: "TemporaryUINT3"
+          address: "400003:UINT"
+        - alias: "TemporaryINT4"
+          address: "400004:INT"
+        - alias: "TemporaryDINT5"
+          address: "400005:DINT[4]"
+        - alias: "TemporaryREAL6"
+          address: "400006:REAL"
+        - alias: "TemporaryREAL7"
+          address: "400007:REAL"
+        - alias: "TemporaryREAL8"
+          address: "400008:REAL"
+- name: "SimulationDevice"
+    connectionString: "simulated://127.0.0.1"
+    tags:
+        - alias: "Temporary"
+          address: "RANDOM/Temporary:Integer"
+tcpPort: 12687
+httpPort: 8445
+```
+
+== Running
+
+To run the java executable execute:-
+```
+java -jar plc4x-opcua-server-0.8.0-uber-jar.jar -c {path-to-config-file} -i
+```
+This will start the OPC UA server with the interactive switch (-i). This prompts the server to ask for usernames and
+passwords upon startup. However, during normal operation the -i switch should be left out.
+
+If a certificate isn't available at *{path-to-security-dir}/security/plc4x-opcuaserver.pfx* then a self signed is
+created. This certificate is password protected with the security password given during startup.
+
+If you place another certificate here make sure it is password protected and set the password by running the server
+again with --set-password switch.
+```
+java -jar plc4x-opcua-server-0.8.0-uber-jar.jar -c {path-to-config-file} -i -s
+```
+
+Once the OPC UA server is running you are able to connect to it from your favorite OPC UA client using the connection
+string.
+```
+opc.tcp://{ip.address}:12687/plc4x
+```
+Replacing the {ip.address} with the servers IP address.
+
+If you want to use an encrypted connection be sure to move the client certificate created in
+*{path-to-security-dir}/security/pki/rejected* to the trusted directory. Otherwise the client will receive a security error
+when trying to connect.
