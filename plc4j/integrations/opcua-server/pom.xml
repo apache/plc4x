@@ -183,11 +183,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
+    <!-- Logging dependancies -->    
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
