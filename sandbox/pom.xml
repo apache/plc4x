@@ -123,14 +123,6 @@
       </modules>
     </profile>
 
-    <!-- Build OPC UA Server -->
-    <profile>
-      <id>with-opcua-server</id>
-      <modules>
-        <module>opcua-server</module>
-      </modules>
-    </profile>
-
   </profiles>
 
 </project>
