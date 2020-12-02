@@ -170,11 +170,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
+    <!-- Logging dependancies -->    
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
