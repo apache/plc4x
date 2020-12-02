@@ -59,6 +59,8 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 
 === Preparing your system for being able to release
 
+NOTE: Be sure you are using a JDK and not a JRE, or the release will fail because the release can't execute the `javadoc` executable.
+
 As part of the release process, Maven will upload maven release artifacts to a so-called staging repository.
 
 This can be thought of as an ad-hoc Maven repository that contains only the artifacts for one release.
@@ -100,6 +102,8 @@ Attending an `ApacheCon` is usually a great way to do this as usually every Apac
 He can then sign your key and hereby enable you to sign Apache release artifacts.
 
 There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
+
+NOTE: However in contrast to that documentation, upload your key to the following servers: `pool.sks-keyservers.net` and `keyserver.ubuntu.com` as these are the ones Nexus is checking.
 
 If you happen to have multiple keys, adding the following profile to your `settings.xml` should help:
 
