@@ -38,9 +38,103 @@
     <sonar.language>c#</sonar.language>
   </properties-->
 
-  <modules>
-    <module>api</module>
-    <module>plc4net.driver</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- Copy the test-resources in here -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-protocol-test-suites</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-knxnetip</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/drivers/knxnetip/generated/testing/assets</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**,org/**</excludes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        Generate the driver code.
+      -->
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-driver-knxnetip</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>knxnetip</protocolName>
+              <languageName>C#</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/drivers/knxnetip/generated/sources</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Build the project -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>dotnet-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>dotnet</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>build</argument>
+                <argument>plc4net.sln</argument>
+                <argument>--configuration=Debug</argument>
+                <argument>--output=${project.build.directory}/build</argument>
+                <argument>-p:Version=${project.version}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-language-cs</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-knxnetip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>
