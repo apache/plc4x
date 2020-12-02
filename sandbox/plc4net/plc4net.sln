@@ -19,10 +19,13 @@
 # under the License.
 #
 
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.156
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "plc4net\plc4net.csproj", "{343770DC-ECE5-4131-9066-A09C120BB3D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-api", "api\plc4net-api.csproj", "{7906988A-C7CA-4886-A343-EBC17C0BAB59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-spi", "spi\plc4net-spi.csproj", "{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{35D8C56A-A721-46B3-A32C-71FCF212E85D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plc4net-driver-knxproj", "drivers\knxnetip\plc4net-driver-knxproj.csproj", "{640E582A-68DF-4E51-B019-AE5774F31B54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,15 +33,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{343770DC-ECE5-4131-9066-A09C120BB3D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{343770DC-ECE5-4131-9066-A09C120BB3D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{343770DC-ECE5-4131-9066-A09C120BB3D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{343770DC-ECE5-4131-9066-A09C120BB3D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7906988A-C7CA-4886-A343-EBC17C0BAB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DCB0DDB3-E6AA-4801-844E-5C71EB50CB1B}
+	GlobalSection(NestedProjects) = preSolution
+		{640E582A-68DF-4E51-B019-AE5774F31B54} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
 	EndGlobalSection
 EndGlobal
