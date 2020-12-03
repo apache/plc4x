@@ -301,7 +301,8 @@ public class CsLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ")";
+                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ", Encoding.GetEncoding(\"" +
+                    stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) + "\"))";
             }
         }
         return "Hurz";
