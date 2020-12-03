@@ -58,7 +58,7 @@
                   <artifactId>plc4x-protocols-knxnetip</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
-                  <outputDirectory>${project.basedir}/drivers/knxnetip/generated/testing/assets</outputDirectory>
+                  <outputDirectory>${project.basedir}/drivers/knxnetip-test/resources</outputDirectory>
                   <includes>**/*.xml</includes>
                   <excludes>META-INF/**,org/**</excludes>
                 </artifactItem>
@@ -85,7 +85,7 @@
               <protocolName>knxnetip</protocolName>
               <languageName>C#</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/drivers/knxnetip/generated/sources</outputDir>
+              <outputDir>${project.basedir}/drivers/knxnetip/src</outputDir>
             </configuration>
           </execution>
         </executions>

@@ -26,14 +26,21 @@
     <Authors>Apache PLC4X</Authors>
     <Copyright>The Apache Software Foundation</Copyright>
     <PackageProjectUrl>https://plc4x.apache.org</PackageProjectUrl>
-    <Title>PLC4Net: Driver: KNXNet/IP</Title>
+    <Title>PLC4Net: Driver: KNXNet/IP: Test</Title>
     <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageVersion>0.8.0-SNAPSHOT</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\api\plc4net-api.csproj" />
-    <ProjectReference Include="..\..\spi\plc4net-spi.csproj" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\knxnetip\plc4net-driver-knxproj.csproj" />
   </ItemGroup>
 
 </Project>

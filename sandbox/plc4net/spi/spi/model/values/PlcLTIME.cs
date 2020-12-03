@@ -30,5 +30,24 @@ namespace org.apache.plc4net.spi.model.values
         {
             this.value = value;
         }
+
+        protected bool Equals(PlcLTIME other)
+        {
+            return value.Equals(other.value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((PlcLTIME) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+        
     }
 }
