@@ -26,5 +26,24 @@ namespace org.apache.plc4net.spi.model.values
         public PlcNULL()
         {
         }
+
+        protected bool Equals(PlcNULL other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((PlcNULL) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new System.NotImplementedException();
+        }
+        
     }
 }

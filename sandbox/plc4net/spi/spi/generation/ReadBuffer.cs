@@ -76,7 +76,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (byte) _reader.ReadInt(0, bitLength);
+            return (byte) _reader.ReadInt(bitLength);
         }
         
         public ushort ReadUshort(int bitLength)
@@ -85,7 +85,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (ushort) _reader.ReadInt(0, bitLength);
+            return (ushort) _reader.ReadInt(bitLength);
         }
 
         public uint ReadUint(int bitLength)
@@ -94,7 +94,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (uint) _reader.ReadInt(0, bitLength);
+            return (uint) _reader.ReadInt(bitLength);
         }
 
         public ulong ReadUlong(int bitLength)
@@ -107,9 +107,9 @@ namespace org.apache.plc4net.spi.generation
             ulong firstInt = 0;
             if (bitLength > 32)
             {
-                firstInt = (ulong) _reader.ReadInt(0, bitLength - 32) << 32;
+                firstInt = (ulong) _reader.ReadInt(bitLength - 32) << 32;
             }
-            return firstInt | (ulong) _reader.ReadInt(0, bitLength);
+            return firstInt | (ulong) _reader.ReadInt(bitLength);
         }
 
         public sbyte ReadSbyte(int bitLength)
@@ -118,7 +118,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (sbyte) _reader.ReadInt(0, bitLength);
+            return (sbyte) _reader.ReadInt(bitLength);
         }
         
         public short ReadShort(int bitLength)
@@ -127,7 +127,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (short) _reader.ReadInt(0, bitLength);
+            return (short) _reader.ReadInt(bitLength);
         }
 
         public int ReadInt(int bitLength)
@@ -136,7 +136,7 @@ namespace org.apache.plc4net.spi.generation
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return (int) _reader.ReadInt(0, bitLength);
+            return _reader.ReadInt(bitLength);
         }
 
         public long ReadLong(int bitLength)
@@ -149,16 +149,16 @@ namespace org.apache.plc4net.spi.generation
             long firstInt = 0;
             if (bitLength > 32)
             {
-                firstInt = (long) _reader.ReadInt(0, bitLength - 32) << 32;
+                firstInt = (long) _reader.ReadInt(bitLength - 32) << 32;
             }
-            return firstInt | (long) _reader.ReadInt(0, bitLength);
+            return firstInt | (long) _reader.ReadInt(bitLength);
         }
 
         public float ReadFloat(bool signed, int exponentBitLength, int mantissaBitLength)
         {
             if (signed && exponentBitLength == 8 && mantissaBitLength == 23)
             {
-                return Convert.ToSingle(ReadInt(32));
+                return BitConverter.ToSingle(BitConverter.GetBytes(ReadInt(32)), 0);
             }
             // This is the format as described in the KNX spec ... it's not a real half precision floating point.
             if (signed && exponentBitLength == 4 && mantissaBitLength == 11)
@@ -185,11 +185,11 @@ namespace org.apache.plc4net.spi.generation
         {
             if (signed && exponentBitLength == 8 && mantissaBitLength == 23)
             {
-                return Convert.ToDouble(ReadInt(32));
+                return BitConverter.ToDouble(BitConverter.GetBytes(ReadInt(32)), 0);
             }
             if (signed && exponentBitLength == 11 && mantissaBitLength == 52)
             {
-                return Convert.ToDouble(ReadLong(64));
+                return BitConverter.ToDouble(BitConverter.GetBytes(ReadLong(64)), 0);
             }
             throw new NotImplementedException("This encoding is currently not supported");
         }
