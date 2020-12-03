@@ -26,6 +26,9 @@
         <Authors>Apache PLC4X</Authors>
         <Copyright>The Apache Software Foundation</Copyright>
         <PackageProjectUrl>https://plc4x.apache.org</PackageProjectUrl>
+        <PackageVersion>0.8.0-SNAPSHOT</PackageVersion>
+        <Title>PLC4Net: SPI</Title>
+        <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     </PropertyGroup>
 
     <ItemGroup>

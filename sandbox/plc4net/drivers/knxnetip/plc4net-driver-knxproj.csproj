@@ -26,6 +26,9 @@
     <Authors>Apache PLC4X</Authors>
     <Copyright>The Apache Software Foundation</Copyright>
     <PackageProjectUrl>https://plc4x.apache.org</PackageProjectUrl>
+    <Title>PLC4Net: Driver: KNXNet/IP</Title>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageVersion>0.8.0-SNAPSHOT</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
