@@ -38,6 +38,7 @@
     <module>apache-kafka</module>
     <module>apache-nifi</module>
     <module>apache-calcite</module>
+    <module>opcua-server</module>
   </modules>
 
   <profiles>
