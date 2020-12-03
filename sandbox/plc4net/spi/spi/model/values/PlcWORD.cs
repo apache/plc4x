@@ -29,5 +29,36 @@ namespace org.apache.plc4net.spi.model.values
         {
             this.value = value;
         }
+        
+        public new int GetBoolLength()
+        {
+            return 16;
+        }
+        
+        public new bool GetBoolAt(int index)
+        {
+            if (index > 15)
+            {
+                return false;
+            }
+
+            return ((value >> index) & 1) == 1;
+        }
+
+        public new bool[] GetBoolArray()
+        {
+            return new[]
+            {
+                GetBoolAt(0), GetBoolAt(1),
+                GetBoolAt(2), GetBoolAt(3),
+                GetBoolAt(4), GetBoolAt(5),
+                GetBoolAt(6), GetBoolAt(7),
+                GetBoolAt(8), GetBoolAt(9),
+                GetBoolAt(10), GetBoolAt(11),
+                GetBoolAt(12), GetBoolAt(13),
+                GetBoolAt(14), GetBoolAt(15)
+            };
+        }
+
     }
 }
