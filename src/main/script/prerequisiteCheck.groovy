@@ -109,7 +109,28 @@ def checkDotnet() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
+        def result = checkVersionAtLeast(curVersion, "4.5.2")
+        if (!result) {
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+def checkGo() {
+    print "Detecting Go version:      "
+    def output
+    try {
+        output = "go version".execute().text
+    } catch (IOException e) {
+        output = ""
+    }
+    Matcher matcher = extractVersion(output)
+    if (matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
         }
@@ -481,6 +502,8 @@ for (def activeProfile : activeProfiles) {
     } else if (activeProfile == "with-docker") {
         dockerEnabled = true
     } else if (activeProfile == "with-dotnet") {
+        goEnabled = true
+    } else if (activeProfile == "with-go") {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
         goEnabled = true
@@ -516,6 +539,10 @@ checkJavaVersion("9", null)
 
 if (dotnetEnabled) {
     checkDotnet()
+}
+
+if (goEnabled) {
+    checkGo()
 }
 
 if (cppEnabled) {
