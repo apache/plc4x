@@ -196,7 +196,7 @@ namespace org.apache.plc4net.spi.generation
 
         public string ReadString(int bitLength, Encoding encoding)
         {
-            return "";
+            throw new NotImplementedException("This encoding is currently not supported");
         }
 
     }
