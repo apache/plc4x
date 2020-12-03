@@ -24,9 +24,36 @@ namespace org.apache.plc4net.spi.model.values
     public class PlcBYTE : PlcBitString
     {
         private byte value;
+
         public PlcBYTE(byte value)
         {
             this.value = value;
+        }
+
+        public new int GetBoolLength()
+        {
+            return 8;
+        }
+
+        public new bool GetBoolAt(int index)
+        {
+            if (index > 7)
+            {
+                return false;
+            }
+
+            return ((value >> index) & 1) == 1;
+        }
+
+        public new bool[] GetBoolArray()
+        {
+            return new[]
+            {
+                GetBoolAt(0), GetBoolAt(1),
+                GetBoolAt(2), GetBoolAt(3),
+                GetBoolAt(4), GetBoolAt(5),
+                GetBoolAt(6), GetBoolAt(7)
+            };
         }
     }
 }
