@@ -63,6 +63,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
@@ -109,7 +110,7 @@ namespace org.apache.plc4net.drivers.${protocolName?replace("-", "")}.${outputFl
                 <#case "reserved">
                     <#assign reservedField = field>
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 ${helper.getReadBufferReadMethodCall(field.type)};
                     <#break>
                 <#case "simple">

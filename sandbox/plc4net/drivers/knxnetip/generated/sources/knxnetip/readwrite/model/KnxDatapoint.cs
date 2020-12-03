@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using org.apache.plc4net.api.value;
 using org.apache.plc4net.spi.generation;
 using org.apache.plc4net.spi.model.values;
@@ -33,7 +34,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         {
             if (formatName == "B1") { // BOOL
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(7);
 
                 // Simple Field (value)
@@ -44,7 +45,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B2") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(6);
 
                 // Simple Field (control)
@@ -60,7 +61,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B1U3") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (control)
@@ -75,27 +76,27 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "A8_ASCII") { // STRING
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
-                var value = io.ReadString(8);
+                var value = io.ReadString(8, Encoding.GetEncoding("ASCII"));
 
                 return new PlcSTRING(value);
             } else
             if (formatName == "A8_8859_1") { // STRING
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
-                var value = io.ReadString(8);
+                var value = io.ReadString(8, Encoding.GetEncoding("ISO-8859-1"));
 
                 return new PlcSTRING(value);
             } else
             if (formatName == "U8") { // USINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -105,7 +106,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "V8") { // SINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -116,7 +117,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B5N3") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (a)
@@ -147,7 +148,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "U16") { // UINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -157,7 +158,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "V16") { // INT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -167,7 +168,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "F16") { // REAL
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -177,7 +178,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "N3N5r2N6r2N6") { // TIME_OF_DAY
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (day)
@@ -186,13 +187,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 // Simple Field (hour)
                 var hour = io.ReadByte(5);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (minutes)
                 var minutes = io.ReadByte(6);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (seconds)
@@ -203,22 +204,22 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "r3N5r4N4r1U7") { // DATE
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (day)
                 var day = io.ReadByte(5);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (month)
                 var month = io.ReadByte(4);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(1);
 
                 // Simple Field (year)
@@ -229,7 +230,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "U32") { // UDINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -239,7 +240,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "V32") { // DINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -249,7 +250,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "F32") { // REAL
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -260,7 +261,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U4U4U4U4U4U4B4N4") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (d6)
@@ -311,27 +312,27 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "A112_ASCII") { // STRING
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
-                var value = io.ReadString(112);
+                var value = io.ReadString(112, Encoding.GetEncoding("ASCII"));
 
                 return new PlcSTRING(value);
             } else
             if (formatName == "A112_8859_1") { // STRING
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
-                var value = io.ReadString(112);
+                var value = io.ReadString(112, Encoding.GetEncoding("ISO-8859-1"));
 
                 return new PlcSTRING(value);
             } else
             if (formatName == "r2U6") { // USINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (value)
@@ -342,14 +343,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B1r1U6") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (learn)
                 var learn = io.ReadBit();
                 internalMap["Struct"] = new PlcBOOL(learn);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(1);
 
                 // Simple Field (sceneNumber)
@@ -360,19 +361,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "U8r4U4r3U5U3U5r2U6r2U6B16") { // DATE_AND_TIME
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (year)
                 var year = io.ReadByte(8);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (month)
                 var month = io.ReadByte(4);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (day)
@@ -384,13 +385,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 // Simple Field (hour)
                 var hour = io.ReadByte(5);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (minutes)
                 var minutes = io.ReadByte(6);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (seconds)
@@ -428,7 +429,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "N8") { // USINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -438,7 +439,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "B8") { // BYTE
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -448,7 +449,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "B16") { // WORD
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -459,7 +460,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U4U4") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (busy)
@@ -475,10 +476,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "r1b1U6") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(1);
 
                 // Simple Field (sceneActive)
@@ -493,7 +494,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "B32") { // DWORD
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -503,7 +504,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "V64") { // LINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (value)
@@ -513,7 +514,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "B24") { // List
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Array Field (value);
@@ -527,7 +528,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             } else
             if (formatName == "N3") { // USINT
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (value)
@@ -538,7 +539,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B1Z8HeatingOrCoolingZ") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(7);
 
                 // Simple Field (heating)
@@ -554,7 +555,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B1Z8BinaryValueZ") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(7);
 
                 // Simple Field (high)
@@ -570,7 +571,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8HvacOperatingMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (hvacOperatingMode)
@@ -586,7 +587,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8DhwMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (dhwMode)
@@ -602,7 +603,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8HvacControllingMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (hvacControllingMode)
@@ -618,7 +619,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8EnableHeatingOrCoolingStage") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (enableHeatingOrCoolingStage)
@@ -634,7 +635,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8BuildingMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (buildingMode)
@@ -650,7 +651,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8OccupancyMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (occupancyMode)
@@ -666,7 +667,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N8Z8EmergencyMode") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (hvacEmergencyMode)
@@ -682,7 +683,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8Z8Rel") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (relValue)
@@ -698,7 +699,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8Z8Counter") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (counterValue)
@@ -714,7 +715,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8TimePeriod") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (timePeriod)
@@ -730,7 +731,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8FlowRate") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (flowRate)
@@ -746,7 +747,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8Counter") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (counterValue)
@@ -762,7 +763,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8ElectricCurrent") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (electricalCurrent)
@@ -778,7 +779,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8Power") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (power)
@@ -794,7 +795,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8AtmPressure") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (atmPressure)
@@ -810,7 +811,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8PercentValue") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (percentValue)
@@ -826,7 +827,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8HvacAirQuality") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (ppmResolution)
@@ -842,7 +843,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8WindSpeed") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (windSpeed)
@@ -858,7 +859,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8SunIntensity") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (sunIntensity)
@@ -874,7 +875,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16Z8HvacAirFlow") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (airFlow)
@@ -890,7 +891,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V8Z8RelSignedValue") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (relSignedValue)
@@ -906,7 +907,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16Z8DeltaTime") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (deltaTime)
@@ -922,7 +923,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16Z8RelSignedValue") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (relSignedValue)
@@ -938,7 +939,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16N8HvacModeAndTimeDelay") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -954,7 +955,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16N8DhwModeAndTimeDelay") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -970,7 +971,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16N8OccupancyModeAndTimeDelay") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -986,7 +987,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16N8BuildingModeAndTimeDelay") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -1002,14 +1003,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8StatusBurnerController") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (actualRelativePower)
                 var actualRelativePower = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(actualRelativePower);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (stage2Active)
@@ -1033,14 +1034,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8LockingSignal") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (requestedPowerReduction)
                 var requestedPowerReduction = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(requestedPowerReduction);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(6);
 
                 // Simple Field (critical)
@@ -1056,14 +1057,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8BoilerControllerDemandSignal") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (relativeDemand)
                 var relativeDemand = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(relativeDemand);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(6);
 
                 // Simple Field (controlsOperationStage2)
@@ -1079,14 +1080,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8ActuatorPositionDemand") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (actuatorPositionDemand)
                 var actuatorPositionDemand = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(actuatorPositionDemand);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (emergencyDemand)
@@ -1110,14 +1111,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8ActuatorPositionStatus") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (actualActuatorPosition)
                 var actualActuatorPosition = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(actualActuatorPosition);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (synchronizationMode)
@@ -1145,7 +1146,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8B8StatusLightingActuator") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (lightingLevel)
@@ -1189,14 +1190,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16B8HeatProducerManagerStatus") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (tempFlowProdSegmH)
                 var tempFlowProdSegmH = io.ReadFloat(true, 4, 11);
                 internalMap["Struct"] = new PlcREAL(tempFlowProdSegmH);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (temporarilyOff)
@@ -1224,14 +1225,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16B8RoomTemperatureDemand") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (roomTemperatureDemand)
                 var roomTemperatureDemand = io.ReadFloat(true, 4, 11);
                 internalMap["Struct"] = new PlcREAL(roomTemperatureDemand);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (emergencyDemand)
@@ -1255,14 +1256,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16B8ColdWaterProducerManagerStatus") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (flowTemperatureProdSegmC)
                 var flowTemperatureProdSegmC = io.ReadFloat(true, 4, 11);
                 internalMap["Struct"] = new PlcREAL(flowTemperatureProdSegmC);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (temporarilyOff)
@@ -1286,14 +1287,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16B8WaterTemperatureControllerStatus") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (actualTemperature)
                 var actualTemperature = io.ReadFloat(true, 4, 11);
                 internalMap["Struct"] = new PlcREAL(actualTemperature);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (controllerWorking)
@@ -1313,14 +1314,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16B16") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (flowTemperatureDemand)
                 var flowTemperatureDemand = io.ReadFloat(true, 4, 11);
                 internalMap["Struct"] = new PlcREAL(flowTemperatureDemand);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (demandFromDhwWhileLegionellaFunctionIsActive)
@@ -1376,7 +1377,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8N8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (energyDemand)
@@ -1392,7 +1393,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16V16RoomTemperature") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointComfort)
@@ -1412,7 +1413,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16V16RoomTemperatureShift") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointShiftComfort)
@@ -1432,7 +1433,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16V16V16RoomTemperature") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointComfort)
@@ -1456,7 +1457,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16V16V16DhwtTemperature") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointLegioProtect)
@@ -1480,7 +1481,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16V16V16RoomTemperatureShift") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointShiftComfort)
@@ -1504,7 +1505,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16U8B8Heat") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (flowTemperatureDemand)
@@ -1515,7 +1516,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var relativePower = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(relativePower);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(2);
 
                 // Simple Field (boilerEnabled)
@@ -1547,7 +1548,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16U8B8ChilledWater") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (chilledWaterFlowTemperatureDemand)
@@ -1558,7 +1559,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var relativePower = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(relativePower);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (chilledWaterPumpEnabled)
@@ -1578,7 +1579,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16U8B16Boiler") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (tempBoiler)
@@ -1589,7 +1590,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var relativePower = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(relativePower);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (chimneySweepFunctionActive)
@@ -1645,7 +1646,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16U8B16Chiller") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (tempChiller)
@@ -1656,7 +1657,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var relativePower = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(relativePower);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (reducedAvailability)
@@ -1696,7 +1697,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16U8N8B8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (nominalPower)
@@ -1711,7 +1712,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var burnerType = io.ReadSbyte(8);
                 internalMap["Struct"] = new PlcSINT(burnerType);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (solidState)
@@ -1731,7 +1732,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U5U5U6") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (magicNumber)
@@ -1751,7 +1752,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V32Z8VolumeLiter") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (volumeLiter)
@@ -1767,7 +1768,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V32Z8FlowRate") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (flowRate)
@@ -1783,7 +1784,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8N8N8N8B8B8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (logNumber)
@@ -1802,7 +1803,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var errorClass = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(errorClass);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(4);
 
                 // Simple Field (errorCode_Sup)
@@ -1821,7 +1822,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var ack_Sup = io.ReadBit();
                 internalMap["Struct"] = new PlcBOOL(ack_Sup);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (alarmUnAck)
@@ -1841,7 +1842,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16V16") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -1857,7 +1858,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "N16U32") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (manufacturerCode)
@@ -1873,7 +1874,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "F16F16F16") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (temperatureSetpointComfort)
@@ -1893,7 +1894,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V8N8N8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (energyDemand)
@@ -1913,7 +1914,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V16V16N8N8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (tempSetpointCooling)
@@ -1937,7 +1938,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16U8Scaling") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (timePeriod)
@@ -1953,7 +1954,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16U8TariffNext") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (delayTime)
@@ -1969,7 +1970,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V32N8Z8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (countVal)
@@ -1989,7 +1990,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U16U32U8N8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (manufacturerId)
@@ -2013,15 +2014,15 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "A8A8A8A8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (languageCode)
-                var languageCode = io.ReadString(16);
+                var languageCode = io.ReadString(16, Encoding.GetEncoding("ASCII"));
                 internalMap["Struct"] = new PlcSTRING(languageCode);
 
                 // Simple Field (regionCode)
-                var regionCode = io.ReadString(16);
+                var regionCode = io.ReadString(16, Encoding.GetEncoding("ASCII"));
                 internalMap["Struct"] = new PlcSTRING(regionCode);
 
                 return new PlcStruct(internalMap);
@@ -2029,7 +2030,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8U8U8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (red)
@@ -2049,11 +2050,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "A8A8Language") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (languageCode)
-                var languageCode = io.ReadString(16);
+                var languageCode = io.ReadString(16, Encoding.GetEncoding("ASCII"));
                 internalMap["Struct"] = new PlcSTRING(languageCode);
 
                 return new PlcStruct(internalMap);
@@ -2061,11 +2062,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "A8A8Region") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (regionCode)
-                var regionCode = io.ReadString(16);
+                var regionCode = io.ReadString(16, Encoding.GetEncoding("ASCII"));
                 internalMap["Struct"] = new PlcSTRING(regionCode);
 
                 return new PlcStruct(internalMap);
@@ -2073,7 +2074,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "V32U8B8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (activeElectricalEnergy)
@@ -2084,7 +2085,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var tariff = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(tariff);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(6);
 
                 // Simple Field (noTariff)
@@ -2100,7 +2101,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B1N3N4") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (deactivationOfPriority)
@@ -2120,7 +2121,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B10U6") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(5);
 
                 // Simple Field (convertorError)
@@ -2152,7 +2153,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "B2U6") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (sceneActivationInactive)
@@ -2172,14 +2173,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8r7B1") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (setValue)
                 var setValue = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(setValue);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(7);
 
                 // Simple Field (channelActivationActive)
@@ -2191,7 +2192,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8U8B8") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (heightPosition)
@@ -2202,7 +2203,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var slatsPosition = io.ReadByte(8);
                 internalMap["Struct"] = new PlcUSINT(slatsPosition);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(6);
 
                 // Simple Field (validSlatsPos)
@@ -2218,7 +2219,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
             if (formatName == "U8U8B16") { // Struct
                 var internalMap = new Dictionary<string, IPlcValue>();
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(8);
 
                 // Simple Field (heightPosition)
@@ -2237,7 +2238,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 var validHeightPos = io.ReadBit();
                 internalMap["Struct"] = new PlcBOOL(validHeightPos);
 
-                // Reserved Field (Just skip the bytes)
+                // Reserved Field (Just skip the bits)
                 io.ReadByte(3);
 
                 // Simple Field (failure)
