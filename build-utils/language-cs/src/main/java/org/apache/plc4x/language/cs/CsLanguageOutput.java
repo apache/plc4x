@@ -50,7 +50,8 @@ public class CsLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.emptyList();
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/cs/model-template.ftlh"));
     }
 
     @Override
