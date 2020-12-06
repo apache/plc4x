@@ -113,46 +113,141 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     public static PlcValue encodePlcValue(DataValue value) {
         ExpandedNodeId typeNode = value.getValue().getDataType().get();
-        Object objValue = value.getValue().getValue();
+        Object objValue = value.getValue().getValue();        
 
-        if (typeNode.equals(Identifiers.Boolean)) {
-            return new PlcBOOL((Boolean) objValue);
-        /*} else if (typeNode.equals(Identifiers.ByteString)) {
-            byte[] array = ((ByteString) objValue).bytes();
-            Byte[] byteArry = new Byte[array.length];
-            int counter = 0;
-            for (byte bytie : array
-            ) {
-                byteArry[counter] = bytie;
-                counter++;
+        if (objValue.getClass().isArray()) {
+            Object[] objArray = (Object[]) objValue;
+            if (objArray[0] instanceof Boolean) {
+                Boolean[] obj = (Boolean[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcBOOL((Boolean) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Integer) {
+                Integer[] obj = (Integer[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcDINT((Integer) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Short) {
+                Short[] obj = (Short[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcINT((Short) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Byte) {
+                Byte[] obj = (Byte[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcSINT((Byte) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Long) {
+                Long[] obj = (Long[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcLINT((Long) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Float) {
+                Float[] obj = (Float[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcREAL((Float) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Double) {
+                Double[] obj = (Double[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcLREAL((Double) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof String) {
+                String[] obj = (String[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcSTRING((String) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else {
+                logger.warn("Node type for " + objArray[0].getClass() + " is not supported");
+                return null;
             }
-            return new DefaultByteArrayPlcValue(byteArry);*/
-        } else if (typeNode.equals(Identifiers.Integer)) {
-            return new PlcDINT((Integer) objValue);
-        } else if (typeNode.equals(Identifiers.Int16)) {
-            return new PlcINT((Short) objValue);
-        } else if (typeNode.equals(Identifiers.Int32)) {
-            return new PlcDINT((Integer) objValue);
-        } else if (typeNode.equals(Identifiers.Int64)) {
-            return new PlcLINT((Long) objValue);
-        } else if (typeNode.equals(Identifiers.UInteger)) {
-            return new PlcLINT((Long) objValue);
-        } else if (typeNode.equals(Identifiers.UInt16)) {
-            return new PlcUINT(((UShort) objValue).intValue());
-        } else if (typeNode.equals(Identifiers.UInt32)) {
-            return new PlcUDINT(((UInteger) objValue).longValue());
-        } else if (typeNode.equals(Identifiers.UInt64)) {
-            return new PlcULINT(new BigInteger(objValue.toString()));
-        } else if (typeNode.equals(Identifiers.Byte)) {
-            return new PlcINT(Short.valueOf(objValue.toString()));
-        } else if (typeNode.equals(Identifiers.Float)) {
-            return new PlcREAL((Float) objValue);
-        } else if (typeNode.equals(Identifiers.Double)) {
-            return new PlcLREAL((Double) objValue);
-        } else if (typeNode.equals(Identifiers.SByte)) {
-            return new PlcSINT((Byte) objValue);
+
         } else {
-            return new PlcSTRING(objValue.toString());
+            if (typeNode.equals(Identifiers.Boolean)) {
+                return new PlcBOOL((Boolean) objValue);
+            } else if (typeNode.equals(Identifiers.Integer)) {
+                return new PlcDINT((Integer) objValue);
+            } else if (typeNode.equals(Identifiers.Int16)) {
+                return new PlcINT((Short) objValue);
+            } else if (typeNode.equals(Identifiers.Int32)) {
+                return new PlcDINT((Integer) objValue);
+            } else if (typeNode.equals(Identifiers.Int64)) {
+                return new PlcLINT((Long) objValue);
+            } else if (typeNode.equals(Identifiers.UInteger)) {
+                return new PlcLINT((Long) objValue);
+            } else if (typeNode.equals(Identifiers.UInt16)) {
+                return new PlcUINT(((UShort) objValue).intValue());
+            } else if (typeNode.equals(Identifiers.UInt32)) {
+                return new PlcUDINT(((UInteger) objValue).longValue());
+            } else if (typeNode.equals(Identifiers.UInt64)) {
+                return new PlcULINT(new BigInteger(objValue.toString()));
+            } else if (typeNode.equals(Identifiers.Byte)) {
+                return new PlcINT(Short.valueOf(objValue.toString()));
+            } else if (typeNode.equals(Identifiers.Float)) {
+                return new PlcREAL((Float) objValue);
+            } else if (typeNode.equals(Identifiers.Double)) {
+                return new PlcLREAL((Double) objValue);
+            } else if (typeNode.equals(Identifiers.SByte)) {
+                return new PlcSINT((Byte) objValue);
+            } else {
+                return new PlcSTRING(objValue.toString());
+            }
         }
 
     }
