@@ -372,7 +372,7 @@
             [simple uint 8  'hour']
             [simple uint 8  'minutes']
             [simple uint 8  'seconds']
-            [simple uint 32 'millis']
+            [simple uint 32 'nanos']
         ]
     ]
 ]
