@@ -700,6 +700,7 @@
 
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>
+            <exclude>**/*.pcapng</exclude>
 
             <!-- JEVN local version files -->
             <exclude>**/.java-version</exclude>
@@ -1140,6 +1141,12 @@
             <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
             <arguments>-Papache-release ${arguments}</arguments>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.7.0.1746</version>
         </plugin>
       </plugins>
     </pluginManagement>
