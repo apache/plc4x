@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.w3c.dom.Element;
 
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -53,6 +54,10 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
 
     public PlcLTIME(@JsonProperty("value") Long value) {
         super(Duration.of(value, ChronoUnit.NANOS), true);
+    }
+
+    public PlcLTIME(@JsonProperty("value") BigInteger value) {
+        super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
     }
 
     @Override

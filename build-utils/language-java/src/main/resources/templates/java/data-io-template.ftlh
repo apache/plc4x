@@ -188,7 +188,7 @@ public class ${type.name}IO {
 
             // Simple Field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
-                        <#if field.name == "value">
+                        <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
                     <#break>
@@ -252,12 +252,25 @@ public class ${type.name}IO {
             return new PlcTIME(value);
                     <#break>
                     <#case "DATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
+            LocalDate value = LocalDate.of(year.intValue(), month.intValue(), day.intValue());
+                    </#if>
             return new PlcDATE(value);
                     <#break>
                     <#case "TIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds", "nanos")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
             return new PlcTIME_OF_DAY(value);
                     <#break>
                     <#case "DATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), month.intValue(), day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), month.intValue(), day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
             return new PlcDATE_AND_TIME(value);
                     <#break>
                     <#case "Struct">

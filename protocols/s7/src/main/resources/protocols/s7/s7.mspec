@@ -353,9 +353,14 @@
         ['IEC61131_TIME' TIME
             [simple uint 32 'value']
         ]
-        ['S7_S5TIME' TIME
-        ]
+        //['S7_S5TIME' TIME
+        //    [reserved uint 2  '0x00']
+        //    [uint     uint 2  'base']
+        //    [simple   uint 12 'value']
+        //]
+        // Interpreted as "number of nanoseconds"
         ['IEC61131_LTIME' LTIME
+            [simple uint 64 'value']
         ]
         // Interpreted as "number of days since 1990-01-01"
         ['IEC61131_DATE' DATE
@@ -443,7 +448,7 @@
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
     ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , 'IEC61131_TIME'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x0C' S5TIME           ['X'              , '4'                 , 'null'                  , 'null'                               , 'S7_S5TIME'             , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    //['0x0C' S5TIME           ['X'              , '4'                 , 'null'                  , 'null'                               , 'S7_S5TIME'             , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x00' LTIME            ['X'              , '8'                 , 'TransportSize.TIME'    , 'null'                               , 'IEC61131_LTIME'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
     ['0x09' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_DATE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x06' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , 'IEC61131_TIME_OF_DAY'  , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
