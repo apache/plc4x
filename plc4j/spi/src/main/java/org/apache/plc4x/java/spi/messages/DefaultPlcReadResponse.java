@@ -28,7 +28,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.values.PlcValues;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,8 +39,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable {
@@ -63,8 +61,12 @@ public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable 
     @Override
     @JsonIgnore
     public PlcValue getAsPlcValue() {
-        return PlcValues.of(request.getFieldNames().stream()
-            .collect(Collectors.toMap(Function.identity(), this::getPlcValue)));
+        Map<String, PlcValue> structMap = new HashMap<>();
+        for (String fieldName : request.getFieldNames()) {
+            PlcValue plcValue = getPlcValue(fieldName);
+            structMap.put(fieldName, plcValue);
+        }
+        return new PlcStruct(structMap);
     }
 
     @Override

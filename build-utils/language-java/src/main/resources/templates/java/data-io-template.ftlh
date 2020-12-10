@@ -253,7 +253,7 @@ public class ${type.name}IO {
                     <#break>
                     <#case "DATE">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
-            LocalDate value = LocalDate.of(year.intValue(), month.intValue(), day.intValue());
+            LocalDate value = LocalDate.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue());
                     </#if>
             return new PlcDATE(value);
                     <#break>
@@ -267,9 +267,9 @@ public class ${type.name}IO {
                     <#break>
                     <#case "DATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), month.intValue(), day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
                     <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
-            LocalDateTime value = LocalDateTime.of(year.intValue(), month.intValue(), day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
                     </#if>
             return new PlcDATE_AND_TIME(value);
                     <#break>

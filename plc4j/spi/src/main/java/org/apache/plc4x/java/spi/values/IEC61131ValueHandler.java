@@ -85,6 +85,8 @@ public class IEC61131ValueHandler implements PlcValueHandler {
                 return new PlcDATE_AND_TIME((LocalDateTime) value);
             } else if (value instanceof String) {
                 return new PlcSTRING((String) value);
+            } else if (value instanceof PlcValue) {
+                return (PlcValue) value;
             } else {
                 throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
                     + " Is not supported");
