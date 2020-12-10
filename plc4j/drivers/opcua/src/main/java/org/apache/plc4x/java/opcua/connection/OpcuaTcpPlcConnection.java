@@ -47,6 +47,7 @@ import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UByte;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.*;
@@ -54,6 +55,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.util.stream.Collectors;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.util.*;
@@ -113,7 +116,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     public static PlcValue encodePlcValue(DataValue value) {
         ExpandedNodeId typeNode = value.getValue().getDataType().get();
-        Object objValue = value.getValue().getValue();        
+        Object objValue = value.getValue().getValue();
 
         if (objValue.getClass().isArray()) {
             Object[] objArray = (Object[]) objValue;
@@ -541,8 +544,41 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 Object valueObject = writeRequest.getPlcValue(fieldName).getObject();
                 // Added small work around for handling BigIntegers as input type for UInt64
                 if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
-                Variant var = new Variant(valueObject);
-                DataValue value = new DataValue(var, null, null, null);
+                Variant var = null;
+                if (valueObject instanceof ArrayList) {
+                    List<PlcValue> plcValueList = (List<PlcValue>) valueObject;
+                    if (plcValueList.get(0) instanceof PlcBOOL) {
+                        List<Boolean> valueList = (plcValueList).stream().map(x -> ((PlcBOOL) x).getBoolean()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Boolean[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcSINT) {
+                        List<UByte> valueList = (List<UByte>) (plcValueList).stream().map(x -> UByte.valueOf(((PlcSINT) x).getByte())).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new UByte[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcINT) {
+                        List<Short> valueList = (plcValueList).stream().map(x -> ((PlcINT) x).getShort()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Short[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcDINT) {
+                        List<Integer> valueList = (plcValueList).stream().map(x -> ((PlcDINT) x).getInteger()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Integer[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcLINT) {
+                        List<Long> valueList = (plcValueList).stream().map(x -> ((PlcLINT) x).getLong()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Long[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcREAL) {
+                        List<Float> valueList = (plcValueList).stream().map(x -> ((PlcREAL) x).getFloat()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Float[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcLREAL) {
+                        List<Double> valueList = (plcValueList).stream().map(x -> ((PlcLREAL) x).getDouble()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new Double[valueList.size()]));
+                    } else if (plcValueList.get(0) instanceof PlcSTRING) {
+                        List<String> valueList = (plcValueList).stream().map(x -> ((PlcSTRING) x).getString()).collect(Collectors.toList());
+                        var = new Variant(valueList.toArray(new String[valueList.size()]));
+                    } else {
+                        logger.warn("Unsupported data type : {}", plcValueList.get(0).getClass());
+                    }
+                }   else {
+                    var = new Variant(valueObject);
+                }
+
+                DataValue value = new DataValue(var);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);
