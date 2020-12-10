@@ -79,18 +79,26 @@ public class ManualS7DriverTest extends ManualTest {
         test.addTestCase("%DB4:20:UINT", 42424);
         test.addTestCase("%DB4:22:DINT", -242442424);
         test.addTestCase("%DB4:26:UDINT", 4242442424L);
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:30:LINT", -4242442424242424242L);
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:38:ULINT", 4242442424242424242L);
         test.addTestCase("%DB4:46:REAL", 3.141593F);
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:50:LREAL", 2.71828182846D);
         test.addTestCase("%DB4:58:TIME", "PT1.234S");
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:62:LTIME", "PT24015H23M12.034002044S");
         test.addTestCase("%DB4:70:DATE", "1998-03-28");
         test.addTestCase("%DB4:72:TIME_OF_DAY", "15:36:30.123");
         test.addTestCase("%DB4:76:TOD", "16:17:18.123");
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:96:DATE_AND_TIME", "1996-05-06T15:36:30");
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:104:DT", "1992-03-29T00:00");
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:112:LDATE_AND_TIME", "1978-03-28T15:36:30");
+        // Not supported in S7 1200
         //test.addTestCase("%DB4:124:LDT", "1978-03-28T15:36:30");
         test.addTestCase("%DB4:136:CHAR", "H");
         test.addTestCase("%DB4:138:WCHAR", "w");
