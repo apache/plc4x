@@ -19,14 +19,14 @@
 package utils
 
 import (
-    "bytes"
-    "errors"
-    "github.com/icza/bitio"
-    "math"
+	"bytes"
+	"errors"
+	"github.com/icza/bitio"
+	"math"
 )
 
 type ReadBuffer struct {
-	buffer *bytes.Buffer
+	data   []uint8
 	reader *bitio.Reader
 	pos    uint64
 }
@@ -35,33 +35,34 @@ func NewReadBuffer(data []uint8) *ReadBuffer {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &ReadBuffer{
-		buffer: buffer,
+		data:   data,
 		reader: reader,
 		pos:    uint64(0),
 	}
 }
 
-func (rb ReadBuffer) Reset() {
-    rb.pos = uint64(0)
+func (rb *ReadBuffer) Reset() {
+	rb.pos = uint64(0)
+	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
 }
 
-func (rb ReadBuffer) GetPos() uint16 {
+func (rb *ReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
 
-func (rb ReadBuffer) GetBytes() []uint8 {
-	return rb.buffer.Bytes()
+func (rb *ReadBuffer) GetBytes() []uint8 {
+	return rb.data
 }
 
-func (rb ReadBuffer) GetTotalBytes() uint64 {
-	return uint64(rb.buffer.Len())
+func (rb *ReadBuffer) GetTotalBytes() uint64 {
+	return uint64(len(rb.data))
 }
 
-func (rb ReadBuffer) HasMore(bitLength uint8) bool {
+func (rb *ReadBuffer) HasMore(bitLength uint8) bool {
 	return false
 }
 
-func (rb ReadBuffer) PeekByte(offset uint8) uint8 {
+func (rb *ReadBuffer) PeekByte(offset uint8) uint8 {
 	return 0
 }
 
@@ -143,47 +144,47 @@ func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
 }
 
 func (rb *ReadBuffer) ReadFloat32(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float32, error) {
-    bitLength := exponentBitLength + mantissaBitLength
-    if signed {
-        bitLength++
-    }
+	bitLength := exponentBitLength + mantissaBitLength
+	if signed {
+		bitLength++
+	}
 	if signed && exponentBitLength == 8 && mantissaBitLength == 23 {
-        rb.pos += uint64(bitLength)
-        uintValue := uint32(rb.reader.TryReadBits(bitLength))
-        res := math.Float32frombits(uintValue)
-        if rb.reader.TryError != nil {
-            return 0, rb.reader.TryError
-        }
-        return res, nil
-    } else if bitLength < 32 {
-        // TODO: Note ... this is the format as described in the KNX specification
-        sign := true
-        var err error
-        if signed {
-            sign, err = rb.ReadBit()
-            if err != nil {
-                return 0.0, errors.New("error reading sign")
-            }
-        }
-        exp, err := rb.ReadInt32(exponentBitLength)
-        if err != nil {
-            return 0.0, errors.New("error reading exponent")
-        }
-        mantissa, err := rb.ReadUint32(mantissaBitLength)
-        // In the mantissa notation actually the first bit is omitted, we need to add it back
-        f := (0.01 * float64(mantissa)) * math.Pow(float64(2), float64(exp))
-        if sign {
-            return -float32(f), nil
-        }
-        return float32(f), nil
-    } else {
-        return 0.0, errors.New("too many bits for float32")
-    }
+		rb.pos += uint64(bitLength)
+		uintValue := uint32(rb.reader.TryReadBits(bitLength))
+		res := math.Float32frombits(uintValue)
+		if rb.reader.TryError != nil {
+			return 0, rb.reader.TryError
+		}
+		return res, nil
+	} else if bitLength < 32 {
+		// TODO: Note ... this is the format as described in the KNX specification
+		sign := true
+		var err error
+		if signed {
+			sign, err = rb.ReadBit()
+			if err != nil {
+				return 0.0, errors.New("error reading sign")
+			}
+		}
+		exp, err := rb.ReadInt32(exponentBitLength)
+		if err != nil {
+			return 0.0, errors.New("error reading exponent")
+		}
+		mantissa, err := rb.ReadUint32(mantissaBitLength)
+		// In the mantissa notation actually the first bit is omitted, we need to add it back
+		f := (0.01 * float64(mantissa)) * math.Pow(float64(2), float64(exp))
+		if sign {
+			return -float32(f), nil
+		}
+		return float32(f), nil
+	} else {
+		return 0.0, errors.New("too many bits for float32")
+	}
 }
 
 func (rb *ReadBuffer) ReadFloat64(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float64, error) {
-    bitLength := 1 + exponentBitLength + mantissaBitLength
-    rb.pos += uint64(bitLength)
+	bitLength := 1 + exponentBitLength + mantissaBitLength
+	rb.pos += uint64(bitLength)
 	uintValue := rb.reader.TryReadBits(bitLength)
 	res := math.Float64frombits(uintValue)
 	if rb.reader.TryError != nil {
