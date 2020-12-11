@@ -286,7 +286,7 @@ public class OpcuaPlcDriverTest {
 
 
               builder.addItem("BooleanArray", BOOL_ARRAY_IDENTIFIER, new Boolean[] {true, true, true, true, true});
-              builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER, new Byte[] {1, -100, 100, -123, 123});
+              builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER + ":BYTE", new Short[] {1, 100, 100, 255, 123});
               builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER, new Double[] {1.0,2.0,3.0,4.0,5.0});
               builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER, new Float[] {1.0F,2.0F,3.0F,4.0F,5.0F});
               builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER, new Short[] {1,2,3,4,5});
