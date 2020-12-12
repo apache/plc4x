@@ -23,8 +23,10 @@ public enum S7ControllerType {
     ANY,
     S7_300,
     S7_400,
+    S7_400H,
     S7_1200,
     S7_1500,
+    S7_1500H,
     LOGO
 
 }

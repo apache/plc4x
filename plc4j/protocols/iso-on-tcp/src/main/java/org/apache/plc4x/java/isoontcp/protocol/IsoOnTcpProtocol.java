@@ -40,8 +40,14 @@ public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        logger.info("IsoOnTcpProtocol event: " + evt.getClass().getName());       
+        super.userEventTriggered(ctx, evt);
+    }
+
+    @Override
     protected void encode(ChannelHandlerContext ctx, IsoOnTcpMessage in, ByteBuf out) throws Exception {
-        logger.debug("ISO on TCP Message sent");
+        logger.info("ISO on TCP Message sent");
         // At this point of processing all higher levels have already serialized their payload.
         // This data is passed to the lower levels in form of an IoBuffer.
         final ByteBuf userData = in.getUserData();
@@ -69,6 +75,7 @@ public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        logger.info("ISO TCP Message received\r\n" + ByteBufUtil.hexDump(in));
         if(logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in));
         }

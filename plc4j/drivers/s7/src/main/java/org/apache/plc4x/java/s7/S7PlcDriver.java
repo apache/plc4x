@@ -36,12 +36,15 @@ import java.util.regex.Pattern;
  * - ISO Transport Protocol (Class 0) (https://tools.ietf.org/html/rfc905)
  * - ISO on TCP (https://tools.ietf.org/html/rfc1006)
  * - TCP
+ * - Support for R and H systems.
  */
 @Component(service = PlcDriver.class, immediate = true)
 public class S7PlcDriver implements PlcDriver {
 
     private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7://(?<host>.*)/(?<rack>\\d{1,4})/(?<slot>\\d{1,4})(?<params>\\?.*)?");
+    private static final Pattern S7H_URI_PATTERN = Pattern.compile("^s7://(?<host0>.*):(?<rack0>\\d{1,4}):(?<slot0>\\d{1,4})/(?<host1>.*):(?<rack1>\\d{1,4}):(?<slot1>\\d{1,4})(?<params>\\?.*)?");    
 
+    
     @Override
     public String getProtocolCode() {
         return "s7";
@@ -54,20 +57,49 @@ public class S7PlcDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
+        boolean isHSystem = false;
+        String params = null;
+        String[] hosts = new String[2];
+        int[] racks = new int[2];
+        int[] slots = new int[2];
+        InetAddress[] plcInetAddress = new InetAddress[2];
+        
         Matcher matcher = S7_URI_PATTERN.matcher(url);
+        Matcher hmatcher = S7H_URI_PATTERN.matcher(url);
+        
+        isHSystem = hmatcher.matches();
+        
         if (!matcher.matches()) {
+            if  (!hmatcher.matches()) 
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}'");
+                "Connection url doesn't match the format 's7://{host|ip}/{rack}/{slot}' or s7://{host0|ip0}:{rack0}:{slot0}/{host1|ip1}:{rack1}:{slot1}'");
         }
-        String host = matcher.group("host");
-
-        int rack = Integer.parseInt(matcher.group("rack"));
-        int slot = Integer.parseInt(matcher.group("slot"));
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-
+        if (!isHSystem) {
+            hosts[0] = matcher.group("host");
+            racks[0] = Integer.parseInt(matcher.group("rack"));
+            slots[0] = Integer.parseInt(matcher.group("slot"));
+            params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+        } else {
+            hosts[0] = hmatcher.group("host0");
+            racks[0] = Integer.parseInt(hmatcher.group("rack0"));
+            slots[0] = Integer.parseInt(hmatcher.group("slot0"));
+            hosts[1] = hmatcher.group("host1");        
+            racks[1] = Integer.parseInt(hmatcher.group("rack1"));
+            slots[1] = Integer.parseInt(hmatcher.group("slot1"));
+            System.out.println(hosts[0] + ":" + racks[0]+ ":" + slots[0]);
+            System.out.println(hosts[1] + ":" + racks[1]+ ":" + slots[1]);
+            params = hmatcher.group("params") != null ? hmatcher.group("params").substring(1) : null;  
+        }
+        
         try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new S7PlcConnection(serverInetAddress, rack, slot, params);
+            if (isHSystem) {
+                plcInetAddress[0] = InetAddress.getByName(hosts[0]);
+                plcInetAddress[1] = InetAddress.getByName(hosts[1]);                
+                return new S7PlcConnection(plcInetAddress, racks, slots, params);                              
+            } else {
+                plcInetAddress[0] = InetAddress.getByName(hosts[0]);
+                return new S7PlcConnection(plcInetAddress[0], racks[0], slots[0], params);  
+            }
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Error parsing address", e);
         } catch (Exception e) {

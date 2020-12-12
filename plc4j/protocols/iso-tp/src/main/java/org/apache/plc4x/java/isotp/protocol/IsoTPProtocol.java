@@ -65,7 +65,7 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         ChannelHandler prevHandler = getPrevChannelHandler(ctx);
-
+        logger.info("IsoTPProtocol: " + evt.getClass().getName());
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
         if ((prevHandler instanceof IsoOnTcpProtocol) && (evt instanceof ConnectEvent)) {

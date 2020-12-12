@@ -163,17 +163,24 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     /**
-     * If the S7 protocol layer is used over Iso TP, then after receiving a {@link IsoTPConnectedEvent} the
-     * corresponding S7 setup communication message has to be sent in order to negotiate the S7 protocol layer.
+     * If the S7 protocol layer is used over Iso TP, then after receiving a 
+     * {@link IsoTPConnectedEvent} the corresponding S7 setup communication 
+     * message has to be sent in order to negotiate the S7 protocol layer.
      *
+     * For high availability handling, the proxy must be incorporated.
+     * This will replicate the event to the communication channels.
+     * 
      * @param ctx the current protocol layers context
      * @param evt the event
      * @throws Exception throws an exception if something goes wrong internally
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        // If we are using S7 inside of IsoTP, then we need to intercept IsoTPs connected events.
-        if ((prevChannelHandler instanceof IsoTPProtocol) && (evt instanceof IsoTPConnectedEvent)) {
+        // If we are using S7 inside of IsoTP or we have a proxy, then we need 
+        // to intercept IsoTPs connected events.
+        if (((prevChannelHandler instanceof IsoTPProtocol) || 
+            (prevChannelHandler instanceof S7HProxy)) && 
+            (evt instanceof IsoTPConnectedEvent)) {
             // Setup Communication
             SetupCommunicationRequestMessage setupCommunicationRequest =
                 new SetupCommunicationRequestMessage((short) 0, maxAmqCaller, maxAmqCallee, pduSize, null);
@@ -240,6 +247,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         } else {
             ChannelPromise subPromise = new DefaultChannelPromise(channel);
             // The tpduRef was 0x01 but had to be changed to 0x00 in order to support Siemens LOGO devices.
+            System.out.println("S7Message; " + message.getTpduReference());
             queue.add(new DataTpdu(true, (byte) 0x00, Collections.emptyList(), buf, message), subPromise);
             
             promiseCombiner.add((Future) subPromise);
@@ -688,6 +696,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     protected void decode(ChannelHandlerContext ctx, IsoTPMessage in, List<Object> out) {
+        logger.info("DECODE: " + ByteBufUtil.prettyHexDump(in.getUserData()));
         if (logger.isTraceEnabled()) {
             logger.trace("Got Data: {}", ByteBufUtil.hexDump(in.getUserData()));
         }
@@ -797,6 +806,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 }
 
                 // Try to send the next message (if there is one).
+                logger.info("DECODE: Try to send the next message (if there is one).");
                 trySendingMessages(ctx);
             }
 
@@ -1778,7 +1788,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
 
     private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
-        //logger.info("trySendingMessages {} < {}",sentButUnacknowledgedTpdus.size(),maxAmqCaller);
+        logger.info("trySendingMessages {} < {}",sentButUnacknowledgedTpdus.size(),maxAmqCaller);
         while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
             // Get the TPDU that is up next in the queue.
             DataTpdu curTpdu = (DataTpdu) queue.current();
@@ -1787,6 +1797,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                 // Send the TPDU.
                 try {
                     //logger.info("trySendingMessages: Trata de enviar todos los mensajes...");
+                    S7Message message = (S7Message) curTpdu.getParent();
+                    System.out.println(">S7Message: " + message.getTpduReference());
                     ChannelFuture channelFuture = queue.removeAndWrite();
                     ctx.flush();
                     if (channelFuture == null) {

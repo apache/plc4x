@@ -18,8 +18,13 @@
  */
 package org.apache.plc4x.java.s7.connection;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import java.net.InetAddress;
 import java.time.Instant;
 import java.util.Collection;
@@ -64,6 +69,8 @@ import org.apache.plc4x.java.isotp.protocol.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
+import org.apache.plc4x.java.s7.netty.S7HEmbeddedChannelFactory;
+import org.apache.plc4x.java.s7.netty.S7HProxy;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
 import org.apache.plc4x.java.s7.netty.model.params.CpuDiagnosticPushParameter;
@@ -119,8 +126,15 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
+    private boolean isHSystem;
+    
     private final int rack;
     private final int slot;
+    
+    int[] racks = new int[2];
+    int[] slots = new int[2];
+
+    private InetAddress[] haddress;    
 
     private final short paramPduSize;
     private final short paramMaxAmqCaller;
@@ -137,19 +151,42 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private EventLoop alarmsloopthread;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
-        this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
-
+        this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);        
+        this.isHSystem = false;
+        
         logger.info("Setting up S7 Connection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
                 "max-amq-callee {}", address.getHostAddress(), rack, slot,
             paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
     }
+    
+    /*
+    * Support for high availability R/H systems.
+    * H systems must have two independent racks, say Rack0 and Rack1. By default
+    * we will select Rack0 as master, however, it should be noted that this is 
+    * field selectable through a switch on the back of the S7400H CPU.
+    * To date there is no S7-1500 R/H system available to perform the tests, 
+    * so the tests will be guaranteed only with S7-400H systems.
+    */
+    public S7PlcConnection(InetAddress[] address, int[] racks, int[] slots, String params) {   
+        this(new S7HEmbeddedChannelFactory(), racks[0], slots[0], params);
+        this.isHSystem = true;     
+        
+        this.racks = racks;
+        this.slots = slots;
+        
+        this.haddress = address;
 
+        logger.info("Setting up S7H Connection with: host-name {}, rack {}, slot {}, pdu-size {}, max-amq-caller {}, " +
+                "max-amq-callee {}", address[0].getHostAddress(), racks[0], slots[0],
+            paramPduSize, paramMaxAmqCaller, paramMaxAmqCallee);
+    }
+    
     public S7PlcConnection(ChannelFactory channelFactory, int rack, int slot, String params) {
         super(channelFactory, true);
 
         this.rack = rack;
-        this.slot = slot;
-
+        this.slot = slot;        
+                      
         short curParamPduSize = 1024;
         short curParamMaxAmqCaller = 8;
         short curParamMaxAmqCallee = 8;
@@ -258,8 +295,13 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         }
                     }
                 });
-                pipeline.addLast(new IsoOnTcpProtocol());
-                pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, TpduSize.valueForGivenSize(paramPduSize)));
+                
+                if (isHSystem) {
+                    pipeline.addLast(new S7HProxy(haddress, racks, slots)); 
+                } else {
+                    pipeline.addLast(new IsoOnTcpProtocol());
+                    pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, TpduSize.valueForGivenSize(paramPduSize)));                    
+                }
                 pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, paramPduSize, paramControllerType,
                     null)); //null <-> new DefaultS7MessageProcessor()
                 pipeline.addLast(new LongS7MessageProcessorCodec());
@@ -267,7 +309,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             }
         };
     }
-
+  
     @Override
     protected void sendChannelCreatedEvent() {
         // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -305,7 +347,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public void connect() throws PlcConnectionException {
-        super.connect(); 
+        super.connect();
         alarmsloopthread.start();
     }
 
@@ -479,7 +521,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     public void unregister(PlcConsumerRegistration registration) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+  
+    
     private class EventLoop extends Thread {
         private volatile boolean cancelled;
         private final Channel channel;
