@@ -178,7 +178,7 @@ public class OpcuaPlcDriverTest {
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
-            
+
             assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
@@ -211,40 +211,40 @@ public class OpcuaPlcDriverTest {
 
             PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
             builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-//            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE);
+            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ":BYTE", 255);
             builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
             builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
-//            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE);
+            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + ":INT", 32000);
             builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
             builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
             builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-//            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE);
+            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ":SINT", -100);
             builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
-//            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE);
-//            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE, new BigInteger("1337"));
-//            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ":UINT", 65535);
+            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ":UDINT", 100);
+            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ":ULINT", new BigInteger("1337"));
+            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ":UDINT", 100);
 
-//            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
+            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "Sad Toddy");
 
             PlcWriteRequest request = builder.build();
             PlcWriteResponse response = request.execute().get();
             assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
             assert response.getResponseCode("String").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
             assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
-//            assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
-//
-//            assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
+            assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+
+            assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
