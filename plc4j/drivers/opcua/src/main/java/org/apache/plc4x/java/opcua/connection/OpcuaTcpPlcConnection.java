@@ -43,6 +43,7 @@ import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
+import org.eclipse.milo.opcua.stack.core.StatusCodes;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.*;
@@ -547,7 +548,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 if (valueObject instanceof ArrayList) {
                     List<PlcValue> plcValueList = (List<PlcValue>) valueObject;
                     String dataType = uaField.getPlcDataType();
-                    if (dataType.equals("IEC61131_NULL")) {                        
+                    if (dataType.equals("IEC61131_NULL")) {
                         if (plcValueList.get(0).getObject() instanceof Boolean) {
                             dataType = "IEC61131_BOOL";
                         } else if (plcValueList.get(0).getObject() instanceof Byte) {
@@ -688,9 +689,110 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                             logger.warn("Unsupported data type : {}, {}", plcValueList.get(0).getClass(), dataType);
                     }
                 } else {
-                    var = new Variant(valueObject);
-                }
+                    String dataType = uaField.getPlcDataType();                    
+                    PlcValue plcValue = (PlcValue) writeRequest.getPlcValue(fieldName);
 
+                    if (dataType.equals("IEC61131_NULL")) {
+                        if (plcValue.getObject() instanceof Boolean) {
+                            dataType = "IEC61131_BOOL";
+                        } else if (plcValue.getObject() instanceof Byte) {
+                            dataType = "IEC61131_SINT";
+                        } else if (plcValue.getObject() instanceof Short) {
+                            dataType = "IEC61131_INT";
+                        } else if (plcValue.getObject() instanceof Integer) {
+                            dataType = "IEC61131_DINT";
+                        } else if (plcValue.getObject() instanceof Long) {
+                            dataType = "IEC61131_LINT";
+                        } else if (plcValue.getObject() instanceof Float) {
+                            dataType = "IEC61131_REAL";
+                        } else if (plcValue.getObject() instanceof Double) {
+                            dataType = "IEC61131_LREAL";
+                        } else if (plcValue.getObject() instanceof String) {
+                            dataType = "IEC61131_STRING";
+                        }
+                    }
+                    switch (dataType) {
+                        case "IEC61131_BOOL":
+                        case "IEC61131_BIT":
+                            var = new Variant(plcValue.getBoolean());
+                            break;
+                        case "IEC61131_BYTE":
+                        case "IEC61131_BITARR8":
+                            var = new Variant(UByte.valueOf(plcValue.getShort()));
+                            break;
+                        case "IEC61131_SINT":
+                        case "IEC61131_INT8":
+                            var = new Variant(plcValue.getByte());
+                            break;
+                        case "IEC61131_USINT":
+                        case "IEC61131_UINT8":
+                        case "IEC61131_BIT8":
+                            var = new Variant(UByte.valueOf(plcValue.getShort()));
+                            break;
+                        case "IEC61131_INT":
+                        case "IEC61131_INT16":
+                            var = new Variant(plcValue.getShort());
+                            break;
+                        case "IEC61131_UINT":
+                        case "IEC61131_UINT16":
+                            var = new Variant(UShort.valueOf(plcValue.getInteger()));
+                            break;
+                        case "IEC61131_WORD":
+                        case "IEC61131_BITARR16":
+                            var = new Variant(UShort.valueOf(plcValue.getInteger()));
+                            break;
+                        case "IEC61131_DINT":
+                        case "IEC61131_INT32":
+                            var = new Variant(plcValue.getInteger());
+                            break;
+                        case "IEC61131_UDINT":
+                        case "IEC61131_UINT32":
+                            var = new Variant(UInteger.valueOf(plcValue.getLong()));
+                            break;
+                        case "IEC61131_DWORD":
+                        case "IEC61131_BITARR32":
+                            var = new Variant(UInteger.valueOf(plcValue.getLong()));
+                            break;
+                        case "IEC61131_LINT":
+                        case "IEC61131_INT64":
+                            var = new Variant(plcValue.getLong());
+                            break;
+                        case "IEC61131_ULINT":
+                        case "IEC61131_UINT64":
+                            var = new Variant(ULong.valueOf(plcValue.getBigInteger()));
+                            break;
+                        case "IEC61131_LWORD":
+                        case "IEC61131_BITARR64":
+                            var = new Variant(ULong.valueOf(plcValue.getBigInteger()));
+                            break;
+                        case "IEC61131_REAL":
+                        case "IEC61131_FLOAT":
+                            var = new Variant(plcValue.getFloat());
+                            break;
+                        case "IEC61131_LREAL":
+                        case "IEC61131_DOUBLE":
+                            var = new Variant(plcValue.getDouble());
+                            break;
+                        case "IEC61131_CHAR":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_WCHAR":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_STRING":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_WSTRING":
+                        case "IEC61131_STRING16":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_DATE_AND_TIME":
+                            var = new Variant(plcValue.getDateTime());
+                            break;
+                        default:
+                            logger.warn("Unsupported data type : {}, {}", plcValue.getClass(), dataType);
+                    }
+                }
                 DataValue value = new DataValue(var);
                 ids.add(idNode);
                 names.add(fieldName);
@@ -715,14 +817,21 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             }
 
             for (int counter = 0; counter < names.size(); counter++) {
-                PlcResponseCode resultCode;
+                final PlcResponseCode resultCode;
                 if (statusCodes != null && statusCodes.size() > counter) {
-                    if (statusCodes.get(counter).isGood()) {
-                        resultCode = PlcResponseCode.OK;
-                    } else if (statusCodes.get(counter).isUncertain()) {
-                        resultCode = PlcResponseCode.NOT_FOUND;
-                    } else if (statusCodes.get(counter).isBad() && statusCodes.get(counter).getValue() == 2155085824L) {
-                        resultCode = PlcResponseCode.INVALID_DATATYPE;
+                    Optional<String[]> status = StatusCodes.lookup(statusCodes.get(counter).getValue());
+                    if (status.isPresent()) {
+                        if (status.get()[0].equals("Good")) {
+                            resultCode = PlcResponseCode.OK;
+                        } else if (status.get()[0].equals("Uncertain")) {
+                            resultCode = PlcResponseCode.NOT_FOUND;
+                        } else if (status.get()[0].equals("Bad")) {
+                            resultCode = PlcResponseCode.INVALID_DATATYPE;
+                        } else if (status.get()[0].equals("Bad_NodeIdUnknown")) {
+                            resultCode = PlcResponseCode.NOT_FOUND;
+                        } else {
+                            resultCode = PlcResponseCode.ACCESS_DENIED;
+                        }
                     } else {
                         resultCode = PlcResponseCode.ACCESS_DENIED;
                     }
