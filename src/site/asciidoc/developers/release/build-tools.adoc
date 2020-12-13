@@ -101,19 +101,23 @@ WARNING: If you find anything here, you will need to pay attention during the re
 
 Now usually comes a phase in which last tests and checks should be performed.
 
-If any problems are found they have to be fixed in the release branch.
+If any problems are found they, have to be fixed in the release branch.
 
-Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems ans we no longer have the same versions.
+Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems and we no longer have the same versions.
 
 === Preparing a release
 
-Before you start preparing the release it is important to manually make the `RELEASE_NOTES` reflect the version we are planning on releasing.
+Before you start preparing the release, it is important to manually make the `RELEASE_NOTES` reflect the version we are planning on releasing.
+
+NOTE: Be sure to ensure you have switched to the release branch before continuing.
 
 So be sure to remove the `(Unreleased)` and `SNAPSHOT` from the version.
 
 As especially when switching a lot between different branches, it is recommended to do a clean checkout of the repository.
-Otherwise a lot of directories can be left over, which would be included in the source-release zip.
+Otherwise, a lot of directories can be left over, which would be included in the source-release zip.
 In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
+
+NOTE: Be sure to ensure you have switched to the release branch before continuing.
 
 After that, the following command will to all preparation steps for the release:
 
@@ -123,13 +127,13 @@ In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
 2. The name of the tag the release commit will be tagged with in the SCM (Name it `releases/code-generation/{release-version}` (`releases/code-generation/{current-full-version}` in our case)
-3. The next development version (The version present in the pom after the release) (`{current-next-minor-version}` in our case)
+3. The next development version (The version present in the pom after the release) (leave it as it is suggested by the plugin)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
 
-However it is important to check that nowhere else SNAPSHOT versions are referenced.
+However, it is important to check that nowhere else SNAPSHOT versions are referenced.
 
-What the plugin now does, is automatically execute the following operations:
+What the plugin now does, is automatically to execute the following operations:
 
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
@@ -141,7 +145,7 @@ What the plugin now does, is automatically execute the following operations:
 8. Commit the changes (commit message: `[maven-release-plugin] prepare for next development iteration`)
 9. Push the commit
 
-However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
+However, this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
 
 Please verify the git repository at: https://gitbox.apache.org/repos/asf?p=plc4x-build-tools.git
 is in the correct state. Please select the release branch and verify the commit log looks similar to this
@@ -172,7 +176,7 @@ If something goes wrong, you can always execute:
 
 And it will change the versions back and commit and push things.
 
-However it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
+However, it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
 
 === Performing a release
 
@@ -180,9 +184,9 @@ This is done by executing another goal of the `maven-release-plugin`:
 
    mvn release:perform
 
-This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
+This executes automatically as all information it requires is located in the `release.properties` file the `prepare`-goal prepared.
 
-The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
+The first step is that the `perform`-goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
    mvn clean deploy -P apache-release
@@ -191,7 +195,7 @@ As the `apache-release` profile is activated, this builds and tests the project 
 
 As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
 
-The way things are setup in the apache parent pom, is that release artifacts are deployed to a so-called `staging repository`.
+The way things are set up in the apache parent pom, is that release artifacts are deployed to a so-called `staging repository`.
 
 You can think of a `staging repository` as a dedicated repository created on the fly as soon as the first artifact comes in.
 
@@ -246,9 +250,9 @@ It should contain all the information needed.
 Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
 Ideally you just copy them there from there.
 
-All of the three `*-source-relese.zip*` artifacts should be located in the directory: `code-generation/target/checkout/code-generation/target`
+The three `*-source-release.zip*` artifacts should be located in the directory: `code-generation/target/checkout/code-generation/target`
 
-So after committing these files to SVN you are ready to start the vote.
+So, after committing these files to SVN, you are ready to start the vote.
 
 === Starting a vote on the mailing list
 
@@ -299,7 +303,7 @@ As it is sometimes to do the vote counting, if voting and discussions are going 
 [subs="verbatim,attributes"]
 ----
    E-Mail Topic:
-   [DISCUSS] Apache PLC4X {current-full-version} RC1
+   [DISCUSS] Apache PLC4X Build-Tools Code-Generation {current-full-version} RC1
 
    Message:
    This is the discussion thread for the corresponding VOTE thread.
@@ -315,7 +319,7 @@ This is an Apache policy to make it possible for anyone to participate in the vo
 
 The vote passes, if at least 3 `+1` votes are received and more `+1` are received than `-1`.
 
-After the 72 hour minimum wait period is over and we have fulfilled the requirement of at least 3 +1 votes and more +1 than -1, a final reply is sent to the vote thread with a prefix of `[RESULT]` in the title in which the summary of the vote is presented in an aggregated form.
+After the 72-our minimum wait period is over, and we have fulfilled the requirement of at least 3 +1 votes and more +1 than -1, a final reply is sent to the vote thread with a prefix of `[RESULT]` in the title in which the summary of the vote is presented in an aggregated form.
 
 [subs="verbatim,attributes"]
 ----
@@ -330,7 +334,7 @@ After the 72 hour minimum wait period is over and we have fulfilled the requirem
 
 === Releasing after a successful vote
 
-As soon as the votes are finished and the results were in favor of a release, the staged artifacts can be released.
+As soon as the votes are finished, and the results were in favor of a release, the staged artifacts can be released.
 This is done by moving them inside the Apache SVN.
 
 [subs="verbatim,attributes"]
@@ -352,7 +356,7 @@ This can be done like this:
 
     svn delete https://dist.apache.org/repos/dist/release/plc4x/0.3.0/ -m"deleted version 0.3.0"
 
-After this https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
+After this, https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
 
 === Releasing the Maven artifacts
 
