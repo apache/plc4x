@@ -93,10 +93,15 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Import-Package>
+              com.fasterxml.jackson.annotation;resolution:=optional,
+              *
+            </Import-Package>
             <Export-package>io.netty.bootstrap,*</Export-package>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
 </project>
