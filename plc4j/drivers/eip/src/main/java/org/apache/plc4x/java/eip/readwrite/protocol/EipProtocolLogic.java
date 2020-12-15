@@ -150,8 +150,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         boolean isPadded = tagFinal.length() % 2 != 0;
         int dataSegLength = 2 + tagFinal.length()
             + (isPadded ? 1 : 0)
-            + (isArray ? 2 : 0)
-            + (isStruct ? tag.substring(tag.indexOf('.') + 1).length() + 2 + tag.substring(tag.indexOf('.') + 1).length() % 2 : 0);
+            + (isArray ? 2 : 0 );
+            
+        if(isStruct){
+            for (var subStr: tag.substring(tag.indexOf(".")+1,tag.length()).split("\\.", -1) ) {
+                dataSegLength+= 2 + subStr.length() + subStr.length()%2;
+            }
+        }
 
         ByteBuffer buffer = ByteBuffer.allocate(dataSegLength).order(ByteOrder.LITTLE_ENDIAN);
 
