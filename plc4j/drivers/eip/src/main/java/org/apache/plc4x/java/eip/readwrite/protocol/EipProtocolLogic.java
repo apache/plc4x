@@ -153,7 +153,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             + (isArray ? 2 : 0 );
             
         if(isStruct){
-            for (var subStr: tag.substring(tag.indexOf(".")+1,tag.length()).split("\\.", -1) ) {
+            for (String subStr : tag.substring(tag.indexOf(".")+1).split("\\.", -1) ) {
                 dataSegLength+= 2 + subStr.length() + subStr.length()%2;
             }
         }
