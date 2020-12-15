@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.examples.pollloop;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +33,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 public class PollLoop {
 
@@ -201,18 +201,15 @@ public class PollLoop {
         collector.start();
     }
 
-    public static Object[] response2Event(PlcReadResponse response, List<String> variables) {
+    public static Object[] response2Event(PlcReadResponse response, List<String> fieldNames) {
         // field names are returned in sorted order we do not want that
-//    List<String> fieldNames = new ArrayList<>(response.getFieldNames());
-        List<String> fieldNames = variables;
         Object[] event = new Object[fieldNames.size() + 1];
 
         event[0] = System.currentTimeMillis();
 
         for (int i = 0; i < fieldNames.size(); i++) {
             if (response.getResponseCode(fieldNames.get(i)) == PlcResponseCode.OK) {
-                Object value = response.getObject(fieldNames.get(i));
-                value = convertBoolean(value);
+                PlcValue value = response.getPlcValue(fieldNames.get(i));
                 event[i + 1] = value.toString();
             }
 
@@ -227,25 +224,4 @@ public class PollLoop {
         return event;
     }
 
-    /**
-     * converts an array of boolean into  a more readable "0101" String
-     */
-    public static Object convertBoolean(Object input) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        if (input instanceof ArrayList) {
-            ArrayList<Boolean> list = (ArrayList<Boolean>) input;
-
-            for (Boolean boolElem : list) {
-                String tmp2;
-                boolean tmp = Boolean.parseBoolean(boolElem.toString());
-                tmp2 = tmp ? "1" : "0";
-
-                stringBuilder.append(tmp2);
-            }
-            return stringBuilder.toString();
-        } else {
-            return input;
-        }
-    }
 }
