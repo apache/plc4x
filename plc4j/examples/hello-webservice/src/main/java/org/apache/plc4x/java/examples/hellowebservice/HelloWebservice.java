@@ -33,7 +33,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.PlcStruct;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,7 +133,7 @@ public class HelloWebservice {
             // Iterate over all the fields in this event and then simply output
             // them to the console in a JSON format.
             for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
-                final PlcStruct plcValue = (PlcStruct) plcSubscriptionEvent.getPlcValue(fieldName);
+                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
 
                 // Create a JSON object that fits the structure of my remote webservice.
                 JsonObject output = new JsonObject();

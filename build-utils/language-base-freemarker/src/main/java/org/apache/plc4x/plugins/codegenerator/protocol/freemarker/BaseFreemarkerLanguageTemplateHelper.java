@@ -21,9 +21,11 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.StringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
@@ -89,16 +91,21 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return thisType;
     }
 
-    protected String getProtocolName() {
+    public String getProtocolName() {
         return protocolName;
     }
 
-    protected String getFlavorName() {
+    public String getFlavorName() {
         return flavorName;
     }
 
-    protected Map<String, TypeDefinition> getTypeDefinitions() {
+    public Map<String, TypeDefinition> getTypeDefinitions() {
         return types;
+    }
+
+    public List<TypeDefinition> getComplexTypeRootDefinitions() {
+        return types.values().stream().filter(typeDefinition -> (typeDefinition instanceof ComplexTypeDefinition) &&
+            !(typeDefinition instanceof DiscriminatedComplexTypeDefinition)).collect(Collectors.toList());
     }
 
     protected static Map<String, SimpleTypeReference> getBuiltInFieldTypes() {
@@ -141,6 +148,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public boolean isComplexTypeReference(TypeReference typeReference) {
         return typeReference instanceof ComplexTypeReference;
+    }
+
+    public boolean isStringTypeReference(TypeReference typeReference) {
+        return typeReference instanceof StringTypeReference;
     }
 
     /**
@@ -275,7 +286,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             throw new RuntimeException("Couldn't find given enum type definition with name " + complexTypeReference.getName());
         }
         if(!(typeDefinition instanceof EnumTypeDefinition)) {
-            throw new RuntimeException("Referenced tpye with name " + complexTypeReference.getName() + " is not an enum type");
+            throw new RuntimeException("Referenced type with name " + complexTypeReference.getName() + " is not an enum type");
         }
         EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) typeDefinition;
         // Enum types always have simple type references.
@@ -285,6 +296,47 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /* *********************************************************************************
      * Methods related to fields.
      **********************************************************************************/
+
+    public boolean hasFieldOfType(String fieldTypeName) {
+        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+           return ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field -> field.getTypeName().equals(fieldTypeName));
+        }
+        return false;
+    }
+
+    public boolean hasFieldsWithNames(List<Field> fields, String... names) {
+        for (String name : names) {
+            boolean foundName = false;
+            for (Field field : fields) {
+                if(field instanceof NamedField) {
+                    if(name.equals(((NamedField) field).getName())) {
+                        foundName = true;
+                        break;
+                    }
+                }
+            }
+            if(!foundName) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Field getFieldForNameFromCurrentOrParent(String fieldName) {
+        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+            return ((ComplexTypeDefinition) getThisTypeDefinition()).getAllPropertyFields()
+                .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+        }
+        return null;
+    }
+
+    public Field getFieldForNameFromCurrent(String fieldName) {
+        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+            return ((ComplexTypeDefinition) getThisTypeDefinition()).getPropertyFields()
+                .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+        }
+        return null;
+    }
 
     public boolean isAbstractField(Field field) {
         return field instanceof AbstractField;
@@ -393,7 +445,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /**
      * @return switch field of the current base type.
      */
-    protected SwitchField getSwitchField() {
+    public SwitchField getSwitchField() {
         return getSwitchField(thisType);
     }
 
@@ -752,6 +804,48 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         return false;
+    }
+
+    public boolean discriminatorValueNeedsStringEqualityCheck(Term term) {
+        if(term instanceof VariableLiteral) {
+            VariableLiteral variableLiteral = (VariableLiteral) term;
+            // If this literal references an Enum type, then we have to output it differently.
+            if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                return false;
+            }
+
+            if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+                Field referencedField = ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().filter(field -> ((field instanceof NamedField) && ((NamedField) field).getName().equals(variableLiteral.getName()))).findFirst().orElse(null);
+                if(referencedField != null) {
+                    if(referencedField instanceof TypedField) {
+                        TypedField typedField = (TypedField) referencedField;
+                        if(typedField.getType() instanceof StringTypeReference) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if(getThisTypeDefinition().getParserArguments() != null) {
+                for (Argument parserArgument : getThisTypeDefinition().getParserArguments()) {
+                    if (parserArgument.getName().equals(variableLiteral.getName())) {
+                        if(parserArgument.getType() instanceof StringTypeReference) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
+        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
+        for (EnumValue enumValue : enumValues) {
+            if (!filteredEnumValues.containsKey(enumValue.getValue())) {
+                filteredEnumValues.put(enumValue.getValue(), enumValue);
+            }
+        }
+        return filteredEnumValues.values();
     }
 
 }

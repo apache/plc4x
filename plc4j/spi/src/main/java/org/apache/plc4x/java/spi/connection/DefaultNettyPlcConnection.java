@@ -36,6 +36,7 @@ import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -58,10 +59,10 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected boolean connected;
 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
-                                     PlcFieldHandler fieldHandler, Configuration configuration,
+                                     PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
                                      ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
-        super(canRead, canWrite, canSubscribe, fieldHandler, optimizer);
+        super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
@@ -110,21 +111,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             throw new PlcConnectionException(e);
         }
     }
-
-    /*@Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        try {
-            // Relay the actual pinging to the channel factory ...
-            channelFactory.ping();
-            // If we got here, the ping was successful.
-            future.complete(null);
-        } catch (PlcException e) {
-            // If we got here, something went wrong.
-            future.completeExceptionally(e);
-        }
-        return future;
-    }*/
 
     @Override
     public void close() throws PlcConnectionException {

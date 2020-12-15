@@ -29,8 +29,8 @@ uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* io, plc4c_modbus_read_write_modbus_constants** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -42,7 +42,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 
   // Const Field (modbusTcpDefaultPort)
   uint16_t modbusTcpDefaultPort = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &modbusTcpDefaultPort);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &modbusTcpDefaultPort);
   if(_res != OK) {
     return _res;
   }
@@ -54,11 +54,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_constants* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (modbusTcpDefaultPort)
-  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT());
+  plc4c_spi_write_unsigned_short(io, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT());
 
   return OK;
 }

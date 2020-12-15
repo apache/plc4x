@@ -22,7 +22,6 @@ package org.apache.plc4x.java.simulated.connection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -121,7 +120,7 @@ class SimulatedConnectionTest implements WithAssertions {
         @Test
         void unsubscribe() throws Exception {
             PlcUnsubscriptionRequest plcUnsubscriptionRequest = SUT.unsubscriptionRequestBuilder()
-                .addHandles(mock(InternalPlcSubscriptionHandle.class))
+                .addHandles(mock(PlcSubscriptionHandle.class))
                 .build();
 
             CompletableFuture<PlcUnsubscriptionResponse> unsubscribe = SUT.unsubscribe(plcUnsubscriptionRequest);
@@ -153,21 +152,23 @@ class SimulatedConnectionTest implements WithAssertions {
 
         @Test
         void subscription() throws Exception {
+            // Initialize the addresses
             PlcWriteRequest plcWriteRequest = SUT.writeRequestBuilder()
                 .addItem("cyclic", "STATE/cyclic:STRING", "initialcyclic")
                 .addItem("state", "STATE/state:STRING", "initialstate")
                 .addItem("event", "STATE/event:STRING", "initialevent")
                 .build();
-
             SUT.write(plcWriteRequest).get(1, TimeUnit.SECONDS);
 
+            // Subscribe for the addresses
             PlcSubscriptionRequest plcSubscriptionRequest = SUT.subscriptionRequestBuilder()
                 .addCyclicField("cyclic", "STATE/cyclic:String", Duration.ofSeconds(1))
                 .addChangeOfStateField("state", "STATE/state:String")
                 .addEventField("event", "STATE/event:String")
                 .build();
-
             PlcSubscriptionResponse plcSubscriptionResponse = SUT.subscribe(plcSubscriptionRequest).get(1, TimeUnit.SECONDS);
+
+            // Register some handlers for the subscriptions that simply put the messages in a queue.
             Queue<PlcSubscriptionEvent> cyclicQueue = new ConcurrentLinkedQueue<>();
             PlcConsumerRegistration cyclicRegistration = plcSubscriptionResponse.getSubscriptionHandle("cyclic").register(cyclicQueue::add);
             Queue<PlcSubscriptionEvent> stateQueue = new ConcurrentLinkedQueue<>();
@@ -175,28 +176,35 @@ class SimulatedConnectionTest implements WithAssertions {
             Queue<PlcSubscriptionEvent> eventQueue = new ConcurrentLinkedQueue<>();
             PlcConsumerRegistration eventRegistration = plcSubscriptionResponse.getSubscriptionHandle("event").register(eventQueue::add);
             assertThat(plcSubscriptionResponse.getFieldNames()).isNotEmpty();
+
+            // Give the system some time to do stuff
             TimeUnit.SECONDS.sleep(10);
 
+            // Write something to the addresses in order to trigger a value-change event
             PlcWriteRequest plcWriteRequest2 = SUT.writeRequestBuilder()
                 .addItem("cyclic", "STATE/cyclic:STRING", "changedcyclic")
                 .addItem("state", "STATE/state:STRING", "changedstate")
                 .addItem("event", "STATE/event:STRING", "changedevent")
                 .build();
-
             SUT.write(plcWriteRequest2).get(1, TimeUnit.SECONDS);
+
+            // Unregister all consumers
             cyclicRegistration.unregister();
             stateRegistration.unregister();
             eventRegistration.unregister();
 
+            // The cyclic queue should not be empty as it had 10 seconds to get a value once per second
             assertThat(cyclicQueue).isNotEmpty();
-            cyclicQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("cyclic")
-            );
+            cyclicQueue.forEach(
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("cyclic"));
+            // The state change queue should also not be empty as we forced an update with the second write
             assertThat(stateQueue).isNotEmpty();
-            stateQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("state")
-            );
+            stateQueue.forEach(
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("state"));
+            // No idea, why this should not be empty
             assertThat(eventQueue).isNotEmpty();
-            eventQueue.forEach(plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("event")
-            );
+            eventQueue.forEach(
+                plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("event"));
         }
     }
 

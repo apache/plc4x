@@ -25,6 +25,9 @@
 #include <plc4c/utils/list.h>
 #include <plc4c/utils/queue.h>
 
+#include "read_buffer.h"
+#include "write_buffer.h"
+
 typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
 typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
@@ -35,8 +38,11 @@ typedef struct plc4c_response_item_t plc4c_response_item;
 typedef struct plc4c_response_subscription_item_t plc4c_response_subscription_item;
 typedef struct plc4c_response_unsubscription_item_t plc4c_response_unsubscription_item;
 
-typedef plc4c_item *(*plc4c_connection_parse_address_item)(
-    char *address_string);
+typedef plc4c_return_code (*plc4c_connection_configure_function)(
+    plc4c_list* parameters, void** configuration);
+
+typedef plc4c_return_code (*plc4c_connection_parse_address_item)(
+    char *address_string, void** encoded_address);
 
 typedef plc4c_return_code (*plc4c_connection_encode_value_item)(
     plc4c_item *item, void *value, void **encoded_value);
@@ -80,6 +86,32 @@ typedef void (*plc4c_connect_free_subscription_response_function)(
 typedef void (*plc4c_connect_free_unsubscription_response_function)(
     plc4c_unsubscription_response *response);
 
+typedef plc4c_return_code (*plc4c_transport_configure_function)(
+    plc4c_list* parameters, void** configuration);
+
+// TODO: Implement the argument.
+typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);
+
+// TODO: Implement the argument.
+typedef plc4c_return_code (*plc4c_transport_close_function)(void* config);
+
+typedef plc4c_return_code (*plc4c_transport_send_message_function)(
+    void* transport_configuration, plc4c_spi_write_buffer* message);
+
+// Helper function that tells the transport what to do with the current input
+// on positive return value: a read-buffer with given number of bytes is
+// returned. RESPONSE_ACCEPT_INCOMPLETE or 0: Currently not enough data is
+// or this content is not applicable for the current task. Don't consume
+// anything and potentially re-check next time. If however the value is negative
+// the buffer seems to contain corrupt data, clean up by skipping the number of
+// bytes you get by making the negative value a positive and not returning any
+// read-buffer.
+typedef int16_t (*accept_message_function)(
+    uint8_t* data, uint16_t length);
+
+typedef plc4c_return_code (*plc4c_transport_select_message_function)(
+    void* transport_configuration, uint8_t min_size, accept_message_function accept_message, plc4c_spi_read_buffer** message);
+
 struct plc4c_system_t {
   /* drivers */
   plc4c_list *driver_list;
@@ -105,12 +137,14 @@ struct plc4c_system_t {
 
 struct plc4c_item_t {
   char *name;
+  void *address;
 };
 
 struct plc4c_driver_t {
   char *protocol_code;
   char *protocol_name;
   char *default_transport_code;
+  plc4c_connection_configure_function configure_function;
   plc4c_connection_parse_address_item parse_address_function;
   plc4c_connection_connect_function connect_function;
   plc4c_connection_disconnect_function disconnect_function;
@@ -129,10 +163,23 @@ struct plc4c_driver_list_item_t {
   plc4c_driver_list_item *next;
 };
 
+struct plc4c_transport_message_t {
+  int length;
+  uint8_t data[];
+};
+
 struct plc4c_transport_t {
   char *transport_code;
+  char* transport_name;
 
-  // TODO: add the send and receive function references here ...
+  plc4c_transport_configure_function configure;
+  plc4c_transport_open_function open;
+  plc4c_transport_close_function close;
+  plc4c_transport_send_message_function send_message;
+  // Function that uses a function passed in to see if a given system-task
+  // will be able to consume the current content of the transports input
+  // buffer.
+  plc4c_transport_select_message_function select_message;
 };
 
 struct plc4c_transport_list_item_t {
@@ -145,7 +192,9 @@ struct plc4c_connection_t {
   char *protocol_code;
   char *transport_code;
   char *transport_connect_information;
+  void *transport_configuration;
   char *parameters;
+  void *configuration;
 
   bool connected;
   // Internal flag indicating the connection should be disconnected
@@ -173,14 +222,17 @@ struct plc4c_data_t {
   size_t size;
   union {
     bool boolean_value;
-    char char_value;
-    unsigned char uchar_value;
-    short short_value;
-    unsigned short ushort_value;
-    int int_value;
-    unsigned int uint_value;
+    int8_t char_value;
+    uint8_t uchar_value;
+    int16_t short_value;
+    uint16_t ushort_value;
+    int32_t int_value;
+    uint32_t uint_value;
+    int64_t lint_value;
+    uint64_t ulint_value;
     /* more */
     float float_value;
+    double double_value;
     char *pstring_value;
     char *const_string_value;
     void *pvoid_value;

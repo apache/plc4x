@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new OpcuaPlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new OpcuaPlcFieldHandler(), new IEC61131ValueHandler());
     }
 
     @Override

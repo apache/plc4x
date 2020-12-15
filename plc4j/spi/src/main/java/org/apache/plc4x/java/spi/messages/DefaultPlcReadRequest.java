@@ -21,10 +21,14 @@ package org.apache.plc4x.java.spi.messages;
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -33,12 +37,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPlcFieldRequest {
+public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, XmlSerializable {
 
     private final PlcReader reader;
+    // This is intentionally a linked hash map in order to keep the order of how elements were added.
     private LinkedHashMap<String, PlcField> fields;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -79,7 +85,6 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
         return new LinkedList<>(fields.values());
     }
 
-    @Override
     @JsonIgnore
     public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
@@ -103,16 +108,35 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
         return fields;
     }
 
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcReadRequest");
+        Element fieldsElement = doc.createElement("fields");
+        messageElement.appendChild(fieldsElement);
+        for (Map.Entry<String, PlcField> fieldEntry : fields.entrySet()) {
+            String fieldName = fieldEntry.getKey();
+            Element fieldNameElement = doc.createElement(fieldName);
+            fieldsElement.appendChild(fieldNameElement);
+            PlcField field = fieldEntry.getValue();
+            if(!(field instanceof XmlSerializable)) {
+                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+            }
+            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
+        }
+        parent.appendChild(messageElement);
+    }
+
     public static class Builder implements PlcReadRequest.Builder {
 
         private final PlcReader reader;
         private final PlcFieldHandler fieldHandler;
-        private final Map<String, String> fields;
+        private final Map<String, Supplier<PlcField>> fields;
 
         public Builder(PlcReader reader, PlcFieldHandler fieldHandler) {
             this.reader = reader;
             this.fieldHandler = fieldHandler;
-            fields = new TreeMap<>();
+            fields = new LinkedHashMap<>();
         }
 
         @Override
@@ -120,7 +144,16 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, fieldQuery);
+            fields.put(name, () -> fieldHandler.createField(fieldQuery));
+            return this;
+        }
+
+        @Override
+        public PlcReadRequest.Builder addItem(String name, PlcField fieldQuery) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, () -> fieldQuery);
             return this;
         }
 
@@ -128,8 +161,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
         public PlcReadRequest build() {
             LinkedHashMap<String, PlcField> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, fieldQuery) -> {
-                PlcField parsedField = fieldHandler.createField(fieldQuery);
-                parsedFields.put(name, parsedField);
+                parsedFields.put(name, fieldQuery.get());
             });
             return new DefaultPlcReadRequest(reader, parsedFields);
         }

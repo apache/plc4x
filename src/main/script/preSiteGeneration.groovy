@@ -25,7 +25,7 @@ def currentYear = Calendar.getInstance().get(Calendar.YEAR) as String
 print "\nCurrent year:                     " + currentYear
 project.properties['current-year'] = currentYear
 
-// Calculate some version related stuff
+// Calculate some version related stuff for the main project
 def currentVersion = project.version as String
 def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
 print "\nCurrent version:                  " + currentVersion
@@ -47,6 +47,33 @@ if (match.count >= 1) {
     project.properties['current-next-incremental-version'] = currentNextIncrementalVersion
     print "\nCurrent next minor version:       " + currentNextMinorVersion + " (current-next-minor-version)"
     project.properties['current-next-minor-version'] = currentNextMinorVersion
+}
+
+// Get the version of the code-generation
+codeGenerationVersion = project.properties['plc4x-code-generation.version']
+def codeGenMatch = (codeGenerationVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
+if (codeGenMatch.count >= 1) {
+    def codeGenMajorVersion = codeGenMatch[0][1] as Integer
+    def codeGenMinorVersion = codeGenMatch[0][2] as Integer
+    def codeGenBugfixVersion = codeGenMatch[0][3] as Integer
+    // If this is not a snapshot version, increment the minor version
+    if(codeGenMatch[0][4] == null) {
+        codeGenMinorVersion++
+    }
+
+    def codeGenerationReleaseFullVersion = codeGenMajorVersion + "." + codeGenMinorVersion + "." + codeGenBugfixVersion
+    def codeGenerationReleaseShortVersion = codeGenMajorVersion + "." + codeGenMinorVersion
+    def codeGenerationNextDevelopmentVersion = codeGenMajorVersion + "." + (codeGenMinorVersion + 1) + ".0"
+    def codeGenerationBugfixShortVersion = codeGenMajorVersion + "." + codeGenMinorVersion + "." + (codeGenBugfixVersion + 1)
+
+    print "\nNext code-generation full version:             " + codeGenerationReleaseFullVersion + " (code-generation-full-version)"
+    project.properties['code-generation-full-version'] = codeGenerationReleaseFullVersion
+    print "\nNext code-generation short version:             " + codeGenerationReleaseShortVersion + " (code-generation-short-version)"
+    project.properties['code-generation-short-version'] = codeGenerationReleaseShortVersion
+    print "\nNext code-generation development version:             " + codeGenerationNextDevelopmentVersion + " (code-generation-development-version)"
+    project.properties['code-generation-development-version'] = codeGenerationNextDevelopmentVersion
+    print "\nNext code-generation bugfix version:             " + codeGenerationBugfixShortVersion + " (code-generation-bugfix-version)"
+    project.properties['code-generation-bugfix-version'] = codeGenerationBugfixShortVersion
 }
 
 // Get the latest released version from our doap file.

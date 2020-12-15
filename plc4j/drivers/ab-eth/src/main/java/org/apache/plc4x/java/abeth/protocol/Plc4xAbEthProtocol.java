@@ -33,13 +33,12 @@ import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     private PlcResponse decodeReadResponse(
         CIPEncapsulationReadResponse plcReadResponse, PlcRequestContainer requestContainer) {
 
-        InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
+        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -179,9 +178,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if(data.length == 1) {
-                                    plcValue = new PlcInteger(data[0]);
+                                    plcValue = new PlcINT(data[0]);
                                 } else {
-                                    plcValue = new PlcList(Arrays.asList(data));
+                                    plcValue = IEC61131ValueHandler.of(data);
                                 }
                             }
                             break;
@@ -190,9 +189,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[1]>> 7) & 1) == 0)  {
-                                    plcValue = PlcValues.of((data[1] << 8) + data[0]);  // positive number
+                                    plcValue = IEC61131ValueHandler.of((data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    plcValue = PlcValues.of((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.of((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -201,9 +200,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[3]>> 7) & 1) == 0)  {
-                                    plcValue = PlcValues.of((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
+                                    plcValue = IEC61131ValueHandler.of((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    plcValue = PlcValues.of((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.of((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -212,9 +211,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (field.getBitNumber() < 8) {
-                                    plcValue = PlcValues.of((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
+                                    plcValue = IEC61131ValueHandler.of((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = PlcValues.of((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = IEC61131ValueHandler.of((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;
@@ -243,7 +242,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     private PlcValue decodeReadResponseUnsignedBytePlcValue(AbEthField field, ByteBuf data) {
         Short[] shorts = null;//readAllValues(Short.class, field, i -> data.readUnsignedByte());
-        return new PlcInteger(1/*shorts*/);
+        return new PlcSINT(1/*shorts*/);
     }
 
 }

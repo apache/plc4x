@@ -18,6 +18,7 @@
 */
 
 #include "cotp_protocol_class.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,3 +28,48 @@ plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_
   return plc4c_s7_read_write_cotp_protocol_class_null_const;
 }
 
+plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_of(char* value_string) {
+    if(strcmp(value_string, "CLASS_0") == 0) {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
+    }
+    if(strcmp(value_string, "CLASS_1") == 0) {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_1;
+    }
+    if(strcmp(value_string, "CLASS_2") == 0) {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_2;
+    }
+    if(strcmp(value_string, "CLASS_3") == 0) {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_3;
+    }
+    if(strcmp(value_string, "CLASS_4") == 0) {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_4;
+    }
+    return -1;
+}
+
+int plc4c_s7_read_write_cotp_protocol_class_num_values() {
+  return 5;
+}
+
+plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
+      }
+      case 1: {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_1;
+      }
+      case 2: {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_2;
+      }
+      case 3: {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_3;
+      }
+      case 4: {
+        return plc4c_s7_read_write_cotp_protocol_class_CLASS_4;
+      }
+      default: {
+        return -1;
+      }
+    }
+}

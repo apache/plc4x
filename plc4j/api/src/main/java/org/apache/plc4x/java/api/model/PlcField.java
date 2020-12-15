@@ -53,4 +53,33 @@ public interface PlcField {
         return Object.class;
     }
 
+    /**
+     * Returns the "datatype" of the response one can expect from this field.
+     * I.e. The mapping between this string and the PlcValue datatype is handled in the Valuehandler class.
+     *
+     * The contract is to return a String description of the datatype. This doesn't necessarily
+     * define the PlcValue type but should be related.
+     * i.e. returns "BOOL" -> PlcBOOL, returns "INT16" -> PlcINT
+     * returning an empty string results in the default handler for that dattype to be evaluated.
+     *
+     * @return The data type is generally parsed to the PlcField class, if not a default datatype is returned.
+     */
+    @JsonIgnore
+    default String getPlcDataType() {
+        return "";
+    }
+
+    /**
+     * Returns the number of elements to expect of the response one can expect from this field.
+     *
+     *
+     * @return The number of elements to expect.
+     */
+    @JsonIgnore
+    default int getNumberOfElements() {
+        return 1;
+    }
+
+
+
 }

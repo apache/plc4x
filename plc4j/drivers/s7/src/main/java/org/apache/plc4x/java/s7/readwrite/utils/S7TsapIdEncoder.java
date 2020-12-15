@@ -34,7 +34,7 @@ public class S7TsapIdEncoder {
 
     public static DeviceGroup decodeDeviceGroup(short tsapId) {
         byte deviceGroupCode = (byte) ((tsapId >> 8) & (0xFF));
-        return DeviceGroup.valueOf(deviceGroupCode);
+        return DeviceGroup.enumForValue(deviceGroupCode);
     }
 
     public static int decodeRack(short tsapId) {

@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcLong;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
@@ -66,7 +66,7 @@ public class Server {
     private static class MyMockDevice implements MockDevice {
         @Override
         public ResponseItem<PlcValue> read(String fieldQuery) {
-            return new ResponseItem<>(PlcResponseCode.OK, new PlcLong(100L));
+            return new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(100L));
         }
 
         @Override

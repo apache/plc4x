@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -38,13 +40,14 @@ public class SymbolicAdsField implements AdsField {
 
     private final int numberOfElements;
 
-    private SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
+    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
         this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
+
     }
 
     public static SymbolicAdsField of(String address) {
@@ -67,7 +70,7 @@ public class SymbolicAdsField implements AdsField {
         return SYMBOLIC_ADDRESS_PATTERN.matcher(address).matches();
     }
 
-    public String getSymbolicField() {
+    public String getSymbolicAddress() {
         return symbolicAddress;
     }
 
@@ -76,6 +79,12 @@ public class SymbolicAdsField implements AdsField {
         return adsDataType;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return adsDataType.toString();
+    }
+
+    @Override
     public int getNumberOfElements() {
         return numberOfElements;
     }
@@ -102,5 +111,24 @@ public class SymbolicAdsField implements AdsField {
         return "SymbolicAdsField{" +
             "symbolicAddress='" + symbolicAddress + '\'' +
             '}';
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+
+        Element symbolicAddressElement = doc.createElement("symbolicAddress");
+        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicAddress()));
+        messageElement.appendChild(symbolicAddressElement);
+
+        Element numberOfElementsElement = doc.createElement("numberOfElements");
+        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(numberOfElementsElement);
+
+        Element datatypeElement = doc.createElement("dataType");
+        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
+        messageElement.appendChild(datatypeElement);
     }
 }

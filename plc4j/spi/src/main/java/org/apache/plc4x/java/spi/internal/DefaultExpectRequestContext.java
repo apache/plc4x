@@ -80,7 +80,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout));
+        registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, timeout);
         finisher.accept(registration);
         return new DefaultContextHandler(registration::hasHandled, registration::cancel);
     }

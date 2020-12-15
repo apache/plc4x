@@ -113,6 +113,10 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         PlcConnection plcConnection;
         try {
             plcConnection = keyedObjectPool.borrowObject(poolKey);
+            if (plcConnection.isConnected() == false) {
+                LOGGER.debug("Attempting to reconnect to device");
+                plcConnection.connect();
+            }
         } catch (Exception e) {
             throw new PlcConnectionException(e);
         }
@@ -146,7 +150,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
     }
 
-    // TODO: maybe export to jmx // generic poolKey has builting jmx too
+    // TODO: maybe export to jmx // generic poolKey has builtin jmx too
     public Map<String, Number> getStatistics() {
         HashMap<String, Number> statistics = new HashMap<>();
         statistics.put("numActive", keyedObjectPool.getNumActive());

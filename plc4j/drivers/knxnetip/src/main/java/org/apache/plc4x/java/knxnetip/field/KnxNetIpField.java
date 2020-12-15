@@ -85,6 +85,11 @@ public class KnxNetIpField implements PlcField {
         return subGroup;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return "";
+    }
+
     // As our fields can contain wildcards and complex matching logic,
     // do a check if a given GroupAddress is actually compatible with this field.
     public boolean matchesGroupAddress(GroupAddress groupAddress) {

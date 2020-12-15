@@ -29,7 +29,6 @@ import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.exceptions.InternalPlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 
@@ -102,7 +101,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             }
             return clazz.getDeclaredConstructor(parameterTypes).newInstance(args);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
-            throw new InternalPlcRuntimeException("Error creating instance of class " + clazz.getName());
+            throw new PlcRuntimeException("Error creating instance of class " + clazz.getName());
         }
     }
 

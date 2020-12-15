@@ -90,6 +90,11 @@ public class OpcuaField implements PlcField {
     }
 
     @Override
+    public String getPlcDataType() {
+        return identifierType.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

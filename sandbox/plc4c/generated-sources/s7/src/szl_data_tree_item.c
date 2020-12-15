@@ -23,8 +23,8 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_szl_data_tree_item** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -36,7 +36,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (itemIndex)
   uint16_t itemIndex = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &itemIndex);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &itemIndex);
   if(_res != OK) {
     return _res;
   }
@@ -53,9 +53,8 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
     uint8_t itemCount = 20;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
-                
       int8_t* _value = malloc(sizeof(int8_t));
-      _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) _value);
+      _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -66,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (moduleTypeId)
   uint16_t moduleTypeId = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &moduleTypeId);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &moduleTypeId);
   if(_res != OK) {
     return _res;
   }
@@ -74,7 +73,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (ausbg)
   uint16_t ausbg = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &ausbg);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &ausbg);
   if(_res != OK) {
     return _res;
   }
@@ -82,7 +81,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (ausbe)
   uint16_t ausbe = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &ausbe);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &ausbe);
   if(_res != OK) {
     return _res;
   }
@@ -91,11 +90,11 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* _message) {
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_szl_data_tree_item* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (itemIndex)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->item_index);
+  _res = plc4c_spi_write_unsigned_short(io, 16, _message->item_index);
   if(_res != OK) {
     return _res;
   }
@@ -106,24 +105,24 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
     for(int curItem = 0; curItem < itemCount; curItem++) {
 
       int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->mlfb, curItem);
-      plc4c_spi_write_signed_byte(buf, 8, *_value);
+      plc4c_spi_write_signed_byte(io, 8, *_value);
     }
   }
 
   // Simple Field (moduleTypeId)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->module_type_id);
+  _res = plc4c_spi_write_unsigned_short(io, 16, _message->module_type_id);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (ausbg)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->ausbg);
+  _res = plc4c_spi_write_unsigned_short(io, 16, _message->ausbg);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (ausbe)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->ausbe);
+  _res = plc4c_spi_write_unsigned_short(io, 16, _message->ausbe);
   if(_res != OK) {
     return _res;
   }

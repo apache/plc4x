@@ -59,7 +59,7 @@ extern "C" {
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = ${enumValue.value}<#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if helper.isStringTypeReference(type.type)>${enumValue?index}<#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };
@@ -68,6 +68,11 @@ typedef enum ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}
 // Get an empty NULL-struct
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string);
+
+int ${helper.getCTypeName(type.name)}_num_values();
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_index(int index);
 <#--
     If this enum also defines constant values, output one function for each.
     Each of these functions consist of a simple switch statement using the enum as switch-value

@@ -21,13 +21,17 @@ package org.apache.plc4x.java.spi.messages;
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,32 +39,34 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadResponse {
+public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable {
 
-    private final InternalPlcReadRequest request;
+    private final PlcReadRequest request;
     private final Map<String, ResponseItem<PlcValue>> values;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcReadResponse(@JsonProperty("request") InternalPlcReadRequest request,
+    public DefaultPlcReadResponse(@JsonProperty("request") PlcReadRequest request,
                                   @JsonProperty("values") Map<String, ResponseItem<PlcValue>> values) {
         this.request = request;
         this.values = values;
     }
 
     @Override
-    public InternalPlcReadRequest getRequest() {
+    public PlcReadRequest getRequest() {
         return request;
     }
 
     @Override
     @JsonIgnore
     public PlcValue getAsPlcValue() {
-        return PlcValues.of(request.getFieldNames().stream()
-            .collect(Collectors.toMap(Function.identity(), name -> PlcValues.of(getObject(name)))));
+        Map<String, PlcValue> structMap = new HashMap<>();
+        for (String fieldName : request.getFieldNames()) {
+            PlcValue plcValue = getPlcValue(fieldName);
+            structMap.put(fieldName, plcValue);
+        }
+        return new PlcStruct(structMap);
     }
 
     @Override
@@ -102,7 +108,6 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         return values.get(name).getCode();
     }
 
-    @Override
     @JsonIgnore
     public Map<String, ResponseItem<PlcValue>> getValues() {
         return values;
@@ -111,14 +116,20 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     @Override
     @JsonIgnore
     public Object getObject(String name) {
-        return getFieldInternal(name).getObject();
+        if(getFieldInternal(name) != null) {
+            return getFieldInternal(name).getObject();
+        }
+        return null;
     }
 
     @Override
     @JsonIgnore
     public Object getObject(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
-        return fieldInternal.getObject();
+        if(fieldInternal != null) {
+            return fieldInternal.getObject();
+        }
+        return null;
     }
 
     @Override
@@ -706,6 +717,26 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
             return null;
         }
         return field;
+    }
+
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement("PlcReadResponse");
+        if(request instanceof XmlSerializable) {
+            ((XmlSerializable) request).xmlSerialize(messageElement);
+        }
+        Element valuesElement = doc.createElement("values");
+        messageElement.appendChild(valuesElement);
+        for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
+            String fieldName = valueEntry.getKey();
+            Element fieldNameElement = doc.createElement(fieldName);
+            valuesElement.appendChild(fieldNameElement);
+            ResponseItem<PlcValue> valueResponse = valueEntry.getValue();
+            valueResponse.xmlSerialize(fieldNameElement);
+        }
+        parent.appendChild(messageElement);
     }
 
 }
