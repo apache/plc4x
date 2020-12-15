@@ -34,8 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -54,6 +53,9 @@ class Plc4xNettyWrapperTest {
     Plc4xNettyWrapper<Date> wrapper;
 
     ConversationContext<Date> conversationContext;
+    private AtomicBoolean timeout;
+    private AtomicBoolean handled;
+    private AtomicBoolean error;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -66,14 +68,14 @@ class Plc4xNettyWrapperTest {
 
         wrapper.userEventTriggered(channelHandlerContext, new ConnectEvent());
         conversationContext = captor.getValue();
+
+        timeout = new AtomicBoolean(false);
+        handled = new AtomicBoolean(false);
+        error = new AtomicBoolean(false);
     }
 
     @Test // see PLC4X-207 / PLC4X-257
     void conversationTimeoutTest() throws Exception {
-        AtomicBoolean timeout = new AtomicBoolean(false);
-        AtomicBoolean handled = new AtomicBoolean(false);
-        AtomicBoolean error = new AtomicBoolean(false);
-
         ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
             .expectResponse(Date.class, Duration.ofMillis(500))
             .onTimeout(e -> {
@@ -87,17 +89,38 @@ class Plc4xNettyWrapperTest {
             });
 
         Thread.sleep(750);
-        assertFalse(timeout.get(), "timeout");
-        assertFalse(handled.get(), "handled");
-        assertFalse(error.get(), "error");
 
+        verify(false, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        verify(true, false, false);
 
-        assertTrue(timeout.get());
+    }
 
-        assertTrue(timeout.get(), "timeout");
-        assertFalse(handled.get(), "handled");
-        assertFalse(error.get(), "error");
+    @Test // see PLC4X-207 / PLC4X-257
+    void conversationWithNoTimeoutTest() throws Exception {
+        ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500))
+            .onTimeout(e -> {
+                timeout.set(true);
+            })
+            .onError((value, throwable) -> {
+                error.set(true);
+            })
+            .handle((answer) -> {
+                handled.set(true);
+            });
 
+        verify(false, false, false);
+        wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        verify(false, false, true);
+    }
+
+    void verify(boolean isTimeout, boolean isError, boolean isHandled) {
+        assertThat(timeout.get()).describedAs("Expected timeout state %b", isTimeout)
+            .isEqualTo(isTimeout);
+        assertThat(error.get()).describedAs("Expected error state %b", isError)
+            .isEqualTo(isError);
+        assertThat(handled.get()).describedAs("Expected handled state %b", isHandled)
+            .isEqualTo(isHandled);
     }
 }
