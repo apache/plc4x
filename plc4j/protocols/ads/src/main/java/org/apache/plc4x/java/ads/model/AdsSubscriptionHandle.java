@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
-import org.apache.plc4x.java.base.messages.PlcSubscriber;
-import org.apache.plc4x.java.base.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 import java.util.Objects;
 

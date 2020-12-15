@@ -18,13 +18,14 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
+import org.apache.camel.Expression;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.junit4.CamelTestSupport;
+import org.apache.camel.test.junit5.CamelTestSupport;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Plc4XComponentTest extends CamelTestSupport {
@@ -35,8 +36,8 @@ public class Plc4XComponentTest extends CamelTestSupport {
         mock.expectedMinimumMessageCount(1);
         mock.expectedMessageCount(2);
 
-        template.asyncSendBody("direct:plc4x", "irrelevant");
-        template.asyncSendBody("direct:plc4x2", "irrelevant");
+        template.asyncSendBody("direct:plc4x", Collections.singletonList("irrelevant"));
+        template.asyncSendBody("direct:plc4x2", Collections.singletonList("irrelevant"));
 
         assertMockEndpointsSatisfied(2, TimeUnit.SECONDS);
     }
@@ -45,19 +46,19 @@ public class Plc4XComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
             public void configure() {
+               Map<String,Object> tags = new HashMap<>();
+               tags.put("Test1","%TestQuery");
+                Plc4XEndpoint producer = getContext().getEndpoint("plc4x:mock:10.10.10.1/1/1", Plc4XEndpoint.class);
+                producer.setTags(tags);
                 from("direct:plc4x")
-                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
-                    }))
-                    .setBody(constant((byte) 0x0))
+                    .setBody(constant(Collections.singletonMap("test",Collections.singletonMap("testAddress",false))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
-                    }))
-                    .setBody(constant(Arrays.asList((byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3)))
+                    .setBody(constant(Collections.singletonMap("test2",Collections.singletonMap("testAddress2",0x05))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
-                from("plc4x:mock:10.10.10.1/1/1?address=Main.by0&dataType=java.lang.String")
+                from(producer)
                     .log("Got ${body}");
             }
         };

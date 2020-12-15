@@ -1,0 +1,56 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== ADS/AMS
+=== Structure AMS/TCP Packet
+
+[cols=1*]
+|===
+| AMS/TCP Header
+
+| AMS Header
+
+| ADS Data
+
+|===
+
+[%header, cols=3*]
+|===
+| Data array
+| Size
+| Description
+
+| AMS/TCP Header
+| 6 bytes
+| contains the length of the data packet.
+
+| AMS Header
+| 32 bytes
+| The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
+
+| ADS Data
+| n bytes
+| The ADS data range contains the parameter of the single ADS commands. The structure of the data array depends on the ADS command. Some ADS commands require no additional data.
+
+|===
+
+=== More details on
+For details about the protocol look here: http://www.beckhoff.com/
+
+Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm[Structure AMS/TCP Packet]

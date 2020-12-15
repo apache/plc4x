@@ -23,6 +23,7 @@ import org.apache.calcite.schema.SchemaFactory;
 import org.apache.calcite.schema.SchemaPlus;
 import org.apache.commons.lang3.Validate;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class Plc4xSchemaFactory implements SchemaFactory {
         // Load configuration from file
         ScraperConfiguration configuration;
         try {
-            configuration = ScraperConfiguration.fromFile(config.toString());
+            configuration = ScraperConfiguration.fromFile(config.toString(), ScraperConfigurationTriggeredImpl.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to load configuration file!", e);
         }

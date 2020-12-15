@@ -27,15 +27,14 @@
                 defaultRoundTrip="onePass">
 
     <tdml:defineSchema name="s7Schema" elementFormDefault="unqualified">
-        <!-- Import the Schema -->
-        <xs:import namespace="http://plc4x.apache.org/s7"
-                   schemaLocation="protocol.dfdl.xsd"/>
+        <!-- Import the Schema (location is defined by daffodil-built-in-catalog.xml) -->
+        <xs:import namespace="http://plc4x.apache.org/s7"/>
 
         <!-- Import the format settings -->
         <dfdl:format ref="s7:s7FullFormat"/>
 
         <!-- Define the root element name and type -->
-        <xs:element name="TpktMessage" type="s7:TpktMessageType"/>
+        <xs:element name="TpktMessage" type="s7:TpktMessage"/>
     </tdml:defineSchema>
 
     <!--
@@ -62,34 +61,34 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>208</type>
-                        <s7:CotpTpduConnectionResponse>
+                        <cotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <s7:CotpParameterTpduSize>
+                                    <cotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </s7:CotpParameterTpduSize>
+                                    </cotpParameterTpduSize>
                                 </parameter>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCallingTsap>
+                                    <cotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </s7:CotpParameterCallingTsap>
+                                    </cotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCalledTsap>
+                                    <cotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </s7:CotpParameterCalledTsap>
+                                    </cotpParameterCalledTsap>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionResponse>
+                            </parameters>
+                        </cotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -166,11 +165,11 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                        </s7:CotpTpduConnectionRequest>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -194,11 +193,11 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>208</type>
-                        <s7:CotpTpduConnectionResponse>
+                        <cotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                        </s7:CotpTpduConnectionResponse>
+                        </cotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -224,11 +223,11 @@
                     <userData>
                         <headerLength>6</headerLength>
                         <type>128</type>
-                        <s7:CotpTpduDisconnectRequest>
+                        <cotpTpduDisconnectRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <disconnectReason>0</disconnectReason>
-                        </s7:CotpTpduDisconnectRequest>
+                        </cotpTpduDisconnectRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -254,10 +253,10 @@
                     <userData>
                         <headerLength>5</headerLength>
                         <type>192</type>
-                        <s7:CotpTpduDisconnectResponse>
+                        <cotpTpduDisconnectResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
-                        </s7:CotpTpduDisconnectResponse>
+                        </cotpTpduDisconnectResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -283,10 +282,10 @@
                     <userData>
                         <headerLength>4</headerLength>
                         <type>112</type>
-                        <s7:CotpTpduError>
+                        <cotpTpduError>
                             <destinationReference>1</destinationReference>
                             <rejectCause>2</rejectCause>
-                        </s7:CotpTpduError>
+                        </cotpTpduError>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -312,10 +311,10 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>0</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>false</endOfTransmission>
                             <tpduRef>2</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -341,10 +340,10 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>2</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -389,20 +388,20 @@
                     <userData>
                         <headerLength>9</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <s7:CotpParameterTpduSize>
+                                    <cotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </s7:CotpParameterTpduSize>
+                                    </cotpParameterTpduSize>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -428,20 +427,20 @@
                     <userData>
                         <headerLength>10</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCallingTsap>
+                                    <cotpParameterCallingTsap>
                                         <tsapId>9</tsapId>
-                                    </s7:CotpParameterCallingTsap>
+                                    </cotpParameterCallingTsap>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -467,20 +466,20 @@
                     <userData>
                         <headerLength>10</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCalledTsap>
+                                    <cotpParameterCalledTsap>
                                         <tsapId>9</tsapId>
-                                    </s7:CotpParameterCalledTsap>
+                                    </cotpParameterCalledTsap>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -506,20 +505,20 @@
                     <userData>
                         <headerLength>9</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>195</type>
                                     <parameterLength>1</parameterLength>
-                                    <s7:CotpParameterChecksum>
+                                    <cotpParameterChecksum>
                                         <checksum>9</checksum>
-                                    </s7:CotpParameterChecksum>
+                                    </cotpParameterChecksum>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -545,20 +544,20 @@
                     <userData>
                         <headerLength>14</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>224</type>
                                     <parameterLength>6</parameterLength>
-                                    <s7:CotpParameterDisconnectAdditionalInformation>
+                                    <cotpParameterDisconnectAdditionalInformation>
                                         <data>010203040506</data>
-                                    </s7:CotpParameterDisconnectAdditionalInformation>
+                                    </cotpParameterDisconnectAdditionalInformation>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -603,34 +602,34 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>224</type>
-                        <s7:CotpTpduConnectionRequest>
+                        <cotpTpduConnectionRequest>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCallingTsap>
+                                    <cotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </s7:CotpParameterCallingTsap>
+                                    </cotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCalledTsap>
+                                    <cotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </s7:CotpParameterCalledTsap>
+                                    </cotpParameterCalledTsap>
                                 </parameter>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <s7:CotpParameterTpduSize>
+                                    <cotpParameterTpduSize>
                                         <tpduSize>10</tpduSize>
-                                    </s7:CotpParameterTpduSize>
+                                    </cotpParameterTpduSize>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionRequest>
+                            </parameters>
+                        </cotpTpduConnectionRequest>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -656,34 +655,34 @@
                     <userData>
                         <headerLength>17</headerLength>
                         <type>208</type>
-                        <s7:CotpTpduConnectionResponse>
+                        <cotpTpduConnectionResponse>
                             <destinationReference>1</destinationReference>
                             <sourceReference>2</sourceReference>
                             <protocolClass>0</protocolClass>
-                            <s7:parameters>
+                            <parameters>
                                 <parameter>
                                     <type>192</type>
                                     <parameterLength>1</parameterLength>
-                                    <s7:CotpParameterTpduSize>
+                                    <cotpParameterTpduSize>
                                         <tpduSize>9</tpduSize>
-                                    </s7:CotpParameterTpduSize>
+                                    </cotpParameterTpduSize>
                                 </parameter>
                                 <parameter>
                                     <type>193</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCallingTsap>
+                                    <cotpParameterCallingTsap>
                                         <tsapId>256</tsapId>
-                                    </s7:CotpParameterCallingTsap>
+                                    </cotpParameterCallingTsap>
                                 </parameter>
                                 <parameter>
                                     <type>194</type>
                                     <parameterLength>2</parameterLength>
-                                    <s7:CotpParameterCalledTsap>
+                                    <cotpParameterCalledTsap>
                                         <tsapId>258</tsapId>
-                                    </s7:CotpParameterCalledTsap>
+                                    </cotpParameterCalledTsap>
                                 </parameter>
-                            </s7:parameters>
-                        </s7:CotpTpduConnectionResponse>
+                            </parameters>
+                        </cotpTpduConnectionResponse>
                     </userData>
                 </s7:TpktMessage>
             </tdml:dfdlInfoset>
@@ -710,14 +709,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -725,12 +724,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -739,18 +738,20 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>4</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -776,14 +777,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>0</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -791,20 +792,22 @@
                                 <parameters>
                                     <parameter>
                                         <type>240</type>
-                                        <s7:S7GeneralParameterSetupCommunication>
+                                        <s7GeneralParameterSetupCommunication>
                                             <reserved>0</reserved>
                                             <maxAmqCaller>1</maxAmqCaller>
                                             <maxAmqCallee>1</maxAmqCallee>
                                             <pduLength>480</pduLength>
-                                        </s7:S7GeneralParameterSetupCommunication>
+                                        </s7GeneralParameterSetupCommunication>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7GeneralPayloadSetupCommunication/>
+                                        <s7GeneralPayloadSetupCommunication>
+                                            <data/>
+                                        </s7GeneralPayloadSetupCommunication>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -830,14 +833,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>0</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -847,20 +850,22 @@
                                 <parameters>
                                     <parameter>
                                         <type>240</type>
-                                        <s7:S7GeneralParameterSetupCommunication>
+                                        <s7GeneralParameterSetupCommunication>
                                             <reserved>0</reserved>
                                             <maxAmqCaller>1</maxAmqCaller>
                                             <maxAmqCallee>1</maxAmqCallee>
                                             <pduLength>240</pduLength>
-                                        </s7:S7GeneralParameterSetupCommunication>
+                                        </s7GeneralParameterSetupCommunication>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7GeneralPayloadSetupCommunication/>
+                                        <s7GeneralPayloadSetupCommunication>
+                                            <data/>
+                                        </s7GeneralPayloadSetupCommunication>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -887,14 +892,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>7</type>
-                            <s7:S7UserDataMessage>
+                            <s7UserDataMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>256</tpduReference>
                                 <parametersLength>8</parametersLength>
@@ -902,7 +907,7 @@
                                 <parameters>
                                     <parameter>
                                         <type>0</type>
-                                        <s7:S7UserDataParameterCPUService>
+                                        <s7UserDataParameterCPUService>
                                             <header>274</header>
                                             <paramLength>4</paramLength>
                                             <typeCode>17</typeCode>
@@ -910,21 +915,21 @@
                                             <functionGroup>4</functionGroup>
                                             <subFunctionGroup>1</subFunctionGroup>
                                             <sequenceNumber>0</sequenceNumber>
-                                        </s7:S7UserDataParameterCPUService>
+                                        </s7UserDataParameterCPUService>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7UserDataPayloadCpuServices>
+                                        <s7UserDataPayloadCpuServices>
                                             <returnCode>255</returnCode>
                                             <transportSize>9</transportSize>
                                             <length>4</length>
                                             <sslId>17</sslId>
                                             <sslIndex>0</sslIndex>
-                                        </s7:S7UserDataPayloadCpuServices>
+                                        </s7UserDataPayloadCpuServices>
                                     </payload>
                                 </payloads>
-                            </s7:S7UserDataMessage>
+                            </s7UserDataMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -952,14 +957,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>7</type>
-                            <s7:S7UserDataMessage>
+                            <s7UserDataMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>256</tpduReference>
                                 <parametersLength>12</parametersLength>
@@ -967,7 +972,7 @@
                                 <parameters>
                                     <parameter>
                                         <type>0</type>
-                                        <s7:S7UserDataParameterCPUService>
+                                        <s7UserDataParameterCPUService>
                                             <header>274</header>
                                             <paramLength>8</paramLength>
                                             <typeCode>18</typeCode>
@@ -978,12 +983,12 @@
                                             <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
                                             <lastDataUnit>0</lastDataUnit>
                                             <errorCode>0</errorCode>
-                                        </s7:S7UserDataParameterCPUService>
+                                        </s7UserDataParameterCPUService>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7UserDataPayloadCpuServices>
+                                        <s7UserDataPayloadCpuServices>
                                             <returnCode>255</returnCode>
                                             <transportSize>9</transportSize>
                                             <length>120</length>
@@ -994,47 +999,47 @@
                                                 <partialListCount>4</partialListCount>
                                                 <sslDataRecords>
                                                     <sslDataRecord>
-                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>1</index>
                                                             <articleNumber><![CDATA[6ES7 315-2EH14-0AB0 ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>3</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>6</index>
                                                             <articleNumber><![CDATA[6ES7 315-2EH14-0AB0 ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>3</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>1</pgDescriptionFileVersion>
-                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>7</index>
                                                             <articleNumber><![CDATA[                    ]]></articleNumber>
                                                             <bgType>192</bgType>
                                                             <moduleOrOsVersion>22019</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>519</pgDescriptionFileVersion>
-                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                     <sslDataRecord>
-                                                        <s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        <s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                             <index>129</index>
                                                             <articleNumber><![CDATA[Boot Loader         ]]></articleNumber>
                                                             <bgType>0</bgType>
                                                             <moduleOrOsVersion>16672</moduleOrOsVersion>
                                                             <pgDescriptionFileVersion>2313</pgDescriptionFileVersion>
-                                                        </s7:S7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
+                                                        </s7ResponsePayloadCpuServicesSslDataRecordModuleIdentification>
                                                     </sslDataRecord>
                                                 </sslDataRecords>
                                             </partialList>
-                                        </s7:S7UserDataPayloadCpuServices>
+                                        </s7UserDataPayloadCpuServices>
                                     </payload>
                                 </payloads>
-                            </s7:S7UserDataMessage>
+                            </s7UserDataMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1061,14 +1066,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6400</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -1076,12 +1081,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>8</dataType>
@@ -1090,18 +1095,20 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>16</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1128,14 +1135,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6400</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1145,14 +1152,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>1</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>1</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1161,10 +1168,10 @@
                                                 <lengthInBytes>4</lengthInBytes>
                                                 <data>00000000</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1191,14 +1198,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>86</parametersLength>
@@ -1206,12 +1213,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>7</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>6</dataType>
@@ -1220,11 +1227,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>44</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1233,11 +1240,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>52</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -1246,11 +1253,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>53</byteOffset>
                                                         <bitOffset>1</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>5</dataType>
@@ -1259,11 +1266,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1272,11 +1279,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>51</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -1285,11 +1292,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1298,18 +1305,20 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>50</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1336,14 +1345,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1353,14 +1362,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>7</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>7</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1414,10 +1423,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1444,14 +1453,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1461,14 +1470,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>3</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>3</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1493,10 +1502,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1523,14 +1532,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>38</parametersLength>
@@ -1538,12 +1547,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>3</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>6</dataType>
@@ -1552,11 +1561,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>44</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>5</dataType>
@@ -1565,11 +1574,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -1578,18 +1587,20 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1616,14 +1627,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1633,14 +1644,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>3</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>3</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1663,10 +1674,10 @@
                                                 <lengthInBytes>2</lengthInBytes>
                                                 <data>0000</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1693,14 +1704,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>50</parametersLength>
@@ -1708,12 +1719,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>4</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1722,11 +1733,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>42</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>1</dataType>
@@ -1735,11 +1746,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>43</byteOffset>
                                                         <bitOffset>1</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1748,11 +1759,11 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>41</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -1761,18 +1772,20 @@
                                                         <memoryArea>132</memoryArea>
                                                         <byteOffset>40</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1799,14 +1812,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>1</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1816,14 +1829,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>4</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>4</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -1856,10 +1869,10 @@
                                                 <lengthInBytes>1</lengthInBytes>
                                                 <data>00</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1887,14 +1900,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6144</tpduReference>
                                 <parametersLength>14</parametersLength>
@@ -1902,12 +1915,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <s7:S7RequestParameterWriteVar>
+                                        <s7RequestParameterWriteVar>
                                             <numItems>1</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>8</dataType>
@@ -1916,15 +1929,15 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>16</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterWriteVar>
+                                        </s7RequestParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadWriteVar>
+                                        <s7RequestPayloadWriteVar>
                                             <numItems>1</numItems>
                                             <item>
                                                 <returnCode>0</returnCode>
@@ -1933,10 +1946,10 @@
                                                 <lengthInBytes>4</lengthInBytes>
                                                 <data>79E9F642</data>
                                             </item>
-                                        </s7:S7RequestPayloadWriteVar>
+                                        </s7RequestPayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -1962,14 +1975,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6144</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -1979,22 +1992,24 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <s7:S7ResponseParameterWriteVar>
+                                        <s7ResponseParameterWriteVar>
                                             <numItems>1</numItems>
-                                        </s7:S7ResponseParameterWriteVar>
+                                        </s7ResponseParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadWriteVar>
+                                        <s7ResponsePayloadWriteVar>
                                             <numItems>1</numItems>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                        </s7:S7ResponsePayloadWriteVar>
+                                            <items>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                            </items>
+                                        </s7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2022,14 +2037,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6912</tpduReference>
                                 <parametersLength>62</parametersLength>
@@ -2037,12 +2052,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7RequestParameterReadVar>
+                                        <s7RequestParameterReadVar>
                                             <numItems>5</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2051,11 +2066,11 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2064,11 +2079,11 @@
                                                         <memoryArea>129</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2077,11 +2092,11 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>29</dataType>
@@ -2090,11 +2105,11 @@
                                                         <memoryArea>29</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterReadVarAnyItem>
+                                                    <s7RequestParameterReadVarAnyItem>
                                                         <paramLength>10</paramLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>28</dataType>
@@ -2103,18 +2118,20 @@
                                                         <memoryArea>28</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterReadVarAnyItem>
+                                                    </s7RequestParameterReadVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterReadVar>
+                                        </s7RequestParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadReadVar/>
+                                        <s7RequestPayloadReadVar>
+                                            <data/>
+                                        </s7RequestPayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2142,14 +2159,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6912</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -2159,14 +2176,14 @@
                                 <parameters>
                                     <parameter>
                                         <type>4</type>
-                                        <s7:S7ResponseParameterReadVar>
+                                        <s7ResponseParameterReadVar>
                                             <numItems>5</numItems>
-                                        </s7:S7ResponseParameterReadVar>
+                                        </s7ResponseParameterReadVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadReadVar>
+                                        <s7ResponsePayloadReadVar>
                                             <numItems>5</numItems>
                                             <item>
                                                 <returnCode>255</returnCode>
@@ -2203,10 +2220,10 @@
                                                 <lengthInBytes>16</lengthInBytes>
                                                 <data>00110000000000000000000000000000</data>
                                             </item>
-                                        </s7:S7ResponsePayloadReadVar>
+                                        </s7ResponsePayloadReadVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2234,14 +2251,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>1</type>
-                            <s7:S7RequestMessage>
+                            <s7RequestMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6656</tpduReference>
                                 <parametersLength>62</parametersLength>
@@ -2249,12 +2266,12 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <s7:S7RequestParameterWriteVar>
+                                        <s7RequestParameterWriteVar>
                                             <numItems>5</numItems>
                                             <items>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>4</dataType>
@@ -2263,11 +2280,11 @@
                                                         <memoryArea>131</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2276,11 +2293,11 @@
                                                         <memoryArea>129</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>2</dataType>
@@ -2289,11 +2306,11 @@
                                                         <memoryArea>130</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>29</dataType>
@@ -2302,11 +2319,11 @@
                                                         <memoryArea>29</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                                 <item>
                                                     <type>18</type>
-                                                    <s7:S7RequestParameterWriteVarAnyItem>
+                                                    <s7RequestParameterWriteVarAnyItem>
                                                         <itemLength>10</itemLength>
                                                         <addressingMode>16</addressingMode>
                                                         <dataType>28</dataType>
@@ -2315,15 +2332,15 @@
                                                         <memoryArea>28</memoryArea>
                                                         <byteOffset>0</byteOffset>
                                                         <bitOffset>0</bitOffset>
-                                                    </s7:S7RequestParameterWriteVarAnyItem>
+                                                    </s7RequestParameterWriteVarAnyItem>
                                                 </item>
                                             </items>
-                                        </s7:S7RequestParameterWriteVar>
+                                        </s7RequestParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7RequestPayloadWriteVar>
+                                        <s7RequestPayloadWriteVar>
                                             <numItems>5</numItems>
                                             <item>
                                                 <returnCode>0</returnCode>
@@ -2360,10 +2377,10 @@
                                                 <lengthInBytes>16</lengthInBytes>
                                                 <data>FECAFECAFECAFECAFECAFECAFECAFECA</data>
                                             </item>
-                                        </s7:S7RequestPayloadWriteVar>
+                                        </s7RequestPayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7RequestMessage>
+                            </s7RequestMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>
@@ -2389,14 +2406,14 @@
                     <userData>
                         <headerLength>2</headerLength>
                         <type>240</type>
-                        <s7:CotpTpduData>
-                            <endOfTransmission>1</endOfTransmission>
+                        <cotpTpduData>
+                            <endOfTransmission>true</endOfTransmission>
                             <tpduRef>0</tpduRef>
-                        </s7:CotpTpduData>
+                        </cotpTpduData>
                         <userData>
                             <magicByte>50</magicByte>
                             <type>3</type>
-                            <s7:S7ResponseMessage>
+                            <s7ResponseMessage>
                                 <reserved>0</reserved>
                                 <tpduReference>6656</tpduReference>
                                 <parametersLength>2</parametersLength>
@@ -2406,34 +2423,36 @@
                                 <parameters>
                                     <parameter>
                                         <type>5</type>
-                                        <s7:S7ResponseParameterWriteVar>
+                                        <s7ResponseParameterWriteVar>
                                             <numItems>5</numItems>
-                                        </s7:S7ResponseParameterWriteVar>
+                                        </s7ResponseParameterWriteVar>
                                     </parameter>
                                 </parameters>
                                 <payloads>
                                     <payload>
-                                        <s7:S7ResponsePayloadWriteVar>
+                                        <s7ResponsePayloadWriteVar>
                                             <numItems>5</numItems>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>255</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>3</returnCode>
-                                            </item>
-                                            <item>
-                                                <returnCode>3</returnCode>
-                                            </item>
-                                        </s7:S7ResponsePayloadWriteVar>
+                                            <items>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>255</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>3</returnCode>
+                                                </item>
+                                                <item>
+                                                    <returnCode>3</returnCode>
+                                                </item>
+                                            </items>
+                                        </s7ResponsePayloadWriteVar>
                                     </payload>
                                 </payloads>
-                            </s7:S7ResponseMessage>
+                            </s7ResponseMessage>
                         </userData>
                     </userData>
                 </s7:TpktMessage>

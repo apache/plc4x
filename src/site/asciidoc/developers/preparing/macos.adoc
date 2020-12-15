@@ -1,0 +1,107 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Mac OS
+
+Most libraries on Mac are installed using `Homebrew`.
+
+Make sure `Homebrew` ist installed in order to install most of these.
+
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+=== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+In order to install it, please execute the following command:
+
+ brew install git
+
+=== LibPCAP
+
+=== gcc
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of gcc which is good enough for our usecases.
+
+=== g++
+
+Checking:
+
+ g++ --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of g++ which is good enough for our usecases.
+
+=== dotnet
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft is offering an installer for MacOS which is available from https://dotnet.microsoft.com/download/dotnet-core/2.2[here].
+
+=== python
+
+Checking:
+
+ python --version
+
+If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+
+In order to install it, please execute the following command:
+
+ brew install python@2
+
+=== bison
+
+Checking:
+
+ python --version
+
+If you get a version above 2.3 output, you don't need to do anything.
+
+macOS comes with a pre-installed version of bison, however this version is 2.3 and hereby too old.
+So you need to update to a more recent version:
+
+ brew install bison
+ brew link bison --force
+ echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+
+Be sure to reboot or at least restart your IDE or commandline in order for the changes to become effective.
+
+=== flex
+
+Checking:
+
+ flex --version
+
+If you get any successful output, you probably don't need to do anything.
+
+It seems macOS comes with a version of flex which is good enough for our usecases.

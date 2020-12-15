@@ -19,16 +19,11 @@
 package org.apache.plc4x.nifi;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
-import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.PropertyValue;
+import org.apache.nifi.components.*;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
-import org.apache.nifi.processor.util.StandardValidators;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.util.*;
@@ -40,7 +35,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
-        .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+        .addValidator(new Plc4xConnectionStringValidator())
         .build();
     private static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
         .Builder().name("PLC_ADDRESS_STRING")
@@ -48,24 +43,23 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .description("PLC4X address string used identify the resource to read/write on a given PLC device " +
             "(Multiple values supported). The expected format is: {name}={address}(;{name}={address})*")
         .required(true)
-        .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+        .addValidator(new Plc4xAddressStringValidator())
         .build();
 
     static final Relationship SUCCESS = new Relationship.Builder()
         .name("SUCCESS")
-        .description("Successfully converted incoming json file to EntitymakerJSON")
+        .description("Successfully processed")
         .build();
     static final Relationship FAILURE = new Relationship.Builder()
         .name("FAILURE")
-        .description("Successfully converted incoming json file to EntitymakerJSON")
+        .description("An error occurred processing")
         .build();
 
     private List<PropertyDescriptor> descriptors;
 
     Set<Relationship> relationships;
 
-    private PlcConnection connection;
-
+    private String connectionString;
     private Map<String, String> addressMap;
 
     @Override
@@ -74,8 +68,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         this.relationships = new HashSet<>(Arrays.asList(SUCCESS, FAILURE));
     }
 
-    PlcConnection getConnection() {
-        return connection;
+    public String getConnectionString() {
+        return connectionString;
     }
 
     Collection<String> getFields() {
@@ -98,14 +92,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
         PropertyValue property = context.getProperty(PLC_CONNECTION_STRING.getName());
-        if ((connection == null) || !connection.isConnected()) {
-            try {
-                connection = new PlcDriverManager().getConnection(property.getValue());
-            } catch (PlcConnectionException e) {
-                getLogger().error("Error connecting to " + property.getValue(), e);
-            }
-        }
-
+        connectionString = property.getValue();
         addressMap = new HashMap<>();
         PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
         for (String segment : addresses.getValue().split(";")) {
@@ -131,13 +118,29 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
         return Objects.equals(descriptors, that.descriptors) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
-            Objects.equals(getConnection(), that.getConnection()) &&
+            Objects.equals(getConnectionString(), that.getConnectionString()) &&
             Objects.equals(addressMap, that.addressMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnection(), addressMap);
+        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnectionString(), addressMap);
+    }
+
+    public static class Plc4xConnectionStringValidator implements Validator {
+        @Override
+        public ValidationResult validate(String subject, String input, ValidationContext context) {
+            // TODO: Add validation here ...
+            return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
+        }
+    }
+
+    public static class Plc4xAddressStringValidator implements Validator {
+        @Override
+        public ValidationResult validate(String subject, String input, ValidationContext context) {
+            // TODO: Add validation here ...
+            return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
+        }
     }
 
 }

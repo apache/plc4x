@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- 
+
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
- 
+
  http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
  -->
 <project name="PLC4X">
 
   <skin>
-    <groupId>io.github.devacfr.maven.skins</groupId>
-    <artifactId>reflow-maven-skin</artifactId>
-    <version>${reflow.skin.version}</version>
+    <groupId>org.apache.plc4x.plugins</groupId>
+    <artifactId>plc4x-site-skin</artifactId>
+    <version>1.0.0</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
@@ -30,111 +30,119 @@
   <!-- Hide the version as we are usually deploying the develop version -->
   <version position="none" />
 
-  <!--
-      Details on how to configure the reflow skin:
-      http://andriusvelykis.github.io/reflow-maven-skin/skin/
-  -->
   <custom>
-    <reflowSkin>
-      <localResources>true</localResources>
-      <absoluteResourceURL>https://plc4x.apache.org/</absoluteResourceURL>
-      <titleTemplate>Apache PLC4X® - %2$s</titleTemplate>
-      <slogan position="bannerLeft">The industrial IoT adapter</slogan>
-      <showApacheEvents>true</showApacheEvents>
-      <toc>top</toc>
-      <bottomNav maxSpan="12">
-        <column>reports</column>
-        <column>Apache</column>
-        <column>modules</column>
-        <column>Protocols</column>
-      </bottomNav>
-      <brand>
-        <name>Apache PLC4X</name>
-        <href>https://plc4x.apache.org/</href>
-      </brand>
-      <breadcrumbs>true</breadcrumbs>
-      <highlightJs>true</highlightJs>
-      <pages>
-        <developer-info>
-          <toc>sidebar</toc>
-        </developer-info>
-      </pages>
-    </reflowSkin>
   </custom>
 
-  <poweredBy>
-    <logo name="Apache Software Foundation" img="https://www.apache.org/images/asf_logo.png" href="https://www.apache.org/"/>
-  </poweredBy>
-
   <bannerLeft>
-      <name>Apache PLC4X</name>
-      <src>https://plc4x.apache.org/images/apache_plc4x_logo.png</src>
-      <href>https://plc4x.apache.org/</href>
+    <name>Apache PLC4X</name>
+    <src>images/apache_plc4x_logo_small.png</src>
+    <href>https://plc4x.apache.org/</href>
   </bannerLeft>
 
   <bannerRight>
     <name>Apache Software Foundation</name>
-    <src>https://plc4x.apache.org/images/apache_logo.png</src>
-    <!--src>./images/apache_logo.png</src-->
-    <href>http://www.apache.org/</href>
+    <src>images/apache_logo_small.png</src>
+    <href>https://www.apache.org/</href>
   </bannerRight>
 
   <body>
-    <head>
-      <![CDATA[
-        <script>
-          document.addEventListener("DOMContentLoaded", function(event) {
-            /* Add an image for promoting Apache events below the right banner */
-            $("#bannerRight").append('<p id="apacheEvents"><a href="//www.apache.org/events/current-event.html"><img src="//www.apache.org/events/current-event-234x60.png"/></a></p>');
-            /* Append the trademarks info to the copyright section */
-            $(".copyright").append('<p>Apache PLC4X, PLC4X, Apache, the Apache feather logo, and the Apache PLC4X project logo are either registered trademarks or trademarks of The Apache Software Foundation in the United States and other countries. All other marks mentioned may be trademarks or registered trademarks of their respective owners.</p>');
-          });
-        </script>
-      ]]>
-    </head>
-
     <menu name="Users">
+      <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
-      <item name="Getting Started" href="users/gettingstarted.html"/>
-      <item name="Object PLC Mapping (OPM)" href="users/opm.html"/>
+      <item name="Adopters" href="users/adopters.html"/>
+      <item name="Getting Started" href="users/gettingstarted.html">
+        <item name="Go" href="users/getting-started/plc4go.html"/>
+        <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
+        <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
+      </item>
+      <item name="Blogs, Videos and Slides" href="users/blogs-videos-and-slides.html"/>
+      <item name="Protocols" href="users/protocols/index.html">
+        <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
+        <item name="ADS/AMS" href="users/protocols/ads.html"/>
+        <item name="BACnet/IP" href="users/protocols/bacnetip.html"/>
+        <item name="DeltaV" href="users/protocols/deltav.html"/>
+        <item name="DF1" href="users/protocols/df1.html"/>
+        <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
+        <item name="Firmata" href="users/protocols/firmata.html"/>
+        <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
+        <item name="Modbus" href="users/protocols/modbus.html"/>
+        <item name="OPC UA" href="users/protocols/opc-ua.html"/>
+        <item name="S7 (Step7)" href="users/protocols/s7.html"/>
+        <item name="Simulated" href="users/protocols/simulated.html"/>
+      </item>
+      <item name="Transports" href="users/transports/index.html">
+        <item name="TCP" href="users/transports/tcp.html"/>
+        <item name="UDP" href="users/transports/udp.html"/>
+        <item name="Serial" href="users/transports/serial.html"/>
+        <item name="Raw Socket" href="users/transports/raw-socket.html"/>
+        <item name="PCAP Replay" href="users/transports/pcap-replay.html"/>
+      </item>
+      <item name="Integrations" href="users/integrations/index.html">
+        <item name="Apache Calcite" href="users/integrations/apache-calcite.html"/>
+        <item name="Apache Camel" href="users/integrations/apache-camel.html"/>
+        <item name="Apache Edgent" href="users/integrations/apache-edgent.html"/>
+        <item name="Apache IoTDB" href="users/integrations/apache-iotdb.html"/>
+        <item name="Apache Kafka" href="users/integrations/apache-kafka.html"/>
+        <item name="Apache NiFi" href="users/integrations/apache-nifi.html"/>
+        <item name="Apache StreamPipes" href="users/integrations/apache-streampipes.html"/>
+        <item name="Eclipse Ditto" href="users/integrations/eclipse-ditto.html"/>
+        <item name="Eclipse Milo OPC UA Server" href="users/integrations/eclipse-milo.html"/>
+        <item name="Elastic Logstash " href="users/integrations/elastic-logstash.html"/>
+      </item>
+      <item name="Tools" href="users/tools/index.html">
+        <item name="Capture Replay" href="users/tools/capture-replay.html"/>
+        <item name="Connection Pool" href="users/tools/connection-pool.html"/>
+        <item name="Object PLC Mapping (OPM)" href="users/tools/opm.html"/>
+        <item name="Scraper" href="users/tools/scraper.html"/>
+        <item name="PLC4X without a PLC and Unit Testing" href="users/tools/testing.html"/>
+      </item>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
       <item name="Security" href="users/security.html"/>
     </menu>
     <menu name="Developers">
-      <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
-      <item name="Building PLC4X" href="developers/building.html"/>
-      <item name="Code Analysis" href="developers/sonar.html"/>
-      <item name="Continuous Integration" href="developers/ci.html"/>
+      <item name="Section Home" href="developers/index.html"/>
+      <item name="Preparing your Computer" href="developers/preparing/index.html">
+        <item name="Linux" href="developers/preparing/linux.html"/>
+        <item name="Mac OS" href="developers/preparing/macos.html"/>
+        <item name="Windows" href="developers/preparing/windows.html"/>
+      </item>
+      <item name="Building" href="developers/building.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
-      <item name="Decision Making" href="developers/decisions.html"/>
-      <!--item name="JQassistant" href="developers/jqassistant.html"/-->
-      <item name="Maturity" href="developers/maturity.html"/>
-      <item name="Preparing your Computer" href="developers/preparing.html"/>
-      <item name="Releasing" href="developers/release.html"/>
+      <item name="Tutorials" href="developers/tutorials/index.html">
+        <item name="Writing Drivers" href="developers/tutorials/writing-driver.html"/>
+        <item name="Testing Drivers" href="developers/tutorials/testing-serializers-and-parsers.html"/>
+      </item>
+      <item name="Code Generation" href="developers/code-gen/index.html">
+        <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>
+        <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
+        <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
+      </item>
+      <item name="Infrastructure" href="developers/infrastructure/index.html">
+        <item name="Continuous Integration" href="developers/infrastructure/ci.html"/>
+        <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
+        <item name="Code Analysis" href="developers/infrastructure/sonar.html"/>
+        <item name="Wiki" href="developers/infrastructure/wiki.html"/>
+        <item name="Build VM" href="developers/infrastructure/vm.html"/>
+        <item name="Website" href="developers/infrastructure/website.html"/>
+        <item name="IoT VPN" href="developers/infrastructure/vpn.html"/>
+      </item>
+      <item name="Releasing" href="developers/release/index.html">
+        <item name="Releasing" href="developers/release/release.html"/>
+        <item name="Validating" href="developers/release/validation.html"/>
+        <item name="Releasing Build-Tools" href="developers/release/build-tools.html"/>
+      </item>
       <item name="Team" href="developers/team.html"/>
-      <item name="VM Access" href="developers/vm.html"/>
-      <item name="VPN Access" href="developers/vpn.html"/>
-      <item name="Website" href="developers/website.html"/>
-      <item name="Wiki" href="developers/wiki.html"/>
+      <item name="Decision Making" href="developers/decisions.html"/>
+      <item name="Maturity" href="developers/maturity.html"/>
     </menu>
-    <menu name="Protocols">
-      <item name="Features" href="protocols/features.html"/>
-      <item name="ADS" href="protocols/ads/index.html"/>
-      <item name="DeltaV" href="protocols/delta-v/index.html"/>
-      <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>
-      <item name="Modbus" href="protocols/modbus/index.html"/>
-      <item name="OPC-UA" href="protocols/opc-ua/index.html"/>
-      <item name="S7" href="protocols/s7/index.html"/>
-    </menu>
-    <menu name="Reports" ref="reports" inherit="bottom"/>
     <menu name="Apache" inherit="bottom">
-      <item name="Apache Software Foundation" href="http://www.apache.org/"/>
+      <item name="Apache Software Foundation" href="https://www.apache.org/"/>
       <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
-      <item name="License" href="http://www.apache.org/licenses/"/>
-      <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
-      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+      <item name="License" href="https://www.apache.org/licenses/"/>
+      <item name="Sponsoring Apache" href="https://www.apache.org/foundation/sponsorship.html"/>
+      <item name="Thanks" href="https://www.apache.org/foundation/thanks.html"/>
     </menu>
-    <menu ref="modules" inherit="bottom"/>
   </body>
 
 </project>

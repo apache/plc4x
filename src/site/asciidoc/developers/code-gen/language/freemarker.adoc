@@ -1,0 +1,117 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+
+== Apache Freemarker
+
+For the Freemarker language output we are using an unmodified version of https://freemarker.apache.org[Apache Freemarker] to generate output.
+
+The boilerplate code for providing a PLC4X language module is located in the `org.apache.plc4x.plugins:plc4x-code-generation-language-base-freemarker` maven module, inside the `FreemarkerLanguageOutput` class.
+
+This class configures a Freemarker context and provides standardized attributes inside this:
+
+- packageName: Java style package name which can be used to create some form of directory structure.
+- typeName: Simple string type name
+- type: `ComplexTypeDefinition` instance containing all the information for the type that code should be generated for.
+- helper: As some times it is pretty complicated to create all the output in Freemarker, the helper allows to provide code that is used by the template that help with generating output.
+
+A Freemarker-based output module, has to provide a list of `Template` instances as well as provide a `FreemarkerLanguageTemplateHelper` instance.
+
+What the `FreemarkerLanguageOutput` then does, is iterate over all complex types provided by the protocol module, and then iterates over all templates the current language defines.
+
+The only convention used in this utility, is that the first line of output a template generates will be treated as the path relative to the base output directory.
+
+It will automatically create all needed intermediate directories and generate the rest of the input to the file specified by the first line.
+
+If this line is empty, the output is skipped for this instance.
+
+=== Example `Java` output
+
+....
+package org.apache.plc4x.language.java;
+
+import freemarker.template.*;
+import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
+import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
+
+import java.io.*;
+import java.util.*;
+
+public class JavaLanguageOutput extends FreemarkerLanguageOutput {
+
+    @Override
+    public String getName() {
+        return "Java";
+    }
+
+    protected List<Template> getTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
+    }
+
+    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, ComplexTypeDefinition> types) {
+        return new JavaLanguageTemplateHelper(types);
+    }
+
+}
+....
+
+As you can see, this output generates up to two files for every complex type.
+
+This is one file, providing the code for the POJO itself.
+The second one generates the IO-component, which contains all the code for parsing and serializing the corresponding POJO.
+
+In other languages, for example `C++` it's possible to use a third one to generate Header files or for `Python` perhaps only one in total.
+
+Here an example for a part of a template for generating Java POJOs:
+
+....
+${packageName?replace(".", "/")}/${typeName}.java
+/*
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+*/
+
+package ${packageName};
+
+import org.apache.plc4x.java.utils.SizeAware;
+
+public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements SizeAware {
+
+    ... SNIP ...
+
+}
+....
+
+So as you can see, the first line will generate the file-path of the to be generated output.
+Which is followed

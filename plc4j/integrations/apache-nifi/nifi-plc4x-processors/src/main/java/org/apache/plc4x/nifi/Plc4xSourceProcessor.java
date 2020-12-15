@@ -28,12 +28,13 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.json.simple.JSONObject;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Tags({"plc4x-source"})
@@ -45,38 +46,44 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         // Get an instance of a component able to read from a PLC.
-        PlcConnection connection = getConnection();
+        try(PlcConnection connection = new PooledPlcDriverManager().getConnection(getConnectionString())) {
 
-        // Prepare the request.
-        if (!connection.getMetadata().canRead()) {
-            throw new ProcessException("Writing not supported by connection");
-        }
+            // Prepare the request.
+            if (!connection.getMetadata().canRead()) {
+                throw new ProcessException("Writing not supported by connection");
+            }
 
-        FlowFile flowFile = session.create();
-        session.append(flowFile, out -> {
+            FlowFile flowFile = session.create();
             try {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 getFields().forEach(field -> {
                     String address = getAddress(field);
-                    if(address != null) {
+                    if (address != null) {
                         builder.addItem(field, address);
                     }
                 });
                 PlcReadRequest readRequest = builder.build();
                 PlcReadResponse response = readRequest.execute().get();
-                JSONObject obj = new JSONObject();
+                Map<String, String> attributes = new HashMap<>();
                 for (String fieldName : response.getFieldNames()) {
-                    for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {
+                    for (int i = 0; i < response.getNumberOfValues(fieldName); i++) {
                         Object value = response.getObject(fieldName, i);
-                        obj.put(fieldName, value);
+                        attributes.put(fieldName, String.valueOf(value));
                     }
                 }
-                obj.writeJSONString(new OutputStreamWriter(out));
-            } catch (InterruptedException | ExecutionException e) {
-                throw new IOException(e);
+                flowFile = session.putAllAttributes(flowFile, attributes);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new ProcessException(e);
+            } catch (ExecutionException e) {
+                throw new ProcessException(e);
             }
-        });
-        session.transfer(flowFile, SUCCESS);
+            session.transfer(flowFile, SUCCESS);
+        } catch (ProcessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ProcessException("Got an error while trying to get a connection", e);
+        }
     }
 
 }

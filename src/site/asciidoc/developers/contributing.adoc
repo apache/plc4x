@@ -58,7 +58,8 @@ Every forked repository has an additional button called "New Pull Request":
 
 image::contributing-github-create-pull-request.png[]
 
-If you click on this, we will receive a notification on your changes and can review them. We also can discuss your changes and have you perfect your pull request before we accept and merge it into PLC4X.
+If you click on this, we will receive a notification on your changes and can review them.
+We also can discuss your changes and have you perfect your pull request before we accept and merge it into PLC4X.
 
 ==== Keeping your fork up to date
 
@@ -66,7 +67,8 @@ As we are continuously working on PLC4X and you created a copy of our repo, this
 
 In order get the changes we introduced in the official repo you have to tell git about that.
 
-You do this locally by adding a new so-called `remote`. Per default the remote you cloned from is called `origin`.
+You do this locally by adding a new so-called `remote`.
+Per default the remote you cloned from is called `origin`.
 
 Usually you will call the second remote `upstream` but in general you can call it whatever you like.
 
@@ -91,7 +93,8 @@ In order to get all changes of our upstream-repository, just execute the followi
 
     git pull upstream
 
-This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`. You can do this by executing the following command:
+This will get all changed from upstream and merge them locally. In order to update your GitHub version, you have to push things back to `origin`.
+You can do this by executing the following command:
 
     git push
 
@@ -115,7 +118,8 @@ If you want to be assigned to an issue because you want to work on it, please re
 
 As our documentation and website are generated as a side-product of our build, contributing to this technically the same as contributing to the code.
 
-All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories. For a reference of the Asciidoctor syntax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
+All our content is written in Asciidoctor and is located in `src/site/asciidoc` directories.
+For a reference of the Asciidoctor syntax please have a look at the https://asciidoctor.org/docs/user-manual/#introduction-to-asciidoctor[Asciidoctor documentation].
 
 === Branching model
 
@@ -123,7 +127,7 @@ The PLC4X project uses the following branching model.
 
 The same model is used for a wide variety of other projects, so it should be pretty straight forward.
 
-- `master` contains the latest released state.
+- `release` contains the latest released state.
 - Development is performed on the `develop` branch.
 - Features are developed in Feature-Branches with a prefix `feature/`
 - Each minor release has a corresponding release branch `rel/{major-version}.{minor-version}`
@@ -145,8 +149,8 @@ digraph g{
         fontcolor="deepskyblue", font="Arial bold", fontsize="14pt" ];
     edge [color="#909090", penwidth=3];
 
-    node  [group="master"];
-    m1    [label="master", width=0.9];
+    node  [group="release"];
+    m1    [label="release", width=0.9];
     m2   [label="0.2.0", width=0.9];
     m3   [label="0.2.1", width=0.9];
     m4   [label="", shape=circle, color="#b0b0b0"];

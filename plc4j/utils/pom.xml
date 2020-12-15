@@ -24,30 +24,23 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
   <packaging>pom</packaging>
 
   <name>PLC4J: Utils</name>
-  <description>A collection of utilities used in multiple modules.</description>
+  <description>A collection of utilities used internally.</description>
 
   <modules>
-    <module>connection-pool</module>
-    <module>opm</module>
+    <!-- Non-default input options -->
+    <module>pcap-replay</module>
+    <module>pcap-shared</module>
     <module>raw-sockets</module>
-    <module>test-utils</module>
-    <module>scraper</module>
-  </modules>
 
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>interop</module>
-      </modules>
-    </profile>
-  </profiles>
+    <!-- Utilities for building tests -->
+    <module>test-utils</module>
+  </modules>
 
 </project>

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ################################################################################
 ##
@@ -21,6 +21,7 @@
 
 set -e
 
+
 # Download the collection of files associated with an Apache PLC4X
 # Release or Release Candidate from the Apache Distribution area:
 # https://dist.apache.org/repos/dist/release/plc4x
@@ -36,10 +37,9 @@ set -e
 
 
 
-setUsage "`basename $0` [--nquery] [--validate|--nvalidate] <version> [<rc-num>]"
+setUsage "$(basename $0) [--nquery] [--validate|--nvalidate] <version> [<rc-num>]"
 handleHelp "$@"
 
-BUILDTOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 NQUERY=
 if [ "$1" == "--nquery" ]; then
@@ -55,19 +55,19 @@ fi
 
 requireArg "$@"
 VER=$1; shift
-checkVerNum $VER || usage "Not a X.Y.Z version number \"$VER\""
+checkVerNum "$VER" || usage "Not a X.Y.Z version number \"$VER\""
 
 RC_NUM=
 if [ $# -gt 0 ]; then
   RC_NUM=$1; shift
-  checkRcNum ${RC_NUM} || usage "Not a release candidate number \"${RC_NUM}\""
+  checkRcNum "${RC_NUM}" || usage "Not a release candidate number \"${RC_NUM}\""
 fi
 
 noExtraArgs "$@"
 
 # Release or Release Candidate mode
 IS_RC=
-if [ ${RC_NUM} ]; then
+if [ "${RC_NUM}" ]; then
   IS_RC=1
 fi
 
@@ -82,49 +82,49 @@ if [ ${IS_RC} ]; then
 fi
 
 DST_BASE_DIR=downloaded-plc4x-${VER}${RC_SFX}
-[ -d ${DST_BASE_DIR} ] && die "${DST_BASE_DIR} already exists"
+[ -d "${DST_BASE_DIR}" ] && die "${DST_BASE_DIR} already exists"
 
 [ ${NQUERY} ] || confirm "Proceed to download to ${DST_BASE_DIR} from ${BASE_URL}?" || exit
 
-echo Downloading to ${DST_BASE_DIR} ...
+echo Downloading to "${DST_BASE_DIR}" ...
 
 function mywget() {
   # OSX lacks wget by default
-  (set -x; curl -f -O $1)
+  (set -x; curl -f -O "$1")
 }
 
 function getSignedBundle() {
-  mywget ${1}
-  mywget ${1}.asc
-  mywget ${1}.sha512
+  mywget "${1}"
+  mywget "${1}".asc
+  mywget "${1}".sha512
 }
 
-mkdir -p ${DST_BASE_DIR}
-cd ${DST_BASE_DIR}
-ABS_BASE_DIR=`pwd`
+mkdir -p "${DST_BASE_DIR}"
+cd "${DST_BASE_DIR}"
+ABS_BASE_DIR=$(pwd)
 URL=${BASE_URL}
-mywget ${URL}/KEYS
+mywget "${URL}"/KEYS
 
-DST_VER_DIR=${VER}-incubating
-URL=${BASE_URL}/${VER}-incubating
+DST_VER_DIR=${VER}
+URL=${BASE_URL}/${VER}
 if [ ${IS_RC} ]; then
   DST_VER_DIR=${DST_VER_DIR}/${RC_SFX}
   URL=${URL}/${RC_SFX}
 fi
 
-mkdir -p ${DST_VER_DIR}
-cd ${DST_VER_DIR}
-mywget ${URL}/README
-mywget ${URL}/RELEASE_NOTES
-getSignedBundle ${URL}/apache-plc4x-incubating-${VER}-source-release.zip
+mkdir -p "${DST_VER_DIR}"
+cd "${DST_VER_DIR}"
+mywget "${URL}"/README.md
+mywget "${URL}"/RELEASE_NOTES
+getSignedBundle "${URL}"/apache-plc4x-"${VER}"-source-release.zip
 
 echo
-echo Done Downloading to ${DST_BASE_DIR}
+echo Done Downloading to "${DST_BASE_DIR}"
 
 [ ${VALIDATE} == 0 ] && exit
 [ ${VALIDATE} == 1 ] || [ ${NQUERY} ] || confirm "Do you want to check the bundle signatures and compare source bundles?" || exit
 
-cd ${ABS_BASE_DIR}
+cd "${ABS_BASE_DIR}"
 
 echo
 echo "If the following bundle gpg signature checks fail, you may need to"
@@ -134,4 +134,4 @@ echo "    $ gpg --import ${DST_BASE_DIR}/KEYS"
 
 echo
 echo "Verifying the source bundle signatures..."
-(set -x; $BUILDTOOLS_DIR/check_sigs.sh ${DST_VER_DIR})
+(set -x; "$BUILDTOOLS_DIR"/check_sigs.sh "${DST_VER_DIR}")

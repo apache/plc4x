@@ -18,26 +18,36 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
+import org.apache.plc4x.kafka.config.*;
 import org.apache.plc4x.kafka.util.VersionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Plc4xSinkConnector extends SinkConnector {
-    static final String URL_CONFIG = "url";
-    private static final String URL_DOC = "Connection string used by PLC4X to connect to the PLC";
 
-    static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC);
+    private static final Logger log = LoggerFactory.getLogger(Plc4xSinkConnector.class);
 
-    private String url;
-    private String query;
+    private SinkConfig sinkConfig;
+    private Map<String, String> configProps;
+
+    @Override
+    public void start(Map<String, String> props) {
+        this.sinkConfig = new SinkConfig(props);
+        this.configProps = Collections.unmodifiableMap(props);
+    }
+
+    @Override
+    public void stop() {
+        sinkConfig = null;
+    }
 
     @Override
     public Class<? extends Task> taskClass() {
@@ -47,31 +57,67 @@ public class Plc4xSinkConnector extends SinkConnector {
     @Override
     public List<Map<String, String>> taskConfigs(int maxTasks) {
         List<Map<String, String>> configs = new LinkedList<>();
-        for (int i = 0; i < maxTasks; i++) {
+
+        for (Sink sink : sinkConfig.getSinks()) {
+
+            StringBuilder query = new StringBuilder();
+
+            for (Field field : sink.getFields()) {
+                String fieldName = field.getName();
+                String fieldAddress = field.getAddress();
+                query.append("|").append(fieldName).append("#").append(fieldAddress);
+            }
+
+            // Create a new task configuration.
             Map<String, String> taskConfig = new HashMap<>();
-            taskConfig.put(URL_CONFIG, url);
+            taskConfig.put(Constants.CONNECTION_NAME_CONFIG, sink.getName());
+            taskConfig.put(Constants.CONNECTION_STRING_CONFIG, sink.getConnectionString());
+            taskConfig.put(Constants.TOPIC_CONFIG, sink.getTopic());
+            taskConfig.put(Constants.RETRIES_CONFIG, sink.getRetries().toString());
+            taskConfig.put(Constants.TIMEOUT_CONFIG, sink.getTimeout().toString());
+            taskConfig.put(Constants.QUERIES_CONFIG, query.toString().substring(1));
             configs.add(taskConfig);
         }
         return configs;
     }
 
     @Override
-    public void start(Map<String, String> props) {
-        AbstractConfig config = new AbstractConfig(Plc4xSinkConnector.CONFIG_DEF, props);
-        url = config.getString(URL_CONFIG);
+    @SuppressWarnings("unchecked")
+    public Config validate(Map<String, String> connectorConfigs) {
+        /////////////////////////////////////////////////////
+        // Get the static part of the config
+        Config config = super.validate(connectorConfigs);
+        log.info("Validating PLC4X Sink Connector Configuration");
+
+        SinkConfig sinkConfigTemp;
+        try {
+            sinkConfigTemp = new SinkConfig(connectorConfigs);
+        } catch (Exception e) {
+            for (ConfigValue configValue : config.configValues()) {
+                if (configValue.errorMessages().size() > 0) {
+                    return config;
+                }
+            }
+            throw e;
+        }
+        sinkConfigTemp.validate();
+        return config;
     }
 
-    @Override
-    public void stop() {}
 
     @Override
     public ConfigDef config() {
-        return CONFIG_DEF;
+        return sinkConfig.configDef();
     }
 
     @Override
     public String version() {
         return VersionUtil.getVersion();
+    }
+
+    @Override
+    public String toString(){
+        return sinkConfig.toString();
     }
 
 }

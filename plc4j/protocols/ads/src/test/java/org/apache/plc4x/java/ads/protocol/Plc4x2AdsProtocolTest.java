@@ -33,8 +33,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes;
+import org.apache.plc4x.java.spi.messages.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -59,7 +58,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.plc4x.java.base.protocol.Plc4XSupportedDataTypes.streamOfLittleEndianDataTypePairs;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;

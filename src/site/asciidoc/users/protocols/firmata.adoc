@@ -1,0 +1,120 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== Firmata
+
+The Firmata protocol is based on the MIDI protocol used for communicating with musical equipment.
+
+It is also one of the most widely used protocols for communication with Arduino devices.
+
+This driver is built to be compatible with the `StandardFirmata Arduino Sketch` which can be found https://github.com/firmata/arduino/blob/master/examples/StandardFirmata/StandardFirmata.ino[here] (Version last changed on August 17th, 2017)
+
+=== Connection String Options
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`firmata`
+
+|Name
+2+|Firmata Protocol
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-firmata</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Default Transport:
+2+| `serial`
+
+|Compatible Transports:
+2+| - `serial`
+
+3+|Supported Operations
+
+|
+| `write`
+| Writing is only supported to digital addresses.
+
+|
+| `subscribe`
+| Reading is supported for both digital and analog addresses. See `note` after this table however.
+
+3+|Options
+
+|===
+
+NOTE: When subscribing to pins, these are configured to become read pins. When writing to digital pins, these are configured to become output pins. However writing to pins for which a subscription exists, an exception will be thrown. In order to write to previously subscribed pins, all subscriptions for this have to be cancelled first.
+
+=== Individual Resource Address Format
+
+Similar to the Modbus protocol, the Firmata protocol support Boolean and Short values.
+
+Booleans are used for the digital IO pins and short values for the analog inputs.
+
+==== Binary Addresses
+
+The full format for a digital address has the following format:
+
+----
+digital:{start-address}[{array-size}]:{special-config}
+----
+
+The `start-address` and `array-size` are simple integer values.
+`special-config` can be used to configure the digital input pin to something else than `INPUT`.
+
+Currently the only supported option is `PULLUP` which configured the Arduino's digital input pin to use it's built in pullup-resistor.
+
+Both the `array-size` as well as the `special-config` parts are optional. So the following example addresses are valid:
+
+----
+digital:4
+digital:4[5]
+digital:4:PULLUP
+----
+
+A normal `Arduino Uno` is equipped with 14 digital inputs: 0-13
+
+WARNING: However in case of using the serial port (which will always be the case when using this driver), the pins 0 and 1 are the `RX` and `TX` pins of the serial port and can't be used.
+
+==== Analog Addresses
+
+The full format for an analog address is as follows:
+
+----
+analog:{start-address}[{array-size}]
+----
+
+The `start-address` and `array-size` are simple integer values.
+
+Both the `array-size` is optional. So the following example addresses are valid:
+
+----
+analog:1
+analog:2[3]
+----
+
+A normal `Arduino Uno` is equipped with 6 analog inputs: 0-5

@@ -38,6 +38,7 @@ import org.apache.plc4x.java.ads.api.serial.AmsSerialFrame;
 import org.apache.plc4x.java.ads.api.serial.types.FragmentNumber;
 import org.apache.plc4x.java.ads.api.serial.types.UserData;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
+import org.hamcrest.core.IsEqual;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,7 +52,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.apache.plc4x.java.base.util.Assert.byteArrayEqualsTo;
 import static org.mockito.Mockito.*;
 
 /**
@@ -164,7 +164,7 @@ public class Payload2SerialProtocolExampleConversationTest {
             Length.of(0x2)
         );
         AmsSerialFrame amsSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) 0x06), UserData.of(amsPacket.getBytes()));
-        errorCollector.checkThat("example request not same", amsSerialFrame.getBytes(), byteArrayEqualsTo(exampleRequest));
+        errorCollector.checkThat("example request not same", amsSerialFrame.getBytes(), IsEqual.equalTo(exampleRequest));
         SUT.encode(channelHandlerContextMock, amsPacket.getByteBuf(), new ArrayList<>());
 
         // PLC --> Terminal : Acknowledge:
@@ -182,7 +182,7 @@ public class Payload2SerialProtocolExampleConversationTest {
             .toArray(Byte[]::new));
 
         AmsSerialAcknowledgeFrame amsSerialAcknowledgeFrame = AmsSerialAcknowledgeFrame.of(amsSerialFrame.getTransmitterAddress(), amsSerialFrame.getReceiverAddress(), amsSerialFrame.getFragmentNumber());
-        errorCollector.checkThat("ack response not same", amsSerialAcknowledgeFrame.getBytes(), byteArrayEqualsTo(exampleAckResponse));
+        errorCollector.checkThat("ack response not same", amsSerialAcknowledgeFrame.getBytes(), IsEqual.equalTo(exampleRequest));
         SUT.decode(channelHandlerContextMock, Unpooled.wrappedBuffer(exampleAckResponse), new ArrayList<>());
         SUT.decode(channelHandlerContextMock, amsSerialAcknowledgeFrame.getByteBuf(), new ArrayList<>());
 
@@ -221,7 +221,7 @@ public class Payload2SerialProtocolExampleConversationTest {
             Data.of((byte) 0xAF, (byte) 0x27)
         );
         AmsSerialFrame amsResponseSerialFrame = AmsSerialFrame.of(FragmentNumber.of((byte) 0xEC), UserData.of(amsResponsePacket.getBytes()));
-        errorCollector.checkThat("read response not same", amsResponseSerialFrame.getBytes(), byteArrayEqualsTo(exampleResponse));
+        errorCollector.checkThat("read response not same", amsResponseSerialFrame.getBytes(), IsEqual.equalTo(exampleRequest));
         SUT.decode(channelHandlerContextMock, Unpooled.wrappedBuffer(exampleResponse), new ArrayList<>());
         SUT.decode(channelHandlerContextMock, amsResponseSerialFrame.getByteBuf(), new ArrayList<>());
     }

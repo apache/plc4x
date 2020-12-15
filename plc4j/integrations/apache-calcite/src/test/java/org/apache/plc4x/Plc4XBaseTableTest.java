@@ -33,7 +33,10 @@ class Plc4XBaseTableTest implements WithAssertions {
     @Test
     void testOnBlockingQueue() {
         ArrayBlockingQueue<Plc4xSchema.Record> queue = new ArrayBlockingQueue<>(100);
-        Plc4xStreamTable table = new Plc4xStreamTable(queue, new JobConfigurationImpl("job1", 100,
+        Plc4xStreamTable table = new Plc4xStreamTable(queue, new JobConfigurationImpl(
+            "job1",
+            null,
+            100,
             Collections.emptyList(),
             Collections.singletonMap("key", "address")));
 
@@ -45,4 +48,5 @@ class Plc4XBaseTableTest implements WithAssertions {
         assertThat(enumerator.moveNext()).isTrue();
         assertThat(enumerator.current()).contains("value");
     }
+
 }

@@ -1,0 +1,355 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../../images/
+
+== The MSpec format
+
+The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
+
+We simply sat down and started to write some imaginary format (`imaginary` was even the initial Name we used) and created parses for this afterwards and fine tuned spec and parsers as part of the process of implementing first protocols and language templates.
+
+It's a text-based format.
+
+At the root level of these specs are a set of `type` or `discriminatedType` blocks.
+
+`type` elements are objects that are independent from the input.
+
+An example would be the `TPKTPacket` of the S7 format:
+
+....
+[type 'TPKTPacket'
+    [const    uint 8     'protocolId' '0x03']
+    [reserved uint 8     '0x00']
+    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
+    [field    COTPPacket 'payload']
+]
+....
+
+A `discriminatedType` type is in contrast an object who's content is dependent in the input.
+
+Every discriminated type can contain at most one `discriminator` field and exactly one `typeSwitch` element.
+
+For example part of the spec for the S7 format looks like this:
+
+....
+[discriminatedType 'S7Message'
+    [const         uint 8  'protocolId'      '0x32']
+    [discriminator uint 8  'messageType']
+    [reserved      uint 16 '0x0000']
+    [field         uint 16 'tpduReference']
+    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
+    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [typeSwitch 'messageType'
+        ['0x01' S7MessageRequest
+        ]
+        ['0x03' S7MessageResponse
+            [field uint 8 'errorClass']
+            [field uint 8 'errorCode']
+        ]
+        ['0x07' S7MessageUserData
+        ]
+    ]
+    [field S7Parameter 'parameter' ['messageType']]
+    [field S7Payload   'payload'   ['messageType', 'parameter']]
+]
+....
+
+An types start is declared by an opening square bracket `[` and ended with a closing one `]`.
+
+Also to both provide a name as first argument.
+
+Every type definition contains a list of fields that can have different types.
+
+The list of available types are:
+
+- const: expects a given value
+- reserved: expects a given value, but only warns if condition is not meet
+- field: simple or complex typed object
+- array: array of simple or complex typed objects
+- optional: simple or complex typed object, that is only present in some conditions
+- implicit: a field required for parsing, but is usually defined though other data
+- discriminator: special type of simple typed field which is used to determine the concrete type of an object (max one per type and always has to be accompanied with a `switch` field) (reserved for `discriminatedType`)
+- typeSwitch: not a real field, but indicates the existence of sub-types, which are declared inline (reserved for `discriminatedType`)
+
+The full syntax and explanations of these type follow in the following chapters.
+
+Another thing we have to explain are how types are specified.
+
+In general we distinguish between two types of types used in field definitions:
+
+- simple types
+- complex types
+
+=== Simple Types
+
+Simple types are usually raw data the format is:
+
+    {base-type} {size}
+
+The base types available are currently:
+
+- *bit*: Simple boolean value
+- *uint*: The input is treated as unsigned integer value
+- *int*: The input is treated as signed integer value
+- *float*: The input is treated as floating point number
+- *string*: The input is treated as string
+
+The size value then provides how many `bits` should be read.
+
+In case of `string` types, it refers to the number of characters.
+
+So reading an unsigned byte would be: `uint 8`.
+
+=== Complex Types
+
+In contrast to simple types, complex type reference other complex types (Root elements of the spec document).
+
+How the parser should interpret them is defined in the referenced types definition.
+
+In the example above, for example the `S7Parameter` is defined in another part of the spec.
+
+=== Field Types and their Syntax
+
+==== array Field
+
+An `array` field is exactly what you expect.
+It generates an field which is not a single-value element but an array or list of elements.
+
+    [array {simple-type} {size} '{name}' {'count', 'length', 'terminated'} '{expression}']
+
+    [array {complex-type} '{name}' {'count', 'length', 'terminated'} '{expression}']
+
+Array types can be both simple and complex typed and have a name.
+An array field must specify the way it's length is determined as well as an expression defining it's length.
+Possible values are:
+- `count`: This means that exactly the number of elements are parsed as the `expression` specifies.
+- `length`: In this case a given number of bytes are being read. So if an element has been parsed and there are still bytes left, another element is parsed.
+- `terminated`: In this case the parser will continue reading elements until it encounters a termination sequence.
+
+==== checksum Field
+
+A checksum field can only operate on simple types.
+
+    [checksum {simple-type} {size} '{name}' '{checksum-expression}']
+
+When parsing a given simple type is parsed and then the result is compared to the value the `checksum-expression` provides.
+If they don't match an exception is thrown.
+
+When serializing, the `checksum-expression` is evaluated and the result is then output.
+
+Note: As quite often a checksum is calculated based on the byte data of a message read up to the checksum, an artificial variable is available in expressions called `checksumRawData` of type `byte[]` which contains an array of all the byte data read in the current message element and it's sub types in case of a discriminated type.
+
+This field doesn't keep any data in memory.
+
+See also:
+- implicit field: A checksum field is similar to an implicit field, however the `checksum-expression` is evaluated are parsing time and throws an exception if the values don't match.
+
+==== const Field
+
+A const field simply reads a given simple type and compares to a given reference value.
+
+    [const {simple-type} {size} '{name}' '{reference}']
+
+When parsing it makes the parser throw an Exception if the parsed value does not match.
+
+When serializing is simply outputs the expected constant.
+
+This field doesn't keep any data in memory.
+
+See also:
+- implicit field: A const field is similar to an implicit field, however it compares the parsed input to the reference value and throws an exception if the values don't match.
+
+==== discriminator Field
+
+Discriminator fields are only used in `discriminatedType`s.
+
+    [discriminator {simple-type} {size} '{name}']
+
+When parsing a discriminator fields result just in being a locally available variable.
+
+When serializing is accesses the discriminated types constants and uses these as output.
+
+See also:
+- implicit field: A discriminator field is similar to an implicit field, however doesn't provide a serialization expression as it uses the discrimination constants of the type it is.
+- discriminated types
+
+==== implicit Field
+
+Implicit types are fields that get their value implicitly from the data they contain.
+
+    [implicit {simple-type} {size} '{name}' '{serialization-expression}']
+
+When parsing an implicit type is available as a local variable and can be used by other expressions.
+
+When serializing the serialization-expression is executed and the resulting value is output.
+
+This type of field is generally used for fields that handle numbers of elements or length values as these can be implicitly calculated at serialization time.
+
+This field doesn't keep any data in memory.
+
+==== manualArray Field
+
+    [manualArray {simple-type} {size} '{name}' {'count', 'length', 'terminated'} '{loop-expression}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
+
+    [manualArray {complex-type} '{name}' {'count', 'length', 'terminated'} '{loop-expression}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
+
+==== manual Field
+
+    [manual {simple-type} {size} '{name}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
+
+    [manual {complex-type} '{name}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
+
+==== optional Field
+
+An optional field is a type of field that can also be `null`.
+
+    [optional {simple-type} {size} '{name}' '{optional-expression}']
+
+    [optional {complex-type} '{name}' '{optional-expression}']
+
+When parsing the `optional-expression` is evaluated. If this results in`false` nothing is output, if it evaluates to `true` it is serialized as a `simple` field.
+
+When serializing, if the field is `null` nothing is output, if it is not `null` it is serialized normally.
+
+See also:
+- simple field: In general `optional` fields are identical to `simple` fields except the ability to be `null` or be skipped.
+
+==== padding Field
+
+A padding field allows aligning of data blocks.
+It outputs additional padding data, given amount of times specified by padding expression.
+Padding is added only when result of expression is bigger than zero.
+
+    [padding {simple-type} {size} '{pading-value}' '{padding-expression}']
+
+When parsing a `padding` field is just consumed without being made available as property or local variable if the `padding-expression` evaluates to value greater than zero.
+If it doesn't, it is just skipped.
+
+This field doesn't keep any data in memory.
+
+==== reserved Field
+
+Reserved fields are very similar to `const` fields, however they don't throw exceptions, but instead log messages if the values don't match.
+
+The reason for this is that in general reserved fields have the given value until they start to be used.
+
+If the field starts to be used this shouldn't break existing applications, but it should raise a flag as it might make sense to update the drivers.
+
+    [reserved {simple-type} {size} '{name}' '{reference}']
+
+When parsing the values is parsed and the result is compared to the reference value.
+If the values don't match, a log message is sent.
+
+This field doesn't keep any data in memory.
+
+See also:
+- `const` field
+
+==== simple Field
+
+Simple fields are the most common types of fields.
+A `simple` field directly mapped to a normally typed field.
+
+    [simple {simple-type} {size} '{name}']
+
+    [simple {complex-type} '{name}']
+
+When parsing, the given type is parsed (can't be `null`) and saved in the corresponding model instance's property field.
+
+When serializing it is serialized normally.
+
+==== virtual Field
+
+Virtual fields have no impact on the input or output.
+They simply result in creating artificial get-methods in the generated model classes.
+
+    [virtual {simple-type} {size} '{name}' '{value-expression}']
+
+    [virtual {complex-type} '{name}' '{value-expression}']
+
+Instead of being bound to a property, the return value of a `virtual` property is created by evaluating the `value-expression`.
+
+==== typeSwitch Field
+
+These types of fields can only occur in discriminated types.
+
+A `discriminatedType` must contain *exactly one* `typeSwitch` field, as it defines the sub-types.
+
+    [typeSwitch '{arument-1}', '{arument-2}', ...
+        ['{argument-1-value-1}' {subtype-1-name}
+            ... Fields ...
+        ]
+        ['{vargument-1-value-2}', '{argument-2-value-1}' {subtype-2-name}
+            ... Fields ...
+        ]
+        ['{vargument-1-value-3}', '{argument-2-value-2}' {subtype-2-name} [uint 8 'existing-attribute-1', uint 16 'existing-attribute-2']
+            ... Fields ...
+        ]
+
+A type switch element must contain a list of at least one argument expression.
+Only the last option can stay empty, which results in a default type.
+
+Each sub-type declares a comma-separated list of concrete values.
+
+It must contain at most as many elements as arguments are declared for the type switch.
+
+The matching type is found during parsing by starting with the first argument.
+
+If it matches and there are no more values, the type is found, if more values are provided, they are compared to the other argument values.
+
+If no type is found, an exception is thrown.
+
+Inside each sub-type can declare fields using a subset of the types (`discriminator` and `typeSwitch` can't be used here)
+
+The third case in above code-snippet also passes a named attribute to the sub-type.
+The name must be identical to any argument or named field parsed before the switchType.
+These arguments are then available for expressions or passing on in the subtypes.
+
+See also:
+- `discriminatedType`
+
+==== Parameters
+
+Some times it is necessary to pass along additional parameters.
+
+If a complex type requires parameters, these are declared in the header of that type.
+
+....
+[discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
+    [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
+        ['0xF0' S7PayloadSetupCommunication]
+        ['0x04','0x01' S7PayloadReadVarRequest]
+        ['0x04','0x03' S7PayloadReadVarResponse
+            [arrayField S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
+        ]
+        ['0x05','0x01' S7PayloadWriteVarRequest
+            [arrayField S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
+        ]
+        ['0x05','0x03' S7PayloadWriteVarResponse
+            [arrayField S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
+        ]
+        ['0x00','0x07' S7PayloadUserData
+        ]
+    ]
+]
+....
+
+Therefore wherever a complex type is referenced an additional list of parameters can be passed to the next type.
+
+Here comes an example of this in above snippet:
+
+    [field S7Payload   'payload'   ['messageType', 'parameter']]

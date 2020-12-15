@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-integration-edgent</artifactId>
@@ -38,8 +38,8 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>apache-edgent</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
+      <artifactId>plc4j-apache-edgent</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -63,32 +63,10 @@
       <artifactId>commons-cli</artifactId>
       <version>1.4</version>
     </dependency>
-
-    <!-- Required driver implementation -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies>
-            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

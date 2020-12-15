@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<tdml:testSuite xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/"
+                xmlns:tdml="http://www.ibm.com/xmlns/dfdl/testData"
+                xmlns:knx="http://plc4x.apache.org/knxnet-ip"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                suiteName="KNXNet/IP protocol"
+                description="Testsuite for the KNXNet/IP protocol"
+                defaultRoundTrip="onePass">
+
+    <tdml:defineSchema name="knxNetIpSchema" elementFormDefault="unqualified">
+        <!-- Import the Schema -->
+        <xs:import namespace="http://plc4x.apache.org/knxnet-ip"
+                   schemaLocation="protocol.dfdl.xsd"/>
+
+        <!-- Import the format settings -->
+        <dfdl:format ref="knx:knxNetIpFullFormat"/>
+
+        <!-- Define the root element name and type -->
+        <!--xs:element name="TpktMessage" type="s7:TpktMessageType"/-->
+    </tdml:defineSchema>
+
+    <tdml:parserTestCase name="KnxNetIp-Search-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Search-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100201000e0801c0a82a46ef8e</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>513</serviceTypeIdentifier>
+                        <totalLength>14</totalLength>
+                    </header>
+                    <SearchRequest>
+                        <HPAIDiscoveryEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A46</ipAddress>
+                            <ipPort>61326</ipPort>
+                        </HPAIDiscoveryEndpoint>
+                    </SearchRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Search-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Search-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">
+                06100202004c0801c0a82a0b0e5736010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401
+            </tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>514</serviceTypeIdentifier>
+                        <totalLength>76</totalLength>
+                    </header>
+                    <SearchResponse>
+                        <HPAIControlEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A0B</ipAddress>
+                            <ipPort>3671</ipPort>
+                        </HPAIControlEndpoint>
+                        <DIBDeviceInfo>
+                            <structureLength>54</structureLength>
+                            <descriptionType>1</descriptionType>
+                            <knxMedium>2</knxMedium>
+                            <deviceStatus>
+                                <reserved>0</reserved>
+                                <programMode>0</programMode>
+                            </deviceStatus>
+                            <knxAddress>
+                                <mainGroup>15</mainGroup>
+                                <middleGroup>15</middleGroup>
+                                <subGroup>255</subGroup>
+                            </knxAddress>
+                            <projectInstallationIdentifier>
+                                <projectNumber>0</projectNumber>
+                                <installationNumber>0</installationNumber>
+                            </projectInstallationIdentifier>
+                            <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
+                            <knxNetIpDeviceMulticastAddress>E000170C</knxNetIpDeviceMulticastAddress>
+                            <knxNetIpDeviceMacAddress>000AB3275536</knxNetIpDeviceMacAddress>
+                            <deviceFriendlyName>Gira KNX/IP-Schnittstelle</deviceFriendlyName>
+                        </DIBDeviceInfo>
+                        <DIBSuppSvcFamilies>
+                            <structureLength>8</structureLength>
+                            <descriptionType>2</descriptionType>
+                            <serviceIds>
+                                <serviceId>
+                                    <type>2</type>
+                                    <KnxNetIpCore>
+                                        <version>1</version>
+                                    </KnxNetIpCore>
+                                </serviceId>
+                                <serviceId>
+                                    <type>3</type>
+                                    <KnxNetIpDeviceManagement>
+                                        <version>1</version>
+                                    </KnxNetIpDeviceManagement>
+                                </serviceId>
+                                <serviceId>
+                                    <type>4</type>
+                                    <KnxNetIpTunneling>
+                                        <version>1</version>
+                                    </KnxNetIpTunneling>
+                                </serviceId>
+                            </serviceIds>
+                        </DIBSuppSvcFamilies>
+                    </SearchResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Description-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Description-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100203000e0801000000000000</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>515</serviceTypeIdentifier>
+                        <totalLength>14</totalLength>
+                    </header>
+                    <DescriptionRequest>
+                        <HPAIControlEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>00000000</ipAddress>
+                            <ipPort>0</ipPort>
+                        </HPAIControlEndpoint>
+                    </DescriptionRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Description-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Description-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">
+                06100204004436010200ffff000000082d409852e000170c000ab327553647697261204b4e582f49502d5363686e6974747374656c6c6500000000000802020103010401
+            </tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>516</serviceTypeIdentifier>
+                        <totalLength>68</totalLength>
+                    </header>
+                    <DescriptionResponse>
+                        <DIBDeviceInfo>
+                            <structureLength>54</structureLength>
+                            <descriptionType>1</descriptionType>
+                            <knxMedium>2</knxMedium>
+                            <deviceStatus>
+                                <reserved>0</reserved>
+                                <programMode>0</programMode>
+                            </deviceStatus>
+                            <knxAddress>
+                                <mainGroup>15</mainGroup>
+                                <middleGroup>15</middleGroup>
+                                <subGroup>255</subGroup>
+                            </knxAddress>
+                            <projectInstallationIdentifier>
+                                <projectNumber>0</projectNumber>
+                                <installationNumber>0</installationNumber>
+                            </projectInstallationIdentifier>
+                            <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
+                            <knxNetIpDeviceMulticastAddress>E000170C</knxNetIpDeviceMulticastAddress>
+                            <knxNetIpDeviceMacAddress>000AB3275536</knxNetIpDeviceMacAddress>
+                            <deviceFriendlyName>Gira KNX/IP-Schnittstelle</deviceFriendlyName>
+                        </DIBDeviceInfo>
+                        <DIBSuppSvcFamilies>
+                            <structureLength>8</structureLength>
+                            <descriptionType>2</descriptionType>
+                            <serviceIds>
+                                <serviceId>
+                                    <type>2</type>
+                                    <KnxNetIpCore>
+                                        <version>1</version>
+                                    </KnxNetIpCore>
+                                </serviceId>
+                                <serviceId>
+                                    <type>3</type>
+                                    <KnxNetIpDeviceManagement>
+                                        <version>1</version>
+                                    </KnxNetIpDeviceManagement>
+                                </serviceId>
+                                <serviceId>
+                                    <type>4</type>
+                                    <KnxNetIpTunneling>
+                                        <version>1</version>
+                                    </KnxNetIpTunneling>
+                                </serviceId>
+                            </serviceIds>
+                        </DIBSuppSvcFamilies>
+                    </DescriptionResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Connect-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Connect-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100205001a0801c0a82a46f4310801c0a82a46f43204040200</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>517</serviceTypeIdentifier>
+                        <totalLength>26</totalLength>
+                    </header>
+                    <ConnectionRequest>
+                        <HPAIDiscoveryEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A46</ipAddress>
+                            <ipPort>62513</ipPort>
+                        </HPAIDiscoveryEndpoint>
+                        <HPAIDataEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A46</ipAddress>
+                            <ipPort>62514</ipPort>
+                        </HPAIDataEndpoint>
+                        <ConnectionRequestInformation>
+                            <structureLength>4</structureLength>
+                            <connectionType>4</connectionType>
+                            <knxLayer>2</knxLayer>
+                            <reserved>0</reserved>
+                        </ConnectionRequestInformation>
+                    </ConnectionRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Connect-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Connect-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100206001466000801c0a82a0b0e5704041101</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>518</serviceTypeIdentifier>
+                        <totalLength>20</totalLength>
+                    </header>
+                    <ConnectionResponse>
+                        <communicationChannelId>102</communicationChannelId>
+                        <status>0</status>
+                        <HPAIDataEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A0B</ipAddress>
+                            <ipPort>3671</ipPort>
+                        </HPAIDataEndpoint>
+                        <ConnectionResponseDataBlock>
+                            <structureLength>4</structureLength>
+                            <connectionType>4</connectionType>
+                            <knxAddress>
+                                <mainGroup>1</mainGroup>
+                                <middleGroup>1</middleGroup>
+                                <subGroup>1</subGroup>
+                            </knxAddress>
+                        </ConnectionResponseDataBlock>
+                    </ConnectionResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Connection-State-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Connection-State-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100207001066000801c0a82a46f431</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>519</serviceTypeIdentifier>
+                        <totalLength>16</totalLength>
+                    </header>
+                    <ConnectionStateRequest>
+                        <communicationChannelId>102</communicationChannelId>
+                        <reserved>0</reserved>
+                        <HPAIControlEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A46</ipAddress>
+                            <ipPort>62513</ipPort>
+                        </HPAIControlEndpoint>
+                    </ConnectionStateRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Connection-State-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Connection-State-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">0610020800086600</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>520</serviceTypeIdentifier>
+                        <totalLength>8</totalLength>
+                    </header>
+                    <ConnectionStateResponse>
+                        <communicationChannelId>102</communicationChannelId>
+                        <status>0</status>
+                    </ConnectionStateResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Device-Configuration-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Device-Configuration-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100310001104670000fc000001531001</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>784</serviceTypeIdentifier>
+                        <totalLength>17</totalLength>
+                    </header>
+                    <DeviceConfigurationRequest>
+                        <structureLength>4</structureLength>
+                        <communicationChannelId>103</communicationChannelId>
+                        <sequenceCounter>0</sequenceCounter>
+                        <reserved>0</reserved>
+                        <cEMI>
+                            <messageCode>252</messageCode>
+                            <MPropRead>
+                                <interfaceObjectType>0</interfaceObjectType>
+                                <objectInstance>1</objectInstance>
+                                <propertyIdentifyer>83</propertyIdentifyer>
+                                <numberOfElements>1</numberOfElements>
+                                <startIndex>1</startIndex>
+                            </MPropRead>
+                        </cEMI>
+                    </DeviceConfigurationRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Device-Configuration-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Device-Configuration-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100311000a04670000</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>785</serviceTypeIdentifier>
+                        <totalLength>10</totalLength>
+                    </header>
+                    <DeviceConfigurationResponse>
+                        <structureLength>4</structureLength>
+                        <communicationChannelId>103</communicationChannelId>
+                        <sequenceCounter>0</sequenceCounter>
+                        <status>0</status>
+                    </DeviceConfigurationResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Disconnect-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Disconnect-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100209001067000801c0a82a46f431</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>521</serviceTypeIdentifier>
+                        <totalLength>16</totalLength>
+                    </header>
+                    <DisconnectRequest>
+                        <communicationChannelId>103</communicationChannelId>
+                        <reserved>0</reserved>
+                        <HPAIControlEndpoint>
+                            <structureLength>8</structureLength>
+                            <hostProtocolCode>1</hostProtocolCode>
+                            <ipAddress>C0A82A46</ipAddress>
+                            <ipPort>62513</ipPort>
+                        </HPAIControlEndpoint>
+                    </DisconnectRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Disconnect-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Disconnect-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">0610020a00086700</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>522</serviceTypeIdentifier>
+                        <totalLength>8</totalLength>
+                    </header>
+                    <DisconnectResponse>
+                        <communicationChannelId>103</communicationChannelId>
+                        <status>0</status>
+                    </DisconnectResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Tunneling-Request"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Tunneling-Request">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100420001c046b00002b0703010504024502bc360a1e0ce100810d</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>1056</serviceTypeIdentifier>
+                        <totalLength>28</totalLength>
+                    </header>
+                    <TunnelingRequest>
+                        <structureLength>4</structureLength>
+                        <communicationChannelId>107</communicationChannelId>
+                        <sequenceCounter>0</sequenceCounter>
+                        <reserved>0</reserved>
+                        <cEMI>
+                            <messageCode>43</messageCode>
+                            <LBusmonInd>
+                                <additionalInformationLength>7</additionalInformationLength>
+                                <additionalInformation>
+                                    <additionalInformation>
+                                        <additionalInformationType>3</additionalInformationType>
+                                        <BusmonitorInfo>
+                                            <length>1</length>
+                                            <busmonitorErrorFlags>
+                                                <frameErrorFlag>false</frameErrorFlag>
+                                                <bitErrorFlag>false</bitErrorFlag>
+                                                <parityErrorFlag>false</parityErrorFlag>
+                                                <dontCare>false</dontCare>
+                                                <lostFlag>false</lostFlag>
+                                                <sequenceNumber>5</sequenceNumber>
+                                            </busmonitorErrorFlags>
+                                        </BusmonitorInfo>
+                                    </additionalInformation>
+                                    <additionalInformation>
+                                        <additionalInformationType>4</additionalInformationType>
+                                        <RelativeTimestamp>
+                                            <length>2</length>
+                                            <relativeTimestamp>17666</relativeTimestamp>
+                                        </RelativeTimestamp>
+                                    </additionalInformation>
+                                </additionalInformation>
+                                <rawFrame>BC360A1E0CE100810D</rawFrame>
+                            </LBusmonInd>
+                        </cEMI>
+                    </TunnelingRequest>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+    <tdml:parserTestCase name="KnxNetIp-Tunneling-Response"
+                         root="KnxNetIpMessage"
+                         model="knxNetIpSchema"
+                         description="KNXNet/IP Tunneling-Response">
+        <tdml:document>
+            <tdml:documentPart type="byte">06100421000a046b0000</tdml:documentPart>
+        </tdml:document>
+
+        <tdml:infoset>
+            <tdml:dfdlInfoset>
+                <knx:KnxNetIpMessage>
+                    <header>
+                        <headerLength>6</headerLength>
+                        <protocolVersion>16</protocolVersion>
+                        <serviceTypeIdentifier>1057</serviceTypeIdentifier>
+                        <totalLength>10</totalLength>
+                    </header>
+                    <TunnelingResponse>
+                        <structureLength>4</structureLength>
+                        <communicationChannelId>107</communicationChannelId>
+                        <sequenceCounter>0</sequenceCounter>
+                        <status>0</status>
+                    </TunnelingResponse>
+                </knx:KnxNetIpMessage>
+            </tdml:dfdlInfoset>
+        </tdml:infoset>
+    </tdml:parserTestCase>
+
+</tdml:testSuite>
+
+

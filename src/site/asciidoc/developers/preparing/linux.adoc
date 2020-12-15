@@ -1,0 +1,159 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Linux
+
+=== Git
+
+Checking:
+
+ git --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt install git
+
+Yum based systems:
+
+ sudo yum install git
+
+=== LibPCAP
+
+Apt-based systems:
+
+ sudo apt-get install libpcap-dev
+
+Yum based systems:
+
+ sudo yum install libpcap-devel
+
+Using libpcap usually requires root privileges, however the java process can be granted permission to do so by executing the following command.
+
+ setcap cap_net_raw,cap_net_admin=eip /path/to/java
+
+Some times I had to set the uid to execute the java executable with the permissions of the owner (root) ... however this is quite sub-optimal solution.
+
+ chmod 4755 /path/to/java
+
+=== gcc
+
+Checking:
+
+ gcc --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install gcc
+
+Yum based systems:
+
+ sudo yum install gcc
+
+=== g++
+
+Checking:
+
+ g++ --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install g++
+
+Yum based systems:
+
+ sudo yum install g++
+
+=== dotnet
+
+Checking:
+
+ dotnet --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Microsoft has documented what is needed to install `.Net SDK` https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-2.2.203[here]
+
+For Ubuntu this would be:
+
+ wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+ sudo dpkg -i packages-microsoft-prod.deb
+
+ sudo apt-get install apt-transport-https
+ sudo apt-get update
+ sudo apt-get install dotnet-sdk-2.2
+
+For other distributions, please select the distribution in the drop-down menu and follow the instructions there.
+
+=== python
+
+Checking:
+
+ python --version
+
+If you get a version of 2.7 or higher reported, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install python-dev
+
+Yum based systems:
+
+ yum install gcc
+ cd /usr/src
+ wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
+ tar xzf Python-2.7.10.tgz
+ cd Python-2.7.10
+ ./configure
+ make altinstall
+
+=== bison
+
+Checking:
+
+ bison --version
+
+If you get a version above 2.3 output, you don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install bison
+
+Yum based systems:
+
+ sudo yum install bison-devel
+
+=== flex
+
+Checking:
+
+ flex --version
+
+If you get any successful output, you probably don't need to do anything.
+
+Apt-based systems:
+
+ sudo apt-get install flex
+
+Yum based systems:
+
+ sudo yum install flex

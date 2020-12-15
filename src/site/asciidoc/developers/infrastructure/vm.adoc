@@ -1,0 +1,96 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== The PLC4X Project VM
+
+As, especially for the raw socket functionality of PLC4X, our project had higher demands on the infrastructure as other projects.
+Apache Infra kindly provided us with a dedicated VM.
+
+This is included as build agent into Apache's Jenkins with the label `plc4x1` and is marked for exclusive usage by our project.
+
+The host name of this machine is: `plc4x-vm.apache.org`
+
+On this machine we can even `sudo` to perform operations only available to `root`.
+
+Project members can request access to the machine.
+
+=== Requesting access
+
+In order to be able to login, users need to add their SSH public key to their Apache ID first.
+
+This is done under the following url: https://id.apache.org/
+
+Here just add the content in the follwoing format to one of the `SSH Key (authorized_keys line)` fields:
+
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDd10ykYAZLxHJVTER71IrrVVpyR8OBdlJd1aVwb67Ts+ueJjzo8ofQKLASaQw9EQOSfprGZW0sfzhepeJvbX0n1IfsRexoyIGlD8WzyX/UoLiRLPHFv+eSGJVlN90x/l+zps+yo3lq6qfuIqkXQQvB4aJBYsYC/jifpMLvx06zaUBPfdWIaGiBgaWbX/59Q0QsSpX5r8tgdA+XLw/8Zg5AbKazuS2Cm/soJCfQQ7km4bd/WtF5R5xvakVbyILMT8Dk9Hs9OfVL/RFGLYqX4bjy5uCTwPBrwlWqFyq1u7JR39i870XNgn+bIeChaZU098BGyBH/cWMGt7bTJQSKxksF2SZAHjt8Ga2Pl+J6MTW6/EPzIYENgvfOBVSlVaz9SlM26nel1+SHDND9dK/4gRNbujbmzHZLfTjMk7oc4R+WPCBIw99CFeShTKHSxhJKz/3KmcmuEHhNRBdMy+xHecr/r/Pax58a9VHXQqHbwES6tvC1gvM2uFSMKoaKtNkME4V7bPLbQcEF8tKz7/gKp6vp1IL0BdDMwZPodFPmbiJzqjvC38A++B5k0GAgWKYPVsenamZviFhRNGjjum/qxBnAF1FjpIocsEA0zQBYvvOPDpKl9KPRZ32ALHztnRfCEwltgnM1Sjinn4zQjxQs5mJBz2rjMGlkSzVjLoSo7khiBQ== my@email-address.com
+
+(I just had to copy this line from my `~/.ssh/id_rsa.pub` file)
+
+TIP: Note, the Email Address in the end doesn't seem to matter, I simply added it for the sake of completeness. So if this doesn't match your Apache email, this is not a problem.
+
+As soon as that's done, access needs to be requested from Apache Infra.
+
+This is done using the Infra Jira at: https://issues.apache.org/jira
+
+Here make sure to select the Project `Infrastructure (INFRA)`.
+
+As soon as that's handled by the Infra team, you should be ready to log-in on the machine.
+
+=== Login to the machine
+
+Using SSH we should now be able to login to the VM.
+
+   ssh apacheId@plc4x-vm2.apache.org
+
+Be sure to use the username matching your Apache ID or the login will fail.
+
+If all went well you should now be able to login to the machine using your apache user.
+
+=== Doing things as `root`
+
+Apache Infra is great at keeping things safe.
+Providing a sudo password directly would increase the danger of having this intercepted, therefore they are using a tool called `opiepasswd`.
+
+Instead of now entering a password, a challenge is displayed:
+
+    myid@plc4x-vm2:~$ sudo apt-get update
+    otp-md5 496 pl8230
+    Password:
+
+If you now enter your normal password, you'll simply get `permission denied` errors.
+
+In order to execute operations as root on the machine, you need to use an opie client.
+
+   otp-md5 496 pl8230
+
+into OPIE client's `challenge` field.
+
+In the `password` field you provide your Apache LDAP password.
+
+When hitting enter or clicking on `Compute` the tool should automatically generate a response.
+
+Now all you need to do is copy & paste that as password into your SSH client session.
+
+TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a really bad idea, Apache has a service to calculate:
+https://selfserve.apache.org/otp-md5.html
+
+=== Required software
+
+For being able to build the charts and graphics as part of the site generation, we need to add some additional packages:
+
+   sudo apt-get install python-seqdiag
+   sudo apt-get install python-nwdiag

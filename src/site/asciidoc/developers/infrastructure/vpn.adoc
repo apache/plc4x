@@ -1,0 +1,189 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+
+== The PLC4X PLC VPN
+
+As attaching physical PLC devices to a cloud infrastructure is challenging, we decided to setup a VPN in the IoT lab of codecentric Frankfurt and to grant committers of the Apache PLC4X project access to that.
+
+This document contains all the information needed to setup the VPN and to communicate with the different PLCs.
+
+=== Network
+
+All nodes of the IoT VPN are configured to use the IP range: '10.10.64.0/24'.
+
+In order to access the VPN from outside, a VPN gateway is configured to accept incoming connections.
+
+This VPN gateway is listening on port `vpn.plc4x.apache.org` on port `444` and should it should be possible to connect to it via OpenVPN.
+
+[nwdiag,plc4x-vpn-network,svg]
+....
+{
+      network internet {
+        address = "X.X.X.0/28"
+
+        vpn.plc4x.a.o [address = "217.110.130.19"];
+        plc4x-vm2.a.o [address = "62.210.60.247"];
+        committer-a;
+        committer-b;
+      }
+
+      network plc4x-iot-lab {
+        address = "10.10.64.x/24"
+
+        vpn.plc4x.a.o [address = "10.10.64.1"];
+        F-FBs-40MC [address = "10.10.64.10"];
+        S-S7-1212 [address = "10.10.64.20"];
+        S-KTP-400 [address = "10.10.64.25"];
+        WG-750-352 [address = "10.10.64.30"];
+        BH-C6920-0030 [address = "10.10.64.40"];
+        committer-int [address = "10.10.64.200"];
+    }
+}
+....
+
+Note the PLC4X Project VM and Jenkins build node `plc4x-vm2.apache.org` also dials in to the `plc4x-iot-lab` network.
+
+=== PLCs
+
+The following PLCs have been configured and should be available in the VPN.
+
+==== Fatek: FBs-40MC
+
+image::plcs/plc4x-vpn-fatek.jpg[float=right, width=200]
+
+This device is able to use the following protocols:
+
+- Modbus (Port `502`)
+- Fatek (Port `500`)
+
+It is configured to use the IP: `10.10.64.10`
+
+==== Siemens: S7-1212AC/DC
+
+image::plcs/plc4x-vpn-siemens-s7.jpg[float=right, width=200]
+
+This device is able to use the following protocols:
+
+- S7 (32 flavour) (Port `102`)
+- S7 (72 flavour) (Port `102`)
+- ProfiNet
+
+It is configured to use the IP: `10.10.64.20`
+
+==== Siemens: KTP 400 Basic Mono
+
+image::plcs/plc4x-vpn-siemens-hmi.jpg[float=right, width=200]
+
+This device is able to use the following protocols:
+
+- S7 (32 flavour) (Port `102`)
+- S7 (72 flavour) (Port `102`)
+- ProfiNet
+
+It is configured to use the IP: `10.10.64.25`
+
+==== WaGo: 750-352 Feldbuskoppler ETHERNET
+
+image::plcs/plc4x-vpn-wago.jpg[float=right, width=200]
+
+This device is not a typical PLC, but more a device making I/O values available via Ethernet protocols.
+
+For our job however it is exactly what we need as it allows testing the protocols without the need to develop a sophisticated PLC software in the first place.
+
+This device is able to use the following protocols:
+
+- Modbus (TCP port `502`, UDP port `502`)
+- EtherNet/IP (TCP port `44818`, UDP port `2222`)
+
+It is configured to use the IP: `10.10.64.30`
+The web-interface is available at http://10.10.64.30/webserv/index.ssi
+The login for this is user: 'admin' pass: 'wago'.
+
+==== Beckhoff: C6920-0030
+
+image::plcs/plc4x-vpn-beckhoff.jpg[float=right, width=200]
+
+This device is able to use the following protocols:
+
+- ADS (Port `48898`)
+- EtherNet/IP (Port `48181`)
+
+It is configured to use the IP: `10.10.64.40`
+
+Beckhoff PLCs are processes running on a host operating system.
+
+In this case, this host OS is `Windows 7 Professional`.
+
+These processes seem to communicate with an internal network, which isn't connected to the physical network of the host.
+
+In order to be able to communicate with the PLC from the outside world, a so-called `AMS Route` needs to be added.
+Unfortunately it seems that this route needs to be added individually for every clients ip.
+As the VPN gateway is automatically assigning IPs to the clients, this step eventually has to be done every time you log in.
+Right now we hope that as soon as routes have been added for quite some ips, eventually we won't have to do this anymore, but right now it looks as if we do.
+
+Adding a route is done by opening the ADS Route Editor on the Beckhoff machine:
+
+image::plcs/plc4x-vpn-beckhoff-route-1.png[]
+
+Here you click on add:
+
+image::plcs/plc4x-vpn-beckhoff-route-2.png[]
+
+And enter the details of the new route:
+
+image::plcs/plc4x-vpn-beckhoff-route-3.png[]
+
+Here it is important to give the route a name.
+The `AmsNetId` is sort of like a 6-segment ipv4-address. It could be chosen independently from the real ip address, however the default is to use the ip address for the first 4 segments and to append `.1.1` after this.
+So from an ip address: `10.10.57.104` the corresponding `AmsNetId` would be: `10.10.57.104.1.1`.
+`Transport Type` should be set to: `TCP_IP`.
+`Address Info` is where the clients ip address is added.
+Be sure to select the `IP Address` radio button below.
+Next thing, you should ensure, is that the type of `Remote Route` is set to `None`.
+
+When clicking on `Add Route`, don't be surprised that the window doesn't close, you have to click on `Close` after that and then you should see your new route in the route list screen.
+
+When planning on using the `EtherNet/IP` communication, the configuration of the TwinCAT device is described here:
+
+https://download.beckhoff.com/download/document/automation/twincat3/TF6280_EtherNet_IP_Slave_EN.pdf
+
+=== Requesting an account
+
+The PLC hardware in the `PLC4X IoT Lab` is hosted in the codecentric Frankfurt office.
+
+Even if we wanted to integrate our VPN Gateway with Apache's LDAP service, this is currently not possible.
+
+In order to get access to the hardware, please request an account on the `PLC4X Developer Mailinglist`: dev@plc4x.apache.org
+
+We'll try to create the account as quickly as possible.
+
+=== Setup
+
+By accessing the following URL with the `username` and `password`, provided by `codecentric`, you will be provided with links to download the VPN clients for different platforms.
+
+   https://vpn.plc4x.apache.org:444
+
+image::plcs/plc4x-vpn-client-download.png[float=right]
+
+However it is also possible to use other VPN clients based on `OpenVPN`.
+
+To do this, just download the option labeled: `Mobile VPN with SSL client profile`.
+
+It's a normal `tgz` file, so rename the file and unpack it.
+
+The archive contains a `client.ovpn` file which contains the configuration needed by `OpenVPN`.

@@ -1,0 +1,59 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Capture Replay
+
+Some times the problem with industry protocols is, that the most interesting protocols live in places that are not very welcoming to IT folks.
+
+Either too hot or too cold and usually no good coffee around.
+
+The `Capture Replay` tool is a little helper, that can possibly help with this.
+
+Especially when it comes to developing passive mode drivers this tool can come in very handy.
+
+It allows to replay recorded network traffic and to directly intercept this traffic in any passive mode drivers.
+
+Possibly it could also work with non passive drivers, but I expect synchronization to be tricky.
+
+=== Getting a Capture
+
+In order to create a capture I usually connect a device running `WireShark` to the network.
+
+Ideally to the replication port of a network switch so I can record all the traffic.
+
+An alternative would be to run `WireShark` on one of the PCs/Servers having access to the traffic I'm interested in.
+So if for example I wanted to work on a driver for control system `X`, capturing the traffic on one of the `X` servers is probably the simplest way to do it.
+If complicance rules prevent ths a third option would be to use a network tap to record the capture.
+
+=== Replaying the Capture
+
+Now you need to copy the `pcapng` file ideally to your development system.
+
+The capture can be replayed by the tool you find in `plc4j/tools/capture-replay`.
+
+Here simply look for the `target/plc4j-capture-replay-{current-last-released-version}-uber-jar.jar` and run:
+
+   java -jar target/plc4j-capture-replay-{current-last-released-version}-uber-jar.jar --input-file {path to capture} --output-device {name of the network device} --replay-speed 1 --loop true
+
+The options `input-file` and `output-device` are mandatory, the rest is optional:
+
+- `input-file` specifies the path to the capture file (pcapng)
+- `output-device` name of the network device that will be used for output (name listed when running `ifconfig` on Linux and Mac or `ipconfig` on Windows)
+- `replay-speed` Speed the replay will be played back. 1 is real time, 0 or less is `as fast as possible`, 0.5 is 50% slower than the original and 2 is twice as fast
+- `loop` if set to true it will automatically start replaying the capture from the start as soon as the end is reached
+
+TIP: The replay-speed is ideal to see how your driver can cope with different volumes of traffic. So even if your driver is currently working fine, consider using this tool in order to find out if your system could cope with 50% more nodes or increased polling intervals etc.

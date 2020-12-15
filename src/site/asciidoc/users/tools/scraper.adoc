@@ -1,0 +1,225 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+== Scraper
+
+While the Apache PLC4X API allows simple access to PLC resources, if you want to continuously monitor some values and have them retrieved in a pre-defined interval, the core PLC4X API method is a little bit uncomfortable.
+
+Especially when you have multiple batches of data you want to have refreshed in different intervals.
+
+In this case you need to take care of the scheduling of queries, need to manage the connection state (Check if the connection is still available and to apply countermeasures, if there are problems)
+
+As we have encountered exactly the same problem for about every integration module we created, the Apache PLC4X team has created a tool called the `Scraper`.
+
+This tool automatically handles all of the tasks mentioned above.
+
+=== Getting started with the `Scraper`
+
+In general, you need 3 parts to work with the `Scraper`:
+
+1) A `Scraper` Configuration
+2) A `Scraper` Implementation
+3) A Handler to handle the results of `Scraper` jobs
+
+In the `Scraper` Configuration you define the so-called `jobs`.
+
+==== Sources
+
+Sources define connections to PLCs using PLC4X drivers.
+
+Generally you can think of a `Source` as a PLC4X connection string, given an alias name.
+
+==== Jobs
+
+A `Job` defines which resources (PLC Addresses) should be collected from which `Sources` with a given `Trigger`.
+
+All resources in a job will be collected as a batch.
+
+Generally multiple types of triggers could theoretically be supported, but for now only a time triggered job (Aka `SCHEDULED`) is actually supported.
+
+In the near future we're hoping that we will be able to support:
+- External triggers
+- Triggering collection based upon PLC-values
+
+But, as to now, this has not been implemented yet.
+
+=== Configuration using the Java API
+
+The core of the Scraper configuration is the `ScraperConfigurationTriggeredImplBuilder` class.
+Use this to build the configuration objects used to bootstrap the Scraper.
+
+----
+ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
+----
+
+As soon as you have your `builder` instance, you should add at least one `source` to it.
+
+----
+builder.addSource({connectionName}, {plc4xConnectionString});
+----
+
+The `connectionName` will be what we use when configuring the job to reference which source it should use to collect.
+
+In order to configure a `job` we have to get an instance of a `JobConfigurationTriggeredImplBuilder`.
+
+----
+JobConfigurationTriggeredImplBuilder jobBuilder = builder.job({jobName}, {triggerCommand});
+----
+
+This creates a new `job` with a given name which is executed based on the information in the `triggerCommand`.
+
+As mentioned above, we currently only support a time-scheduled collection.
+
+This genrally just requires one parameter: The number of `milliseconds` between each collection.
+
+----
+SCHEDULED:1000
+----
+
+Above would schedule a collection every 1000ms - so once every second.
+
+Up to now this job would not be run anywhere, and it would also not collect anything.
+So in order to have the job actually do something, we should assign it a `source` to collect from.
+
+----
+jobBuilder.source({connectionName});
+----
+
+Here we could theoretically collect on multiple sources, by simply calling the `source()` method multiple times.
+
+All sources would be collected at the same time, whenever the trigger tells it to.
+
+So the last thing we need to configure our first `Scraper` job, is to add a few fields for it to collect.
+
+----
+jobBuilder.field({fieldName}, {fieldAddress});
+----
+
+The `field` method has to be called for every field we want to add to the current job configuration.
+It gives a PLC4X address string an easy to understand string name, just like when using the core PLC4X API.
+
+As soon as we're done adding fields, we configure the job by calling the `build` method.
+
+----
+jobBuilder.build();
+----
+
+This configures the finished job and attaches that to the overall `Scraper` configuration of the scraper configuration.
+
+As soon as we're done configuring jobs, we need to create the `Scraper` configuration by calling the `buiold` method on the `builder`:
+
+----
+ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
+----
+
+=== Running the `Scraper`
+
+In order to run the `Scraper`, the following boilerplate code is needed.
+
+----
+       try {
+            PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+            TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+            TriggeredScraperImpl scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+
+                ...
+
+            }, triggerCollector);
+            scraper.start();
+            triggerCollector.start();
+        } catch (ScraperException e) {
+            log.error("Error starting the scraper", e);
+        }
+----
+
+At first a new `PooledPlcDriverManager` is created (It actually doesn't have to be the pooled version, but we strongly suggest you use it as for some protocols the connection process is stressfull for the connected PLC).
+
+With this `plcDriverManager` we can then create a so-called `TriggerCollector`, which we pass in the driver manager as argument.
+
+Next comes the probably most important part: We configure the scraper, by binding a `Scraper Configuration`, a `ResultHandler` and a `TriggerCollector` together.
+
+After this, the scraper is ready to start, which is then done by calling `start` on the `scraper` as well as the `triggerCollector`.
+
+For the sake of clarity, here comes the definition of the `ResultHandler` interface:
+
+----
+@FunctionalInterface
+public interface ResultHandler {
+
+    /**
+     * Callback handler.
+     * @param jobName name of the job (from config)
+     * @param connectionName alias of the connection (<b>not</b> connection String)
+     * @param results Results in the form alias to result value
+     */
+    void handle(String jobName, String connectionName, Map<String, Object> results);
+
+}
+----
+
+=== Configuration using a `JSON` or `YAML` file
+
+As an alternative to using the Java API, the Scraper Configuration can also be read from a `JSON` or `YAML` document.
+
+Here come some examples:
+
+JSON:
+
+----
+{
+    "sources": {
+        "connectionName": "connectionString"
+    },
+    "jobs": [
+        {
+            "name": "jobName",
+            "triggerConfig": (SCHEDULED,10000)
+            "sources": [
+                "connectionName"
+            ],
+            "fields": {
+                "a": "{address-a}",
+                "b": "{address-b}"
+            }
+        }
+    ]
+}
+----
+
+YAML:
+
+----
+---
+sources:
+  connectionName: connectionString
+jobs:
+  - name: jobName
+    triggerConfig: (SCHEDULED,10000)
+    sources:
+      - connectionName
+    fields:
+      a: {address-a}
+      b: {address-b}
+----
+
+In both cases, you can create the `ScraperConfiguration` with the following code:
+
+----
+ScraperConfiguration conf = ScraperConfiguration.fromFile("{path to the JSON or YAML file}", ScraperConfigurationTriggeredImpl.class);
+----

@@ -1,0 +1,38 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Capture Replay Tool
+
+Some times it is difficult to track down problems where they occur.
+
+Especially when it comes to passive mode drivers, problems sometimes are difficult to track down.
+
+However with this tool it's easy to to this work by simply recording a WireShark recording of the network traffic and then replaying this from another device.
+
+In my setup I use an ordinary Raspberry PI to replay a previously recorded capture and then to work on the passive mode drivers as if you were connected to the real thing.
+
+=== Usage
+
+In order to replay a previously recorded network capture, you need:
+
+- The `PCAPNG` capture itself
+- The name of the network device (like shown by `ifconfig` or `ipconfig` (on Windows))
+- An optional replay speed (if omitted a value of `1` is assumed which is real-time)
+
+Run the application like this:
+
+    java -jar plc4j-capture-replay-0.7.0-SNAPSHOT.jar

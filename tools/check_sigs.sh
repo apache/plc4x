@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ################################################################################
 ##
@@ -26,7 +26,7 @@ set -e
 
 . `dirname $0`/common.sh
 
-setUsage "`basename $0` [bundle-directory]"
+setUsage "$(basename "$0") [bundle-directory]"
 handleHelp "$@"
 
 if [ $# -ge 1 ]
@@ -36,15 +36,15 @@ fi
 
 noExtraArgs "$@"
 
-[ -d ${BUNDLE_DIR} ] || die "Bundle directory \"${BUNDLE_DIR}\" does not exist"
+[ -d "${BUNDLE_DIR}" ] || die "Bundle directory \"${BUNDLE_DIR}\" does not exist"
 
 function checkFile() {
     FILE="$1"
     echo
     echo "Checking $FILE..."
 
-    HASH=`shasum -p -a 512 "${FILE}" | awk '{print$1}'`
-    CHECK=`cat "${FILE}.sha512"`
+    HASH=$(shasum -a 512 "${FILE}" | awk '{print$1}')
+    CHECK=$(cat "${FILE}.sha512")
 
     if [ "$HASH" != "$CHECK" ]
     then
@@ -58,9 +58,9 @@ function checkFile() {
 
 }
 
-for bundle in ${BUNDLE_DIR}/*.zip
+for bundle in "${BUNDLE_DIR}"/*.zip
 do
-    checkFile ${bundle}
+    checkFile "${bundle}"
 done
 
 echo

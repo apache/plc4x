@@ -1,12 +1,220 @@
 ==============================================================
-(Unreleased) Apache PLC4X (incubating) 0.4.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.8.0-SNAPSHOT
 ==============================================================
+
+This is an ordinary PLC4X release, containing changes that
+accumulated over time. It doesn't have an explicit focus on
+a particular topic.
 
 New Features
 ------------
 
+- The KNXnet/IP Driver now supports writing of values.
+
+- The Modbus driver now supports more common notations of
+  Modbus addresses using a pure-numeric notation.
+
+- The ADS, KNX, Modbus, S7 and simulated drivers have been
+  updated to support the IEC 61131-3 data-types.
+
+- We are now including PLC4Go as PLC4X implementation in
+  the programming language Go(lang)
+
+- Integration with the Milo OPC UA Server is now available.
+
+- Kafka Connect workers have been updated source and sink connectors
+  are now included.
+
 Incompatible changes
 --------------------
+
+- The syntax of the S7 addresses changed slightly allowing to
+  provide a string length. Without this, a STRING datatype will
+  read 254 characters, by adding the size in round brackets to
+  the type name will use the specified number.
+
+  Examples:
+
+  Read one String which is max 10 chars long:
+  %DB2:30:STRING(10)
+
+  Read an array of 3 Strings where each is max 10 chars long:
+  %DB2:30:STRING(10)[3]
+
+- The PLCValue types have been refactored to align with the types
+  defined in IEC 61131-3 (https://en.wikipedia.org/wiki/IEC_61131-3)
+  directly using the older Java types (PlcBoolean) is no longer
+  possible.
+
+Bug Fixes
+---------
+
+A lot of testing was done regarding the IEC 61131-3 data-types.
+This resulted in numerous bugfixes in many protocols.
+
+PLC4X-132   [S7] Communication to S7 PLC dies in some situations
+PLC4X-206   When writing short values exceptions are thrown
+            while preparing the write request.
+PLC4X-207   No registered handler found for message TPKTPacket[],
+            using default decode method - Communication with S7
+            and Modbus device hangs
+PLC4X-209   [S7] When writing INT and DINT values the Write
+            operation fails with an internal error
+PLC4X-210   [KNX] When running a KNX Tunneling Subscription
+            for a longer time there are packets that kill
+            the connection
+PLC4X-211   PlcValues seem to always return "true" on the
+            isXYZ" checks.
+PLC4X-212   When writing multiple values in one request the
+            item status is not correctly set
+PLC4X-213   [Modbus] The Modbus driver doesn't handle error
+            responses gracefully
+PLC4X-214   [Modbus] Holding register addresses have an offset
+            of 1 (Not reading the correct address)
+PLC4X-215   Drivers using the BaseOptimizer
+            (SingleFieldOptimizer) don't handle error responses
+            gracefully
+PLC4X-218   [Scraper] After stopping the scraper still the
+            statistics are logged and the application doesn't
+            terminate
+PLC4X-239   Read DTL (Date and Time)
+PLC4X-240   Protocol error in reading string
+PLC4X-245   [Modbus] Apache NiFi processor throws
+            java.io.IOException after a while
+PLC4X-255   Kafka Connector Source Task doesn't block within poll()
+            resulting in high CPU usage.
+PLC4X-261   Pooled connection manager returns a connection that isn't
+            connected in some situations.
+
+==============================================================
+Apache PLC4X 0.7.0
+==============================================================
+
+This version is the first after a major refactoring of the driver
+core. All previous driver versions are now considered deprecated
+and have been replaced by versions using the new driver structure
+and generated driver codebase.
+
+New Features
+------------
+
+- Drivers now support structured types using PlcValues
+- The EIP (EtherNet/IP) driver no longer requires an external
+  library and is implemented fully in the PLC4X project
+- The Modbus driver no longer requires an external library
+  and is implemented fully in the PLC4X project
+- The new S7 Driver supports writing multiple entries in one
+  request (The API allowed this from the beginning now not
+  every item is wrapped in a single request. It should bring
+  significant performance gains when writing multiple vlaues)
+- S7 Driver now supports String datatypes.
+- OSGi : Implementation of Drivers/Transports as OSGi services
+  to be able to use them in an OSGi container.
+- New Firmata protocol driver
+
+Incompatible changes
+--------------------
+
+- Due to the refactoring of the driver core there might be issues
+  running drivers built against older core versions.
+- This version doesn't provide a Beckhoff AMS/ADS driver as this
+  driver is still being ported to the new mspec format.
+- All drivers connection strings now follow the same pattern:
+  {protocol-code:(transport-code:)?//{transport-config}(?{params})?
+  Please check the drivers documentation on our website:
+  https://plc4x.apache.org/users/protocols/s7.html
+- The karaf-feature modules are removed as the drivers now all
+  provide both a feature.xml as well as a `kar` bundled archive
+
+Bug Fixes
+---------
+
+PLC4X-174	UDP Transport does not accept ports containing 0
+PLC4X-134   S7 is terminating the connection during handshake
+PLC4X-192   Support for conversion of complex connection string
+            parameters
+
+==============================================================
+Apache PLC4X 0.6.0
+==============================================================
+
+This is the last release of PLC4X with the "handwritten" drivers.
+This Minor release will thus receive updates and fixes until
+most users have switched to 0.7 and above (with generated drivers).
+
+If you are using the S7 Driver you should update to this Version
+as the critical (memory leak) bug PLC4X-163 is fixed.
+
+New Features
+------------
+- PLC4X-168 A shorter S7 Field Syntax is Introduced.
+This release contains no further features and mostly stabilization.
+
+Incompatible changes
+--------------------
+- Moved the C++, C# and Python drivers into the `sandbox`
+
+Bug Fixes
+---------
+- Fixed Promise Chain for InternalPlcWriteRequest
+- PLC4X-45 Add float support to Modbus Protocol
+- PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
+- PLC4X-166 Fixed Download Page
+- PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
+- PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
+
+==============================================================
+Apache PLC4X 0.5.0
+==============================================================
+
+This is the first release containing our new generated drivers (AB-ETH)
+
+New Features
+------------
+
+- Implemented a new Apache Kafka Connect integration module
+- Implemented a new Apache NiFi integration module
+- Implemented a new Logstash integration module
+- Implemented a driver for the AB-ETH protocol
+- Implemented Apache Karaf features for S7 OSGI drivers
+- PLC4X-121	Develop Code Generation to allow Generated Drivers in multiple Languages
+
+Sandbox (Beta-Features)
+- Implemented a new BACnet/IP passive mode driver
+- Implemented a new Serial DF1 driver
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+- PLC4X-104	S7 Driver Datatype TIME_OF_DAY causes ArrayOutOfBoundException
+- PLC4X-134	S7 is terminating the connection during handshake
+- PLC4X-139	PLC4X leaks sockets in case of connection problems
+- PLC4X-141	String with real length of greater 127 throw an exception
+- PLC4X-144	When requesting invalid addresses, the DefaultS7MessageProcessor produces errors
+
+==============================================================
+Apache PLC4X 0.4.0
+==============================================================
+
+This is the first release of Apache PLC4X as top-level project.
+
+New Features
+------------
+
+- The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
+- Support of the OPC-UA protocol with the `opc-ua-driver`.
+- Other Languages Support:
+-- Added first versions of a C# .Net PLC4X API (`plc4net`)
+-- Added first versions of a Python PLC4X API (`plc4py`)
+- Added an Interop server which allows to relay requests from other languages to a Java Server
+
+Incompatible changes
+--------------------
+
+- ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
 
 Bug Fixes
 ---------
@@ -152,7 +360,7 @@ Incompatible changes
 - NONE -
 
 Miscellaneous changes
----------------------  
+---------------------
 
 - NONE -
 
@@ -162,7 +370,7 @@ Known Issues
 - NONE -
 
 Most drivers should be treated experimental and are not near production ready.
-The S7 driver is probably the furthest implemented and tested driver and hereby can be 
+The S7 driver is probably the furthest implemented and tested driver and hereby can be
 considered to be the most mature.
 
 Bug Fixes
@@ -172,7 +380,3 @@ PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
 PLC4X-48	S7 driver failes to parse response with multiple items
-
-
-
-

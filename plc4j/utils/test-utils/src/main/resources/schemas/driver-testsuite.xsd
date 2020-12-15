@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<xs:schema targetNamespace="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="driver-testsuite">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Name of the tessuite -->
+                <xs:element name="name" type="xs:string"/>
+
+                <!-- The name of the driver we want to test (as it's used in the connection-string) -->
+                <xs:element name="driver-name" type="xs:string"/>
+                <!-- Additional parameters passed to the driver in the connection-string -->
+                <xs:element name="driver-parameters" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="parameter">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" type="xs:string"/>
+                                        <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Interaction which is performed to initiate the driver connection -->
+                <xs:element name="setup" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:choice>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                <xs:element name="api-request" type="messageStep"/>
+                                <xs:element name="api-response" type="messageStep"/>
+                                <xs:element name="delay" type="xs:integer"/>
+                                <xs:element name="terminate"/>
+                            </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Interaction which is performed to terminate the driver connection -->
+                <xs:element name="teardown" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:choice>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                <xs:element name="api-request" type="messageStep"/>
+                                <xs:element name="api-response" type="messageStep"/>
+                                <xs:element name="delay" type="xs:integer"/>
+                                <xs:element name="terminate"/>
+                           </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Actual test cases -->
+                <xs:element name="testcase" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <!-- The name of the test, as it is output by the test-runner -->
+                            <xs:element name="name" type="xs:string"/>
+                            <!-- Some optional description of what the test should do -->
+                            <xs:element name="description" type="xs:string" minOccurs="0"/>
+                            <xs:element name="steps">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                                        <xs:choice>
+                                            <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                            <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="incoming-plc-message" type="messageStep"/>
+                                            <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="api-request" type="messageStep"/>
+                                            <xs:element name="api-response" type="messageStep"/>
+                                            <xs:element name="delay" type="xs:integer"/>
+                                            <xs:element name="terminate"/>
+                                        </xs:choice>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+
+            <xs:attribute name="bigEndian" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="messageStep">
+        <xs:simpleContent>
+            <xs:extension base="xs:anyType">
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="bytesStep">
+        <xs:simpleContent>
+            <xs:extension base="xs:hexBinary">
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>
