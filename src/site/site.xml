@@ -76,6 +76,7 @@
         <item name="TCP" href="users/transports/tcp.html"/>
         <item name="UDP" href="users/transports/udp.html"/>
         <item name="Serial" href="users/transports/serial.html"/>
+        <item name="SocketCAN" href="users/transports/socketcan.html"/>
         <item name="Raw Socket" href="users/transports/raw-socket.html"/>
         <item name="PCAP Replay" href="users/transports/pcap-replay.html"/>
       </item>
