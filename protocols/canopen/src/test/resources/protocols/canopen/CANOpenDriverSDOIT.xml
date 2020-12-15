@@ -30,7 +30,7 @@
     </parameter>
     <parameter>
       <name>request-timeout</name>
-      <value>1500</value>
+      <value>5000</value>
     </parameter>
   </driver-parameters>
 
