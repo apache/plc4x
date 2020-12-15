@@ -79,7 +79,7 @@ Currently we support the following protocols:
             <img src="../images/protocols/canopen.gif" alt="CANopen logo">
           </div-->
           <div class="card-body">
-            <h5 class="card-title"><b>BACnet/IP</b></h5>
+            <h5 class="card-title"><b>CANopen</b></h5>
           </div>
         </div>
       </div>
