@@ -108,8 +108,9 @@ public enum TransportSize {
     STRING(0x03, "X", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Variable-length double-byte character string
     // TODO: Find the code (Perhaps 0x13)
-    WSTRING(0x00, "X", 1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500);
-
+    WSTRING(0x00, "X", 1, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
+    // String in Simotion PLCs
+    SIMOTIONSTRING(0x33, "X", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY);
     /* TO BE CONTINUED */
 
     // Codes and their types:
