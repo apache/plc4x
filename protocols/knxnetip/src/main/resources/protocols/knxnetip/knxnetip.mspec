@@ -218,12 +218,15 @@
         ['0x04' KnxNetIpTunneling
             [simple uint 8 'version']
         ]
+        // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x06' KnxNetRemoteLogging
             [simple uint 8 'version']
         ]
+        // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x07' KnxNetRemoteConfigurationAndDiagnosis
             [simple uint 8 'version']
         ]
+        // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x08' KnxNetObjectServer
             [simple uint 8 'version']
         ]
