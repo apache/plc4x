@@ -32,6 +32,31 @@
   <name>Protocols: KNXNet/IP</name>
   <description>Base protocol specifications for the KNXNet/IP protocol</description>
 
+  <build>
+    <plugins>
+      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fetch-knx-manufacturer-data</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://update.knx.org/data/XML/project-20/knx_master.xml</url>
+              <unpack>false</unpack>
+              <outputDirectory>${project.build.outputDirectory}/protocols/knxnetip</outputDirectory>
+              <outputFileName>knx-master-data.xml</outputFileName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
