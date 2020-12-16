@@ -17,22 +17,14 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.opcuaserver;
+package org.apache.plc4x.java.opcuaserver.configuration;
 
-import java.util.List;
-import java.io.File;
-import java.io.IOException;
 import java.security.SecureRandom;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.eclipse.jetty.util.security.Password;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
 
