@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.opcuaserver;
+package org.apache.plc4x.java.opcuaserver.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

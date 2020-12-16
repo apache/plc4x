@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.opcuaserver;
+package org.apache.plc4x.java.opcuaserver.configuration;
 
 import org.eclipse.jetty.util.security.Password;
 

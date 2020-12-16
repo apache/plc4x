@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.plc4x.java.opcuaserver.configuration.Configuration;
+import org.apache.plc4x.java.opcuaserver.configuration.DeviceConfiguration;
+import org.apache.plc4x.java.opcuaserver.configuration.Tag;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.core.ValueRank;
