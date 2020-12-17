@@ -20,11 +20,14 @@ package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EipField implements PlcField {
+public class EipField implements PlcField, XmlSerializable {
 
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("^%(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
@@ -134,5 +137,28 @@ public class EipField implements PlcField {
             default:
                 return Object.class;
         }
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+
+        Element blockNumberElement = doc.createElement("node");
+        blockNumberElement.appendChild(doc.createTextNode(tag));
+        messageElement.appendChild(blockNumberElement);
+
+        Element indexElement = doc.createElement("type");
+        indexElement.appendChild(doc.createTextNode(type == null ? "" : type.name()));
+        messageElement.appendChild(indexElement);
+
+        Element subIndexElement = doc.createElement("elementNb");
+        subIndexElement.appendChild(doc.createTextNode(Integer.toString(elementNb)));
+        messageElement.appendChild(subIndexElement);
+
+        Element dataType = doc.createElement("defaultJavaType");
+        dataType.appendChild(doc.createTextNode((type == null ? Object.class : getDefaultJavaType()).getName()));
+        messageElement.appendChild(dataType);
     }
 }

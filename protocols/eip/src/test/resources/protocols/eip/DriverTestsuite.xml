@@ -92,11 +92,11 @@
           <options>0</options>
           <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
             <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
-              <service className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
-                <tag>kQRyYXRl</tag>
+              <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
+                <tag>910472617465</tag>
                 <elementNb>1</elementNb>
                 <requestPathSize>3</requestPathSize>
-              </service>
+              </unconnectedService>
               <backPlane>0</backPlane>
               <slot>0</slot>
             </service>
@@ -123,28 +123,31 @@
               <status>0</status>
               <extStatus>0</extStatus>
               <dataType>DINT</dataType> <!--0xC4-->
-              <data>AAACFg==</data>  <!--0x216 but again issue when parsing Object to XML-->
+              <data>00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
             </service>
           </exchange>
         </CipRRData>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.eip.readwrite.field.EipField">
-              <tag>rate</tag>
-              <type/>
-              <elementNb>0</elementNb>
-              <defaultJavaType>java.lang.Object</defaultJavaType>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <EipField>
+                  <node>rate</node>
+                  <type/>
+                  <elementNb>0</elementNb>
+                  <defaultJavaType>java.lang.Object</defaultJavaType>
+                </EipField>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcDINT>-751546925</PlcDINT>
             </hurz>
-          </request>
-          <hurz>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcDINT">
-              <object>369229824</object>
-            </value>
-          </hurz>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>

@@ -25,6 +25,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.test.XmlTestsuiteRunner;
+import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
+import org.apache.plc4x.test.dom4j.LocationAwareElement;
+import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
+import org.apache.plc4x.test.mapper.TestSuiteMappingModule;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
 import org.apache.plc4x.test.parserserializer.model.ParserSerializerTestsuite;
 import org.apache.plc4x.test.parserserializer.model.Testcase;
@@ -40,33 +45,31 @@ import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.util.*;
 
-public class ParserSerializerTestsuiteRunner {
+public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
 
-    private final String testsuiteDocument;
-
     public ParserSerializerTestsuiteRunner(String testsuiteDocument) {
-        this.testsuiteDocument = testsuiteDocument;
+        super(testsuiteDocument);
     }
 
     @TestFactory
-    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
-        ParserSerializerTestsuite testSuite = parseTestsuite(ParserSerializerTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
-        if(testSuite == null) {
+    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException, URISyntaxException {
+        ParserSerializerTestsuite testSuite = parseTestsuite();
+        if (testSuite == null) {
             throw new ParserSerializerTestsuiteException("Couldn't find testsuite document");
         }
         List<DynamicTest> dynamicTests = new LinkedList<>();
-        for(Testcase testcase : testSuite.getTestcases()) {
+        for (Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
             String testcaseLabel = testSuite.getName() + ": " + testcaseName;
-            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->
+            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () ->
                 run(testSuite, testcase)
             );
             dynamicTests.add(test);
@@ -74,9 +77,10 @@ public class ParserSerializerTestsuiteRunner {
         return dynamicTests;
     }
 
-    private ParserSerializerTestsuite parseTestsuite(InputStream testsuiteDocumentXml) throws ParserSerializerTestsuiteException {
+    private ParserSerializerTestsuite parseTestsuite() throws ParserSerializerTestsuiteException {
         try {
-            SAXReader reader = new SAXReader();
+            SAXReader reader = new LocationAwareSAXReader();
+            reader.setDocumentFactory(new LocationAwareDocumentFactory());
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
             boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
@@ -104,7 +108,12 @@ public class ParserSerializerTestsuiteRunner {
                     }
                 }
 
-                testcases.add(new Testcase(name, description, raw, rootType, parserArguments, xmlElement));
+                Testcase testcase = new Testcase(name, description, raw, rootType, parserArguments, xmlElement);
+                if (testcaseXml instanceof LocationAwareElement) {
+                    // pass source location to test
+                    testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
+                }
+                testcases.add(testcase);
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
             return new ParserSerializerTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
@@ -116,7 +125,7 @@ public class ParserSerializerTestsuiteRunner {
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-        ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+        ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
         ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
 

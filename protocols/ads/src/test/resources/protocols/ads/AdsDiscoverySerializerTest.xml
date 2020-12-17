@@ -63,7 +63,7 @@
           <octet6>1</octet6>
         </amsNetId>
         <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>REVTS1RPUC1UME42VU5C</text>
+          <text>4445534B544F502D54304E36554E42</text>
         </name>
       </DiscoveryResponse>
     </xml>
@@ -86,7 +86,7 @@
           <octet6>1</octet6>
         </sender>
         <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>MTAuMTAuMTAuMTA=</text>
+          <text>31302E31302E31302E3130</text>
         </address>
         <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
           <octet1>10</octet1>
@@ -97,13 +97,13 @@
           <octet6>1</octet6>
         </target>
         <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>dXNlcm5hbWU=</text>
+          <text>757365726E616D65</text>
         </username>
         <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>cGFzc3dvcmQ=</text>
+          <text>70617373776F7264</text>
         </password>
         <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>MTAuMTAuMTAuMTA=</text>
+          <text>31302E31302E31302E3130</text>
         </routeName>
       </RouteRequest>
     </xml>
@@ -234,7 +234,7 @@
           <octet6>1</octet6>
         </sender>
         <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>REVTS1RPUC0zUEoxQTVE</text>
+          <text>4445534B544F502D33504A31413544</text>
         </address>
         <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
           <octet1>192</octet1>
@@ -245,13 +245,13 @@
           <octet6>1</octet6>
         </target>
         <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>QWRtaW5pc3RyYXRvcg==</text>
+          <text>41646D696E6973747261746F72</text>
         </username>
         <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text></text>
         </password>
         <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>REVTS1RPUC0zUEoxQTVE</text>
+          <text>4445534B544F502D33504A31413544</text>
         </routeName>
       </RouteRequest>
     </xml>
