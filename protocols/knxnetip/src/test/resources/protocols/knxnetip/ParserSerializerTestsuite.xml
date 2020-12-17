@@ -123,7 +123,7 @@
         <hpaiIDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>61326</ipPort>
         </hpaiIDiscoveryEndpoint>
@@ -140,7 +140,7 @@
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqCw==</addr>
+            <addr>C0A82A0B</addr>
           </ipAddress>
           <ipPort>3671</ipPort>
         </hpaiControlEndpoint>
@@ -159,14 +159,14 @@
             <projectNumber>0</projectNumber>
             <installationNumber>0</installationNumber>
           </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>AAgtQJhS</knxNetIpDeviceSerialNumber>
+          <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
           <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>4AAXDA==</addr>
+            <addr>E000170C</addr>
           </knxNetIpDeviceMulticastAddress>
           <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
-            <addr>AAqzJ1U2</addr>
+            <addr>000AB3275536</addr>
           </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>R2lyYSBLTlgvSVAtU2Nobml0dHN0ZWxsZQAAAAAA</deviceFriendlyName>
+          <deviceFriendlyName>47697261204B4E582F49502D5363686E6974747374656C6C650000000000</deviceFriendlyName>
         </dibDeviceInfo>
         <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
           <descriptionType>2</descriptionType>
@@ -195,7 +195,7 @@
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>AAAAAA==</addr>
+            <addr>00000000</addr>
           </ipAddress>
           <ipPort>0</ipPort>
         </hpaiControlEndpoint>
@@ -224,14 +224,14 @@
             <projectNumber>0</projectNumber>
             <installationNumber>0</installationNumber>
           </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>AAgtQJhS</knxNetIpDeviceSerialNumber>
+          <knxNetIpDeviceSerialNumber>00082D409852</knxNetIpDeviceSerialNumber>
           <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>4AAXDA==</addr>
+            <addr>E000170C</addr>
           </knxNetIpDeviceMulticastAddress>
           <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
-            <addr>AAqzJ1U2</addr>
+            <addr>000AB3275536</addr>
           </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>R2lyYSBLTlgvSVAtU2Nobml0dHN0ZWxsZQAAAAAA</deviceFriendlyName>
+          <deviceFriendlyName>47697261204B4E582F49502D5363686E6974747374656C6C650000000000</deviceFriendlyName>
         </dibDeviceInfo>
         <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
           <descriptionType>2</descriptionType>
@@ -260,14 +260,14 @@
         <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiDiscoveryEndpoint>
         <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>62514</ipPort>
         </hpaiDataEndpoint>
@@ -289,7 +289,7 @@
         <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqCw==</addr>
+            <addr>C0A82A0B</addr>
           </ipAddress>
           <ipPort>3671</ipPort>
         </hpaiDataEndpoint>
@@ -314,7 +314,7 @@
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiControlEndpoint>
@@ -380,7 +380,7 @@
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiControlEndpoint>
@@ -441,7 +441,7 @@
               <middleGroup>6</middleGroup>
               <subGroup>10</subGroup>
             </sourceAddress>
-            <destinationAddress>Hgw=</destinationAddress>
+            <destinationAddress>1E0C</destinationAddress>
             <groupAddress>true</groupAddress>
             <hopCount>6</hopCount>
             <dataLength>1</dataLength>
@@ -481,14 +481,14 @@
         <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>50185</ipPort>
         </hpaiDiscoveryEndpoint>
         <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>C0A82A46</addr>
           </ipAddress>
           <ipPort>50186</ipPort>
         </hpaiDataEndpoint>

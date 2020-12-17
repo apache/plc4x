@@ -120,7 +120,7 @@
         <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
           <toggle>false</toggle>
           <last>false</last>
-          <data>VWx0cmFIaQ==</data>
+          <data>556C7472614869</data>
         </response>
       </CANOpenSDOResponse>
     </xml>
@@ -226,7 +226,7 @@
             <subindex>1</subindex>
           </address>
           <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-            <data>YXNkZg==</data>
+            <data>61736466</data>
           </payload>
         </request>
       </CANOpenSDORequest>
@@ -269,7 +269,7 @@
         <response className="org.apache.plc4x.java.canopen.readwrite.SDOBlockResponse">
           <block className="org.apache.plc4x.java.canopen.readwrite.SDOBlockData">
             <flags>2</flags>
-            <data>CBAAFQAAAA==</data>
+            <data>08100015000000</data>
           </block>
         </response>
       </CANOpenSDOResponse>

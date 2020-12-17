@@ -112,7 +112,7 @@
           <invokeId>2</invokeId>
           <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
             <result>OK</result>
-            <data>AQ==</data>
+            <data>01</data>
           </data>
         </userdata>
       </AmsTCPPacket>
@@ -163,7 +163,7 @@
             <indexOffset>0</indexOffset>
             <readLength>4</readLength>
             <items/>
-            <data>bWFpbi5mX3RyaWdEYXRlaUdlbGVzZW4uTQA=</data>
+            <data>6D61696E2E665F74726967446174656947656C6573656E2E4D00</data>
           </data>
         </userdata>
       </AmsTCPPacket>
@@ -211,7 +211,7 @@
           <invokeId>1</invokeId>
           <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteResponse">
             <result>OK</result>
-            <data>AQCAGw==</data>
+            <data>0100801B</data>
           </data>
         </userdata>
       </AmsTCPPacket>
@@ -308,7 +308,7 @@
           <invokeId>1</invokeId>
           <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
             <result>OK</result>
-            <data>AQ==</data>
+            <data>01</data>
           </data>
         </userdata>
       </AmsTCPPacket>
@@ -357,7 +357,7 @@
           <data className="org.apache.plc4x.java.ads.readwrite.AdsWriteRequest">
             <indexGroup>61446</indexGroup>
             <indexOffset>0</indexOffset>
-            <data>AQCAGw==</data>
+            <data>0100801B</data>
           </data>
         </userdata>
       </AmsTCPPacket>

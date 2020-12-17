@@ -65,7 +65,7 @@
           <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
             <majorVersion>2</majorVersion>
             <minorVersion>5</minorVersion>
-            <fileName>U3RhbmRhcmRGaXJtYXRhLmlubw==</fileName>
+            <fileName>5374616E646172644669726D6174612E696E6F</fileName>
           </command>
         </command>
       </FirmataMessageCommand>
@@ -101,7 +101,7 @@
           <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
             <majorVersion>2</majorVersion>
             <minorVersion>5</minorVersion>
-            <fileName>U3RhbmRhcmRGaXJtYXRhLmlubw==</fileName>
+            <fileName>5374616E646172644669726D6174612E696E6F</fileName>
           </command>
         </command>
       </FirmataMessageCommand>
@@ -208,7 +208,7 @@
     <xml>
       <FirmataMessageAnalogIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageAnalogIO">
         <pin>0</pin>
-        <data>VAM=</data>
+        <data>5403</data>
       </FirmataMessageAnalogIO>
     </xml>
   </testcase>
@@ -223,7 +223,7 @@
     <xml>
       <FirmataMessageDigitalIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageDigitalIO">
         <pinBlock>0</pinBlock>
-        <data>AAA=</data>
+        <data>0000</data>
       </FirmataMessageDigitalIO>
     </xml>
   </testcase>

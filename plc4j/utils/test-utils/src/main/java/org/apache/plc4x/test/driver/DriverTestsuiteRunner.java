@@ -37,6 +37,10 @@ import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.test.XmlTestsuiteRunner;
+import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
+import org.apache.plc4x.test.dom4j.LocationAwareElement;
+import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.model.DriverTestsuite;
 import org.apache.plc4x.test.driver.model.StepType;
@@ -46,6 +50,7 @@ import org.apache.plc4x.test.driver.model.api.TestField;
 import org.apache.plc4x.test.driver.model.api.TestReadRequest;
 import org.apache.plc4x.test.driver.model.api.TestRequest;
 import org.apache.plc4x.test.driver.model.api.TestWriteRequest;
+import org.apache.plc4x.test.mapper.TestSuiteMappingModule;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -71,26 +76,24 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class DriverTestsuiteRunner {
+public class DriverTestsuiteRunner extends XmlTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverTestsuiteRunner.class);
-
-    private final String testsuiteDocument;
 
     private CompletableFuture<? extends PlcResponse> responseFuture;
 
     public DriverTestsuiteRunner(String testsuiteDocument) {
-        this.testsuiteDocument = testsuiteDocument;
+        super(testsuiteDocument);
     }
 
     @TestFactory
     public Iterable<DynamicTest> getTestsuiteTests() throws DriverTestsuiteException {
-        DriverTestsuite testSuite = parseTestsuite(DriverTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
+        DriverTestsuite testSuite = parseTestsuite();
         List<DynamicTest> dynamicTests = new LinkedList<>();
-        for(Testcase testcase : testSuite.getTestcases()) {
+        for (Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
             String testcaseLabel = testSuite.getName() + ": " + testcaseName;
-            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->
+            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () ->
                 run(testSuite, testcase)
             );
             dynamicTests.add(test);
@@ -98,9 +101,10 @@ public class DriverTestsuiteRunner {
         return dynamicTests;
     }
 
-    private DriverTestsuite parseTestsuite(InputStream testsuiteDocumentXml) throws DriverTestsuiteException {
+    private DriverTestsuite parseTestsuite() throws DriverTestsuiteException {
         try {
-            SAXReader reader = new SAXReader();
+            SAXReader reader = new LocationAwareSAXReader();
+            reader.setDocumentFactory(new LocationAwareDocumentFactory());
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
             boolean bigEndian = !"false".equals(testsuiteXml.attributeValue("bigEndian"));
@@ -108,7 +112,7 @@ public class DriverTestsuiteRunner {
             String driverName = testsuiteXml.element(new QName("driver-name")).getTextTrim();
             Element driverParametersElement = testsuiteXml.element(new QName("driver-parameters"));
             Map<String, String> driverParameters = null;
-            if(driverParametersElement != null) {
+            if (driverParametersElement != null) {
                 driverParameters = new HashMap<>();
                 for (Element parameter : driverParametersElement.elements(new QName("parameter"))) {
                     String parameterName = parameter.element(new QName("name")).getTextTrim();
@@ -147,7 +151,11 @@ public class DriverTestsuiteRunner {
                 for (Element element : stepsElement.elements()) {
                     steps.add(parseTestStep(element));
                 }
-                testcases.add(new Testcase(name, description, steps));
+                Testcase testcase = new Testcase(name, description, steps);
+                if (testcaseXml instanceof LocationAwareElement) {
+                    testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
+                }
+                testcases.add(testcase);
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
 
@@ -346,7 +354,11 @@ public class DriverTestsuiteRunner {
                 parserArguments.add(parserArgumentNode.getTextTrim());
             }
         }
-        return new TestStep(stepType, stepName, parserArguments, definitionNode);
+        TestStep testStep = new TestStep(stepType, stepName, parserArguments, definitionNode);
+        if (curElement instanceof LocationAwareElement) {
+            testStep.setLocation(((LocationAwareElement) curElement).getLocation());
+        }
+        return testStep;
     }
 
     private Plc4xEmbeddedChannel getEmbeddedChannel(PlcConnection plcConnection) {
@@ -412,7 +424,7 @@ public class DriverTestsuiteRunner {
         try {
             final MessageIO messageIO = getMessageIOType(className).newInstance();
             final String referenceXmlString = referenceXml.asXML();
-            final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+            final ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
             final Message message = mapper.readValue(referenceXmlString, getMessageType(className));
             try {
                 messageIO.serialize(writeBuffer, message);
@@ -432,7 +444,7 @@ public class DriverTestsuiteRunner {
     }
 
     private void validateMessage(Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
-        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
         final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
         try {
             final String className = referenceXml.attributeValue(new QName("className"));

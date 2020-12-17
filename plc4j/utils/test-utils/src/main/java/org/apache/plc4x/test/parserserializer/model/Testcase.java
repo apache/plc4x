@@ -19,11 +19,14 @@
 
 package org.apache.plc4x.test.parserserializer.model;
 
+import org.apache.plc4x.test.model.Location;
+import org.apache.plc4x.test.model.LocationAware;
 import org.dom4j.Element;
 
 import java.util.List;
+import java.util.Optional;
 
-public class Testcase {
+public class Testcase implements LocationAware {
 
     private final String name;
     private final String description;
@@ -31,6 +34,8 @@ public class Testcase {
     private final String rootType;
     private final List<String> parserArguments;
     private final Element xml;
+
+    private Location location;
 
     public Testcase(String name, String description, byte[] raw, String rootType, List<String> parserArguments, Element xml) {
         this.name = name;
@@ -65,4 +70,11 @@ public class Testcase {
         return xml;
     }
 
+    public Optional<Location> getLocation() {
+        return Optional.ofNullable(location);
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
