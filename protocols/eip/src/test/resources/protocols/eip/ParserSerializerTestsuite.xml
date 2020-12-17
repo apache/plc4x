@@ -64,14 +64,14 @@
         <options>0</options>
         <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
           <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
-            <service className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
+            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
               <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
                   but there seems to be some mismatch with the XML generation from Objects
                   (arguments are also in the wrong order) -->
-              <tag>kQRyYXRl</tag>
+              <tag>910472617465</tag>
               <elementNb>1</elementNb>
               <requestPathSize>3</requestPathSize>
-            </service>
+            </unconnectedService>
             <backPlane>1</backPlane>
             <slot>4</slot>
           </service>
@@ -100,11 +100,11 @@
         </senderContext>
         <options>0</options>
         <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
-            <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
-              <status>0</status>
-              <extStatus>0</extStatus>
-              <dataType>DINT</dataType> <!--0xC4-->
-              <data>AAACFg==</data>  <!--0x216 but again issue when parsing Object to XML-->
+          <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
+            <status>0</status>
+            <extStatus>0</extStatus>
+            <dataType>DINT</dataType> <!--0xC4-->
+            <data>00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
           </service>
         </exchange>
       </CipRRData>
@@ -132,16 +132,16 @@
         <options>0</options>
         <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
           <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
-            <service className="org.apache.plc4x.java.eip.readwrite.CipWriteRequest">
+            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipWriteRequest">
               <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
                   but there seems to be some mismatch with the XML generation from Objects
                   (arguments are also in the wrong order) -->
-              <tag>kRZDYXJ0b25TaXpl</tag>
+              <tag>9116436172746F6E53697A65</tag>
               <dataType>DINT</dataType>
               <elementNb>1</elementNb>
-              <data>AAAADg==</data> <!--0x14 but again issue when parsing Object to XML-->
+              <data>0000000E</data> <!--0x14 but again issue when parsing Object to XML-->
               <requestPathSize>6</requestPathSize>
-            </service>
+            </unconnectedService>
             <backPlane>1</backPlane>
             <slot>4</slot>
           </service>

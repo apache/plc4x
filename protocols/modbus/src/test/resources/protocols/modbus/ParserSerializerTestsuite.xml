@@ -54,10 +54,7 @@
         <transactionIdentifier>31998</transactionIdentifier>
         <unitIdentifier>255</unitIdentifier>
         <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersResponse">
-          <value>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAAAAAAAAAAdsAAAHWAABKOAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRhaW0AbgAAAAAAAAAAAAAAAAAAMDEAMAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</value>
+          <value>00000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001DB000001D600004A380000000000000000000000000000000000000000000000000000000000006461696D006E0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000</value>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -109,11 +106,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</value>
           <items>
             <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
               <referenceType>6</referenceType>
-              <data>AAAAAA==</data>
+              <data>00000000</data>
             </items>
             <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
               <referenceType>6</referenceType>
-              <data>AAAAAAAAAAAAAAAAAAAAAA==</data>
+              <data>00000000000000000000000000000000</data>
             </items>
           </items>
         </pdu>
@@ -139,7 +136,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</value>
               <referenceType>6</referenceType>
               <fileNumber>2</fileNumber>
               <recordNumber>0</recordNumber>
-              <recordData>AAg=</recordData>
+              <recordData>0008</recordData>
             </items>
           </items>
         </pdu>
@@ -164,13 +161,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</value>
               <referenceType>6</referenceType>
               <fileNumber>1</fileNumber>
               <recordNumber>9999</recordNumber>
-              <recordData>AAA=</recordData>
+              <recordData>0000</recordData>
             </items>
             <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem">
               <referenceType>6</referenceType>
               <fileNumber>2</fileNumber>
               <recordNumber>0</recordNumber>
-              <recordData>AAA=</recordData>
+              <recordData>0000</recordData>
             </items>
           </items>
         </pdu>
