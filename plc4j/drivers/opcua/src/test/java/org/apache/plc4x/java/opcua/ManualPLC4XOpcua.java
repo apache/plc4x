@@ -97,7 +97,7 @@ public class ManualPLC4XOpcua {
         PlcField field = fieldH.createField(BOOL_IDENTIFIER);
         try {
             opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12685/milo?discovery=false");
+                new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
         } catch (PlcConnectionException e) {
             e.printStackTrace();
