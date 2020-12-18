@@ -52,25 +52,49 @@
 
 3+|Supported Operations
 
-| read      | The read interface allows to read the full range of supported PLC4X types in single and bulk requests |
-| write     | The write interface is capable of writting the overhanded base type. At the moment there are some issues with unsigned
-types because they represent the wrong datatype to write which will conflict with the corresponding target variable type. |
-| subscribe | Subscriptions are possible with events on event- and cyclic-basis |
+| read      | |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
+| write     | |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
+| subscribe | |Subscriptions are possible with events on event- and cyclic-basis
 
 
-3+|Options
+3+|'Options'
 
-|Key         |   Type [default]    | Description |
-`discovery`  |   boolean [`true`] | Controls the feature of the discovery endpoint of an OPC UA server which every server will propagate over an '<address>/discovery' endpoint. The most common issue here ist that the most servers are not correct configured and propagate the wrong external IP- or URL-addresses. If that is the case you can disable the discovery by configuring it with an 'false' value. |
+|`Key`         |   `Type [default]`    | `Description` |
+discovery  |   boolean [`true`] | Controls the feature of the discovery endpoint of an OPC UA server which every server
+will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
+configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
+configuring it with a `false` value. |
 
 
 |===
 
+=== Connection String
+
+The OPC UA drivers uses the connection string
+
+----
+
+opcua:{transport}://{ip-address}:{port}?{options}
+
+----
+
+An example of this connection string would be:-
+
+----
+
+opcua:tcp://127.0.0.1:12686?discovery=true
+
+----
+
+Note the transport, port and options fields are optional.
+
+
 === Address Format
-To read, write and subscribe data to a PLC4X device, the OPC UA driver uses the OPC variable declaration string.
-It includes the namespace(ns) of the hierarchy tree followed by the type of identifier string(s), numeric(i), binary(b) or guid(g) and its address.
-The Data Type is an optional field for some address data types. If it is not included a default data type is selected, however for opc ua Unsigned
-opc ua address data types it needs to be included.
+To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
+connecting to.
+It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
+binary(`b`) or guid(`g`) and its address. The Data Type is an optional field, if it is not included a default data type
+is selected based on the datatype of the returned value. For Unsigned data types it needs to be included otherwise.
 
 ----
 
@@ -99,76 +123,36 @@ The following data types are supported
 - LREAL (double)
 - CHAR (char)
 - WCHAR (2 byte char)
+- STRING (utf-8)
+- WSTRING (utf-16)
 
 
 ==== Example of a valid OPC UA address:
 
+The following are examples of valid addresses
+
 String address:
 ----
 ns=2;s=HelloWorld/ScalarTypes/Boolean
+ns=2;s=HelloWorld/ScalarTypes/Boolean:BOOL
 ----
 Numeric address
 ----
 ns=1;i=1337
+ns=1;i=1337:DINT
 ----
 GUID address:
 ----
 ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a:REAL
 ----
 
-== Example operations with PLC4J
+Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
 
-=== Read value of an PLC value
-----
-String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean"; // String in opc ua format to describe target value
-String fieldName = "Bool"; // local unique key for the requested variable
-String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
+=== Some useful tips
 
-PlcConnection opcuaReadConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
-PlcReadRequest.Builder builder = opcuaReadConnection.readRequestBuilder();
-builder.addItem(fieldName, BOOL_IDENTIFIER);
-PlcReadRequest request = builder.build();
-PlcReadResponse response = opcuaConnection.read(request).get();
+The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
 
-if(response.getResponseCode(fieldName) == PlcResponseCode.OK){
-    Boolean plcBooleanValue = response.getBoolean();
-}
-
-----
-=== Write value of an PLC value
-----
-String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean"; // String in opc ua format to describe target value
-String fieldName = "Bool"; // local unique key for the requested variable
-String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
-
-PlcConnection opcuaReadConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
-PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
-wBuilder.addItem(fieldName, BOOL_IDENTIFIER, true);
-PlcWriteRequest writeRequest = wBuilder.build();
-PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
-
-if(wResponse.getResponseCode(fieldName) == PlcResponseCode.OK){
-    // Todo ...
-}
-
-----
-=== Subscribe PLC events
-
-----
-String fieldAddress = "ns=2;s=HelloWorld/ScalarTypes/String"; // String in opc ua format to describe target value
-String fieldName = "field1"; // local unique key for the requested variable
-String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
-
-PlcConnection opcuaSubConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
-PlcSubscriptionRequest.Builder subBuilder =  opcuaSubConnection.subscriptionRequestBuilder(); // get builder
-subBuilder.addChangeOfStateField(fieldName, fieldAddress); // add the tuple of fieldName and Address to the request
-PlcSubscriptionRequest subReq = subBuilder.build(); // build the request
-PlcSubscriptionResponse subResp = subReq.execute().get(); // execute the build up of a subscription
-Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println("Your Information"); // create a consumer function for the subscription
-PlcConsumerRegistration registration = subResp.getSubscriptionHandle(fieldName).register(consumer); // add the consumer to the created subscription  of the request and access it over the  SubscriptionHandler
-registration.unregister(); // Unsubscribe
-
-----
 
 === More details on OPC UA
 
@@ -184,8 +168,9 @@ This multi-layered approach accomplishes the original design specification goals
 * Comprehensive information modeling: for defining complex information
 
 === More details
-At the moment, the underlying stack to accomplish the OPC UA functionallity is the eclipse project milo which is a powerfull server-side and client-side driver to enable the OPC UA capabilties. The Milo server SDK is also used to implement the bridge server functionallity inside of the sandbox.
 
-https://projects.eclipse.org/projects/iot.milo[Eclipse Milo - Project]
+
+The client SDK within the https://projects.eclipse.org/projects/iot.milo[Eclipse Milo] project is used as the basis for the PLC4X OPC UA driver.
+
 
 |===
