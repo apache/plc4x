@@ -43,10 +43,10 @@ import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
+import org.eclipse.milo.opcua.stack.core.StatusCodes;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
-import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
-import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.*;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.*;
@@ -54,8 +54,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.util.stream.Collectors;
 import java.net.InetAddress;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -115,44 +118,139 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         ExpandedNodeId typeNode = value.getValue().getDataType().get();
         Object objValue = value.getValue().getValue();
 
-        if (typeNode.equals(Identifiers.Boolean)) {
-            return new PlcBOOL((Boolean) objValue);
-        /*} else if (typeNode.equals(Identifiers.ByteString)) {
-            byte[] array = ((ByteString) objValue).bytes();
-            Byte[] byteArry = new Byte[array.length];
-            int counter = 0;
-            for (byte bytie : array
-            ) {
-                byteArry[counter] = bytie;
-                counter++;
+        if (objValue.getClass().isArray()) {
+            Object[] objArray = (Object[]) objValue;
+            if (objArray[0] instanceof Boolean) {
+                Boolean[] obj = (Boolean[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcBOOL((Boolean) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Integer) {
+                Integer[] obj = (Integer[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcDINT((Integer) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Short) {
+                Short[] obj = (Short[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcINT((Short) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Byte) {
+                Byte[] obj = (Byte[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcSINT((Byte) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Long) {
+                Long[] obj = (Long[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcLINT((Long) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Float) {
+                Float[] obj = (Float[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcREAL((Float) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof Double) {
+                Double[] obj = (Double[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcLREAL((Double) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else if (objArray[0] instanceof String) {
+                String[] obj = (String[]) objValue;
+                List<PlcValue> plcValue;
+                {
+                    int itemCount = (int) obj.length;
+                    plcValue = new LinkedList<>();
+
+                    for(int curItem = 0; curItem < itemCount; curItem++) {
+                        plcValue.add(new PlcSTRING((String) obj[curItem]));
+                    }
+                }
+                return new PlcList(plcValue);
+            } else {
+                logger.warn("Node type for " + objArray[0].getClass() + " is not supported");
+                return null;
             }
-            return new DefaultByteArrayPlcValue(byteArry);*/
-        } else if (typeNode.equals(Identifiers.Integer)) {
-            return new PlcDINT((Integer) objValue);
-        } else if (typeNode.equals(Identifiers.Int16)) {
-            return new PlcINT((Short) objValue);
-        } else if (typeNode.equals(Identifiers.Int32)) {
-            return new PlcDINT((Integer) objValue);
-        } else if (typeNode.equals(Identifiers.Int64)) {
-            return new PlcLINT((Long) objValue);
-        } else if (typeNode.equals(Identifiers.UInteger)) {
-            return new PlcLINT((Long) objValue);
-        } else if (typeNode.equals(Identifiers.UInt16)) {
-            return new PlcUINT(((UShort) objValue).intValue());
-        } else if (typeNode.equals(Identifiers.UInt32)) {
-            return new PlcUDINT(((UInteger) objValue).longValue());
-        } else if (typeNode.equals(Identifiers.UInt64)) {
-            return new PlcULINT(new BigInteger(objValue.toString()));
-        } else if (typeNode.equals(Identifiers.Byte)) {
-            return new PlcINT(Short.valueOf(objValue.toString()));
-        } else if (typeNode.equals(Identifiers.Float)) {
-            return new PlcREAL((Float) objValue);
-        } else if (typeNode.equals(Identifiers.Double)) {
-            return new PlcLREAL((Double) objValue);
-        } else if (typeNode.equals(Identifiers.SByte)) {
-            return new PlcSINT((Byte) objValue);
+
         } else {
-            return new PlcSTRING(objValue.toString());
+            if (typeNode.equals(Identifiers.Boolean)) {
+                return new PlcBOOL((Boolean) objValue);
+            } else if (typeNode.equals(Identifiers.Integer)) {
+                return new PlcDINT((Integer) objValue);
+            } else if (typeNode.equals(Identifiers.Int16)) {
+                return new PlcINT((Short) objValue);
+            } else if (typeNode.equals(Identifiers.Int32)) {
+                return new PlcDINT((Integer) objValue);
+            } else if (typeNode.equals(Identifiers.Int64)) {
+                return new PlcLINT((Long) objValue);
+            } else if (typeNode.equals(Identifiers.UInteger)) {
+                return new PlcLINT((Long) objValue);
+            } else if (typeNode.equals(Identifiers.UInt16)) {
+                return new PlcUINT(((UShort) objValue).intValue());
+            } else if (typeNode.equals(Identifiers.UInt32)) {
+                return new PlcUDINT(((UInteger) objValue).longValue());
+            } else if (typeNode.equals(Identifiers.UInt64)) {
+                return new PlcULINT(new BigInteger(objValue.toString()));
+            } else if (typeNode.equals(Identifiers.Byte)) {
+                return new PlcINT(Short.valueOf(objValue.toString()));
+            } else if (typeNode.equals(Identifiers.Float)) {
+                return new PlcREAL((Float) objValue);
+            } else if (typeNode.equals(Identifiers.Double)) {
+                return new PlcLREAL((Double) objValue);
+            } else if (typeNode.equals(Identifiers.SByte)) {
+                return new PlcSINT((Byte) objValue);
+            } else {
+                return new PlcSTRING(objValue.toString());
+            }
         }
 
     }
@@ -446,8 +544,256 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 Object valueObject = writeRequest.getPlcValue(fieldName).getObject();
                 // Added small work around for handling BigIntegers as input type for UInt64
                 if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
-                Variant var = new Variant(valueObject);
-                DataValue value = new DataValue(var, null, null, null);
+                Variant var = null;
+                if (valueObject instanceof ArrayList) {
+                    List<PlcValue> plcValueList = (List<PlcValue>) valueObject;
+                    String dataType = uaField.getPlcDataType();
+                    if (dataType.equals("IEC61131_NULL")) {
+                        if (plcValueList.get(0).getObject() instanceof Boolean) {
+                            dataType = "IEC61131_BOOL";
+                        } else if (plcValueList.get(0).getObject() instanceof Byte) {
+                            dataType = "IEC61131_SINT";
+                        } else if (plcValueList.get(0).getObject() instanceof Short) {
+                            dataType = "IEC61131_INT";
+                        } else if (plcValueList.get(0).getObject() instanceof Integer) {
+                            dataType = "IEC61131_DINT";
+                        } else if (plcValueList.get(0).getObject() instanceof Long) {
+                            dataType = "IEC61131_LINT";
+                        } else if (plcValueList.get(0).getObject() instanceof Float) {
+                            dataType = "IEC61131_REAL";
+                        } else if (plcValueList.get(0).getObject() instanceof Double) {
+                            dataType = "IEC61131_LREAL";
+                        } else if (plcValueList.get(0).getObject() instanceof String) {
+                            dataType = "IEC61131_STRING";
+                        }
+                    }
+                    switch (dataType) {
+                        case "IEC61131_BOOL":
+                        case "IEC61131_BIT":
+                            List<Boolean> booleanList = (plcValueList).stream().map(
+                                    x -> ((PlcBOOL) x).getBoolean()).collect(Collectors.toList());
+                            var = new Variant(booleanList.toArray(new Boolean[booleanList.size()]));
+                            break;
+                        case "IEC61131_BYTE":
+                        case "IEC61131_BITARR8":
+                            List<UByte> byteList = (plcValueList).stream().map(
+                                    x -> UByte.valueOf(((PlcBYTE) x).getShort())).collect(Collectors.toList());
+                            var = new Variant(byteList.toArray(new UByte[byteList.size()]));
+                            break;
+                        case "IEC61131_SINT":
+                        case "IEC61131_INT8":
+                            List<Byte> sintList = (plcValueList).stream().map(
+                                    x -> ((PlcSINT) x).getByte()).collect(Collectors.toList());
+                            var = new Variant(sintList.toArray(new Byte[sintList.size()]));
+                            break;
+                        case "IEC61131_USINT":
+                        case "IEC61131_UINT8":
+                        case "IEC61131_BIT8":
+                            List<UByte> usintList = (plcValueList).stream().map(
+                                    x -> UByte.valueOf(((PlcUSINT) x).getShort())).collect(Collectors.toList());
+                            var = new Variant(usintList.toArray(new UByte[usintList.size()]));
+                            break;
+                        case "IEC61131_INT":
+                        case "IEC61131_INT16":
+                            List<Short> intList = (plcValueList).stream().map(
+                                    x -> ((PlcINT) x).getShort()).collect(Collectors.toList());
+                            var = new Variant(intList.toArray(new Short[intList.size()]));
+                            break;
+                        case "IEC61131_UINT":
+                        case "IEC61131_UINT16":
+                            List<UShort> uintList = (plcValueList).stream().map(
+                                    x -> UShort.valueOf(((PlcUINT) x).getInteger())).collect(Collectors.toList());
+                            var = new Variant(uintList.toArray(new UShort[uintList.size()]));
+                            break;
+                        case "IEC61131_WORD":
+                        case "IEC61131_BITARR16":
+                            List<UShort> wordList = (plcValueList).stream().map(
+                                    x -> UShort.valueOf(((PlcWORD) x).getInteger())).collect(Collectors.toList());
+                            var = new Variant(wordList.toArray(new UShort[wordList.size()]));
+                            break;
+                        case "IEC61131_DINT":
+                        case "IEC61131_INT32":
+                            List<Integer> dintList = (plcValueList).stream().map(
+                                    x -> ((PlcDINT) x).getInteger()).collect(Collectors.toList());
+                            var = new Variant(dintList.toArray(new Integer[dintList.size()]));
+                            break;
+                        case "IEC61131_UDINT":
+                        case "IEC61131_UINT32":
+                            List<UInteger> udintList = (plcValueList).stream().map(
+                                    x -> UInteger.valueOf(((PlcUDINT) x).getLong())).collect(Collectors.toList());
+                            var = new Variant(udintList.toArray(new UInteger[udintList.size()]));
+                            break;
+                        case "IEC61131_DWORD":
+                        case "IEC61131_BITARR32":
+                            List<UInteger> dwordList = (plcValueList).stream().map(
+                                    x -> UInteger.valueOf(((PlcDWORD) x).getLong())).collect(Collectors.toList());
+                            var = new Variant(dwordList.toArray(new UInteger[dwordList.size()]));
+                            break;
+                        case "IEC61131_LINT":
+                        case "IEC61131_INT64":
+                            List<Long> lintList = (plcValueList).stream().map(
+                                    x -> ((PlcLINT) x).getLong()).collect(Collectors.toList());
+                            var = new Variant(lintList.toArray(new Long[lintList.size()]));
+                            break;
+                        case "IEC61131_ULINT":
+                        case "IEC61131_UINT64":
+                            List<ULong> ulintList = (plcValueList).stream().map(
+                                    x -> ULong.valueOf(((PlcULINT) x).getBigInteger())).collect(Collectors.toList());
+                            var = new Variant(ulintList.toArray(new ULong[ulintList.size()]));
+                            break;
+                        case "IEC61131_LWORD":
+                        case "IEC61131_BITARR64":
+                            List<ULong> lwordList = (plcValueList).stream().map(
+                                    x -> ULong.valueOf(((PlcLWORD) x).getBigInteger())).collect(Collectors.toList());
+                            var = new Variant(lwordList.toArray(new ULong[lwordList.size()]));
+                            break;
+                        case "IEC61131_REAL":
+                        case "IEC61131_FLOAT":
+                            List<Float> realList = (plcValueList).stream().map(
+                                    x -> ((PlcREAL) x).getFloat()).collect(Collectors.toList());
+                            var = new Variant(realList.toArray(new Float[realList.size()]));
+                            break;
+                        case "IEC61131_LREAL":
+                        case "IEC61131_DOUBLE":
+                            List<Double> lrealList = (plcValueList).stream().map(
+                                    x -> (Double) ((PlcLREAL) x).getDouble()).collect(Collectors.toList());
+                            var = new Variant(lrealList.toArray(new Double[lrealList.size()]));
+                            break;
+                        case "IEC61131_CHAR":
+                            List<String> charList = (plcValueList).stream().map(
+                                    x -> ((PlcCHAR) x).getString()).collect(Collectors.toList());
+                            var = new Variant(charList.toArray(new String[charList.size()]));
+                            break;
+                        case "IEC61131_WCHAR":
+                            List<String> wcharList = (plcValueList).stream().map(
+                                    x -> ((PlcWCHAR) x).getString()).collect(Collectors.toList());
+                            var = new Variant(wcharList.toArray(new String[wcharList.size()]));
+                            break;
+                        case "IEC61131_STRING":
+                            List<String> stringList = (plcValueList).stream().map(
+                                    x -> ((PlcSTRING) x).getString()).collect(Collectors.toList());
+                            var = new Variant(stringList.toArray(new String[stringList.size()]));
+                            break;
+                        case "IEC61131_WSTRING":
+                        case "IEC61131_STRING16":
+                            List<String> wstringList = (plcValueList).stream().map(
+                                    x -> (String) ((PlcSTRING) x).getString()).collect(Collectors.toList());
+                            var = new Variant(wstringList.toArray(new String[wstringList.size()]));
+                            break;
+                        case "IEC61131_DATE_AND_TIME":
+                            List<LocalDateTime> dateTimeList = (plcValueList).stream().map(
+                                    x -> ((PlcDATE_AND_TIME) x).getDateTime()).collect(Collectors.toList());
+                            var = new Variant(dateTimeList.toArray(new LocalDateTime[dateTimeList.size()]));
+                            break;
+                        default:
+                            logger.warn("Unsupported data type : {}, {}", plcValueList.get(0).getClass(), dataType);
+                    }
+                } else {
+                    String dataType = uaField.getPlcDataType();                    
+                    PlcValue plcValue = (PlcValue) writeRequest.getPlcValue(fieldName);
+
+                    if (dataType.equals("IEC61131_NULL")) {
+                        if (plcValue.getObject() instanceof Boolean) {
+                            dataType = "IEC61131_BOOL";
+                        } else if (plcValue.getObject() instanceof Byte) {
+                            dataType = "IEC61131_SINT";
+                        } else if (plcValue.getObject() instanceof Short) {
+                            dataType = "IEC61131_INT";
+                        } else if (plcValue.getObject() instanceof Integer) {
+                            dataType = "IEC61131_DINT";
+                        } else if (plcValue.getObject() instanceof Long) {
+                            dataType = "IEC61131_LINT";
+                        } else if (plcValue.getObject() instanceof Float) {
+                            dataType = "IEC61131_REAL";
+                        } else if (plcValue.getObject() instanceof Double) {
+                            dataType = "IEC61131_LREAL";
+                        } else if (plcValue.getObject() instanceof String) {
+                            dataType = "IEC61131_STRING";
+                        }
+                    }
+                    switch (dataType) {
+                        case "IEC61131_BOOL":
+                        case "IEC61131_BIT":
+                            var = new Variant(plcValue.getBoolean());
+                            break;
+                        case "IEC61131_BYTE":
+                        case "IEC61131_BITARR8":
+                            var = new Variant(UByte.valueOf(plcValue.getShort()));
+                            break;
+                        case "IEC61131_SINT":
+                        case "IEC61131_INT8":
+                            var = new Variant(plcValue.getByte());
+                            break;
+                        case "IEC61131_USINT":
+                        case "IEC61131_UINT8":
+                        case "IEC61131_BIT8":
+                            var = new Variant(UByte.valueOf(plcValue.getShort()));
+                            break;
+                        case "IEC61131_INT":
+                        case "IEC61131_INT16":
+                            var = new Variant(plcValue.getShort());
+                            break;
+                        case "IEC61131_UINT":
+                        case "IEC61131_UINT16":
+                            var = new Variant(UShort.valueOf(plcValue.getInteger()));
+                            break;
+                        case "IEC61131_WORD":
+                        case "IEC61131_BITARR16":
+                            var = new Variant(UShort.valueOf(plcValue.getInteger()));
+                            break;
+                        case "IEC61131_DINT":
+                        case "IEC61131_INT32":
+                            var = new Variant(plcValue.getInteger());
+                            break;
+                        case "IEC61131_UDINT":
+                        case "IEC61131_UINT32":
+                            var = new Variant(UInteger.valueOf(plcValue.getLong()));
+                            break;
+                        case "IEC61131_DWORD":
+                        case "IEC61131_BITARR32":
+                            var = new Variant(UInteger.valueOf(plcValue.getLong()));
+                            break;
+                        case "IEC61131_LINT":
+                        case "IEC61131_INT64":
+                            var = new Variant(plcValue.getLong());
+                            break;
+                        case "IEC61131_ULINT":
+                        case "IEC61131_UINT64":
+                            var = new Variant(ULong.valueOf(plcValue.getBigInteger()));
+                            break;
+                        case "IEC61131_LWORD":
+                        case "IEC61131_BITARR64":
+                            var = new Variant(ULong.valueOf(plcValue.getBigInteger()));
+                            break;
+                        case "IEC61131_REAL":
+                        case "IEC61131_FLOAT":
+                            var = new Variant(plcValue.getFloat());
+                            break;
+                        case "IEC61131_LREAL":
+                        case "IEC61131_DOUBLE":
+                            var = new Variant(plcValue.getDouble());
+                            break;
+                        case "IEC61131_CHAR":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_WCHAR":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_STRING":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_WSTRING":
+                        case "IEC61131_STRING16":
+                            var = new Variant(plcValue.getString());
+                            break;
+                        case "IEC61131_DATE_AND_TIME":
+                            var = new Variant(plcValue.getDateTime());
+                            break;
+                        default:
+                            logger.warn("Unsupported data type : {}, {}", plcValue.getClass(), dataType);
+                    }
+                }
+                DataValue value = new DataValue(var);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);
@@ -471,14 +817,21 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             }
 
             for (int counter = 0; counter < names.size(); counter++) {
-                PlcResponseCode resultCode;
+                final PlcResponseCode resultCode;
                 if (statusCodes != null && statusCodes.size() > counter) {
-                    if (statusCodes.get(counter).isGood()) {
-                        resultCode = PlcResponseCode.OK;
-                    } else if (statusCodes.get(counter).isUncertain()) {
-                        resultCode = PlcResponseCode.NOT_FOUND;
-                    } else if (statusCodes.get(counter).isBad() && statusCodes.get(counter).getValue() == 2155085824L) {
-                        resultCode = PlcResponseCode.INVALID_DATATYPE;
+                    Optional<String[]> status = StatusCodes.lookup(statusCodes.get(counter).getValue());
+                    if (status.isPresent()) {
+                        if (status.get()[0].equals("Good")) {
+                            resultCode = PlcResponseCode.OK;
+                        } else if (status.get()[0].equals("Uncertain")) {
+                            resultCode = PlcResponseCode.NOT_FOUND;
+                        } else if (status.get()[0].equals("Bad")) {
+                            resultCode = PlcResponseCode.INVALID_DATATYPE;
+                        } else if (status.get()[0].equals("Bad_NodeIdUnknown")) {
+                            resultCode = PlcResponseCode.NOT_FOUND;
+                        } else {
+                            resultCode = PlcResponseCode.ACCESS_DENIED;
+                        }
                     } else {
                         resultCode = PlcResponseCode.ACCESS_DENIED;
                     }

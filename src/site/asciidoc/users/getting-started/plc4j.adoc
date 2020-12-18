@@ -110,7 +110,11 @@ The request is sent to the PLC by issuing the `execute` method on the request ob
 ----
 CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
 asyncResponse.whenComplete((response, throwable) -> {
-  ... process the response ...
+  try {
+    ... process the response ...
+  } catch (Exception e) {
+    ... Handle any errors ...
+  }
 });
 ----
 
@@ -120,7 +124,7 @@ So as soon as the request is fully processed, the callback gets called and will 
 However if you want to write your code in a more synchronous fashion, the following alternative will provide this:
 
 ----
-PlcReadResponse response = readRequest.execute().get();
+PlcReadResponse response = readRequest.execute().get(5000, TimeUnit.MILLISECONDS);
 ----
 
 Processing of the responses is identical in both cases.
