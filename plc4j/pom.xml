@@ -227,7 +227,7 @@
           <!--
                 Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>@{failsafeArgLine}</argLine>
+          <!--argLine>@{failsafeArgLine}</argLine-->
         </configuration>
       </plugin>
 
