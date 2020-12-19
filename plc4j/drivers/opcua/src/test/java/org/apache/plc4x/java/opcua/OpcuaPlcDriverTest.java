@@ -339,14 +339,14 @@ public class OpcuaPlcDriverTest {
     @Test
     public void testOpcuaAddressPattern() {
 
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://localhost");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://localhost:3131");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://www.google.de");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://www.google.de:443");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://127.0.0.1");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://127.0.0.1:251");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://254.254.254.254:1337");
-        assertMatching(INET_ADDRESS_PATTERN, "tcp://254.254.254.254");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://localhost");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://localhost:3131");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://www.google.de");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://www.google.de:443");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://127.0.0.1");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://127.0.0.1:251");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://254.254.254.254:1337");
+        assertMatching(INET_ADDRESS_PATTERN, ":tcp://254.254.254.254");
 
 
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://localhost");
