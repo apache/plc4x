@@ -41,6 +41,7 @@
 
     <module>examples</module>
     <module>karaf-features</module>
+    <module>integrations</module>
   </modules>
 
   <build>

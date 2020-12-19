@@ -40,6 +40,7 @@
     <module>modbus</module>
     <module>s7</module>
 	<module>opcua</module>
+    <module>simulated</module>
   </modules>
 
 </project>

@@ -45,6 +45,7 @@
 
     <!-- Utilities used externally by users -->
     <module>connection-pool</module>
+    <module>opm</module>
   </modules>
 
   <profiles>

@@ -171,4 +171,9 @@ public class TestFieldHandler implements PlcFieldHandler {
         throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
 
+    @Override
+    public BaseDefaultFieldItem encodeDuration(PlcField field, Object[] values) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

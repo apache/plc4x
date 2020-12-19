@@ -101,4 +101,9 @@ public class MockFieldHandler implements PlcFieldHandler {
         return new MockFieldItem(values);
     }
 
+    @Override
+    public BaseDefaultFieldItem encodeDuration(PlcField field, Object[] values) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

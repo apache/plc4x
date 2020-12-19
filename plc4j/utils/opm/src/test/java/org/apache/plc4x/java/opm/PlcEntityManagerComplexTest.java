@@ -309,6 +309,11 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         public BaseDefaultFieldItem encodeByteArray(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             return null;
         }
+
+        @Override
+        public BaseDefaultFieldItem encodeDuration(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 
     private static class NoEntity {
