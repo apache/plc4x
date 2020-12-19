@@ -177,69 +177,69 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize":
-                            var dt *COTPParameterTpduSize
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPParameterTpduSize)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap":
-                            var dt *COTPParameterCallingTsap
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPParameterCallingTsap)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap":
-                            var dt *COTPParameterCalledTsap
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPParameterCalledTsap)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPParameterChecksum":
-                            var dt *COTPParameterChecksum
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPParameterChecksum)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPParameterDisconnectAdditionalInformation":
-                            var dt *COTPParameterDisconnectAdditionalInformation
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPParameterDisconnectAdditionalInformation)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize":
+                        var dt *COTPParameterTpduSize
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPParameterTpduSize)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap":
+                        var dt *COTPParameterCallingTsap
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPParameterCallingTsap)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap":
+                        var dt *COTPParameterCalledTsap
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPParameterCalledTsap)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterChecksum":
+                        var dt *COTPParameterChecksum
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPParameterChecksum)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterDisconnectAdditionalInformation":
+                        var dt *COTPParameterDisconnectAdditionalInformation
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPParameterDisconnectAdditionalInformation)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

@@ -194,21 +194,21 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
     // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
     var parameter *S7Parameter = nil
     if bool((parameterLength) > ((0))) {
-        _message, _err := S7ParameterParse(io, messageType)
+        _val, _err := S7ParameterParse(io, messageType)
         if _err != nil {
             return nil, errors.New("Error parsing 'parameter' field " + _err.Error())
         }
-        parameter = _message
+        parameter = _val
     }
 
     // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
     var payload *S7Payload = nil
     if bool((payloadLength) > ((0))) {
-        _message, _err := S7PayloadParse(io, messageType, parameter)
+        _val, _err := S7PayloadParse(io, messageType, parameter)
         if _err != nil {
             return nil, errors.New("Error parsing 'payload' field " + _err.Error())
         }
-        payload = _message
+        payload = _val
     }
 
     // Finish initializing
@@ -326,57 +326,57 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                     return err
                 }
                 m.Payload = dt
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7MessageRequest":
-                            var dt *S7MessageRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*S7MessageRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7MessageResponse":
-                            var dt *S7MessageResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7MessageResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7MessageResponseData":
-                            var dt *S7MessageResponseData
-                            if m.Child != nil {
-                                dt = m.Child.(*S7MessageResponseData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7MessageUserData":
-                            var dt *S7MessageUserData
-                            if m.Child != nil {
-                                dt = m.Child.(*S7MessageUserData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageRequest":
+                        var dt *S7MessageRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*S7MessageRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageResponse":
+                        var dt *S7MessageResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7MessageResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageResponseData":
+                        var dt *S7MessageResponseData
+                        if m.Child != nil {
+                            dt = m.Child.(*S7MessageResponseData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageUserData":
+                        var dt *S7MessageUserData
+                        if m.Child != nil {
+                            dt = m.Child.(*S7MessageUserData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

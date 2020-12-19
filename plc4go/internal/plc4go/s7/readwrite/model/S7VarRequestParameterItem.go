@@ -153,21 +153,21 @@ func (m *S7VarRequestParameterItem) UnmarshalXML(d *xml.Decoder, start xml.Start
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress":
-                            var dt *S7VarRequestParameterItemAddress
-                            if m.Child != nil {
-                                dt = m.Child.(*S7VarRequestParameterItemAddress)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress":
+                        var dt *S7VarRequestParameterItemAddress
+                        if m.Child != nil {
+                            dt = m.Child.(*S7VarRequestParameterItemAddress)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

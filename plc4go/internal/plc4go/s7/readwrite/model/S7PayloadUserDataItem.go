@@ -246,33 +246,33 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
                     return err
                 }
                 m.SzlIndex = data
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
-                            var dt *S7PayloadUserDataItemCpuFunctionReadSzlRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadUserDataItemCpuFunctionReadSzlRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse":
-                            var dt *S7PayloadUserDataItemCpuFunctionReadSzlResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadUserDataItemCpuFunctionReadSzlResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
+                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadUserDataItemCpuFunctionReadSzlRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse":
+                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadUserDataItemCpuFunctionReadSzlResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type HPAIDataEndpoint struct {
-    HostProtocolCode *HostProtocolCode
+    HostProtocolCode HostProtocolCode
     IpAddress *IPAddress
     IpPort uint16
     IHPAIDataEndpoint
@@ -41,7 +41,7 @@ type IHPAIDataEndpoint interface {
     xml.Marshaler
 }
 
-func NewHPAIDataEndpoint(hostProtocolCode *HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDataEndpoint {
+func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDataEndpoint {
     return &HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
@@ -69,7 +69,7 @@ func (m *HPAIDataEndpoint) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Simple field (hostProtocolCode)
-    lengthInBits += m.HostProtocolCode.LengthInBits()
+    lengthInBits += 8
 
     // Simple field (ipAddress)
     lengthInBits += m.IpAddress.LengthInBits()
@@ -161,8 +161,8 @@ func (m *HPAIDataEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "hostProtocolCode":
-                var data *HostProtocolCode
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data HostProtocolCode
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.HostProtocolCode = data

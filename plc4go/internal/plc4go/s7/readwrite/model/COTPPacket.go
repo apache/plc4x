@@ -165,11 +165,11 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
     curPos = io.GetPos() - startPos
     var payload *S7Message = nil
     if bool((curPos) < (cotpLen)) {
-        _message, _err := S7MessageParse(io)
+        _val, _err := S7MessageParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'payload' field " + _err.Error())
         }
-        payload = _message
+        payload = _val
     }
 
     // Finish initializing
@@ -255,81 +255,81 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                     return err
                 }
                 m.Payload = dt
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
-                            var dt *COTPPacketData
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest":
-                            var dt *COTPPacketConnectionRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketConnectionRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse":
-                            var dt *COTPPacketConnectionResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketConnectionResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest":
-                            var dt *COTPPacketDisconnectRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketDisconnectRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse":
-                            var dt *COTPPacketDisconnectResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketDisconnectResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError":
-                            var dt *COTPPacketTpduError
-                            if m.Child != nil {
-                                dt = m.Child.(*COTPPacketTpduError)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
+                        var dt *COTPPacketData
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest":
+                        var dt *COTPPacketConnectionRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketConnectionRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse":
+                        var dt *COTPPacketConnectionResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketConnectionResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectRequest":
+                        var dt *COTPPacketDisconnectRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketDisconnectRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketDisconnectResponse":
+                        var dt *COTPPacketDisconnectResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketDisconnectResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.COTPPacketTpduError":
+                        var dt *COTPPacketTpduError
+                        if m.Child != nil {
+                            dt = m.Child.(*COTPPacketTpduError)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

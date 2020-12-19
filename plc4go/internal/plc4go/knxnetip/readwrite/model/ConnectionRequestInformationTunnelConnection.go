@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
-    KnxLayer *KnxLayer
+    KnxLayer KnxLayer
     Parent *ConnectionRequestInformation
     IConnectionRequestInformationTunnelConnection
 }
@@ -52,7 +52,7 @@ func (m *ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
 func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
-func NewConnectionRequestInformationTunnelConnection(knxLayer *KnxLayer, ) *ConnectionRequestInformation {
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer, ) *ConnectionRequestInformation {
     child := &ConnectionRequestInformationTunnelConnection{
         KnxLayer: knxLayer,
         Parent: NewConnectionRequestInformation(),
@@ -88,7 +88,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (knxLayer)
-    lengthInBits += m.KnxLayer.LengthInBits()
+    lengthInBits += 8
 
     // Reserved Field (reserved)
     lengthInBits += 8
@@ -163,8 +163,8 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "knxLayer":
-                var data *KnxLayer
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data KnxLayer
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.KnxLayer = data

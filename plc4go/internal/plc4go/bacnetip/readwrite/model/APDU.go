@@ -167,105 +167,105 @@ func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
-                            var dt *APDUConfirmedRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUConfirmedRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
-                            var dt *APDUUnconfirmedRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUUnconfirmedRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
-                            var dt *APDUSimpleAck
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUSimpleAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
-                            var dt *APDUComplexAck
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUComplexAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
-                            var dt *APDUSegmentAck
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUSegmentAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
-                            var dt *APDUError
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUError)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
-                            var dt *APDUReject
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUReject)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
-                            var dt *APDUAbort
-                            if m.Child != nil {
-                                dt = m.Child.(*APDUAbort)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
+                        var dt *APDUConfirmedRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUConfirmedRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
+                        var dt *APDUUnconfirmedRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUUnconfirmedRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
+                        var dt *APDUSimpleAck
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUSimpleAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
+                        var dt *APDUComplexAck
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUComplexAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
+                        var dt *APDUSegmentAck
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUSegmentAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
+                        var dt *APDUError
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUError)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
+                        var dt *APDUReject
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUReject)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
+                        var dt *APDUAbort
+                        if m.Child != nil {
+                            dt = m.Child.(*APDUAbort)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

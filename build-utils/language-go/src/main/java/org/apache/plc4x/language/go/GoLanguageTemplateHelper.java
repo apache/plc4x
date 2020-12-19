@@ -257,7 +257,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean needsPointerAccess(PropertyField field) {
-        return !(field instanceof EnumField) && ("optional".equals(field.getTypeName()) || isComplexTypeReference(field.getType()));
+        return "optional".equals(field.getTypeName()) || (isComplexTypeReference(field.getType()) && !isEnumField(field));
     }
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
@@ -764,6 +764,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         return filteredEnumValues.values();
+    }
+
+    public List<DiscriminatedComplexTypeDefinition> getUniqueSwitchCases(List<DiscriminatedComplexTypeDefinition> allSwitchCases) {
+        Map<String, DiscriminatedComplexTypeDefinition> switchCases = new LinkedHashMap<>();
+        for (DiscriminatedComplexTypeDefinition switchCase : allSwitchCases) {
+            if(!switchCases.containsKey(switchCase.getName())) {
+                switchCases.put(switchCase.getName(), switchCase);
+            }
+        }
+        return new ArrayList<>(switchCases.values());
     }
 
     public List<String> getRequiredImports() {

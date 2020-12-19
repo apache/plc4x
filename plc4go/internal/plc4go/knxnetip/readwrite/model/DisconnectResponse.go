@@ -28,7 +28,7 @@ import (
 // The data-structure of this message
 type DisconnectResponse struct {
     CommunicationChannelId uint8
-    Status *Status
+    Status Status
     Parent *KnxNetIpMessage
     IDisconnectResponse
 }
@@ -52,7 +52,7 @@ func (m *DisconnectResponse) MsgType() uint16 {
 func (m *DisconnectResponse) InitializeParent(parent *KnxNetIpMessage) {
 }
 
-func NewDisconnectResponse(communicationChannelId uint8, status *Status, ) *KnxNetIpMessage {
+func NewDisconnectResponse(communicationChannelId uint8, status Status, ) *KnxNetIpMessage {
     child := &DisconnectResponse{
         CommunicationChannelId: communicationChannelId,
         Status: status,
@@ -92,7 +92,7 @@ func (m *DisconnectResponse) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Simple field (status)
-    lengthInBits += m.Status.LengthInBits()
+    lengthInBits += 8
 
     return lengthInBits
 }
@@ -162,8 +162,8 @@ func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data *Status
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data Status
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.Status = data

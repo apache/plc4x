@@ -227,7 +227,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
         }
-
         destinationNetworkAddress = &_val
     }
 
@@ -238,7 +237,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'destinationLength' field " + _err.Error())
         }
-
         destinationLength = &_val
     }
 
@@ -260,7 +258,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'sourceNetworkAddress' field " + _err.Error())
         }
-
         sourceNetworkAddress = &_val
     }
 
@@ -271,7 +268,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'sourceLength' field " + _err.Error())
         }
-
         sourceLength = &_val
     }
 
@@ -293,28 +289,27 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'hopCount' field " + _err.Error())
         }
-
         hopCount = &_val
     }
 
     // Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
     var nlm *NLM = nil
     if messageTypeFieldPresent {
-        _message, _err := NLMParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+        _val, _err := NLMParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'nlm' field " + _err.Error())
         }
-        nlm = _message
+        nlm = _val
     }
 
     // Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
     var apdu *APDU = nil
     if !(messageTypeFieldPresent) {
-        _message, _err := APDUParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+        _val, _err := APDUParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'apdu' field " + _err.Error())
         }
-        apdu = _message
+        apdu = _val
     }
 
     // Create the instance

@@ -224,11 +224,11 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
     curPos = io.GetPos() - startPos
     var priority *BACnetTag = nil
     if bool((curPos) < (((len) - ((1))))) {
-        _message, _err := BACnetTagParse(io)
+        _val, _err := BACnetTagParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'priority' field " + _err.Error())
         }
-        priority = _message
+        priority = _val
     }
 
     // Create a partially initialized instance

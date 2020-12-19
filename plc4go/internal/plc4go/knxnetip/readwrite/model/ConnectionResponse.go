@@ -28,7 +28,7 @@ import (
 // The data-structure of this message
 type ConnectionResponse struct {
     CommunicationChannelId uint8
-    Status *Status
+    Status Status
     HpaiDataEndpoint *HPAIDataEndpoint
     ConnectionResponseDataBlock *ConnectionResponseDataBlock
     Parent *KnxNetIpMessage
@@ -54,7 +54,7 @@ func (m *ConnectionResponse) MsgType() uint16 {
 func (m *ConnectionResponse) InitializeParent(parent *KnxNetIpMessage) {
 }
 
-func NewConnectionResponse(communicationChannelId uint8, status *Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock, ) *KnxNetIpMessage {
+func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock, ) *KnxNetIpMessage {
     child := &ConnectionResponse{
         CommunicationChannelId: communicationChannelId,
         Status: status,
@@ -96,7 +96,7 @@ func (m *ConnectionResponse) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Simple field (status)
-    lengthInBits += m.Status.LengthInBits()
+    lengthInBits += 8
 
     // Optional Field (hpaiDataEndpoint)
     if m.HpaiDataEndpoint != nil {
@@ -132,21 +132,21 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
     var hpaiDataEndpoint *HPAIDataEndpoint = nil
     if bool((status) == (Status_NO_ERROR)) {
-        _message, _err := HPAIDataEndpointParse(io)
+        _val, _err := HPAIDataEndpointParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
         }
-        hpaiDataEndpoint = _message
+        hpaiDataEndpoint = _val
     }
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
     var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
     if bool((status) == (Status_NO_ERROR)) {
-        _message, _err := ConnectionResponseDataBlockParse(io)
+        _val, _err := ConnectionResponseDataBlockParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
         }
-        connectionResponseDataBlock = _message
+        connectionResponseDataBlock = _val
     }
 
     // Create a partially initialized instance
@@ -218,8 +218,8 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data *Status
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data Status
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.Status = data

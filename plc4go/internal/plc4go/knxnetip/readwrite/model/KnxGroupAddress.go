@@ -141,45 +141,45 @@ func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel":
-                            var dt *KnxGroupAddressFreeLevel
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxGroupAddressFreeLevel)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level":
-                            var dt *KnxGroupAddress2Level
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxGroupAddress2Level)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level":
-                            var dt *KnxGroupAddress3Level
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxGroupAddress3Level)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel":
+                        var dt *KnxGroupAddressFreeLevel
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxGroupAddressFreeLevel)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level":
+                        var dt *KnxGroupAddress2Level
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxGroupAddress2Level)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level":
+                        var dt *KnxGroupAddress3Level
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxGroupAddress3Level)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

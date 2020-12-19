@@ -197,285 +197,285 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LBusmonInd":
-                            var dt *LBusmonInd
-                            if m.Child != nil {
-                                dt = m.Child.(*LBusmonInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataReq":
-                            var dt *LDataReq
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataInd":
-                            var dt *LDataInd
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataCon":
-                            var dt *LDataCon
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LRawReq":
-                            var dt *LRawReq
-                            if m.Child != nil {
-                                dt = m.Child.(*LRawReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LRawInd":
-                            var dt *LRawInd
-                            if m.Child != nil {
-                                dt = m.Child.(*LRawInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LRawCon":
-                            var dt *LRawCon
-                            if m.Child != nil {
-                                dt = m.Child.(*LRawCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataReq":
-                            var dt *LPollDataReq
-                            if m.Child != nil {
-                                dt = m.Child.(*LPollDataReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataCon":
-                            var dt *LPollDataCon
-                            if m.Child != nil {
-                                dt = m.Child.(*LPollDataCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedReq":
-                            var dt *TDataConnectedReq
-                            if m.Child != nil {
-                                dt = m.Child.(*TDataConnectedReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedInd":
-                            var dt *TDataConnectedInd
-                            if m.Child != nil {
-                                dt = m.Child.(*TDataConnectedInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualReq":
-                            var dt *TDataIndividualReq
-                            if m.Child != nil {
-                                dt = m.Child.(*TDataIndividualReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualInd":
-                            var dt *TDataIndividualInd
-                            if m.Child != nil {
-                                dt = m.Child.(*TDataIndividualInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MPropReadReq":
-                            var dt *MPropReadReq
-                            if m.Child != nil {
-                                dt = m.Child.(*MPropReadReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MPropReadCon":
-                            var dt *MPropReadCon
-                            if m.Child != nil {
-                                dt = m.Child.(*MPropReadCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteReq":
-                            var dt *MPropWriteReq
-                            if m.Child != nil {
-                                dt = m.Child.(*MPropWriteReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteCon":
-                            var dt *MPropWriteCon
-                            if m.Child != nil {
-                                dt = m.Child.(*MPropWriteCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MPropInfoInd":
-                            var dt *MPropInfoInd
-                            if m.Child != nil {
-                                dt = m.Child.(*MPropInfoInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCommandReq":
-                            var dt *MFuncPropCommandReq
-                            if m.Child != nil {
-                                dt = m.Child.(*MFuncPropCommandReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropStateReadReq":
-                            var dt *MFuncPropStateReadReq
-                            if m.Child != nil {
-                                dt = m.Child.(*MFuncPropStateReadReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCon":
-                            var dt *MFuncPropCon
-                            if m.Child != nil {
-                                dt = m.Child.(*MFuncPropCon)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MResetReq":
-                            var dt *MResetReq
-                            if m.Child != nil {
-                                dt = m.Child.(*MResetReq)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.MResetInd":
-                            var dt *MResetInd
-                            if m.Child != nil {
-                                dt = m.Child.(*MResetInd)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LBusmonInd":
+                        var dt *LBusmonInd
+                        if m.Child != nil {
+                            dt = m.Child.(*LBusmonInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataReq":
+                        var dt *LDataReq
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataInd":
+                        var dt *LDataInd
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataCon":
+                        var dt *LDataCon
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LRawReq":
+                        var dt *LRawReq
+                        if m.Child != nil {
+                            dt = m.Child.(*LRawReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LRawInd":
+                        var dt *LRawInd
+                        if m.Child != nil {
+                            dt = m.Child.(*LRawInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LRawCon":
+                        var dt *LRawCon
+                        if m.Child != nil {
+                            dt = m.Child.(*LRawCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataReq":
+                        var dt *LPollDataReq
+                        if m.Child != nil {
+                            dt = m.Child.(*LPollDataReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataCon":
+                        var dt *LPollDataCon
+                        if m.Child != nil {
+                            dt = m.Child.(*LPollDataCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedReq":
+                        var dt *TDataConnectedReq
+                        if m.Child != nil {
+                            dt = m.Child.(*TDataConnectedReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedInd":
+                        var dt *TDataConnectedInd
+                        if m.Child != nil {
+                            dt = m.Child.(*TDataConnectedInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualReq":
+                        var dt *TDataIndividualReq
+                        if m.Child != nil {
+                            dt = m.Child.(*TDataIndividualReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualInd":
+                        var dt *TDataIndividualInd
+                        if m.Child != nil {
+                            dt = m.Child.(*TDataIndividualInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MPropReadReq":
+                        var dt *MPropReadReq
+                        if m.Child != nil {
+                            dt = m.Child.(*MPropReadReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MPropReadCon":
+                        var dt *MPropReadCon
+                        if m.Child != nil {
+                            dt = m.Child.(*MPropReadCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteReq":
+                        var dt *MPropWriteReq
+                        if m.Child != nil {
+                            dt = m.Child.(*MPropWriteReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteCon":
+                        var dt *MPropWriteCon
+                        if m.Child != nil {
+                            dt = m.Child.(*MPropWriteCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MPropInfoInd":
+                        var dt *MPropInfoInd
+                        if m.Child != nil {
+                            dt = m.Child.(*MPropInfoInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCommandReq":
+                        var dt *MFuncPropCommandReq
+                        if m.Child != nil {
+                            dt = m.Child.(*MFuncPropCommandReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropStateReadReq":
+                        var dt *MFuncPropStateReadReq
+                        if m.Child != nil {
+                            dt = m.Child.(*MFuncPropStateReadReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCon":
+                        var dt *MFuncPropCon
+                        if m.Child != nil {
+                            dt = m.Child.(*MFuncPropCon)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MResetReq":
+                        var dt *MResetReq
+                        if m.Child != nil {
+                            dt = m.Child.(*MResetReq)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.MResetInd":
+                        var dt *MResetInd
+                        if m.Child != nil {
+                            dt = m.Child.(*MResetInd)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

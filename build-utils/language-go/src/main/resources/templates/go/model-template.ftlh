@@ -275,6 +275,8 @@ func (m *${type.name}) LengthInBits() uint16 {
                 <#if helper.isSimpleTypeReference(optionalField.type)>
                     <#assign simpleTypeReference = optionalField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits}
+                <#elseif helper.isEnumField(field)>
+        lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
                 <#else>
         lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
                 </#if>
@@ -305,6 +307,8 @@ func (m *${type.name}) LengthInBits() uint16 {
                 <#if helper.isSimpleTypeReference(simpleField.type)>
                     <#assign simpleTypeReference = simpleField.type>
     lengthInBits += ${simpleTypeReference.sizeInBits}
+                <#elseif helper.isEnumField(field)>
+    lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
                 <#else>
     lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
                 </#if>
@@ -541,14 +545,19 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
         if _err != nil {
             return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
         }
-
         ${optionalField.name} = &_val
-            <#else>
-        _message, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
+            <#elseif helper.isEnumField(field)>
+        _val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
         if _err != nil {
             return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
         }
-        ${optionalField.name} = _message
+        ${optionalField.name} = &_val
+            <#else>
+        _val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
+        if _err != nil {
+            return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
+        }
+        ${optionalField.name} = _val
             </#if>
     }
                 <#break>
@@ -592,7 +601,11 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
     // Simple Field (${simpleField.name})
     ${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
     if _${simpleField.name}Err != nil {
+            <#if helper.isEnumField(field)>
         return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+            <#else>
+        return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+            </#if>
     }
                 <#break>
 
@@ -938,27 +951,27 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
             </#if>
         </#list>
         <#if hasSwitch>
-                default:
-                    switch start.Attr[0].Value {
-            <#list helper.getSwitchField().cases as subtype>
-                        case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
-                            var dt *${subtype.name}
-                            if m.Child != nil {
-                                dt = m.Child.(*${subtype.name})
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
+            default:
+                switch start.Attr[0].Value {
+            <#list helper.getUniqueSwitchCases(helper.getSwitchField().cases) as subtype>
+                    case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
+                        var dt *${subtype.name}
+                        if m.Child != nil {
+                            dt = m.Child.(*${subtype.name})
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
                 <#if helper.isArrayField(field)>
-                            _values = append(_values, dt)
+                        _values = append(_values, dt)
                 <#else>
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
                 </#if>
             </#list>
-                    }
+                }
         </#if>
     </#if>
             }
