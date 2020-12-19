@@ -41,9 +41,9 @@ import java.util.regex.Pattern;
 public class OpcuaPlcDriver implements PlcDriver {
 
 
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transport>tcp))?://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
-    public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>[\\w/=?&]+)?");
+    public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua" + INET_ADDRESS_PATTERN + "(?<params>[\\w/=?&]+)?");
     private static final int requestTimeout = 10000;
     private OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
 
@@ -70,7 +70,7 @@ public class OpcuaPlcDriver implements PlcDriver {
         String host = matcher.group("host");
         String portString = matcher.group("port");
         Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : "";
 
         try {
             return opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(host), port, params, requestTimeout);
