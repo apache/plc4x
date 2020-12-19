@@ -151,7 +151,6 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'crc' field " + _err.Error())
         }
-
         crc = &_val
     }
 

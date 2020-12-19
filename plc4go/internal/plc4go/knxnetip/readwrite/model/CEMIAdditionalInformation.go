@@ -155,33 +155,33 @@ func (m *CEMIAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.Start
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
-                            var dt *CEMIAdditionalInformationBusmonitorInfo
-                            if m.Child != nil {
-                                dt = m.Child.(*CEMIAdditionalInformationBusmonitorInfo)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
-                            var dt *CEMIAdditionalInformationRelativeTimestamp
-                            if m.Child != nil {
-                                dt = m.Child.(*CEMIAdditionalInformationRelativeTimestamp)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
+                        var dt *CEMIAdditionalInformationBusmonitorInfo
+                        if m.Child != nil {
+                            dt = m.Child.(*CEMIAdditionalInformationBusmonitorInfo)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
+                        var dt *CEMIAdditionalInformationRelativeTimestamp
+                        if m.Child != nil {
+                            dt = m.Child.(*CEMIAdditionalInformationRelativeTimestamp)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

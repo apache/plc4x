@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type DIBDeviceInfo struct {
     DescriptionType uint8
-    KnxMedium *KnxMedium
+    KnxMedium KnxMedium
     DeviceStatus *DeviceStatus
     KnxAddress *KnxAddress
     ProjectInstallationIdentifier *ProjectInstallationIdentifier
@@ -48,7 +48,7 @@ type IDIBDeviceInfo interface {
     xml.Marshaler
 }
 
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium *KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
     return &DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
 }
 
@@ -79,7 +79,7 @@ func (m *DIBDeviceInfo) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Simple field (knxMedium)
-    lengthInBits += m.KnxMedium.LengthInBits()
+    lengthInBits += 8
 
     // Simple field (deviceStatus)
     lengthInBits += m.DeviceStatus.LengthInBits()
@@ -286,8 +286,8 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.DescriptionType = data
             case "knxMedium":
-                var data *KnxMedium
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data KnxMedium
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.KnxMedium = data

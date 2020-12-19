@@ -203,7 +203,6 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
         if _err != nil {
             return nil, errors.New("Error parsing 'sequenceNumber' field " + _err.Error())
         }
-
         sequenceNumber = &_val
     }
 
@@ -214,7 +213,6 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
         if _err != nil {
             return nil, errors.New("Error parsing 'proposedWindowSize' field " + _err.Error())
         }
-
         proposedWindowSize = &_val
     }
 

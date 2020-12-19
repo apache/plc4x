@@ -141,7 +141,6 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
         if _err != nil {
             return nil, errors.New("Error parsing 'extTagNumber' field " + _err.Error())
         }
-
         extTagNumber = &_val
     }
 
@@ -152,7 +151,6 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
         if _err != nil {
             return nil, errors.New("Error parsing 'extLength' field " + _err.Error())
         }
-
         extLength = &_val
     }
 

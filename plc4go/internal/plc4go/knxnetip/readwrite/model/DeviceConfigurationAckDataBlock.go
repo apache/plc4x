@@ -29,7 +29,7 @@ import (
 type DeviceConfigurationAckDataBlock struct {
     CommunicationChannelId uint8
     SequenceCounter uint8
-    Status *Status
+    Status Status
     IDeviceConfigurationAckDataBlock
 }
 
@@ -41,7 +41,7 @@ type IDeviceConfigurationAckDataBlock interface {
     xml.Marshaler
 }
 
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status *Status) *DeviceConfigurationAckDataBlock {
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *DeviceConfigurationAckDataBlock {
     return &DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
 
@@ -75,7 +75,7 @@ func (m *DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
     lengthInBits += 8
 
     // Simple field (status)
-    lengthInBits += m.Status.LengthInBits()
+    lengthInBits += 8
 
     return lengthInBits
 }
@@ -174,8 +174,8 @@ func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml
                 }
                 m.SequenceCounter = data
             case "status":
-                var data *Status
-                if err := d.DecodeElement(data, &tok); err != nil {
+                var data Status
+                if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.Status = data

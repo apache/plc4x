@@ -144,57 +144,57 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse":
-                            var dt *S7PayloadReadVarResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadReadVarResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
-                            var dt *S7PayloadWriteVarRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadWriteVarRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
-                            var dt *S7PayloadWriteVarResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadWriteVarResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
-                            var dt *S7PayloadUserData
-                            if m.Child != nil {
-                                dt = m.Child.(*S7PayloadUserData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse":
+                        var dt *S7PayloadReadVarResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadReadVarResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
+                        var dt *S7PayloadWriteVarRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadWriteVarRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
+                        var dt *S7PayloadWriteVarResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadWriteVarResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
+                        var dt *S7PayloadUserData
+                        if m.Child != nil {
+                            dt = m.Child.(*S7PayloadUserData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

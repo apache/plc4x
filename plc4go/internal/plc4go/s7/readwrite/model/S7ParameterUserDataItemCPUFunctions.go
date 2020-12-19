@@ -185,7 +185,6 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
         if _err != nil {
             return nil, errors.New("Error parsing 'dataUnitReferenceNumber' field " + _err.Error())
         }
-
         dataUnitReferenceNumber = &_val
     }
 
@@ -196,7 +195,6 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
         if _err != nil {
             return nil, errors.New("Error parsing 'lastDataUnit' field " + _err.Error())
         }
-
         lastDataUnit = &_val
     }
 
@@ -207,7 +205,6 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
         if _err != nil {
             return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
         }
-
         errorCode = &_val
     }
 

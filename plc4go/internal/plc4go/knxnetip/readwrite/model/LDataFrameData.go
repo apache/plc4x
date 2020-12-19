@@ -149,12 +149,12 @@ func (m *LDataFrameData) LengthInBits() uint16 {
 
     // Optional Field (controlType)
     if m.ControlType != nil {
-        lengthInBits += (*m.ControlType).LengthInBits()
+        lengthInBits += 2
     }
 
     // Optional Field (apci)
     if m.Apci != nil {
-        lengthInBits += (*m.Apci).LengthInBits()
+        lengthInBits += 4
     }
 
     // Optional Field (dataFirstByte)
@@ -232,21 +232,21 @@ func LDataFrameDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
     // Optional Field (controlType) (Can be skipped, if a given expression evaluates to false)
     var controlType *ControlType = nil
     if control {
-        _message, _err := ControlTypeParse(io)
+        _val, _err := ControlTypeParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'controlType' field " + _err.Error())
         }
-        controlType = _message
+        controlType = &_val
     }
 
     // Optional Field (apci) (Can be skipped, if a given expression evaluates to false)
     var apci *APCI = nil
     if !(control) {
-        _message, _err := APCIParse(io)
+        _val, _err := APCIParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'apci' field " + _err.Error())
         }
-        apci = _message
+        apci = &_val
     }
 
     // Optional Field (dataFirstByte) (Can be skipped, if a given expression evaluates to false)
@@ -256,7 +256,6 @@ func LDataFrameDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'dataFirstByte' field " + _err.Error())
         }
-
         dataFirstByte = &_val
     }
 

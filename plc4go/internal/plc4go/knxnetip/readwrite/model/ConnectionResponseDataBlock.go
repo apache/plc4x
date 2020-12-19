@@ -171,33 +171,33 @@ func (m *ConnectionResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Sta
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockDeviceManagement":
-                            var dt *ConnectionResponseDataBlockDeviceManagement
-                            if m.Child != nil {
-                                dt = m.Child.(*ConnectionResponseDataBlockDeviceManagement)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection":
-                            var dt *ConnectionResponseDataBlockTunnelConnection
-                            if m.Child != nil {
-                                dt = m.Child.(*ConnectionResponseDataBlockTunnelConnection)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockDeviceManagement":
+                        var dt *ConnectionResponseDataBlockDeviceManagement
+                        if m.Child != nil {
+                            dt = m.Child.(*ConnectionResponseDataBlockDeviceManagement)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection":
+                        var dt *ConnectionResponseDataBlockTunnelConnection
+                        if m.Child != nil {
+                            dt = m.Child.(*ConnectionResponseDataBlockTunnelConnection)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

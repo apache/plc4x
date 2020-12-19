@@ -287,69 +287,57 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                     return err
                 }
                 m.ErrorFlag = data
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameAck":
-                            var dt *LDataFrameAck
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataFrameAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameData":
-                            var dt *LDataFrameData
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataFrameData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
-                            var dt *LDataFramePollingData
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataFramePollingData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
-                            var dt *LDataFramePollingData
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataFramePollingData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt":
-                            var dt *LDataFrameDataExt
-                            if m.Child != nil {
-                                dt = m.Child.(*LDataFrameDataExt)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameAck":
+                        var dt *LDataFrameAck
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataFrameAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameData":
+                        var dt *LDataFrameData
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataFrameData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
+                        var dt *LDataFramePollingData
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataFramePollingData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt":
+                        var dt *LDataFrameDataExt
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataFrameDataExt)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

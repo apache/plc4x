@@ -139,7 +139,6 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'extTagNumber' field " + _err.Error())
         }
-
         extTagNumber = &_val
     }
 
@@ -150,7 +149,6 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'extLength' field " + _err.Error())
         }
-
         extLength = &_val
     }
 
@@ -291,177 +289,177 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                     return err
                 }
                 m.ExtLength = data
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
-                            var dt *BACnetTagApplicationNull
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationNull)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
-                            var dt *BACnetTagApplicationBoolean
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationBoolean)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
-                            var dt *BACnetTagApplicationUnsignedInteger
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationUnsignedInteger)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
-                            var dt *BACnetTagApplicationSignedInteger
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationSignedInteger)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
-                            var dt *BACnetTagApplicationReal
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationReal)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
-                            var dt *BACnetTagApplicationDouble
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationDouble)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
-                            var dt *BACnetTagApplicationOctetString
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationOctetString)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
-                            var dt *BACnetTagApplicationCharacterString
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationCharacterString)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
-                            var dt *BACnetTagApplicationBitString
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationBitString)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
-                            var dt *BACnetTagApplicationEnumerated
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationEnumerated)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
-                            var dt *BACnetTagApplicationDate
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationDate)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
-                            var dt *BACnetTagApplicationTime
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationTime)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
-                            var dt *BACnetTagApplicationObjectIdentifier
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagApplicationObjectIdentifier)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
-                            var dt *BACnetTagContext
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetTagContext)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
+                        var dt *BACnetTagApplicationNull
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationNull)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
+                        var dt *BACnetTagApplicationBoolean
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationBoolean)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
+                        var dt *BACnetTagApplicationUnsignedInteger
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationUnsignedInteger)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
+                        var dt *BACnetTagApplicationSignedInteger
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationSignedInteger)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
+                        var dt *BACnetTagApplicationReal
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationReal)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
+                        var dt *BACnetTagApplicationDouble
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationDouble)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
+                        var dt *BACnetTagApplicationOctetString
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationOctetString)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
+                        var dt *BACnetTagApplicationCharacterString
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationCharacterString)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
+                        var dt *BACnetTagApplicationBitString
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationBitString)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
+                        var dt *BACnetTagApplicationEnumerated
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationEnumerated)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
+                        var dt *BACnetTagApplicationDate
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationDate)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
+                        var dt *BACnetTagApplicationTime
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationTime)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
+                        var dt *BACnetTagApplicationObjectIdentifier
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagApplicationObjectIdentifier)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
+                        var dt *BACnetTagContext
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetTagContext)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

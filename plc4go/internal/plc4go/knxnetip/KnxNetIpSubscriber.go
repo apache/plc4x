@@ -77,63 +77,83 @@ func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsub
 /*
  * Callback for incoming value change events from the KNX bus
  */
-func (m *KnxNetIpSubscriber) handleValueChange(cemiDataFrame *driverModel.CEMIDataFrame, changed bool) {
-    // Decode the group-address according to the settings in the driver
-    // Group addresses can be 1, 2 or 3 levels (3 being the default)
-    garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(cemiDataFrame.DestinationAddress))
-    groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
-    if err != nil {
-        return
+func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFrame, changed bool) {
+    var destinationAddress []int8
+    var dataFirstByte *int8
+    var data []int8
+    switch lDataFrame.Child.(type) {
+    case *driverModel.LDataFrameData:
+        dataFrame := driverModel.CastLDataFrameData(lDataFrame)
+        destinationAddress = dataFrame.DestinationAddress
+        dataFirstByte = dataFrame.DataFirstByte
+        data = dataFrame.Data
+    case *driverModel.LDataFrameDataExt:
+        dataFrame := driverModel.CastLDataFrameDataExt(lDataFrame)
+        destinationAddress = dataFrame.DestinationAddress
+        dataFirstByte = dataFrame.DataFirstByte
+        data = dataFrame.Data
     }
 
-    // Go through all subscription-requests and process each separately
-    for _, subscriptionRequest := range m.subscriptionRequests {
-        fields := map[string]apiModel.PlcField{}
-        types := map[string]internalModel.SubscriptionType{}
-        intervals := map[string]time.Duration{}
-        responseCodes := map[string]apiModel.PlcResponseCode{}
-        addresses := map[string][]int8{}
-        plcValues := map[string]values.PlcValue{}
+    if destinationAddress != nil {
+        // Decode the group-address according to the settings in the driver
+        // Group addresses can be 1, 2 or 3 levels (3 being the default)
+        garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
+        groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
+        if err != nil {
+            return
+        }
 
-        // Check if this datagram matches any address in this subscription request
-        // As depending on the address used for fields, the decoding is different, we need to decode on-demand here.
-        for _, fieldName := range subscriptionRequest.GetFieldNames() {
-            field, err := CastToKnxNetIpFieldFromPlcField(subscriptionRequest.GetField(fieldName))
-            if err != nil {
-                continue
-            }
-            subscriptionType := subscriptionRequest.GetType(fieldName)
-            // If it matches, take the datatype of each matching field and try to decode the payload
-            if field.matches(groupAddress) {
-                // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
-                if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
-                    var payload []uint8
-                    payload = append(payload, uint8(cemiDataFrame.DataFirstByte))
-                    payload = append(payload, utils.Int8ArrayToByteArray(cemiDataFrame.Data)...)
-                    rb := utils.NewReadBuffer(payload)
-                    plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
-                    fields[fieldName] = field
-                    types[fieldName] = subscriptionRequest.GetType(fieldName)
-                    intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
-                    addresses[fieldName] = cemiDataFrame.DestinationAddress
-                    if err == nil {
-                        responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-                        plcValues[fieldName] = plcValue
-                    } else {
-                        // TODO: Do a little more here ...
-                        responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-                        plcValues[fieldName] = nil
+        // Go through all subscription-requests and process each separately
+        for _, subscriptionRequest := range m.subscriptionRequests {
+            fields := map[string]apiModel.PlcField{}
+            types := map[string]internalModel.SubscriptionType{}
+            intervals := map[string]time.Duration{}
+            responseCodes := map[string]apiModel.PlcResponseCode{}
+            addresses := map[string][]int8{}
+            plcValues := map[string]values.PlcValue{}
+
+            // Check if this datagram matches any address in this subscription request
+            // As depending on the address used for fields, the decoding is different, we need to decode on-demand here.
+            for _, fieldName := range subscriptionRequest.GetFieldNames() {
+                field, err := CastToKnxNetIpFieldFromPlcField(subscriptionRequest.GetField(fieldName))
+                if err != nil {
+                    continue
+                }
+                subscriptionType := subscriptionRequest.GetType(fieldName)
+                // If it matches, take the datatype of each matching field and try to decode the payload
+                if field.matches(groupAddress) {
+                    // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
+                    if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
+                        if dataFirstByte != nil {
+                            var payload []uint8
+                            payload = append(payload, uint8(*dataFirstByte))
+                            payload = append(payload, utils.Int8ArrayToByteArray(data)...)
+                            rb := utils.NewReadBuffer(payload)
+                            plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
+                            fields[fieldName] = field
+                            types[fieldName] = subscriptionRequest.GetType(fieldName)
+                            intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+                            addresses[fieldName] = destinationAddress
+                            if err == nil {
+                                responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+                                plcValues[fieldName] = plcValue
+                            } else {
+                                // TODO: Do a little more here ...
+                                responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+                                plcValues[fieldName] = nil
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        // Assemble a PlcSubscription event
-        if len(plcValues) > 0 {
-            event := NewKnxNetIpSubscriptionEvent(
-                fields, types, intervals, responseCodes, addresses, plcValues)
-            eventHandler := subscriptionRequest.GetEventHandler()
-            eventHandler(event)
+            // Assemble a PlcSubscription event
+            if len(plcValues) > 0 {
+                event := NewKnxNetIpSubscriptionEvent(
+                    fields, types, intervals, responseCodes, addresses, plcValues)
+                eventHandler := subscriptionRequest.GetEventHandler()
+                eventHandler(event)
+            }
         }
     }
 }
