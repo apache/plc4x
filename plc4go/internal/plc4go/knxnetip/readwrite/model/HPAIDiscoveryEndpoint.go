@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type HPAIDiscoveryEndpoint struct {
-    HostProtocolCode HostProtocolCode
+    HostProtocolCode *HostProtocolCode
     IpAddress *IPAddress
     IpPort uint16
     IHPAIDiscoveryEndpoint
@@ -41,7 +41,7 @@ type IHPAIDiscoveryEndpoint interface {
     xml.Marshaler
 }
 
-func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDiscoveryEndpoint {
+func NewHPAIDiscoveryEndpoint(hostProtocolCode *HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDiscoveryEndpoint {
     return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
@@ -68,8 +68,8 @@ func (m *HPAIDiscoveryEndpoint) LengthInBits() uint16 {
     // Implicit Field (structureLength)
     lengthInBits += 8
 
-    // Enum Field (hostProtocolCode)
-    lengthInBits += 8
+    // Simple field (hostProtocolCode)
+    lengthInBits += m.HostProtocolCode.LengthInBits()
 
     // Simple field (ipAddress)
     lengthInBits += m.IpAddress.LengthInBits()
@@ -92,7 +92,7 @@ func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (*HPAIDiscoveryEndpoint, e
         return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
     }
 
-    // Enum field (hostProtocolCode)
+    // Simple Field (hostProtocolCode)
     hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
     if _hostProtocolCodeErr != nil {
         return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
@@ -123,9 +123,8 @@ func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
     }
 
-    // Enum field (hostProtocolCode)
-    hostProtocolCode := CastHostProtocolCode(m.HostProtocolCode)
-    _hostProtocolCodeErr := hostProtocolCode.Serialize(io)
+    // Simple Field (hostProtocolCode)
+    _hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
     if _hostProtocolCodeErr != nil {
         return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
     }
@@ -162,8 +161,8 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "hostProtocolCode":
-                var data HostProtocolCode
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *HostProtocolCode
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.HostProtocolCode = data

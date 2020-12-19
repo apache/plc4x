@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIRawCon struct {
+type LRawReq struct {
     Parent *CEMI
-    ICEMIRawCon
+    ILRawReq
 }
 
 // The corresponding interface
-type ICEMIRawCon interface {
+type ILRawReq interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,66 +41,66 @@ type ICEMIRawCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIRawCon) MessageCode() uint8 {
-    return 0x2F
+func (m *LRawReq) MessageCode() uint8 {
+    return 0x10
 }
 
 
-func (m *CEMIRawCon) InitializeParent(parent *CEMI) {
+func (m *LRawReq) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIRawCon() *CEMI {
-    child := &CEMIRawCon{
+func NewLRawReq() *CEMI {
+    child := &LRawReq{
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIRawCon(structType interface{}) *CEMIRawCon {
-    castFunc := func(typ interface{}) *CEMIRawCon {
-        if casted, ok := typ.(CEMIRawCon); ok {
+func CastLRawReq(structType interface{}) *LRawReq {
+    castFunc := func(typ interface{}) *LRawReq {
+        if casted, ok := typ.(LRawReq); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIRawCon); ok {
+        if casted, ok := typ.(*LRawReq); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIRawCon(casted.Child)
+            return CastLRawReq(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIRawCon(casted.Child)
+            return CastLRawReq(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIRawCon) GetTypeName() string {
-    return "CEMIRawCon"
+func (m *LRawReq) GetTypeName() string {
+    return "LRawReq"
 }
 
-func (m *CEMIRawCon) LengthInBits() uint16 {
+func (m *LRawReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIRawCon) LengthInBytes() uint16 {
+func (m *LRawReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIRawConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LRawReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIRawCon{
+    _child := &LRawReq{
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIRawCon) Serialize(io utils.WriteBuffer) error {
+func (m *LRawReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -108,7 +108,7 @@ func (m *CEMIRawCon) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -129,7 +129,7 @@ func (m *CEMIRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m *CEMIRawCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

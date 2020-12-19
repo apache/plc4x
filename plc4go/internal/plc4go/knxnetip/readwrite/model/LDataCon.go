@@ -26,16 +26,16 @@ import (
 )
 
 // The data-structure of this message
-type CEMIBusmonInd struct {
+type LDataCon struct {
     AdditionalInformationLength uint8
     AdditionalInformation []*CEMIAdditionalInformation
-    CemiFrame *CEMIFrame
+    DataFrame *LDataFrame
     Parent *CEMI
-    ICEMIBusmonInd
+    ILDataCon
 }
 
 // The corresponding interface
-type ICEMIBusmonInd interface {
+type ILDataCon interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -45,49 +45,49 @@ type ICEMIBusmonInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIBusmonInd) MessageCode() uint8 {
-    return 0x2B
+func (m *LDataCon) MessageCode() uint8 {
+    return 0x2E
 }
 
 
-func (m *CEMIBusmonInd) InitializeParent(parent *CEMI) {
+func (m *LDataCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, cemiFrame *CEMIFrame, ) *CEMI {
-    child := &CEMIBusmonInd{
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, ) *CEMI {
+    child := &LDataCon{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiFrame: cemiFrame,
+        DataFrame: dataFrame,
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIBusmonInd(structType interface{}) *CEMIBusmonInd {
-    castFunc := func(typ interface{}) *CEMIBusmonInd {
-        if casted, ok := typ.(CEMIBusmonInd); ok {
+func CastLDataCon(structType interface{}) *LDataCon {
+    castFunc := func(typ interface{}) *LDataCon {
+        if casted, ok := typ.(LDataCon); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIBusmonInd); ok {
+        if casted, ok := typ.(*LDataCon); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIBusmonInd(casted.Child)
+            return CastLDataCon(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIBusmonInd(casted.Child)
+            return CastLDataCon(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIBusmonInd) GetTypeName() string {
-    return "CEMIBusmonInd"
+func (m *LDataCon) GetTypeName() string {
+    return "LDataCon"
 }
 
-func (m *CEMIBusmonInd) LengthInBits() uint16 {
+func (m *LDataCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (additionalInformationLength)
@@ -100,17 +100,17 @@ func (m *CEMIBusmonInd) LengthInBits() uint16 {
         }
     }
 
-    // Simple field (cemiFrame)
-    lengthInBits += m.CemiFrame.LengthInBits()
+    // Simple field (dataFrame)
+    lengthInBits += m.DataFrame.LengthInBits()
 
     return lengthInBits
 }
 
-func (m *CEMIBusmonInd) LengthInBytes() uint16 {
+func (m *LDataCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (additionalInformationLength)
     additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -131,24 +131,24 @@ func CEMIBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
         additionalInformation = append(additionalInformation, _item)
     }
 
-    // Simple Field (cemiFrame)
-    cemiFrame, _cemiFrameErr := CEMIFrameParse(io)
-    if _cemiFrameErr != nil {
-        return nil, errors.New("Error parsing 'cemiFrame' field " + _cemiFrameErr.Error())
+    // Simple Field (dataFrame)
+    dataFrame, _dataFrameErr := LDataFrameParse(io)
+    if _dataFrameErr != nil {
+        return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
     }
 
     // Create a partially initialized instance
-    _child := &CEMIBusmonInd{
+    _child := &LDataCon{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiFrame: cemiFrame,
+        DataFrame: dataFrame,
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIBusmonInd) Serialize(io utils.WriteBuffer) error {
+func (m *LDataCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (additionalInformationLength)
@@ -168,10 +168,10 @@ func (m *CEMIBusmonInd) Serialize(io utils.WriteBuffer) error {
         }
     }
 
-    // Simple Field (cemiFrame)
-    _cemiFrameErr := m.CemiFrame.Serialize(io)
-    if _cemiFrameErr != nil {
-        return errors.New("Error serializing 'cemiFrame' field " + _cemiFrameErr.Error())
+    // Simple Field (dataFrame)
+    _dataFrameErr := m.DataFrame.Serialize(io)
+    if _dataFrameErr != nil {
+        return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
     }
 
         return nil
@@ -179,7 +179,7 @@ func (m *CEMIBusmonInd) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -202,12 +202,12 @@ func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 _values = append(_values, dt)
                 m.AdditionalInformation = _values
-            case "cemiFrame":
-                var dt *CEMIFrame
+            case "dataFrame":
+                var dt *LDataFrame
                 if err := d.DecodeElement(&dt, &tok); err != nil {
                     return err
                 }
-                m.CemiFrame = dt
+                m.DataFrame = dt
             }
         }
         token, err = d.Token()
@@ -220,7 +220,7 @@ func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m *CEMIBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
         return err
     }
@@ -233,7 +233,7 @@ func (m *CEMIBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
         return err
     }
-    if err := e.EncodeElement(m.CemiFrame, xml.StartElement{Name: xml.Name{Local: "cemiFrame"}}); err != nil {
+    if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
         return err
     }
     return nil

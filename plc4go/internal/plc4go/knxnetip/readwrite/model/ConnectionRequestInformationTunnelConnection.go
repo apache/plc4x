@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
-    KnxLayer KnxLayer
+    KnxLayer *KnxLayer
     Parent *ConnectionRequestInformation
     IConnectionRequestInformationTunnelConnection
 }
@@ -52,7 +52,7 @@ func (m *ConnectionRequestInformationTunnelConnection) ConnectionType() uint8 {
 func (m *ConnectionRequestInformationTunnelConnection) InitializeParent(parent *ConnectionRequestInformation) {
 }
 
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer, ) *ConnectionRequestInformation {
+func NewConnectionRequestInformationTunnelConnection(knxLayer *KnxLayer, ) *ConnectionRequestInformation {
     child := &ConnectionRequestInformationTunnelConnection{
         KnxLayer: knxLayer,
         Parent: NewConnectionRequestInformation(),
@@ -87,8 +87,8 @@ func (m *ConnectionRequestInformationTunnelConnection) GetTypeName() string {
 func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
-    // Enum Field (knxLayer)
-    lengthInBits += 8
+    // Simple field (knxLayer)
+    lengthInBits += m.KnxLayer.LengthInBits()
 
     // Reserved Field (reserved)
     lengthInBits += 8
@@ -102,7 +102,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 
 func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
-    // Enum field (knxLayer)
+    // Simple Field (knxLayer)
     knxLayer, _knxLayerErr := KnxLayerParse(io)
     if _knxLayerErr != nil {
         return nil, errors.New("Error parsing 'knxLayer' field " + _knxLayerErr.Error())
@@ -134,9 +134,8 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
-    // Enum field (knxLayer)
-    knxLayer := CastKnxLayer(m.KnxLayer)
-    _knxLayerErr := knxLayer.Serialize(io)
+    // Simple Field (knxLayer)
+    _knxLayerErr := m.KnxLayer.Serialize(io)
     if _knxLayerErr != nil {
         return errors.New("Error serializing 'knxLayer' field " + _knxLayerErr.Error())
     }
@@ -164,8 +163,8 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "knxLayer":
-                var data KnxLayer
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *KnxLayer
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.KnxLayer = data

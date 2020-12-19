@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIRawInd struct {
+type TDataIndividualInd struct {
     Parent *CEMI
-    ICEMIRawInd
+    ITDataIndividualInd
 }
 
 // The corresponding interface
-type ICEMIRawInd interface {
+type ITDataIndividualInd interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,66 +41,66 @@ type ICEMIRawInd interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIRawInd) MessageCode() uint8 {
-    return 0x2D
+func (m *TDataIndividualInd) MessageCode() uint8 {
+    return 0x94
 }
 
 
-func (m *CEMIRawInd) InitializeParent(parent *CEMI) {
+func (m *TDataIndividualInd) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIRawInd() *CEMI {
-    child := &CEMIRawInd{
+func NewTDataIndividualInd() *CEMI {
+    child := &TDataIndividualInd{
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIRawInd(structType interface{}) *CEMIRawInd {
-    castFunc := func(typ interface{}) *CEMIRawInd {
-        if casted, ok := typ.(CEMIRawInd); ok {
+func CastTDataIndividualInd(structType interface{}) *TDataIndividualInd {
+    castFunc := func(typ interface{}) *TDataIndividualInd {
+        if casted, ok := typ.(TDataIndividualInd); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIRawInd); ok {
+        if casted, ok := typ.(*TDataIndividualInd); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIRawInd(casted.Child)
+            return CastTDataIndividualInd(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIRawInd(casted.Child)
+            return CastTDataIndividualInd(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIRawInd) GetTypeName() string {
-    return "CEMIRawInd"
+func (m *TDataIndividualInd) GetTypeName() string {
+    return "TDataIndividualInd"
 }
 
-func (m *CEMIRawInd) LengthInBits() uint16 {
+func (m *TDataIndividualInd) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIRawInd) LengthInBytes() uint16 {
+func (m *TDataIndividualInd) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIRawIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIRawInd{
+    _child := &TDataIndividualInd{
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIRawInd) Serialize(io utils.WriteBuffer) error {
+func (m *TDataIndividualInd) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -108,7 +108,7 @@ func (m *CEMIRawInd) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIRawInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *TDataIndividualInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -129,7 +129,7 @@ func (m *CEMIRawInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m *CEMIRawInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TDataIndividualInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

@@ -27,25 +27,26 @@ import (
 )
 
 // The data-structure of this message
-type CEMIFrameDataExt struct {
+type LDataFrameDataExt struct {
     GroupAddress bool
     HopCount uint8
     ExtendedFrameFormat uint8
     SourceAddress *KnxAddress
     DestinationAddress []int8
     DataLength uint8
-    Tcpi TPCI
+    Control bool
+    Numbered bool
     Counter uint8
-    Apci APCI
-    DataFirstByte int8
+    ControlType *ControlType
+    Apci *APCI
+    DataFirstByte *int8
     Data []int8
-    Crc uint8
-    Parent *CEMIFrame
-    ICEMIFrameDataExt
+    Parent *LDataFrame
+    ILDataFrameDataExt
 }
 
 // The corresponding interface
-type ICEMIFrameDataExt interface {
+type ILDataFrameDataExt interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -55,70 +56,71 @@ type ICEMIFrameDataExt interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIFrameDataExt) NotAckFrame() bool {
+func (m *LDataFrameDataExt) NotAckFrame() bool {
     return true
 }
 
-func (m *CEMIFrameDataExt) StandardFrame() bool {
+func (m *LDataFrameDataExt) ExtendedFrame() bool {
+    return true
+}
+
+func (m *LDataFrameDataExt) Polling() bool {
     return false
 }
 
-func (m *CEMIFrameDataExt) Polling() bool {
-    return false
-}
 
-
-func (m *CEMIFrameDataExt) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+func (m *LDataFrameDataExt) InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
     m.Parent.Repeated = repeated
     m.Parent.Priority = priority
     m.Parent.AcknowledgeRequested = acknowledgeRequested
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewCEMIFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, dataLength uint8, tcpi TPCI, counter uint8, apci APCI, dataFirstByte int8, data []int8, crc uint8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
-    child := &CEMIFrameDataExt{
+func NewLDataFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, dataLength uint8, control bool, numbered bool, counter uint8, controlType *ControlType, apci *APCI, dataFirstByte *int8, data []int8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+    child := &LDataFrameDataExt{
         GroupAddress: groupAddress,
         HopCount: hopCount,
         ExtendedFrameFormat: extendedFrameFormat,
         SourceAddress: sourceAddress,
         DestinationAddress: destinationAddress,
         DataLength: dataLength,
-        Tcpi: tcpi,
+        Control: control,
+        Numbered: numbered,
         Counter: counter,
+        ControlType: controlType,
         Apci: apci,
         DataFirstByte: dataFirstByte,
         Data: data,
-        Crc: crc,
-        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
+        Parent: NewLDataFrame(repeated, priority, acknowledgeRequested, errorFlag),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIFrameDataExt(structType interface{}) *CEMIFrameDataExt {
-    castFunc := func(typ interface{}) *CEMIFrameDataExt {
-        if casted, ok := typ.(CEMIFrameDataExt); ok {
+func CastLDataFrameDataExt(structType interface{}) *LDataFrameDataExt {
+    castFunc := func(typ interface{}) *LDataFrameDataExt {
+        if casted, ok := typ.(LDataFrameDataExt); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIFrameDataExt); ok {
+        if casted, ok := typ.(*LDataFrameDataExt); ok {
             return casted
         }
-        if casted, ok := typ.(CEMIFrame); ok {
-            return CastCEMIFrameDataExt(casted.Child)
+        if casted, ok := typ.(LDataFrame); ok {
+            return CastLDataFrameDataExt(casted.Child)
         }
-        if casted, ok := typ.(*CEMIFrame); ok {
-            return CastCEMIFrameDataExt(casted.Child)
+        if casted, ok := typ.(*LDataFrame); ok {
+            return CastLDataFrameDataExt(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIFrameDataExt) GetTypeName() string {
-    return "CEMIFrameDataExt"
+func (m *LDataFrameDataExt) GetTypeName() string {
+    return "LDataFrameDataExt"
 }
 
-func (m *CEMIFrameDataExt) LengthInBits() uint16 {
+func (m *LDataFrameDataExt) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (groupAddress)
@@ -141,34 +143,43 @@ func (m *CEMIFrameDataExt) LengthInBits() uint16 {
     // Simple field (dataLength)
     lengthInBits += 8
 
-    // Enum Field (tcpi)
-    lengthInBits += 2
+    // Simple field (control)
+    lengthInBits += 1
+
+    // Simple field (numbered)
+    lengthInBits += 1
 
     // Simple field (counter)
     lengthInBits += 4
 
-    // Enum Field (apci)
-    lengthInBits += 4
+    // Optional Field (controlType)
+    if m.ControlType != nil {
+        lengthInBits += (*m.ControlType).LengthInBits()
+    }
 
-    // Simple field (dataFirstByte)
-    lengthInBits += 6
+    // Optional Field (apci)
+    if m.Apci != nil {
+        lengthInBits += (*m.Apci).LengthInBits()
+    }
+
+    // Optional Field (dataFirstByte)
+    if m.DataFirstByte != nil {
+        lengthInBits += 6
+    }
 
     // Array field
     if len(m.Data) > 0 {
         lengthInBits += 8 * uint16(len(m.Data))
     }
 
-    // Simple field (crc)
-    lengthInBits += 8
-
     return lengthInBits
 }
 
-func (m *CEMIFrameDataExt) LengthInBytes() uint16 {
+func (m *LDataFrameDataExt) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameDataExtParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
+func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
     // Simple Field (groupAddress)
     groupAddress, _groupAddressErr := io.ReadBit()
@@ -211,10 +222,16 @@ func CEMIFrameDataExtParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
         return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
     }
 
-    // Enum field (tcpi)
-    tcpi, _tcpiErr := TPCIParse(io)
-    if _tcpiErr != nil {
-        return nil, errors.New("Error parsing 'tcpi' field " + _tcpiErr.Error())
+    // Simple Field (control)
+    control, _controlErr := io.ReadBit()
+    if _controlErr != nil {
+        return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
+    }
+
+    // Simple Field (numbered)
+    numbered, _numberedErr := io.ReadBit()
+    if _numberedErr != nil {
+        return nil, errors.New("Error parsing 'numbered' field " + _numberedErr.Error())
     }
 
     // Simple Field (counter)
@@ -223,16 +240,35 @@ func CEMIFrameDataExtParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
         return nil, errors.New("Error parsing 'counter' field " + _counterErr.Error())
     }
 
-    // Enum field (apci)
-    apci, _apciErr := APCIParse(io)
-    if _apciErr != nil {
-        return nil, errors.New("Error parsing 'apci' field " + _apciErr.Error())
+    // Optional Field (controlType) (Can be skipped, if a given expression evaluates to false)
+    var controlType *ControlType = nil
+    if control {
+        _message, _err := ControlTypeParse(io)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'controlType' field " + _err.Error())
+        }
+        controlType = _message
     }
 
-    // Simple Field (dataFirstByte)
-    dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
-    if _dataFirstByteErr != nil {
-        return nil, errors.New("Error parsing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+    // Optional Field (apci) (Can be skipped, if a given expression evaluates to false)
+    var apci *APCI = nil
+    if !(control) {
+        _message, _err := APCIParse(io)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'apci' field " + _err.Error())
+        }
+        apci = _message
+    }
+
+    // Optional Field (dataFirstByte) (Can be skipped, if a given expression evaluates to false)
+    var dataFirstByte *int8 = nil
+    if !(control) {
+        _val, _err := io.ReadInt8(6)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'dataFirstByte' field " + _err.Error())
+        }
+
+        dataFirstByte = &_val
     }
 
     // Array field (data)
@@ -246,33 +282,28 @@ func CEMIFrameDataExtParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
         data[curItem] = _item
     }
 
-    // Simple Field (crc)
-    crc, _crcErr := io.ReadUint8(8)
-    if _crcErr != nil {
-        return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
-    }
-
     // Create a partially initialized instance
-    _child := &CEMIFrameDataExt{
+    _child := &LDataFrameDataExt{
         GroupAddress: groupAddress,
         HopCount: hopCount,
         ExtendedFrameFormat: extendedFrameFormat,
         SourceAddress: sourceAddress,
         DestinationAddress: destinationAddress,
         DataLength: dataLength,
-        Tcpi: tcpi,
+        Control: control,
+        Numbered: numbered,
         Counter: counter,
+        ControlType: controlType,
         Apci: apci,
         DataFirstByte: dataFirstByte,
         Data: data,
-        Crc: crc,
-        Parent: &CEMIFrame{},
+        Parent: &LDataFrame{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIFrameDataExt) Serialize(io utils.WriteBuffer) error {
+func (m *LDataFrameDataExt) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (groupAddress)
@@ -319,11 +350,18 @@ func (m *CEMIFrameDataExt) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
     }
 
-    // Enum field (tcpi)
-    tcpi := CastTPCI(m.Tcpi)
-    _tcpiErr := tcpi.Serialize(io)
-    if _tcpiErr != nil {
-        return errors.New("Error serializing 'tcpi' field " + _tcpiErr.Error())
+    // Simple Field (control)
+    control := bool(m.Control)
+    _controlErr := io.WriteBit((control))
+    if _controlErr != nil {
+        return errors.New("Error serializing 'control' field " + _controlErr.Error())
+    }
+
+    // Simple Field (numbered)
+    numbered := bool(m.Numbered)
+    _numberedErr := io.WriteBit((numbered))
+    if _numberedErr != nil {
+        return errors.New("Error serializing 'numbered' field " + _numberedErr.Error())
     }
 
     // Simple Field (counter)
@@ -333,18 +371,34 @@ func (m *CEMIFrameDataExt) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'counter' field " + _counterErr.Error())
     }
 
-    // Enum field (apci)
-    apci := CastAPCI(m.Apci)
-    _apciErr := apci.Serialize(io)
-    if _apciErr != nil {
-        return errors.New("Error serializing 'apci' field " + _apciErr.Error())
+    // Optional Field (controlType) (Can be skipped, if the value is null)
+    var controlType *ControlType = nil
+    if m.ControlType != nil {
+        controlType = m.ControlType
+        _controlTypeErr := controlType.Serialize(io)
+        if _controlTypeErr != nil {
+            return errors.New("Error serializing 'controlType' field " + _controlTypeErr.Error())
+        }
     }
 
-    // Simple Field (dataFirstByte)
-    dataFirstByte := int8(m.DataFirstByte)
-    _dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
-    if _dataFirstByteErr != nil {
-        return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+    // Optional Field (apci) (Can be skipped, if the value is null)
+    var apci *APCI = nil
+    if m.Apci != nil {
+        apci = m.Apci
+        _apciErr := apci.Serialize(io)
+        if _apciErr != nil {
+            return errors.New("Error serializing 'apci' field " + _apciErr.Error())
+        }
+    }
+
+    // Optional Field (dataFirstByte) (Can be skipped, if the value is null)
+    var dataFirstByte *int8 = nil
+    if m.DataFirstByte != nil {
+        dataFirstByte = m.DataFirstByte
+        _dataFirstByteErr := io.WriteInt8(6, *(dataFirstByte))
+        if _dataFirstByteErr != nil {
+            return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+        }
     }
 
     // Array Field (data)
@@ -357,19 +411,12 @@ func (m *CEMIFrameDataExt) Serialize(io utils.WriteBuffer) error {
         }
     }
 
-    // Simple Field (crc)
-    crc := uint8(m.Crc)
-    _crcErr := io.WriteUint8(8, (crc))
-    if _crcErr != nil {
-        return errors.New("Error serializing 'crc' field " + _crcErr.Error())
-    }
-
         return nil
     }
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LDataFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -419,27 +466,39 @@ func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                     return err
                 }
                 m.DataLength = data
-            case "tcpi":
-                var data TPCI
+            case "control":
+                var data bool
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
-                m.Tcpi = data
+                m.Control = data
+            case "numbered":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Numbered = data
             case "counter":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
                     return err
                 }
                 m.Counter = data
+            case "controlType":
+                var data *ControlType
+                if err := d.DecodeElement(data, &tok); err != nil {
+                    return err
+                }
+                m.ControlType = data
             case "apci":
-                var data APCI
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *APCI
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.Apci = data
             case "dataFirstByte":
-                var data int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *int8
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.DataFirstByte = data
@@ -454,12 +513,6 @@ func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                     return err
                 }
                 m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
-            case "crc":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Crc = data
             }
         }
         token, err = d.Token()
@@ -472,7 +525,7 @@ func (m *CEMIFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
     }
 }
 
-func (m *CEMIFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LDataFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.GroupAddress, xml.StartElement{Name: xml.Name{Local: "groupAddress"}}); err != nil {
         return err
     }
@@ -493,10 +546,16 @@ func (m *CEMIFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) er
     if err := e.EncodeElement(m.DataLength, xml.StartElement{Name: xml.Name{Local: "dataLength"}}); err != nil {
         return err
     }
-    if err := e.EncodeElement(m.Tcpi, xml.StartElement{Name: xml.Name{Local: "tcpi"}}); err != nil {
+    if err := e.EncodeElement(m.Control, xml.StartElement{Name: xml.Name{Local: "control"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Numbered, xml.StartElement{Name: xml.Name{Local: "numbered"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Counter, xml.StartElement{Name: xml.Name{Local: "counter"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ControlType, xml.StartElement{Name: xml.Name{Local: "controlType"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Apci, xml.StartElement{Name: xml.Name{Local: "apci"}}); err != nil {
@@ -508,9 +567,6 @@ func (m *CEMIFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) er
     _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
     base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
     if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Crc, xml.StartElement{Name: xml.Name{Local: "crc"}}); err != nil {
         return err
     }
     return nil

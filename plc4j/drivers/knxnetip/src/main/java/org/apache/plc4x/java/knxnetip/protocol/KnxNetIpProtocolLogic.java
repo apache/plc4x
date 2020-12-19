@@ -23,7 +23,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
@@ -345,11 +344,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             TunnelingRequest knxRequest = new TunnelingRequest(
                 new TunnelingRequestDataBlock(communicationChannelId,
                     (short) sequenceCounter.getAndIncrement()),
-                new CEMIDataReq((short) 0, new CEMIAdditionalInformation[0],
-                    new CEMIDataFrame(true, false, true, true, CEMIPriority.LOW, false, false, true, (byte) 6,
-                        (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        (short) ((data != null) ? data.length + 1 : 1), TPCI.UNNUMBERED_DATA_PACKET, (byte) 0,
-                        APCI.GROUP_VALUE_WRITE_PDU, dataFirstByte, data)
+                new LDataReq((short) 0, new CEMIAdditionalInformation[0],
+                    new LDataFrameData(false, CEMIPriority.LOW, false, false,
+                        knxNetIpDriverContext.getClientKnxAddress(), destinationAddress, true,
+                        (byte) 6,(byte) ((data != null) ? data.length + 1 : 1), false,false, (byte) 0,
+                        null, APCI.GROUP_VALUE_WRITE_PDU, dataFirstByte, data)
                 ));
 
             // Start a new request-transaction (Is ended in the response-handler)
@@ -399,19 +398,33 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             if(knxNetIpDriverContext.isPassiveMode() ||
                 (curCommunicationChannelId == knxNetIpDriverContext.getCommunicationChannelId())) {
                 // Data packets received from a link layer tunneling connection.
-                if(tunnelingRequest.getCemi() instanceof CEMIDataInd) {
-                    CEMIDataInd dataInd = (CEMIDataInd) tunnelingRequest.getCemi();
-                    final CEMIDataFrame cemiDataFrame = dataInd.getCemiDataFrame();
-                    processCemiData(cemiDataFrame.getSourceAddress(), cemiDataFrame.getDestinationAddress(),
-                        cemiDataFrame.getDataFirstByte(), cemiDataFrame.getData());
+                if(tunnelingRequest.getCemi() instanceof LDataInd) {
+                    LDataInd dataInd = (LDataInd) tunnelingRequest.getCemi();
+                    final LDataFrame lDataFrame = dataInd.getDataFrame();
+                    if(lDataFrame instanceof LDataFrameData) {
+                        LDataFrameData lDataFrameData = (LDataFrameData) lDataFrame;
+                        processCemiData(lDataFrameData.getSourceAddress(), lDataFrameData.getDestinationAddress(),
+                            lDataFrameData.getDataFirstByte(), lDataFrameData.getData());
+                    } else if(lDataFrame instanceof LDataFrameDataExt) {
+                        LDataFrameDataExt lDataFrameDataExt = (LDataFrameDataExt) lDataFrame;
+                        processCemiData(lDataFrameDataExt.getSourceAddress(), lDataFrameDataExt.getDestinationAddress(),
+                            lDataFrameDataExt.getDataFirstByte(), lDataFrameDataExt.getData());
+                    }
                 }
                 // Data packets received from a busmonitor tunneling connection.
-                else if(tunnelingRequest.getCemi() instanceof CEMIBusmonInd) {
-                    CEMIBusmonInd busmonInd = (CEMIBusmonInd) tunnelingRequest.getCemi();
-                    if (busmonInd.getCemiFrame() instanceof CEMIFrameData) {
-                        CEMIFrameData cemiDataFrame = (CEMIFrameData) busmonInd.getCemiFrame();
-                        processCemiData(cemiDataFrame.getSourceAddress(), cemiDataFrame.getDestinationAddress(),
-                            cemiDataFrame.getDataFirstByte(), cemiDataFrame.getData());
+                else if(tunnelingRequest.getCemi() instanceof LBusmonInd) {
+                    LBusmonInd busmonInd = (LBusmonInd) tunnelingRequest.getCemi();
+                    if (busmonInd.getDataFrame() != null) {
+                        final LDataFrame lDataFrame = busmonInd.getDataFrame();
+                        if(lDataFrame instanceof LDataFrameData) {
+                            LDataFrameData lDataFrameData = (LDataFrameData) lDataFrame;
+                            processCemiData(lDataFrameData.getSourceAddress(), lDataFrameData.getDestinationAddress(),
+                                lDataFrameData.getDataFirstByte(), lDataFrameData.getData());
+                        } else if(lDataFrame instanceof LDataFrameDataExt) {
+                            LDataFrameDataExt lDataFrameDataExt = (LDataFrameDataExt) lDataFrame;
+                            processCemiData(lDataFrameDataExt.getSourceAddress(), lDataFrameDataExt.getDestinationAddress(),
+                                lDataFrameDataExt.getDataFirstByte(), lDataFrameDataExt.getData());
+                        }
                     }
                 }
 

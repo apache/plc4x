@@ -26,16 +26,16 @@ import (
 )
 
 // The data-structure of this message
-type CEMIDataReq struct {
+type LDataReq struct {
     AdditionalInformationLength uint8
     AdditionalInformation []*CEMIAdditionalInformation
-    CemiDataFrame *CEMIDataFrame
+    DataFrame *LDataFrame
     Parent *CEMI
-    ICEMIDataReq
+    ILDataReq
 }
 
 // The corresponding interface
-type ICEMIDataReq interface {
+type ILDataReq interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -45,49 +45,49 @@ type ICEMIDataReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIDataReq) MessageCode() uint8 {
+func (m *LDataReq) MessageCode() uint8 {
     return 0x11
 }
 
 
-func (m *CEMIDataReq) InitializeParent(parent *CEMI) {
+func (m *LDataReq) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, cemiDataFrame *CEMIDataFrame, ) *CEMI {
-    child := &CEMIDataReq{
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, ) *CEMI {
+    child := &LDataReq{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiDataFrame: cemiDataFrame,
+        DataFrame: dataFrame,
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIDataReq(structType interface{}) *CEMIDataReq {
-    castFunc := func(typ interface{}) *CEMIDataReq {
-        if casted, ok := typ.(CEMIDataReq); ok {
+func CastLDataReq(structType interface{}) *LDataReq {
+    castFunc := func(typ interface{}) *LDataReq {
+        if casted, ok := typ.(LDataReq); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIDataReq); ok {
+        if casted, ok := typ.(*LDataReq); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIDataReq(casted.Child)
+            return CastLDataReq(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIDataReq(casted.Child)
+            return CastLDataReq(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIDataReq) GetTypeName() string {
-    return "CEMIDataReq"
+func (m *LDataReq) GetTypeName() string {
+    return "LDataReq"
 }
 
-func (m *CEMIDataReq) LengthInBits() uint16 {
+func (m *LDataReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (additionalInformationLength)
@@ -100,17 +100,17 @@ func (m *CEMIDataReq) LengthInBits() uint16 {
         }
     }
 
-    // Simple field (cemiDataFrame)
-    lengthInBits += m.CemiDataFrame.LengthInBits()
+    // Simple field (dataFrame)
+    lengthInBits += m.DataFrame.LengthInBits()
 
     return lengthInBits
 }
 
-func (m *CEMIDataReq) LengthInBytes() uint16 {
+func (m *LDataReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (additionalInformationLength)
     additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -131,24 +131,24 @@ func CEMIDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
         additionalInformation = append(additionalInformation, _item)
     }
 
-    // Simple Field (cemiDataFrame)
-    cemiDataFrame, _cemiDataFrameErr := CEMIDataFrameParse(io)
-    if _cemiDataFrameErr != nil {
-        return nil, errors.New("Error parsing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
+    // Simple Field (dataFrame)
+    dataFrame, _dataFrameErr := LDataFrameParse(io)
+    if _dataFrameErr != nil {
+        return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
     }
 
     // Create a partially initialized instance
-    _child := &CEMIDataReq{
+    _child := &LDataReq{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiDataFrame: cemiDataFrame,
+        DataFrame: dataFrame,
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIDataReq) Serialize(io utils.WriteBuffer) error {
+func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (additionalInformationLength)
@@ -168,10 +168,10 @@ func (m *CEMIDataReq) Serialize(io utils.WriteBuffer) error {
         }
     }
 
-    // Simple Field (cemiDataFrame)
-    _cemiDataFrameErr := m.CemiDataFrame.Serialize(io)
-    if _cemiDataFrameErr != nil {
-        return errors.New("Error serializing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
+    // Simple Field (dataFrame)
+    _dataFrameErr := m.DataFrame.Serialize(io)
+    if _dataFrameErr != nil {
+        return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
     }
 
         return nil
@@ -179,7 +179,7 @@ func (m *CEMIDataReq) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -202,12 +202,12 @@ func (m *CEMIDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                 }
                 _values = append(_values, dt)
                 m.AdditionalInformation = _values
-            case "cemiDataFrame":
-                var data *CEMIDataFrame
-                if err := d.DecodeElement(data, &tok); err != nil {
+            case "dataFrame":
+                var dt *LDataFrame
+                if err := d.DecodeElement(&dt, &tok); err != nil {
                     return err
                 }
-                m.CemiDataFrame = data
+                m.DataFrame = dt
             }
         }
         token, err = d.Token()
@@ -220,7 +220,7 @@ func (m *CEMIDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
     }
 }
 
-func (m *CEMIDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
         return err
     }
@@ -233,7 +233,7 @@ func (m *CEMIDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
         return err
     }
-    if err := e.EncodeElement(m.CemiDataFrame, xml.StartElement{Name: xml.Name{Local: "cemiDataFrame"}}); err != nil {
+    if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
         return err
     }
     return nil

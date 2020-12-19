@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIFrameAck struct {
-    Parent *CEMIFrame
-    ICEMIFrameAck
+type LRawCon struct {
+    Parent *CEMI
+    ILRawCon
 }
 
 // The corresponding interface
-type ICEMIFrameAck interface {
+type ILRawCon interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,78 +41,66 @@ type ICEMIFrameAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIFrameAck) NotAckFrame() bool {
-    return false
-}
-
-func (m *CEMIFrameAck) StandardFrame() bool {
-    return false
-}
-
-func (m *CEMIFrameAck) Polling() bool {
-    return false
+func (m *LRawCon) MessageCode() uint8 {
+    return 0x2F
 }
 
 
-func (m *CEMIFrameAck) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-    m.Parent.Repeated = repeated
-    m.Parent.Priority = priority
-    m.Parent.AcknowledgeRequested = acknowledgeRequested
-    m.Parent.ErrorFlag = errorFlag
+func (m *LRawCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIFrameAck(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
-    child := &CEMIFrameAck{
-        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
+func NewLRawCon() *CEMI {
+    child := &LRawCon{
+        Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIFrameAck(structType interface{}) *CEMIFrameAck {
-    castFunc := func(typ interface{}) *CEMIFrameAck {
-        if casted, ok := typ.(CEMIFrameAck); ok {
+func CastLRawCon(structType interface{}) *LRawCon {
+    castFunc := func(typ interface{}) *LRawCon {
+        if casted, ok := typ.(LRawCon); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIFrameAck); ok {
+        if casted, ok := typ.(*LRawCon); ok {
             return casted
         }
-        if casted, ok := typ.(CEMIFrame); ok {
-            return CastCEMIFrameAck(casted.Child)
+        if casted, ok := typ.(CEMI); ok {
+            return CastLRawCon(casted.Child)
         }
-        if casted, ok := typ.(*CEMIFrame); ok {
-            return CastCEMIFrameAck(casted.Child)
+        if casted, ok := typ.(*CEMI); ok {
+            return CastLRawCon(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIFrameAck) GetTypeName() string {
-    return "CEMIFrameAck"
+func (m *LRawCon) GetTypeName() string {
+    return "LRawCon"
 }
 
-func (m *CEMIFrameAck) LengthInBits() uint16 {
+func (m *LRawCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIFrameAck) LengthInBytes() uint16 {
+func (m *LRawCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameAckParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
+func LRawConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIFrameAck{
-        Parent: &CEMIFrame{},
+    _child := &LRawCon{
+        Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIFrameAck) Serialize(io utils.WriteBuffer) error {
+func (m *LRawCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -120,7 +108,7 @@ func (m *CEMIFrameAck) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -141,7 +129,7 @@ func (m *CEMIFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     }
 }
 
-func (m *CEMIFrameAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LRawCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

@@ -45,7 +45,7 @@
         ]
         ['0x0206' ConnectionResponse
             [simple   uint 8 'communicationChannelId']
-            [enum     Status 'status']
+            [simple   Status 'status']
             [optional HPAIDataEndpoint            'hpaiDataEndpoint'            'status == Status.NO_ERROR']
             [optional ConnectionResponseDataBlock 'connectionResponseDataBlock' 'status == Status.NO_ERROR']
         ]
@@ -56,7 +56,7 @@
         ]
         ['0x0208' ConnectionStateResponse
             [simple uint 8 'communicationChannelId']
-            [enum   Status 'status']
+            [simple Status 'status']
         ]
         ['0x0209' DisconnectRequest
             [simple   uint 8 'communicationChannelId']
@@ -65,7 +65,7 @@
         ]
         ['0x020A' DisconnectResponse
             [simple uint 8 'communicationChannelId']
-            [enum   Status 'status']
+            [simple Status 'status']
         ]
         ['0x020B' UnknownMessage [uint 16 'totalLength']
             [array int 8 'unknownData' count 'totalLength - 6']
@@ -91,14 +91,14 @@
 
 [type 'HPAIDiscoveryEndpoint'
     [implicit uint 8           'structureLength' 'lengthInBytes']
-    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
 
 [type 'HPAIControlEndpoint'
     [implicit uint 8           'structureLength' 'lengthInBytes']
-    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
@@ -106,7 +106,7 @@
 [type 'DIBDeviceInfo'
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
-    [enum     KnxMedium    'knxMedium']
+    [simple   KnxMedium    'knxMedium']
     [simple   DeviceStatus 'deviceStatus']
     [simple   KnxAddress   'knxAddress']
     [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
@@ -124,7 +124,7 @@
 
 [type 'HPAIDataEndpoint'
     [implicit uint 8           'structureLength' 'lengthInBytes']
-    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
@@ -136,7 +136,7 @@
         ['0x03' ConnectionRequestInformationDeviceManagement
         ]
         ['0x04' ConnectionRequestInformationTunnelConnection
-            [enum     KnxLayer  'knxLayer']
+            [simple   KnxLayer  'knxLayer']
             [reserved uint 8    '0x00']
         ]
     ]
@@ -165,7 +165,7 @@
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
-    [enum     Status 'status']
+    [simple   Status 'status']
 ]
 
 [type 'TunnelingRequestDataBlock'
@@ -179,7 +179,7 @@
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
-    [enum     Status 'status']
+    [simple   Status 'status']
 ]
 
 [type 'IPAddress'
@@ -233,58 +233,94 @@
     ]
 ]
 
-// The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS"
+// The CEMI part is described in the document
+// "03_06_03 EMI_IMI v01.03.03 AS" Page 6ff
+// NOTE: When inspecting traffic in WireShark it seems they got the
+// standard/extended frame thing wrong. When comparing to the spec most
+// normal traffic is actually extended frames.
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
-        ['0x11' CEMIDataReq
-            [simple uint 8                    'additionalInformationLength']
-            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple CEMIDataFrame             'cemiDataFrame']
-        ]
-        ['0x2E' CEMIDataCon
-            [simple uint 8                    'additionalInformationLength']
-            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple CEMIDataFrame             'cemiDataFrame']
-        ]
-        ['0x29' CEMIDataInd
-            [simple uint 8                    'additionalInformationLength']
-            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple CEMIDataFrame             'cemiDataFrame']
+        ['0x2B' LBusmonInd
+            [simple   uint 8                    'additionalInformationLength']
+            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple   LDataFrame                'dataFrame']
+            [optional uint 8                    'crc'                   'dataFrame.notAckFrame']
         ]
 
-        ['0x10' CEMIRawReq
+        // Page 72ff
+        ['0x11' LDataReq
+            [simple   uint 8                    'additionalInformationLength']
+            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple   LDataFrame                'dataFrame']
         ]
-        ['0x2F' CEMIRawCon
+        ['0x29' LDataInd
+            [simple   uint 8                    'additionalInformationLength']
+            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple   LDataFrame                'dataFrame']
         ]
-        ['0x2D' CEMIRawInd
+        ['0x2E' LDataCon
+            [simple   uint 8                    'additionalInformationLength']
+            [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple   LDataFrame                'dataFrame']
         ]
 
-        ['0x13' CEMIPollDataReq
+        ['0x10' LRawReq
         ]
-        ['0x25' CEMIPollDataCon
+        ['0x2D' LRawInd
         ]
-
-        ['0x2B' CEMIBusmonInd
-            [simple uint 8                    'additionalInformationLength']
-            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple CEMIFrame                 'cemiFrame']
+        ['0x2F' LRawCon
         ]
 
-        ['0xFC' CEMIMPropReadReq
+        ['0x13' LPollDataReq
+        ]
+        ['0x25' LPollDataCon
+        ]
+
+        ['0x41' TDataConnectedReq
+        ]
+        ['0x89' TDataConnectedInd
+        ]
+
+        ['0x4A' TDataIndividualReq
+        ]
+        ['0x94' TDataIndividualInd
+        ]
+
+        ['0xFC' MPropReadReq
             [simple uint 16 'interfaceObjectType']
             [simple uint  8 'objectInstance']
             [simple uint  8 'propertyId']
             [simple uint  4 'numberOfElements']
             [simple uint 12 'startIndex']
         ]
-        ['0xFB' CEMIMPropReadCon
+        ['0xFB' MPropReadCon
             [simple uint 16 'interfaceObjectType']
             [simple uint  8 'objectInstance']
             [simple uint  8 'propertyId']
             [simple uint  4 'numberOfElements']
             [simple uint 12 'startIndex']
             [simple uint 16 'unknown']
+        ]
+
+        ['0xF6' MPropWriteReq
+        ]
+        ['0xF5' MPropWriteCon
+        ]
+
+        ['0xF7' MPropInfoInd
+        ]
+
+        ['0xF8' MFuncPropCommandReq
+        ]
+        ['0xF9' MFuncPropStateReadReq
+        ]
+        ['0xFA' MFuncPropCon
+        ]
+
+        ['0xF1' MResetReq
+        ]
+        ['0xF0' MResetInd
         ]
     ]
 ]
@@ -308,70 +344,65 @@
     ]
 ]
 
-[type 'CEMIDataFrame'
-    [simple        bit          'standardFrame']
-    [simple        bit          'polling']
-    [simple        bit          'notRepeated']
-    [simple        bit          'notAckFrame']
-    [enum          CEMIPriority 'priority']
-    [simple        bit          'acknowledgeRequested']
-    [simple        bit          'errorFlag']
-    [simple        bit          'groupDestinationAddress']
-    [simple        uint 3       'hopCount']
-    [simple        uint 4       'extendedFrameFormat']
-    [simple        KnxAddress   'sourceAddress']
-    [array         int 8        'destinationAddress' count '2']
-    [simple        uint 8       'dataLength']
-    [enum          TPCI         'tcpi']
-    [simple        uint 4       'counter']
-    [enum          APCI         'apci']
-    [simple        int 6        'dataFirstByte']
-    [array         int 8        'data' count 'dataLength - 1']
-]
-
 // The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
 // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
-[discriminatedType 'CEMIFrame'
-    [discriminator bit          'standardFrame']
+[discriminatedType 'LDataFrame'
+    [discriminator bit          'extendedFrame']
     [discriminator bit          'polling']
     [simple        bit          'repeated']
     [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
     [simple        bit          'errorFlag']
-    [typeSwitch 'notAckFrame','standardFrame','polling'
-        ['false' CEMIFrameAck
+    [typeSwitch 'notAckFrame','extendedFrame','polling'
+        ['false' LDataFrameAck
         ]
-        ['true','true','false' CEMIFrameData
-            [simple   KnxAddress      'sourceAddress']
-            [array    int 8           'destinationAddress' count '2']
-            [simple   bit             'groupAddress']
-            [simple   uint 3          'hopCount']
-            [simple   uint 4          'dataLength']
-            [enum     TPCI            'tcpi']
-            [simple   uint 4          'counter']
-            [enum     APCI            'apci']
-            [simple   int 6           'dataFirstByte']
-            [array    int 8           'data' count 'dataLength - 1']
-            [simple   uint 8          'crc']
+        // Page 28ff
+        ['true','false','false' LDataFrameData
+            [simple   KnxAddress   'sourceAddress']
+            [array    int 8        'destinationAddress' count '2']
+            [simple   bit          'groupAddress']
+            [simple   uint 3       'hopCount']
+            [simple   uint 4       'dataLength']
+            // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
+            [simple   bit          'control']
+            [simple   bit          'numbered']
+            [simple   uint 4       'counter']
+            [optional ControlType  'controlType'   'control']
+            [optional APCI         'apci'          '!control']
+            [optional int 6        'dataFirstByte' '!control']
+            [array    int 8        'data' count    'dataLength - 1']
         ]
-        ['true','true','true' CEMIFramePollingData
+        // Page 31ff
+        ['true','true','true' LDataFramePollingData
+            [simple   KnxAddress   'sourceAddress']
+            [array    int 8        'targetAddress' count '2']
+            [reserved uint 4       '0x00']
+            [simple   uint 6       'numberExpectedPollData']
         ]
-        ['true','false','false' CEMIFrameDataExt
-            [simple   bit             'groupAddress']
-            [simple   uint 3          'hopCount']
-            [simple   uint 4          'extendedFrameFormat']
-            [simple   KnxAddress      'sourceAddress']
-            [array    int 8           'destinationAddress' count '2']
-            [simple   uint 8          'dataLength']
-            [enum     TPCI            'tcpi']
-            [simple   uint 4          'counter']
-            [enum     APCI            'apci']
-            [simple   int 6           'dataFirstByte']
-            [array    int 8           'data' count 'dataLength - 1']
-            [simple   uint 8          'crc']
+        // Page 31ff
+        ['true','false','true' LDataFramePollingData
+            [simple   KnxAddress   'sourceAddress']
+            [array    int 8        'targetAddress' count '2']
+            [reserved uint 4       '0x00']
+            [simple   uint 6       'numberExpectedPollData']
         ]
-        ['true','false','true' CEMIFramePollingDataExt
+        // Page 29ff
+        ['true','true','false' LDataFrameDataExt
+            [simple   bit          'groupAddress']
+            [simple   uint 3       'hopCount']
+            [simple   uint 4       'extendedFrameFormat']
+            [simple   KnxAddress   'sourceAddress']
+            [array    int 8        'destinationAddress' count '2']
+            [simple   uint 8       'dataLength']
+            // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
+            [simple   bit          'control']
+            [simple   bit          'numbered']
+            [simple   uint 4       'counter']
+            [optional ControlType  'controlType'   'control']
+            [optional APCI         'apci'          '!control']
+            [optional int 6        'dataFirstByte' '!control']
+            [array    int 8        'data' count    'dataLength - 1']
         ]
     ]
 ]
@@ -1482,6 +1513,13 @@
     ['0x3' LOW]
 ]
 
+[enum uint 2 'ControlType'
+    ['0x0' CONNECT]
+    ['0x1' DISCONNECT]
+    ['0x2' ACK]
+    ['0x3' NACK]
+]
+
 [enum uint 8 'Status'
     ['0x00' NO_ERROR]
     ['0x01' PROTOCOL_TYPE_NOT_SUPPORTED]
@@ -1525,13 +1563,6 @@
     ['0x08' MEDIUM_RESERVED_2]
     ['0x10' MEDIUM_RF]
     ['0x20' MEDIUM_KNX_IP]
-]
-
-[enum uint 2 'TPCI'
-    ['0x0' UNNUMBERED_DATA_PACKET]
-    ['0x1' UNNUMBERED]
-    ['0x2' NUMBERED_DATA_PACKET]
-    ['0x3' NUMBERED_CONTROL_DATA]
 ]
 
 [enum uint 4 'APCI'

@@ -22,74 +22,74 @@ import (
     "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
 )
 
-type TPCI uint8
+type ControlType uint8
 
-type ITPCI interface {
+type IControlType interface {
     Serialize(io utils.WriteBuffer) error
 }
 
 const(
-    TPCI_UNNUMBERED_DATA_PACKET TPCI = 0x0
-    TPCI_UNNUMBERED TPCI = 0x1
-    TPCI_NUMBERED_DATA_PACKET TPCI = 0x2
-    TPCI_NUMBERED_CONTROL_DATA TPCI = 0x3
+    ControlType_CONNECT ControlType = 0x0
+    ControlType_DISCONNECT ControlType = 0x1
+    ControlType_ACK ControlType = 0x2
+    ControlType_NACK ControlType = 0x3
 )
 
-func TPCIValueOf(value uint8) TPCI {
+func ControlTypeValueOf(value uint8) ControlType {
     switch value {
         case 0x0:
-            return TPCI_UNNUMBERED_DATA_PACKET
+            return ControlType_CONNECT
         case 0x1:
-            return TPCI_UNNUMBERED
+            return ControlType_DISCONNECT
         case 0x2:
-            return TPCI_NUMBERED_DATA_PACKET
+            return ControlType_ACK
         case 0x3:
-            return TPCI_NUMBERED_CONTROL_DATA
+            return ControlType_NACK
     }
     return 0
 }
 
-func CastTPCI(structType interface{}) TPCI {
-    castFunc := func(typ interface{}) TPCI {
-        if sTPCI, ok := typ.(TPCI); ok {
-            return sTPCI
+func CastControlType(structType interface{}) ControlType {
+    castFunc := func(typ interface{}) ControlType {
+        if sControlType, ok := typ.(ControlType); ok {
+            return sControlType
         }
         return 0
     }
     return castFunc(structType)
 }
 
-func (m TPCI) LengthInBits() uint16 {
+func (m ControlType) LengthInBits() uint16 {
     return 2
 }
 
-func (m TPCI) LengthInBytes() uint16 {
+func (m ControlType) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TPCIParse(io *utils.ReadBuffer) (TPCI, error) {
+func ControlTypeParse(io *utils.ReadBuffer) (ControlType, error) {
     val, err := io.ReadUint8(2)
     if err != nil {
         return 0, nil
     }
-    return TPCIValueOf(val), nil
+    return ControlTypeValueOf(val), nil
 }
 
-func (e TPCI) Serialize(io utils.WriteBuffer) error {
+func (e ControlType) Serialize(io utils.WriteBuffer) error {
     err := io.WriteUint8(2, uint8(e))
     return err
 }
 
-func (e TPCI) String() string {
+func (e ControlType) String() string {
     switch e {
-    case TPCI_UNNUMBERED_DATA_PACKET:
-        return "UNNUMBERED_DATA_PACKET"
-    case TPCI_UNNUMBERED:
-        return "UNNUMBERED"
-    case TPCI_NUMBERED_DATA_PACKET:
-        return "NUMBERED_DATA_PACKET"
-    case TPCI_NUMBERED_CONTROL_DATA:
-        return "NUMBERED_CONTROL_DATA"
+    case ControlType_CONNECT:
+        return "CONNECT"
+    case ControlType_DISCONNECT:
+        return "DISCONNECT"
+    case ControlType_ACK:
+        return "ACK"
+    case ControlType_NACK:
+        return "NACK"
     }
     return ""
 }

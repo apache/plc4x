@@ -26,19 +26,18 @@ import (
 )
 
 // The data-structure of this message
-type CEMIMPropReadCon struct {
+type MPropReadReq struct {
     InterfaceObjectType uint16
     ObjectInstance uint8
     PropertyId uint8
     NumberOfElements uint8
     StartIndex uint16
-    Unknown uint16
     Parent *CEMI
-    ICEMIMPropReadCon
+    IMPropReadReq
 }
 
 // The corresponding interface
-type ICEMIMPropReadCon interface {
+type IMPropReadReq interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -48,52 +47,51 @@ type ICEMIMPropReadCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIMPropReadCon) MessageCode() uint8 {
-    return 0xFB
+func (m *MPropReadReq) MessageCode() uint8 {
+    return 0xFC
 }
 
 
-func (m *CEMIMPropReadCon) InitializeParent(parent *CEMI) {
+func (m *MPropReadReq) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, unknown uint16, ) *CEMI {
-    child := &CEMIMPropReadCon{
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, ) *CEMI {
+    child := &MPropReadReq{
         InterfaceObjectType: interfaceObjectType,
         ObjectInstance: objectInstance,
         PropertyId: propertyId,
         NumberOfElements: numberOfElements,
         StartIndex: startIndex,
-        Unknown: unknown,
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIMPropReadCon(structType interface{}) *CEMIMPropReadCon {
-    castFunc := func(typ interface{}) *CEMIMPropReadCon {
-        if casted, ok := typ.(CEMIMPropReadCon); ok {
+func CastMPropReadReq(structType interface{}) *MPropReadReq {
+    castFunc := func(typ interface{}) *MPropReadReq {
+        if casted, ok := typ.(MPropReadReq); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIMPropReadCon); ok {
+        if casted, ok := typ.(*MPropReadReq); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIMPropReadCon(casted.Child)
+            return CastMPropReadReq(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIMPropReadCon(casted.Child)
+            return CastMPropReadReq(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIMPropReadCon) GetTypeName() string {
-    return "CEMIMPropReadCon"
+func (m *MPropReadReq) GetTypeName() string {
+    return "MPropReadReq"
 }
 
-func (m *CEMIMPropReadCon) LengthInBits() uint16 {
+func (m *MPropReadReq) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (interfaceObjectType)
@@ -111,17 +109,14 @@ func (m *CEMIMPropReadCon) LengthInBits() uint16 {
     // Simple field (startIndex)
     lengthInBits += 12
 
-    // Simple field (unknown)
-    lengthInBits += 16
-
     return lengthInBits
 }
 
-func (m *CEMIMPropReadCon) LengthInBytes() uint16 {
+func (m *MPropReadReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIMPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropReadReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (interfaceObjectType)
     interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
@@ -153,27 +148,20 @@ func CEMIMPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
         return nil, errors.New("Error parsing 'startIndex' field " + _startIndexErr.Error())
     }
 
-    // Simple Field (unknown)
-    unknown, _unknownErr := io.ReadUint16(16)
-    if _unknownErr != nil {
-        return nil, errors.New("Error parsing 'unknown' field " + _unknownErr.Error())
-    }
-
     // Create a partially initialized instance
-    _child := &CEMIMPropReadCon{
+    _child := &MPropReadReq{
         InterfaceObjectType: interfaceObjectType,
         ObjectInstance: objectInstance,
         PropertyId: propertyId,
         NumberOfElements: numberOfElements,
         StartIndex: startIndex,
-        Unknown: unknown,
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIMPropReadCon) Serialize(io utils.WriteBuffer) error {
+func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (interfaceObjectType)
@@ -211,19 +199,12 @@ func (m *CEMIMPropReadCon) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
     }
 
-    // Simple Field (unknown)
-    unknown := uint16(m.Unknown)
-    _unknownErr := io.WriteUint16(16, (unknown))
-    if _unknownErr != nil {
-        return errors.New("Error serializing 'unknown' field " + _unknownErr.Error())
-    }
-
         return nil
     }
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIMPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *MPropReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -262,12 +243,6 @@ func (m *CEMIMPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
                     return err
                 }
                 m.StartIndex = data
-            case "unknown":
-                var data uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Unknown = data
             }
         }
         token, err = d.Token()
@@ -280,7 +255,7 @@ func (m *CEMIMPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
     }
 }
 
-func (m *CEMIMPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *MPropReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.InterfaceObjectType, xml.StartElement{Name: xml.Name{Local: "interfaceObjectType"}}); err != nil {
         return err
     }
@@ -294,9 +269,6 @@ func (m *CEMIMPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) er
         return err
     }
     if err := e.EncodeElement(m.StartIndex, xml.StartElement{Name: xml.Name{Local: "startIndex"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Unknown, xml.StartElement{Name: xml.Name{Local: "unknown"}}); err != nil {
         return err
     }
     return nil
