@@ -73,7 +73,7 @@
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>surefireArgLine</propertyName>
+              <!--propertyName>surefireArgLine</propertyName-->
             </configuration>
           </execution>
           <!--
@@ -91,7 +91,7 @@
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>failsafeArgLine</propertyName>
+              <!--propertyName>failsafeArgLine</propertyName-->
             </configuration>
           </execution>
           <!--
@@ -141,7 +141,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{surefireArgLine}</argLine>
+          <!--argLine>-Xmx256m @{surefireArgLine}</argLine-->
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
@@ -214,7 +214,7 @@
           <!--
                 Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>@{failsafeArgLine}</argLine>
+          <!--argLine>@{failsafeArgLine}</argLine-->
         </configuration>
       </plugin>
     </plugins>
