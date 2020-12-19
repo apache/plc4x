@@ -194,8 +194,13 @@ public class ${type.name}IO {
                     <#break>
                     <#case "simple">
 
+                        <#if helper.isEnumField(field)>
+            // Enum field (${field.name})
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+                        <#else>
             // Simple Field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+                        </#if>
                         <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">
                             <#assign valueDefined=true>
                         </#if>

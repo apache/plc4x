@@ -359,7 +359,17 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumField(Field field) {
-        return field instanceof EnumField;
+        if(field instanceof TypedField) {
+            TypedField typedField = (TypedField) field;
+            TypeReference typeReference = typedField.getType();
+            if(!isSimpleTypeReference(typeReference)) {
+                TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typedField.getType());
+                if(typeDefinition instanceof EnumTypeDefinition) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isImplicitField(Field field) {
