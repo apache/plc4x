@@ -29,7 +29,7 @@ import (
 type DeviceConfigurationAckDataBlock struct {
     CommunicationChannelId uint8
     SequenceCounter uint8
-    Status Status
+    Status *Status
     IDeviceConfigurationAckDataBlock
 }
 
@@ -41,7 +41,7 @@ type IDeviceConfigurationAckDataBlock interface {
     xml.Marshaler
 }
 
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *DeviceConfigurationAckDataBlock {
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status *Status) *DeviceConfigurationAckDataBlock {
     return &DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
 
@@ -74,8 +74,8 @@ func (m *DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
     // Simple field (sequenceCounter)
     lengthInBits += 8
 
-    // Enum Field (status)
-    lengthInBits += 8
+    // Simple field (status)
+    lengthInBits += m.Status.LengthInBits()
 
     return lengthInBits
 }
@@ -104,7 +104,7 @@ func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigur
         return nil, errors.New("Error parsing 'sequenceCounter' field " + _sequenceCounterErr.Error())
     }
 
-    // Enum field (status)
+    // Simple Field (status)
     status, _statusErr := StatusParse(io)
     if _statusErr != nil {
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
@@ -137,9 +137,8 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
         return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
     }
 
-    // Enum field (status)
-    status := CastStatus(m.Status)
-    _statusErr := status.Serialize(io)
+    // Simple Field (status)
+    _statusErr := m.Status.Serialize(io)
     if _statusErr != nil {
         return errors.New("Error serializing 'status' field " + _statusErr.Error())
     }
@@ -175,8 +174,8 @@ func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml
                 }
                 m.SequenceCounter = data
             case "status":
-                var data Status
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *Status
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.Status = data

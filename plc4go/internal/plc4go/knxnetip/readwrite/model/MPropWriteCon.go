@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIPollDataReq struct {
+type MPropWriteCon struct {
     Parent *CEMI
-    ICEMIPollDataReq
+    IMPropWriteCon
 }
 
 // The corresponding interface
-type ICEMIPollDataReq interface {
+type IMPropWriteCon interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,66 +41,66 @@ type ICEMIPollDataReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIPollDataReq) MessageCode() uint8 {
-    return 0x13
+func (m *MPropWriteCon) MessageCode() uint8 {
+    return 0xF5
 }
 
 
-func (m *CEMIPollDataReq) InitializeParent(parent *CEMI) {
+func (m *MPropWriteCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIPollDataReq() *CEMI {
-    child := &CEMIPollDataReq{
+func NewMPropWriteCon() *CEMI {
+    child := &MPropWriteCon{
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIPollDataReq(structType interface{}) *CEMIPollDataReq {
-    castFunc := func(typ interface{}) *CEMIPollDataReq {
-        if casted, ok := typ.(CEMIPollDataReq); ok {
+func CastMPropWriteCon(structType interface{}) *MPropWriteCon {
+    castFunc := func(typ interface{}) *MPropWriteCon {
+        if casted, ok := typ.(MPropWriteCon); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIPollDataReq); ok {
+        if casted, ok := typ.(*MPropWriteCon); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIPollDataReq(casted.Child)
+            return CastMPropWriteCon(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIPollDataReq(casted.Child)
+            return CastMPropWriteCon(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIPollDataReq) GetTypeName() string {
-    return "CEMIPollDataReq"
+func (m *MPropWriteCon) GetTypeName() string {
+    return "MPropWriteCon"
 }
 
-func (m *CEMIPollDataReq) LengthInBits() uint16 {
+func (m *MPropWriteCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIPollDataReq) LengthInBytes() uint16 {
+func (m *MPropWriteCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIPollDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropWriteConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIPollDataReq{
+    _child := &MPropWriteCon{
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIPollDataReq) Serialize(io utils.WriteBuffer) error {
+func (m *MPropWriteCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -108,7 +108,7 @@ func (m *CEMIPollDataReq) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIPollDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *MPropWriteCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -129,7 +129,7 @@ func (m *CEMIPollDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m *CEMIPollDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *MPropWriteCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

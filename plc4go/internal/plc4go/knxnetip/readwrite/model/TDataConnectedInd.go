@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIRawReq struct {
+type TDataConnectedInd struct {
     Parent *CEMI
-    ICEMIRawReq
+    ITDataConnectedInd
 }
 
 // The corresponding interface
-type ICEMIRawReq interface {
+type ITDataConnectedInd interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,66 +41,66 @@ type ICEMIRawReq interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIRawReq) MessageCode() uint8 {
-    return 0x10
+func (m *TDataConnectedInd) MessageCode() uint8 {
+    return 0x89
 }
 
 
-func (m *CEMIRawReq) InitializeParent(parent *CEMI) {
+func (m *TDataConnectedInd) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIRawReq() *CEMI {
-    child := &CEMIRawReq{
+func NewTDataConnectedInd() *CEMI {
+    child := &TDataConnectedInd{
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIRawReq(structType interface{}) *CEMIRawReq {
-    castFunc := func(typ interface{}) *CEMIRawReq {
-        if casted, ok := typ.(CEMIRawReq); ok {
+func CastTDataConnectedInd(structType interface{}) *TDataConnectedInd {
+    castFunc := func(typ interface{}) *TDataConnectedInd {
+        if casted, ok := typ.(TDataConnectedInd); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIRawReq); ok {
+        if casted, ok := typ.(*TDataConnectedInd); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIRawReq(casted.Child)
+            return CastTDataConnectedInd(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIRawReq(casted.Child)
+            return CastTDataConnectedInd(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIRawReq) GetTypeName() string {
-    return "CEMIRawReq"
+func (m *TDataConnectedInd) GetTypeName() string {
+    return "TDataConnectedInd"
 }
 
-func (m *CEMIRawReq) LengthInBits() uint16 {
+func (m *TDataConnectedInd) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIRawReq) LengthInBytes() uint16 {
+func (m *TDataConnectedInd) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIRawReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataConnectedIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIRawReq{
+    _child := &TDataConnectedInd{
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIRawReq) Serialize(io utils.WriteBuffer) error {
+func (m *TDataConnectedInd) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -108,7 +108,7 @@ func (m *CEMIRawReq) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *TDataConnectedInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -129,7 +129,7 @@ func (m *CEMIRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
     }
 }
 
-func (m *CEMIRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *TDataConnectedInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

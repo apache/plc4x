@@ -28,49 +28,49 @@ import (
 )
 
 // The data-structure of this message
-type CEMIFrame struct {
+type LDataFrame struct {
     Repeated bool
     Priority CEMIPriority
     AcknowledgeRequested bool
     ErrorFlag bool
-    Child ICEMIFrameChild
-    ICEMIFrame
-    ICEMIFrameParent
+    Child ILDataFrameChild
+    ILDataFrame
+    ILDataFrameParent
 }
 
 // The corresponding interface
-type ICEMIFrame interface {
+type ILDataFrame interface {
+    ExtendedFrame() bool
     NotAckFrame() bool
     Polling() bool
-    StandardFrame() bool
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
     xml.Marshaler
 }
 
-type ICEMIFrameParent interface {
-    SerializeParent(io utils.WriteBuffer, child ICEMIFrame, serializeChildFunction func() error) error
+type ILDataFrameParent interface {
+    SerializeParent(io utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error
     GetTypeName() string
 }
 
-type ICEMIFrameChild interface {
+type ILDataFrameChild interface {
     Serialize(io utils.WriteBuffer) error
-    InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
+    InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
     GetTypeName() string
-    ICEMIFrame
+    ILDataFrame
 }
 
-func NewCEMIFrame(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
-    return &CEMIFrame{Repeated: repeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
+func NewLDataFrame(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+    return &LDataFrame{Repeated: repeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
 
-func CastCEMIFrame(structType interface{}) *CEMIFrame {
-    castFunc := func(typ interface{}) *CEMIFrame {
-        if casted, ok := typ.(CEMIFrame); ok {
+func CastLDataFrame(structType interface{}) *LDataFrame {
+    castFunc := func(typ interface{}) *LDataFrame {
+        if casted, ok := typ.(LDataFrame); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIFrame); ok {
+        if casted, ok := typ.(*LDataFrame); ok {
             return casted
         }
         return nil
@@ -78,14 +78,14 @@ func CastCEMIFrame(structType interface{}) *CEMIFrame {
     return castFunc(structType)
 }
 
-func (m *CEMIFrame) GetTypeName() string {
-    return "CEMIFrame"
+func (m *LDataFrame) GetTypeName() string {
+    return "LDataFrame"
 }
 
-func (m *CEMIFrame) LengthInBits() uint16 {
+func (m *LDataFrame) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
-    // Discriminator Field (standardFrame)
+    // Discriminator Field (extendedFrame)
     lengthInBits += 1
 
     // Discriminator Field (polling)
@@ -112,16 +112,16 @@ func (m *CEMIFrame) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m *CEMIFrame) LengthInBytes() uint16 {
+func (m *LDataFrame) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
+func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
-    // Discriminator Field (standardFrame) (Used as input to a switch field)
-    standardFrame, _standardFrameErr := io.ReadBit()
-    if _standardFrameErr != nil {
-        return nil, errors.New("Error parsing 'standardFrame' field " + _standardFrameErr.Error())
+    // Discriminator Field (extendedFrame) (Used as input to a switch field)
+    extendedFrame, _extendedFrameErr := io.ReadBit()
+    if _extendedFrameErr != nil {
+        return nil, errors.New("Error parsing 'extendedFrame' field " + _extendedFrameErr.Error())
     }
 
     // Discriminator Field (polling) (Used as input to a switch field)
@@ -161,19 +161,19 @@ func CEMIFrameParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
     }
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-    var _parent *CEMIFrame
+    var _parent *LDataFrame
     var typeSwitchError error
     switch {
     case notAckFrame == false:
-        _parent, typeSwitchError = CEMIFrameAckParse(io)
-    case notAckFrame == true && standardFrame == true && polling == false:
-        _parent, typeSwitchError = CEMIFrameDataParse(io)
-    case notAckFrame == true && standardFrame == true && polling == true:
-        _parent, typeSwitchError = CEMIFramePollingDataParse(io)
-    case notAckFrame == true && standardFrame == false && polling == false:
-        _parent, typeSwitchError = CEMIFrameDataExtParse(io)
-    case notAckFrame == true && standardFrame == false && polling == true:
-        _parent, typeSwitchError = CEMIFramePollingDataExtParse(io)
+        _parent, typeSwitchError = LDataFrameAckParse(io)
+    case notAckFrame == true && extendedFrame == false && polling == false:
+        _parent, typeSwitchError = LDataFrameDataParse(io)
+    case notAckFrame == true && extendedFrame == true && polling == true:
+        _parent, typeSwitchError = LDataFramePollingDataParse(io)
+    case notAckFrame == true && extendedFrame == false && polling == true:
+        _parent, typeSwitchError = LDataFramePollingDataParse(io)
+    case notAckFrame == true && extendedFrame == true && polling == false:
+        _parent, typeSwitchError = LDataFrameDataExtParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
@@ -184,17 +184,17 @@ func CEMIFrameParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
     return _parent, nil
 }
 
-func (m *CEMIFrame) Serialize(io utils.WriteBuffer) error {
+func (m *LDataFrame) Serialize(io utils.WriteBuffer) error {
     return m.Child.Serialize(io)
 }
 
-func (m *CEMIFrame) SerializeParent(io utils.WriteBuffer, child ICEMIFrame, serializeChildFunction func() error) error {
+func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error {
 
-    // Discriminator Field (standardFrame) (Used as input to a switch field)
-    standardFrame := bool(child.StandardFrame())
-    _standardFrameErr := io.WriteBit((standardFrame))
-    if _standardFrameErr != nil {
-        return errors.New("Error serializing 'standardFrame' field " + _standardFrameErr.Error())
+    // Discriminator Field (extendedFrame) (Used as input to a switch field)
+    extendedFrame := bool(child.ExtendedFrame())
+    _extendedFrameErr := io.WriteBit((extendedFrame))
+    if _extendedFrameErr != nil {
+        return errors.New("Error serializing 'extendedFrame' field " + _extendedFrameErr.Error())
     }
 
     // Discriminator Field (polling) (Used as input to a switch field)
@@ -248,7 +248,7 @@ func (m *CEMIFrame) SerializeParent(io utils.WriteBuffer, child ICEMIFrame, seri
     return nil
 }
 
-func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     for {
@@ -289,10 +289,10 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                 m.ErrorFlag = data
                 default:
                     switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameAck":
-                            var dt *CEMIFrameAck
+                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameAck":
+                            var dt *LDataFrameAck
                             if m.Child != nil {
-                                dt = m.Child.(*CEMIFrameAck)
+                                dt = m.Child.(*LDataFrameAck)
                             }
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
@@ -301,10 +301,10 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                                 dt.Parent = m
                                 m.Child = dt
                             }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData":
-                            var dt *CEMIFrameData
+                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameData":
+                            var dt *LDataFrameData
                             if m.Child != nil {
-                                dt = m.Child.(*CEMIFrameData)
+                                dt = m.Child.(*LDataFrameData)
                             }
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
@@ -313,10 +313,10 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                                 dt.Parent = m
                                 m.Child = dt
                             }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData":
-                            var dt *CEMIFramePollingData
+                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
+                            var dt *LDataFramePollingData
                             if m.Child != nil {
-                                dt = m.Child.(*CEMIFramePollingData)
+                                dt = m.Child.(*LDataFramePollingData)
                             }
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
@@ -325,10 +325,10 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                                 dt.Parent = m
                                 m.Child = dt
                             }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameDataExt":
-                            var dt *CEMIFrameDataExt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
+                            var dt *LDataFramePollingData
                             if m.Child != nil {
-                                dt = m.Child.(*CEMIFrameDataExt)
+                                dt = m.Child.(*LDataFramePollingData)
                             }
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
@@ -337,10 +337,10 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                                 dt.Parent = m
                                 m.Child = dt
                             }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingDataExt":
-                            var dt *CEMIFramePollingDataExt
+                        case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt":
+                            var dt *LDataFrameDataExt
                             if m.Child != nil {
-                                dt = m.Child.(*CEMIFramePollingDataExt)
+                                dt = m.Child.(*LDataFrameDataExt)
                             }
                             if err := d.DecodeElement(&dt, &tok); err != nil {
                                 return err
@@ -355,7 +355,7 @@ func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     }
 }
 
-func (m *CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     className := reflect.TypeOf(m.Child).String()
     className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".") + 1:]
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{

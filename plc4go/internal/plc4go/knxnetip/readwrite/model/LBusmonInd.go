@@ -26,16 +26,17 @@ import (
 )
 
 // The data-structure of this message
-type CEMIDataCon struct {
+type LBusmonInd struct {
     AdditionalInformationLength uint8
     AdditionalInformation []*CEMIAdditionalInformation
-    CemiDataFrame *CEMIDataFrame
+    DataFrame *LDataFrame
+    Crc *uint8
     Parent *CEMI
-    ICEMIDataCon
+    ILBusmonInd
 }
 
 // The corresponding interface
-type ICEMIDataCon interface {
+type ILBusmonInd interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -45,49 +46,50 @@ type ICEMIDataCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIDataCon) MessageCode() uint8 {
-    return 0x2E
+func (m *LBusmonInd) MessageCode() uint8 {
+    return 0x2B
 }
 
 
-func (m *CEMIDataCon) InitializeParent(parent *CEMI) {
+func (m *LBusmonInd) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIDataCon(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, cemiDataFrame *CEMIDataFrame, ) *CEMI {
-    child := &CEMIDataCon{
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8, ) *CEMI {
+    child := &LBusmonInd{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiDataFrame: cemiDataFrame,
+        DataFrame: dataFrame,
+        Crc: crc,
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIDataCon(structType interface{}) *CEMIDataCon {
-    castFunc := func(typ interface{}) *CEMIDataCon {
-        if casted, ok := typ.(CEMIDataCon); ok {
+func CastLBusmonInd(structType interface{}) *LBusmonInd {
+    castFunc := func(typ interface{}) *LBusmonInd {
+        if casted, ok := typ.(LBusmonInd); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIDataCon); ok {
+        if casted, ok := typ.(*LBusmonInd); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIDataCon(casted.Child)
+            return CastLBusmonInd(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIDataCon(casted.Child)
+            return CastLBusmonInd(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIDataCon) GetTypeName() string {
-    return "CEMIDataCon"
+func (m *LBusmonInd) GetTypeName() string {
+    return "LBusmonInd"
 }
 
-func (m *CEMIDataCon) LengthInBits() uint16 {
+func (m *LBusmonInd) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (additionalInformationLength)
@@ -100,17 +102,22 @@ func (m *CEMIDataCon) LengthInBits() uint16 {
         }
     }
 
-    // Simple field (cemiDataFrame)
-    lengthInBits += m.CemiDataFrame.LengthInBits()
+    // Simple field (dataFrame)
+    lengthInBits += m.DataFrame.LengthInBits()
+
+    // Optional Field (crc)
+    if m.Crc != nil {
+        lengthInBits += 8
+    }
 
     return lengthInBits
 }
 
-func (m *CEMIDataCon) LengthInBytes() uint16 {
+func (m *LBusmonInd) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Simple Field (additionalInformationLength)
     additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -131,24 +138,36 @@ func CEMIDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
         additionalInformation = append(additionalInformation, _item)
     }
 
-    // Simple Field (cemiDataFrame)
-    cemiDataFrame, _cemiDataFrameErr := CEMIDataFrameParse(io)
-    if _cemiDataFrameErr != nil {
-        return nil, errors.New("Error parsing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
+    // Simple Field (dataFrame)
+    dataFrame, _dataFrameErr := LDataFrameParse(io)
+    if _dataFrameErr != nil {
+        return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
+    }
+
+    // Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
+    var crc *uint8 = nil
+    if CastLDataFrame(dataFrame).NotAckFrame() {
+        _val, _err := io.ReadUint8(8)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'crc' field " + _err.Error())
+        }
+
+        crc = &_val
     }
 
     // Create a partially initialized instance
-    _child := &CEMIDataCon{
+    _child := &LBusmonInd{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
-        CemiDataFrame: cemiDataFrame,
+        DataFrame: dataFrame,
+        Crc: crc,
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIDataCon) Serialize(io utils.WriteBuffer) error {
+func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (additionalInformationLength)
@@ -168,10 +187,20 @@ func (m *CEMIDataCon) Serialize(io utils.WriteBuffer) error {
         }
     }
 
-    // Simple Field (cemiDataFrame)
-    _cemiDataFrameErr := m.CemiDataFrame.Serialize(io)
-    if _cemiDataFrameErr != nil {
-        return errors.New("Error serializing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())
+    // Simple Field (dataFrame)
+    _dataFrameErr := m.DataFrame.Serialize(io)
+    if _dataFrameErr != nil {
+        return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
+    }
+
+    // Optional Field (crc) (Can be skipped, if the value is null)
+    var crc *uint8 = nil
+    if m.Crc != nil {
+        crc = m.Crc
+        _crcErr := io.WriteUint8(8, *(crc))
+        if _crcErr != nil {
+            return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+        }
     }
 
         return nil
@@ -179,7 +208,7 @@ func (m *CEMIDataCon) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -202,12 +231,18 @@ func (m *CEMIDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
                 }
                 _values = append(_values, dt)
                 m.AdditionalInformation = _values
-            case "cemiDataFrame":
-                var data *CEMIDataFrame
+            case "dataFrame":
+                var dt *LDataFrame
+                if err := d.DecodeElement(&dt, &tok); err != nil {
+                    return err
+                }
+                m.DataFrame = dt
+            case "crc":
+                var data *uint8
                 if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
-                m.CemiDataFrame = data
+                m.Crc = data
             }
         }
         token, err = d.Token()
@@ -220,7 +255,7 @@ func (m *CEMIDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
     }
 }
 
-func (m *CEMIDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
         return err
     }
@@ -233,7 +268,10 @@ func (m *CEMIDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
         return err
     }
-    if err := e.EncodeElement(m.CemiDataFrame, xml.StartElement{Name: xml.Name{Local: "cemiDataFrame"}}); err != nil {
+    if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Crc, xml.StartElement{Name: xml.Name{Local: "crc"}}); err != nil {
         return err
     }
     return nil

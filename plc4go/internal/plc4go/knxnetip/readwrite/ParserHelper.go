@@ -42,8 +42,6 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.HPAIDiscoveryEndpointParse(io)
     case "ProjectInstallationIdentifier":
         return model.ProjectInstallationIdentifierParse(io)
-    case "CEMIDataFrame":
-        return model.CEMIDataFrameParse(io)
     case "ServiceId":
         return model.ServiceIdParse(io)
     case "HPAIDataEndpoint":
@@ -76,6 +74,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.DeviceConfigurationRequestDataBlockParse(io)
     case "DIBSuppSvcFamilies":
         return model.DIBSuppSvcFamiliesParse(io)
+    case "LDataFrame":
+        return model.LDataFrameParse(io)
     case "KnxGroupAddress":
         numLevels, err := utils.StrToUint8(arguments[0])
         if err != nil {
@@ -84,8 +84,6 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.KnxGroupAddressParse(io, numLevels)
     case "MACAddress":
         return model.MACAddressParse(io)
-    case "CEMIFrame":
-        return model.CEMIFrameParse(io)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIPollDataCon struct {
+type MFuncPropCon struct {
     Parent *CEMI
-    ICEMIPollDataCon
+    IMFuncPropCon
 }
 
 // The corresponding interface
-type ICEMIPollDataCon interface {
+type IMFuncPropCon interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,66 +41,66 @@ type ICEMIPollDataCon interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIPollDataCon) MessageCode() uint8 {
-    return 0x25
+func (m *MFuncPropCon) MessageCode() uint8 {
+    return 0xFA
 }
 
 
-func (m *CEMIPollDataCon) InitializeParent(parent *CEMI) {
+func (m *MFuncPropCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIPollDataCon() *CEMI {
-    child := &CEMIPollDataCon{
+func NewMFuncPropCon() *CEMI {
+    child := &MFuncPropCon{
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIPollDataCon(structType interface{}) *CEMIPollDataCon {
-    castFunc := func(typ interface{}) *CEMIPollDataCon {
-        if casted, ok := typ.(CEMIPollDataCon); ok {
+func CastMFuncPropCon(structType interface{}) *MFuncPropCon {
+    castFunc := func(typ interface{}) *MFuncPropCon {
+        if casted, ok := typ.(MFuncPropCon); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIPollDataCon); ok {
+        if casted, ok := typ.(*MFuncPropCon); ok {
             return casted
         }
         if casted, ok := typ.(CEMI); ok {
-            return CastCEMIPollDataCon(casted.Child)
+            return CastMFuncPropCon(casted.Child)
         }
         if casted, ok := typ.(*CEMI); ok {
-            return CastCEMIPollDataCon(casted.Child)
+            return CastMFuncPropCon(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIPollDataCon) GetTypeName() string {
-    return "CEMIPollDataCon"
+func (m *MFuncPropCon) GetTypeName() string {
+    return "MFuncPropCon"
 }
 
-func (m *CEMIPollDataCon) LengthInBits() uint16 {
+func (m *MFuncPropCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIPollDataCon) LengthInBytes() uint16 {
+func (m *MFuncPropCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIPollDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MFuncPropConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIPollDataCon{
+    _child := &MFuncPropCon{
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIPollDataCon) Serialize(io utils.WriteBuffer) error {
+func (m *MFuncPropCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -108,7 +108,7 @@ func (m *CEMIPollDataCon) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIPollDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *MFuncPropCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -129,7 +129,7 @@ func (m *CEMIPollDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
     }
 }
 
-func (m *CEMIPollDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *MFuncPropCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

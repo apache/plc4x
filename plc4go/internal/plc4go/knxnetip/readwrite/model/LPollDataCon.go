@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type CEMIFramePollingDataExt struct {
-    Parent *CEMIFrame
-    ICEMIFramePollingDataExt
+type LPollDataCon struct {
+    Parent *CEMI
+    ILPollDataCon
 }
 
 // The corresponding interface
-type ICEMIFramePollingDataExt interface {
+type ILPollDataCon interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,78 +41,66 @@ type ICEMIFramePollingDataExt interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CEMIFramePollingDataExt) NotAckFrame() bool {
-    return true
-}
-
-func (m *CEMIFramePollingDataExt) StandardFrame() bool {
-    return false
-}
-
-func (m *CEMIFramePollingDataExt) Polling() bool {
-    return true
+func (m *LPollDataCon) MessageCode() uint8 {
+    return 0x25
 }
 
 
-func (m *CEMIFramePollingDataExt) InitializeParent(parent *CEMIFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-    m.Parent.Repeated = repeated
-    m.Parent.Priority = priority
-    m.Parent.AcknowledgeRequested = acknowledgeRequested
-    m.Parent.ErrorFlag = errorFlag
+func (m *LPollDataCon) InitializeParent(parent *CEMI) {
 }
 
-func NewCEMIFramePollingDataExt(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *CEMIFrame {
-    child := &CEMIFramePollingDataExt{
-        Parent: NewCEMIFrame(repeated, priority, acknowledgeRequested, errorFlag),
+func NewLPollDataCon() *CEMI {
+    child := &LPollDataCon{
+        Parent: NewCEMI(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastCEMIFramePollingDataExt(structType interface{}) *CEMIFramePollingDataExt {
-    castFunc := func(typ interface{}) *CEMIFramePollingDataExt {
-        if casted, ok := typ.(CEMIFramePollingDataExt); ok {
+func CastLPollDataCon(structType interface{}) *LPollDataCon {
+    castFunc := func(typ interface{}) *LPollDataCon {
+        if casted, ok := typ.(LPollDataCon); ok {
             return &casted
         }
-        if casted, ok := typ.(*CEMIFramePollingDataExt); ok {
+        if casted, ok := typ.(*LPollDataCon); ok {
             return casted
         }
-        if casted, ok := typ.(CEMIFrame); ok {
-            return CastCEMIFramePollingDataExt(casted.Child)
+        if casted, ok := typ.(CEMI); ok {
+            return CastLPollDataCon(casted.Child)
         }
-        if casted, ok := typ.(*CEMIFrame); ok {
-            return CastCEMIFramePollingDataExt(casted.Child)
+        if casted, ok := typ.(*CEMI); ok {
+            return CastLPollDataCon(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *CEMIFramePollingDataExt) GetTypeName() string {
-    return "CEMIFramePollingDataExt"
+func (m *LPollDataCon) GetTypeName() string {
+    return "LPollDataCon"
 }
 
-func (m *CEMIFramePollingDataExt) LengthInBits() uint16 {
+func (m *LPollDataCon) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *CEMIFramePollingDataExt) LengthInBytes() uint16 {
+func (m *LPollDataCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFramePollingDataExtParse(io *utils.ReadBuffer) (*CEMIFrame, error) {
+func LPollDataConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Create a partially initialized instance
-    _child := &CEMIFramePollingDataExt{
-        Parent: &CEMIFrame{},
+    _child := &LPollDataCon{
+        Parent: &CEMI{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *CEMIFramePollingDataExt) Serialize(io utils.WriteBuffer) error {
+func (m *LPollDataCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -120,7 +108,7 @@ func (m *CEMIFramePollingDataExt) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *CEMIFramePollingDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LPollDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -141,7 +129,7 @@ func (m *CEMIFramePollingDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartEl
     }
 }
 
-func (m *CEMIFramePollingDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LPollDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

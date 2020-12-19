@@ -23,6 +23,7 @@ import (
             "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
             "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
             api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+            "time"
 )
 
 func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int32) (api.PlcValue, error) {
@@ -209,7 +210,19 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             }
             return values.NewPlcTIME(value), nil
         case dataProtocolId == "S7_S5TIME": // TIME
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(2); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
         case dataProtocolId == "IEC61131_LTIME": // LTIME
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadUint64(64)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcLTIME(value), nil
         case dataProtocolId == "IEC61131_DATE": // DATE
 
             // Simple Field (value)
@@ -227,6 +240,56 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
             }
             return values.NewPlcTIME_OF_DAY(value), nil
         case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
+
+            // Simple Field (year)
+            year, _yearErr := io.ReadUint16(16)
+            if _yearErr != nil {
+                return nil, errors.New("Error parsing 'year' field " + _yearErr.Error())
+            }
+
+            // Simple Field (month)
+            month, _monthErr := io.ReadUint8(8)
+            if _monthErr != nil {
+                return nil, errors.New("Error parsing 'month' field " + _monthErr.Error())
+            }
+
+            // Simple Field (day)
+            day, _dayErr := io.ReadUint8(8)
+            if _dayErr != nil {
+                return nil, errors.New("Error parsing 'day' field " + _dayErr.Error())
+            }
+
+            // Simple Field (dayOfWeek)
+            _, _dayOfWeekErr := io.ReadUint8(8)
+            if _dayOfWeekErr != nil {
+                return nil, errors.New("Error parsing 'dayOfWeek' field " + _dayOfWeekErr.Error())
+            }
+
+            // Simple Field (hour)
+            hour, _hourErr := io.ReadUint8(8)
+            if _hourErr != nil {
+                return nil, errors.New("Error parsing 'hour' field " + _hourErr.Error())
+            }
+
+            // Simple Field (minutes)
+            minutes, _minutesErr := io.ReadUint8(8)
+            if _minutesErr != nil {
+                return nil, errors.New("Error parsing 'minutes' field " + _minutesErr.Error())
+            }
+
+            // Simple Field (seconds)
+            seconds, _secondsErr := io.ReadUint8(8)
+            if _secondsErr != nil {
+                return nil, errors.New("Error parsing 'seconds' field " + _secondsErr.Error())
+            }
+
+            // Simple Field (nanos)
+            _, _nanosErr := io.ReadUint32(32)
+            if _nanosErr != nil {
+                return nil, errors.New("Error parsing 'nanos' field " + _nanosErr.Error())
+            }
+            value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
+            return values.NewPlcDATE_AND_TIME(value), nil
     }
     return nil, errors.New("unsupported type")
 }
@@ -375,7 +438,17 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case dataProtocolId == "S7_S5TIME": // TIME
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
         case dataProtocolId == "IEC61131_LTIME": // LTIME
+
+            // Simple Field (value)
+            if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
         case dataProtocolId == "IEC61131_DATE": // DATE
 
             // Simple Field (value)
@@ -389,6 +462,46 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
+
+            // Simple Field (year)
+            if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+                return errors.New("Error serializing 'year' field " + _err.Error())
+            }
+
+            // Simple Field (month)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'month' field " + _err.Error())
+            }
+
+            // Simple Field (day)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'day' field " + _err.Error())
+            }
+
+            // Simple Field (dayOfWeek)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'dayOfWeek' field " + _err.Error())
+            }
+
+            // Simple Field (hour)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'hour' field " + _err.Error())
+            }
+
+            // Simple Field (minutes)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'minutes' field " + _err.Error())
+            }
+
+            // Simple Field (seconds)
+            if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'seconds' field " + _err.Error())
+            }
+
+            // Simple Field (nanos)
+            if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+                return errors.New("Error serializing 'nanos' field " + _err.Error())
+            }
         default:
 
             return errors.New("unsupported type")

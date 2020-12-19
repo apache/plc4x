@@ -28,7 +28,7 @@ import (
 // The data-structure of this message
 type DisconnectResponse struct {
     CommunicationChannelId uint8
-    Status Status
+    Status *Status
     Parent *KnxNetIpMessage
     IDisconnectResponse
 }
@@ -52,7 +52,7 @@ func (m *DisconnectResponse) MsgType() uint16 {
 func (m *DisconnectResponse) InitializeParent(parent *KnxNetIpMessage) {
 }
 
-func NewDisconnectResponse(communicationChannelId uint8, status Status, ) *KnxNetIpMessage {
+func NewDisconnectResponse(communicationChannelId uint8, status *Status, ) *KnxNetIpMessage {
     child := &DisconnectResponse{
         CommunicationChannelId: communicationChannelId,
         Status: status,
@@ -91,8 +91,8 @@ func (m *DisconnectResponse) LengthInBits() uint16 {
     // Simple field (communicationChannelId)
     lengthInBits += 8
 
-    // Enum Field (status)
-    lengthInBits += 8
+    // Simple field (status)
+    lengthInBits += m.Status.LengthInBits()
 
     return lengthInBits
 }
@@ -109,7 +109,7 @@ func DisconnectResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
         return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
+    // Simple Field (status)
     status, _statusErr := StatusParse(io)
     if _statusErr != nil {
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
@@ -135,9 +135,8 @@ func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
-    status := CastStatus(m.Status)
-    _statusErr := status.Serialize(io)
+    // Simple Field (status)
+    _statusErr := m.Status.Serialize(io)
     if _statusErr != nil {
         return errors.New("Error serializing 'status' field " + _statusErr.Error())
     }
@@ -163,8 +162,8 @@ func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
                 }
                 m.CommunicationChannelId = data
             case "status":
-                var data Status
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var data *Status
+                if err := d.DecodeElement(data, &tok); err != nil {
                     return err
                 }
                 m.Status = data
