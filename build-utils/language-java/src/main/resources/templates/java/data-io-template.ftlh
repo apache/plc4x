@@ -120,14 +120,22 @@ public class ${type.name}IO {
                             <#if helper.isLengthArrayField(field)>
             // Length array
             int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-            List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> ${field.name} = new LinkedList<>();
             int ${field.name}EndPos = io.getPos() + _${field.name}Length;
+            List<PlcValue> value = new LinkedList<>();
             while(io.getPos() < ${field.name}EndPos) {
-                ${field.name}.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
-                <#-- After parsing, update the current position, but only if it's needed -->
-                                <#if field.loopExpression.contains("curPos")>
-                curPos = io.getPos() - startPos;
-                                </#if>
+                value.add(
+                <#if helper.isSimpleTypeReference(field.type)>
+                    new ${helper.getPlcValueTypeForTypeReference(field.type)}(${helper.getReadBufferReadMethodCall(field.type)})
+                <#else>${field.type.name}IO.staticParse(io
+                    <#if field.params?has_content>,
+                        <#list field.params as parserArgument>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})
+                            <#sep>, </#sep>
+                        </#list>
+                    </#if>
+                    )
+                </#if>
+                );
             }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                             <#elseif helper.isTerminatedArrayField(field)>
@@ -186,9 +194,14 @@ public class ${type.name}IO {
                     <#break>
                     <#case "simple">
 
+                        <#if helper.isEnumField(field)>
+            // Enum field (${field.name})
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+                        <#else>
             // Simple Field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
-                        <#if field.name == "value">
+                        </#if>
+                        <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
                     <#break>
@@ -252,12 +265,25 @@ public class ${type.name}IO {
             return new PlcTIME(value);
                     <#break>
                     <#case "DATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
+            LocalDate value = LocalDate.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue());
+                    </#if>
             return new PlcDATE(value);
                     <#break>
                     <#case "TIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds", "nanos")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
             return new PlcTIME_OF_DAY(value);
                     <#break>
                     <#case "DATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
             return new PlcDATE_AND_TIME(value);
                     <#break>
                     <#case "Struct">

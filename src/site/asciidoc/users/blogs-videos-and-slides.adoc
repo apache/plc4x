@@ -25,6 +25,7 @@
 
 === Videos & Webinars
 
+- https://youtu.be/xguPoy6ebV4[Eclipse IoT Meetup, December 2020]
 - https://youtu.be/5n27Ybqrot4[Librecon - Open Industry 4.0, 2020]
 - https://youtu.be/SzWu7ab1gCI[Analyzing IIoT data with PLC4X and StreamPipes]
 - https://youtu.be/TEXENlCJHNk[Apache PLC4X or: How I Learned to Stop Worrying and Love the Industrial IoT]

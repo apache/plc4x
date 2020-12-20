@@ -28,6 +28,8 @@ The companies in the following list are actively using Apache PLC4X.
 
 a|image::users/companies/logo-codecentric.png[cc, 200, 200] |https://www.codecentric.de[codecentric AG^,opts=nofollow] |IT Consulting |We develop software that solves real problems - and PLC4X solves the problem of IoT connectivity in a highly performant and open source way
 
+a|image::users/companies/logo-connectorio.png[cc, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow] |IoT / Software / Cloud|We developed an open source gateway runtime and compatible cloud service to manage installations and collected information. We utilize PLC4X to gain access to data provided by industrial hardware.
+
 a|image::users/companies/logo-industryfusion.png[if, 200, 200] |https://www.industry-fusion.com[IndustryFusion^,opts=nofollow] |IIoT / Industry 4.0 |In the End-2-End Industry 4.0 solution IndustryFusion we use PLC4X for brownfield-connectivity, i.e. the connectivity to existing machines on the shop floor.
 
 a|image::users/companies/logo_unistuttgart_isw.png[isw, 200, 200] |https://www.isw.uni-stuttgart.de/en/[ISW University of Stuttgart^,opts=nofollow] |IIoT / Industry 4.0 / Research |We use PLC4X for our research projects because of its great potential for retrofitting scenarios, the simplicity of the API, an active community for broad platform support and the open source flexibility.

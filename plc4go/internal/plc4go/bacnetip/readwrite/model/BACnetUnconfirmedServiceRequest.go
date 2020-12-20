@@ -175,153 +175,153 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm":
-                            var dt *BACnetUnconfirmedServiceRequestIAm
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestIAm)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave":
-                            var dt *BACnetUnconfirmedServiceRequestIHave
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestIHave)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification":
-                            var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification":
-                            var dt *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer":
-                            var dt *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage":
-                            var dt *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization":
-                            var dt *BACnetUnconfirmedServiceRequestTimeSynchronization
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestTimeSynchronization)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas":
-                            var dt *BACnetUnconfirmedServiceRequestWhoHas
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestWhoHas)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs":
-                            var dt *BACnetUnconfirmedServiceRequestWhoIs
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestWhoIs)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization":
-                            var dt *BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUTCTimeSynchronization)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup":
-                            var dt *BACnetUnconfirmedServiceRequestWriteGroup
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestWriteGroup)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple":
-                            var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-                            if m.Child != nil {
-                                dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm":
+                        var dt *BACnetUnconfirmedServiceRequestIAm
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestIAm)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave":
+                        var dt *BACnetUnconfirmedServiceRequestIHave
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestIHave)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification":
+                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification":
+                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer":
+                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage":
+                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedTextMessage)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization":
+                        var dt *BACnetUnconfirmedServiceRequestTimeSynchronization
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestTimeSynchronization)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas":
+                        var dt *BACnetUnconfirmedServiceRequestWhoHas
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestWhoHas)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs":
+                        var dt *BACnetUnconfirmedServiceRequestWhoIs
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestWhoIs)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization":
+                        var dt *BACnetUnconfirmedServiceRequestUTCTimeSynchronization
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUTCTimeSynchronization)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup":
+                        var dt *BACnetUnconfirmedServiceRequestWriteGroup
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestWriteGroup)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple":
+                        var dt *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+                        if m.Child != nil {
+                            dt = m.Child.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

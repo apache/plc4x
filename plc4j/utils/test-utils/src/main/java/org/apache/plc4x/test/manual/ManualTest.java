@@ -105,7 +105,7 @@ public abstract class ManualTest {
                     String fieldName = testCase.address;
                     Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName));
                     Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
-                    if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
+                    if (readResponse.getPlcValue(fieldName) instanceof PlcList) {
                         PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
                         List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                         for (int j = 0; j < expectedValues.size(); j++) {
@@ -118,6 +118,8 @@ public abstract class ManualTest {
                 }
             }
             System.out.println("Success");
+        } catch (Exception e) {
+            Assertions.fail(e);
         }
     }
 

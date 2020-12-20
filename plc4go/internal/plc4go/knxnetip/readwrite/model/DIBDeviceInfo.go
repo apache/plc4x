@@ -78,7 +78,7 @@ func (m *DIBDeviceInfo) LengthInBits() uint16 {
     // Simple field (descriptionType)
     lengthInBits += 8
 
-    // Enum Field (knxMedium)
+    // Simple field (knxMedium)
     lengthInBits += 8
 
     // Simple field (deviceStatus)
@@ -127,7 +127,7 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
         return nil, errors.New("Error parsing 'descriptionType' field " + _descriptionTypeErr.Error())
     }
 
-    // Enum field (knxMedium)
+    // Simple Field (knxMedium)
     knxMedium, _knxMediumErr := KnxMediumParse(io)
     if _knxMediumErr != nil {
         return nil, errors.New("Error parsing 'knxMedium' field " + _knxMediumErr.Error())
@@ -205,9 +205,8 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
     }
 
-    // Enum field (knxMedium)
-    knxMedium := CastKnxMedium(m.KnxMedium)
-    _knxMediumErr := knxMedium.Serialize(io)
+    // Simple Field (knxMedium)
+    _knxMediumErr := m.KnxMedium.Serialize(io)
     if _knxMediumErr != nil {
         return errors.New("Error serializing 'knxMedium' field " + _knxMediumErr.Error())
     }

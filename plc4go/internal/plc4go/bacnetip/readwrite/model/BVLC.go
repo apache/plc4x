@@ -215,165 +215,165 @@ func (m *BVLC) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCResult":
-                            var dt *BVLCResult
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCResult)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCWideBroadcastDistributionTable":
-                            var dt *BVLCWideBroadcastDistributionTable
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCWideBroadcastDistributionTable)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTable":
-                            var dt *BVLCReadBroadcastDistributionTable
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCReadBroadcastDistributionTable)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTableAck":
-                            var dt *BVLCReadBroadcastDistributionTableAck
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCReadBroadcastDistributionTableAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCForwardedNPDU":
-                            var dt *BVLCForwardedNPDU
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCForwardedNPDU)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCRegisterForeignDevice":
-                            var dt *BVLCRegisterForeignDevice
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCRegisterForeignDevice)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTable":
-                            var dt *BVLCReadForeignDeviceTable
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCReadForeignDeviceTable)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTableAck":
-                            var dt *BVLCReadForeignDeviceTableAck
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCReadForeignDeviceTableAck)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDeleteForeignDeviceTableEntry":
-                            var dt *BVLCDeleteForeignDeviceTableEntry
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCDeleteForeignDeviceTableEntry)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDistributeBroadcastToNetwork":
-                            var dt *BVLCDistributeBroadcastToNetwork
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCDistributeBroadcastToNetwork)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCOriginalUnicastNPDU":
-                            var dt *BVLCOriginalUnicastNPDU
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCOriginalUnicastNPDU)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCOriginalBroadcastNPDU":
-                            var dt *BVLCOriginalBroadcastNPDU
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCOriginalBroadcastNPDU)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.BVLCSecureBVLL":
-                            var dt *BVLCSecureBVLL
-                            if m.Child != nil {
-                                dt = m.Child.(*BVLCSecureBVLL)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCResult":
+                        var dt *BVLCResult
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCResult)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCWideBroadcastDistributionTable":
+                        var dt *BVLCWideBroadcastDistributionTable
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCWideBroadcastDistributionTable)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTable":
+                        var dt *BVLCReadBroadcastDistributionTable
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCReadBroadcastDistributionTable)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTableAck":
+                        var dt *BVLCReadBroadcastDistributionTableAck
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCReadBroadcastDistributionTableAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCForwardedNPDU":
+                        var dt *BVLCForwardedNPDU
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCForwardedNPDU)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCRegisterForeignDevice":
+                        var dt *BVLCRegisterForeignDevice
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCRegisterForeignDevice)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTable":
+                        var dt *BVLCReadForeignDeviceTable
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCReadForeignDeviceTable)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTableAck":
+                        var dt *BVLCReadForeignDeviceTableAck
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCReadForeignDeviceTableAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDeleteForeignDeviceTableEntry":
+                        var dt *BVLCDeleteForeignDeviceTableEntry
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCDeleteForeignDeviceTableEntry)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDistributeBroadcastToNetwork":
+                        var dt *BVLCDistributeBroadcastToNetwork
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCDistributeBroadcastToNetwork)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCOriginalUnicastNPDU":
+                        var dt *BVLCOriginalUnicastNPDU
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCOriginalUnicastNPDU)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCOriginalBroadcastNPDU":
+                        var dt *BVLCOriginalBroadcastNPDU
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCOriginalBroadcastNPDU)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BVLCSecureBVLL":
+                        var dt *BVLCSecureBVLL
+                        if m.Child != nil {
+                            dt = m.Child.(*BVLCSecureBVLL)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

@@ -113,7 +113,6 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'vendorId' field " + _err.Error())
         }
-
         vendorId = &_val
     }
 
@@ -188,33 +187,33 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
                     return err
                 }
                 m.VendorId = data
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
-                            var dt *NLMWhoIsRouterToNetwork
-                            if m.Child != nil {
-                                dt = m.Child.(*NLMWhoIsRouterToNetwork)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
-                            var dt *NLMIAmRouterToNetwork
-                            if m.Child != nil {
-                                dt = m.Child.(*NLMIAmRouterToNetwork)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
+                        var dt *NLMWhoIsRouterToNetwork
+                        if m.Child != nil {
+                            dt = m.Child.(*NLMWhoIsRouterToNetwork)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
+                        var dt *NLMIAmRouterToNetwork
+                        if m.Child != nil {
+                            dt = m.Child.(*NLMIAmRouterToNetwork)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

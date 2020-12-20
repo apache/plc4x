@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- 
+
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
- 
+
  http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
  -->
 <project name="PLC4X">
 
@@ -50,6 +50,7 @@
       <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
+      <item name="Commercial support" href="users/commercial-support.html"/>
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
@@ -61,6 +62,7 @@
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
         <item name="BACnet/IP" href="users/protocols/bacnetip.html"/>
+        <item name="CANopen" href="users/protocols/canopen.html"/>
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
         <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
@@ -75,6 +77,7 @@
         <item name="TCP" href="users/transports/tcp.html"/>
         <item name="UDP" href="users/transports/udp.html"/>
         <item name="Serial" href="users/transports/serial.html"/>
+        <item name="SocketCAN" href="users/transports/socketcan.html"/>
         <item name="Raw Socket" href="users/transports/raw-socket.html"/>
         <item name="PCAP Replay" href="users/transports/pcap-replay.html"/>
       </item>
@@ -87,6 +90,7 @@
         <item name="Apache NiFi" href="users/integrations/apache-nifi.html"/>
         <item name="Apache StreamPipes" href="users/integrations/apache-streampipes.html"/>
         <item name="Eclipse Ditto" href="users/integrations/eclipse-ditto.html"/>
+        <item name="Eclipse Milo OPC UA Server" href="users/integrations/eclipse-milo.html"/>
         <item name="Elastic Logstash " href="users/integrations/elastic-logstash.html"/>
       </item>
       <item name="Tools" href="users/tools/index.html">

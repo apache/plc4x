@@ -163,13 +163,17 @@ public abstract class BaseOptimizer {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         results.put(subRequest, Either.right(new Exception("Something went wrong")));
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
                         results.put(subRequest, Either.right(new Exception("Something went wrong")));
                     }
                 }
                 PlcResponse response = responseProcessor.apply(results);
                 parentFuture.complete(response);
                 return Void.TYPE;
+            }).exceptionally(throwable -> {
+                // TODO: If would be cool if we could still process all of the successful ones ...
+                parentFuture.completeExceptionally(throwable);
+                return null;
             });
             return parentFuture;
         } else {

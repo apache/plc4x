@@ -163,81 +163,81 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
-                            var dt *KnxNetIpCore
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetIpCore)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement":
-                            var dt *KnxNetIpDeviceManagement
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetIpDeviceManagement)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling":
-                            var dt *KnxNetIpTunneling
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetIpTunneling)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteLogging":
-                            var dt *KnxNetRemoteLogging
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetRemoteLogging)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis":
-                            var dt *KnxNetRemoteConfigurationAndDiagnosis
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetRemoteConfigurationAndDiagnosis)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer":
-                            var dt *KnxNetObjectServer
-                            if m.Child != nil {
-                                dt = m.Child.(*KnxNetObjectServer)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
+                        var dt *KnxNetIpCore
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetIpCore)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpDeviceManagement":
+                        var dt *KnxNetIpDeviceManagement
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetIpDeviceManagement)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpTunneling":
+                        var dt *KnxNetIpTunneling
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetIpTunneling)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteLogging":
+                        var dt *KnxNetRemoteLogging
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetRemoteLogging)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetRemoteConfigurationAndDiagnosis":
+                        var dt *KnxNetRemoteConfigurationAndDiagnosis
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetRemoteConfigurationAndDiagnosis)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetObjectServer":
+                        var dt *KnxNetObjectServer
+                        if m.Child != nil {
+                            dt = m.Child.(*KnxNetObjectServer)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

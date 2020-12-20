@@ -116,16 +116,16 @@
 
   <testcase>
     <name>Search Request</name>
-    <raw>06100201000e0801c0a82a46ef8e</raw>
+    <raw>06100201000e0801c0a82ac8d6b4</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <SearchRequest className="org.apache.plc4x.java.knxnetip.readwrite.SearchRequest">
         <hpaiIDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>wKgqyA==</addr>
           </ipAddress>
-          <ipPort>61326</ipPort>
+          <ipPort>54964</ipPort>
         </hpaiIDiscoveryEndpoint>
       </SearchRequest>
     </xml>
@@ -253,23 +253,24 @@
 
   <testcase>
     <name>Connect Request</name>
-    <raw>06100205001a0801c0a82a46f4310801c0a82a46f43204040200</raw>
+    <!--raw>06100205001a0801c0a82a46f4310801c0a82a46f43204040200</raw-->
+    <raw>06100205001a0801c0a82ac8d6b40801c0a82ac8d6b404040200</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
         <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>wKgqyA==</addr>
           </ipAddress>
-          <ipPort>62513</ipPort>
+          <ipPort>54964</ipPort>
         </hpaiDiscoveryEndpoint>
         <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>wKgqyA==</addr>
           </ipAddress>
-          <ipPort>62514</ipPort>
+          <ipPort>54964</ipPort>
         </hpaiDataEndpoint>
         <connectionRequestInformation className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection">
           <knxLayer>TUNNEL_LINK_LAYER</knxLayer>
@@ -280,11 +281,11 @@
 
   <testcase>
     <name>Connect Response</name>
-    <raw>06100206001466000801c0a82a0b0e5704041101</raw>
+    <raw>06100206001402000801c0a82a0b0e570404fffe</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse">
-        <communicationChannelId>102</communicationChannelId>
+        <communicationChannelId>2</communicationChannelId>
         <status>NO_ERROR</status>
         <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
@@ -295,9 +296,9 @@
         </hpaiDataEndpoint>
         <connectionResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection">
           <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-            <mainGroup>1</mainGroup>
-            <middleGroup>1</middleGroup>
-            <subGroup>1</subGroup>
+            <mainGroup>15</mainGroup>
+            <middleGroup>15</middleGroup>
+            <subGroup>254</subGroup>
           </knxAddress>
         </connectionResponseDataBlock>
       </ConnectionResponse>
@@ -306,17 +307,17 @@
 
   <testcase>
     <name>Connection State Request</name>
-    <raw>06100207001066000801c0a82a46f431</raw>
+    <raw>06100207001002000801c0a82ac8d6b4</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionStateRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest">
-        <communicationChannelId>102</communicationChannelId>
+        <communicationChannelId>2</communicationChannelId>
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>wKgqyA==</addr>
           </ipAddress>
-          <ipPort>62513</ipPort>
+          <ipPort>54964</ipPort>
         </hpaiControlEndpoint>
       </ConnectionStateRequest>
     </xml>
@@ -324,11 +325,11 @@
 
   <testcase>
     <name>Connection State Response</name>
-    <raw>0610020800086600</raw>
+    <raw>0610020800080200</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <ConnectionStateResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse">
-        <communicationChannelId>102</communicationChannelId>
+        <communicationChannelId>2</communicationChannelId>
         <status>NO_ERROR</status>
       </ConnectionStateResponse>
     </xml>
@@ -344,7 +345,7 @@
           <communicationChannelId>103</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
         </deviceConfigurationRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIMPropReadReq">
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.MPropReadReq">
           <interfaceObjectType>0</interfaceObjectType>
           <objectInstance>1</objectInstance>
           <propertyId>83</propertyId>
@@ -372,17 +373,17 @@
 
   <testcase>
     <name>Disconnect Request</name>
-    <raw>06100209001067000801c0a82a46f431</raw>
+    <raw>06100209001001000801c0a82a0b0e57</raw>
     <root-type>KnxNetIpMessage</root-type>
     <xml>
       <DisconnectRequest className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectRequest">
-        <communicationChannelId>103</communicationChannelId>
+        <communicationChannelId>1</communicationChannelId>
         <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
           <hostProtocolCode>IPV4_UDP</hostProtocolCode>
           <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
-            <addr>wKgqRg==</addr>
+            <addr>wKgqCw==</addr>
           </ipAddress>
-          <ipPort>62513</ipPort>
+          <ipPort>3671</ipPort>
         </hpaiControlEndpoint>
       </DisconnectRequest>
     </xml>
@@ -402,6 +403,47 @@
 
   <testcase>
     <name>Tunneling Request</name>
+    <raw>061004200015040200002900bce0220a120c010081</raw>
+    <root-type>KnxNetIpMessage</root-type>
+    <xml>
+      <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
+        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
+          <communicationChannelId>2</communicationChannelId>
+          <sequenceCounter>0</sequenceCounter>
+        </tunnelingRequestDataBlock>
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.LDataInd">
+          <additionalInformationLength>0</additionalInformationLength>
+          <additionalInformation/>
+          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
+            <repeated>true</repeated>
+            <priority>LOW</priority>
+            <acknowledgeRequested>false</acknowledgeRequested>
+            <errorFlag>false</errorFlag>
+            <groupAddress>true</groupAddress>
+            <hopCount>6</hopCount>
+            <extendedFrameFormat>0</extendedFrameFormat>
+            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
+              <mainGroup>2</mainGroup>
+              <middleGroup>2</middleGroup>
+              <subGroup>10</subGroup>
+            </sourceAddress>
+            <destinationAddress>Egw=</destinationAddress>
+            <dataLength>1</dataLength>
+            <control>false</control>
+            <numbered>false</numbered>
+            <counter>0</counter>
+            <controlType/>
+            <apci>GROUP_VALUE_WRITE_PDU</apci>
+            <dataFirstByte>1</dataFirstByte>
+            <data></data>
+          </dataFrame>
+        </cemi>
+      </TunnelingRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Tunneling Request (Busmon)</name>
     <raw>06100420001c046b00002b0703010504024502bc360a1e0ce100810d</raw>
     <!--
     Raw CEMI Frame: bc360a1e0ce100810d
@@ -414,7 +456,7 @@
           <communicationChannelId>107</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
         </tunnelingRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.LBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
           <additionalInformation>
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
@@ -431,27 +473,30 @@
               </relativeTimestamp>
             </additionalInformation>
           </additionalInformation>
-          <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData">
+          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
             <repeated>true</repeated>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
+            <groupAddress>false</groupAddress>
+            <hopCount>3</hopCount>
+            <extendedFrameFormat>6</extendedFrameFormat>
             <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KnxAddress">
-              <mainGroup>3</mainGroup>
-              <middleGroup>6</middleGroup>
-              <subGroup>10</subGroup>
+              <mainGroup>0</mainGroup>
+              <middleGroup>10</middleGroup>
+              <subGroup>30</subGroup>
             </sourceAddress>
-            <destinationAddress>Hgw=</destinationAddress>
-            <groupAddress>true</groupAddress>
-            <hopCount>6</hopCount>
-            <dataLength>1</dataLength>
-            <tcpi>UNNUMBERED_DATA_PACKET</tcpi>
+            <destinationAddress>DOE=</destinationAddress>
+            <dataLength>0</dataLength>
+            <control>true</control>
+            <numbered>false</numbered>
             <counter>0</counter>
-            <apci>GROUP_VALUE_WRITE_PDU</apci>
-            <dataFirstByte>1</dataFirstByte>
+            <controlType>DISCONNECT</controlType>
+            <apci/>
+            <dataFirstByte/>
             <data></data>
-            <crc>13</crc>
-          </cemiFrame>
+          </dataFrame>
+          <crc>13</crc>
         </cemi>
       </TunnelingRequest>
     </xml>

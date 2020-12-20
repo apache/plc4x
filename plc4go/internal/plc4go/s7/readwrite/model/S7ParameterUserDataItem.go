@@ -153,21 +153,21 @@ func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEl
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions":
-                            var dt *S7ParameterUserDataItemCPUFunctions
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterUserDataItemCPUFunctions)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions":
+                        var dt *S7ParameterUserDataItemCPUFunctions
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterUserDataItemCPUFunctions)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

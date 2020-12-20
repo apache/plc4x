@@ -91,7 +91,7 @@ func (m *DisconnectResponse) LengthInBits() uint16 {
     // Simple field (communicationChannelId)
     lengthInBits += 8
 
-    // Enum Field (status)
+    // Simple field (status)
     lengthInBits += 8
 
     return lengthInBits
@@ -109,7 +109,7 @@ func DisconnectResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
         return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
+    // Simple Field (status)
     status, _statusErr := StatusParse(io)
     if _statusErr != nil {
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
@@ -135,9 +135,8 @@ func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
-    status := CastStatus(m.Status)
-    _statusErr := status.Serialize(io)
+    // Simple Field (status)
+    _statusErr := m.Status.Serialize(io)
     if _statusErr != nil {
         return errors.New("Error serializing 'status' field " + _statusErr.Error())
     }

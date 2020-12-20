@@ -68,7 +68,7 @@ func (m *HPAIControlEndpoint) LengthInBits() uint16 {
     // Implicit Field (structureLength)
     lengthInBits += 8
 
-    // Enum Field (hostProtocolCode)
+    // Simple field (hostProtocolCode)
     lengthInBits += 8
 
     // Simple field (ipAddress)
@@ -92,7 +92,7 @@ func HPAIControlEndpointParse(io *utils.ReadBuffer) (*HPAIControlEndpoint, error
         return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
     }
 
-    // Enum field (hostProtocolCode)
+    // Simple Field (hostProtocolCode)
     hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
     if _hostProtocolCodeErr != nil {
         return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
@@ -123,9 +123,8 @@ func (m *HPAIControlEndpoint) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
     }
 
-    // Enum field (hostProtocolCode)
-    hostProtocolCode := CastHostProtocolCode(m.HostProtocolCode)
-    _hostProtocolCodeErr := hostProtocolCode.Serialize(io)
+    // Simple Field (hostProtocolCode)
+    _hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
     if _hostProtocolCodeErr != nil {
         return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
     }

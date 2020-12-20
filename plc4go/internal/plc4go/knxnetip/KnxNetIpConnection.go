@@ -298,7 +298,16 @@ func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 }
 
 func (m *KnxNetIpConnection) IsConnected() bool {
-    panic("implement me")
+    if m.messageCodec != nil {
+        pingChannel := m.Ping()
+        select {
+        case pingResponse := <-pingChannel:
+            return pingResponse.Err == nil
+        case <-time.After(time.Second * 5):
+            return false
+        }
+    }
+    return false
 }
 
 func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
@@ -414,40 +423,59 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequestChan
         }
 
         go func() {
-            cemiDataInd := driverModel.CastCEMIDataInd(tunnelingRequest.Cemi.Child)
-            if cemiDataInd != nil {
-                addressData := uint16(cemiDataInd.CemiDataFrame.DestinationAddress[0])<<8 | (uint16(cemiDataInd.CemiDataFrame.DestinationAddress[1]) & 0xFF)
-                m.valueCacheMutex.RLock()
-                val, ok := m.valueCache[addressData]
-                m.valueCacheMutex.RUnlock()
-                changed := false
-                var payload []int8
-                payload = append(payload, cemiDataInd.CemiDataFrame.DataFirstByte)
-                payload = append(payload, cemiDataInd.CemiDataFrame.Data...)
-                if !ok || !m.sliceEqual(val, payload) {
-                    m.valueCacheMutex.Lock()
-                    m.valueCache[addressData] = payload
-                    m.valueCacheMutex.Unlock()
-                    // If this is a new value, we have to also provide the 3 different types of addresses.
-                    if !ok {
-                        destinationAddress := cemiDataInd.CemiDataFrame.DestinationAddress
-                        arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
-                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
-                            m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
+            lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
+            if lDataInd != nil {
+
+                var destinationAddress []int8
+                var dataFirstByte *int8
+                var data []int8
+                switch lDataInd.DataFrame.Child.(type) {
+                case *driverModel.LDataFrameData:
+                    dataFrame := driverModel.CastLDataFrameData(lDataInd.DataFrame)
+                    destinationAddress = dataFrame.DestinationAddress
+                    dataFirstByte = dataFrame.DataFirstByte
+                    data = dataFrame.Data
+                case *driverModel.LDataFrameDataExt:
+                    dataFrame := driverModel.CastLDataFrameDataExt(lDataInd.DataFrame)
+                    destinationAddress = dataFrame.DestinationAddress
+                    dataFirstByte = dataFrame.DataFirstByte
+                    data = dataFrame.Data
+                }
+                if destinationAddress != nil {
+                    addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
+                    m.valueCacheMutex.RLock()
+                    val, ok := m.valueCache[addressData]
+                    m.valueCacheMutex.RUnlock()
+                    changed := false
+                    if dataFirstByte != nil {
+                        var payload []int8
+                        payload = append(payload, *dataFirstByte)
+                        payload = append(payload, data...)
+                        if !ok || !m.sliceEqual(val, payload) {
+                            m.valueCacheMutex.Lock()
+                            m.valueCache[addressData] = payload
+                            m.valueCacheMutex.Unlock()
+                            // If this is a new value, we have to also provide the 3 different types of addresses.
+                            if !ok {
+                                arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
+                                if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
+                                    m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
+                                }
+                                arb.Reset()
+                                if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
+                                    m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
+                                }
+                                arb.Reset()
+                                if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
+                                    m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
+                                }
+                            }
+                            changed = true
                         }
-                        arb.Reset()
-                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
-                            m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
-                        }
-                        arb.Reset()
-                        if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
-                            m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
+                        for _, subscriber := range m.subscribers {
+                            subscriber.handleValueChange(lDataInd.DataFrame, changed)
                         }
                     }
-                    changed = true
-                }
-                for _, subscriber := range m.subscribers {
-                    subscriber.handleValueChange(cemiDataInd.CemiDataFrame, changed)
                 }
             }
         }()

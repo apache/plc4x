@@ -53,6 +53,7 @@
     <module>hello-world-plc4x</module>
     <module>hello-world-plc4x-subscription</module>
     <module>hello-world-plc4x-write</module>
+    <module>poll-loop</module>
   </modules>
 
   <build>

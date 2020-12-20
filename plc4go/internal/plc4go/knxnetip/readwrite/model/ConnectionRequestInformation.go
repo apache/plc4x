@@ -171,33 +171,33 @@ func (m *ConnectionRequestInformation) UnmarshalXML(d *xml.Decoder, start xml.St
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
-                            var dt *ConnectionRequestInformationDeviceManagement
-                            if m.Child != nil {
-                                dt = m.Child.(*ConnectionRequestInformationDeviceManagement)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection":
-                            var dt *ConnectionRequestInformationTunnelConnection
-                            if m.Child != nil {
-                                dt = m.Child.(*ConnectionRequestInformationTunnelConnection)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
+                        var dt *ConnectionRequestInformationDeviceManagement
+                        if m.Child != nil {
+                            dt = m.Child.(*ConnectionRequestInformationDeviceManagement)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection":
+                        var dt *ConnectionRequestInformationTunnelConnection
+                        if m.Child != nil {
+                            dt = m.Child.(*ConnectionRequestInformationTunnelConnection)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

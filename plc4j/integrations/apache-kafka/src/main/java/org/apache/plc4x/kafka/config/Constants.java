@@ -82,6 +82,9 @@ public class Constants {
     public static final String TIMESTAMP_DOC = "PLC value timestamp. This is the time that the PLC value is placed in the buffer";
     public static final Integer TIMESTAMP_DEFAULT = 5000;
 
+    public static final String EXPIRES_CONFIG = "expires";
+    public static final String EXPIRES_DOC = "Time for the record to become otu of date. It is up to the consumer to determine if this is useful";
+
     public static final String SINKS_CONFIG = "sinks";
     public static final String SINKS_DOC = "List of sink names that will be configured.";
     public static final String SINKS_DEFAULT = "";

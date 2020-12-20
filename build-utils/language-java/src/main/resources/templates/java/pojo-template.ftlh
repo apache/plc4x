@@ -240,6 +240,8 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if helper.isSimpleTypeReference(optionalField.type)>
             <#assign simpleTypeReference = optionalField.type>
             lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#elseif helper.isEnumField(field)>
+            lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits};
         <#else>
             lengthInBits += ${optionalField.name}.getLengthInBits();
         </#if>
@@ -270,6 +272,8 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if helper.isSimpleTypeReference(simpleField.type)>
             <#assign simpleTypeReference = simpleField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#elseif helper.isEnumField(field)>
+        lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits};
         <#else>
         lengthInBits += ${simpleField.name}.getLengthInBits();
         </#if>

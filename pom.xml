@@ -101,14 +101,14 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
-    <plc4x-code-generation.version>1.4.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.4.0</plc4x-code-generation.version>
 
     <antlr.version>4.9</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <assertj.version>3.18.1</assertj.version>
     <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
-    <bouncycastle.version>1.66</bouncycastle.version>
+    <bouncycastle.version>1.67</bouncycastle.version>
     <boost.version>1.74.0</boost.version>
     <boost.version.underline-short>1_74</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
@@ -134,10 +134,12 @@
     <freemarker.version>2.3.30</freemarker.version>
     <groovy.version>3.0.6</groovy.version>
     <gson.version>2.8.6</gson.version>
+    <guava.version>30.0-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.13</httpcore.version>
     <jackson.version>2.11.3</jackson.version>
+    <jaxb.version>2.3.3</jaxb.version>
     <jna.version>5.3.1</jna.version>
     <joda-time.version>2.10.8</joda-time.version>
     <jserialcom.version>2.6.2</jserialcom.version>
@@ -290,6 +292,18 @@
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${gson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>${jaxb.version}</version>
       </dependency>
 
       <dependency>
@@ -480,7 +494,6 @@
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcmail-jdk15on</artifactId>
         <version>${bouncycastle.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -570,6 +583,26 @@
       <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>sdk-server</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>sdk-core</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-core</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-server</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-client</artifactId>
         <version>${milo.version}</version>
       </dependency>
       <dependency>
@@ -667,6 +700,7 @@
 
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>
+            <exclude>**/*.pcapng</exclude>
 
             <!-- JEVN local version files -->
             <exclude>**/.java-version</exclude>
@@ -1107,6 +1141,12 @@
             <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
             <arguments>-Papache-release ${arguments}</arguments>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.7.0.1746</version>
         </plugin>
       </plugins>
     </pluginManagement>

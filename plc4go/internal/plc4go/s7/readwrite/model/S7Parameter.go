@@ -164,81 +164,81 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-                default:
-                    switch start.Attr[0].Value {
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
-                            var dt *S7ParameterSetupCommunication
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterSetupCommunication)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
-                            var dt *S7ParameterReadVarRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterReadVarRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
-                            var dt *S7ParameterReadVarResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterReadVarResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
-                            var dt *S7ParameterWriteVarRequest
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterWriteVarRequest)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
-                            var dt *S7ParameterWriteVarResponse
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterWriteVarResponse)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                        case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
-                            var dt *S7ParameterUserData
-                            if m.Child != nil {
-                                dt = m.Child.(*S7ParameterUserData)
-                            }
-                            if err := d.DecodeElement(&dt, &tok); err != nil {
-                                return err
-                            }
-                            if m.Child == nil {
-                                dt.Parent = m
-                                m.Child = dt
-                            }
-                    }
+            default:
+                switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
+                        var dt *S7ParameterSetupCommunication
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterSetupCommunication)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
+                        var dt *S7ParameterReadVarRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterReadVarRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
+                        var dt *S7ParameterReadVarResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterReadVarResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
+                        var dt *S7ParameterWriteVarRequest
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterWriteVarRequest)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
+                        var dt *S7ParameterWriteVarResponse
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterWriteVarResponse)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
+                        var dt *S7ParameterUserData
+                        if m.Child != nil {
+                            dt = m.Child.(*S7ParameterUserData)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
+                }
             }
         }
     }

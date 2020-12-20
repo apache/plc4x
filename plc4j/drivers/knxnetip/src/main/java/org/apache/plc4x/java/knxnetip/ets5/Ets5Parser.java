@@ -151,12 +151,14 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    // Lookup the driver internal data-type.
-                    final KnxDatapointType datapointType = knxDatapointTypeMap.get(
-                        addressType.getMainType() + "#" + addressType.getSubType());
+                    if(addressType != null) {
+                        // Lookup the driver internal data-type.
+                        final KnxDatapointType datapointType = knxDatapointTypeMap.get(
+                            addressType.getMainType() + "#" + addressType.getSubType());
 
-                    GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, datapointType, function);
-                    groupAddresses.put(knxGroupAddress, groupAddress);
+                        GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, datapointType, function);
+                        groupAddresses.put(knxGroupAddress, groupAddress);
+                    }
                 }
                 return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }

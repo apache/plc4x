@@ -170,7 +170,6 @@ func APDUComplexAckParse(io *utils.ReadBuffer) (*APDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'sequenceNumber' field " + _err.Error())
         }
-
         sequenceNumber = &_val
     }
 
@@ -181,7 +180,6 @@ func APDUComplexAckParse(io *utils.ReadBuffer) (*APDU, error) {
         if _err != nil {
             return nil, errors.New("Error parsing 'proposedWindowSize' field " + _err.Error())
         }
-
         proposedWindowSize = &_val
     }
 

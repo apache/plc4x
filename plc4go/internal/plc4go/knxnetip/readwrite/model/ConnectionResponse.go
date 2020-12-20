@@ -95,7 +95,7 @@ func (m *ConnectionResponse) LengthInBits() uint16 {
     // Simple field (communicationChannelId)
     lengthInBits += 8
 
-    // Enum Field (status)
+    // Simple field (status)
     lengthInBits += 8
 
     // Optional Field (hpaiDataEndpoint)
@@ -123,7 +123,7 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
         return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
+    // Simple Field (status)
     status, _statusErr := StatusParse(io)
     if _statusErr != nil {
         return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
@@ -132,21 +132,21 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
     var hpaiDataEndpoint *HPAIDataEndpoint = nil
     if bool((status) == (Status_NO_ERROR)) {
-        _message, _err := HPAIDataEndpointParse(io)
+        _val, _err := HPAIDataEndpointParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
         }
-        hpaiDataEndpoint = _message
+        hpaiDataEndpoint = _val
     }
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
     var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
     if bool((status) == (Status_NO_ERROR)) {
-        _message, _err := ConnectionResponseDataBlockParse(io)
+        _val, _err := ConnectionResponseDataBlockParse(io)
         if _err != nil {
             return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
         }
-        connectionResponseDataBlock = _message
+        connectionResponseDataBlock = _val
     }
 
     // Create a partially initialized instance
@@ -171,9 +171,8 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
     }
 
-    // Enum field (status)
-    status := CastStatus(m.Status)
-    _statusErr := status.Serialize(io)
+    // Simple Field (status)
+    _statusErr := m.Status.Serialize(io)
     if _statusErr != nil {
         return errors.New("Error serializing 'status' field " + _statusErr.Error())
     }

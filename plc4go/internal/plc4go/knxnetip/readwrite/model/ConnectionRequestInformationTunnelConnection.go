@@ -87,7 +87,7 @@ func (m *ConnectionRequestInformationTunnelConnection) GetTypeName() string {
 func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
-    // Enum Field (knxLayer)
+    // Simple field (knxLayer)
     lengthInBits += 8
 
     // Reserved Field (reserved)
@@ -102,7 +102,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 
 func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
-    // Enum field (knxLayer)
+    // Simple Field (knxLayer)
     knxLayer, _knxLayerErr := KnxLayerParse(io)
     if _knxLayerErr != nil {
         return nil, errors.New("Error parsing 'knxLayer' field " + _knxLayerErr.Error())
@@ -134,9 +134,8 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
-    // Enum field (knxLayer)
-    knxLayer := CastKnxLayer(m.KnxLayer)
-    _knxLayerErr := knxLayer.Serialize(io)
+    // Simple Field (knxLayer)
+    _knxLayerErr := m.KnxLayer.Serialize(io)
     if _knxLayerErr != nil {
         return errors.New("Error serializing 'knxLayer' field " + _knxLayerErr.Error())
     }
