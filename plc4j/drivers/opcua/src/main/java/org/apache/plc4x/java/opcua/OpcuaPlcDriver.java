@@ -64,7 +64,7 @@ public class OpcuaPlcDriver implements PlcDriver {
 
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'opcua:{type}//{port|host}'");
+                "Connection url doesn't match the format 'opcua:{type}//{host|port}'");
         }
 
         String host = matcher.group("host");

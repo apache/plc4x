@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.opcua.readwrite.types.OpcuaIdentifierType;
 import org.apache.plc4x.java.opcua.readwrite.types.OpcuaDataType;
@@ -74,8 +75,10 @@ public class OpcuaField implements PlcField {
         String namespaceString = matcher.group("namespace");
         Integer namespace = namespaceString != null ? Integer.valueOf(namespaceString) : 0;
 
-        String dtString = matcher.group("datatype");
-        String dataTypeString = dtString != null ? "IEC61131_" + dtString.toUpperCase() : "IEC61131_NULL";
+        String dataTypeString = matcher.group("datatype") != null ? "IEC61131_" + matcher.group("datatype").toUpperCase() : "IEC61131_NULL";
+        if (!OpcuaDataType.isDefined(dataTypeString)) {
+            throw new PlcUnsupportedDataTypeException("Datatype " + dataTypeString + " is unsupported by this protocol");
+        }
         OpcuaDataType dataType = OpcuaDataType.enumForValue(dataTypeString);
 
         return new OpcuaField(namespace, identifier, identifierType, dataType);
