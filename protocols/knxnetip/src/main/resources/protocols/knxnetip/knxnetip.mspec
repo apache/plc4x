@@ -1552,7 +1552,6 @@
 //                   Busmonitor connection is allowed at any given time.
 [enum uint 8 'KnxLayer'
     ['0x02' TUNNEL_LINK_LAYER]
-    ['0x03'
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
 ]
