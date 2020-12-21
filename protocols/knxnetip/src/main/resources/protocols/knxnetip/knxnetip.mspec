@@ -371,7 +371,7 @@
             [optional ControlType  'controlType'   'control']
             [optional APCI         'apci'          '!control']
             [optional int 6        'dataFirstByte' '!control']
-            [array    int 8        'data' count    'dataLength - 1']
+            [array    int 8        'data' count    '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         // Page 31ff
         ['true','true','true' LDataFramePollingData
@@ -402,7 +402,7 @@
             [optional ControlType  'controlType'   'control']
             [optional APCI         'apci'          '!control']
             [optional int 6        'dataFirstByte' '!control']
-            [array    int 8        'data' count    'dataLength - 1']
+            [array    int 8        'data' count    '(dataLength < 1) ? 0 : dataLength - 1']
         ]
     ]
 ]
@@ -1552,6 +1552,7 @@
 //                   Busmonitor connection is allowed at any given time.
 [enum uint 8 'KnxLayer'
     ['0x02' TUNNEL_LINK_LAYER]
+    ['0x03'
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
 ]
