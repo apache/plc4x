@@ -512,9 +512,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 ((vl.getChild().getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild().getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        // If we are accessing optional fields of simple type, we need to use pointer-access.
-        else if (!serialize && (getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) &&
-            (((OptionalField) getFieldForNameFromCurrent(vl.getName())).getType() instanceof SimpleTypeReference)) {
+        // If we are accessing optional fields, we need to use pointer-access.
+        else if (!serialize && (getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField)) {
             return "(*" + vl.getName() + ")" +
                 ((vl.getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess) : "");

@@ -370,7 +370,11 @@
             [simple   uint 4       'counter']
             [optional ControlType  'controlType'   'control']
             [optional APCI         'apci'          '!control']
-            [optional int 6        'dataFirstByte' '!control']
+            // The 4 bit of APCI only allow 16 options, in order to extend, if APCI is set to 0xF
+            // the following 6 bit allow a bit more room for selection
+            [optional ExtendedAPCI 'extendedApci'  '!control && apci == APCI.OTHER_PDU']
+            // If the extended APCI is used, these 6 bits can't be used for data.
+            [optional int 6        'dataFirstByte' '!control && apci != APCI.OTHER_PDU']
             [array    int 8        'data' count    '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         // Page 31ff
@@ -401,7 +405,11 @@
             [simple   uint 4       'counter']
             [optional ControlType  'controlType'   'control']
             [optional APCI         'apci'          '!control']
-            [optional int 6        'dataFirstByte' '!control']
+            // The 4 bit of APCI only allow 16 options, in order to extend, if APCI is set to 0xF
+            // the following 6 bit allow a bit more room for selection
+            [optional ExtendedAPCI 'extendedApci'  '!control && apci == APCI.OTHER_PDU']
+            // If the extended APCI is used, these 6 bits can't be used for data.
+            [optional int 6        'dataFirstByte' '!control && apci != APCI.OTHER_PDU']
             [array    int 8        'data' count    '(dataLength < 1) ? 0 : dataLength - 1']
         ]
     ]
@@ -589,7 +597,8 @@
         ]
         ['An_8859_1' STRING
             [reserved uint 8  '0x0']
-            [manual string 8 'ISO-8859-1' 'value' '' '' '']
+            // TODO: Implement this field
+            //[manual string 8 'ISO-8859-1' 'value' '' '' '']
         ]
         ['U4U4' Struct
             [reserved uint 8  '0x0']
@@ -609,7 +618,8 @@
         // TODO UTF-8 chars can be two type values. probably better to do a "manual" element
         ['An_UTF_8' STRING
             [reserved uint 8  '0x0']
-            [manual string 8 'UTF-8' 'value' '' '' '']
+            // TODO: Implement this field
+            //[manual string 8 'UTF-8' 'value' '' '' '']
         ]
         ['V64' LINT
             [reserved uint 8  '0x0']
@@ -1565,6 +1575,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
+// 03_03_07 Application Layer v01.06.02 AS Page 9ff
 [enum uint 4 'APCI'
     ['0x0' GROUP_VALUE_READ_PDU]
     ['0x1' GROUP_VALUE_RESPONSE_PDU]
@@ -1573,15 +1584,73 @@
     ['0x4' INDIVIDUAL_ADDRESS_READ_PDU]
     ['0x5' INDIVIDUAL_ADDRESS_RESPONSE_PDU]
     ['0x6' ADC_READ_PDU]
+    // In case of this type the following 6 bits contain more detailed information
     ['0x7' ADC_RESPONSE_PDU]
     ['0x8' MEMORY_READ_PDU]
     ['0x9' MEMORY_RESPONSE_PDU]
     ['0xA' MEMORY_WRITE_PDU]
+    // In case of this type the following 6 bits contain more detailed information
     ['0xB' USER_MESSAGE_PDU]
     ['0xC' DEVICE_DESCRIPTOR_READ_PDU]
     ['0xD' DEVICE_DESCRIPTOR_RESPONSE_PDU]
     ['0xE' RESTART_PDU]
     ['0xF' OTHER_PDU]
+]
+
+// 03_03_07 Application Layer v01.06.02 AS Page 9ff
+[enum uint 6 'ExtendedAPCI'
+    ['0x00' OPEN_ROUTING_TABLE_REQUEST_PDU]
+    ['0x01' READ_ROUTING_TABLE_REQUEST_PDU]
+    ['0x02' READ_ROUTING_TABLE_RESPONSE_PDU]
+    ['0x03' WRITE_ROUTING_TABLE_REQUEST_PDU]
+    ['0x08' READ_ROUTER_MEMORY_REQUEST_PDU]
+    ['0x09' READ_ROUTER_MEMORY_RESPONSE_PDU]
+    ['0x0A' WRITE_ROUTER_MEMORY_REQUEST_PDU]
+    ['0x0D' READ_ROUTER_STATUS_REQUEST_PDU]
+    ['0x0E' READ_ROUTER_STATUS_RESPONSE_PDU]
+    ['0x0F' WRITE_ROUTER_STATUS_REQUEST_PDU]
+
+    ['0x10' MEMORY_BIT_WRITE_PDU]
+
+    ['0x11' AUTHORIZE_REQUEST_PDU]
+    ['0x12' AUTHORIZE_RESPONSE_PDU]
+    ['0x13' KEY_WRITE_PDU]
+    ['0x14' KEY_RESPONSE_PDU]
+
+    ['0x15' PROPERTY_VALUE_READ_PDU]
+    ['0x16' PROPERTY_VALUE_RESPONSE_PDU]
+    ['0x17' PROPERTY_VALUE_WRITE_PDU]
+    ['0x18' PROPERTY_DESCRIPTION_READ_PDU]
+    ['0x19' PROPERTY_DESCRIPTION_RESPONSE_PDU]
+
+    ['0x1A' NETWORK_PARAMETER_READ_PDU]
+    ['0x1B' NETWORK_PARAMETER_RESPONSE_PDU]
+
+    ['0x1C' INDIVIDUAL_ADDRESS_SERIAL_NUMBER_READ_PDU]
+    ['0x1D' INDIVIDUAL_ADDRESS_SERIAL_NUMBER_RESPONSE_PDU]
+    ['0x1E' INDIVIDUAL_ADDRESS_SERIAL_NUMBER_WRITE_PDU]
+
+    ['0x20' DOMAIN_ADDRESS_WRITE]
+    ['0x21' DOMAIN_ADDRESS_READ]
+    ['0x22' DOMAIN_ADDRESS_RESPONSE]
+    ['0x23' DOMAIN_ADDRESS_SELECTIVE_READ]
+
+    ['0x24' NETWORK_PARAMETER_WRITE]
+
+    ['0x25' LINK_READ]
+    ['0x26' LINK_RESPONSE]
+    ['0x27' LINK_WRITE]
+
+    ['0x28' GROUP_PROPERTY_VALUE_READ]
+    ['0x29' GROUP_PROPERTY_VALUE_RESPONSE]
+    ['0x2A' GROUP_PROPERTY_VALUE_WRITE]
+    ['0x2B' GROUP_PROPERTY_VALUE_INFO_REPORT]
+
+    ['0x2C' DOMAIN_ADDRESS_SERIAL_NUMBER_READ]
+    ['0x2D' DOMAIN_ADDRESS_SERIAL_NUMBER_RESPONSE]
+    ['0x2E' DOMAIN_ADDRESS_SERIAL_NUMBER_WRITE]
+
+    ['0x30' FILE_STREAM_INFO_REPORT]
 ]
 
 [enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']

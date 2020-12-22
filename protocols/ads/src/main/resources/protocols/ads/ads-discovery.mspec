@@ -87,7 +87,7 @@
 [type 'AmsMagicString'
     [implicit uint 16 'len' 'COUNT(text) + 1']
     [reserved uint 8 '0x00']
-    [array int 8 'text' COUNT 'len - 1']
+    [array int 8 'text' count 'len - 1']
     [reserved uint 8 '0x00']
 ]
 

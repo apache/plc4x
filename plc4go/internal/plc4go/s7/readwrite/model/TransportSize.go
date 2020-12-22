@@ -59,7 +59,6 @@ const(
     TransportSize_STRING TransportSize = 0x03
     TransportSize_WSTRING TransportSize = 0x00
     TransportSize_TIME TransportSize = 0x0B
-    TransportSize_S5TIME TransportSize = 0x0C
     TransportSize_LTIME TransportSize = 0x00
     TransportSize_DATE TransportSize = 0x09
     TransportSize_TIME_OF_DAY TransportSize = 0x06
@@ -102,9 +101,6 @@ func (e TransportSize) Supported_S7_300() bool {
             return true
         }
         case 0x0B: { /* '0x0B' */
-            return true
-        }
-        case 0x0C: { /* '0x0C' */
             return true
         }
         case 0x0F: { /* '0x0F' */
@@ -157,9 +153,6 @@ func (e TransportSize) Supported_LOGO() bool {
         case 0x0B: { /* '0x0B' */
             return true
         }
-        case 0x0C: { /* '0x0C' */
-            return true
-        }
         case 0x0F: { /* '0x0F' */
             return false
         }
@@ -208,9 +201,6 @@ func (e TransportSize) SizeInBytes() uint8 {
             return 2
         }
         case 0x0B: { /* '0x0B' */
-            return 4
-        }
-        case 0x0C: { /* '0x0C' */
             return 4
         }
         case 0x0F: { /* '0x0F' */
@@ -263,9 +253,6 @@ func (e TransportSize) Supported_S7_400() bool {
         case 0x0B: { /* '0x0B' */
             return true
         }
-        case 0x0C: { /* '0x0C' */
-            return true
-        }
         case 0x0F: { /* '0x0F' */
             return true
         }
@@ -314,9 +301,6 @@ func (e TransportSize) Supported_S7_1200() bool {
             return true
         }
         case 0x0B: { /* '0x0B' */
-            return true
-        }
-        case 0x0C: { /* '0x0C' */
             return true
         }
         case 0x0F: { /* '0x0F' */
@@ -369,9 +353,6 @@ func (e TransportSize) SizeCode() uint8 {
         case 0x0B: { /* '0x0B' */
             return 'X'
         }
-        case 0x0C: { /* '0x0C' */
-            return 'X'
-        }
         case 0x0F: { /* '0x0F' */
             return 'X'
         }
@@ -420,9 +401,6 @@ func (e TransportSize) Supported_S7_1500() bool {
             return true
         }
         case 0x0B: { /* '0x0B' */
-            return true
-        }
-        case 0x0C: { /* '0x0C' */
             return true
         }
         case 0x0F: { /* '0x0F' */
@@ -475,9 +453,6 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
         case 0x0B: { /* '0x0B' */
             return 0
         }
-        case 0x0C: { /* '0x0C' */
-            return 0
-        }
         case 0x0F: { /* '0x0F' */
             return 0
         }
@@ -526,9 +501,6 @@ func (e TransportSize) BaseType() TransportSize {
             return 0
         }
         case 0x0B: { /* '0x0B' */
-            return 0
-        }
-        case 0x0C: { /* '0x0C' */
             return 0
         }
         case 0x0F: { /* '0x0F' */
@@ -581,9 +553,6 @@ func (e TransportSize) DataProtocolId() string {
         case 0x0B: { /* '0x0B' */
             return "IEC61131_TIME"
         }
-        case 0x0C: { /* '0x0C' */
-            return "S7_S5TIME"
-        }
         case 0x0F: { /* '0x0F' */
             return "IEC61131_DATE_AND_TIME"
         }
@@ -622,8 +591,6 @@ func TransportSizeValueOf(value int8) TransportSize {
             return TransportSize_DATE
         case 0x0B:
             return TransportSize_TIME
-        case 0x0C:
-            return TransportSize_S5TIME
         case 0x0F:
             return TransportSize_DATE_AND_TIME
         case 0x13:
@@ -689,8 +656,6 @@ func (e TransportSize) String() string {
         return "DATE"
     case TransportSize_TIME:
         return "TIME"
-    case TransportSize_S5TIME:
-        return "S5TIME"
     case TransportSize_DATE_AND_TIME:
         return "DATE_AND_TIME"
     case TransportSize_WCHAR:

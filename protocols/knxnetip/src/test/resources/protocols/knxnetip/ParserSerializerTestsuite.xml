@@ -434,6 +434,7 @@
             <counter>0</counter>
             <controlType/>
             <apci>GROUP_VALUE_WRITE_PDU</apci>
+            <extendedApci/>
             <dataFirstByte>1</dataFirstByte>
             <data></data>
           </dataFrame>
@@ -493,6 +494,7 @@
             <counter>0</counter>
             <controlType>DISCONNECT</controlType>
             <apci/>
+            <extendedApci/>
             <dataFirstByte/>
             <data></data>
           </dataFrame>

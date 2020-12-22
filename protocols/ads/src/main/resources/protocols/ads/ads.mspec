@@ -319,7 +319,7 @@
             // 4 bytes	Length of the data (in bytes) which should be written.
             [implicit uint 32 'writeLength' '(COUNT(items) * ((indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.value) ? 16 : 12)) + COUNT(data)']
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements.
-            [array  AdsMultiRequestItem 'items' COUNT '((indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.value)) ? indexOffset : 0' ['indexGroup']]
+            [array  AdsMultiRequestItem 'items' count '((indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.value)) ? indexOffset : 0' ['indexGroup']]
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
