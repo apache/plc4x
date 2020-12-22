@@ -16,34 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.api.metadata;
+package org.apache.plc4x.java.api.messages;
 
-/**
- * Information about connection capabilities.
- * This includes connection and driver specific metadata.
- */
-public interface PlcConnectionMetadata {
+public interface PlcBrowseResponse extends PlcResponse {
 
-    /**
-     * Indicates that the connection supports reading.
-     */
-    boolean canRead();
-
-    /**
-     * Indicates that the connection supports writing.
-     */
-    boolean canWrite();
-
-    /**
-     * Indicates that the connection supports subscription.
-     */
-    boolean canSubscribe();
-
-    /**
-     * Indicates that the connection supports browsing.
-     */
-    default boolean canBrowse() {
-        return false;
-    }
+    PlcBrowseRequest getRequest();
 
 }

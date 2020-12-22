@@ -563,8 +563,8 @@ func TestKnxAutoDiscovery(t *testing.T) {
                         model.NewLDataReq(0, nil,
                             model.NewLDataFrameDataExt(false, 6, uint8(0),
                                 sourceAddress, targetKnxAddress, uint8(0), true, false,
-                                uint8(0), &controlType, nil, nil, nil, true,
-                                model.CEMIPriority_SYSTEM, false, false)))
+                                uint8(0), &controlType, nil, nil, nil, nil,
+                                false, model.CEMIPriority_SYSTEM, false, false)))
                     writeBuffer = utils.NewWriteBuffer()
                     err = deviceConnectionRequest.Serialize(*writeBuffer)
                     if err != nil {

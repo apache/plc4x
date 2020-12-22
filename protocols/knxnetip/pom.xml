@@ -48,7 +48,7 @@
             <configuration>
               <url>https://update.knx.org/data/XML/project-20/knx_master.xml</url>
               <unpack>false</unpack>
-              <outputDirectory>${project.build.outputDirectory}/protocols/knxnetip</outputDirectory>
+              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>knx-master-data.xml</outputFileName>
             </configuration>
           </execution>
@@ -69,13 +69,13 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${project.build.outputDirectory}/protocols/knxnetip</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>*.xml</includes>
-              <stylesheet>src/main/xslt/manufacturer-data.xsl</stylesheet>
+              <stylesheet>src/main/xslt/knx-types.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/knxnetip</outputDir>
               <fileMappers>
                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                  <targetExtension>.properties</targetExtension>
+                  <targetExtension>.mspec</targetExtension>
                 </fileMapper>
               </fileMappers>
             </transformationSet>
