@@ -95,7 +95,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
     @JsonIgnore
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
-        return <#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+        return <#if discriminatorValue??>${helper.escapeValue(helper.getDiscriminatorTypes()[discriminatorName],discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
     }
         </#if>
     </#list>

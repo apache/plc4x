@@ -17,7 +17,40 @@
 // under the License.
 //
 
-// Remark: The different fields are encoded in Big-endian.
+// Remark: The different fields are encoded in Little-endian.
+
+[type 'OpcuaAPU' [bit 'response']
+    [simple         MessagePDU   'message' ['response']]
+]
+
+[discriminatedType 'MessagePDU' [bit 'response']
+    [discriminator string 24          'messageType']
+    [typeSwitch 'messageType','response'
+        // HEL Request
+        ['HEL','false'     OpcUAMessageHelloRequest
+            [simple          string 8            'chunk']
+            [simple          int 32              'messageSize']
+            [simple          int 32             'version']
+            [simple          int 32             'receiveBufferSize']
+            [simple          int 32             'sendBufferSize']
+            [simple          int 32             'maxMessageSize']
+            [simple          int 32             'maxChunkCount']
+            [simple          string 256         'endpoint']
+        ]
+        // HEL Response
+        ['HEL','true'     OpcUAMessageHelloResponse
+            [simple          string 1            'chunk']
+            [simple          int 32             'messageSize']
+            [simple          int 32             'version']
+            [simple          int 32             'receiveBufferSize']
+            [simple          int 32             'sendBufferSize']
+            [simple          int 32             'maxMessageSize']
+            [simple          int 32             'maxChunkCount']
+        ]
+    ]
+]
+
+
 
 [enum string 'OpcuaDataType'
     ['IEC61131_NULL' NULL ]

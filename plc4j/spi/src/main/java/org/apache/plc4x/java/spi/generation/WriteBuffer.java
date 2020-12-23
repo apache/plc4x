@@ -191,6 +191,10 @@ public class WriteBuffer {
     }
 
     public void writeInt(int bitLength, int value) throws ParseException {
+        System.out.println(bitLength);
+        System.out.println(value);
+        System.out.println(getData().length);
+        System.out.println(getPos());
         if(bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -256,7 +260,10 @@ public class WriteBuffer {
     public void writeString(int bitLength, String encoding, String value) throws ParseException {
         final byte[] bytes = value.getBytes(Charset.forName(encoding));
         try {
+            int count = 0;
             for (byte aByte : bytes) {
+                System.out.println(count);
+                count += 1;
                 bo.writeByte(false, 8, aByte);
             }
         } catch (IOException e) {

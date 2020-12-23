@@ -24,13 +24,28 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.opcua.protocol.OpcuaField;
+import org.apache.plc4x.java.opcua.protocol.*;
+import org.apache.plc4x.java.opcua.config.*;
+import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.readwrite.io.*;
+import org.apache.plc4x.java.opcua.readwrite.types.*;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
+import io.netty.buffer.ByteBuf;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.function.ToIntFunction;
 
 /**
  * Implementation of the OPC UA protocol, based on:
@@ -38,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * Created by Matthias Milan Strljic on 10.05.2019
  */
-public class OpcuaPlcDriver implements PlcDriver {
+public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transport>tcp))?://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
@@ -55,33 +70,73 @@ public class OpcuaPlcDriver implements PlcDriver {
 
     @Override
     public String getProtocolName() {
-        return "OPC UA (TCP)";
+        return "Opcua";
     }
 
     @Override
-    public PlcConnection getConnection(String url) throws PlcConnectionException {
-        Matcher matcher = OPCUA_URI_PATTERN.matcher(url);
-
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'opcua:{type}//{host|port}'");
-        }
-
-        String host = matcher.group("host");
-        String portString = matcher.group("port");
-        Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : "";
-
-        try {
-            return opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(host), port, params, requestTimeout);
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException(e);
-        }
+    protected Class<? extends Configuration> getConfigurationType() {
+        return OpcuaConfiguration.class;
     }
 
     @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("opcua does not support Auth at this state");
+    protected String getDefaultTransport() {
+        return "tcp";
+    }
+
+    /**
+     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitSetupComplete() {
+        return true;
+    }
+
+    @Override
+    protected boolean canRead() {
+        return true;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return true;
+    }
+
+    @Override
+    protected BaseOptimizer getOptimizer() {
+        return new SingleFieldOptimizer();
+    }
+
+    @Override
+    protected OpcuaPlcFieldHandler getFieldHandler() {
+        return new OpcuaPlcFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, OpcuaAPUIO.class)
+            .withProtocol(OpcuaProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            // Every incoming message is to be treated as a response.
+            .withParserArgs(true)
+            .littleEndian()
+            .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 6) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 256) + 6;
+            }
+            return -1;
+        }
     }
 
     @Override
