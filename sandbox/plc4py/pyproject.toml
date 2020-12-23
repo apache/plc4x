@@ -19,6 +19,7 @@
 name = "plc4py"
 version = "0.1.0"
 description = "Implementation of the Apache PLC4X project for Python"
+license = "Apache-2.0"
 authors = ["Apache PLC4X <dev@plc4x.apache.org>"]
 
 [tool.poetry.dependencies]
