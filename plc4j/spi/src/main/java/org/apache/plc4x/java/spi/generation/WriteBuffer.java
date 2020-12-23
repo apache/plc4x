@@ -190,11 +190,7 @@ public class WriteBuffer {
         }
     }
 
-    public void writeInt(int bitLength, int value) throws ParseException {
-        System.out.println(bitLength);
-        System.out.println(value);
-        System.out.println(getData().length);
-        System.out.println(getPos());
+    public void writeInt(int bitLength, int value) throws ParseException {        
         if(bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }

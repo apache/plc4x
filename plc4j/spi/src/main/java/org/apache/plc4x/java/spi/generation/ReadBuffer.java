@@ -298,7 +298,7 @@ public class ReadBuffer {
     public String readString(int bitLength, String encoding) {
         byte[] strBytes = new byte[bitLength / 8];
         for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
-            try {
+            try {                
                 strBytes[i] = readByte(8);
             } catch (Exception e) {
                 throw new PlcRuntimeException(e);

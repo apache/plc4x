@@ -87,7 +87,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> {
 
         OpcUAMessageHelloRequest hello = null;
         //try {
-            hello = new OpcUAMessageHelloRequest("F", 63, 0, 65535, 65535, 2097152, 64,  new String("opc.tcp://127.0.0.1:12687/plc4x"));
+            hello = new OpcUAMessageHelloRequest("F", 63, 0, 65535, 65535, 2097152, 64, 31, new String("opc.tcp://127.0.0.1:12687/plc4x"));
         //} catch (UnsupportedEncodingException e) {
         //    LOGGER.info("Excpetion Occurred.");
         //}

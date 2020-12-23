@@ -121,7 +121,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, OpcuaAPUIO.class)
             .withProtocol(OpcuaProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            //.withPacketSizeEstimator(ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.
             .withParserArgs(true)
             .littleEndian()

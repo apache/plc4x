@@ -35,11 +35,12 @@
             [simple          int 32             'sendBufferSize']
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
+            [simple          int 32             'stringLength']
             [simple          string 256         'endpoint']
         ]
-        // HEL Response
-        ['HEL','true'     OpcUAMessageHelloResponse
-            [simple          string 1            'chunk']
+        // ACK Response
+        ['ACK','true'     OpcUAMessageHelloResponse
+            [simple          string 8            'chunk']
             [simple          int 32             'messageSize']
             [simple          int 32             'version']
             [simple          int 32             'receiveBufferSize']
