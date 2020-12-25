@@ -183,7 +183,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->    
+    <!-- Logging dependancies -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
@@ -209,15 +209,7 @@
       <artifactId>slf4j-simple</artifactId>
     </dependency>
 
-    <dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	</dependency>
-
-    <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
-    </dependency>
+    
 
   </dependencies>
 

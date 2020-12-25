@@ -270,7 +270,7 @@
     [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [string 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [string '-1' 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['IEC61131_BOOL','1' BOOL
             [reserved uint 7 '0x00']
@@ -378,7 +378,7 @@
     ]
 ]
 
-[enum string 'ModbusDataTypeSizes' [uint 8 'dataTypeSize']
+[enum string '-1' 'ModbusDataTypeSizes' [uint 8 'dataTypeSize']
     ['IEC61131_BOOL' BOOL ['1']]
     ['IEC61131_BYTE' BYTE ['1']]
     ['IEC61131_WORD' WORD ['2']]

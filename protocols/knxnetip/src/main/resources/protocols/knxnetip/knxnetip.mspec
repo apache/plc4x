@@ -436,7 +436,7 @@
     ]
 ]
 
-[dataIo 'KnxDatapoint' [string 'formatName']
+[dataIo 'KnxDatapoint' [string '-1' 'formatName']
     [typeSwitch 'formatName'
         ['B1' BOOL
             [reserved uint 7 '0x0']
@@ -454,11 +454,11 @@
         ]
         ['A8_ASCII' STRING
             [reserved uint 8   '0x0']
-            [simple   string 8 'ASCII' 'value']
+            [simple   string '8' 'ASCII' 'value']
         ]
         ['A8_8859_1' STRING
             [reserved uint 8   '0x0']
-            [simple   string 8 'ISO-8859-1' 'value']
+            [simple   string '8' 'ISO-8859-1' 'value']
         ]
         ['U8' USINT
             [reserved uint 8   '0x0']
@@ -537,11 +537,11 @@
         ]
         ['A112_ASCII' STRING
             [reserved uint 8  '0x0']
-            [simple   string 112 'ASCII' 'value']
+            [simple   string '112' 'ASCII' 'value']
         ]
         ['A112_8859_1' STRING
             [reserved uint 8  '0x0']
-            [simple   string 112 'ISO-8859-1' 'value']
+            [simple   string '112' 'ISO-8859-1' 'value']
         ]
         ['r2U6' USINT
             [reserved uint 2 '0x00']
@@ -598,7 +598,7 @@
         ['An_8859_1' STRING
             [reserved uint 8  '0x0']
             // TODO: Implement this field
-            //[manual string 8 'ISO-8859-1' 'value' '' '' '']
+            //[manual string '8' 'ISO-8859-1' 'value' '' '' '']
         ]
         ['U4U4' Struct
             [reserved uint 8  '0x0']
@@ -619,7 +619,7 @@
         ['An_UTF_8' STRING
             [reserved uint 8  '0x0']
             // TODO: Implement this field
-            //[manual string 8 'UTF-8' 'value' '' '' '']
+            //[manual string '8' 'UTF-8' 'value' '' '' '']
         ]
         ['V64' LINT
             [reserved uint 8  '0x0']
@@ -1074,8 +1074,8 @@
         ]
         ['A8A8A8A8' Struct
             [reserved uint 8  '0x0']
-            [simple   string 16 'ASCII' 'languageCode']
-            [simple   string 16 'ASCII' 'regionCode']
+            [simple   string '16' 'ASCII' 'languageCode']
+            [simple   string '16' 'ASCII' 'regionCode']
         ]
         ['U8U8U8' Struct
             [reserved uint 8  '0x0']
@@ -1085,11 +1085,11 @@
         ]
         ['A8A8Language' Struct
             [reserved uint 8  '0x0']
-            [simple   string 16 'ASCII' 'languageCode']
+            [simple   string '16' 'ASCII' 'languageCode']
         ]
         ['A8A8Region' Struct
             [reserved uint 8  '0x0']
-            [simple   string 16 'ASCII' 'regionCode']
+            [simple   string '16' 'ASCII' 'regionCode']
         ]
         ['V32U8B8' Struct
             [reserved uint 8  '0x0']
@@ -1156,7 +1156,7 @@
     ]
 ]
 
-[enum string 'KnxDatapointType' [uint 10 'mainNumber', uint 10 'subNumber', string 'formatName']
+[enum string '-1' 'KnxDatapointType' [uint 10 'mainNumber', uint 10 'subNumber', string '-1' 'formatName']
     ['DPT_Switch'                               DPT_Switch                             ['1',   '1',    'B1']]
     ['DPT_Bool'                                 DPT_Bool                               ['1',   '2',    'B1']]
     ['DPT_Enable'                               DPT_Enable                             ['1',   '3',    'B1']]
@@ -1653,7 +1653,7 @@
     ['0x30' FILE_STREAM_INFO_REPORT]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' [string '-1' 'description',                                                    bit 'knxSupport']
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -1676,5 +1676,3 @@
     ['0x29' GARBAGE                   ['measured_weight_of_disposed_rubbish',                                   'true']]
     ['0x37' RADIO_CONVERTER           ['enables_the_radio_transmission_of_a_meter_without_a_radio_interface',   'false']]
 ]
-
-

@@ -164,11 +164,7 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
-    </dependency>
-
+    
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>server-examples</artifactId>

@@ -24,11 +24,11 @@
 ]
 
 [discriminatedType 'MessagePDU' [bit 'response']
-    [discriminator string 24          'messageType']
+    [discriminator string '24'          'messageType']
     [typeSwitch 'messageType','response'
         // HEL Request
         ['HEL','false'     OpcUAMessageHelloRequest
-            [simple          string 8            'chunk']
+            [simple          string '8'            'chunk']
             [simple          int 32              'messageSize']
             [simple          int 32             'version']
             [simple          int 32             'receiveBufferSize']
@@ -36,11 +36,11 @@
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
             [simple          int 32             'stringLength']
-            [simple          string 256         'endpoint']
+            [simple          string '256'         'endpoint']
         ]
         // ACK Response
         ['ACK','true'     OpcUAMessageHelloResponse
-            [simple          string 8            'chunk']
+            [simple          string '8'            'chunk']
             [simple          int 32             'messageSize']
             [simple          int 32             'version']
             [simple          int 32             'receiveBufferSize']
@@ -48,12 +48,27 @@
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
         ]
+        ['OPN','true'     OpcuaOpenSecureChannleRequest
+            [simple          string '8'            'chunk']
+            [simple          int 32             'messageSize']
+            [simple          int 32             'secureChannelId']
+            [simple          int 32             'securityPolicyUriSize']
+            [simple          string 'securityPolicyUriSize'          'endpoint']
+            [simple          int 32             'senderCertificate']
+            [simple          int 32             'receiverCertificateThumbprint']
+            [simple          int 32             'sequenceNumber']
+            [simple          int 32             'requestId']
+            [simple          OpcuaMessage       'message']
+       ]
     ]
 ]
 
+[discriminatedType 'OpcuaMessage'
+    [simple         int 32   'message_test' ]
+]
 
 
-[enum string 'OpcuaDataType'
+[enum string '-1' 'OpcuaDataType'
     ['IEC61131_NULL' NULL ]
     ['IEC61131_BOOL' BOOL ]
     ['IEC61131_BYTE' BYTE ]
@@ -85,7 +100,7 @@
 ]
 
 
-[enum string 'OpcuaIdentifierType'
+[enum string '-1' 'OpcuaIdentifierType'
     ['s' STRING_IDENTIFIER]
     ['i' NUMBER_IDENTIFIER]
     ['g' GUID_IDENTIFIER]

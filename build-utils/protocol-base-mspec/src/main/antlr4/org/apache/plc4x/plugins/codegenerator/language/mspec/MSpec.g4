@@ -138,7 +138,7 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='string' (size=INTEGER_LITERAL)? (encoding=idExpression)?
+ | base='string' length=expression (encoding=idExpression)?
  | base='time'
  | base='date'
  | base='dateTime'
@@ -165,7 +165,7 @@ innerExpression
  | HEX_LITERAL
  | INTEGER_LITERAL
  | STRING_LITERAL
- // Explicitlx allow the loop type keywords in expressions
+ // Explicitly allow the loop type keywords in expressions
  | ARRAY_LOOP_TYPE
  | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
@@ -179,7 +179,7 @@ innerExpression
 
 idExpression
  : TICK id=IDENTIFIER_LITERAL TICK
- // Explicitlx allow the loop type keywords in id-expressions
+ // Explicitly allow the loop type keywords in id-expressions
  | TICK id=ARRAY_LOOP_TYPE TICK
  ;
 
