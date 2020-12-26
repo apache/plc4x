@@ -26,8 +26,7 @@
 [discriminatedType 'MessagePDU' [bit 'response']
     [discriminator string '24'          'messageType']
     [typeSwitch 'messageType','response'
-        // HEL Request
-        ['HEL','false'     OpcUAMessageHelloRequest
+        ['HEL','false'     OpcuaHelloRequest
             [simple          string '8'            'chunk']
             [simple          int 32              'messageSize']
             [simple          int 32             'version']
@@ -36,10 +35,13 @@
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
             [simple          int 32             'stringLength']
-            [simple          string '256'         'endpoint']
+            [simple          string 'stringLength'         'endpoint']
         ]
-        // ACK Response
-        ['ACK','true'     OpcUAMessageHelloResponse
+        ['HEL','true'     OpcuaHelloResponse
+        ]
+        ['ACK','false'     OpcuaAcknowledgeRequest
+        ]
+        ['ACK','true'     OpcuaAcknowledgeResponse
             [simple          string '8'            'chunk']
             [simple          int 32             'messageSize']
             [simple          int 32             'version']
@@ -48,25 +50,69 @@
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
         ]
-        ['OPN','true'     OpcuaOpenSecureChannleRequest
-            [simple          string '8'            'chunk']
+        ['ERR','false'     OpcuaErrorRequest
+        ]
+        ['ERR','true'     OpcuaErrorResponse
+        ]
+        ['OPN','false'     OpcuaOpenRequest
+            [simple          string '8'         'chunk']
             [simple          int 32             'messageSize']
             [simple          int 32             'secureChannelId']
             [simple          int 32             'securityPolicyUriSize']
-            [simple          string 'securityPolicyUriSize'          'endpoint']
-            [simple          int 32             'senderCertificate']
-            [simple          int 32             'receiverCertificateThumbprint']
+            [simple          string 'securityPolicyUriSize == -1 ? 0 : securityPolicyUriSize'          'endpoint']
+            [simple          int 32             'senderCertificateSize']
+            [simple          string 'senderCertificateSize == -1 ? 0 : senderCertificateSize'             'senderCertificate']
+            [simple          int 32             'receiverCertificateThumbprintSize']
+            [simple          string 'receiverCertificateThumbprintSize == -1 ? 0 : receiverCertificateThumbprintSize'             'receiverCertificateThumbprint']
             [simple          int 32             'sequenceNumber']
             [simple          int 32             'requestId']
             [simple          OpcuaMessage       'message']
+       ]
+       ['OPN','true'     OpcuaOpenResponse
+       ]
+       ['CLO','false'     OpcuaCloseRequest
+       ]
+       ['CLO','true'     OpcuaCloseResponse
+       ]
+       ['MSG','false'     OpcuaMessageRequest
+       ]
+       ['MSG','true'     OpcuaMessageResponse
        ]
     ]
 ]
 
 [discriminatedType 'OpcuaMessage'
-    [simple         int 32   'message_test' ]
+    [simple         int 8   'nodeIdEncodingMask' ]
+    [simple         int 8   'nodeIdNamespaceIndex' ]
+    [discriminator  int 16   'nodeId' ]
+    [typeSwitch 'nodeId'
+        ['0x01BE'    OpcuaOpenSecureChannelRequest
+            [simple         int 8   'authenticationToken' ]
+            [simple         int 64   'timestamp' ]
+            [simple         int 32   'requestHandle' ]
+            [simple         bit   'serviceLevelSymbolicId' ]
+            [simple         bit   'serviceLevelLocalizedText' ]
+            [simple         bit   'serviceLevelAdditionalInfo' ]
+            [simple         bit   'serviceLevelStatusCode' ]
+            [simple         bit   'serviceLevelDiagnostics' ]
+            [simple         bit   'operationLevelSymbolcId' ]
+            [simple         bit   'operationLevelLocalizedText' ]
+            [simple         bit   'operationLevelAdditionalInfo' ]
+            [simple         bit   'operationLevelStatusCode' ]
+            [simple         bit   'operationLevelDiagnostics' ]
+            [reserved       int 22 '0x000000'] // padding
+            [simple         int 32   'auditEntryId' ]
+            [simple         int 32   'timeoutHint' ]
+            [simple         int 24   'additionalHeader' ]
+            [simple         int 32   'clientProtocolVersion' ]
+            [simple         int 32   'seecurityTokenRequestType' ]
+            [simple         int 32   'messageSecurityMode' ]
+            [simple         int 32   'clientNonceSize' ]
+            [simple         string 'clientNonceSize == -1 ? 0 : clientNonceSize'          'clientNonce']
+            [simple         int 32   'requestedLifetime' ]
+        ]
+    ]
 ]
-
 
 [enum string '-1' 'OpcuaDataType'
     ['IEC61131_NULL' NULL ]

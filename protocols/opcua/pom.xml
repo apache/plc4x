@@ -32,6 +32,58 @@
   <name>Protocols: OPC UA</name>
   <description>Base protocol specifications for the OPC UA protocol</description>
 
+  <build>
+      <plugins>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>fetch-opc-datatypes</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>https://opcfoundation.org/UA/schemas/1.04/Opc.Ua.Types.bsd</url>
+                  <unpack>false</unpack>
+                  <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                  <outputFileName>opc-datatypes.xml</outputFileName>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xml-maven-plugin</artifactId>
+            <version>1.0.2</version>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>transform</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>*.xml</includes>
+                  <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
+                  <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                      <targetExtension>.mspec</targetExtension>
+                    </fileMapper>
+                  </fileMappers>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+          </plugin>
+      </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

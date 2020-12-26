@@ -83,20 +83,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> {
     public void onConnect(ConversationContext<OpcuaAPU> context) {
         // Only the TCP transport supports login.
         LOGGER.info("Opcua Driver running in ACTIVE mode.");
-        // Open the session on ISO Transport Protocol first.
 
-        OpcUAMessageHelloRequest hello = null;
-        //try {
-            hello = new OpcUAMessageHelloRequest("F", 63, 0, 65535, 65535, 2097152, 64, 31, new String("opc.tcp://127.0.0.1:12687/plc4x"));
-        //} catch (UnsupportedEncodingException e) {
-        //    LOGGER.info("Excpetion Occurred.");
-        //}
+        OpcuaHelloRequest hello = new OpcuaHelloRequest("F", 63, 0, 65535, 65535, 2097152, 64, 31, new String("opc.tcp://127.0.0.1:12687/plc4x"));
 
         context.sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcUAMessageHelloResponse)
-            .unwrap(p -> (OpcUAMessageHelloResponse) p.getMessage())
-            .handle(opcuaMessageHelloResponse -> {
+            .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
+            .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
+            .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
             });
     }
