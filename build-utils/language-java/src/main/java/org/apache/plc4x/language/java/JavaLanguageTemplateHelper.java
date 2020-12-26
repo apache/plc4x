@@ -577,7 +577,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             // Get the class and method name
             String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
-            // Cut off the double-quptes
+            // Cut off the double-quotes
             methodName = methodName.substring(1, methodName.length() - 1);
             sb.append(methodName).append("(");
             for(int i = 1; i < vl.getArgs().size(); i++) {

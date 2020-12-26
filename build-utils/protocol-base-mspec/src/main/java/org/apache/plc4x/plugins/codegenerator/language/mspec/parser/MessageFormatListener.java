@@ -508,7 +508,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     private String unquoteString(String quotedString) {
-        if (quotedString != null && quotedString.length() > 2) {
+        if (quotedString != null && quotedString.length() >= 2) {
             return quotedString.substring(1, quotedString.length() - 1);
         }
         return quotedString;
