@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class OpcuaProtocol implements Protocol {
@@ -36,11 +37,22 @@ public class OpcuaProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = OpcuaProtocol.class.getResourceAsStream("/protocols/opcua/opcua.mspec");
+
+        InputStream schemaInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opcua.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        return new MessageFormatParser().parse(schemaInputStream);
+        Map<String, TypeDefinition> typeDefinitionMap =
+            new LinkedHashMap<>(new MessageFormatParser().parse(schemaInputStream));
+
+        InputStream masterDataInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opc-datatypes.mspec");
+        if(masterDataInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(masterDataInputStream));
+        return typeDefinitionMap;
     }
 
 }

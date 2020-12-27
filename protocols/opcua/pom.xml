@@ -78,6 +78,12 @@
                       <targetExtension>.mspec</targetExtension>
                     </fileMapper>
                   </fileMappers>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
                 </transformationSet>
               </transformationSets>
             </configuration>

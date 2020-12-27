@@ -47,13 +47,13 @@
 // under the License.
 //
 
-[enum uint 8 'KnxObjectType' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
+[enum uint 8 'KnxObjectType' [string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
-[enum uint 8 'KnxObjectProperties' [string 'name', string 'dataTypeId', string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
+[enum uint 8 'KnxObjectProperties' [string '-1' 'name', string '-1' 'dataTypeId', string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
-[enum uint 16 'KnxManufacturers' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
+[enum uint 16 'KnxManufacturers' [string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
 ]
     </xsl:template>
 

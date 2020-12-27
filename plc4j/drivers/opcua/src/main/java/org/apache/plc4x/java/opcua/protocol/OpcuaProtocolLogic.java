@@ -92,6 +92,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> {
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
+
+                OpcuaMessage openMessage = new OpcuaMessage("F", 63, 0, 65535, 65535, 2097152, 64, 31, new String("opc.tcp://127.0.0.1:12687/plc4x"));
+                OpcuaOpenRequest openrequest = new OpcuaOpenRequest("F", 63, 0, 65535, 65535, 2097152, 64, 31, new String("opc.tcp://127.0.0.1:12687/plc4x"));
+
+
+                context.sendRequest(new OpcuaAPU(hello))
+                    .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                    .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
+                    .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
+                    .handle(opcuaAcknowledgeResponse -> {
+                        LOGGER.debug("Got Hello Response Connection Response");
+                    });
             });
     }
 
