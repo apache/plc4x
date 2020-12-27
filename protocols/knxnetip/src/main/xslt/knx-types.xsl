@@ -50,7 +50,7 @@
 [enum uint 8 'KnxObjectType' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
-[enum uint 8 'KnxObjectProperties' [string 'dataTypeId', string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
+[enum uint 8 'KnxObjectProperties' [string 'name', string 'dataTypeId', string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
 [enum uint 16 'KnxManufacturers' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
@@ -83,9 +83,15 @@
         </xsl:variable>
         <xsl:variable name="interfaceObjectPropertyId">
             <xsl:call-template name="clean-id-string">
-                <xsl:with-param name="text" select="@Name"/>
+                <xsl:with-param name="text">
+                    <xsl:call-template name="string-replace-all">
+                        <xsl:with-param name="text" select="@Id"/>
+                        <xsl:with-param name="replace" select="'-'"/>
+                        <xsl:with-param name="with" select="'_'"/>
+                    </xsl:call-template>
+                </xsl:with-param>
             </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="@Number"/>' <xsl:value-of select="$interfaceObjectPropertyId"/> ['<xsl:value-of select="$dataTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="@Number"/>' <xsl:value-of select="$interfaceObjectPropertyId"/> ['<xsl:value-of select="@Name"/>', '<xsl:value-of select="$dataTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:Manufacturer">

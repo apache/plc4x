@@ -60,8 +60,6 @@ struct plc4c_s7_read_write_s7_message {
   uint8_t protocol_id;
   uint16_t tpdu_reference;
   union {
-    struct { /* S7MessageRequest */
-    };
     struct { /* S7MessageResponse */
       uint8_t s7_message_response_error_class;
       uint8_t s7_message_response_error_code;
@@ -69,8 +67,6 @@ struct plc4c_s7_read_write_s7_message {
     struct { /* S7MessageResponseData */
       uint8_t s7_message_response_data_error_class;
       uint8_t s7_message_response_data_error_code;
-    };
-    struct { /* S7MessageUserData */
     };
   };
   plc4c_s7_read_write_s7_parameter* parameter;
