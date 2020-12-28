@@ -47,7 +47,7 @@
 // under the License.
 //
 
-[enum uint 8 'KnxObjectType' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
+[enum uint 16 'KnxObjectType' [string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
 [enum uint 8 'KnxObjectProperties' [string 'name', string 'dataTypeId', string 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
