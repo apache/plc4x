@@ -32,23 +32,52 @@ import (
 )
 
 func KnxNetIp(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		t.Errorf("Error decoding test input")
-	}
-	rb := utils.NewReadBuffer(request)
-	adu, err := model.KnxNetIpMessageParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
+    t.Skip()
+    request, err := hex.DecodeString("000a00000006010300000004")
+    if err != nil {
+        t.Errorf("Error decoding test input")
+    }
+    rb := utils.NewReadBuffer(request)
+    adu, err := model.KnxNetIpMessageParse(rb)
+    if err != nil {
+        t.Errorf("Error parsing: %s", err)
+    }
+    if adu != nil {
+        // Output success ...
+    }
 
 }
 
-func TestKnxNetIpPlc4goDriver(t *testing.T) {
+func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
+    driverManager := plc4go.NewPlcDriverManager()
+    driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+    driverManager.RegisterTransport(udp.NewUdpTransport())
+
+    found := make(chan bool)
+    err := driverManager.Discover(func(event apiModel.PlcDiscoveryEvent) {
+        fmt.Printf("Found device: %s:%s://%s\n - Name: %s\n", event.ProtocolCode, event.TransportCode,
+            event.TransportUrl.Host, event.Name)
+        found <- true
+    })
+    if err != nil {
+        fmt.Printf("got error %s", err.Error())
+        return
+    }
+    for {
+        select {
+        case _ = <-found:
+            time.Sleep(time.Second * 2)
+            fmt.Print("Found devices")
+            return
+        case <-time.After(time.Second * 10):
+            t.Error("Couldn't find device")
+            t.Fail()
+            return
+        }
+    }
+}
+
+func KnxNetIpPlc4goDriver(t *testing.T) {
     driverManager := plc4go.NewPlcDriverManager()
     driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
     driverManager.RegisterTransport(udp.NewUdpTransport())
@@ -86,11 +115,11 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 
     // Prepare a read-request
     /*pollingInterval, err := time.ParseDuration("5s")
-    if err != nil {
-        t.Errorf("invalid format")
-        t.Fail()
-        return
-    }*/
+      if err != nil {
+          t.Errorf("invalid format")
+          t.Fail()
+          return
+      }*/
     srb := connection.SubscriptionRequestBuilder()
     srb.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
     srb.AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp")
@@ -137,34 +166,34 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
         }
     }
     /*value1 := rrr.Response.GetValue("field1")
-    value2 := rrr.Response.GetValue("field2")
-    fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
-    fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+      value2 := rrr.Response.GetValue("field2")
+      fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
+      fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
 
-    // Prepare a write-request
-    wrb := connection.WriteRequestBuilder()
-    wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
-    wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
-    writeRequest, err := rrb.Build()
-    if err != nil {
-        t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
-        t.Fail()
-        return
-    }
+      // Prepare a write-request
+      wrb := connection.WriteRequestBuilder()
+      wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
+      wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
+      writeRequest, err := rrb.Build()
+      if err != nil {
+          t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+          t.Fail()
+          return
+      }
 
-    // Execute a write-request
-    wrc := writeRequest.Execute()
+      // Execute a write-request
+      wrc := writeRequest.Execute()
 
-    // Wait for the response to finish
-    wrr := <-wrc
-    if wrr.Err != nil {
-        t.Errorf("error executing read-request: %s", rrr.Err.Error())
-        t.Fail()
-        return
-    }
+      // Wait for the response to finish
+      wrr := <-wrc
+      if wrr.Err != nil {
+          t.Errorf("error executing read-request: %s", rrr.Err.Error())
+          t.Fail()
+          return
+      }
 
-    fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
-    fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))*/
+      fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
+      fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))*/
 }
 
 func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
