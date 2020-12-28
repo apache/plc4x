@@ -86,7 +86,7 @@
                   </outputProperties>
                 </transformationSet>
               </transformationSets>
-            </configuration>
+            </configuration>                      
           </plugin>
       </plugins>
   </build>

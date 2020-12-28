@@ -30,6 +30,9 @@
         encoding="utf-8"
     />
 
+    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
+    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+
     <xsl:template match="/">
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -53,11 +56,7 @@
     </xsl:template>
 
     <xsl:template match="opc:EnumeratedType">
-        <xsl:variable name="objectTypeId">
-            <xsl:call-template name="clean-id-string">
-                <xsl:with-param name="text" select="@Name"/>
-            </xsl:call-template>
-        </xsl:variable>[enum int 32 '<xsl:value-of select="$objectTypeId"/>'
+        [enum int 32 '<xsl:value-of select="@Name"/>'
         <xsl:apply-templates select="opc:Documentation"/>
         <xsl:apply-templates select="opc:EnumeratedValue"/>
   ]
@@ -71,6 +70,8 @@
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-id-string">
                 <xsl:with-param name="text" select="@Name"/>
+                <xsl:with-param name="switchField" select="../@Name"/>
+                <xsl:with-param name="switchValue" select="1"/>
             </xsl:call-template>
         </xsl:variable>['<xsl:value-of select="@Value"/>' <xsl:value-of select="$objectTypeId"/>]
     </xsl:template>
@@ -79,10 +80,11 @@
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-id-string">
                 <xsl:with-param name="text" select="@Name"/>
+                <xsl:with-param name="switchField" select="@SwitchField"/>
+                <xsl:with-param name="switchValue" select="@SwitchValue"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'
+        </xsl:variable>[type '<xsl:value-of select="@Name"/>'
         <xsl:apply-templates select="opc:Documentation"/>
-        [simple int 32 'testing']
   ]
     </xsl:template>
 
@@ -90,90 +92,102 @@
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-id-string">
                 <xsl:with-param name="text" select="@Name"/>
+                <xsl:with-param name="switchField" select="@SwitchField"/>
+                <xsl:with-param name="switchValue" select="@SwitchValue"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="*[@SwitchField]">[discriminatedType '<xsl:value-of select="@Name"/>'</xsl:when>
+            <xsl:when test="not(*[@SwitchField])">[type '<xsl:value-of select="@Name"/>'</xsl:when>
+        </xsl:choose>
     <xsl:apply-templates select="opc:Documentation"/>
     <xsl:apply-templates select="opc:Field"/>
   ]
     </xsl:template>
 
-    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-
     <xsl:template match="opc:Field">
         <xsl:variable name="objectTypeId">
-            <xsl:call-template name="clean-id-string">
-                <xsl:with-param name="text" select="@Name"/>
-            </xsl:call-template>
+            <xsl:value-of select="@Name"/>
         </xsl:variable>
         <xsl:variable name="lowerCaseName">
-            <xsl:value-of select="concat(translate(substring(@Name, 1, 1), $uppercase, $lowercase), substring(@Name, 2))"/>
+            <xsl:call-template name="clean-id-string">
+                <xsl:with-param name="text" select="@Name"/>
+                <xsl:with-param name="switchField" select="@SwitchField"/>
+                <xsl:with-param name="switchValue" select="@SwitchValue"/>
+            </xsl:call-template>
         </xsl:variable>
+        <xsl:variable name="lowerCaseLengthField">
+            <xsl:call-template name="lowerCaseLeadingChar">
+                <xsl:with-param name="text" select="@LengthField"/>
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="mspecType">simple</xsl:variable>
         <xsl:variable name="dataType">
-            <xsl:choose>
-                <xsl:when test="@TypeName = 'opc:Bit'">bit</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Boolean'">bit</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Byte'">uint 8</xsl:when>
-                <xsl:when test="@TypeName = 'opc:SByte'">int 8</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Int16'">int 16</xsl:when>
-                <xsl:when test="@TypeName = 'opc:UInt16'">uint 16</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Int32'">int 32</xsl:when>
-                <xsl:when test="@TypeName = 'opc:UInt32'">uint 32</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Int64'">int 64</xsl:when>
-                <xsl:when test="@TypeName = 'opc:UInt64'">uint 64</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Float'">float 8.23</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Double'">float 11.52</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Char'">string '<xsl:value-of select="concat(translate(substring(@LengthField, 1, 1), $uppercase, $lowercase), substring(@LengthField, 2))"/>'</xsl:when>
-                <xsl:when test="@TypeName = 'opc:CharArray'">string '-1'</xsl:when>
-                <xsl:when test="@TypeName = 'opc:Guid'">string '-1'</xsl:when>
-                <xsl:when test="@TypeName = 'opc:ByteString'">string '-1'</xsl:when>
-                <xsl:when test="@TypeName = 'opc:DateTime'">string '-1'</xsl:when>
-                <xsl:when test="@TypeName = 'opc:String'">string</xsl:when>
-                <xsl:otherwise><xsl:value-of select="substring-after(@TypeName,':')"/></xsl:otherwise>
-            </xsl:choose>
+            <xsl:call-template name="translateDataType">
+                <xsl:with-param name="datatype" select="@TypeName"/>
+                <xsl:with-param name="name" select="-1"/>
+            </xsl:call-template>
         </xsl:variable>
-            <xsl:choose>
-                <xsl:when test="@LengthField and @TypeName = 'opc:String'">[array <xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="concat(translate(substring(@LengthField, 1, 1), $uppercase, $lowercase), substring(@LengthField, 2))"/>']
-                </xsl:when>
-                <xsl:when test="@LengthField">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="concat(translate(substring(@LengthField, 1, 1), $uppercase, $lowercase), substring(@LengthField, 2))"/>']
-                </xsl:when>
-                <xsl:when test="@TypeName = 'opc:String'">[simple int 32 '<xsl:value-of select="$lowerCaseName"/>Size']
-                [simple <xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>Size' '<xsl:value-of select="$objectTypeId"/>']
-                </xsl:when>
-                <xsl:otherwise>[simple <xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
-                </xsl:otherwise>
-            </xsl:choose>
+
+        <xsl:choose>
+            <xsl:when test="@LengthField and @TypeName = 'opc:String'">[array <xsl:value-of select="$dataType"/> '-1' '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
+            </xsl:when>
+            <xsl:when test="@LengthField">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
+            </xsl:when>
+            <xsl:when test="@TypeName = 'opc:String'">[simple int 32 '<xsl:value-of select="$lowerCaseName"/>Size']
+            [simple <xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>Size' '<xsl:value-of select="@Name"/>']
+            </xsl:when>
+            <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="clean-id-string">
         <xsl:param name="text"/>
-        <xsl:call-template name="string-replace-all">
-            <xsl:with-param name="text" select="$text"/>
-            <xsl:with-param name="replace" select="'%'"/>
-            <xsl:with-param name="with" select="'PERCENT'"/>
-        </xsl:call-template>
-    </xsl:template>
-
-    <xsl:template name="string-replace-all">
-        <xsl:param name="text"/>
-        <xsl:param name="replace"/>
-        <xsl:param name="with"/>
+        <xsl:param name="switchField"/>
+        <xsl:param name="switchValue"/>
         <xsl:choose>
-            <xsl:when test="$text = '' or $replace = ''or not($replace)">
-                <xsl:value-of select="$text"/>
-            </xsl:when>
-            <xsl:when test="contains($text, $replace)">
-                <xsl:value-of select="substring-before($text,$replace)"/>
-                <xsl:value-of select="$with"/>
-                <xsl:call-template name="string-replace-all">
-                    <xsl:with-param name="text" select="substring-after($text,$replace)"/>
-                    <xsl:with-param name="replace" select="$replace"/>
-                    <xsl:with-param name="with" select="$with"/>
+            <xsl:when test="$switchValue">
+                <xsl:call-template name="lowerCaseLeadingChar">
+                    <xsl:with-param name="text" select="concat($switchField, $text)"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="$text"/>
+                <xsl:call-template name="lowerCaseLeadingChar">
+                    <xsl:with-param name="text" select="$text"/>
+                </xsl:call-template>
             </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template name="lowerCaseLeadingChar">
+        <xsl:param name="text"/>
+        <xsl:value-of select="concat(translate(substring($text, 1, 1), $uppercase, $lowercase), substring($text, 2))"/>
+    </xsl:template>
+
+    <xsl:template name="translateDataType">
+        <xsl:param name="datatype"/>
+        <xsl:param name="name"/>
+        <xsl:choose>
+            <xsl:when test="$datatype = 'opc:Bit'">bit</xsl:when>
+            <xsl:when test="$datatype = 'opc:Boolean'">bit</xsl:when>
+            <xsl:when test="$datatype = 'opc:Byte'">uint 8</xsl:when>
+            <xsl:when test="$datatype = 'opc:SByte'">int 8</xsl:when>
+            <xsl:when test="$datatype = 'opc:Int16'">int 16</xsl:when>
+            <xsl:when test="$datatype = 'opc:UInt16'">uint 16</xsl:when>
+            <xsl:when test="$datatype = 'opc:Int32'">int 32</xsl:when>
+            <xsl:when test="$datatype = 'opc:UInt32'">uint 32</xsl:when>
+            <xsl:when test="$datatype = 'opc:Int64'">int 64</xsl:when>
+            <xsl:when test="$datatype = 'opc:UInt64'">uint 64</xsl:when>
+            <xsl:when test="$datatype = 'opc:Float'">float 8.23</xsl:when>
+            <xsl:when test="$datatype = 'opc:Double'">float 11.52</xsl:when>
+            <xsl:when test="$datatype = 'opc:Char'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:CharArray'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:Guid'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:ByteString'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:DateTime'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:String'">string</xsl:when>
+            <xsl:otherwise><xsl:value-of select="substring-after($datatype,':')"/></xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 

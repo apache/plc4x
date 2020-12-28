@@ -76,7 +76,7 @@ constField
  ;
 
 discriminatorField
- : 'discriminator' type=dataType name=idExpression
+ : 'discriminator' type=typeReference name=idExpression
  ;
 
 enumField
@@ -162,9 +162,6 @@ multipleExpressions
 
 innerExpression
  : BOOLEAN_LITERAL
- | HEX_LITERAL
- | INTEGER_LITERAL
- | STRING_LITERAL
  // Explicitly allow the loop type keywords in expressions
  | ARRAY_LOOP_TYPE
  | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
@@ -175,6 +172,9 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
+ | HEX_LITERAL
+ | INTEGER_LITERAL
+ | STRING_LITERAL
  ;
 
 idExpression
