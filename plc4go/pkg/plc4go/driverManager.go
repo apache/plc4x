@@ -20,8 +20,9 @@ package plc4go
 
 import (
     "errors"
-    "net/url"
     "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "net/url"
 )
 
 // This is the main entry point for PLC4Go applications
@@ -42,6 +43,9 @@ type PlcDriverManager interface {
 
     // Get a connection to a remote PLC for a given plc4x connection-string
     GetConnection(connectionString string) <-chan PlcConnectionConnectResult
+
+    // Execute all available discovery methods on all available drivers using all transports
+    Discover(func(event model.PlcDiscoveryEvent)) error
 }
 
 type PlcDriverManger struct {
@@ -58,7 +62,7 @@ func NewPlcDriverManager() PlcDriverManager {
 
 func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
     // If this driver is already registered, just skip resetting it
-    for driverName, _ := range m.drivers{
+    for driverName, _ := range m.drivers {
         if driverName == driver.GetProtocolCode() {
             return
         }
@@ -83,7 +87,7 @@ func (m PlcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 
 func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
     // If this transport is already registered, just skip resetting it
-    for transportName, _ := range m.transports{
+    for transportName, _ := range m.transports {
         if transportName == transport.GetTransportCode() {
             return
         }
@@ -155,9 +159,22 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
     // Assemble a correct transport url
     transportUrl := url.URL{
         Scheme: transportName,
-        Host: transportConnectionString,
+        Host:   transportConnectionString,
     }
 
     // Create a new connection
     return driver.GetConnection(transportUrl, m.transports, configOptions)
+}
+
+func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+    for _, driver := range m.drivers {
+        if driver.SupportsDiscovery() {
+            err := driver.Discover(callback)
+            if err != nil {
+                return errors.New("Error running Discover on driver " + driver.GetProtocolName() +
+                    ". Got error: " + err.Error())
+            }
+        }
+    }
+    return nil
 }

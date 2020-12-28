@@ -20,11 +20,11 @@ package knxnetip
 
 import (
     "errors"
-    "fmt"
-    "net/url"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
     "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
     "github.com/apache/plc4x/plc4go/pkg/plc4go"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "net/url"
 )
 
 type KnxNetIpDriver struct {
@@ -33,8 +33,8 @@ type KnxNetIpDriver struct {
 }
 
 func NewKnxNetIpDriver() *KnxNetIpDriver {
-	return &KnxNetIpDriver{
-	    fieldHandler: NewFieldHandler(),
+    return &KnxNetIpDriver{
+        fieldHandler: NewFieldHandler(),
     }
 }
 
@@ -56,12 +56,6 @@ func (m KnxNetIpDriver) CheckQuery(query string) error {
 }
 
 func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-    // If the host is set to "discover", use the KNX discovery mechanism
-    if transportUrl.Host == "-discover-" {
-        // Multicast address every KNX gateway is required to respond to.
-        transportUrl.Host =  "224.0.23.12"
-    }
-
     // Get an the transport specified in the url
     transport, ok := transports[transportUrl.Scheme]
     if !ok {
@@ -80,23 +74,6 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
     }
 
     // Create a new codec for taking care of encoding/decoding of messages
-    defaultChanel := make(chan interface{})
-    go func() {
-        for {
-            _ = <-defaultChanel
-            fmt.Printf("Hurz")
-/*            adu := model.CastModbusTcpADU(msg)
-            serialized, err := json.Marshal(adu)
-            if err != nil {
-                fmt.Printf("got error serializing adu: %s\n", err.Error())
-            } else {
-                fmt.Printf("got message in the default handler %s\n", serialized)
-            }*/
-//            06100201000e0801c0a82a32c70e
-//                          xxxx
-//            06100201000e08  c0a82a32c95f
-        }
-    }()
     codec := NewKnxNetIpMessageCodec(transportInstance, nil)
 
     // Create the new connection
@@ -105,3 +82,10 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
     return connection.Connect()
 }
 
+func (m KnxNetIpDriver) SupportsDiscovery() bool {
+    return true
+}
+
+func (m KnxNetIpDriver) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+    return NewKnxNetIpDiscoverer().Discover(callback)
+}

@@ -116,6 +116,17 @@ func (m *KnxNetIpMessageCodec) Expect(check func(interface{}) (bool, bool)) chan
 	return responseChanel
 }
 
+func (m *KnxNetIpMessageCodec) RemoveExpectation(check func(interface{}) (bool, bool)) error {
+    for index, expectation := range m.expectations {
+        if &expectation.check == &check {
+            // Remove this expectation from the list.
+            m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+            return nil
+        }
+    }
+    return errors.New("not found")
+}
+
 func work(codec *KnxNetIpMessageCodec) {
 	// Start an endless loop
 	// TODO: Provide some means to terminate this ...

@@ -19,21 +19,10 @@
 package plc4go
 
 import (
-    "net/url"
     "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "net/url"
 )
-
-type PlcDriverResult struct {
-	Driver PlcDriver
-	Err    error
-}
-
-func NewPlcDriverResult(driver PlcDriver, err error) PlcDriverResult {
-	return PlcDriverResult{
-		Driver: driver,
-		Err:    err,
-	}
-}
 
 type PlcDriver interface {
 	// Get the short code used to identify this driver (As used in the connection string)
@@ -50,4 +39,8 @@ type PlcDriver interface {
 
 	// Establishes a connection to a given PLC using the information in the connectionString
 	GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan PlcConnectionConnectResult
+
+    SupportsDiscovery() bool
+
+    Discover(callback func(event model.PlcDiscoveryEvent)) error
 }

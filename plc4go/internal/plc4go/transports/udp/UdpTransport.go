@@ -21,10 +21,10 @@ package udp
 import (
     "bufio"
     "errors"
-    "net"
-    "net/url"
     "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
     "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "net"
+    "net/url"
     "regexp"
     "strconv"
 )
@@ -46,17 +46,22 @@ func (m UdpTransport) GetTransportName() string {
 }
 
 func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+    return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
+}
+
+func (m UdpTransport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
     connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
-    var remoteAddress string
+    var remoteAddressString string
     var remotePort int
     if match := utils.GetSubgropMatches(connectionStringRegexp, transportUrl.Host); match != nil {
         if val, ok := match["ip"]; ok && len(val) > 0 {
-            remoteAddress = val
+            remoteAddressString = val
         } else if val, ok := match["hostname"]; ok && len(val) > 0 {
-            remoteAddress = val
+            remoteAddressString = val
         } else {
             return nil, errors.New("missing hostname or ip to connect")
         }
+
         if val, ok := match["port"]; ok && len(val) > 0 {
             portVal, err := strconv.Atoi(val)
             if err != nil {
@@ -86,12 +91,12 @@ func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[
     }
 
     // Potentially resolve the ip address, if a hostname was provided
-    udpAddr, err := net.ResolveUDPAddr("udp", remoteAddress + ":" + strconv.Itoa(remotePort))
+    remoteAddress, err := net.ResolveUDPAddr("udp", remoteAddressString+":"+strconv.Itoa(remotePort))
     if err != nil {
         return nil, errors.New("error resolving typ address: " + err.Error())
     }
 
-    transportInstance := NewUdpTransportInstance(udpAddr, connectTimeout, &m)
+    transportInstance := NewUdpTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
 
     castFunc := func(typ interface{}) (transports.TransportInstance, error) {
         if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -103,26 +108,27 @@ func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[
 }
 
 type UdpTransportInstance struct {
-    RemoteAddress *net.UDPAddr
-    LocalAddress *net.UDPAddr
+    LocalAddress   *net.UDPAddr
+    RemoteAddress  *net.UDPAddr
     ConnectTimeout uint32
-    transport *UdpTransport
-    udpConn   net.Conn
-    reader    *bufio.Reader
+    transport      *UdpTransport
+    udpConn        *net.UDPConn
+    reader         *bufio.Reader
 }
 
-func NewUdpTransportInstance(remoteAddress *net.UDPAddr, connectTimeout uint32, transport *UdpTransport) *UdpTransportInstance {
-    return &UdpTransportInstance {
-        RemoteAddress: remoteAddress,
+func NewUdpTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, transport *UdpTransport) *UdpTransportInstance {
+    return &UdpTransportInstance{
+        LocalAddress:   localAddress,
+        RemoteAddress:  remoteAddress,
         ConnectTimeout: connectTimeout,
-        transport: transport,
+        transport:      transport,
     }
 }
 
 func (m *UdpTransportInstance) Connect() error {
     // "connect" to the remote
     var err error
-    m.udpConn, err = net.Dial("udp", m.RemoteAddress.String())
+    m.udpConn, err = net.ListenUDP("udp", m.LocalAddress)
     if err != nil {
         return errors.New("error connecting to remote address: " + err.Error())
     }
@@ -130,6 +136,16 @@ func (m *UdpTransportInstance) Connect() error {
     // Update the local address and port in the transport instance
     m.LocalAddress = m.udpConn.LocalAddr().(*net.UDPAddr)
 
+    // TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer
+    /*go func() {
+        buf := make([]byte, 1024)
+        for {
+            rsize, raddr, err := m.udpConn.ReadFromUDP(buf)
+            if err != nil {
+                fmt.Printf("Got %d bytes from %v: %v", rsize, raddr, buf)
+            }
+        }
+    }()*/
     m.reader = bufio.NewReader(m.udpConn)
 
     return nil
@@ -177,7 +193,7 @@ func (m *UdpTransportInstance) Read(numBytes uint32) ([]uint8, error) {
 
 func (m *UdpTransportInstance) Write(data []uint8) error {
     if m.udpConn != nil {
-        num, err := m.udpConn.Write(data)
+        num, err := m.udpConn.WriteToUDP(data, m.RemoteAddress)
         if err != nil {
             return errors.New("error writing: " + err.Error())
         }
