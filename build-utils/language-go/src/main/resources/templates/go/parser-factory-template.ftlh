@@ -66,7 +66,7 @@ import (
     "errors"
     "github.com/apache/plc4x/plc4go/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ${protocolName?cap_first}ParserHelper struct {

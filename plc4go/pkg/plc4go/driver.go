@@ -19,7 +19,7 @@
 package plc4go
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
     "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "net/url"
 )

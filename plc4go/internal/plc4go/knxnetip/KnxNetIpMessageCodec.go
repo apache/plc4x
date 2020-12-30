@@ -22,8 +22,8 @@ import (
     "errors"
     "fmt"
     "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "time"
 )
 

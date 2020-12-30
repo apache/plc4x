@@ -19,13 +19,13 @@
 package knxnetip
 
 import (
-	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
-	internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+    driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type KnxNetIpReader struct {

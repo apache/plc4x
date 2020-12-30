@@ -18,7 +18,7 @@
 //
 package spi
 
-import "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 
 type Message interface {
 	LengthInBytes() uint16

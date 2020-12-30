@@ -76,4 +76,6 @@ type PlcConnection interface {
 	SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder
 	// Create a builder for assembling unsubscription-requests
 	UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder
+
+	BrowseRequestBuilder() model.PlcBrowseRequestBuilder
 }
