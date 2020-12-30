@@ -19,22 +19,22 @@
 package knxnetip
 
 import (
-    "bytes"
-    "errors"
-    driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-    internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/transports/udp"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go"
-    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "net"
-    "strconv"
-    "strings"
-    "sync"
-    "time"
+	"bytes"
+	"errors"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"net"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
 )
 
 type ConnectionMetadata struct {

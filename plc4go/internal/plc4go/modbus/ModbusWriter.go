@@ -21,12 +21,12 @@ package modbus
 import (
 	"errors"
 	"fmt"
-	"math"
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"math"
 	"sync/atomic"
 )
 

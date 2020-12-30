@@ -20,7 +20,7 @@ package plc4go
 
 import (
     "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
     "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "net/url"
 )
@@ -166,6 +166,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
     return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
+// TODO: Currently all network devices are used as well as all transports and all protocols. It would be cool if we had some sort of DiscoveryRequestBuilder instead of only this single method.
 func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent)) error {
     for _, driver := range m.drivers {
         if driver.SupportsDiscovery() {
