@@ -204,8 +204,14 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#assign discriminatorField = field>
         <#assign simpleTypeReference = discriminatorField.type>
 
-        // Discriminator Field (${discriminatorField.name})
+        // Discriminator Field (${discriminatorField.name})        
+        <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+            <#assign simpleTypeReference = discriminatorField.type>
+        lengthInBits += ${simpleTypeReference.getLength()};
+        <#else>
+            <#assign simpleTypeReference = discriminatorField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        </#if>
         <#break>
     <#case "enum">
         <#assign enumField = field>

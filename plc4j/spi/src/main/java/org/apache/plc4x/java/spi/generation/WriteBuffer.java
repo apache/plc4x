@@ -190,7 +190,7 @@ public class WriteBuffer {
         }
     }
 
-    public void writeInt(int bitLength, int value) throws ParseException {        
+    public void writeInt(int bitLength, int value) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -257,8 +257,7 @@ public class WriteBuffer {
         final byte[] bytes = value.getBytes(Charset.forName(encoding));
         try {
             int count = 0;
-            for (byte aByte : bytes) {
-                System.out.println(count);
+            for (byte aByte : bytes) {                
                 count += 1;
                 bo.writeByte(false, 8, aByte);
             }

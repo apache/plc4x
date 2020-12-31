@@ -25,8 +25,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
-
-
+        
     @Override
     public int getDefaultPort() {
         return 12687;

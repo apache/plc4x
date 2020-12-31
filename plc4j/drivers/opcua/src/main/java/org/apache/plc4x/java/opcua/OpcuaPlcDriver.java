@@ -121,7 +121,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(OpcuaAPU.class, OpcuaAPUIO.class)
             .withProtocol(OpcuaProtocolLogic.class)
-            //.withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.
             .withParserArgs(true)
             .littleEndian()
@@ -131,9 +131,9 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     /** Estimate the Length of a Packet */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
-        public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 256) + 6;
+        public int applyAsInt(ByteBuf byteBuf) {            
+            if (byteBuf.readableBytes() >= 8) {
+                return Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4));
             }
             return -1;
         }

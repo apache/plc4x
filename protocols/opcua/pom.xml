@@ -55,6 +55,25 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>fetch-opc-discriminators</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>https://opcfoundation.org/UA/schemas/1.04/Opc.Ua.NodeSet2.Services.xml</url>
+                  <unpack>false</unpack>
+                  <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                  <outputFileName>opc-discriminators.xml</outputFileName>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>xml-maven-plugin</artifactId>
             <version>1.0.2</version>
@@ -70,7 +89,7 @@
               <transformationSets>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
-                  <includes>*.xml</includes>
+                  <includes>opc-datatypes.xml</includes>
                   <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
                   <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
                   <fileMappers>
@@ -78,6 +97,12 @@
                       <targetExtension>.mspec</targetExtension>
                     </fileMapper>
                   </fileMappers>
+                  <parameters>
+                    <parameter>
+                      <name>services</name>
+                      <value>${project.build.directory}/downloads/opc-discriminators.xml</value>
+                    </parameter>
+                  </parameters>                  
                   <outputProperties>
                     <outputProperty>
                       <name>indent</name>
@@ -86,7 +111,7 @@
                   </outputProperties>
                 </transformationSet>
               </transformationSets>
-            </configuration>                      
+            </configuration>
           </plugin>
       </plugins>
   </build>
