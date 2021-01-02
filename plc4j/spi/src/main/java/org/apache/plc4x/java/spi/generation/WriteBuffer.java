@@ -28,7 +28,12 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class WriteBuffer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WriteBuffer.class);
 
     private final ByteBuffer bb;
     private final BufferByteOutput bbo;
@@ -40,6 +45,7 @@ public class WriteBuffer {
     }
 
     public WriteBuffer(int size, boolean littleEndian) {
+        LOGGER.info("Creating write buffer " + size);
         bb = ByteBuffer.allocate(size);
         bbo = new BufferByteOutput(bb);
         bo = new MyDefaultBitOutput(bbo);
@@ -63,6 +69,7 @@ public class WriteBuffer {
 
     public void writeBit(boolean value) throws ParseException {
         try {
+            LOGGER.info("Writing Bit:- " + value);
             bo.writeBoolean(value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -77,6 +84,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned byte can only contain max 8 bits");
         }
         try {
+            LOGGER.info("Writing Usigned Byte:- " + value + ", " + bitLength + ", " + getPos());
             bo.writeByte(true, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -91,6 +99,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned short can only contain max 16 bits");
         }
         try {
+            LOGGER.info("Writing Unsigned Short:- " + value + ", " + bitLength + ", " + getPos());
             bo.writeShort(true, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -105,6 +114,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned int can only contain max 32 bits");
         }
         try {
+            LOGGER.info("Writing Unisgned Int:- " + value + ", " + bitLength + ", " + getPos());
             if(littleEndian) {
                 value = Integer.reverseBytes(value) >> 16;
             }
@@ -122,6 +132,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned long can only contain max 63 bits");
         }
         try {
+            LOGGER.info("Writing Unsigned Long:- " + value + ", " + bitLength + ", " + getPos());
             if(littleEndian) {
                 value = Long.reverseBytes(value) >> 32;
             }
@@ -167,6 +178,7 @@ public class WriteBuffer {
             throw new ParseException("byte can only contain max 8 bits");
         }
         try {
+            LOGGER.info("Writing Byte:- " + value + ", " + bitLength + ", " + getPos());
             bo.writeByte(false, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -181,6 +193,7 @@ public class WriteBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
+            LOGGER.info("Writing Short:- " + value + ", " + bitLength + ", " + getPos());
             if(littleEndian) {
                 value = Short.reverseBytes(value);
             }
@@ -198,6 +211,7 @@ public class WriteBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
+            LOGGER.info("Writing int:- " + value + ", " + bitLength + ", " + getPos());
             if(littleEndian) {
                 value = Integer.reverseBytes(value);
             }
@@ -215,6 +229,7 @@ public class WriteBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
+            LOGGER.info("Writing long:- " + value + ", " + bitLength + ", " + getPos());
             if(littleEndian) {
                 value = Long.reverseBytes(value);
             }
@@ -239,6 +254,7 @@ public class WriteBuffer {
         if (bitsExponent != 8 || bitsMantissa != 23) {
             throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
         }
+        LOGGER.info("Writing float:- " + value);
         writeInt(1 + bitsExponent + bitsMantissa, Float.floatToRawIntBits(value));
     }
 
@@ -246,6 +262,7 @@ public class WriteBuffer {
         if (bitsExponent != 11 || bitsMantissa != 52) {
             throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
         }
+        LOGGER.info("Writing double:- " + value);
         writeLong(1 + bitsExponent + bitsMantissa, Double.doubleToRawLongBits(value));
     }
 
@@ -254,12 +271,17 @@ public class WriteBuffer {
     }
 
     public void writeString(int bitLength, String encoding, String value) throws ParseException {
-        final byte[] bytes = value.getBytes(Charset.forName(encoding));
+        LOGGER.info("Writing String:- " + value + ", " + bitLength + ", " + getPos());
+        final byte[] bytes = value.getBytes(Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
         try {
             int count = 0;
-            for (byte aByte : bytes) {                
+            for (byte aByte : bytes) {
+                if (count < (bitLength / 8) || (bitLength == -1)) {
+                    bo.writeByte(false, 8, aByte);
+                } else {
+                    break;
+                }
                 count += 1;
-                bo.writeByte(false, 8, aByte);
             }
         } catch (IOException e) {
            throw new ParseException("Error writing string", e);

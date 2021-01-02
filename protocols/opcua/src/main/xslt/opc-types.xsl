@@ -113,7 +113,7 @@
 ]
 
 [type 'TwoByteNodeId'
-    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='TwoByteNodeId']"/>
+        [simple uint 8 'identifier']
 ]
 
 [type 'FourByteNodeId'
@@ -396,62 +396,44 @@
 ]
 
 [discriminatedType 'ExpandedNodeId'
-    [simple NodeIdType 'nodeIdType']
+    [simple bit 'namespaceURISpecified']
+    [simple bit 'serverIndexSpecified']
+    [discriminator NodeIdType 'nodeIdType']
     [typeSwitch 'nodeIdType'
         ['NodeIdType.nodeIdTypeTwoByte' ExpandedNodeIdTwoByte
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
             [simple TwoByteNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
         ['NodeIdType.nodeIdTypeFourByte' ExpandedNodeIdFourByte
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
             [simple FourByteNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
         ['NodeIdType.nodeIdTypeNumeric' ExpandedNodeIdNumeric
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
             [simple NumericNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
         ['NodeIdType.nodeIdTypeString' ExpandedNodeIdString
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
-            [reserved uint 6 '0x00']
             [simple StringNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
         ['NodeIdType.nodeIdTypeGuid' ExpandedNodeIdGuid
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
             [simple GuidNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
         ['NodeIdType.nodeIdTypeByteString' ExpandedNodeIdByteString
-            [simple bit 'serverIndexSpecified']
-            [simple bit 'namespaceURISpecified']
             [simple ByteStringNodeId 'id']
-            [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-            [optional uint 32 'serverIndex' 'serverIndexSpecified']
         ]
     ]
+    [optional PascalString 'namespaceURI' 'namespaceURISpecified']
+    [optional uint 32 'serverIndex' 'serverIndexSpecified']
 ]
 
-[type 'ExtensionObject'
+[discriminatedType 'ExtensionObject'
+    //A serialized object prefixed with its data type identifier.
     [simple ExpandedNodeId 'nodeId']
     [simple uint 8 'encodingMask']
+    [optional int 32 'bodyLength' 'encodingMask > 0']
+    [array uint 8 'body' count 'bodyLength']
 ]
 
 [type 'PascalString'
     [simple int 32 'stringLength']
-    [simple string 'stringLength == -1 ? 0 : stringLength * 8' 'stringValue']
+    [optional string 'stringLength == -1 ? 0 : stringLength * 8' 'UTF-8' 'stringValue' 'stringLength >= 0']
 ]
 
 [type 'LocalizedText'

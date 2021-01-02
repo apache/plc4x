@@ -243,10 +243,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+        <#if helper.isEnumField(field)>
+            ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type))});
+        <#else>
+            ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = <#if helper.isSimpleTypeReference(discriminatorField.type)>${helper.getReadBufferReadMethodCall(discriminatorField.type)}<#else>${discriminatorField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(discriminatorField.type, parserArgument?index), true)}) (${helper.toParseExpression(discriminatorField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        </#if>
         <#break>
     <#case "enum">
         <#assign enumField = field>
@@ -460,11 +463,20 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
+            <#assign simpleTypeReference = discriminatorField.type>
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
+        <#else>
+            <#assign complexTypeReference = discriminatorField.type>
+            <#if helper.isEnumField(field)>
+                ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ".getValue())")};
+            <#else>
+                ${complexTypeReference.name}IO.staticSerialize(io, ${discriminatorField.name});
+            </#if>
+        </#if>
         <#break>
     <#case "enum">
         <#assign enumField = field>

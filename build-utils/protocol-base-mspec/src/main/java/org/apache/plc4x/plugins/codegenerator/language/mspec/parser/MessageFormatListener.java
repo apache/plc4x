@@ -187,7 +187,6 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
-        // Handle enum types.
         TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Field field = new DefaultDiscriminatorField(null, type, name);

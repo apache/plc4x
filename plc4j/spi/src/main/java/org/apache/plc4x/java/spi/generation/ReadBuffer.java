@@ -44,7 +44,7 @@ public class ReadBuffer {
     }
 
     public ReadBuffer(byte[] input, boolean littleEndian) {
-        LOGGER.info("Creating read buffer " + input.length)
+        LOGGER.info("Creating read buffer " + input.length);
         ArrayByteInput abi = new ArrayByteInput(input);
         this.bi = new MyDefaultBitInput(abi);
         this.littleEndian = littleEndian;

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -110,27 +111,25 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 NodeIdTwoByte authenticationToken = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
                                                                     new TwoByteNodeId((short) 0));
 
-                ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(NodeIdType.nodeIdTypeFourByte,
+                ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,
                                                                     false,
-                                                                    false,
-                                                                    new FourByteNodeId((short) 0, 466),
-                                                                    new PascalString(-1,""),
-                                                                    1L);
+                                                                    new PascalString(-1,null),
+                                                                    1L,
+                                                                    new FourByteNodeId((short) 0, 466));
 
-                ExpandedNodeId extExpandedNodeId = new ExpandedNodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
+                ExpandedNodeId extExpandedNodeId = new ExpandedNodeIdTwoByte(false,
                                                                     false,
-                                                                    false,
-                                                                    new TwoByteNodeId((short) 0),
                                                                     null,
-                                                                    null);
+                                                                    null,
+                                                                    new TwoByteNodeId((short) 0));
 
-                ExtensionObject extObject = new ExtensionObject(extExpandedNodeId, (short) 0);
+                ExtensionObject extObject = new ExtensionObject(extExpandedNodeId, (short) 0, null, null);
 
                 RequestHeader requestHeader = new RequestHeader(authenticationToken,
-                                                                System.currentTimeMillis() * 10000L,
+                                                                (System.currentTimeMillis() * 10000) + 116444736000000000L,
                                                                 0L,
                                                                 0L,
-                                                                new PascalString(-1, ""),
+                                                                new PascalString(-1, null),
                                                                 10000L,
                                                                 extObject);
 
@@ -142,7 +141,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                 0L,
                                                                 SecurityTokenRequestType.securityTokenRequestTypeIssue,
                                                                 MessageSecurityMode.messageSecurityModeNone,
-                                                                new PascalString(-1, ""),
+                                                                new PascalString(-1, null),
                                                                 36000000);
 
 
@@ -171,23 +170,23 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         Integer nextSequenceNumber = opcuaOpenResponse.getSequenceNumber() + 1;
                         Integer nextRequestId = opcuaOpenResponse.getRequestId() + 1;
 
-                        NodeIdTwoByte authenticationToken2 = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,                                                                            
+                        NodeIdTwoByte authenticationToken2 = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
                                                                             new TwoByteNodeId((short) 0));
 
-                        ExpandedNodeId extExpandedNodeId2 = new ExpandedNodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
+                        ExpandedNodeId extExpandedNodeId2 = new ExpandedNodeIdTwoByte(false,
                                                                             false,
-                                                                            false,
-                                                                            new TwoByteNodeId((short) 0),
+                                                                            NodeIdType.nodeIdTypeTwoByte,
                                                                             null,
-                                                                            null);
+                                                                            null,
+                                                                            new TwoByteNodeId((short) 0));
 
                         ExtensionObject extObject2 = new ExtensionObject(extExpandedNodeId2, (short) 0);
 
                         RequestHeader requestHeader2 = new RequestHeader(authenticationToken2,
-                                                                        System.currentTimeMillis() * 10000L,
+                                                                        (System.currentTimeMillis() * 10000) + 116444736000000000L,
                                                                         0L,
                                                                         0L,
-                                                                        new PascalString(-1, ""),
+                                                                        new PascalString(-1, null),
                                                                         10000L,
                                                                         extObject2);
 
@@ -199,8 +198,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                           true,
                                                                           new PascalString(2, "en"),
                                                                           new PascalString(text.length(), text));
-                        PascalString gatewayServerUri = new PascalString(-1, "");
-                        PascalString discoveryProfileUri = new PascalString(-1, "");
+                        PascalString gatewayServerUri = new PascalString(-1, null);
+                        PascalString discoveryProfileUri = new PascalString(-1, null);
                         int noOfDiscoveryUrls = -1;
                         PascalString discoveryUrls = null;
 
@@ -221,11 +220,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                         (byte) 0,
                                                                         requestHeader2,
                                                                         clientDescription,
-                                                                        new PascalString(-1, ""),
+                                                                        new PascalString(-1, null),
                                                                         new PascalString(endpoint2.length(), endpoint2),
                                                                         new PascalString(sessionName.length(), sessionName),
                                                                         new PascalString(clientNonce.length(), clientNonce),
-                                                                        new PascalString(-1, ""),
+                                                                        new PascalString(-1, null),
                                                                         120000L,
                                                                         0L);
 
@@ -244,43 +243,59 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                 LOGGER.debug("Got Create Session Response Connection Response");
                                 CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
 
-                                NodeIdTwoByte authenticationToken3 = (NodeIdTwoByte) createSessionResponse.getAuthenticationToken();
+                                NodeIdByteString authenticationToken3 = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
                                 Integer tokenId2 = (int) opcuaMessageResponse.getSecureTokenId();
                                 Integer channelId2 = (int) opcuaMessageResponse.getSecureChannelId();
                                 Integer nextSequenceNumber2 = opcuaMessageResponse.getSequenceNumber() + 1;
                                 Integer nextRequestId2 = opcuaMessageResponse.getRequestId() + 1;
 
 
-                                ExpandedNodeId extExpandedNodeId3 = new ExpandedNodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
+                                ExpandedNodeId extExpandedNodeId3 = new ExpandedNodeIdTwoByte(false,
                                                                                     false,
-                                                                                    false,
-                                                                                    new TwoByteNodeId((short) 0),
+                                                                                    NodeIdType.nodeIdTypeTwoByte,
                                                                                     null,
-                                                                                    null);
+                                                                                    null,
+                                                                                    new TwoByteNodeId((short) 0));
+                                System.out.println("(((((((((((((((" + extExpandedNodeId3.getLengthInBytes());
 
                                 ExtensionObject extObject3 = new ExtensionObject(extExpandedNodeId3, (short) 0);
 
+                                System.out.println("(((((((((((((((" + extObject3.getLengthInBytes());
+                                System.out.println("(((((((((((((((" + authenticationToken3.getLengthInBytes());
+                                System.out.println("@@@@@@@@@@@@@@@@@" + authenticationToken3.getId().getIdentifier().getStringLength());
+                                System.out.println("@@@@@@@@@@@@@@@@@" + authenticationToken3.getId().getIdentifier().getStringValue().length());
+
                                 RequestHeader requestHeader3 = new RequestHeader(authenticationToken3,
-                                                                                System.currentTimeMillis() * 10000L,
+                                                                                (System.currentTimeMillis() * 10000) + 116444736000000000L,
                                                                                 1L,
                                                                                 0L,
-                                                                                new PascalString(-1, ""),
+                                                                                new PascalString(-1, null),
                                                                                 10000L,
                                                                                 extObject3);
 
-                                SignatureData clientSignature = new SignatureData(new PascalString(-1, ""), new PascalString(-1, ""));
+                                System.out.println("(((((((((((((((" + requestHeader3.getLengthInBytes());
 
-                                SignedSoftwareCertificate[] signedSoftwareCertificate = null;
+                                SignatureData clientSignature = new SignatureData(new PascalString(-1, null), new PascalString(-1, null));
 
-                                ExpandedNodeId extExpandedNodeId4 = new ExpandedNodeIdFourByte(NodeIdType.nodeIdTypeFourByte,
+                                System.out.println("(((((((((((((((" + clientSignature.getLengthInBytes());
+
+                                SignedSoftwareCertificate[] signedSoftwareCertificate = new SignedSoftwareCertificate[1];
+
+                                signedSoftwareCertificate[0] = new SignedSoftwareCertificate(new PascalString(-1, null), new PascalString(-1, null));
+
+                                ExpandedNodeId extExpandedNodeId4 = new ExpandedNodeIdFourByte(false,
                                                                                     false,
-                                                                                    false,
-                                                                                    new FourByteNodeId((short) 0,  321),
+                                                                                    NodeIdType.nodeIdTypeFourByte,
                                                                                     null,
-                                                                                    null);
+                                                                                    null,
+                                                                                    new FourByteNodeId((short) 1,  321));
+
+                                System.out.println("(((((((((((((((" + extExpandedNodeId4.getLengthInBytes());
 
 
-                                ExtensionObject useridentityToken = new ExtensionObject(extExpandedNodeId4, (short) 0);
+                                ExtensionObject useridentityToken = new ExtensionObject(extExpandedNodeId4, (short) 1);
+
+                                System.out.println("(((((((((((((((" + useridentityToken.getLengthInBytes());
 
                                 String endpoint3 = "opc.tcp://127.0.0.1:12687/plc4x";
 
@@ -289,11 +304,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                                 requestHeader3,
                                                                                 clientSignature,
                                                                                 0,
-                                                                                signedSoftwareCertificate,
+                                                                                null,
                                                                                 0,
                                                                                 null,
                                                                                 useridentityToken,
                                                                                 clientSignature);
+
+                                System.out.println("(((((((((((((((" + activateSessionRequest.getLengthInBytes());
 
                                 OpcuaMessageRequest activateMessageRequest = new OpcuaMessageRequest("F",
                                                                                 channelId2,
@@ -301,6 +318,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                                 nextSequenceNumber2,
                                                                                 nextRequestId2,
                                                                                 activateSessionRequest);
+
+                                System.out.println("(((((((((((((((" + activateMessageRequest.getLengthInBytes());
 
                                 context.sendRequest(new OpcuaAPU(activateMessageRequest))
                                     .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
