@@ -30,7 +30,7 @@ class CachedDriverManagerIT {
         MockConnection plcMockConnection = mock(MockConnection.class);
         when(mock.create()).thenReturn(plcMockConnection);
 
-        CachedDriverManager driverManager = new CachedDriverManager("", mock, 2_000);
+        CachedDriverManager driverManager = new CachedDriverManager("", mock, 100_000);
 
         AtomicInteger errorCounter = new AtomicInteger(0);
         AtomicInteger successCounter = new AtomicInteger(0);
@@ -41,6 +41,7 @@ class CachedDriverManagerIT {
                     driverManager.getConnection("").close();
                     successCounter.incrementAndGet();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     errorCounter.incrementAndGet();
                 }
             });
@@ -48,7 +49,7 @@ class CachedDriverManagerIT {
 
         executorService.shutdown();
 
-        executorService.awaitTermination(10, TimeUnit.SECONDS);
+        executorService.awaitTermination(50, TimeUnit.SECONDS);
 
         assertEquals(100, successCounter.get());
         assertEquals(0, errorCounter.get());

@@ -1,9 +1,11 @@
 package org.apache.plc4x.java.utils.connectionpool;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import java.util.concurrent.*;
  * @author julian
  * Created by julian on 24.02.20
  */
+@Disabled("These should be run manually")
 class CachedDriverManagerMT {
 
     private static final Logger logger = LoggerFactory.getLogger(CachedDriverManagerMT.class);
@@ -87,7 +90,7 @@ class CachedDriverManagerMT {
 
         PooledDriverManager driverManager = new PooledDriverManager();
 
-        for (int i = 1; i <= 100_000; i++) {
+        for (int i = 1; i <= 10_000; i++) {
             pool.submit(() -> {
                 try {
                     PlcConnection conn = driverManager.getConnection(PLC_IP);

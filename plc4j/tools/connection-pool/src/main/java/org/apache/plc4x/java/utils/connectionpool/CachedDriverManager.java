@@ -139,14 +139,16 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         if (!this.url.equals(url)) {
             throw new IllegalArgumentException("This Cached Driver Manager only supports the Conection " + url);
         }
-        if (queue.isEmpty() && isConnectionAvailable()) {
-            return getConnection_(url);
-        } else {
-            // At least trigger a connection
-            try {
-                getConnection_(url).close();
-            } catch (Exception e) {
-                // Ignore here.
+        synchronized (this) {
+            if (queue.isEmpty() && isConnectionAvailable()) {
+                return getConnection_(url);
+            } else {
+                // At least trigger a connection
+                try {
+                    getConnection_(url).close();
+                } catch (Exception e) {
+                    // Ignore here.
+                }
             }
         }
         CompletableFuture<PlcConnection> future = new CompletableFuture<>();
@@ -224,7 +226,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     /**
      * Checks if someone is waiting in the line to get the connection.
      */
-    private void checkQueue() {
+    private synchronized void checkQueue() {
         logger.debug("Connection is available, checking if someone is waiting in the queue...");
         CompletableFuture<PlcConnection> next;
         while ((next = queue.poll()) != null) {
