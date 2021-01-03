@@ -35,7 +35,7 @@ import (
 
 type KnxNetIpDiscoverer struct {
     messageCodec spi.MessageCodec
-    spi.Discoverer
+    spi.PlcDiscoverer
 }
 
 func NewKnxNetIpDiscoverer() *KnxNetIpDiscoverer {
@@ -118,44 +118,33 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
                 driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP.To4())),
                 uint16(localAddress.Port)))
 
-            err = codec.Send(searchRequestMessage)
-            if err != nil {
-                return err
-            }
+            err = codec.SendRequest(
+                searchRequestMessage,
+                func(message interface{}) bool {
+                    fmt.Printf("Check for Search-Response ...")
+                    searchResponse := driverModel.CastSearchResponse(message)
+                    // As we can expect multiple responses, we always tell the codec to keep this selector active
+                    fmt.Printf(" Result %t\n", searchResponse != nil)
+                    return searchResponse != nil
+                },
+                func(message interface{}) error {
+                    searchResponse := driverModel.CastSearchResponse(message)
 
-            // Register an expected response
-            check := func(response interface{}) (bool, bool) {
-                searchResponseMessage := driverModel.CastSearchResponse(response)
-                // As we can expect multiple responses, we always tell the codec to keep this selector active
-                return searchResponseMessage != nil, true
-            }
-            // Register a callback to handle the response
-            responseChan := codec.Expect(check)
-            go func() {
-                // As we can receive multiple responses, stay in a loop
-                for {
-                    select {
-                    case response := <-responseChan:
-                        searchResponse := driverModel.CastSearchResponse(response)
-
-                        addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
-                        remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-                            uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
-                        if err != nil {
-                            fmt.Print(err.Error())
-                        }
-                        deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
-                            searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-                        discoveryEvent := model.NewPlcDiscoveryEvent(
-                            "knxnet-ip", "udp", *remoteUrl, nil, deviceName)
-                        // Pass the event back to the callback
-                        callback(discoveryEvent)
-                    case <-time.After(time.Second * 5):
-                        // After timeout of 5 seconds, stop waiting for search-responses
-                        _ = codec.RemoveExpectation(check)
+                    addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
+                    remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
+                        uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
+                    if err != nil {
+                        return err
                     }
-                }
-            }()
+                    deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
+                        searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+                    discoveryEvent := model.NewPlcDiscoveryEvent(
+                        "knxnet-ip", "udp", *remoteUrl, nil, deviceName)
+                    // Pass the event back to the callback
+                    callback(discoveryEvent)
+                    return nil
+                },
+                time.Second * 1)
         }
     }
     return nil

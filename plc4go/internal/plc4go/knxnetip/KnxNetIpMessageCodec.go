@@ -22,32 +22,37 @@ import (
     "errors"
     "fmt"
     "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "time"
 )
 
 type KnxNetIpExpectation struct {
-	timestamp       time.Time
-	check           func(interface{}) (bool, bool)
-	responseChannel chan interface{}
+    expiration     time.Time
+    acceptsMessage spi.AcceptsMessage
+    handleMessage  spi.HandleMessage
 }
 
 type KnxNetIpMessageCodec struct {
-	transportInstance             transports.TransportInstance
-	defaultIncomingMessageChannel chan interface{}
-	expectations                  []KnxNetIpExpectation
+    sequenceCounter               int32
+    transportInstance             transports.TransportInstance
+    messageInterceptor            func(message interface{})
+    defaultIncomingMessageChannel chan interface{}
+    expectations                  []KnxNetIpExpectation
 }
 
-func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *KnxNetIpMessageCodec {
-	codec := &KnxNetIpMessageCodec{
-		transportInstance:             transportInstance,
-        defaultIncomingMessageChannel: defaultIncomingMessageChannel,
-		expectations:                  []KnxNetIpExpectation{},
-	}
-	// Start a worker that handles processing of responses
-	go work(codec)
-	return codec
+func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message interface{})) *KnxNetIpMessageCodec {
+    codec := &KnxNetIpMessageCodec{
+        sequenceCounter:               0,
+        transportInstance:             transportInstance,
+        messageInterceptor:            messageInterceptor,
+        defaultIncomingMessageChannel: make(chan interface{}),
+        expectations:                  []KnxNetIpExpectation{},
+    }
+    // Start a worker that handles processing of responses
+    go work(codec)
+    return codec
 }
 
 func (m *KnxNetIpMessageCodec) Connect() error {
@@ -56,118 +61,134 @@ func (m *KnxNetIpMessageCodec) Connect() error {
 }
 
 func (m *KnxNetIpMessageCodec) Disconnect() error {
-	return m.transportInstance.Close()
+    return m.transportInstance.Close()
 }
 
 func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
-	// Cast the message to the correct type of struct
-	knxMessage := model.CastKnxNetIpMessage(message)
-	// Serialize the request
-	wb := utils.NewWriteBuffer()
-	err := knxMessage.Serialize(*wb)
-	if err != nil {
-		return errors.New("error serializing request " + err.Error())
-	}
+    // Cast the message to the correct type of struct
+    knxMessage := model.CastKnxNetIpMessage(message)
+    // Serialize the request
+    wb := utils.NewWriteBuffer()
+    err := knxMessage.Serialize(*wb)
+    if err != nil {
+        return errors.New("error serializing request " + err.Error())
+    }
 
-	// Send it to the PLC
-	err = m.transportInstance.Write(wb.GetBytes())
-	if err != nil {
-		return errors.New("error sending request " + err.Error())
-	}
-	return nil
+    // Send it to the PLC
+    err = m.transportInstance.Write(wb.GetBytes())
+    if err != nil {
+        return errors.New("error sending request " + err.Error())
+    }
+
+    return nil
 }
 
-func (m *KnxNetIpMessageCodec) Receive() (interface{}, error) {
-	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
-		data, err := m.transportInstance.PeekReadableBytes(6)
-		if err != nil {
-			// TODO: Possibly clean up ...
-			return nil, nil
-		}
-		// Get the size of the entire packet
-		packetSize := (uint32(data[4]) << 8) + uint32(data[5])
-		if num >= packetSize {
-			data, err = m.transportInstance.Read(packetSize)
-			if err != nil {
-				// TODO: Possibly clean up ...
-				return nil, nil
-			}
-			rb := utils.NewReadBuffer(data)
-			knxMessage, err := model.KnxNetIpMessageParse(rb)
-			if err != nil {
-				// TODO: Possibly clean up ...
-				return nil, nil
-			}
-			return knxMessage, nil
-		}
-	}
-	return nil, nil
+func (m *KnxNetIpMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+    expectation := KnxNetIpExpectation{
+        expiration:     time.Now().Add(ttl),
+        acceptsMessage: acceptsMessage,
+        handleMessage:  handleMessage,
+    }
+    m.expectations = append(m.expectations, expectation)
+    return nil
 }
 
-func (m *KnxNetIpMessageCodec) Expect(check func(interface{}) (bool, bool)) chan interface{} {
-	responseChanel := make(chan interface{})
-	expectation := KnxNetIpExpectation{
-		timestamp:       time.Now(),
-		check:           check,
-		responseChannel: responseChanel,
-	}
-	m.expectations = append(m.expectations, expectation)
-	return responseChanel
+func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+    // Send the actual message
+    err := m.Send(message)
+    if err != nil {
+        return err
+    }
+    return m.Expect(acceptsMessage, handleMessage, ttl)
 }
 
-func (m *KnxNetIpMessageCodec) RemoveExpectation(check func(interface{}) (bool, bool)) error {
-    for index, expectation := range m.expectations {
-        if &expectation.check == &check {
-            // Remove this expectation from the list.
-            m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-            return nil
+func (m *KnxNetIpMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
+    return m.defaultIncomingMessageChannel
+}
+
+func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
+    // We need at least 6 bytes in order to know how big the packet is in total
+    if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
+        data, err := m.transportInstance.PeekReadableBytes(6)
+        if err != nil {
+            fmt.Printf("Got error reading: %s\n", err.Error())
+            // TODO: Possibly clean up ...
+            return nil, nil
+        }
+        // Get the size of the entire packet
+        packetSize := (uint32(data[4]) << 8) + uint32(data[5])
+        if num >= packetSize {
+            data, err = m.transportInstance.Read(packetSize)
+            if err != nil {
+                fmt.Printf("Got error reading: %s\n", err.Error())
+                // TODO: Possibly clean up ...
+                return nil, nil
+            }
+            rb := utils.NewReadBuffer(data)
+            knxMessage, err := model.KnxNetIpMessageParse(rb)
+            if err != nil {
+                // TODO: Possibly clean up ...
+                return nil, nil
+            }
+            return knxMessage, nil
+        } else {
+            fmt.Printf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+        }
+    } else if err != nil {
+        fmt.Printf("Got error reading: %s\n", err.Error())
+    } else {
+        fmt.Printf("Only %d bytes available\n", num)
+    }
+    return nil, nil
+}
+
+func work(m *KnxNetIpMessageCodec) {
+    // Start an endless loop
+    // TODO: Provide some means to terminate this ...
+    for {
+        message, err := m.receive()
+        if err != nil {
+            fmt.Printf("got an error reading from transport %s", err.Error())
+        } else if message != nil {
+            now := time.Now()
+            // Give a message interceptor a chance to intercept
+            if m.messageInterceptor != nil {
+                m.messageInterceptor(message)
+            }
+            // Go through all expectations
+            messageHandled := false
+            for index, expectation := range m.expectations {
+                // Check if this expectation has expired.
+                if now.After(expectation.expiration) {
+                    // Remove this expectation from the list.
+                    m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+                    break
+                }
+
+                // Check if the current message matches the expectations
+                // If it does, let it handle the message.
+                if accepts := expectation.acceptsMessage(message); accepts {
+                    err = expectation.handleMessage(message)
+                    if err == nil {
+                        messageHandled = true
+                        // Remove this expectation from the list.
+                        m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+                    }
+                    break
+                }
+            }
+
+            // If the message has not been handled and a default handler is provided, call this ...
+            if !messageHandled {
+                m.defaultIncomingMessageChannel <- message
+            }
+        } else {
+            // Sleep for 10ms
+            time.Sleep(10 * time.Millisecond)
         }
     }
-    return errors.New("not found")
-}
-
-func work(codec *KnxNetIpMessageCodec) {
-	// Start an endless loop
-	// TODO: Provide some means to terminate this ...
-	for {
-		if len(codec.expectations) > 0 {
-			message, err := codec.Receive()
-			if err != nil {
-				fmt.Printf("got an error reading from transport %s", err.Error())
-			} else if message != nil {
-				messageHandled := false
-				// Go through all expectations
-				for index, expectation := range codec.expectations {
-					// Check if the current message matches the expectations
-					if match, keepExpectation := expectation.check(message); match {
-						// Send the decoded message back
-						expectation.responseChannel <- message
-						// If the expectation doesn't want to keep the expectation active, remove it
-						if !keepExpectation {
-                            // Remove this expectation from the list.
-                            codec.expectations = append(codec.expectations[:index], codec.expectations[index+1:]...)
-                        }
-						messageHandled = true
-						break
-					}
-				}
-				// If the message has not been handled and a default handler is provided, call this ...
-				if !messageHandled {
-					if codec.defaultIncomingMessageChannel != nil {
-						codec.defaultIncomingMessageChannel <- message
-					} else {
-						fmt.Printf("No handler registered for handling message %s", message)
-					}
-				}
-			}
-		} else {
-			// Sleep for 10ms
-			time.Sleep(10 * time.Millisecond)
-		}
-	}
 }
 
 func (m KnxNetIpMessageCodec) GetTransportInstance() transports.TransportInstance {
-	return m.transportInstance
+    return m.transportInstance
 }

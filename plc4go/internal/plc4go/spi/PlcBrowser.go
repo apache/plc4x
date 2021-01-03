@@ -20,6 +20,6 @@ package spi
 
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
-type Discoverer interface {
-    Discover(callback func(event model.PlcDiscoveryEvent)) error
+type PlcBrowser interface {
+    Browse(browseRequest model.PlcBrowseRequest) <-chan model.PlcBrowseRequestResult
 }

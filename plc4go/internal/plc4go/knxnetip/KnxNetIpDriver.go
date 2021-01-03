@@ -73,11 +73,8 @@ func (m KnxNetIpDriver) GetConnection(transportUrl url.URL, transports map[strin
         return ch
     }
 
-    // Create a new codec for taking care of encoding/decoding of messages
-    codec := NewKnxNetIpMessageCodec(transportInstance, nil)
-
     // Create the new connection
-    connection := NewKnxNetIpConnection(codec, options, m.fieldHandler)
+    connection := NewKnxNetIpConnection(transportInstance, options, m.fieldHandler)
 
     return connection.Connect()
 }
