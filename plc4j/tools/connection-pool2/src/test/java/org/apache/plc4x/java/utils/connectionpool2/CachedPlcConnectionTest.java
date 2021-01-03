@@ -17,12 +17,10 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.utils.connectionpool;
+package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.utils.connectionpool.CachedDriverManager;
-import org.apache.plc4x.java.utils.connectionpool.CachedPlcConnection;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;

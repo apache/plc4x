@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.utils.connectionpool;
+package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.connection.MockConnection;

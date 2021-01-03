@@ -17,9 +17,22 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.utils.connectionpool;
+package org.apache.plc4x.java.utils.connectionpool2;
 
-public interface PooledDriverManagerMBean {
+public interface CachedDriverManagerMBean {
 
-    String[] getConnectedUrls();
+    String getStateString();
+
+    int getNumberOfConnects();
+
+    int getNumberOfBorrows();
+
+    int getNumberOfWachtdogs();
+
+    int getNumberOfRejections();
+
+    void triggerReconnect();
+
+    int getQueueSize();
+
 }

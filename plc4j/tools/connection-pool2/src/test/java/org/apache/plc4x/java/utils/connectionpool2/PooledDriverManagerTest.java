@@ -17,20 +17,37 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.utils.connectionpool;
+package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Simple Factory Method which creates a new PlcConnection
  *
  * @author julian
- * Created by julian on 27.11.20
+ * Created by julian on 24.02.20
  */
-@FunctionalInterface
-public interface PlcConnectionFactory {
+class PooledDriverManagerTest implements WithAssertions {
 
-    PlcConnection create() throws PlcConnectionException;
+    @Test
+    void getCachedDriverManager() throws PlcConnectionException {
+        CachedDriverManager mock = Mockito.mock(CachedDriverManager.class, Mockito.RETURNS_DEEP_STUBS);
+        PooledDriverManager driverManager = new PooledDriverManager(key -> mock);
 
+        assertThat(driverManager.getCachedManagers().size()).isEqualTo(0);
+        PlcConnection connection = driverManager.getConnection("abc");
+
+        assertThat(driverManager.getCachedManagers())
+            .containsValue(mock)
+            .containsKey("abc")
+            .hasSize(1);
+
+        verify(mock, times(1)).getConnection("abc");
+    }
 }
