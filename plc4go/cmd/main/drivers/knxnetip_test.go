@@ -19,33 +19,59 @@
 package drivers
 
 import (
-    "encoding/hex"
     "fmt"
     "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
     "github.com/apache/plc4x/plc4go/pkg/plc4go"
     apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     "testing"
     "time"
 )
 
-func KnxNetIp(t *testing.T) {
-    t.Skip()
-    request, err := hex.DecodeString("000a00000006010300000004")
-    if err != nil {
-        t.Errorf("Error decoding test input")
+func TestKnxNetIpPlc4goBrowse(t *testing.T) {
+    driverManager := plc4go.NewPlcDriverManager()
+    driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+    driverManager.RegisterTransport(udp.NewUdpTransport())
+
+    // Create a connection string from the discovery result.
+    connectionString := "knxnet-ip:udp://192.168.42.11:3671"
+    crc := driverManager.GetConnection(connectionString)
+    connectionResult := <-crc
+    if connectionResult.Err != nil {
+        t.Errorf("Got error connecting: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
     }
-    rb := utils.NewReadBuffer(request)
-    adu, err := model.KnxNetIpMessageParse(rb)
+    connection := connectionResult.Connection
+    defer connection.Close()
+
+    // Build a browse request, to scan the KNX network for KNX devices
+    // (Limiting the range to only the actually used range of addresses)
+    browseRequestBuilder := connection.BrowseRequestBuilder()
+    browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
+    browseRequest, err := browseRequestBuilder.Build()
     if err != nil {
-        t.Errorf("Error parsing: %s", err)
-    }
-    if adu != nil {
-        // Output success ...
+        t.Errorf("Got error preparing browse-request: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
     }
 
+    // Execute the browse-request
+    brr := browseRequest.Execute()
+    browseRequestResults := <-brr
+    if browseRequestResults.Err != nil {
+        t.Errorf("Got error executing browse-request: %s", connectionResult.Err.Error())
+        t.Fail()
+        return
+    }
+
+    // Output the addresses found
+    for _, queryName := range browseRequestResults.Response.GetQueryNames() {
+        results := browseRequestResults.Response.GetQueryResults(queryName)
+        for _, result := range results {
+            fmt.Printf("Found KNX device at address: %v", result.Address)
+        }
+    }
 }
 
 func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
@@ -57,6 +83,45 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
     err := driverManager.Discover(func(event apiModel.PlcDiscoveryEvent) {
         fmt.Printf("Found device: %s:%s://%s\n - Name: %s\n", event.ProtocolCode, event.TransportCode,
             event.TransportUrl.Host, event.Name)
+        //go func() {
+            // Create a connection string from the discovery result.
+            connectionString := fmt.Sprintf("%s:%s://%s", event.ProtocolCode, event.TransportCode,
+                event.TransportUrl.Host)
+            crc := driverManager.GetConnection(connectionString)
+            connectionResult := <-crc
+            if connectionResult.Err != nil {
+                fmt.Printf("Got error connecting: %s", connectionResult.Err.Error())
+                return
+            }
+            connection := connectionResult.Connection
+            defer connection.Close()
+
+            // Build a browse request, to scan the KNX network for KNX devices
+            // (Limiting the range to only the actually used range of addresses)
+            browseRequestBuilder := connection.BrowseRequestBuilder()
+            browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
+            browseRequest, err := browseRequestBuilder.Build()
+            if err != nil {
+                fmt.Printf("Got error preparing browse-request: %s", connectionResult.Err.Error())
+                return
+            }
+
+            // Execute the browse-request
+            brr := browseRequest.Execute()
+            browseRequestResults := <-brr
+            if browseRequestResults.Err != nil {
+                fmt.Printf("Got error executing browse-request: %s", connectionResult.Err.Error())
+                return
+            }
+
+            // Output the addresses found
+            for _, queryName := range browseRequestResults.Response.GetQueryNames() {
+                results := browseRequestResults.Response.GetQueryResults(queryName)
+                for _, result := range results {
+                    fmt.Printf("Found KNX device at address: %v", result.Address)
+                }
+            }
+        //}()
         found <- true
     })
     if err != nil {
@@ -69,15 +134,15 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
             time.Sleep(time.Second * 2)
             fmt.Print("Found devices")
             return
-        case <-time.After(time.Second * 10):
-            t.Error("Couldn't find device")
+        case <-time.After(time.Second * 60):
+            t.Error("Couldn't find device in the last 60 seconds")
             t.Fail()
             return
         }
     }
 }
 
-func KnxNetIpPlc4goDriver(t *testing.T) {
+func TestKnxNetIpPlc4goDriver(t *testing.T) {
     driverManager := plc4go.NewPlcDriverManager()
     driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
     driverManager.RegisterTransport(udp.NewUdpTransport())
@@ -101,25 +166,19 @@ func KnxNetIpPlc4goDriver(t *testing.T) {
         attributes["GatewayKnxAddress"],
         attributes["ClientKnxAddress"])
 
+    // TODO: Find out why a connection-state request breaks everything ...
     // Try to ping the remote device
-    pingResultChannel := connection.Ping()
+    /*pingResultChannel := connection.Ping()
     pingResult := <-pingResultChannel
     if pingResult.Err != nil {
         t.Errorf("couldn't ping device: %s", pingResult.Err.Error())
         t.Fail()
         return
-    }
+    }*/
 
     // Make sure the connection is closed at the end
     defer connection.Close()
 
-    // Prepare a read-request
-    /*pollingInterval, err := time.ParseDuration("5s")
-      if err != nil {
-          t.Errorf("invalid format")
-          t.Fail()
-          return
-      }*/
     srb := connection.SubscriptionRequestBuilder()
     srb.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
     srb.AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp")

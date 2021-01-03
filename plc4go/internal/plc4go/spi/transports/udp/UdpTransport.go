@@ -126,15 +126,26 @@ func NewUdpTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAd
 }
 
 func (m *UdpTransportInstance) Connect() error {
+    // If we haven't provided a local address, have the system figure it out by dialing
+    // the remote address and then using that connections local address as local address.
+    if m.LocalAddress == nil {
+        udpTest, err := net.Dial("udp", m.RemoteAddress.String())
+        if err != nil {
+            return errors.New("error connecting to remote address: " + err.Error())
+        }
+        m.LocalAddress = udpTest.LocalAddr().(*net.UDPAddr)
+        err = udpTest.Close()
+        if err != nil {
+            return errors.New("error closing test-connection: " + err.Error())
+        }
+    }
+
     // "connect" to the remote
     var err error
     m.udpConn, err = net.ListenUDP("udp", m.LocalAddress)
     if err != nil {
         return errors.New("error connecting to remote address: " + err.Error())
     }
-
-    // Update the local address and port in the transport instance
-    m.LocalAddress = m.udpConn.LocalAddr().(*net.UDPAddr)
 
     // TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer
     /*go func() {

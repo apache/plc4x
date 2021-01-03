@@ -27,6 +27,7 @@ import (
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "time"
 )
 
 type ConnectionMetadata struct {
@@ -98,31 +99,26 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	diagnosticRequestPdu := driverModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 	go func() {
 		pingRequest := driverModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
-		err := m.messageCodec.Send(pingRequest)
-		if err != nil {
-			result <- plc4go.NewPlcConnectionPingResult(err)
-			return
-		}
-		// Register an expected response
-		check := func(response interface{}) (bool, bool) {
-			responseAdu := driverModel.CastModbusTcpADU(response)
-			return responseAdu.TransactionIdentifier == 1 &&
-				responseAdu.UnitIdentifier == m.unitIdentifier, false
-		}
-		// Register a callback to handle the response
-		pingResponseChanel := m.messageCodec.Expect(check)
-		if pingResponseChanel == nil {
-			result <- plc4go.NewPlcConnectionPingResult(errors.New("no response channel"))
-			return
-		}
-		// Wait for the response to come in
-		pingResponse := <-pingResponseChanel
-		if pingResponse == nil {
-			result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
-			return
-		}
-		// If we got a valid response (even if it will probably contain an error, we know the remote is available)
-		result <- plc4go.NewPlcConnectionPingResult(nil)
+		err := m.messageCodec.SendRequest(
+		    pingRequest,
+		    func(message interface{}) bool {
+                responseAdu := driverModel.CastModbusTcpADU(message)
+                return responseAdu.TransactionIdentifier == 1 &&
+                    responseAdu.UnitIdentifier == m.unitIdentifier
+            },
+            func(message interface{}) error {
+                if message != nil {
+                    // If we got a valid response (even if it will probably contain an error, we know the remote is available)
+                    result <- plc4go.NewPlcConnectionPingResult(nil)
+                } else {
+                    result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
+                }
+                return nil
+            },
+            time.Second * 1)
+        if err != nil {
+            result <- plc4go.NewPlcConnectionPingResult(err)
+        }
 	}()
 
 	return result

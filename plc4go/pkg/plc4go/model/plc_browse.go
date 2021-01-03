@@ -24,8 +24,8 @@ type PlcBrowseRequestBuilder interface {
 }
 
 type PlcBrowseQueryResult struct {
-    address           string
-    possibleDataTypes []string
+    Address           string
+    PossibleDataTypes []string
 }
 
 type PlcBrowseRequest interface {
