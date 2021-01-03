@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </code>
  * Now you can use "cached" everywhere you need the corresponding connection.
  *
+ *
  * @author julian
  * Created by julian on 24.02.20
  */
