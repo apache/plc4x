@@ -84,6 +84,10 @@ func (m ConnectionMetadata) CanSubscribe() bool {
 	return true
 }
 
+func (m ConnectionMetadata) CanBrowse() bool {
+	return true
+}
+
 type KnxNetIpConnection struct {
 	messageCodec             spi.MessageCodec
 	options                  map[string][]string
