@@ -24,19 +24,18 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "time"
+	"time"
 )
 
 type ConnectionMetadata struct {
-    apiModel.PlcConnectionMetadata
+	apiModel.PlcConnectionMetadata
 }
 
 func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
-    return map[string]string {
-    }
+	return map[string]string{}
 }
 
 func (m ConnectionMetadata) CanRead() bool {
@@ -48,6 +47,10 @@ func (m ConnectionMetadata) CanWrite() bool {
 }
 
 func (m ConnectionMetadata) CanSubscribe() bool {
+	return false
+}
+
+func (m ConnectionMetadata) CanBrowse() bool {
 	return false
 }
 
@@ -100,25 +103,25 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	go func() {
 		pingRequest := driverModel.NewModbusTcpADU(1, m.unitIdentifier, diagnosticRequestPdu)
 		err := m.messageCodec.SendRequest(
-		    pingRequest,
-		    func(message interface{}) bool {
-                responseAdu := driverModel.CastModbusTcpADU(message)
-                return responseAdu.TransactionIdentifier == 1 &&
-                    responseAdu.UnitIdentifier == m.unitIdentifier
-            },
-            func(message interface{}) error {
-                if message != nil {
-                    // If we got a valid response (even if it will probably contain an error, we know the remote is available)
-                    result <- plc4go.NewPlcConnectionPingResult(nil)
-                } else {
-                    result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
-                }
-                return nil
-            },
-            time.Second * 1)
-        if err != nil {
-            result <- plc4go.NewPlcConnectionPingResult(err)
-        }
+			pingRequest,
+			func(message interface{}) bool {
+				responseAdu := driverModel.CastModbusTcpADU(message)
+				return responseAdu.TransactionIdentifier == 1 &&
+					responseAdu.UnitIdentifier == m.unitIdentifier
+			},
+			func(message interface{}) error {
+				if message != nil {
+					// If we got a valid response (even if it will probably contain an error, we know the remote is available)
+					result <- plc4go.NewPlcConnectionPingResult(nil)
+				} else {
+					result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
+				}
+				return nil
+			},
+			time.Second*1)
+		if err != nil {
+			result <- plc4go.NewPlcConnectionPingResult(err)
+		}
 	}()
 
 	return result
