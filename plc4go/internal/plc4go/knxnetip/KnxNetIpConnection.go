@@ -133,17 +133,24 @@ func NewKnxNetIpConnection(transportInstance transports.TransportInstance, optio
 }
 
 func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	result := make(chan plc4go.PlcConnectionConnectResult)
+	sendResult := func(connection plc4go.PlcConnection, err error) {
+		select {
+		case result <- plc4go.NewPlcConnectionConnectResult(connection, err):
+		default:
+		}
+	}
+
 	go func() {
 		err := m.messageCodec.Connect()
 		if err != nil {
-			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+			sendResult(nil, err)
 			return
 		}
 
 		transportInstanceExposer, ok := m.messageCodec.(spi.TransportInstanceExposer)
 		if !ok {
-			ch <- plc4go.NewPlcConnectionConnectResult(m, errors.New(
+			sendResult(m, errors.New(
 				"used transport, is not a TransportInstanceExposer"))
 			return
 		}
@@ -151,7 +158,7 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 		// Prepare a SearchReq
 		udpTransportInstance, ok := transportInstanceExposer.GetTransportInstance().(*udp.UdpTransportInstance)
 		if !ok {
-			ch <- plc4go.NewPlcConnectionConnectResult(m, errors.New(
+			sendResult(m, errors.New(
 				"used transport, is not a UdpTransportInstance"))
 			return
 		}
@@ -260,7 +267,7 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 								m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
 
 								// Fire the "connected" event
-								ch <- plc4go.NewPlcConnectionConnectResult(m, nil)
+								sendResult(m, nil)
 
 								// Start a timer that sends connection-state requests every 60 seconds
 								m.connectionStateTimer = time.NewTicker(60 * time.Second)
@@ -277,8 +284,9 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 													// TODO: Do some error handling here ...
 													m.connectionStateTimer.Stop()
 												}
-											case <-time.After(1 * time.Second):
-												m.connectionStateTimer.Stop()
+											case <-time.After(5 * time.Second):
+												// Close the connection
+												m.Close()
 											}
 
 										// If externally a request to stop the timer was issued, stop the timer.
@@ -298,19 +306,72 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 			},
 			time.Second*1)
 		if err != nil {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, err)
+			sendResult(nil, err)
 		}
 	}()
-	return ch
+	return result
 }
 
 func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	// TODO: Implement ...
-	ch := make(chan plc4go.PlcConnectionCloseResult)
+	result := make(chan plc4go.PlcConnectionCloseResult)
+	sendResult := func(connection plc4go.PlcConnection, err error) {
+		select {
+		case result <- plc4go.NewPlcConnectionCloseResult(connection, err):
+		default:
+		}
+	}
+
 	go func() {
-		ch <- plc4go.NewPlcConnectionCloseResult(m, nil)
+		// Stop the connection-state checker.
+		m.connectionStateTimer.Stop()
+
+		transportInstanceExposer, ok := m.messageCodec.(spi.TransportInstanceExposer)
+		if !ok {
+			sendResult(nil, errors.New(
+				"used transport, is not a TransportInstanceExposer"))
+			return
+		}
+
+		// Prepare a SearchReq
+		udpTransportInstance, ok := transportInstanceExposer.GetTransportInstance().(*udp.UdpTransportInstance)
+		if !ok {
+			sendResult(nil, errors.New(
+				"used transport, is not a UdpTransportInstance"))
+			return
+		}
+
+		localAddress := m.castIpToKnxAddress(udpTransportInstance.LocalAddress.IP)
+
+		disconnectRequest := driverModel.NewDisconnectRequest(
+			m.CommunicationChannelId,
+			driverModel.NewHPAIControlEndpoint(
+				driverModel.HostProtocolCode_IPV4_UDP,
+				localAddress,
+				uint16(udpTransportInstance.LocalAddress.Port)))
+
+		err := m.SendRequest(
+			disconnectRequest,
+			func(message interface{}) bool {
+				disconnectResponse := driverModel.CastDisconnectResponse(message)
+				return disconnectResponse != nil
+			},
+			func(message interface{}) error {
+				disconnectResponse := driverModel.CastDisconnectResponse(message)
+				if disconnectResponse.Status == driverModel.Status_NO_ERROR {
+					sendResult(m, nil)
+				} else {
+					sendResult(m, errors.New("got an unexpected response for disconnect "+disconnectResponse.Status.String()))
+				}
+				return nil
+			},
+			time.Second*5)
+
+		if err != nil {
+			sendResult(nil, err)
+		}
 	}()
-	return ch
+	return result
 }
 
 func (m *KnxNetIpConnection) IsConnected() bool {
@@ -334,6 +395,7 @@ func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		default:
 		}
 	}
+
 	//	diagnosticRequestPdu := driverModel.NewModbusPDUDiagnosticRequest(0, 0x42)
 	go func() {
 		transportInstanceExposer, ok := m.messageCodec.(spi.TransportInstanceExposer)
@@ -440,7 +502,7 @@ func (m *KnxNetIpConnection) SendRequest(request *driverModel.KnxNetIpMessage, a
 	return m.messageCodec.SendRequest(request, acceptsMessage, handleMessage, ttl)
 }
 
-func (m *KnxNetIpConnection) interceptIncomingMessage(message interface{}) {
+func (m *KnxNetIpConnection) interceptIncomingMessage(interface{}) {
 	if m.connectionStateTimer != nil {
 		// Reset the timer for sending the ConnectionStateRequest
 		m.connectionStateTimer.Reset(60 * time.Second)

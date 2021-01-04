@@ -19,56 +19,84 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type DefaultPlcBrowseRequestBuilder struct {
-    browser spi.PlcBrowser
-    queries map[string]string
-    model.PlcBrowseRequestBuilder
+	browser spi.PlcBrowser
+	queries map[string]string
+	model.PlcBrowseRequestBuilder
 }
 
 func NewDefaultPlcBrowseRequestBuilder(browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
-    return &DefaultPlcBrowseRequestBuilder{
-        browser: browser,
-        queries: map[string]string{},
-    }
+	return &DefaultPlcBrowseRequestBuilder{
+		browser: browser,
+		queries: map[string]string{},
+	}
 }
 
 func (m *DefaultPlcBrowseRequestBuilder) AddItem(name string, query string) {
-    m.queries[name] = query
+	m.queries[name] = query
 }
 
 func (m *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error) {
-    queries := m.queries
-    return DefaultPlcBrowseRequest{
-        queries: queries,
-        browser: m.browser,
-    }, nil
+	queries := m.queries
+	return DefaultPlcBrowseRequest{
+		queries: queries,
+		browser: m.browser,
+	}, nil
 }
 
 type DefaultPlcBrowseRequest struct {
-    queries map[string]string
-    browser spi.PlcBrowser
+	queries map[string]string
+	browser spi.PlcBrowser
 }
 
 func (d DefaultPlcBrowseRequest) GetQueryNames() []string {
-    var queryNames []string
-    for queryName, _ := range d.queries {
-        queryNames = append(queryNames, queryName)
-    }
-    return queryNames
+	var queryNames []string
+	for queryName, _ := range d.queries {
+		queryNames = append(queryNames, queryName)
+	}
+	return queryNames
 }
 
 func (d DefaultPlcBrowseRequest) GetQueryString(name string) string {
-    return d.queries[name]
+	return d.queries[name]
 }
 
 func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
-    return d.browser.Browse(d)
+	return d.browser.Browse(d)
 }
 
 func (d DefaultPlcBrowseRequest) ExecuteStreaming() <-chan model.PlcBrowseQueryResult {
-    panic("implement me")
+	panic("implement me")
+}
+
+type DefaultPlcBrowseResponse struct {
+	request model.PlcBrowseRequest
+	results map[string][]model.PlcBrowseQueryResult
+}
+
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseQueryResult) DefaultPlcBrowseResponse {
+	return DefaultPlcBrowseResponse{
+		request: request,
+		results: results,
+	}
+}
+
+func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
+	return d.request
+}
+
+func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
+	var queryNames []string
+	for queryName := range d.results {
+		queryNames = append(queryNames, queryName)
+	}
+	return queryNames
+}
+
+func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseQueryResult {
+	return d.results[queryName]
 }

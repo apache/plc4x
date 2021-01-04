@@ -69,7 +69,7 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	for _, queryName := range browseRequestResults.Response.GetQueryNames() {
 		results := browseRequestResults.Response.GetQueryResults(queryName)
 		for _, result := range results {
-			fmt.Printf("Found KNX device at address: %v", result.Address)
+			fmt.Printf("Found KNX device at address: %v\n", result.Address)
 		}
 	}
 }
@@ -158,10 +158,8 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 		t.Fail()
 		return
 	}
-
-	time.Sleep(time.Millisecond * 100)
-
 	connection := connectionResult.Connection
+	defer connection.Close()
 
 	attributes := connection.GetMetadata().GetConnectionAttributes()
 	fmt.Printf("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%s' got assigned client KNX address '%s'\n",
@@ -181,9 +179,6 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 		t.Fail()
 		return
 	}
-
-	// Make sure the connection is closed at the end
-	defer connection.Close()
 
 	srb := connection.SubscriptionRequestBuilder()
 	srb.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
