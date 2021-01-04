@@ -29,23 +29,26 @@ import org.apache.plc4x.java.opcua.config.*;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.readwrite.io.*;
 import org.apache.plc4x.java.opcua.readwrite.types.*;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import io.netty.buffer.ByteBuf;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import java.util.function.ToIntFunction;
+
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 /**
  * Implementation of the OPC UA protocol, based on:
@@ -56,9 +59,21 @@ import java.util.function.ToIntFunction;
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
 
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transport>tcp))?://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
-    public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua" + INET_ADDRESS_PATTERN + "(?<params>[\\w/=?&]+)?");
+
+
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>tcp))?://" +
+                                                                        "(?<transportHost>[\\w.-]+)(:" +
+                                                                        "(?<transportPort>\\d*))?");
+
+
+    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
+                                                                    INET_ADDRESS_PATTERN +
+                                                                    "(?<transportEndpoint>[\\w/=]+)" +
+                                                                    "(?<paramString>[(\\?|\\&)\\w=]+\\=[\\w&]+)*"
+                                                                );
+
+
     private static final int requestTimeout = 10000;
     private OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
 
@@ -126,6 +141,93 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             .withParserArgs(true)
             .littleEndian()
             .build();
+    }
+
+
+
+    @Override
+    public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
+        // Split up the connection string into it's individual segments.
+        Matcher matcher = URI_PATTERN.matcher(connectionString);
+        if (!matcher.matches()) {
+            throw new PlcConnectionException(
+                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})(?{parameter-string)?'");
+        }
+        final String protocolCode = matcher.group("protocolCode");
+        final String transportCode = (matcher.group("transportCode") != null) ?
+            matcher.group("transportCode") : getDefaultTransport();
+        final String transportHost = matcher.group("transportHost");
+        final String transportPort = matcher.group("transportPort");
+        final String transportEndpoint = matcher.group("transportEndpoint");
+        final String paramString = matcher.group("paramString");
+
+        System.out.println(protocolCode + " - " + transportCode + " - " + transportHost + " - " +  transportPort + " - " +  transportEndpoint + " - " +  paramString);
+
+        // Check if the protocol code matches this driver.
+        if(!protocolCode.equals(getProtocolCode())) {
+            // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
+            throw new PlcConnectionException(
+                "This driver is not suited to handle this connection string");
+        }
+
+        // Create the configuration object.
+        OpcuaConfiguration configuration = new OpcuaConfiguration(  transportCode,
+                                                                    transportHost,
+                                                                    transportPort,
+                                                                    transportEndpoint,
+                                                                    paramString);
+
+        if(configuration == null) {
+            throw new PlcConnectionException("Unsupported configuration");
+        }
+
+        // Try to find a transport in order to create a communication channel.
+        Transport transport = null;
+        ServiceLoader<Transport> transportLoader = ServiceLoader.load(
+            Transport.class, Thread.currentThread().getContextClassLoader());
+        for (Transport curTransport : transportLoader) {
+            if(curTransport.getTransportCode().equals(transportCode)) {
+                transport = curTransport;
+                break;
+            }
+        }
+        if(transport == null) {
+            throw new PlcConnectionException("Unsupported transport " + transportCode);
+        }
+
+        // Inject the configuration into the transport.
+        configure(configuration, transport);
+
+        // Create an instance of the communication channel which the driver should use.
+        ChannelFactory channelFactory = transport.createChannelFactory(transportHost + ":" + transportPort);
+        if(channelFactory == null) {
+            throw new PlcConnectionException("Unable to get channel factory from url " + transportHost + ":" + transportPort);
+        }
+        configure(configuration, channelFactory);
+
+        // Give drivers the option to customize the channel.
+        initializePipeline(channelFactory);
+
+        // Make the "await setup complete" overridable via system property.
+        boolean awaitSetupComplete = awaitSetupComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
+            awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
+        }
+
+        return new DefaultNettyPlcConnection(
+            canRead(), canWrite(), canSubscribe(),
+            getFieldHandler(),
+            getValueHandler(),
+            configuration,
+            channelFactory,
+            awaitSetupComplete,
+            getStackConfigurer(),
+            getOptimizer());
+    }
+
+    @Override
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        throw new PlcConnectionException("Authentication not supported.");
     }
 
     /** Estimate the Length of a Packet */

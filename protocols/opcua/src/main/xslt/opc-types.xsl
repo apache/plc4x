@@ -133,7 +133,9 @@
 ]
 
 [type 'ByteStringNodeId'
-    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='ByteStringNodeId']"/>
+    [simple uint 16 'namespaceIndex']
+    [simple int 32 'bodyLength']
+    [array int 8 'body' count 'bodyLength == -1 ? 0 : bodyLength']
 ]
 
 [type 'DataValue'
@@ -428,7 +430,7 @@
     [simple ExpandedNodeId 'nodeId']
     [simple uint 8 'encodingMask']
     [optional int 32 'bodyLength' 'encodingMask > 0']
-    [array uint 8 'body' count 'bodyLength']
+    [array int 8 'body' count 'bodyLength == null ? 0 : bodyLength']
 ]
 
 [type 'PascalString'

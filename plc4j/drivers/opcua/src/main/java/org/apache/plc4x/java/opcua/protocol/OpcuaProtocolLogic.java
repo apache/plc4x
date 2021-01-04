@@ -21,6 +21,10 @@ package org.apache.plc4x.java.opcua.protocol;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -30,6 +34,11 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
+import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -55,14 +64,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
 import java.util.stream.IntStream;
 import java.nio.charset.StandardCharsets;
+
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -73,12 +82,41 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+    private static final String CHUNK = "F";
+    private static final int VERSION = 0;
+    private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
+    private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
+    private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
+    private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
+    private NodeId authenticationToken = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte, new TwoByteNodeId((short) 0));
+    private static final PascalString NULL_STRING = new PascalString(-1,null);
+    private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeIdTwoByte(false,
+                                                                                    false,
+                                                                                    null,
+                                                                                    null,
+                                                                                    new TwoByteNodeId((short) 0));
+    private static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(NULL_EXPANDED_NODEID,
+                                                                                        (short) 0,
+                                                                                null,               //Body Length
+                                                                                    null);               // Body
+    private static final long epochOffset = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
+    private static final int DEFAULT_CONNECTION_LIFETIME = 36000000;
+    private static final String nameSpaceSecurityPolicyNone = "http://opcfoundation.org/UA/SecurityPolicy#None";
+    private static final String applicationUri = "urn:apache:plc4x:client";
+    private static final String productUri = "urn:apache:plc4x:client";
+    private static final String applicationText = "OPCUA client for the Apache PLC4X:PLC4J project";
 
-    private final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    private String sessionName = "UaSession:" + applicationText + ":" + RandomStringUtils.random(20, true, true);
+    private String clientNonce = RandomStringUtils.random(40, true, true);
     private RequestTransactionManager tm;
+
+    private String endpoint;
+    private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
+        this.endpoint = configuration.getEndpoint();
+        this.tm = new RequestTransactionManager(1);
     }
 
     @Override
@@ -87,19 +125,30 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     @Override
+    public void setDriverContext(DriverContext driverContext) {
+        super.setDriverContext(driverContext);
+
+        // Initialize Transaction Manager.
+        // Until the number of concurrent requests is successfully negotiated we set it to a
+        // maximum of only one request being able to be sent at a time. During the login process
+        // No concurrent requests can be sent anyway. It will be updated when receiving the
+        // S7ParameterSetupCommunication response.
+        this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
     public void onConnect(ConversationContext<OpcuaAPU> context) {
         // Only the TCP transport supports login.
         LOGGER.info("Opcua Driver running in ACTIVE mode.");
 
-        final String endpoint = "opc.tcp://127.0.0.1:12687/plc4x";
-        OpcuaHelloRequest hello = new OpcuaHelloRequest("F",
-                                                        0,
-                                                        65535,
-                                                        65535,
-                                                        2097152,
-                                                        64,
-                                                        endpoint.length(),
-                                                        endpoint);
+        OpcuaHelloRequest hello = new OpcuaHelloRequest(CHUNK,
+            VERSION,
+            DEFAULT_RECEIVE_BUFFER_SIZE,
+            DEFAULT_SEND_BUFFER_SIZE,
+            DEFAULT_MAX_MESSAGE_SIZE,
+            DEFAULT_MAX_CHUNK_COUNT,
+            this.endpoint.length(),
+            this.endpoint);
 
         context.sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
@@ -107,234 +156,228 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
-
-                NodeIdTwoByte authenticationToken = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
-                                                                    new TwoByteNodeId((short) 0));
-
-                ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,
-                                                                    false,
-                                                                    new PascalString(-1,null),
-                                                                    1L,
-                                                                    new FourByteNodeId((short) 0, 466));
-
-                ExpandedNodeId extExpandedNodeId = new ExpandedNodeIdTwoByte(false,
-                                                                    false,
-                                                                    null,
-                                                                    null,
-                                                                    new TwoByteNodeId((short) 0));
-
-                ExtensionObject extObject = new ExtensionObject(extExpandedNodeId, (short) 0, null, null);
-
-                RequestHeader requestHeader = new RequestHeader(authenticationToken,
-                                                                (System.currentTimeMillis() * 10000) + 116444736000000000L,
-                                                                0L,
-                                                                0L,
-                                                                new PascalString(-1, null),
-                                                                10000L,
-                                                                extObject);
-
-
-
-                OpenSecureChannelRequest openrequest = new OpenSecureChannelRequest((byte) 1,
-                                                                (byte) 0,
-                                                                requestHeader,
-                                                                0L,
-                                                                SecurityTokenRequestType.securityTokenRequestTypeIssue,
-                                                                MessageSecurityMode.messageSecurityModeNone,
-                                                                new PascalString(-1, null),
-                                                                36000000);
-
-
-                String nameSpace = "http://opcfoundation.org/UA/SecurityPolicy#None";
-                OpcuaOpenRequest openRequest = new OpcuaOpenRequest("F",
-                                                                0,
-                                                                nameSpace.length(),
-                                                                nameSpace,
-                                                                -1,
-                                                                "",
-                                                                -1,
-                                                                "",
-                                                                1,
-                                                                1,
-                                                                openrequest);
-
-                context.sendRequest(new OpcuaAPU(openRequest))
-                    .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                    .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-                    .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-                    .handle(opcuaOpenResponse -> {
-                        LOGGER.debug("Got Secure Response Connection Response");
-                        OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
-                        Integer tokenId = (int) openSecureChannelResponse.getSecurityToken().getTokenId();
-                        Integer channelId = (int) openSecureChannelResponse.getSecurityToken().getChannelId();
-                        Integer nextSequenceNumber = opcuaOpenResponse.getSequenceNumber() + 1;
-                        Integer nextRequestId = opcuaOpenResponse.getRequestId() + 1;
-
-                        NodeIdTwoByte authenticationToken2 = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte,
-                                                                            new TwoByteNodeId((short) 0));
-
-                        ExpandedNodeId extExpandedNodeId2 = new ExpandedNodeIdTwoByte(false,
-                                                                            false,
-                                                                            NodeIdType.nodeIdTypeTwoByte,
-                                                                            null,
-                                                                            null,
-                                                                            new TwoByteNodeId((short) 0));
-
-                        ExtensionObject extObject2 = new ExtensionObject(extExpandedNodeId2, (short) 0);
-
-                        RequestHeader requestHeader2 = new RequestHeader(authenticationToken2,
-                                                                        (System.currentTimeMillis() * 10000) + 116444736000000000L,
-                                                                        0L,
-                                                                        0L,
-                                                                        new PascalString(-1, null),
-                                                                        10000L,
-                                                                        extObject2);
-
-                        String applicationUri = "urn:eclipse:milo:plc4x:client";
-                        String productUri = "urn:eclipse:milo:plc4x:client";
-                        String text = "eclipse milo opc-ua client of the apache PLC4X:PLC4J project";
-                        LocalizedText applicationName = new LocalizedText((short) 0,
-                                                                          true,
-                                                                          true,
-                                                                          new PascalString(2, "en"),
-                                                                          new PascalString(text.length(), text));
-                        PascalString gatewayServerUri = new PascalString(-1, null);
-                        PascalString discoveryProfileUri = new PascalString(-1, null);
-                        int noOfDiscoveryUrls = -1;
-                        PascalString discoveryUrls = null;
-
-                        ApplicationDescription clientDescription = new ApplicationDescription(new PascalString(applicationUri.length(), applicationUri),
-                                                                                    new PascalString(productUri.length(), productUri),
-                                                                                    applicationName,
-                                                                                    ApplicationType.applicationTypeClient,
-                                                                                    gatewayServerUri,
-                                                                                    discoveryProfileUri,
-                                                                                    noOfDiscoveryUrls,
-                                                                                    discoveryUrls);
-
-                        String endpoint2 = "opc.tcp://127.0.0.1:12687/plc4x";
-                        String sessionName = "UaSession:eclipse milo opc-ua client of the apache PLC4X:PLC4J project:" + System.currentTimeMillis();
-                        String clientNonce = "764287368237654873259869867";
-
-                        CreateSessionRequest createSessionRequest = new CreateSessionRequest((byte) 1,
-                                                                        (byte) 0,
-                                                                        requestHeader2,
-                                                                        clientDescription,
-                                                                        new PascalString(-1, null),
-                                                                        new PascalString(endpoint2.length(), endpoint2),
-                                                                        new PascalString(sessionName.length(), sessionName),
-                                                                        new PascalString(clientNonce.length(), clientNonce),
-                                                                        new PascalString(-1, null),
-                                                                        120000L,
-                                                                        0L);
-
-                        OpcuaMessageRequest messageRequest = new OpcuaMessageRequest("F",
-                                                                        channelId,
-                                                                        tokenId,
-                                                                        nextSequenceNumber,
-                                                                        nextRequestId,
-                                                                        createSessionRequest);
-
-                        context.sendRequest(new OpcuaAPU(messageRequest))
-                            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-                            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-                            .handle(opcuaMessageResponse -> {
-                                LOGGER.debug("Got Create Session Response Connection Response");
-                                CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
-
-                                NodeIdByteString authenticationToken3 = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
-                                Integer tokenId2 = (int) opcuaMessageResponse.getSecureTokenId();
-                                Integer channelId2 = (int) opcuaMessageResponse.getSecureChannelId();
-                                Integer nextSequenceNumber2 = opcuaMessageResponse.getSequenceNumber() + 1;
-                                Integer nextRequestId2 = opcuaMessageResponse.getRequestId() + 1;
-
-
-                                ExpandedNodeId extExpandedNodeId3 = new ExpandedNodeIdTwoByte(false,
-                                                                                    false,
-                                                                                    NodeIdType.nodeIdTypeTwoByte,
-                                                                                    null,
-                                                                                    null,
-                                                                                    new TwoByteNodeId((short) 0));
-                                System.out.println("(((((((((((((((" + extExpandedNodeId3.getLengthInBytes());
-
-                                ExtensionObject extObject3 = new ExtensionObject(extExpandedNodeId3, (short) 0);
-
-                                System.out.println("(((((((((((((((" + extObject3.getLengthInBytes());
-                                System.out.println("(((((((((((((((" + authenticationToken3.getLengthInBytes());
-                                System.out.println("@@@@@@@@@@@@@@@@@" + authenticationToken3.getId().getIdentifier().getStringLength());
-                                System.out.println("@@@@@@@@@@@@@@@@@" + authenticationToken3.getId().getIdentifier().getStringValue().length());
-
-                                RequestHeader requestHeader3 = new RequestHeader(authenticationToken3,
-                                                                                (System.currentTimeMillis() * 10000) + 116444736000000000L,
-                                                                                1L,
-                                                                                0L,
-                                                                                new PascalString(-1, null),
-                                                                                10000L,
-                                                                                extObject3);
-
-                                System.out.println("(((((((((((((((" + requestHeader3.getLengthInBytes());
-
-                                SignatureData clientSignature = new SignatureData(new PascalString(-1, null), new PascalString(-1, null));
-
-                                System.out.println("(((((((((((((((" + clientSignature.getLengthInBytes());
-
-                                SignedSoftwareCertificate[] signedSoftwareCertificate = new SignedSoftwareCertificate[1];
-
-                                signedSoftwareCertificate[0] = new SignedSoftwareCertificate(new PascalString(-1, null), new PascalString(-1, null));
-
-                                ExpandedNodeId extExpandedNodeId4 = new ExpandedNodeIdFourByte(false,
-                                                                                    false,
-                                                                                    NodeIdType.nodeIdTypeFourByte,
-                                                                                    null,
-                                                                                    null,
-                                                                                    new FourByteNodeId((short) 1,  321));
-
-                                System.out.println("(((((((((((((((" + extExpandedNodeId4.getLengthInBytes());
-
-
-                                ExtensionObject useridentityToken = new ExtensionObject(extExpandedNodeId4, (short) 1);
-
-                                System.out.println("(((((((((((((((" + useridentityToken.getLengthInBytes());
-
-                                String endpoint3 = "opc.tcp://127.0.0.1:12687/plc4x";
-
-                                ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest((byte) 1,
-                                                                                (byte) 0,
-                                                                                requestHeader3,
-                                                                                clientSignature,
-                                                                                0,
-                                                                                null,
-                                                                                0,
-                                                                                null,
-                                                                                useridentityToken,
-                                                                                clientSignature);
-
-                                System.out.println("(((((((((((((((" + activateSessionRequest.getLengthInBytes());
-
-                                OpcuaMessageRequest activateMessageRequest = new OpcuaMessageRequest("F",
-                                                                                channelId2,
-                                                                                tokenId2,
-                                                                                nextSequenceNumber2,
-                                                                                nextRequestId2,
-                                                                                activateSessionRequest);
-
-                                System.out.println("(((((((((((((((" + activateMessageRequest.getLengthInBytes());
-
-                                context.sendRequest(new OpcuaAPU(activateMessageRequest))
-                                    .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                                    .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-                                    .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-                                    .handle(opcuaActivateResponse -> {
-                                        LOGGER.debug("Got Activate Session Response Connection Response");
-
-                                    });
-
-
-                            });
-
-                    });
+                onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse);
             });
     }
 
+    public void onConnectOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
+
+        int transactionId = transactionIdentifierGenerator.getAndIncrement();
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
+                                                                    false,            //Server Index Specified
+                                                                    NULL_STRING,                      //Namespace Uri
+                                                                    1L,                     //Server Index
+                                                                    new FourByteNodeId((short) 0, 466));    //Identifier for OpenSecureChannel
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            0L,                                         //RequestHandle
+            0L,
+            NULL_STRING,
+            10000L,
+            NULL_EXTENSION_OBJECT);
+
+        OpenSecureChannelRequest openSecureChannelRequest = new OpenSecureChannelRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            VERSION,
+            SecurityTokenRequestType.securityTokenRequestTypeIssue,
+            MessageSecurityMode.messageSecurityModeNone,
+            NULL_STRING,
+            DEFAULT_CONNECTION_LIFETIME);
+
+        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
+            0,
+            new PascalString(nameSpaceSecurityPolicyNone.length(), nameSpaceSecurityPolicyNone),
+            NULL_STRING,
+            NULL_STRING,
+            transactionId,
+            transactionId,
+            openSecureChannelRequest);
+
+        context.sendRequest(new OpcuaAPU(openRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
+            .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+            .handle(opcuaOpenResponse -> {
+                LOGGER.debug("Got Secure Response Connection Response");
+                try {
+                    onConnectCreateSessionRequest(context, opcuaOpenResponse);
+                } catch (PlcConnectionException e) {
+                    LOGGER.error("Error occurred while connecting to OPC UA server");
+                }
+            });
+
+    }
+
+    public void onConnectCreateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
+        OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
+        Integer tokenId = (int) openSecureChannelResponse.getSecurityToken().getTokenId();
+        Integer channelId = (int) openSecureChannelResponse.getSecurityToken().getChannelId();
+
+        int transactionId = transactionIdentifierGenerator.getAndIncrement();
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        Integer nextSequenceNumber = opcuaOpenResponse.getSequenceNumber() + 1;
+        Integer nextRequestId = opcuaOpenResponse.getRequestId() + 1;
+
+        if (!(transactionId == nextSequenceNumber)) {
+            LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
+            throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
+        }
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            0L,
+            0L,
+            NULL_STRING,
+            10000L,
+            NULL_EXTENSION_OBJECT);
+
+        LocalizedText applicationName = new LocalizedText((short) 0,
+            true,
+            true,
+            new PascalString("en".length(), "en"),
+            new PascalString(applicationText.length(), applicationText));
+
+        PascalString gatewayServerUri = NULL_STRING;
+        PascalString discoveryProfileUri = NULL_STRING;
+        int noOfDiscoveryUrls = -1;
+        PascalString discoveryUrls = null;
+
+        ApplicationDescription clientDescription = new ApplicationDescription(new PascalString(applicationUri.length(), applicationUri),
+            new PascalString(productUri.length(), productUri),
+            applicationName,
+            ApplicationType.applicationTypeClient,
+            gatewayServerUri,
+            discoveryProfileUri,
+            noOfDiscoveryUrls,
+            discoveryUrls);
+
+        clientNonce = RandomStringUtils.random(40, true, true);
+
+        CreateSessionRequest createSessionRequest = new CreateSessionRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            clientDescription,
+            NULL_STRING,
+            new PascalString(endpoint.length(), endpoint),
+            new PascalString(sessionName.length(), sessionName),
+            new PascalString(clientNonce.length(), clientNonce),
+            NULL_STRING,
+            120000L,
+            0L);
+
+        OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(CHUNK,
+            channelId,
+            tokenId,
+            nextSequenceNumber,
+            nextRequestId,
+            createSessionRequest);
+
+        context.sendRequest(new OpcuaAPU(messageRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaMessageResponse -> {
+                LOGGER.debug("Got Create Session Response Connection Response");
+                try {
+                    onConnectActivateSessionRequest(context, opcuaMessageResponse);
+                } catch (PlcConnectionException e) {
+                    LOGGER.error("Error occurred while connecting to OPC UA server");
+                }
+            });
+    }
+
+    private void onConnectActivateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaMessageResponse opcuaMessageResponse) throws PlcConnectionException {
+
+        CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
+
+        authenticationToken = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
+        Integer tokenId = (int) opcuaMessageResponse.getSecureTokenId();
+        Integer channelId = (int) opcuaMessageResponse.getSecureChannelId();
+
+        int transactionId = transactionIdentifierGenerator.getAndIncrement();
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        Integer nextSequenceNumber = opcuaMessageResponse.getSequenceNumber() + 1;
+        Integer nextRequestId = opcuaMessageResponse.getRequestId() + 1;
+
+        if (!(transactionId == nextSequenceNumber)) {
+            LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
+            throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
+        }
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            1L,
+            0L,
+            NULL_STRING,
+            10000L,
+            NULL_EXTENSION_OBJECT);
+
+        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_STRING);
+
+        SignedSoftwareCertificate[] signedSoftwareCertificate = new SignedSoftwareCertificate[1];
+
+        signedSoftwareCertificate[0] = new SignedSoftwareCertificate(NULL_STRING, NULL_STRING);
+
+        //Manually serialize this object
+        PascalString anonymousIdentityToken = new PascalString("anonymous".length(), "anonymous");
+        WriteBuffer buffer = new WriteBuffer(anonymousIdentityToken.getLengthInBytes(), true);
+        try{
+            PascalStringIO.staticSerialize(buffer, anonymousIdentityToken);
+        } catch (ParseException e) {
+            LOGGER.error("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
+            throw new PlcConnectionException("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
+        }
+
+        ExpandedNodeId extExpandedNodeId4 = new ExpandedNodeIdFourByte(false,
+            false,
+            null,
+            null,
+            new FourByteNodeId((short) 0,  321));
+
+        ExtensionObject userIdentityToken = new ExtensionObject(extExpandedNodeId4, (short) 1, buffer.getData().length, buffer.getData());
+
+        ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            clientSignature,
+            0,
+            null,
+            0,
+            null,
+            userIdentityToken,
+            clientSignature);
+
+        OpcuaMessageRequest activateMessageRequest = new OpcuaMessageRequest(CHUNK,
+            channelId,
+            tokenId,
+            nextSequenceNumber,
+            nextRequestId,
+            activateSessionRequest);
+
+        context.sendRequest(new OpcuaAPU(activateMessageRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaActivateResponse -> {
+                LOGGER.debug("Got Activate Session Response Connection Response");
+
+            });
+    }
+
+
+    private long getCurrentDateTime() {
+        return (System.currentTimeMillis() * 10000) + epochOffset;
+    }
 }

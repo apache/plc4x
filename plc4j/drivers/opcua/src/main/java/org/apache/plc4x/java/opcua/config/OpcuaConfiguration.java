@@ -25,6 +25,40 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+
+    private final String code;
+    private final String host;
+    private final String port;
+    private final String endpoint;
+    private final String params;
+
+    public OpcuaConfiguration(String transportCode, String transportHost, String transportPort, String transportEndpoint, String paramString) {
+        this.code = transportCode;
+        this.host = transportHost;
+        this.port = transportPort;
+        this.endpoint = "opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint;
+        this.params = paramString;
+    }
+
+    public String getTransportCode() {
+        return code;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public String getParams() {
+        return params;
+    }
         
     @Override
     public int getDefaultPort() {
