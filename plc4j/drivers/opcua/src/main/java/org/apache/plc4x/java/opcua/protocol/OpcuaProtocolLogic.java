@@ -59,6 +59,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,6 +113,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private String endpoint;
     private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
+    private AtomicInteger requestHandleGenerator = new AtomicInteger(1);
+    private AtomicInteger tokenId = new AtomicInteger(1);
+    private AtomicInteger channelId = new AtomicInteger(1);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -216,8 +220,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     public void onConnectCreateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
         OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
-        Integer tokenId = (int) openSecureChannelResponse.getSecurityToken().getTokenId();
-        Integer channelId = (int) openSecureChannelResponse.getSecurityToken().getChannelId();
+        tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
+        channelId.set((int) openSecureChannelResponse.getSecurityToken().getChannelId());
 
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == 0xFFFF) {
@@ -275,8 +279,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             0L);
 
         OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(CHUNK,
-            channelId,
-            tokenId,
+            channelId.get(),
+            tokenId.get(),
             nextSequenceNumber,
             nextRequestId,
             createSessionRequest);
@@ -300,8 +304,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
 
         authenticationToken = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
-        Integer tokenId = (int) opcuaMessageResponse.getSecureTokenId();
-        Integer channelId = (int) opcuaMessageResponse.getSecureChannelId();
+        tokenId.set((int) opcuaMessageResponse.getSecureTokenId());
+        channelId.set((int) opcuaMessageResponse.getSecureChannelId());
 
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == 0xFFFF) {
@@ -316,9 +320,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
         }
 
+        int requestHandle = requestHandleGenerator.getAndIncrement();
+        if(requestHandleGenerator.get() == 0xFFFF) {
+            requestHandleGenerator.set(1);
+        }
+
         RequestHeader requestHeader = new RequestHeader(authenticationToken,
             getCurrentDateTime(),
-            1L,
+            requestHandle,
             0L,
             NULL_STRING,
             10000L,
@@ -360,8 +369,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             clientSignature);
 
         OpcuaMessageRequest activateMessageRequest = new OpcuaMessageRequest(CHUNK,
-            channelId,
-            tokenId,
+            channelId.get(),
+            tokenId.get(),
             nextSequenceNumber,
             nextRequestId,
             activateSessionRequest);
@@ -373,7 +382,114 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .handle(opcuaActivateResponse -> {
                 LOGGER.debug("Got Activate Session Response Connection Response");
 
+                ActivateSessionResponse activateMessageResponse = (ActivateSessionResponse) opcuaActivateResponse.getMessage();
+
+                long returnedRequestHandle = activateMessageResponse.getResponseHeader().getRequestHandle();
+                if (!(requestHandle == returnedRequestHandle)) {
+                    LOGGER.error("Request handle isn't as expected, we might have missed a packet. - " +  requestHandle + " != " + returnedRequestHandle);
+                }
+
+                // Send an event that connection setup is complete.
+                context.fireConnected();
             });
+    }
+
+    @Override
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        LOGGER.info("Reading Value");
+        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
+        DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
+
+        if(request.getFieldNames().size() == 1) {
+            String fieldName = request.getFieldNames().iterator().next();
+            OpcuaField field = (OpcuaField) request.getField(fieldName);
+
+            int requestHandle = requestHandleGenerator.getAndIncrement();
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(requestHandleGenerator.get() == 0xFFFF) {
+                requestHandleGenerator.set(1);
+            }
+
+            RequestHeader requestHeader = new RequestHeader(authenticationToken,
+                getCurrentDateTime(),
+                requestHandle,
+                0L,
+                NULL_STRING,
+                10000L,
+                NULL_EXTENSION_OBJECT);
+
+            ReadValueId[] readValueArray = new ReadValueId[1];
+
+            NodeIdString nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
+
+            readValueArray[0] = new ReadValueId(nodeId,
+                0xD,
+                NULL_STRING,
+                new QualifiedName(0, NULL_STRING));
+
+            ReadRequest opcuaReadRequest = new ReadRequest((byte) 1,
+                (byte) 0,
+                requestHeader,
+                0.0d,
+                TimestampsToReturn.timestampsToReturnNeither,
+                readValueArray.length,
+                readValueArray);
+
+            int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(transactionIdentifierGenerator.get() == 0xFFFF) {
+                transactionIdentifierGenerator.set(1);
+            }
+
+            OpcuaMessageRequest readMessageRequest = new OpcuaMessageRequest(CHUNK,
+                channelId.get(),
+                tokenId.get(),
+                transactionIdentifier,
+                transactionIdentifier,
+                opcuaReadRequest);
+
+            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+            transaction.submit(() -> context.sendRequest(new OpcuaAPU(readMessageRequest))
+                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+                .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+                .handle(opcuaResponse -> {
+                    // Try to decode the response data based on the corresponding request.
+                    ReadResponse readResponse = (ReadResponse) opcuaResponse.getMessage();
+
+                    //TODO;- Fix this
+                    DataValue[] results = readResponse.getResults();
+                    Integer value = null;
+                    if (results.length > 0) {
+                        Variant variant = results[0].getValue();
+                        LOGGER.info("Repsponse Include Variant of type " + variant.getClass().toString());
+                        if (variant instanceof VariantInt32) {
+                            value = ((VariantInt32) variant).getValue()[0];
+                        }
+                    }
+
+                    PlcValue plcValue = new PlcDINT(value);
+                    // Prepare the response.
+                    PlcReadResponse response = new DefaultPlcReadResponse(request,
+                        Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+
+                    // Pass the response back to the application.
+                    future.complete(response);
+
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+                }));
+        } else {
+            future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
+        }
+        return future;
+    }
+
+    @Override
+    protected void decode(ConversationContext<OpcuaAPU> context, OpcuaAPU msg) throws Exception {
+        super.decode(context, msg);
     }
 
 
