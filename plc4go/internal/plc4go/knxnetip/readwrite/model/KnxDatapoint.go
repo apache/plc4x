@@ -20,8 +20,8 @@ package model
 
 import (
             "errors"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
             api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
             "time"
 )
@@ -662,6 +662,25 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcWORD(value), nil
+        case formatName == "N2": // USINT
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(6); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadUint8(2)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcUSINT(value), nil
+        case formatName == "An_8859_1": // STRING
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(8); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
         case formatName == "U4U4": // Struct
             _map := map[string]api.PlcValue{}
 
@@ -724,6 +743,12 @@ func KnxDatapointParse(io *utils.ReadBuffer, formatName string) (api.PlcValue, e
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcDWORD(value), nil
+        case formatName == "An_UTF_8": // STRING
+
+            // Reserved Field (Just skip the bytes)
+            if _, _err := io.ReadUint8(8); _err != nil {
+                return nil, errors.New("Error parsing reserved field " + _err.Error())
+            }
         case formatName == "V64": // LINT
 
             // Reserved Field (Just skip the bytes)
@@ -3897,6 +3922,23 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
             if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
+        case formatName == "N2": // USINT
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
+
+            // Simple Field (value)
+            if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
+        case formatName == "An_8859_1": // STRING
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(8, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
+            }
         case formatName == "U4U4": // Struct
 
             // Reserved Field (Just skip the bytes)
@@ -3944,6 +3986,12 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, formatName
             // Simple Field (value)
             if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
+            }
+        case formatName == "An_UTF_8": // STRING
+
+            // Reserved Field (Just skip the bytes)
+            if _err := io.WriteUint8(8, uint8(0x0)); _err != nil {
+                return errors.New("Error serializing reserved field " + _err.Error())
             }
         case formatName == "V64": // LINT
 

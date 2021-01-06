@@ -120,17 +120,19 @@ struct ${helper.getCTypeName(type.name)} {
     <#if helper.isSwitchField(field)>
   union {
         <#list field.cases as case>
+            <#if case.propertyFields?has_content>
     struct { /* ${case.name} */
-            <#list case.propertyFields as caseField>
-                <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !helper.isOptionalField(caseField) && !helper.isArrayField(caseField) && !helper.isManualArrayField(caseField)>
+                <#list case.propertyFields as caseField>
+                    <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !helper.isOptionalField(caseField) && !helper.isArrayField(caseField) && !helper.isManualArrayField(caseField)>
       ${helper.getLanguageTypeNameForField(caseField)} ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
-                <#elseif helper.isArrayField(caseField) || helper.isManualArrayField(caseField)>
+                    <#elseif helper.isArrayField(caseField) || helper.isManualArrayField(caseField)>
       plc4c_list* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
-                <#else>
+                    <#else>
       ${helper.getLanguageTypeNameForField(caseField)}* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
-                </#if>
-            </#list>
+                    </#if>
+                </#list>
     };
+            </#if>
         </#list>
   };
     <#elseif (helper.isSimpleTypeReference(field.type) || helper.isEnumField(field)) && !helper.isOptionalField(field) && !helper.isArrayField(field) && !helper.isManualArrayField(field)>

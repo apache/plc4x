@@ -19,8 +19,10 @@ under the License.
 package org.apache.plc4x.java.opcua.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.opcua.protocol.model.OpcuaIdentifierType;
+import org.apache.plc4x.java.opcua.readwrite.types.OpcuaIdentifierType;
+import org.apache.plc4x.java.opcua.readwrite.types.OpcuaDataType;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -38,26 +40,26 @@ public class OpcuaField implements PlcField {
 
     private final String identifier;
 
-    private final String dataType;
+    private final OpcuaDataType dataType;
 
-    protected OpcuaField(int namespace, OpcuaIdentifierType identifierType, String identifier, String dataType) {
+    protected OpcuaField(int namespace, OpcuaIdentifierType identifierType, String identifier, OpcuaDataType dataType) {
         this.namespace = namespace;
         this.identifier = identifier;
         this.identifierType = identifierType;
         if (this.identifier == null || this.namespace < 0) {
             throw new IllegalArgumentException("Identifier can not be null or Namespace can not be lower then 0.");
         }
-        this.dataType = dataType != null ? dataType.toUpperCase() : null;
+        this.dataType = dataType;
     }
 
-    private OpcuaField(Integer namespace, String identifier, OpcuaIdentifierType identifierType, String dataType) {
+    private OpcuaField(Integer namespace, String identifier, OpcuaIdentifierType identifierType, OpcuaDataType dataType) {
         this.identifier = Objects.requireNonNull(identifier);
         this.identifierType = Objects.requireNonNull(identifierType);
         this.namespace = namespace != null ? namespace : 0;
         if (this.namespace < 0) {
             throw new IllegalArgumentException("namespace must be greater then zero. Was " + this.namespace);
         }
-        this.dataType = dataType != null ? dataType.toUpperCase() : null;
+        this.dataType = dataType;
     }
 
     public static OpcuaField of(String address) {
@@ -68,12 +70,16 @@ public class OpcuaField implements PlcField {
         String identifier = matcher.group("identifier");
 
         String identifierTypeString = matcher.group("identifierType");
-        OpcuaIdentifierType identifierType = OpcuaIdentifierType.fromString(identifierTypeString);
+        OpcuaIdentifierType identifierType = OpcuaIdentifierType.enumForValue(identifierTypeString);
 
         String namespaceString = matcher.group("namespace");
         Integer namespace = namespaceString != null ? Integer.valueOf(namespaceString) : 0;
 
-        String dataType = "IEC61131_" + matcher.group("datatype");
+        String dataTypeString = matcher.group("datatype") != null ? "IEC61131_" + matcher.group("datatype").toUpperCase() : "IEC61131_NULL";
+        if (!OpcuaDataType.isDefined(dataTypeString)) {
+            throw new PlcUnsupportedDataTypeException("Datatype " + dataTypeString + " is unsupported by this protocol");
+        }
+        OpcuaDataType dataType = OpcuaDataType.enumForValue(dataTypeString);
 
         return new OpcuaField(namespace, identifier, identifierType, dataType);
     }
@@ -96,12 +102,12 @@ public class OpcuaField implements PlcField {
     }
 
     public String getDataType() {
-        return dataType;
+        return dataType.getValue();
     }
 
     @Override
     public String getPlcDataType() {
-        return dataType;
+        return dataType.getValue();
     }
 
     @Override
@@ -125,7 +131,7 @@ public class OpcuaField implements PlcField {
     public String toString() {
         return "OpcuaField{" +
             "namespace=" + namespace +
-            "identifierType=" + identifierType.getText() +
+            "identifierType=" + identifierType.getValue() +
             "identifier=" + identifier +
             '}';
     }

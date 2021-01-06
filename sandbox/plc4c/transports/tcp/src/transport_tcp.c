@@ -21,11 +21,18 @@
 #include <plc4c/transport_tcp.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#ifndef _WIN32
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <string.h>
-#include <errno.h>
+#else
+#include <winsock.h>
+
+#define bzero(b,len) (memset((b), '\0', (len)), (void) 0)
+#define MSG_DONTWAIT 0
+#endif
 
 extern int errno;
 
@@ -88,7 +95,7 @@ plc4c_return_code plc4c_transport_tcp_send_message_function(
     void* transport_configuration, plc4c_spi_write_buffer* message) {
   plc4c_transport_tcp_config* tcp_config = transport_configuration;
 
-  ssize_t bytes_sent = send(tcp_config->sockfd, message->data, message->length, MSG_DONTWAIT);
+  size_t bytes_sent = send(tcp_config->sockfd, message->data, message->length, MSG_DONTWAIT);
   if(bytes_sent < 0) {
     return CONNECTION_ERROR;
   }

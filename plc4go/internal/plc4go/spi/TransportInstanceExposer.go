@@ -18,7 +18,7 @@
 //
 package spi
 
-import "github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 
 type TransportInstanceExposer interface {
     GetTransportInstance() transports.TransportInstance

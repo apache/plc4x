@@ -62,8 +62,6 @@ struct plc4c_s7_read_write_s7_payload_user_data_item {
   plc4c_s7_read_write_szl_id* szl_id;
   uint16_t szl_index;
   union {
-    struct { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
-    };
     struct { /* S7PayloadUserDataItemCpuFunctionReadSzlResponse */
       plc4c_list* s7_payload_user_data_item_cpu_function_read_szl_response_items;
     };

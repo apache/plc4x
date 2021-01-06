@@ -23,7 +23,7 @@ import (
     "encoding/xml"
     "errors"
     "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 // The data-structure of this message
@@ -39,6 +39,7 @@ type LDataFrameDataExt struct {
     Counter uint8
     ControlType *ControlType
     Apci *APCI
+    ExtendedApci *ExtendedAPCI
     DataFirstByte *int8
     Data []int8
     Parent *LDataFrame
@@ -76,7 +77,7 @@ func (m *LDataFrameDataExt) InitializeParent(parent *LDataFrame, repeated bool, 
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, dataLength uint8, control bool, numbered bool, counter uint8, controlType *ControlType, apci *APCI, dataFirstByte *int8, data []int8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+func NewLDataFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, dataLength uint8, control bool, numbered bool, counter uint8, controlType *ControlType, apci *APCI, extendedApci *ExtendedAPCI, dataFirstByte *int8, data []int8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
     child := &LDataFrameDataExt{
         GroupAddress: groupAddress,
         HopCount: hopCount,
@@ -89,6 +90,7 @@ func NewLDataFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat
         Counter: counter,
         ControlType: controlType,
         Apci: apci,
+        ExtendedApci: extendedApci,
         DataFirstByte: dataFirstByte,
         Data: data,
         Parent: NewLDataFrame(repeated, priority, acknowledgeRequested, errorFlag),
@@ -160,6 +162,11 @@ func (m *LDataFrameDataExt) LengthInBits() uint16 {
     // Optional Field (apci)
     if m.Apci != nil {
         lengthInBits += 4
+    }
+
+    // Optional Field (extendedApci)
+    if m.ExtendedApci != nil {
+        lengthInBits += 6
     }
 
     // Optional Field (dataFirstByte)
@@ -260,9 +267,19 @@ func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         apci = &_val
     }
 
+    // Optional Field (extendedApci) (Can be skipped, if a given expression evaluates to false)
+    var extendedApci *ExtendedAPCI = nil
+    if bool(!(control)) && bool(bool(((*apci)) == (APCI_OTHER_PDU))) {
+        _val, _err := ExtendedAPCIParse(io)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'extendedApci' field " + _err.Error())
+        }
+        extendedApci = &_val
+    }
+
     // Optional Field (dataFirstByte) (Can be skipped, if a given expression evaluates to false)
     var dataFirstByte *int8 = nil
-    if !(control) {
+    if bool(!(control)) && bool(bool(((*apci)) != (APCI_OTHER_PDU))) {
         _val, _err := io.ReadInt8(6)
         if _err != nil {
             return nil, errors.New("Error parsing 'dataFirstByte' field " + _err.Error())
@@ -272,8 +289,8 @@ func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
     // Array field (data)
     // Count array
-    data := make([]int8, uint16(dataLength) - uint16(uint16(1)))
-    for curItem := uint16(0); curItem < uint16(uint16(dataLength) - uint16(uint16(1))); curItem++ {
+    data := make([]int8, utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1)))))
+    for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1))))); curItem++ {
         _item, _err := io.ReadInt8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'data' field " + _err.Error())
@@ -294,6 +311,7 @@ func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         Counter: counter,
         ControlType: controlType,
         Apci: apci,
+        ExtendedApci: extendedApci,
         DataFirstByte: dataFirstByte,
         Data: data,
         Parent: &LDataFrame{},
@@ -387,6 +405,16 @@ func (m *LDataFrameDataExt) Serialize(io utils.WriteBuffer) error {
         _apciErr := apci.Serialize(io)
         if _apciErr != nil {
             return errors.New("Error serializing 'apci' field " + _apciErr.Error())
+        }
+    }
+
+    // Optional Field (extendedApci) (Can be skipped, if the value is null)
+    var extendedApci *ExtendedAPCI = nil
+    if m.ExtendedApci != nil {
+        extendedApci = m.ExtendedApci
+        _extendedApciErr := extendedApci.Serialize(io)
+        if _extendedApciErr != nil {
+            return errors.New("Error serializing 'extendedApci' field " + _extendedApciErr.Error())
         }
     }
 
@@ -495,6 +523,12 @@ func (m *LDataFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
                     return err
                 }
                 m.Apci = data
+            case "extendedApci":
+                var data *ExtendedAPCI
+                if err := d.DecodeElement(data, &tok); err != nil {
+                    return err
+                }
+                m.ExtendedApci = data
             case "dataFirstByte":
                 var data *int8
                 if err := d.DecodeElement(data, &tok); err != nil {
@@ -558,6 +592,9 @@ func (m *LDataFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) e
         return err
     }
     if err := e.EncodeElement(m.Apci, xml.StartElement{Name: xml.Name{Local: "apci"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtendedApci, xml.StartElement{Name: xml.Name{Local: "extendedApci"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {

@@ -19,87 +19,105 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
-    Serialize(io utils.WriteBuffer) error
+	Serialize(io utils.WriteBuffer) error
 }
 
-const(
-    DataTransportErrorCode_RESERVED DataTransportErrorCode = 0x00
-    DataTransportErrorCode_OK DataTransportErrorCode = 0xFF
-    DataTransportErrorCode_ACCESS_DENIED DataTransportErrorCode = 0x03
-    DataTransportErrorCode_INVALID_ADDRESS DataTransportErrorCode = 0x05
-    DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED DataTransportErrorCode = 0x06
-    DataTransportErrorCode_NOT_FOUND DataTransportErrorCode = 0x0A
+const (
+	DataTransportErrorCode_RESERVED                DataTransportErrorCode = 0x00
+	DataTransportErrorCode_OK                      DataTransportErrorCode = 0xFF
+	DataTransportErrorCode_ACCESS_DENIED           DataTransportErrorCode = 0x03
+	DataTransportErrorCode_INVALID_ADDRESS         DataTransportErrorCode = 0x05
+	DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED DataTransportErrorCode = 0x06
+	DataTransportErrorCode_NOT_FOUND               DataTransportErrorCode = 0x0A
 )
 
-func DataTransportErrorCodeValueOf(value uint8) DataTransportErrorCode {
-    switch value {
-        case 0x00:
-            return DataTransportErrorCode_RESERVED
-        case 0x03:
-            return DataTransportErrorCode_ACCESS_DENIED
-        case 0x05:
-            return DataTransportErrorCode_INVALID_ADDRESS
-        case 0x06:
-            return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
-        case 0x0A:
-            return DataTransportErrorCode_NOT_FOUND
-        case 0xFF:
-            return DataTransportErrorCode_OK
-    }
-    return 0
+func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
+	switch value {
+	case 0x00:
+		return DataTransportErrorCode_RESERVED
+	case 0x03:
+		return DataTransportErrorCode_ACCESS_DENIED
+	case 0x05:
+		return DataTransportErrorCode_INVALID_ADDRESS
+	case 0x06:
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+	case 0x0A:
+		return DataTransportErrorCode_NOT_FOUND
+	case 0xFF:
+		return DataTransportErrorCode_OK
+	}
+	return 0
+}
+
+func DataTransportErrorCodeByName(value string) DataTransportErrorCode {
+	switch value {
+	case "RESERVED":
+		return DataTransportErrorCode_RESERVED
+	case "ACCESS_DENIED":
+		return DataTransportErrorCode_ACCESS_DENIED
+	case "INVALID_ADDRESS":
+		return DataTransportErrorCode_INVALID_ADDRESS
+	case "DATA_TYPE_NOT_SUPPORTED":
+		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+	case "NOT_FOUND":
+		return DataTransportErrorCode_NOT_FOUND
+	case "OK":
+		return DataTransportErrorCode_OK
+	}
+	return 0
 }
 
 func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
-    castFunc := func(typ interface{}) DataTransportErrorCode {
-        if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
-            return sDataTransportErrorCode
-        }
-        return 0
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) DataTransportErrorCode {
+		if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
+			return sDataTransportErrorCode
+		}
+		return 0
+	}
+	return castFunc(structType)
 }
 
 func (m DataTransportErrorCode) LengthInBits() uint16 {
-    return 8
+	return 8
 }
 
 func (m DataTransportErrorCode) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func DataTransportErrorCodeParse(io *utils.ReadBuffer) (DataTransportErrorCode, error) {
-    val, err := io.ReadUint8(8)
-    if err != nil {
-        return 0, nil
-    }
-    return DataTransportErrorCodeValueOf(val), nil
+	val, err := io.ReadUint8(8)
+	if err != nil {
+		return 0, nil
+	}
+	return DataTransportErrorCodeByValue(val), nil
 }
 
 func (e DataTransportErrorCode) Serialize(io utils.WriteBuffer) error {
-    err := io.WriteUint8(8, uint8(e))
-    return err
+	err := io.WriteUint8(8, uint8(e))
+	return err
 }
 
 func (e DataTransportErrorCode) String() string {
-    switch e {
-    case DataTransportErrorCode_RESERVED:
-        return "RESERVED"
-    case DataTransportErrorCode_ACCESS_DENIED:
-        return "ACCESS_DENIED"
-    case DataTransportErrorCode_INVALID_ADDRESS:
-        return "INVALID_ADDRESS"
-    case DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED:
-        return "DATA_TYPE_NOT_SUPPORTED"
-    case DataTransportErrorCode_NOT_FOUND:
-        return "NOT_FOUND"
-    case DataTransportErrorCode_OK:
-        return "OK"
-    }
-    return ""
+	switch e {
+	case DataTransportErrorCode_RESERVED:
+		return "RESERVED"
+	case DataTransportErrorCode_ACCESS_DENIED:
+		return "ACCESS_DENIED"
+	case DataTransportErrorCode_INVALID_ADDRESS:
+		return "INVALID_ADDRESS"
+	case DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED:
+		return "DATA_TYPE_NOT_SUPPORTED"
+	case DataTransportErrorCode_NOT_FOUND:
+		return "NOT_FOUND"
+	case DataTransportErrorCode_OK:
+		return "OK"
+	}
+	return ""
 }

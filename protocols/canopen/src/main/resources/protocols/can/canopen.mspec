@@ -104,7 +104,7 @@
             [simple bit 'toggle']
             [implicit uint 3 'size' '7 - COUNT(data)']
             [simple bit 'last']
-            [array int 8 'data' COUNT '7 - size']
+            [array int 8 'data' count '7 - size']
             [padding uint 8 'alignment' '0x00' '7 - COUNT(data)']
         ]
         ['SDORequestCommand.INITIATE_DOWNLOAD' SDOInitiateDownloadRequest
@@ -136,7 +136,7 @@
 
 [type 'SDOBlockData'
     [simple uint 5 'flags']
-    [array int 8 'data' COUNT '7']
+    [array int 8 'data' count '7']
 ]
 
 [type 'SDOResponse' [SDOResponseCommand 'command']
@@ -145,7 +145,7 @@
             [simple bit 'toggle']
             [implicit uint 3 'size' '7 - COUNT(data)']
             [simple bit 'last']
-            [array int 8 'data' COUNT '7 - size']
+            [array int 8 'data' count '7 - size']
             [padding uint 8 'alignment' '0x00' '7 - COUNT(data)']
         ]
         ['SDOResponseCommand.SEGMENT_DOWNLOAD' SDOSegmentDownloadResponse
@@ -178,7 +178,7 @@
 [type 'SDOInitiateUploadResponsePayload' [bit 'expedited', bit 'indicated', uint 2 'size']
     [typeSwitch 'expedited', 'indicated'
         ['true', 'true' SDOInitiateExpeditedUploadResponse [uint 2 'size']
-            [array int 8 'data' COUNT '4 - size']
+            [array int 8 'data' count '4 - size']
             [padding uint 8 'alignment' '0x00' '4 - COUNT(data)']
         ]
         ['false', 'true' SDOInitiateSegmentedUploadResponse
@@ -202,7 +202,7 @@
     [simple bit 'expedited']
     [simple bit 'indicated']
     [simple IndexAddress 'address']
-    [array int 8 'data' COUNT '(expedited && indicated) ? 4 - size : 0']
+    [array int 8 'data' count '(expedited && indicated) ? 4 - size : 0']
     [padding uint 8 'alignment' '0x00' '4 - (COUNT(data))']
 ]
 
@@ -230,7 +230,7 @@
 ]
 
 [type 'CANOpenPDO' [uint 2 'index', bit 'receive']
-    [array int 8 'data' COUNT '8']
+    [array int 8 'data' count '8']
 ]
 
 [type 'CANOpenTime'
@@ -359,5 +359,5 @@
 [type 'CANOpenMPDO'
     [simple uint 8 'node']
     [simple IndexAddress 'address']
-    [array int 8 'data' COUNT '4']
+    [array int 8 'data' count '4']
 ]
