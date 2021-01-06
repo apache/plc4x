@@ -676,6 +676,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
+            <exclude>**/.lock/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
