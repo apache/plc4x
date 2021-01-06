@@ -657,7 +657,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.lock/**</exclude>
+
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -715,6 +715,8 @@
 
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
+            <!-- Exclude poetry.lock file -->
+            <exclude>**/.lock</exclude>
 
             <!-- Exclude a temp file needed by Docker -->
             <exclude>project_version</exclude>
