@@ -718,7 +718,8 @@
             <!-- Exclude poetry.lock file -->
             <exclude>**/poetry.lock</exclude>
             <exclude>poetry.lock</exclude>
-
+            <!-- Temporary exclusion licence is present in pyproject.toml -->
+            <exclude>**/pyproject.toml </exclude>
             <!-- Exclude a temp file needed by Docker -->
             <exclude>project_version</exclude>
 
