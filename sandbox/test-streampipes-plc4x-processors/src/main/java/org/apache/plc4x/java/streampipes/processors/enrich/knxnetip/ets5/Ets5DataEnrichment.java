@@ -66,10 +66,10 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
 
             if (groupAddress != null) {
                 // Decode the raw data.
-                final PlcValue plcValue = KnxDatapointIO.staticParse(rawDataReader, groupAddress.getType().getFormatName());
+                /*final PlcValue plcValue = KnxDatapointIO.staticParse(rawDataReader, groupAddress.getType().getFormatName());
 
                 // Serialize the decoded object to json
-                /*final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
+                final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
 
                 // Add the additional properties.
                 event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_GROUP_ADDRESS,
