@@ -92,9 +92,9 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
             } else {
                 System.out.println("Couldn't decode group address " + destinationAddress);
             }
-        } catch (ParseException e) {
+        /*} catch (ParseException e) {
             // Driver Decoding
-            e.printStackTrace();
+            e.printStackTrace();*/
         } catch (DecoderException e) {
             // Hex Decoding
             e.printStackTrace();
