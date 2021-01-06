@@ -747,9 +747,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if ("null".equals(valueString)) {
                 return "0";
             }
-            String typeName = valueString.substring(0, valueString.indexOf('.'));
-            String constantName = valueString.substring(valueString.indexOf('.') + 1);
-            return typeName + "_" + constantName;
+            if(valueString.contains(".")) {
+                String typeName = valueString.substring(0, valueString.indexOf('.'));
+                String constantName = valueString.substring(valueString.indexOf('.') + 1);
+                return typeName + "_" + constantName;
+            }
+            return valueString;
         } else {
             return escapeValue(typeReference, valueString);
         }
