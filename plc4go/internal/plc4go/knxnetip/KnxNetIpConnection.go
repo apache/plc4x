@@ -115,6 +115,7 @@ type KnxNetIpConnection struct {
 }
 
 type InternalKnxNetIpConnection interface {
+	Send(request *driverModel.KnxNetIpMessage) error
 	SendRequest(request *driverModel.KnxNetIpMessage, expect func(response interface{}) (bool, bool)) (int32, chan interface{})
 }
 
@@ -257,8 +258,6 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 											lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
 											if lDataInd != nil {
 												m.handleIncomingTunnelingRequest(tunnelingRequest)
-											} else {
-												fmt.Printf("Not a LDataInd message %v\n", tunnelingRequest.Cemi)
 											}
 										}
 									}
@@ -496,6 +495,16 @@ func (m *KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
 	return m.valueHandler
 }
 
+func (m *KnxNetIpConnection) Send(request *driverModel.KnxNetIpMessage) error {
+	// If this is a tunneling request, we need to update the communicationChannelId and assign a sequenceCounter
+	tunnelingRequest := driverModel.CastTunnelingRequest(request)
+	if tunnelingRequest != nil {
+		tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId = m.CommunicationChannelId
+		tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter = m.getNewSequenceCounter()
+	}
+	return m.messageCodec.Send(request)
+}
+
 func (m *KnxNetIpConnection) SendRequest(request *driverModel.KnxNetIpMessage, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
 	// If this is a tunneling request, we need to update the communicationChannelId and assign a sequenceCounter
 	tunnelingRequest := driverModel.CastTunnelingRequest(request)
@@ -527,15 +536,6 @@ func (m *KnxNetIpConnection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddres
 }
 
 func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
-	// Send an Ack response for this message
-	tunnelingResponse := driverModel.NewTunnelingResponse(driverModel.NewTunnelingResponseDataBlock(
-		m.CommunicationChannelId, tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter,
-		driverModel.Status_NO_ERROR))
-	err := m.messageCodec.Send(tunnelingResponse)
-	if err != nil {
-		return
-	}
-
 	go func() {
 		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
 		if lDataInd != nil {

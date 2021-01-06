@@ -142,14 +142,13 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
 	}
 }
 
-func TestKnxNetIpPlc4goDriver(t *testing.T) {
+func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
 	driverManager.RegisterTransport(udp.NewUdpTransport())
 
 	// Get a connection to a remote PLC
 	crc := driverManager.GetConnection("knxnet-ip://192.168.42.11")
-	//crc := driverManager.GetConnection("knxnet-ip://-discover-")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -166,8 +165,6 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 		attributes["GatewayName"],
 		attributes["GatewayKnxAddress"],
 		attributes["ClientKnxAddress"])
-
-	time.Sleep(time.Millisecond * 100)
 
 	// TODO: Find out why a connection-state request breaks everything ...
 	// Try to ping the remote device
@@ -225,35 +222,35 @@ func TestKnxNetIpPlc4goDriver(t *testing.T) {
 			}
 		}
 	}
-	/*value1 := rrr.Response.GetValue("field1")
-	  value2 := rrr.Response.GetValue("field2")
-	  fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
-	  fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+}
 
-	  // Prepare a write-request
-	  wrb := connection.WriteRequestBuilder()
-	  wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
-	  wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
-	  writeRequest, err := rrb.Build()
-	  if err != nil {
-	      t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
-	      t.Fail()
-	      return
-	  }
+func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	driverManager.RegisterTransport(udp.NewUdpTransport())
 
-	  // Execute a write-request
-	  wrc := writeRequest.Execute()
+	// Get a connection to a remote PLC
+	crc := driverManager.GetConnection("knxnet-ip://192.168.42.11")
 
-	  // Wait for the response to finish
-	  wrr := <-wrc
-	  if wrr.Err != nil {
-	      t.Errorf("error executing read-request: %s", rrr.Err.Error())
-	      t.Fail()
-	      return
-	  }
+	// Wait for the driver to connect (or not)
+	connectionResult := <-crc
+	if connectionResult.Err != nil {
+		t.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+	connection := connectionResult.Connection
+	defer connection.Close()
 
-	  fmt.Printf("\n\nResult field1: %d\n", wrr.Response.GetResponseCode("field1"))
-	  fmt.Printf("\n\nResult field2: %d\n", wrr.Response.GetResponseCode("field2"))*/
+	readRequestBuilder := connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
+	readRequestBuilder.AddItem("hardwareType", "1.1.10/0/78")
+	readRequest, _ := readRequestBuilder.Build()
+
+	rrr := readRequest.Execute()
+	readResult := <-rrr
+
+	fmt.Printf("Got result %v", readResult)
 }
 
 func knxEventHandler(event apiModel.PlcSubscriptionEvent) {

@@ -19,7 +19,6 @@
 package knxnetip
 
 import (
-	"errors"
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -123,50 +122,29 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 						deviceConnectionRequest,
 						// The Gateway is now supposed to send an Ack to this request.
 						func(message interface{}) bool {
-							tunnelingResponse := driverModel.CastTunnelingResponse(message)
-							return tunnelingResponse != nil &&
-								tunnelingResponse.TunnelingResponseDataBlock.CommunicationChannelId == b.connection.CommunicationChannelId &&
-								tunnelingResponse.TunnelingResponseDataBlock.SequenceCounter == uint8(b.connection.SequenceCounter)
+							tunnelingRequest := driverModel.CastTunnelingRequest(message)
+							if tunnelingRequest == nil || tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != b.connection.CommunicationChannelId {
+								return false
+							}
+							lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
+							return lDataCon != nil
 						},
 						func(message interface{}) error {
-							tunnelingResponse := driverModel.CastTunnelingResponse(message)
-							// As soon as we got a positive ACK, we expect the gateway to send a
-							// LDataCon message with the result of the connection request.
-							if tunnelingResponse.TunnelingResponseDataBlock.Status != driverModel.Status_NO_ERROR {
-								return errors.New("got a failure to process the connection request")
+							tunnelingRequest := driverModel.CastTunnelingRequest(message)
+							lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
+							// If the error flag is not set, we've found a device
+							if !lDataCon.DataFrame.ErrorFlag {
+								queryResult := apiModel.PlcBrowseQueryResult{
+									Address: fmt.Sprintf("%s.%s.%s",
+										individualAddress.MainGroup,
+										individualAddress.MiddleGroup,
+										individualAddress.SubGroup),
+									PossibleDataTypes: nil,
+								}
+								queryResults = append(queryResults, queryResult)
 							}
-							return b.messageCodec.Expect(
-								func(message interface{}) bool {
-									tunnelingRequest := driverModel.CastTunnelingRequest(message)
-									if tunnelingRequest == nil || tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != b.connection.CommunicationChannelId {
-										return false
-									}
-									lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-									return lDataCon != nil
-								},
-								func(message interface{}) error {
-									tunnelingRequest := driverModel.CastTunnelingRequest(message)
-									lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-									// If the error flag is not set, we've found a device
-									if !lDataCon.DataFrame.ErrorFlag {
-										queryResult := apiModel.PlcBrowseQueryResult{
-											Address: fmt.Sprintf("%s.%s.%s",
-												individualAddress.MainGroup,
-												individualAddress.MiddleGroup,
-												individualAddress.SubGroup),
-											PossibleDataTypes: nil,
-										}
-										queryResults = append(queryResults, queryResult)
-									}
-									// In all cases send an Ack for the incoming message
-									ack := driverModel.NewTunnelingResponse(driverModel.NewTunnelingResponseDataBlock(
-										tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId,
-										tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter,
-										driverModel.Status_NO_ERROR))
-									done <- true
-									return b.messageCodec.Send(ack)
-								},
-								time.Second*1)
+							done <- true
+							return nil
 						},
 						time.Second*1)
 					select {
