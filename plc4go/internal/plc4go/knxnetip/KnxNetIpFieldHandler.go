@@ -19,76 +19,76 @@
 package knxnetip
 
 import (
-    "errors"
-    driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "regexp"
+	"errors"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"regexp"
 )
 
 type KnxNetIpFieldType uint8
 
 const (
-    KNX_NET_IP_FIELD_COIL KnxNetIpFieldType = 0x00
+	KNX_NET_IP_FIELD_COIL KnxNetIpFieldType = 0x00
 )
 
 func (m KnxNetIpFieldType) GetName() string {
-    switch m {
-    case KNX_NET_IP_FIELD_COIL:
-        return "ModbusFieldHoldingRegister"
-    }
-    return ""
+	switch m {
+	case KNX_NET_IP_FIELD_COIL:
+		return "ModbusFieldHoldingRegister"
+	}
+	return ""
 }
 
 type FieldHandler struct {
-    knxNetIpGroupAddress3Level    *regexp.Regexp
-    knxNetIpGroupAddress2Level    *regexp.Regexp
-    knxNetIpGroupAddress1Level    *regexp.Regexp
-    knxNetIpDevicePropertyAddress *regexp.Regexp
-    knxNetIpDeviceQuery           *regexp.Regexp
-    spi.PlcFieldHandler
+	knxNetIpGroupAddress3Level    *regexp.Regexp
+	knxNetIpGroupAddress2Level    *regexp.Regexp
+	knxNetIpGroupAddress1Level    *regexp.Regexp
+	knxNetIpDevicePropertyAddress *regexp.Regexp
+	knxNetIpDeviceQuery           *regexp.Regexp
+	spi.PlcFieldHandler
 }
 
 func NewFieldHandler() FieldHandler {
-    return FieldHandler{
-        knxNetIpGroupAddress3Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
-        knxNetIpGroupAddress2Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))/(?P<subGroup>(\d{1,4}|\*|\[(\d{1,4}|\d{1,4}\-\d{1,4})(,(\d{1,4}|\d{1,4}\-\d{1,4}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
-        knxNetIpGroupAddress1Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*|\[(\d{1,5}|\d{1,5}\-\d{1,5})(,(\d{1,5}|\d{1,5}\-\d{1,5}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
-        knxNetIpDevicePropertyAddress: regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})\/(?P<objectId>\d{1,3})\/(?P<propertyId>\d{1,3})(:(?P<datatype>[a-zA-Z_]+))?$`),
-        knxNetIpDeviceQuery:           regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(\/(?P<objectId>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(\/(?P<propertyId>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*])))?)?$`),
-    }
+	return FieldHandler{
+		knxNetIpGroupAddress3Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\/(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
+		knxNetIpGroupAddress2Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))/(?P<subGroup>(\d{1,4}|\*|\[(\d{1,4}|\d{1,4}\-\d{1,4})(,(\d{1,4}|\d{1,4}\-\d{1,4}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
+		knxNetIpGroupAddress1Level:    regexp.MustCompile(`^(?P<mainGroup>(\d{1,5}|\*|\[(\d{1,5}|\d{1,5}\-\d{1,5})(,(\d{1,5}|\d{1,5}\-\d{1,5}))*]))(:(?P<datatype>[a-zA-Z_]+))?$`),
+		knxNetIpDevicePropertyAddress: regexp.MustCompile(`^(?P<mainGroup>\d{1,2})\.(?P<middleGroup>\d)\.(?P<subGroup>\d{1,3})\/(?P<objectId>\d{1,3})\/(?P<propertyId>\d{1,3})(:(?P<datatype>[a-zA-Z_]+))?$`),
+		knxNetIpDeviceQuery:           regexp.MustCompile(`^(?P<mainGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<middleGroup>(\d{1,2}|\*|\[(\d{1,2}|\d{1,2}\-\d{1,2})(,(\d{1,2}|\d{1,2}\-\d{1,2}))*]))\.(?P<subGroup>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(\/(?P<objectId>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*]))(\/(?P<propertyId>(\d{1,3}|\*|\[(\d{1,3}|\d{1,3}\-\d{1,3})(,(\d{1,3}|\d{1,3}\-\d{1,3}))*])))?)?$`),
+	}
 }
 
 func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
-    if match := utils.GetSubgropMatches(m.knxNetIpDeviceQuery, query); match != nil {
-        fieldTypeName, ok := match["datatype"]
-        var fieldType driverModel.KnxDatapointType
-        if ok {
-            fieldType = driverModel.KnxDatapointTypeValueOf(fieldTypeName)
-        }
-        return NewKnxNetIpDevicePropertyAddressPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"], match["objectId"], match["propertyId"]), nil
-    } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress3Level, query); match != nil {
-        fieldTypeName, ok := match["datatype"]
-        var fieldType driverModel.KnxDatapointType
-        if ok {
-            fieldType = driverModel.KnxDatapointTypeValueOf(fieldTypeName)
-        }
-        return NewKnxNetIpGroupAddress3LevelPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
-    } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress2Level, query); match != nil {
-        fieldTypeName, ok := match["datatype"]
-        var fieldType driverModel.KnxDatapointType
-        if ok {
-            fieldType = driverModel.KnxDatapointTypeValueOf(fieldTypeName)
-        }
-        return NewKnxNetIpGroupAddress2LevelPlcField(&fieldType, match["mainGroup"], match["subGroup"]), nil
-    } else if match := utils.GetSubgropMatches(m.knxNetIpGroupAddress1Level, query); match != nil {
-        fieldTypeName, ok := match["datatype"]
-        var fieldType driverModel.KnxDatapointType
-        if ok {
-            fieldType = driverModel.KnxDatapointTypeValueOf(fieldTypeName)
-        }
-        return NewKnxNetIpGroupAddress1LevelPlcField(&fieldType, match["mainGroup"]), nil
-    }
-    return nil, errors.New("Invalid address format for address '" + query + "'")
+	if match := utils.GetSubgroupMatches(m.knxNetIpDeviceQuery, query); match != nil {
+		fieldTypeName, ok := match["datatype"]
+		var fieldType driverModel.KnxDatapointType
+		if ok {
+			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+		}
+		return NewKnxNetIpDevicePropertyAddressPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"], match["objectId"], match["propertyId"]), nil
+	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress3Level, query); match != nil {
+		fieldTypeName, ok := match["datatype"]
+		var fieldType driverModel.KnxDatapointType
+		if ok {
+			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+		}
+		return NewKnxNetIpGroupAddress3LevelPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
+	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress2Level, query); match != nil {
+		fieldTypeName, ok := match["datatype"]
+		var fieldType driverModel.KnxDatapointType
+		if ok {
+			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+		}
+		return NewKnxNetIpGroupAddress2LevelPlcField(&fieldType, match["mainGroup"], match["subGroup"]), nil
+	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress1Level, query); match != nil {
+		fieldTypeName, ok := match["datatype"]
+		var fieldType driverModel.KnxDatapointType
+		if ok {
+			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+		}
+		return NewKnxNetIpGroupAddress1LevelPlcField(&fieldType, match["mainGroup"]), nil
+	}
+	return nil, errors.New("Invalid address format for address '" + query + "'")
 }

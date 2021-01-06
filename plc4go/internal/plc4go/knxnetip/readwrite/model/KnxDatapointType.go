@@ -536,7 +536,7 @@ func (e KnxDatapointType) SizeInBits() uint8 {
 		}
 	}
 }
-func KnxDatapointTypeValueOf(value uint16) KnxDatapointType {
+func KnxDatapointTypeByValue(value uint16) KnxDatapointType {
 	switch value {
 	case 1:
 		return KnxDatapointType_DPT_1_BIT
@@ -650,6 +650,120 @@ func KnxDatapointTypeValueOf(value uint16) KnxDatapointType {
 	return 0
 }
 
+func KnxDatapointTypeByName(value string) KnxDatapointType {
+	switch value {
+	case "DPT_1_BIT":
+		return KnxDatapointType_DPT_1_BIT
+	case "DPT_TIME":
+		return KnxDatapointType_DPT_TIME
+	case "DPT_DATE":
+		return KnxDatapointType_DPT_DATE
+	case "DPT_4_BYTE_UNSIGNED_VALUE":
+		return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+	case "DPT_4_BYTE_SIGNED_VALUE":
+		return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+	case "DPT_4_BYTE_FLOAT_VALUE":
+		return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+	case "DPT_ENTRANCE_ACCESS":
+		return KnxDatapointType_DPT_ENTRANCE_ACCESS
+	case "DPT_CHARACTER_STRING":
+		return KnxDatapointType_DPT_CHARACTER_STRING
+	case "DPT_SCENE_NUMBER":
+		return KnxDatapointType_DPT_SCENE_NUMBER
+	case "DPT_SCENE_CONTROL":
+		return KnxDatapointType_DPT_SCENE_CONTROL
+	case "DPT_DATE_TIME":
+		return KnxDatapointType_DPT_DATE_TIME
+	case "DPT_1_BIT_CONTROLLED":
+		return KnxDatapointType_DPT_1_BIT_CONTROLLED
+	case "DPT_1_BYTE":
+		return KnxDatapointType_DPT_1_BYTE
+	case "DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM":
+		return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+	case "DPT_8_BIT_SET":
+		return KnxDatapointType_DPT_8_BIT_SET
+	case "DPT_DATAPOINT_TYPE_VERSION":
+		return KnxDatapointType_DPT_DATAPOINT_TYPE_VERSION
+	case "DPT_ALARM_INFO":
+		return KnxDatapointType_DPT_ALARM_INFO
+	case "DPT_16_BIT_SET":
+		return KnxDatapointType_DPT_16_BIT_SET
+	case "DPT_3X_2_BYTE_FLOAT_VALUE":
+		return KnxDatapointType_DPT_3X_2_BYTE_FLOAT_VALUE
+	case "DPT_SCALING_SPEED":
+		return KnxDatapointType_DPT_SCALING_SPEED
+	case "DPT_4_1_1_BYTE_COMBINED_INFORMATION":
+		return KnxDatapointType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+	case "DPT_2_BIT_SET":
+		return KnxDatapointType_DPT_2_BIT_SET
+	case "DPT_MBUS_ADDRESS":
+		return KnxDatapointType_DPT_MBUS_ADDRESS
+	case "DPT_3_BYTE_COLOUR_RGB":
+		return KnxDatapointType_DPT_3_BYTE_COLOUR_RGB
+	case "DPT_LANGUAGE_CODE_ISO_639_1":
+		return KnxDatapointType_DPT_LANGUAGE_CODE_ISO_639_1
+	case "DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY":
+		return KnxDatapointType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+	case "DPT_PRIORITISED_MODE_CONTROL":
+		return KnxDatapointType_DPT_PRIORITISED_MODE_CONTROL
+	case "DPT_CONFIGURATION_DIAGNOSTICS_16_BIT":
+		return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+	case "DPT_CONFIGURATION_DIAGNOSTICS_8_BIT":
+		return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+	case "DPT_POSITIONS":
+		return KnxDatapointType_DPT_POSITIONS
+	case "DPT_STATUS_32_BIT":
+		return KnxDatapointType_DPT_STATUS_32_BIT
+	case "DPT_STATUS_48_BIT":
+		return KnxDatapointType_DPT_STATUS_48_BIT
+	case "DPT_CONVERTER_STATUS":
+		return KnxDatapointType_DPT_CONVERTER_STATUS
+	case "DPT_CONVERTER_TEST_RESULT":
+		return KnxDatapointType_DPT_CONVERTER_TEST_RESULT
+	case "DPT_BATTERY_INFORMATION":
+		return KnxDatapointType_DPT_BATTERY_INFORMATION
+	case "DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION":
+		return KnxDatapointType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+	case "DPT_2_NIBBLE_SET":
+		return KnxDatapointType_DPT_2_NIBBLE_SET
+	case "DPT_STATUS_24_BIT":
+		return KnxDatapointType_DPT_STATUS_24_BIT
+	case "DPT_COLOUR_RGBW":
+		return KnxDatapointType_DPT_COLOUR_RGBW
+	case "DPT_RELATIVE_CONTROL_RGBW":
+		return KnxDatapointType_DPT_RELATIVE_CONTROL_RGBW
+	case "DPT_RELATIVE_CONTROL_RGB":
+		return KnxDatapointType_DPT_RELATIVE_CONTROL_RGB
+	case "DPT_F32F32":
+		return KnxDatapointType_DPT_F32F32
+	case "DPT_8_BIT_SET_2":
+		return KnxDatapointType_DPT_8_BIT_SET_2
+	case "DPT_32_BIT_SET":
+		return KnxDatapointType_DPT_32_BIT_SET
+	case "DPT_F16F16F16F16":
+		return KnxDatapointType_DPT_F16F16F16F16
+	case "DPT_ELECTRICAL_ENERGY":
+		return KnxDatapointType_DPT_ELECTRICAL_ENERGY
+	case "DPT_3_BIT_CONTROLLED":
+		return KnxDatapointType_DPT_3_BIT_CONTROLLED
+	case "DPT_24_TIMES_CHANNEL_ACTIVATION":
+		return KnxDatapointType_DPT_24_TIMES_CHANNEL_ACTIVATION
+	case "DPT_CHARACTER":
+		return KnxDatapointType_DPT_CHARACTER
+	case "DPT_8_BIT_UNSIGNED_VALUE":
+		return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+	case "DPT_8_BIT_SIGNED_VALUE":
+		return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
+	case "DPT_2_BYTE_UNSIGNED_VALUE":
+		return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+	case "DPT_2_BYTE_SIGNED_VALUE":
+		return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+	case "DPT_2_BYTE_FLOAT_VALUE":
+		return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+	}
+	return 0
+}
+
 func CastKnxDatapointType(structType interface{}) KnxDatapointType {
 	castFunc := func(typ interface{}) KnxDatapointType {
 		if sKnxDatapointType, ok := typ.(KnxDatapointType); ok {
@@ -673,7 +787,7 @@ func KnxDatapointTypeParse(io *utils.ReadBuffer) (KnxDatapointType, error) {
 	if err != nil {
 		return 0, nil
 	}
-	return KnxDatapointTypeValueOf(val), nil
+	return KnxDatapointTypeByValue(val), nil
 }
 
 func (e KnxDatapointType) Serialize(io utils.WriteBuffer) error {
