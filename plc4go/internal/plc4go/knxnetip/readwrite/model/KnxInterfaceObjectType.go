@@ -160,7 +160,7 @@ func (e KnxInterfaceObjectType) Text() string {
 		}
 	}
 }
-func KnxInterfaceObjectTypeValueOf(value uint16) KnxInterfaceObjectType {
+func KnxInterfaceObjectTypeByValue(value uint16) KnxInterfaceObjectType {
 	switch value {
 	case 0:
 		return KnxInterfaceObjectType_OT_DEVICE
@@ -214,6 +214,60 @@ func KnxInterfaceObjectTypeValueOf(value uint16) KnxInterfaceObjectType {
 	return 0
 }
 
+func KnxInterfaceObjectTypeByName(value string) KnxInterfaceObjectType {
+	switch value {
+	case "OT_DEVICE":
+		return KnxInterfaceObjectType_OT_DEVICE
+	case "OT_ADDRESS_TABLE":
+		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
+	case "OT_POLLING_MASTER":
+		return KnxInterfaceObjectType_OT_POLLING_MASTER
+	case "OT_KNXIP_PARAMETER":
+		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+	case "OT_FILE_SERVER":
+		return KnxInterfaceObjectType_OT_FILE_SERVER
+	case "OT_SECURITY":
+		return KnxInterfaceObjectType_OT_SECURITY
+	case "OT_RF_MEDIUM":
+		return KnxInterfaceObjectType_OT_RF_MEDIUM
+	case "OT_ASSOCIATION_TABLE":
+		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
+	case "OT_APPLICATION_PROGRAM":
+		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
+	case "OT_INTERACE_PROGRAM":
+		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
+	case "OT_INDOOR_BRIGHTNESS_SENSOR":
+		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+	case "OT_INDOOR_LUMINANCE_SENSOR":
+		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+	case "OT_LIGHT_SWITCHING_ACTUATOR_BASIC":
+		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+	case "OT_DIMMING_ACTUATOR_BASIC":
+		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+	case "OT_DIMMING_SENSOR_BASIC":
+		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+	case "OT_SWITCHING_SENSOR_BASIC":
+		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+	case "OT_EIBOBJECT_ASSOCIATATION_TABLE":
+		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
+	case "OT_ROUTER":
+		return KnxInterfaceObjectType_OT_ROUTER
+	case "OT_GENERAL":
+		return KnxInterfaceObjectType_OT_GENERAL
+	case "OT_LTE_ADDRESS_ROUTING_TABLE":
+		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
+	case "OT_CEMI_SERVER":
+		return KnxInterfaceObjectType_OT_CEMI_SERVER
+	case "OT_SUNBLIND_ACTUATOR_BASIC":
+		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+	case "OT_SUNBLIND_SENSOR_BASIC":
+		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+	case "OT_GROUP_OBJECT_TABLE":
+		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+	}
+	return 0
+}
+
 func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
 	castFunc := func(typ interface{}) KnxInterfaceObjectType {
 		if sKnxInterfaceObjectType, ok := typ.(KnxInterfaceObjectType); ok {
@@ -237,7 +291,7 @@ func KnxInterfaceObjectTypeParse(io *utils.ReadBuffer) (KnxInterfaceObjectType, 
 	if err != nil {
 		return 0, nil
 	}
-	return KnxInterfaceObjectTypeValueOf(val), nil
+	return KnxInterfaceObjectTypeByValue(val), nil
 }
 
 func (e KnxInterfaceObjectType) Serialize(io utils.WriteBuffer) error {

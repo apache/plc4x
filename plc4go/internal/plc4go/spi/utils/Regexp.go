@@ -20,16 +20,16 @@ package utils
 
 import "regexp"
 
-func GetSubgropMatches(r *regexp.Regexp, query string) map[string]string {
-    match := r.FindStringSubmatch(query)
-    if match == nil {
-        return nil
-    }
-    subMatchMap := make(map[string]string)
-    for i, name := range r.SubexpNames() {
-        if i != 0 {
-            subMatchMap[name] = match[i]
-        }
-    }
-    return subMatchMap
+func GetSubgroupMatches(r *regexp.Regexp, query string) map[string]string {
+	match := r.FindStringSubmatch(query)
+	if match == nil {
+		return nil
+	}
+	subMatchMap := make(map[string]string)
+	for i, name := range r.SubexpNames() {
+		if i != 0 {
+			subMatchMap[name] = match[i]
+		}
+	}
+	return subMatchMap
 }

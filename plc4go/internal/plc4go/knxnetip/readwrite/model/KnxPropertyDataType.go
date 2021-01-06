@@ -285,7 +285,7 @@ func (e KnxPropertyDataType) SizeInBytes() uint8 {
 		}
 	}
 }
-func KnxPropertyDataTypeValueOf(value uint8) KnxPropertyDataType {
+func KnxPropertyDataTypeByValue(value uint8) KnxPropertyDataType {
 	switch value {
 	case 0:
 		return KnxPropertyDataType_PDT_CONTROL
@@ -389,6 +389,110 @@ func KnxPropertyDataTypeValueOf(value uint8) KnxPropertyDataType {
 	return 0
 }
 
+func KnxPropertyDataTypeByName(value string) KnxPropertyDataType {
+	switch value {
+	case "PDT_CONTROL":
+		return KnxPropertyDataType_PDT_CONTROL
+	case "PDT_CHAR":
+		return KnxPropertyDataType_PDT_CHAR
+	case "PDT_FLOAT":
+		return KnxPropertyDataType_PDT_FLOAT
+	case "PDT_DOUBLE":
+		return KnxPropertyDataType_PDT_DOUBLE
+	case "PDT_CHAR_BLOCK":
+		return KnxPropertyDataType_PDT_CHAR_BLOCK
+	case "PDT_POLL_GROUP_SETTINGS":
+		return KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS
+	case "PDT_SHORT_CHAR_BLOCK":
+		return KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK
+	case "PDT_DATE_TIME":
+		return KnxPropertyDataType_PDT_DATE_TIME
+	case "PDT_VARIABLE_LENGTH":
+		return KnxPropertyDataType_PDT_VARIABLE_LENGTH
+	case "PDT_GENERIC_01":
+		return KnxPropertyDataType_PDT_GENERIC_01
+	case "PDT_GENERIC_02":
+		return KnxPropertyDataType_PDT_GENERIC_02
+	case "PDT_GENERIC_03":
+		return KnxPropertyDataType_PDT_GENERIC_03
+	case "PDT_UNSIGNED_CHAR":
+		return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+	case "PDT_GENERIC_04":
+		return KnxPropertyDataType_PDT_GENERIC_04
+	case "PDT_GENERIC_05":
+		return KnxPropertyDataType_PDT_GENERIC_05
+	case "PDT_GENERIC_06":
+		return KnxPropertyDataType_PDT_GENERIC_06
+	case "PDT_GENERIC_07":
+		return KnxPropertyDataType_PDT_GENERIC_07
+	case "PDT_GENERIC_08":
+		return KnxPropertyDataType_PDT_GENERIC_08
+	case "PDT_GENERIC_09":
+		return KnxPropertyDataType_PDT_GENERIC_09
+	case "PDT_GENERIC_10":
+		return KnxPropertyDataType_PDT_GENERIC_10
+	case "PDT_GENERIC_11":
+		return KnxPropertyDataType_PDT_GENERIC_11
+	case "PDT_GENERIC_12":
+		return KnxPropertyDataType_PDT_GENERIC_12
+	case "PDT_GENERIC_13":
+		return KnxPropertyDataType_PDT_GENERIC_13
+	case "PDT_INT":
+		return KnxPropertyDataType_PDT_INT
+	case "PDT_GENERIC_14":
+		return KnxPropertyDataType_PDT_GENERIC_14
+	case "PDT_GENERIC_15":
+		return KnxPropertyDataType_PDT_GENERIC_15
+	case "PDT_GENERIC_16":
+		return KnxPropertyDataType_PDT_GENERIC_16
+	case "PDT_GENERIC_17":
+		return KnxPropertyDataType_PDT_GENERIC_17
+	case "PDT_GENERIC_18":
+		return KnxPropertyDataType_PDT_GENERIC_18
+	case "PDT_GENERIC_19":
+		return KnxPropertyDataType_PDT_GENERIC_19
+	case "PDT_GENERIC_20":
+		return KnxPropertyDataType_PDT_GENERIC_20
+	case "PDT_UNSIGNED_INT":
+		return KnxPropertyDataType_PDT_UNSIGNED_INT
+	case "PDT_UTF_8":
+		return KnxPropertyDataType_PDT_UTF_8
+	case "PDT_VERSION":
+		return KnxPropertyDataType_PDT_VERSION
+	case "PDT_ALARM_INFO":
+		return KnxPropertyDataType_PDT_ALARM_INFO
+	case "PDT_KNX_FLOAT":
+		return KnxPropertyDataType_PDT_KNX_FLOAT
+	case "PDT_BINARY_INFORMATION":
+		return KnxPropertyDataType_PDT_BINARY_INFORMATION
+	case "PDT_BITSET8":
+		return KnxPropertyDataType_PDT_BITSET8
+	case "PDT_BITSET16":
+		return KnxPropertyDataType_PDT_BITSET16
+	case "PDT_ENUM8":
+		return KnxPropertyDataType_PDT_ENUM8
+	case "PDT_SCALING":
+		return KnxPropertyDataType_PDT_SCALING
+	case "PDT_DATE":
+		return KnxPropertyDataType_PDT_DATE
+	case "PDT_NE_VL":
+		return KnxPropertyDataType_PDT_NE_VL
+	case "PDT_NE_FL":
+		return KnxPropertyDataType_PDT_NE_FL
+	case "PDT_FUNCTION":
+		return KnxPropertyDataType_PDT_FUNCTION
+	case "PDT_ESCAPE":
+		return KnxPropertyDataType_PDT_ESCAPE
+	case "PDT_TIME":
+		return KnxPropertyDataType_PDT_TIME
+	case "PDT_LONG":
+		return KnxPropertyDataType_PDT_LONG
+	case "PDT_UNSIGNED_LONG":
+		return KnxPropertyDataType_PDT_UNSIGNED_LONG
+	}
+	return 0
+}
+
 func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
 	castFunc := func(typ interface{}) KnxPropertyDataType {
 		if sKnxPropertyDataType, ok := typ.(KnxPropertyDataType); ok {
@@ -412,7 +516,7 @@ func KnxPropertyDataTypeParse(io *utils.ReadBuffer) (KnxPropertyDataType, error)
 	if err != nil {
 		return 0, nil
 	}
-	return KnxPropertyDataTypeValueOf(val), nil
+	return KnxPropertyDataTypeByValue(val), nil
 }
 
 func (e KnxPropertyDataType) Serialize(io utils.WriteBuffer) error {
