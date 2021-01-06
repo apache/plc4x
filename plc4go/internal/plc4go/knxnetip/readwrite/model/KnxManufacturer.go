@@ -167,7 +167,7 @@ const (
 	KnxManufacturer_LUTRON                                             KnxManufacturer = 175
 	KnxManufacturer_AIRZONE___ALTRA                                    KnxManufacturer = 176
 	KnxManufacturer_LITHOSS_DESIGN_SWITCHES                            KnxManufacturer = 177
-	KnxManufacturer_3ATEL                                              KnxManufacturer = 178
+	KnxManufacturer_THREEATEL                                          KnxManufacturer = 178
 	KnxManufacturer_PHILIPS_CONTROLS                                   KnxManufacturer = 179
 	KnxManufacturer_VELUX_AS                                           KnxManufacturer = 180
 	KnxManufacturer_LOYTEC                                             KnxManufacturer = 181
@@ -475,7 +475,7 @@ const (
 	KnxManufacturer_IAUTOMATION_PTY_LIMITED                            KnxManufacturer = 498
 	KnxManufacturer_EXTRON                                             KnxManufacturer = 499
 	KnxManufacturer_FREEDOMPRO                                         KnxManufacturer = 500
-	KnxManufacturer_1HOME                                              KnxManufacturer = 501
+	KnxManufacturer_ONEHOME                                            KnxManufacturer = 501
 	KnxManufacturer_EOS_SAUNATECHNIK_GMBH                              KnxManufacturer = 502
 	KnxManufacturer_KUSATEK_GMBH                                       KnxManufacturer = 503
 	KnxManufacturer_EISBAER_SCADA                                      KnxManufacturer = 504
@@ -2892,7 +2892,7 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 177:
 		return KnxManufacturer_LITHOSS_DESIGN_SWITCHES
 	case 178:
-		return KnxManufacturer_3ATEL
+		return KnxManufacturer_THREEATEL
 	case 179:
 		return KnxManufacturer_PHILIPS_CONTROLS
 	case 180:
@@ -3556,7 +3556,7 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 500:
 		return KnxManufacturer_FREEDOMPRO
 	case 501:
-		return KnxManufacturer_1HOME
+		return KnxManufacturer_ONEHOME
 	case 502:
 		return KnxManufacturer_EOS_SAUNATECHNIK_GMBH
 	case 503:
@@ -3971,8 +3971,8 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_AIRZONE___ALTRA
 	case "LITHOSS_DESIGN_SWITCHES":
 		return KnxManufacturer_LITHOSS_DESIGN_SWITCHES
-	case "3ATEL":
-		return KnxManufacturer_3ATEL
+	case "THREEATEL":
+		return KnxManufacturer_THREEATEL
 	case "PHILIPS_CONTROLS":
 		return KnxManufacturer_PHILIPS_CONTROLS
 	case "VELUX_AS":
@@ -4635,8 +4635,8 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_BTICINO
 	case "FREEDOMPRO":
 		return KnxManufacturer_FREEDOMPRO
-	case "1HOME":
-		return KnxManufacturer_1HOME
+	case "ONEHOME":
+		return KnxManufacturer_ONEHOME
 	case "EOS_SAUNATECHNIK_GMBH":
 		return KnxManufacturer_EOS_SAUNATECHNIK_GMBH
 	case "KUSATEK_GMBH":
@@ -5082,8 +5082,8 @@ func (e KnxManufacturer) String() string {
 		return "AIRZONE___ALTRA"
 	case KnxManufacturer_LITHOSS_DESIGN_SWITCHES:
 		return "LITHOSS_DESIGN_SWITCHES"
-	case KnxManufacturer_3ATEL:
-		return "3ATEL"
+	case KnxManufacturer_THREEATEL:
+		return "THREEATEL"
 	case KnxManufacturer_PHILIPS_CONTROLS:
 		return "PHILIPS_CONTROLS"
 	case KnxManufacturer_VELUX_AS:
@@ -5746,8 +5746,8 @@ func (e KnxManufacturer) String() string {
 		return "BTICINO"
 	case KnxManufacturer_FREEDOMPRO:
 		return "FREEDOMPRO"
-	case KnxManufacturer_1HOME:
-		return "1HOME"
+	case KnxManufacturer_ONEHOME:
+		return "ONEHOME"
 	case KnxManufacturer_EOS_SAUNATECHNIK_GMBH:
 		return "EOS_SAUNATECHNIK_GMBH"
 	case KnxManufacturer_KUSATEK_GMBH:

@@ -52,7 +52,7 @@
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
-[enum uint 32 'KnxInterfaceObjectProperty' [uint16 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 'text']
+[enum uint 32 'KnxInterfaceObjectProperty' [uint 16 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 'text']
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
@@ -142,6 +142,8 @@
     <xsl:template match="knx:Manufacturer">
         <xsl:variable name="manufacturerId">
             <xsl:choose>
+                <xsl:when test="@Name = '3ATEL'">THREEATEL</xsl:when>
+                <xsl:when test="@Name = '1Home'">ONEHOME</xsl:when>
                 <xsl:when test="@Name = 'Simon'">SIMON_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
                 <xsl:when test="@Name = 'Not Assigned'">NOT_ASSIGNED_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
                 <xsl:otherwise>

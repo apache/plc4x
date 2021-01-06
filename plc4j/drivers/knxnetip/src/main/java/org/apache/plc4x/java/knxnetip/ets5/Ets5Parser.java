@@ -77,7 +77,7 @@ public class Ets5Parser {
                 // Build an index of the internal data-types.
                 Map<String, KnxDatapointType> knxDatapointTypeMap = new HashMap<>();
                 for (KnxDatapointType value : KnxDatapointType.values()) {
-                    knxDatapointTypeMap.put(value.getMainNumber() + "#" + value.getSubNumber(), value);
+                    //knxDatapointTypeMap.put(value.get() + "#" + value.getSubNumber(), value);
                 }
 
                 Map<String, AddressType> addressTypes = new HashMap<>();
