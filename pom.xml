@@ -716,7 +716,8 @@
             <!-- Temporary Python virtualenv files-->
             <exclude>**/venv/**</exclude>
             <!-- Exclude poetry.lock file -->
-            <exclude>**/.lock</exclude>
+            <exclude>**/poetry.lock</exclude>
+            <exclude>poetry.lock</exclude>
 
             <!-- Exclude a temp file needed by Docker -->
             <exclude>project_version</exclude>
