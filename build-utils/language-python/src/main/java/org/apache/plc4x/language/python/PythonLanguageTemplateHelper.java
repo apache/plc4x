@@ -73,32 +73,20 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "byte";
+                        return "bytes";
                     }
                     if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "ushort";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "uint";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "ulong";
+                        return "int";
                     }
                     throw new RuntimeException("Unsupported simple type");
                 }
                 case INT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "sbyte";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "short";
+                        return "bytes";
                     }
                     if (integerTypeReference.getSizeInBits() <= 32) {
                         return "int";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "long";
                     }
                     throw new RuntimeException("Unsupported simple type");
                 }
@@ -110,22 +98,19 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     if (sizeInBits <= 32) {
                         return "float";
                     }
-                    if (sizeInBits <= 64) {
-                        return "double";
-                    }
                     throw new RuntimeException("Unsupported simple type");
                 }
                 case STRING: {
-                    return "string";
+                    return "str";
                 }
                 case TIME: {
-                    return "time";
+                    return "datetime.time";
                 }
                 case DATE: {
-                    return "date";
+                    return "datetime.date";
                 }
                 case DATETIME: {
-                    return "datetime2";
+                    return "datetime.datetime";
                 }
             }
             throw new RuntimeException("Unsupported simple type");
