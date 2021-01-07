@@ -38,6 +38,7 @@
     <module>protocol-base-mspec</module>
 
     <module>language-c</module>
+    <module>language-python</module>
     <module>language-go</module>
     <module>language-java</module>
     <module>protocol-test</module>
