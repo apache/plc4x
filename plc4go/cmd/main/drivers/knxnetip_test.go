@@ -19,8 +19,10 @@
 package drivers
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -69,7 +71,52 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	for _, queryName := range browseRequestResults.Response.GetQueryNames() {
 		results := browseRequestResults.Response.GetQueryResults(queryName)
 		for _, result := range results {
-			fmt.Printf("Found KNX device at address: %v\n", result.Address)
+			fmt.Printf("Found KNX device at address: %v querying device information: \n", result.Address)
+
+			// Create a read-request to read the manufacturer and hardware ids
+			readRequestBuilder := connection.ReadRequestBuilder()
+			readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
+			readRequestBuilder.AddItem("hardwareType", result.Address+"/0/78")
+			readRequest, err := readRequestBuilder.Build()
+			if err != nil {
+				t.Errorf("Error creating read-request. %s", err.Error())
+				t.Fail()
+				return
+			}
+
+			// Execute the read-requests
+			rrr := readRequest.Execute()
+			readResult := <-rrr
+			if readResult.Err != nil {
+				t.Errorf("Error executing read-request. %s", readResult.Err.Error())
+				t.Fail()
+				return
+			}
+
+			// Check the response
+			readResponse := readResult.Response
+			if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
+				t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
+				t.Fail()
+				return
+			}
+			if readResponse.GetResponseCode("hardwareType") != apiModel.PlcResponseCode_OK {
+				t.Errorf("Got response code %d for 'hardwareType'", readResponse.GetResponseCode("hardwareType"))
+				t.Fail()
+				return
+			}
+
+			// Process the results
+			manufacturerId := readResponse.GetValue("manufacturerId")
+			manufacturerName := ""
+			for manufacturer := model.KnxManufacturer_M_UNKNOWN; manufacturer <= model.KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED; manufacturer++ {
+				if manufacturer.Number() == manufacturerId.GetUint16() {
+					manufacturerName = manufacturer.Name()
+					break
+				}
+			}
+			hardwareType := readResponse.GetValue("hardwareType").GetRaw()
+			fmt.Printf(" - Manufacturer: %d: %s\n - Hardware Type: %s\n", manufacturerId.GetUint16(), manufacturerName, hex.EncodeToString(hardwareType))
 		}
 	}
 }

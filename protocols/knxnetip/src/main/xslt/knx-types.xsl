@@ -47,30 +47,58 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-[enum uint 16 'KnxInterfaceObjectType' [string 'text']
-    ['65535' OT_GENERAL ['"General Object"']]
-    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
-]
-
-[enum uint 32 'KnxInterfaceObjectProperty' [uint 16 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 'text']
-    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
-]
-
-[enum uint 8 'KnxPropertyDataType' [uint 8 'sizeInBytes']
-    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
-]
-
-[enum uint 16 'KnxDatapointType' [string 'text', uint 8 'sizeInBits']
+[enum uint 16 'KnxDatapointType' [uint 16 'number', uint 8 'sizeInBits', string 'name']
+    ['0' DPT_UNKNOWN ['0', '0', '"Unknown Datapoint Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType"/>
 ]
 
-[enum uint 32 'KnxDatapointSubtype' [KnxDatapointType 'datapointType', string 'text']
+[enum uint 32 'KnxDatapointSubtype' [uint 16 'number', KnxDatapointType 'datapointType', string 'name']
+    ['0' DPST_UNKNOWN ['0', 'KnxDatapointType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
 
-[enum uint 16 'KnxManufacturer' [string 'text']
+[enum uint 16 'KnxInterfaceObjectType' [string 'code', string 'name']
+    ['0' OT_UNKNOWN ['U', '"Unknown Interface Object Type"']]
+    ['1' OT_GENERAL ['G', '"General Interface Object Type"']]
+    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
+]
+
+[enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 'name']
+    ['0' PID_UNKNOWN ['0', 'KnxInterfaceObjectType.OT_UNKNOWN', 'KnxPropertyDataType.PDT_UNKNOWN', '"Unknown Interface Object Property"']]
+    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
+]
+
+[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 'name']
+    ['0' PDT_UNKNOWN ['0', '0', '"Unknown Property Data Type"']]
+    <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
+]
+
+[enum uint 16 'KnxManufacturer' [uint 16 'number', string 'name']
+    ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
 ]
+    </xsl:template>
+
+    <xsl:template match="knx:DatapointType">
+        <xsl:variable name="datapointTypeId">
+            <xsl:call-template name="getDatapointTypeId">
+                <xsl:with-param name="contextNode" select="."/>
+            </xsl:call-template>
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$datapointTypeId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="@SizeInBit"/>', '"<xsl:value-of select="@Text"/>"']]
+    </xsl:template>
+
+    <xsl:template match="knx:DatapointSubtype">
+        <xsl:variable name="datapointSubtypeId">
+            <xsl:choose>
+                <xsl:when test="fn:starts-with(@Name, 'DPT')">DPST_<xsl:value-of select="fn:substring-after(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(@Name, '\[', '_'), '\]', ''), '&#x00B3;', '_3'), '&#xB5;', 'y'), '/', ''), '-', '_'), 'DPT_')"/></xsl:when>
+                <xsl:otherwise>DPST_<xsl:for-each select="tokenize(@Name, ' ')"><xsl:value-of select="concat(upper-case(substring(.,1,1)), substring(., 2))"/><xsl:if test="position()!=last()">_</xsl:if></xsl:for-each></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="datapointTypeId">
+            <xsl:call-template name="getDatapointTypeId">
+                <xsl:with-param name="contextNode" select="../.."/>
+            </xsl:call-template>
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$datapointSubtypeId"/> ['<xsl:value-of select="@Number"/>', 'KnxDatapointType.<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:InterfaceObjectType">
@@ -78,19 +106,10 @@
             <xsl:call-template name="getIdFromText">
                 <xsl:with-param name="text" select="@Name"/>
             </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="@Number"/>' <xsl:value-of select="$objectTypeId"/> ['"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position() + 1"/>' <xsl:value-of select="$objectTypeId"/> ['<xsl:value-of select="@Number"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:InterfaceObjectProperty">
-        <xsl:variable name="objectTypeNumber">
-            <xsl:choose>
-                <xsl:when test="fn:starts-with(@Id, 'PID-G')">65535</xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="fn:substring-before(fn:substring-after(@Id, 'PID-'), '-')"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="objectPropertyValue" select="format-number(fn:number(concat($objectTypeNumber, format-number(@Number, '000'))), '#####0')"/>
         <xsl:variable name="objectPropertyId">
             <xsl:variable name="objectTypeId" select="@ObjectType"/>
             <xsl:choose>
@@ -104,7 +123,16 @@
                 <xsl:when test="@ObjectType">KnxInterfaceObjectType.<xsl:value-of select="//knx:InterfaceObjectType[@Id = $objectTypeId]/@Name"/></xsl:when>
                 <xsl:otherwise>KnxInterfaceObjectType.OT_GENERAL</xsl:otherwise>
             </xsl:choose>
-        </xsl:variable>['<xsl:value-of select="$objectPropertyValue"/>' <xsl:value-of select="$objectPropertyId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$objectType"/>', 'KnxPropertyDataType.PDT_CONTROL', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>
+        <xsl:variable name="propertyDataTypeName">
+            <xsl:choose>
+                <xsl:when test="@PDT and not(fn:contains(@PDT, ' '))">
+                    <xsl:variable name="pdtId" select="@PDT"/>
+                    <xsl:value-of select="//knx:PropertyDataType[@Id=$pdtId]/@Name"/>
+                </xsl:when>
+                <xsl:otherwise>PDT_UNKNOWN</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$objectPropertyId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$objectType"/>', 'KnxPropertyDataType.<xsl:value-of select="$propertyDataTypeName"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:PropertyDataType">
@@ -113,30 +141,7 @@
                 <xsl:when test="@Size"><xsl:value-of select="@Size"/></xsl:when>
                 <xsl:otherwise>0</xsl:otherwise>
             </xsl:choose>
-        </xsl:variable>['<xsl:value-of select="@Number"/>' <xsl:value-of select="fn:replace(@Name, '-', '_')"/> ['<xsl:value-of select="$sizeInBytes"/>']]
-    </xsl:template>
-
-    <xsl:template match="knx:DatapointType">
-        <xsl:variable name="datapointTypeId">
-            <xsl:call-template name="getDatapointTypeId">
-                <xsl:with-param name="contextNode" select="."/>
-            </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="@Number"/>' <xsl:value-of select="$datapointTypeId"/> ['"<xsl:value-of select="@Text"/>"', '<xsl:value-of select="@SizeInBit"/>']]
-    </xsl:template>
-
-    <xsl:template match="knx:DatapointSubtype">
-        <xsl:variable name="datapointSubtypeValue" select="concat(../../@Number, format-number(@Number, '0000'))"/>
-        <xsl:variable name="datapointSubtypeId">
-            <xsl:choose>
-                <xsl:when test="fn:starts-with(@Name, 'DPT')">DPST_<xsl:value-of select="fn:substring-after(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(@Name, '\[', '_'), '\]', ''), '&#x00B3;', '_3'), '&#xB5;', 'y'), '/', ''), '-', '_'), 'DPT_')"/></xsl:when>
-                <xsl:otherwise>DPST_<xsl:for-each select="tokenize(@Name, ' ')"><xsl:value-of select="concat(upper-case(substring(.,1,1)), substring(., 2))"/><xsl:if test="position()!=last()">_</xsl:if></xsl:for-each></xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="datapointTypeId">
-            <xsl:call-template name="getDatapointTypeId">
-                <xsl:with-param name="contextNode" select="../.."/>
-            </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="$datapointSubtypeValue"/>' <xsl:value-of select="$datapointSubtypeId"/> ['KnxDatapointType.<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="fn:replace(@Name, '-', '_')"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$sizeInBytes"/>', '"<xsl:value-of select="@Name"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:Manufacturer">
@@ -152,7 +157,7 @@
                     </xsl:call-template>
                 </xsl:otherwise>
             </xsl:choose>
-        </xsl:variable>['<xsl:value-of select="@KnxManufacturerId"/>' <xsl:value-of select="$manufacturerId"/> ['"<xsl:value-of select="fn:replace(normalize-space(@Name),'&#xa0;', ' ')"/>"']]
+        </xsl:variable>['<xsl:value-of select="position()"/>' M_<xsl:value-of select="$manufacturerId"/> ['<xsl:value-of select="@KnxManufacturerId"/>', '"<xsl:value-of select="fn:replace(normalize-space(@Name),'&#xa0;', ' ')"/>"']]
     </xsl:template>
 
     <xsl:template name="getDatatypeId">

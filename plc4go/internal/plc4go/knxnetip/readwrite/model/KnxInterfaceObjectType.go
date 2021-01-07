@@ -25,134 +25,249 @@ import (
 type KnxInterfaceObjectType uint16
 
 type IKnxInterfaceObjectType interface {
-	Text() string
+	Code() string
+	Name() string
 	Serialize(io utils.WriteBuffer) error
 }
 
 const (
-	KnxInterfaceObjectType_OT_GENERAL                        KnxInterfaceObjectType = 65535
-	KnxInterfaceObjectType_OT_DEVICE                         KnxInterfaceObjectType = 0
-	KnxInterfaceObjectType_OT_ADDRESS_TABLE                  KnxInterfaceObjectType = 1
-	KnxInterfaceObjectType_OT_ASSOCIATION_TABLE              KnxInterfaceObjectType = 2
-	KnxInterfaceObjectType_OT_APPLICATION_PROGRAM            KnxInterfaceObjectType = 3
-	KnxInterfaceObjectType_OT_INTERACE_PROGRAM               KnxInterfaceObjectType = 4
-	KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE  KnxInterfaceObjectType = 5
-	KnxInterfaceObjectType_OT_ROUTER                         KnxInterfaceObjectType = 6
-	KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE      KnxInterfaceObjectType = 7
-	KnxInterfaceObjectType_OT_CEMI_SERVER                    KnxInterfaceObjectType = 8
-	KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE             KnxInterfaceObjectType = 9
-	KnxInterfaceObjectType_OT_POLLING_MASTER                 KnxInterfaceObjectType = 10
-	KnxInterfaceObjectType_OT_KNXIP_PARAMETER                KnxInterfaceObjectType = 11
-	KnxInterfaceObjectType_OT_FILE_SERVER                    KnxInterfaceObjectType = 13
-	KnxInterfaceObjectType_OT_SECURITY                       KnxInterfaceObjectType = 17
-	KnxInterfaceObjectType_OT_RF_MEDIUM                      KnxInterfaceObjectType = 19
-	KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR       KnxInterfaceObjectType = 409
-	KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR        KnxInterfaceObjectType = 410
-	KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC KnxInterfaceObjectType = 417
-	KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC         KnxInterfaceObjectType = 418
-	KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC           KnxInterfaceObjectType = 420
-	KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC         KnxInterfaceObjectType = 421
-	KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC        KnxInterfaceObjectType = 800
-	KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC          KnxInterfaceObjectType = 801
+	KnxInterfaceObjectType_OT_UNKNOWN                        KnxInterfaceObjectType = 0
+	KnxInterfaceObjectType_OT_GENERAL                        KnxInterfaceObjectType = 1
+	KnxInterfaceObjectType_OT_DEVICE                         KnxInterfaceObjectType = 2
+	KnxInterfaceObjectType_OT_ADDRESS_TABLE                  KnxInterfaceObjectType = 3
+	KnxInterfaceObjectType_OT_ASSOCIATION_TABLE              KnxInterfaceObjectType = 4
+	KnxInterfaceObjectType_OT_APPLICATION_PROGRAM            KnxInterfaceObjectType = 5
+	KnxInterfaceObjectType_OT_INTERACE_PROGRAM               KnxInterfaceObjectType = 6
+	KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE  KnxInterfaceObjectType = 7
+	KnxInterfaceObjectType_OT_ROUTER                         KnxInterfaceObjectType = 8
+	KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE      KnxInterfaceObjectType = 9
+	KnxInterfaceObjectType_OT_CEMI_SERVER                    KnxInterfaceObjectType = 10
+	KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE             KnxInterfaceObjectType = 11
+	KnxInterfaceObjectType_OT_POLLING_MASTER                 KnxInterfaceObjectType = 12
+	KnxInterfaceObjectType_OT_KNXIP_PARAMETER                KnxInterfaceObjectType = 13
+	KnxInterfaceObjectType_OT_FILE_SERVER                    KnxInterfaceObjectType = 14
+	KnxInterfaceObjectType_OT_SECURITY                       KnxInterfaceObjectType = 15
+	KnxInterfaceObjectType_OT_RF_MEDIUM                      KnxInterfaceObjectType = 16
+	KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR       KnxInterfaceObjectType = 17
+	KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR        KnxInterfaceObjectType = 18
+	KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC KnxInterfaceObjectType = 19
+	KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC         KnxInterfaceObjectType = 20
+	KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC           KnxInterfaceObjectType = 21
+	KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC         KnxInterfaceObjectType = 22
+	KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC        KnxInterfaceObjectType = 23
+	KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC          KnxInterfaceObjectType = 24
 )
 
-func (e KnxInterfaceObjectType) Text() string {
+func (e KnxInterfaceObjectType) Code() string {
 	switch e {
 	case 0:
 		{ /* '0' */
-			return "Device Object"
+			return "U"
 		}
 	case 1:
 		{ /* '1' */
-			return "Addresstable Object"
+			return "G"
 		}
 	case 10:
 		{ /* '10' */
-			return "Polling Master"
+			return "8"
 		}
 	case 11:
 		{ /* '11' */
-			return "KNXnet/IP Parameter Object"
+			return "9"
+		}
+	case 12:
+		{ /* '12' */
+			return "10"
 		}
 	case 13:
 		{ /* '13' */
-			return "File Server Object"
+			return "11"
+		}
+	case 14:
+		{ /* '14' */
+			return "13"
+		}
+	case 15:
+		{ /* '15' */
+			return "17"
+		}
+	case 16:
+		{ /* '16' */
+			return "19"
 		}
 	case 17:
 		{ /* '17' */
-			return "Security Object"
+			return "409"
+		}
+	case 18:
+		{ /* '18' */
+			return "410"
 		}
 	case 19:
 		{ /* '19' */
-			return "RF Medium Object"
+			return "417"
 		}
 	case 2:
 		{ /* '2' */
-			return "Associationtable Object"
+			return "0"
+		}
+	case 20:
+		{ /* '20' */
+			return "418"
+		}
+	case 21:
+		{ /* '21' */
+			return "420"
+		}
+	case 22:
+		{ /* '22' */
+			return "421"
+		}
+	case 23:
+		{ /* '23' */
+			return "800"
+		}
+	case 24:
+		{ /* '24' */
+			return "801"
 		}
 	case 3:
 		{ /* '3' */
-			return "Applicationprogram Object"
+			return "1"
 		}
 	case 4:
 		{ /* '4' */
-			return "Interfaceprogram Object"
-		}
-	case 409:
-		{ /* '409' */
-			return "Indoor Brightness Sensor"
-		}
-	case 410:
-		{ /* '410' */
-			return "Indoor Luminance Sensor"
-		}
-	case 417:
-		{ /* '417' */
-			return "Light Switching Actuator Basic"
-		}
-	case 418:
-		{ /* '418' */
-			return "Dimming Actuator Basic"
-		}
-	case 420:
-		{ /* '420' */
-			return "Dimming   Sensor Basic"
-		}
-	case 421:
-		{ /* '421' */
-			return "Switching Sensor Basic"
+			return "2"
 		}
 	case 5:
 		{ /* '5' */
-			return "KNX-Object Associationtable Object"
+			return "3"
 		}
 	case 6:
 		{ /* '6' */
-			return "Router Object"
-		}
-	case 65535:
-		{ /* '65535' */
-			return "General Object"
+			return "4"
 		}
 	case 7:
 		{ /* '7' */
-			return "LTE Address Routing Table Object"
+			return "5"
 		}
 	case 8:
 		{ /* '8' */
-			return "cEMI Server Object"
-		}
-	case 800:
-		{ /* '800' */
-			return "Sunblind Actuator Basic"
-		}
-	case 801:
-		{ /* '801' */
-			return "Sunblind Sensor Basic"
+			return "6"
 		}
 	case 9:
 		{ /* '9' */
+			return "7"
+		}
+	default:
+		{
+			return ""
+		}
+	}
+}
+
+func (e KnxInterfaceObjectType) Name() string {
+	switch e {
+	case 0:
+		{ /* '0' */
+			return "Unknown Interface Object Type"
+		}
+	case 1:
+		{ /* '1' */
+			return "General Interface Object Type"
+		}
+	case 10:
+		{ /* '10' */
+			return "cEMI Server Object"
+		}
+	case 11:
+		{ /* '11' */
 			return "Group Object Table Object"
+		}
+	case 12:
+		{ /* '12' */
+			return "Polling Master"
+		}
+	case 13:
+		{ /* '13' */
+			return "KNXnet/IP Parameter Object"
+		}
+	case 14:
+		{ /* '14' */
+			return "File Server Object"
+		}
+	case 15:
+		{ /* '15' */
+			return "Security Object"
+		}
+	case 16:
+		{ /* '16' */
+			return "RF Medium Object"
+		}
+	case 17:
+		{ /* '17' */
+			return "Indoor Brightness Sensor"
+		}
+	case 18:
+		{ /* '18' */
+			return "Indoor Luminance Sensor"
+		}
+	case 19:
+		{ /* '19' */
+			return "Light Switching Actuator Basic"
+		}
+	case 2:
+		{ /* '2' */
+			return "Device Object"
+		}
+	case 20:
+		{ /* '20' */
+			return "Dimming Actuator Basic"
+		}
+	case 21:
+		{ /* '21' */
+			return "Dimming   Sensor Basic"
+		}
+	case 22:
+		{ /* '22' */
+			return "Switching Sensor Basic"
+		}
+	case 23:
+		{ /* '23' */
+			return "Sunblind Actuator Basic"
+		}
+	case 24:
+		{ /* '24' */
+			return "Sunblind Sensor Basic"
+		}
+	case 3:
+		{ /* '3' */
+			return "Addresstable Object"
+		}
+	case 4:
+		{ /* '4' */
+			return "Associationtable Object"
+		}
+	case 5:
+		{ /* '5' */
+			return "Applicationprogram Object"
+		}
+	case 6:
+		{ /* '6' */
+			return "Interfaceprogram Object"
+		}
+	case 7:
+		{ /* '7' */
+			return "KNX-Object Associationtable Object"
+		}
+	case 8:
+		{ /* '8' */
+			return "Router Object"
+		}
+	case 9:
+		{ /* '9' */
+			return "LTE Address Routing Table Object"
 		}
 	default:
 		{
@@ -163,63 +278,69 @@ func (e KnxInterfaceObjectType) Text() string {
 func KnxInterfaceObjectTypeByValue(value uint16) KnxInterfaceObjectType {
 	switch value {
 	case 0:
-		return KnxInterfaceObjectType_OT_DEVICE
+		return KnxInterfaceObjectType_OT_UNKNOWN
 	case 1:
-		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
-	case 10:
-		return KnxInterfaceObjectType_OT_POLLING_MASTER
-	case 11:
-		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
-	case 13:
-		return KnxInterfaceObjectType_OT_FILE_SERVER
-	case 17:
-		return KnxInterfaceObjectType_OT_SECURITY
-	case 19:
-		return KnxInterfaceObjectType_OT_RF_MEDIUM
-	case 2:
-		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
-	case 3:
-		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
-	case 4:
-		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
-	case 409:
-		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
-	case 410:
-		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
-	case 417:
-		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
-	case 418:
-		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
-	case 420:
-		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
-	case 421:
-		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
-	case 5:
-		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
-	case 6:
-		return KnxInterfaceObjectType_OT_ROUTER
-	case 65535:
 		return KnxInterfaceObjectType_OT_GENERAL
-	case 7:
-		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
-	case 8:
+	case 10:
 		return KnxInterfaceObjectType_OT_CEMI_SERVER
-	case 800:
-		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
-	case 801:
-		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
-	case 9:
+	case 11:
 		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+	case 12:
+		return KnxInterfaceObjectType_OT_POLLING_MASTER
+	case 13:
+		return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+	case 14:
+		return KnxInterfaceObjectType_OT_FILE_SERVER
+	case 15:
+		return KnxInterfaceObjectType_OT_SECURITY
+	case 16:
+		return KnxInterfaceObjectType_OT_RF_MEDIUM
+	case 17:
+		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+	case 18:
+		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+	case 19:
+		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+	case 2:
+		return KnxInterfaceObjectType_OT_DEVICE
+	case 20:
+		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+	case 21:
+		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+	case 22:
+		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+	case 23:
+		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+	case 24:
+		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+	case 3:
+		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
+	case 4:
+		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
+	case 5:
+		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
+	case 6:
+		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
+	case 7:
+		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
+	case 8:
+		return KnxInterfaceObjectType_OT_ROUTER
+	case 9:
+		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
 	}
 	return 0
 }
 
 func KnxInterfaceObjectTypeByName(value string) KnxInterfaceObjectType {
 	switch value {
-	case "OT_DEVICE":
-		return KnxInterfaceObjectType_OT_DEVICE
-	case "OT_ADDRESS_TABLE":
-		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
+	case "OT_UNKNOWN":
+		return KnxInterfaceObjectType_OT_UNKNOWN
+	case "OT_GENERAL":
+		return KnxInterfaceObjectType_OT_GENERAL
+	case "OT_CEMI_SERVER":
+		return KnxInterfaceObjectType_OT_CEMI_SERVER
+	case "OT_GROUP_OBJECT_TABLE":
+		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
 	case "OT_POLLING_MASTER":
 		return KnxInterfaceObjectType_OT_POLLING_MASTER
 	case "OT_KNXIP_PARAMETER":
@@ -230,40 +351,38 @@ func KnxInterfaceObjectTypeByName(value string) KnxInterfaceObjectType {
 		return KnxInterfaceObjectType_OT_SECURITY
 	case "OT_RF_MEDIUM":
 		return KnxInterfaceObjectType_OT_RF_MEDIUM
-	case "OT_ASSOCIATION_TABLE":
-		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
-	case "OT_APPLICATION_PROGRAM":
-		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
-	case "OT_INTERACE_PROGRAM":
-		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
 	case "OT_INDOOR_BRIGHTNESS_SENSOR":
 		return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
 	case "OT_INDOOR_LUMINANCE_SENSOR":
 		return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
 	case "OT_LIGHT_SWITCHING_ACTUATOR_BASIC":
 		return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+	case "OT_DEVICE":
+		return KnxInterfaceObjectType_OT_DEVICE
 	case "OT_DIMMING_ACTUATOR_BASIC":
 		return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
 	case "OT_DIMMING_SENSOR_BASIC":
 		return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
 	case "OT_SWITCHING_SENSOR_BASIC":
 		return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
-	case "OT_EIBOBJECT_ASSOCIATATION_TABLE":
-		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
-	case "OT_ROUTER":
-		return KnxInterfaceObjectType_OT_ROUTER
-	case "OT_GENERAL":
-		return KnxInterfaceObjectType_OT_GENERAL
-	case "OT_LTE_ADDRESS_ROUTING_TABLE":
-		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
-	case "OT_CEMI_SERVER":
-		return KnxInterfaceObjectType_OT_CEMI_SERVER
 	case "OT_SUNBLIND_ACTUATOR_BASIC":
 		return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
 	case "OT_SUNBLIND_SENSOR_BASIC":
 		return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
-	case "OT_GROUP_OBJECT_TABLE":
-		return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+	case "OT_ADDRESS_TABLE":
+		return KnxInterfaceObjectType_OT_ADDRESS_TABLE
+	case "OT_ASSOCIATION_TABLE":
+		return KnxInterfaceObjectType_OT_ASSOCIATION_TABLE
+	case "OT_APPLICATION_PROGRAM":
+		return KnxInterfaceObjectType_OT_APPLICATION_PROGRAM
+	case "OT_INTERACE_PROGRAM":
+		return KnxInterfaceObjectType_OT_INTERACE_PROGRAM
+	case "OT_EIBOBJECT_ASSOCIATATION_TABLE":
+		return KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE
+	case "OT_ROUTER":
+		return KnxInterfaceObjectType_OT_ROUTER
+	case "OT_LTE_ADDRESS_ROUTING_TABLE":
+		return KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE
 	}
 	return 0
 }
@@ -301,10 +420,14 @@ func (e KnxInterfaceObjectType) Serialize(io utils.WriteBuffer) error {
 
 func (e KnxInterfaceObjectType) String() string {
 	switch e {
-	case KnxInterfaceObjectType_OT_DEVICE:
-		return "OT_DEVICE"
-	case KnxInterfaceObjectType_OT_ADDRESS_TABLE:
-		return "OT_ADDRESS_TABLE"
+	case KnxInterfaceObjectType_OT_UNKNOWN:
+		return "OT_UNKNOWN"
+	case KnxInterfaceObjectType_OT_GENERAL:
+		return "OT_GENERAL"
+	case KnxInterfaceObjectType_OT_CEMI_SERVER:
+		return "OT_CEMI_SERVER"
+	case KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE:
+		return "OT_GROUP_OBJECT_TABLE"
 	case KnxInterfaceObjectType_OT_POLLING_MASTER:
 		return "OT_POLLING_MASTER"
 	case KnxInterfaceObjectType_OT_KNXIP_PARAMETER:
@@ -315,40 +438,38 @@ func (e KnxInterfaceObjectType) String() string {
 		return "OT_SECURITY"
 	case KnxInterfaceObjectType_OT_RF_MEDIUM:
 		return "OT_RF_MEDIUM"
-	case KnxInterfaceObjectType_OT_ASSOCIATION_TABLE:
-		return "OT_ASSOCIATION_TABLE"
-	case KnxInterfaceObjectType_OT_APPLICATION_PROGRAM:
-		return "OT_APPLICATION_PROGRAM"
-	case KnxInterfaceObjectType_OT_INTERACE_PROGRAM:
-		return "OT_INTERACE_PROGRAM"
 	case KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR:
 		return "OT_INDOOR_BRIGHTNESS_SENSOR"
 	case KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR:
 		return "OT_INDOOR_LUMINANCE_SENSOR"
 	case KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC:
 		return "OT_LIGHT_SWITCHING_ACTUATOR_BASIC"
+	case KnxInterfaceObjectType_OT_DEVICE:
+		return "OT_DEVICE"
 	case KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC:
 		return "OT_DIMMING_ACTUATOR_BASIC"
 	case KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC:
 		return "OT_DIMMING_SENSOR_BASIC"
 	case KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC:
 		return "OT_SWITCHING_SENSOR_BASIC"
-	case KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE:
-		return "OT_EIBOBJECT_ASSOCIATATION_TABLE"
-	case KnxInterfaceObjectType_OT_ROUTER:
-		return "OT_ROUTER"
-	case KnxInterfaceObjectType_OT_GENERAL:
-		return "OT_GENERAL"
-	case KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE:
-		return "OT_LTE_ADDRESS_ROUTING_TABLE"
-	case KnxInterfaceObjectType_OT_CEMI_SERVER:
-		return "OT_CEMI_SERVER"
 	case KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC:
 		return "OT_SUNBLIND_ACTUATOR_BASIC"
 	case KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC:
 		return "OT_SUNBLIND_SENSOR_BASIC"
-	case KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE:
-		return "OT_GROUP_OBJECT_TABLE"
+	case KnxInterfaceObjectType_OT_ADDRESS_TABLE:
+		return "OT_ADDRESS_TABLE"
+	case KnxInterfaceObjectType_OT_ASSOCIATION_TABLE:
+		return "OT_ASSOCIATION_TABLE"
+	case KnxInterfaceObjectType_OT_APPLICATION_PROGRAM:
+		return "OT_APPLICATION_PROGRAM"
+	case KnxInterfaceObjectType_OT_INTERACE_PROGRAM:
+		return "OT_INTERACE_PROGRAM"
+	case KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE:
+		return "OT_EIBOBJECT_ASSOCIATATION_TABLE"
+	case KnxInterfaceObjectType_OT_ROUTER:
+		return "OT_ROUTER"
+	case KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE:
+		return "OT_LTE_ADDRESS_ROUTING_TABLE"
 	}
 	return ""
 }
