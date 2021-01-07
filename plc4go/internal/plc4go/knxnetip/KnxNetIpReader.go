@@ -20,7 +20,7 @@ package knxnetip
 
 import (
 	"errors"
-	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
@@ -169,7 +169,7 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 						uint8(1), false, true, uint8(0), nil, &apciType, nil,
 						&dataFirstByte, nil, true, driverModel.CEMIPriority_LOW, false,
 						false)))
-			m.connection.SendRequest(
+			_ = m.connection.SendRequest(
 				deviceDescriptorReadRequest,
 				func(message interface{}) bool {
 					tunnelingRequest := driverModel.CastTunnelingRequest(message)
@@ -194,7 +194,7 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 				func(message interface{}) error {
 					controlType = driverModel.ControlType_ACK
 					// Send back an ACK
-					m.connection.Send(
+					_ = m.connection.Send(
 						driverModel.NewTunnelingRequest(
 							driverModel.NewTunnelingRequestDataBlock(0, 0),
 							driverModel.NewLDataReq(0, nil,
@@ -375,15 +375,29 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 			_, _ = readBuffer.ReadUint8(8)
 			_, _ = readBuffer.ReadUint8(8)
 
-			count, _ := readBuffer.ReadUint8(4)
-			index, _ := readBuffer.ReadUint16(12)
+			_ /*count*/, _ = readBuffer.ReadUint8(4)
+			_ /*index*/, _ = readBuffer.ReadUint16(12)
 
-			// TODO: Depending on the object id and property id, parse the remaining data accordingly.
-			fmt.Printf("Got object-id %d property-id %d count %d index %d\n", objectId, propertyId, count, index)
+			// Read the data payload.
+			dataLength := dataFrameExt.DataLength - 5
+
+			// Depending on the object id and property id, parse the remaining data accordingly.
+			property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
+			for i := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; i < driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; i++ {
+				// If the propertyId matches and this is either a general object or the object id matches, add it to the result
+				if i.PropertyId() == uint8(propertyId) && (i.ObjectType().Code() == "G" || i.ObjectType().Code() == strconv.Itoa(objectId)) {
+					property = i
+					break
+				}
+			}
+
+			// Parse the payload according to the specified datatype
+			dataType := property.PropertyDataType()
+			plcValue := readwrite.ParsePropertyDataType(*readBuffer, dataType, dataLength)
 
 			// Send back an ACK
 			controlType := driverModel.ControlType_ACK
-			m.connection.Send(
+			_ = m.connection.Send(
 				driverModel.NewTunnelingRequest(
 					driverModel.NewTunnelingRequestDataBlock(0, 0),
 					driverModel.NewLDataReq(0, nil,
@@ -393,7 +407,7 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 							nil, nil, nil, true, driverModel.CEMIPriority_SYSTEM,
 							false, false))))
 
-			result <- internalValues.NewPlcBOOL(true)
+			result <- plcValue
 			return nil
 		},
 		time.Second*5)

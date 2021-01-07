@@ -25,1620 +25,1626 @@ import (
 type KnxDatapointSubtype uint32
 
 type IKnxDatapointSubtype interface {
+	Number() uint16
 	DatapointType() KnxDatapointType
-	Text() string
+	Name() string
 	Serialize(io utils.WriteBuffer) error
 }
 
 const (
-	KnxDatapointSubtype_DPST_Switch                                   KnxDatapointSubtype = 10001
-	KnxDatapointSubtype_DPST_Bool                                     KnxDatapointSubtype = 10002
-	KnxDatapointSubtype_DPST_Enable                                   KnxDatapointSubtype = 10003
-	KnxDatapointSubtype_DPST_Ramp                                     KnxDatapointSubtype = 10004
-	KnxDatapointSubtype_DPST_Alarm                                    KnxDatapointSubtype = 10005
-	KnxDatapointSubtype_DPST_BinaryValue                              KnxDatapointSubtype = 10006
-	KnxDatapointSubtype_DPST_Step                                     KnxDatapointSubtype = 10007
-	KnxDatapointSubtype_DPST_UpDown                                   KnxDatapointSubtype = 10008
-	KnxDatapointSubtype_DPST_OpenClose                                KnxDatapointSubtype = 10009
-	KnxDatapointSubtype_DPST_Start                                    KnxDatapointSubtype = 10010
-	KnxDatapointSubtype_DPST_State                                    KnxDatapointSubtype = 10011
-	KnxDatapointSubtype_DPST_Invert                                   KnxDatapointSubtype = 10012
-	KnxDatapointSubtype_DPST_DimSendStyle                             KnxDatapointSubtype = 10013
-	KnxDatapointSubtype_DPST_InputSource                              KnxDatapointSubtype = 10014
-	KnxDatapointSubtype_DPST_Reset                                    KnxDatapointSubtype = 10015
-	KnxDatapointSubtype_DPST_Ack                                      KnxDatapointSubtype = 10016
-	KnxDatapointSubtype_DPST_Trigger                                  KnxDatapointSubtype = 10017
-	KnxDatapointSubtype_DPST_Occupancy                                KnxDatapointSubtype = 10018
-	KnxDatapointSubtype_DPST_Window_Door                              KnxDatapointSubtype = 10019
-	KnxDatapointSubtype_DPST_LogicalFunction                          KnxDatapointSubtype = 10021
-	KnxDatapointSubtype_DPST_Scene_AB                                 KnxDatapointSubtype = 10022
-	KnxDatapointSubtype_DPST_ShutterBlinds_Mode                       KnxDatapointSubtype = 10023
-	KnxDatapointSubtype_DPST_DayNight                                 KnxDatapointSubtype = 10024
-	KnxDatapointSubtype_DPST_Heat_Cool                                KnxDatapointSubtype = 10100
-	KnxDatapointSubtype_DPST_Switch_Control                           KnxDatapointSubtype = 20001
-	KnxDatapointSubtype_DPST_Bool_Control                             KnxDatapointSubtype = 20002
-	KnxDatapointSubtype_DPST_Enable_Control                           KnxDatapointSubtype = 20003
-	KnxDatapointSubtype_DPST_Ramp_Control                             KnxDatapointSubtype = 20004
-	KnxDatapointSubtype_DPST_Alarm_Control                            KnxDatapointSubtype = 20005
-	KnxDatapointSubtype_DPST_BinaryValue_Control                      KnxDatapointSubtype = 20006
-	KnxDatapointSubtype_DPST_Step_Control                             KnxDatapointSubtype = 20007
-	KnxDatapointSubtype_DPST_Direction1_Control                       KnxDatapointSubtype = 20008
-	KnxDatapointSubtype_DPST_Direction2_Control                       KnxDatapointSubtype = 20009
-	KnxDatapointSubtype_DPST_Start_Control                            KnxDatapointSubtype = 20010
-	KnxDatapointSubtype_DPST_State_Control                            KnxDatapointSubtype = 20011
-	KnxDatapointSubtype_DPST_Invert_Control                           KnxDatapointSubtype = 20012
-	KnxDatapointSubtype_DPST_Control_Dimming                          KnxDatapointSubtype = 30007
-	KnxDatapointSubtype_DPST_Control_Blinds                           KnxDatapointSubtype = 30008
-	KnxDatapointSubtype_DPST_Char_ASCII                               KnxDatapointSubtype = 40001
-	KnxDatapointSubtype_DPST_Char_8859_1                              KnxDatapointSubtype = 40002
-	KnxDatapointSubtype_DPST_Scaling                                  KnxDatapointSubtype = 50001
-	KnxDatapointSubtype_DPST_Angle                                    KnxDatapointSubtype = 50003
-	KnxDatapointSubtype_DPST_Percent_U8                               KnxDatapointSubtype = 50004
-	KnxDatapointSubtype_DPST_DecimalFactor                            KnxDatapointSubtype = 50005
-	KnxDatapointSubtype_DPST_Tariff                                   KnxDatapointSubtype = 50006
-	KnxDatapointSubtype_DPST_Value_1_Ucount                           KnxDatapointSubtype = 50010
-	KnxDatapointSubtype_DPST_FanStage                                 KnxDatapointSubtype = 50100
-	KnxDatapointSubtype_DPST_Percent_V8                               KnxDatapointSubtype = 60001
-	KnxDatapointSubtype_DPST_Value_1_Count                            KnxDatapointSubtype = 60010
-	KnxDatapointSubtype_DPST_Status_Mode3                             KnxDatapointSubtype = 60020
-	KnxDatapointSubtype_DPST_Value_2_Ucount                           KnxDatapointSubtype = 70001
-	KnxDatapointSubtype_DPST_TimePeriodMsec                           KnxDatapointSubtype = 70002
-	KnxDatapointSubtype_DPST_TimePeriod10Msec                         KnxDatapointSubtype = 70003
-	KnxDatapointSubtype_DPST_TimePeriod100Msec                        KnxDatapointSubtype = 70004
-	KnxDatapointSubtype_DPST_TimePeriodSec                            KnxDatapointSubtype = 70005
-	KnxDatapointSubtype_DPST_TimePeriodMin                            KnxDatapointSubtype = 70006
-	KnxDatapointSubtype_DPST_TimePeriodHrs                            KnxDatapointSubtype = 70007
-	KnxDatapointSubtype_DPST_PropDataType                             KnxDatapointSubtype = 70010
-	KnxDatapointSubtype_DPST_Length_mm                                KnxDatapointSubtype = 70011
-	KnxDatapointSubtype_DPST_UElCurrentmA                             KnxDatapointSubtype = 70012
-	KnxDatapointSubtype_DPST_Brightness                               KnxDatapointSubtype = 70013
-	KnxDatapointSubtype_DPST_Absolute_Colour_Temperature              KnxDatapointSubtype = 70600
-	KnxDatapointSubtype_DPST_Value_2_Count                            KnxDatapointSubtype = 80001
-	KnxDatapointSubtype_DPST_DeltaTimeMsec                            KnxDatapointSubtype = 80002
-	KnxDatapointSubtype_DPST_DeltaTime10Msec                          KnxDatapointSubtype = 80003
-	KnxDatapointSubtype_DPST_DeltaTime100Msec                         KnxDatapointSubtype = 80004
-	KnxDatapointSubtype_DPST_DeltaTimeSec                             KnxDatapointSubtype = 80005
-	KnxDatapointSubtype_DPST_DeltaTimeMin                             KnxDatapointSubtype = 80006
-	KnxDatapointSubtype_DPST_DeltaTimeHrs                             KnxDatapointSubtype = 80007
-	KnxDatapointSubtype_DPST_Percent_V16                              KnxDatapointSubtype = 80010
-	KnxDatapointSubtype_DPST_Rotation_Angle                           KnxDatapointSubtype = 80011
-	KnxDatapointSubtype_DPST_Length_m                                 KnxDatapointSubtype = 80012
-	KnxDatapointSubtype_DPST_Value_Temp                               KnxDatapointSubtype = 90001
-	KnxDatapointSubtype_DPST_Value_Tempd                              KnxDatapointSubtype = 90002
-	KnxDatapointSubtype_DPST_Value_Tempa                              KnxDatapointSubtype = 90003
-	KnxDatapointSubtype_DPST_Value_Lux                                KnxDatapointSubtype = 90004
-	KnxDatapointSubtype_DPST_Value_Wsp                                KnxDatapointSubtype = 90005
-	KnxDatapointSubtype_DPST_Value_Pres                               KnxDatapointSubtype = 90006
-	KnxDatapointSubtype_DPST_Value_Humidity                           KnxDatapointSubtype = 90007
-	KnxDatapointSubtype_DPST_Value_AirQuality                         KnxDatapointSubtype = 90008
-	KnxDatapointSubtype_DPST_Value_AirFlow                            KnxDatapointSubtype = 90009
-	KnxDatapointSubtype_DPST_Value_Time1                              KnxDatapointSubtype = 90010
-	KnxDatapointSubtype_DPST_Value_Time2                              KnxDatapointSubtype = 90011
-	KnxDatapointSubtype_DPST_Value_Volt                               KnxDatapointSubtype = 90020
-	KnxDatapointSubtype_DPST_Value_Curr                               KnxDatapointSubtype = 90021
-	KnxDatapointSubtype_DPST_PowerDensity                             KnxDatapointSubtype = 90022
-	KnxDatapointSubtype_DPST_KelvinPerPercent                         KnxDatapointSubtype = 90023
-	KnxDatapointSubtype_DPST_Power                                    KnxDatapointSubtype = 90024
-	KnxDatapointSubtype_DPST_Value_Volume_Flow                        KnxDatapointSubtype = 90025
-	KnxDatapointSubtype_DPST_Rain_Amount                              KnxDatapointSubtype = 90026
-	KnxDatapointSubtype_DPST_Value_Temp_F                             KnxDatapointSubtype = 90027
-	KnxDatapointSubtype_DPST_Value_Wsp_kmh                            KnxDatapointSubtype = 90028
-	KnxDatapointSubtype_DPST_Value_Absolute_Humidity                  KnxDatapointSubtype = 90029
-	KnxDatapointSubtype_DPST_Concentration_ygm3                       KnxDatapointSubtype = 90030
-	KnxDatapointSubtype_DPST_TimeOfDay                                KnxDatapointSubtype = 100001
-	KnxDatapointSubtype_DPST_Date                                     KnxDatapointSubtype = 110001
-	KnxDatapointSubtype_DPST_Value_4_Ucount                           KnxDatapointSubtype = 120001
-	KnxDatapointSubtype_DPST_LongTimePeriod_Sec                       KnxDatapointSubtype = 120100
-	KnxDatapointSubtype_DPST_LongTimePeriod_Min                       KnxDatapointSubtype = 120101
-	KnxDatapointSubtype_DPST_LongTimePeriod_Hrs                       KnxDatapointSubtype = 120102
-	KnxDatapointSubtype_DPST_VolumeLiquid_Litre                       KnxDatapointSubtype = 121200
-	KnxDatapointSubtype_DPST_Volume_m_3                               KnxDatapointSubtype = 121201
-	KnxDatapointSubtype_DPST_Value_4_Count                            KnxDatapointSubtype = 130001
-	KnxDatapointSubtype_DPST_FlowRate_m3h                             KnxDatapointSubtype = 130002
-	KnxDatapointSubtype_DPST_ActiveEnergy                             KnxDatapointSubtype = 130010
-	KnxDatapointSubtype_DPST_ApparantEnergy                           KnxDatapointSubtype = 130011
-	KnxDatapointSubtype_DPST_ReactiveEnergy                           KnxDatapointSubtype = 130012
-	KnxDatapointSubtype_DPST_ActiveEnergy_kWh                         KnxDatapointSubtype = 130013
-	KnxDatapointSubtype_DPST_ApparantEnergy_kVAh                      KnxDatapointSubtype = 130014
-	KnxDatapointSubtype_DPST_ReactiveEnergy_kVARh                     KnxDatapointSubtype = 130015
-	KnxDatapointSubtype_DPST_ActiveEnergy_MWh                         KnxDatapointSubtype = 130016
-	KnxDatapointSubtype_DPST_LongDeltaTimeSec                         KnxDatapointSubtype = 130100
-	KnxDatapointSubtype_DPST_DeltaVolumeLiquid_Litre                  KnxDatapointSubtype = 131200
-	KnxDatapointSubtype_DPST_DeltaVolume_m_3                          KnxDatapointSubtype = 131201
-	KnxDatapointSubtype_DPST_Value_Acceleration                       KnxDatapointSubtype = 140000
-	KnxDatapointSubtype_DPST_Value_Acceleration_Angular               KnxDatapointSubtype = 140001
-	KnxDatapointSubtype_DPST_Value_Activation_Energy                  KnxDatapointSubtype = 140002
-	KnxDatapointSubtype_DPST_Value_Activity                           KnxDatapointSubtype = 140003
-	KnxDatapointSubtype_DPST_Value_Mol                                KnxDatapointSubtype = 140004
-	KnxDatapointSubtype_DPST_Value_Amplitude                          KnxDatapointSubtype = 140005
-	KnxDatapointSubtype_DPST_Value_AngleRad                           KnxDatapointSubtype = 140006
-	KnxDatapointSubtype_DPST_Value_AngleDeg                           KnxDatapointSubtype = 140007
-	KnxDatapointSubtype_DPST_Value_Angular_Momentum                   KnxDatapointSubtype = 140008
-	KnxDatapointSubtype_DPST_Value_Angular_Velocity                   KnxDatapointSubtype = 140009
-	KnxDatapointSubtype_DPST_Value_Area                               KnxDatapointSubtype = 140010
-	KnxDatapointSubtype_DPST_Value_Capacitance                        KnxDatapointSubtype = 140011
-	KnxDatapointSubtype_DPST_Value_Charge_DensitySurface              KnxDatapointSubtype = 140012
-	KnxDatapointSubtype_DPST_Value_Charge_DensityVolume               KnxDatapointSubtype = 140013
-	KnxDatapointSubtype_DPST_Value_Compressibility                    KnxDatapointSubtype = 140014
-	KnxDatapointSubtype_DPST_Value_Conductance                        KnxDatapointSubtype = 140015
-	KnxDatapointSubtype_DPST_Value_Electrical_Conductivity            KnxDatapointSubtype = 140016
-	KnxDatapointSubtype_DPST_Value_Density                            KnxDatapointSubtype = 140017
-	KnxDatapointSubtype_DPST_Value_Electric_Charge                    KnxDatapointSubtype = 140018
-	KnxDatapointSubtype_DPST_Value_Electric_Current                   KnxDatapointSubtype = 140019
-	KnxDatapointSubtype_DPST_Value_Electric_CurrentDensity            KnxDatapointSubtype = 140020
-	KnxDatapointSubtype_DPST_Value_Electric_DipoleMoment              KnxDatapointSubtype = 140021
-	KnxDatapointSubtype_DPST_Value_Electric_Displacement              KnxDatapointSubtype = 140022
-	KnxDatapointSubtype_DPST_Value_Electric_FieldStrength             KnxDatapointSubtype = 140023
-	KnxDatapointSubtype_DPST_Value_Electric_Flux                      KnxDatapointSubtype = 140024
-	KnxDatapointSubtype_DPST_Value_Electric_FluxDensity               KnxDatapointSubtype = 140025
-	KnxDatapointSubtype_DPST_Value_Electric_Polarization              KnxDatapointSubtype = 140026
-	KnxDatapointSubtype_DPST_Value_Electric_Potential                 KnxDatapointSubtype = 140027
-	KnxDatapointSubtype_DPST_Value_Electric_PotentialDifference       KnxDatapointSubtype = 140028
-	KnxDatapointSubtype_DPST_Value_ElectromagneticMoment              KnxDatapointSubtype = 140029
-	KnxDatapointSubtype_DPST_Value_Electromotive_Force                KnxDatapointSubtype = 140030
-	KnxDatapointSubtype_DPST_Value_Energy                             KnxDatapointSubtype = 140031
-	KnxDatapointSubtype_DPST_Value_Force                              KnxDatapointSubtype = 140032
-	KnxDatapointSubtype_DPST_Value_Frequency                          KnxDatapointSubtype = 140033
-	KnxDatapointSubtype_DPST_Value_Angular_Frequency                  KnxDatapointSubtype = 140034
-	KnxDatapointSubtype_DPST_Value_Heat_Capacity                      KnxDatapointSubtype = 140035
-	KnxDatapointSubtype_DPST_Value_Heat_FlowRate                      KnxDatapointSubtype = 140036
-	KnxDatapointSubtype_DPST_Value_Heat_Quantity                      KnxDatapointSubtype = 140037
-	KnxDatapointSubtype_DPST_Value_Impedance                          KnxDatapointSubtype = 140038
-	KnxDatapointSubtype_DPST_Value_Length                             KnxDatapointSubtype = 140039
-	KnxDatapointSubtype_DPST_Value_Light_Quantity                     KnxDatapointSubtype = 140040
-	KnxDatapointSubtype_DPST_Value_Luminance                          KnxDatapointSubtype = 140041
-	KnxDatapointSubtype_DPST_Value_Luminous_Flux                      KnxDatapointSubtype = 140042
-	KnxDatapointSubtype_DPST_Value_Luminous_Intensity                 KnxDatapointSubtype = 140043
-	KnxDatapointSubtype_DPST_Value_Magnetic_FieldStrength             KnxDatapointSubtype = 140044
-	KnxDatapointSubtype_DPST_Value_Magnetic_Flux                      KnxDatapointSubtype = 140045
-	KnxDatapointSubtype_DPST_Value_Magnetic_FluxDensity               KnxDatapointSubtype = 140046
-	KnxDatapointSubtype_DPST_Value_Magnetic_Moment                    KnxDatapointSubtype = 140047
-	KnxDatapointSubtype_DPST_Value_Magnetic_Polarization              KnxDatapointSubtype = 140048
-	KnxDatapointSubtype_DPST_Value_Magnetization                      KnxDatapointSubtype = 140049
-	KnxDatapointSubtype_DPST_Value_MagnetomotiveForce                 KnxDatapointSubtype = 140050
-	KnxDatapointSubtype_DPST_Value_Mass                               KnxDatapointSubtype = 140051
-	KnxDatapointSubtype_DPST_Value_MassFlux                           KnxDatapointSubtype = 140052
-	KnxDatapointSubtype_DPST_Value_Momentum                           KnxDatapointSubtype = 140053
-	KnxDatapointSubtype_DPST_Value_Phase_AngleRad                     KnxDatapointSubtype = 140054
-	KnxDatapointSubtype_DPST_Value_Phase_AngleDeg                     KnxDatapointSubtype = 140055
-	KnxDatapointSubtype_DPST_Value_Power                              KnxDatapointSubtype = 140056
-	KnxDatapointSubtype_DPST_Value_Power_Factor                       KnxDatapointSubtype = 140057
-	KnxDatapointSubtype_DPST_Value_Pressure                           KnxDatapointSubtype = 140058
-	KnxDatapointSubtype_DPST_Value_Reactance                          KnxDatapointSubtype = 140059
-	KnxDatapointSubtype_DPST_Value_Resistance                         KnxDatapointSubtype = 140060
-	KnxDatapointSubtype_DPST_Value_Resistivity                        KnxDatapointSubtype = 140061
-	KnxDatapointSubtype_DPST_Value_SelfInductance                     KnxDatapointSubtype = 140062
-	KnxDatapointSubtype_DPST_Value_SolidAngle                         KnxDatapointSubtype = 140063
-	KnxDatapointSubtype_DPST_Value_Sound_Intensity                    KnxDatapointSubtype = 140064
-	KnxDatapointSubtype_DPST_Value_Speed                              KnxDatapointSubtype = 140065
-	KnxDatapointSubtype_DPST_Value_Stress                             KnxDatapointSubtype = 140066
-	KnxDatapointSubtype_DPST_Value_Surface_Tension                    KnxDatapointSubtype = 140067
-	KnxDatapointSubtype_DPST_Value_Common_Temperature                 KnxDatapointSubtype = 140068
-	KnxDatapointSubtype_DPST_Value_Absolute_Temperature               KnxDatapointSubtype = 140069
-	KnxDatapointSubtype_DPST_Value_TemperatureDifference              KnxDatapointSubtype = 140070
-	KnxDatapointSubtype_DPST_Value_Thermal_Capacity                   KnxDatapointSubtype = 140071
-	KnxDatapointSubtype_DPST_Value_Thermal_Conductivity               KnxDatapointSubtype = 140072
-	KnxDatapointSubtype_DPST_Value_ThermoelectricPower                KnxDatapointSubtype = 140073
-	KnxDatapointSubtype_DPST_Value_Time                               KnxDatapointSubtype = 140074
-	KnxDatapointSubtype_DPST_Value_Torque                             KnxDatapointSubtype = 140075
-	KnxDatapointSubtype_DPST_Value_Volume                             KnxDatapointSubtype = 140076
-	KnxDatapointSubtype_DPST_Value_Volume_Flux                        KnxDatapointSubtype = 140077
-	KnxDatapointSubtype_DPST_Value_Weight                             KnxDatapointSubtype = 140078
-	KnxDatapointSubtype_DPST_Value_Work                               KnxDatapointSubtype = 140079
-	KnxDatapointSubtype_DPST_Volume_Flux_Meter                        KnxDatapointSubtype = 141200
-	KnxDatapointSubtype_DPST_Volume_Flux_ls                           KnxDatapointSubtype = 141201
-	KnxDatapointSubtype_DPST_Access_Data                              KnxDatapointSubtype = 150000
-	KnxDatapointSubtype_DPST_String_ASCII                             KnxDatapointSubtype = 160000
-	KnxDatapointSubtype_DPST_String_8859_1                            KnxDatapointSubtype = 160001
-	KnxDatapointSubtype_DPST_SceneNumber                              KnxDatapointSubtype = 170001
-	KnxDatapointSubtype_DPST_SceneControl                             KnxDatapointSubtype = 180001
-	KnxDatapointSubtype_DPST_DateTime                                 KnxDatapointSubtype = 190001
-	KnxDatapointSubtype_DPST_SCLOMode                                 KnxDatapointSubtype = 200001
-	KnxDatapointSubtype_DPST_BuildingMode                             KnxDatapointSubtype = 200002
-	KnxDatapointSubtype_DPST_OccMode                                  KnxDatapointSubtype = 200003
-	KnxDatapointSubtype_DPST_Priority                                 KnxDatapointSubtype = 200004
-	KnxDatapointSubtype_DPST_LightApplicationMode                     KnxDatapointSubtype = 200005
-	KnxDatapointSubtype_DPST_ApplicationArea                          KnxDatapointSubtype = 200006
-	KnxDatapointSubtype_DPST_AlarmClassType                           KnxDatapointSubtype = 200007
-	KnxDatapointSubtype_DPST_PSUMode                                  KnxDatapointSubtype = 200008
-	KnxDatapointSubtype_DPST_ErrorClass_System                        KnxDatapointSubtype = 200011
-	KnxDatapointSubtype_DPST_ErrorClass_HVAC                          KnxDatapointSubtype = 200012
-	KnxDatapointSubtype_DPST_Time_Delay                               KnxDatapointSubtype = 200013
-	KnxDatapointSubtype_DPST_Beaufort_Wind_Force_Scale                KnxDatapointSubtype = 200014
-	KnxDatapointSubtype_DPST_SensorSelect                             KnxDatapointSubtype = 200017
-	KnxDatapointSubtype_DPST_ActuatorConnectType                      KnxDatapointSubtype = 200020
-	KnxDatapointSubtype_DPST_Cloud_Cover                              KnxDatapointSubtype = 200021
-	KnxDatapointSubtype_DPST_PowerReturnMode                          KnxDatapointSubtype = 200022
-	KnxDatapointSubtype_DPST_FuelType                                 KnxDatapointSubtype = 200100
-	KnxDatapointSubtype_DPST_BurnerType                               KnxDatapointSubtype = 200101
-	KnxDatapointSubtype_DPST_HVACMode                                 KnxDatapointSubtype = 200102
-	KnxDatapointSubtype_DPST_DHWMode                                  KnxDatapointSubtype = 200103
-	KnxDatapointSubtype_DPST_LoadPriority                             KnxDatapointSubtype = 200104
-	KnxDatapointSubtype_DPST_HVACContrMode                            KnxDatapointSubtype = 200105
-	KnxDatapointSubtype_DPST_HVACEmergMode                            KnxDatapointSubtype = 200106
-	KnxDatapointSubtype_DPST_ChangeoverMode                           KnxDatapointSubtype = 200107
-	KnxDatapointSubtype_DPST_ValveMode                                KnxDatapointSubtype = 200108
-	KnxDatapointSubtype_DPST_DamperMode                               KnxDatapointSubtype = 200109
-	KnxDatapointSubtype_DPST_HeaterMode                               KnxDatapointSubtype = 200110
-	KnxDatapointSubtype_DPST_FanMode                                  KnxDatapointSubtype = 200111
-	KnxDatapointSubtype_DPST_MasterSlaveMode                          KnxDatapointSubtype = 200112
-	KnxDatapointSubtype_DPST_StatusRoomSetp                           KnxDatapointSubtype = 200113
-	KnxDatapointSubtype_DPST_Metering_DeviceType                      KnxDatapointSubtype = 200114
-	KnxDatapointSubtype_DPST_HumDehumMode                             KnxDatapointSubtype = 200115
-	KnxDatapointSubtype_DPST_EnableHCStage                            KnxDatapointSubtype = 200116
-	KnxDatapointSubtype_DPST_ADAType                                  KnxDatapointSubtype = 200120
-	KnxDatapointSubtype_DPST_BackupMode                               KnxDatapointSubtype = 200121
-	KnxDatapointSubtype_DPST_StartSynchronization                     KnxDatapointSubtype = 200122
-	KnxDatapointSubtype_DPST_Behaviour_Lock_Unlock                    KnxDatapointSubtype = 200600
-	KnxDatapointSubtype_DPST_Behaviour_Bus_Power_Up_Down              KnxDatapointSubtype = 200601
-	KnxDatapointSubtype_DPST_DALI_Fade_Time                           KnxDatapointSubtype = 200602
-	KnxDatapointSubtype_DPST_BlinkingMode                             KnxDatapointSubtype = 200603
-	KnxDatapointSubtype_DPST_LightControlMode                         KnxDatapointSubtype = 200604
-	KnxDatapointSubtype_DPST_SwitchPBModel                            KnxDatapointSubtype = 200605
-	KnxDatapointSubtype_DPST_PBAction                                 KnxDatapointSubtype = 200606
-	KnxDatapointSubtype_DPST_DimmPBModel                              KnxDatapointSubtype = 200607
-	KnxDatapointSubtype_DPST_SwitchOnMode                             KnxDatapointSubtype = 200608
-	KnxDatapointSubtype_DPST_LoadTypeSet                              KnxDatapointSubtype = 200609
-	KnxDatapointSubtype_DPST_LoadTypeDetected                         KnxDatapointSubtype = 200610
-	KnxDatapointSubtype_DPST_Converter_Test_Control                   KnxDatapointSubtype = 200611
-	KnxDatapointSubtype_DPST_SABExcept_Behaviour                      KnxDatapointSubtype = 200801
-	KnxDatapointSubtype_DPST_SABBehaviour_Lock_Unlock                 KnxDatapointSubtype = 200802
-	KnxDatapointSubtype_DPST_SSSBMode                                 KnxDatapointSubtype = 200803
-	KnxDatapointSubtype_DPST_BlindsControlMode                        KnxDatapointSubtype = 200804
-	KnxDatapointSubtype_DPST_CommMode                                 KnxDatapointSubtype = 201000
-	KnxDatapointSubtype_DPST_AddInfoTypes                             KnxDatapointSubtype = 201001
-	KnxDatapointSubtype_DPST_RF_ModeSelect                            KnxDatapointSubtype = 201002
-	KnxDatapointSubtype_DPST_RF_FilterSelect                          KnxDatapointSubtype = 201003
-	KnxDatapointSubtype_DPST_StatusGen                                KnxDatapointSubtype = 210001
-	KnxDatapointSubtype_DPST_Device_Control                           KnxDatapointSubtype = 210002
-	KnxDatapointSubtype_DPST_ForceSign                                KnxDatapointSubtype = 210100
-	KnxDatapointSubtype_DPST_ForceSignCool                            KnxDatapointSubtype = 210101
-	KnxDatapointSubtype_DPST_StatusRHC                                KnxDatapointSubtype = 210102
-	KnxDatapointSubtype_DPST_StatusSDHWC                              KnxDatapointSubtype = 210103
-	KnxDatapointSubtype_DPST_FuelTypeSet                              KnxDatapointSubtype = 210104
-	KnxDatapointSubtype_DPST_StatusRCC                                KnxDatapointSubtype = 210105
-	KnxDatapointSubtype_DPST_StatusAHU                                KnxDatapointSubtype = 210106
-	KnxDatapointSubtype_DPST_CombinedStatus_RTSM                      KnxDatapointSubtype = 210107
-	KnxDatapointSubtype_DPST_LightActuatorErrorInfo                   KnxDatapointSubtype = 210601
-	KnxDatapointSubtype_DPST_RF_ModeInfo                              KnxDatapointSubtype = 211000
-	KnxDatapointSubtype_DPST_RF_FilterInfo                            KnxDatapointSubtype = 211001
-	KnxDatapointSubtype_DPST_Channel_Activation_8                     KnxDatapointSubtype = 211010
-	KnxDatapointSubtype_DPST_StatusDHWC                               KnxDatapointSubtype = 220100
-	KnxDatapointSubtype_DPST_StatusRHCC                               KnxDatapointSubtype = 220101
-	KnxDatapointSubtype_DPST_CombinedStatus_HVA                       KnxDatapointSubtype = 220102
-	KnxDatapointSubtype_DPST_CombinedStatus_RTC                       KnxDatapointSubtype = 220103
-	KnxDatapointSubtype_DPST_Media                                    KnxDatapointSubtype = 221000
-	KnxDatapointSubtype_DPST_Channel_Activation_16                    KnxDatapointSubtype = 221010
-	KnxDatapointSubtype_DPST_OnOffAction                              KnxDatapointSubtype = 230001
-	KnxDatapointSubtype_DPST_Alarm_Reaction                           KnxDatapointSubtype = 230002
-	KnxDatapointSubtype_DPST_UpDown_Action                            KnxDatapointSubtype = 230003
-	KnxDatapointSubtype_DPST_HVAC_PB_Action                           KnxDatapointSubtype = 230102
-	KnxDatapointSubtype_DPST_DoubleNibble                             KnxDatapointSubtype = 251000
-	KnxDatapointSubtype_DPST_SceneInfo                                KnxDatapointSubtype = 260001
-	KnxDatapointSubtype_DPST_CombinedInfoOnOff                        KnxDatapointSubtype = 270001
-	KnxDatapointSubtype_DPST_ActiveEnergy_V64                         KnxDatapointSubtype = 290010
-	KnxDatapointSubtype_DPST_ApparantEnergy_V64                       KnxDatapointSubtype = 290011
-	KnxDatapointSubtype_DPST_ReactiveEnergy_V64                       KnxDatapointSubtype = 290012
-	KnxDatapointSubtype_DPST_Channel_Activation_24                    KnxDatapointSubtype = 301010
-	KnxDatapointSubtype_DPST_HVACModeNext                             KnxDatapointSubtype = 2060100
-	KnxDatapointSubtype_DPST_DHWModeNext                              KnxDatapointSubtype = 2060102
-	KnxDatapointSubtype_DPST_OccModeNext                              KnxDatapointSubtype = 2060104
-	KnxDatapointSubtype_DPST_BuildingModeNext                         KnxDatapointSubtype = 2060105
-	KnxDatapointSubtype_DPST_Version                                  KnxDatapointSubtype = 2170001
-	KnxDatapointSubtype_DPST_AlarmInfo                                KnxDatapointSubtype = 2190001
-	KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3                     KnxDatapointSubtype = 2220100
-	KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_3                KnxDatapointSubtype = 2220101
-	KnxDatapointSubtype_DPST_Scaling_Speed                            KnxDatapointSubtype = 2250001
-	KnxDatapointSubtype_DPST_Scaling_Step_Time                        KnxDatapointSubtype = 2250002
-	KnxDatapointSubtype_DPST_MeteringValue                            KnxDatapointSubtype = 2290001
-	KnxDatapointSubtype_DPST_MBus_Address                             KnxDatapointSubtype = 2301000
-	KnxDatapointSubtype_DPST_Colour_RGB                               KnxDatapointSubtype = 2320600
-	KnxDatapointSubtype_DPST_LanguageCodeAlpha2_ASCII                 KnxDatapointSubtype = 2340001
-	KnxDatapointSubtype_DPST_Tariff_ActiveEnergy                      KnxDatapointSubtype = 2350001
-	KnxDatapointSubtype_DPST_Prioritised_Mode_Control                 KnxDatapointSubtype = 2360001
-	KnxDatapointSubtype_DPST_DALI_Control_Gear_Diagnostic             KnxDatapointSubtype = 2370600
-	KnxDatapointSubtype_DPST_DALI_Diagnostics                         KnxDatapointSubtype = 2380600
-	KnxDatapointSubtype_DPST_CombinedPosition                         KnxDatapointSubtype = 2400800
-	KnxDatapointSubtype_DPST_StatusSAB                                KnxDatapointSubtype = 2410800
-	KnxDatapointSubtype_DPST_Colour_xyY                               KnxDatapointSubtype = 2420600
-	KnxDatapointSubtype_DPST_Converter_Status                         KnxDatapointSubtype = 2440600
-	KnxDatapointSubtype_DPST_Converter_Test_Result                    KnxDatapointSubtype = 2450600
-	KnxDatapointSubtype_DPST_Battery_Info                             KnxDatapointSubtype = 2460600
-	KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Transition KnxDatapointSubtype = 2490600
-	KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control    KnxDatapointSubtype = 2500600
-	KnxDatapointSubtype_DPST_Colour_RGBW                              KnxDatapointSubtype = 2510600
-	KnxDatapointSubtype_DPST_Relative_Control_RGBW                    KnxDatapointSubtype = 2520600
-	KnxDatapointSubtype_DPST_Relative_Control_RGB                     KnxDatapointSubtype = 2540600
-	KnxDatapointSubtype_DPST_GeographicalLocation                     KnxDatapointSubtype = 2550001
-	KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4                     KnxDatapointSubtype = 2750100
-	KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4                KnxDatapointSubtype = 2750101
+	KnxDatapointSubtype_DPST_UNKNOWN                                  KnxDatapointSubtype = 0
+	KnxDatapointSubtype_DPST_Switch                                   KnxDatapointSubtype = 1
+	KnxDatapointSubtype_DPST_Bool                                     KnxDatapointSubtype = 2
+	KnxDatapointSubtype_DPST_Enable                                   KnxDatapointSubtype = 3
+	KnxDatapointSubtype_DPST_Ramp                                     KnxDatapointSubtype = 4
+	KnxDatapointSubtype_DPST_Alarm                                    KnxDatapointSubtype = 5
+	KnxDatapointSubtype_DPST_BinaryValue                              KnxDatapointSubtype = 6
+	KnxDatapointSubtype_DPST_Step                                     KnxDatapointSubtype = 7
+	KnxDatapointSubtype_DPST_UpDown                                   KnxDatapointSubtype = 8
+	KnxDatapointSubtype_DPST_OpenClose                                KnxDatapointSubtype = 9
+	KnxDatapointSubtype_DPST_Start                                    KnxDatapointSubtype = 10
+	KnxDatapointSubtype_DPST_State                                    KnxDatapointSubtype = 11
+	KnxDatapointSubtype_DPST_Invert                                   KnxDatapointSubtype = 12
+	KnxDatapointSubtype_DPST_DimSendStyle                             KnxDatapointSubtype = 13
+	KnxDatapointSubtype_DPST_InputSource                              KnxDatapointSubtype = 14
+	KnxDatapointSubtype_DPST_Reset                                    KnxDatapointSubtype = 15
+	KnxDatapointSubtype_DPST_Ack                                      KnxDatapointSubtype = 16
+	KnxDatapointSubtype_DPST_Trigger                                  KnxDatapointSubtype = 17
+	KnxDatapointSubtype_DPST_Occupancy                                KnxDatapointSubtype = 18
+	KnxDatapointSubtype_DPST_Window_Door                              KnxDatapointSubtype = 19
+	KnxDatapointSubtype_DPST_LogicalFunction                          KnxDatapointSubtype = 20
+	KnxDatapointSubtype_DPST_Scene_AB                                 KnxDatapointSubtype = 21
+	KnxDatapointSubtype_DPST_ShutterBlinds_Mode                       KnxDatapointSubtype = 22
+	KnxDatapointSubtype_DPST_DayNight                                 KnxDatapointSubtype = 23
+	KnxDatapointSubtype_DPST_Heat_Cool                                KnxDatapointSubtype = 24
+	KnxDatapointSubtype_DPST_Switch_Control                           KnxDatapointSubtype = 25
+	KnxDatapointSubtype_DPST_Bool_Control                             KnxDatapointSubtype = 26
+	KnxDatapointSubtype_DPST_Enable_Control                           KnxDatapointSubtype = 27
+	KnxDatapointSubtype_DPST_Ramp_Control                             KnxDatapointSubtype = 28
+	KnxDatapointSubtype_DPST_Alarm_Control                            KnxDatapointSubtype = 29
+	KnxDatapointSubtype_DPST_BinaryValue_Control                      KnxDatapointSubtype = 30
+	KnxDatapointSubtype_DPST_Step_Control                             KnxDatapointSubtype = 31
+	KnxDatapointSubtype_DPST_Direction1_Control                       KnxDatapointSubtype = 32
+	KnxDatapointSubtype_DPST_Direction2_Control                       KnxDatapointSubtype = 33
+	KnxDatapointSubtype_DPST_Start_Control                            KnxDatapointSubtype = 34
+	KnxDatapointSubtype_DPST_State_Control                            KnxDatapointSubtype = 35
+	KnxDatapointSubtype_DPST_Invert_Control                           KnxDatapointSubtype = 36
+	KnxDatapointSubtype_DPST_Control_Dimming                          KnxDatapointSubtype = 37
+	KnxDatapointSubtype_DPST_Control_Blinds                           KnxDatapointSubtype = 38
+	KnxDatapointSubtype_DPST_Char_ASCII                               KnxDatapointSubtype = 39
+	KnxDatapointSubtype_DPST_Char_8859_1                              KnxDatapointSubtype = 40
+	KnxDatapointSubtype_DPST_Scaling                                  KnxDatapointSubtype = 41
+	KnxDatapointSubtype_DPST_Angle                                    KnxDatapointSubtype = 42
+	KnxDatapointSubtype_DPST_Percent_U8                               KnxDatapointSubtype = 43
+	KnxDatapointSubtype_DPST_DecimalFactor                            KnxDatapointSubtype = 44
+	KnxDatapointSubtype_DPST_Tariff                                   KnxDatapointSubtype = 45
+	KnxDatapointSubtype_DPST_Value_1_Ucount                           KnxDatapointSubtype = 46
+	KnxDatapointSubtype_DPST_FanStage                                 KnxDatapointSubtype = 47
+	KnxDatapointSubtype_DPST_Percent_V8                               KnxDatapointSubtype = 48
+	KnxDatapointSubtype_DPST_Value_1_Count                            KnxDatapointSubtype = 49
+	KnxDatapointSubtype_DPST_Status_Mode3                             KnxDatapointSubtype = 50
+	KnxDatapointSubtype_DPST_Value_2_Ucount                           KnxDatapointSubtype = 51
+	KnxDatapointSubtype_DPST_TimePeriodMsec                           KnxDatapointSubtype = 52
+	KnxDatapointSubtype_DPST_TimePeriod10Msec                         KnxDatapointSubtype = 53
+	KnxDatapointSubtype_DPST_TimePeriod100Msec                        KnxDatapointSubtype = 54
+	KnxDatapointSubtype_DPST_TimePeriodSec                            KnxDatapointSubtype = 55
+	KnxDatapointSubtype_DPST_TimePeriodMin                            KnxDatapointSubtype = 56
+	KnxDatapointSubtype_DPST_TimePeriodHrs                            KnxDatapointSubtype = 57
+	KnxDatapointSubtype_DPST_PropDataType                             KnxDatapointSubtype = 58
+	KnxDatapointSubtype_DPST_Length_mm                                KnxDatapointSubtype = 59
+	KnxDatapointSubtype_DPST_UElCurrentmA                             KnxDatapointSubtype = 60
+	KnxDatapointSubtype_DPST_Brightness                               KnxDatapointSubtype = 61
+	KnxDatapointSubtype_DPST_Absolute_Colour_Temperature              KnxDatapointSubtype = 62
+	KnxDatapointSubtype_DPST_Value_2_Count                            KnxDatapointSubtype = 63
+	KnxDatapointSubtype_DPST_DeltaTimeMsec                            KnxDatapointSubtype = 64
+	KnxDatapointSubtype_DPST_DeltaTime10Msec                          KnxDatapointSubtype = 65
+	KnxDatapointSubtype_DPST_DeltaTime100Msec                         KnxDatapointSubtype = 66
+	KnxDatapointSubtype_DPST_DeltaTimeSec                             KnxDatapointSubtype = 67
+	KnxDatapointSubtype_DPST_DeltaTimeMin                             KnxDatapointSubtype = 68
+	KnxDatapointSubtype_DPST_DeltaTimeHrs                             KnxDatapointSubtype = 69
+	KnxDatapointSubtype_DPST_Percent_V16                              KnxDatapointSubtype = 70
+	KnxDatapointSubtype_DPST_Rotation_Angle                           KnxDatapointSubtype = 71
+	KnxDatapointSubtype_DPST_Length_m                                 KnxDatapointSubtype = 72
+	KnxDatapointSubtype_DPST_Value_Temp                               KnxDatapointSubtype = 73
+	KnxDatapointSubtype_DPST_Value_Tempd                              KnxDatapointSubtype = 74
+	KnxDatapointSubtype_DPST_Value_Tempa                              KnxDatapointSubtype = 75
+	KnxDatapointSubtype_DPST_Value_Lux                                KnxDatapointSubtype = 76
+	KnxDatapointSubtype_DPST_Value_Wsp                                KnxDatapointSubtype = 77
+	KnxDatapointSubtype_DPST_Value_Pres                               KnxDatapointSubtype = 78
+	KnxDatapointSubtype_DPST_Value_Humidity                           KnxDatapointSubtype = 79
+	KnxDatapointSubtype_DPST_Value_AirQuality                         KnxDatapointSubtype = 80
+	KnxDatapointSubtype_DPST_Value_AirFlow                            KnxDatapointSubtype = 81
+	KnxDatapointSubtype_DPST_Value_Time1                              KnxDatapointSubtype = 82
+	KnxDatapointSubtype_DPST_Value_Time2                              KnxDatapointSubtype = 83
+	KnxDatapointSubtype_DPST_Value_Volt                               KnxDatapointSubtype = 84
+	KnxDatapointSubtype_DPST_Value_Curr                               KnxDatapointSubtype = 85
+	KnxDatapointSubtype_DPST_PowerDensity                             KnxDatapointSubtype = 86
+	KnxDatapointSubtype_DPST_KelvinPerPercent                         KnxDatapointSubtype = 87
+	KnxDatapointSubtype_DPST_Power                                    KnxDatapointSubtype = 88
+	KnxDatapointSubtype_DPST_Value_Volume_Flow                        KnxDatapointSubtype = 89
+	KnxDatapointSubtype_DPST_Rain_Amount                              KnxDatapointSubtype = 90
+	KnxDatapointSubtype_DPST_Value_Temp_F                             KnxDatapointSubtype = 91
+	KnxDatapointSubtype_DPST_Value_Wsp_kmh                            KnxDatapointSubtype = 92
+	KnxDatapointSubtype_DPST_Value_Absolute_Humidity                  KnxDatapointSubtype = 93
+	KnxDatapointSubtype_DPST_Concentration_ygm3                       KnxDatapointSubtype = 94
+	KnxDatapointSubtype_DPST_TimeOfDay                                KnxDatapointSubtype = 95
+	KnxDatapointSubtype_DPST_Date                                     KnxDatapointSubtype = 96
+	KnxDatapointSubtype_DPST_Value_4_Ucount                           KnxDatapointSubtype = 97
+	KnxDatapointSubtype_DPST_LongTimePeriod_Sec                       KnxDatapointSubtype = 98
+	KnxDatapointSubtype_DPST_LongTimePeriod_Min                       KnxDatapointSubtype = 99
+	KnxDatapointSubtype_DPST_LongTimePeriod_Hrs                       KnxDatapointSubtype = 100
+	KnxDatapointSubtype_DPST_VolumeLiquid_Litre                       KnxDatapointSubtype = 101
+	KnxDatapointSubtype_DPST_Volume_m_3                               KnxDatapointSubtype = 102
+	KnxDatapointSubtype_DPST_Value_4_Count                            KnxDatapointSubtype = 103
+	KnxDatapointSubtype_DPST_FlowRate_m3h                             KnxDatapointSubtype = 104
+	KnxDatapointSubtype_DPST_ActiveEnergy                             KnxDatapointSubtype = 105
+	KnxDatapointSubtype_DPST_ApparantEnergy                           KnxDatapointSubtype = 106
+	KnxDatapointSubtype_DPST_ReactiveEnergy                           KnxDatapointSubtype = 107
+	KnxDatapointSubtype_DPST_ActiveEnergy_kWh                         KnxDatapointSubtype = 108
+	KnxDatapointSubtype_DPST_ApparantEnergy_kVAh                      KnxDatapointSubtype = 109
+	KnxDatapointSubtype_DPST_ReactiveEnergy_kVARh                     KnxDatapointSubtype = 110
+	KnxDatapointSubtype_DPST_ActiveEnergy_MWh                         KnxDatapointSubtype = 111
+	KnxDatapointSubtype_DPST_LongDeltaTimeSec                         KnxDatapointSubtype = 112
+	KnxDatapointSubtype_DPST_DeltaVolumeLiquid_Litre                  KnxDatapointSubtype = 113
+	KnxDatapointSubtype_DPST_DeltaVolume_m_3                          KnxDatapointSubtype = 114
+	KnxDatapointSubtype_DPST_Value_Acceleration                       KnxDatapointSubtype = 115
+	KnxDatapointSubtype_DPST_Value_Acceleration_Angular               KnxDatapointSubtype = 116
+	KnxDatapointSubtype_DPST_Value_Activation_Energy                  KnxDatapointSubtype = 117
+	KnxDatapointSubtype_DPST_Value_Activity                           KnxDatapointSubtype = 118
+	KnxDatapointSubtype_DPST_Value_Mol                                KnxDatapointSubtype = 119
+	KnxDatapointSubtype_DPST_Value_Amplitude                          KnxDatapointSubtype = 120
+	KnxDatapointSubtype_DPST_Value_AngleRad                           KnxDatapointSubtype = 121
+	KnxDatapointSubtype_DPST_Value_AngleDeg                           KnxDatapointSubtype = 122
+	KnxDatapointSubtype_DPST_Value_Angular_Momentum                   KnxDatapointSubtype = 123
+	KnxDatapointSubtype_DPST_Value_Angular_Velocity                   KnxDatapointSubtype = 124
+	KnxDatapointSubtype_DPST_Value_Area                               KnxDatapointSubtype = 125
+	KnxDatapointSubtype_DPST_Value_Capacitance                        KnxDatapointSubtype = 126
+	KnxDatapointSubtype_DPST_Value_Charge_DensitySurface              KnxDatapointSubtype = 127
+	KnxDatapointSubtype_DPST_Value_Charge_DensityVolume               KnxDatapointSubtype = 128
+	KnxDatapointSubtype_DPST_Value_Compressibility                    KnxDatapointSubtype = 129
+	KnxDatapointSubtype_DPST_Value_Conductance                        KnxDatapointSubtype = 130
+	KnxDatapointSubtype_DPST_Value_Electrical_Conductivity            KnxDatapointSubtype = 131
+	KnxDatapointSubtype_DPST_Value_Density                            KnxDatapointSubtype = 132
+	KnxDatapointSubtype_DPST_Value_Electric_Charge                    KnxDatapointSubtype = 133
+	KnxDatapointSubtype_DPST_Value_Electric_Current                   KnxDatapointSubtype = 134
+	KnxDatapointSubtype_DPST_Value_Electric_CurrentDensity            KnxDatapointSubtype = 135
+	KnxDatapointSubtype_DPST_Value_Electric_DipoleMoment              KnxDatapointSubtype = 136
+	KnxDatapointSubtype_DPST_Value_Electric_Displacement              KnxDatapointSubtype = 137
+	KnxDatapointSubtype_DPST_Value_Electric_FieldStrength             KnxDatapointSubtype = 138
+	KnxDatapointSubtype_DPST_Value_Electric_Flux                      KnxDatapointSubtype = 139
+	KnxDatapointSubtype_DPST_Value_Electric_FluxDensity               KnxDatapointSubtype = 140
+	KnxDatapointSubtype_DPST_Value_Electric_Polarization              KnxDatapointSubtype = 141
+	KnxDatapointSubtype_DPST_Value_Electric_Potential                 KnxDatapointSubtype = 142
+	KnxDatapointSubtype_DPST_Value_Electric_PotentialDifference       KnxDatapointSubtype = 143
+	KnxDatapointSubtype_DPST_Value_ElectromagneticMoment              KnxDatapointSubtype = 144
+	KnxDatapointSubtype_DPST_Value_Electromotive_Force                KnxDatapointSubtype = 145
+	KnxDatapointSubtype_DPST_Value_Energy                             KnxDatapointSubtype = 146
+	KnxDatapointSubtype_DPST_Value_Force                              KnxDatapointSubtype = 147
+	KnxDatapointSubtype_DPST_Value_Frequency                          KnxDatapointSubtype = 148
+	KnxDatapointSubtype_DPST_Value_Angular_Frequency                  KnxDatapointSubtype = 149
+	KnxDatapointSubtype_DPST_Value_Heat_Capacity                      KnxDatapointSubtype = 150
+	KnxDatapointSubtype_DPST_Value_Heat_FlowRate                      KnxDatapointSubtype = 151
+	KnxDatapointSubtype_DPST_Value_Heat_Quantity                      KnxDatapointSubtype = 152
+	KnxDatapointSubtype_DPST_Value_Impedance                          KnxDatapointSubtype = 153
+	KnxDatapointSubtype_DPST_Value_Length                             KnxDatapointSubtype = 154
+	KnxDatapointSubtype_DPST_Value_Light_Quantity                     KnxDatapointSubtype = 155
+	KnxDatapointSubtype_DPST_Value_Luminance                          KnxDatapointSubtype = 156
+	KnxDatapointSubtype_DPST_Value_Luminous_Flux                      KnxDatapointSubtype = 157
+	KnxDatapointSubtype_DPST_Value_Luminous_Intensity                 KnxDatapointSubtype = 158
+	KnxDatapointSubtype_DPST_Value_Magnetic_FieldStrength             KnxDatapointSubtype = 159
+	KnxDatapointSubtype_DPST_Value_Magnetic_Flux                      KnxDatapointSubtype = 160
+	KnxDatapointSubtype_DPST_Value_Magnetic_FluxDensity               KnxDatapointSubtype = 161
+	KnxDatapointSubtype_DPST_Value_Magnetic_Moment                    KnxDatapointSubtype = 162
+	KnxDatapointSubtype_DPST_Value_Magnetic_Polarization              KnxDatapointSubtype = 163
+	KnxDatapointSubtype_DPST_Value_Magnetization                      KnxDatapointSubtype = 164
+	KnxDatapointSubtype_DPST_Value_MagnetomotiveForce                 KnxDatapointSubtype = 165
+	KnxDatapointSubtype_DPST_Value_Mass                               KnxDatapointSubtype = 166
+	KnxDatapointSubtype_DPST_Value_MassFlux                           KnxDatapointSubtype = 167
+	KnxDatapointSubtype_DPST_Value_Momentum                           KnxDatapointSubtype = 168
+	KnxDatapointSubtype_DPST_Value_Phase_AngleRad                     KnxDatapointSubtype = 169
+	KnxDatapointSubtype_DPST_Value_Phase_AngleDeg                     KnxDatapointSubtype = 170
+	KnxDatapointSubtype_DPST_Value_Power                              KnxDatapointSubtype = 171
+	KnxDatapointSubtype_DPST_Value_Power_Factor                       KnxDatapointSubtype = 172
+	KnxDatapointSubtype_DPST_Value_Pressure                           KnxDatapointSubtype = 173
+	KnxDatapointSubtype_DPST_Value_Reactance                          KnxDatapointSubtype = 174
+	KnxDatapointSubtype_DPST_Value_Resistance                         KnxDatapointSubtype = 175
+	KnxDatapointSubtype_DPST_Value_Resistivity                        KnxDatapointSubtype = 176
+	KnxDatapointSubtype_DPST_Value_SelfInductance                     KnxDatapointSubtype = 177
+	KnxDatapointSubtype_DPST_Value_SolidAngle                         KnxDatapointSubtype = 178
+	KnxDatapointSubtype_DPST_Value_Sound_Intensity                    KnxDatapointSubtype = 179
+	KnxDatapointSubtype_DPST_Value_Speed                              KnxDatapointSubtype = 180
+	KnxDatapointSubtype_DPST_Value_Stress                             KnxDatapointSubtype = 181
+	KnxDatapointSubtype_DPST_Value_Surface_Tension                    KnxDatapointSubtype = 182
+	KnxDatapointSubtype_DPST_Value_Common_Temperature                 KnxDatapointSubtype = 183
+	KnxDatapointSubtype_DPST_Value_Absolute_Temperature               KnxDatapointSubtype = 184
+	KnxDatapointSubtype_DPST_Value_TemperatureDifference              KnxDatapointSubtype = 185
+	KnxDatapointSubtype_DPST_Value_Thermal_Capacity                   KnxDatapointSubtype = 186
+	KnxDatapointSubtype_DPST_Value_Thermal_Conductivity               KnxDatapointSubtype = 187
+	KnxDatapointSubtype_DPST_Value_ThermoelectricPower                KnxDatapointSubtype = 188
+	KnxDatapointSubtype_DPST_Value_Time                               KnxDatapointSubtype = 189
+	KnxDatapointSubtype_DPST_Value_Torque                             KnxDatapointSubtype = 190
+	KnxDatapointSubtype_DPST_Value_Volume                             KnxDatapointSubtype = 191
+	KnxDatapointSubtype_DPST_Value_Volume_Flux                        KnxDatapointSubtype = 192
+	KnxDatapointSubtype_DPST_Value_Weight                             KnxDatapointSubtype = 193
+	KnxDatapointSubtype_DPST_Value_Work                               KnxDatapointSubtype = 194
+	KnxDatapointSubtype_DPST_Volume_Flux_Meter                        KnxDatapointSubtype = 195
+	KnxDatapointSubtype_DPST_Volume_Flux_ls                           KnxDatapointSubtype = 196
+	KnxDatapointSubtype_DPST_Access_Data                              KnxDatapointSubtype = 197
+	KnxDatapointSubtype_DPST_String_ASCII                             KnxDatapointSubtype = 198
+	KnxDatapointSubtype_DPST_String_8859_1                            KnxDatapointSubtype = 199
+	KnxDatapointSubtype_DPST_SceneNumber                              KnxDatapointSubtype = 200
+	KnxDatapointSubtype_DPST_SceneControl                             KnxDatapointSubtype = 201
+	KnxDatapointSubtype_DPST_DateTime                                 KnxDatapointSubtype = 202
+	KnxDatapointSubtype_DPST_SCLOMode                                 KnxDatapointSubtype = 203
+	KnxDatapointSubtype_DPST_BuildingMode                             KnxDatapointSubtype = 204
+	KnxDatapointSubtype_DPST_OccMode                                  KnxDatapointSubtype = 205
+	KnxDatapointSubtype_DPST_Priority                                 KnxDatapointSubtype = 206
+	KnxDatapointSubtype_DPST_LightApplicationMode                     KnxDatapointSubtype = 207
+	KnxDatapointSubtype_DPST_ApplicationArea                          KnxDatapointSubtype = 208
+	KnxDatapointSubtype_DPST_AlarmClassType                           KnxDatapointSubtype = 209
+	KnxDatapointSubtype_DPST_PSUMode                                  KnxDatapointSubtype = 210
+	KnxDatapointSubtype_DPST_ErrorClass_System                        KnxDatapointSubtype = 211
+	KnxDatapointSubtype_DPST_ErrorClass_HVAC                          KnxDatapointSubtype = 212
+	KnxDatapointSubtype_DPST_Time_Delay                               KnxDatapointSubtype = 213
+	KnxDatapointSubtype_DPST_Beaufort_Wind_Force_Scale                KnxDatapointSubtype = 214
+	KnxDatapointSubtype_DPST_SensorSelect                             KnxDatapointSubtype = 215
+	KnxDatapointSubtype_DPST_ActuatorConnectType                      KnxDatapointSubtype = 216
+	KnxDatapointSubtype_DPST_Cloud_Cover                              KnxDatapointSubtype = 217
+	KnxDatapointSubtype_DPST_PowerReturnMode                          KnxDatapointSubtype = 218
+	KnxDatapointSubtype_DPST_FuelType                                 KnxDatapointSubtype = 219
+	KnxDatapointSubtype_DPST_BurnerType                               KnxDatapointSubtype = 220
+	KnxDatapointSubtype_DPST_HVACMode                                 KnxDatapointSubtype = 221
+	KnxDatapointSubtype_DPST_DHWMode                                  KnxDatapointSubtype = 222
+	KnxDatapointSubtype_DPST_LoadPriority                             KnxDatapointSubtype = 223
+	KnxDatapointSubtype_DPST_HVACContrMode                            KnxDatapointSubtype = 224
+	KnxDatapointSubtype_DPST_HVACEmergMode                            KnxDatapointSubtype = 225
+	KnxDatapointSubtype_DPST_ChangeoverMode                           KnxDatapointSubtype = 226
+	KnxDatapointSubtype_DPST_ValveMode                                KnxDatapointSubtype = 227
+	KnxDatapointSubtype_DPST_DamperMode                               KnxDatapointSubtype = 228
+	KnxDatapointSubtype_DPST_HeaterMode                               KnxDatapointSubtype = 229
+	KnxDatapointSubtype_DPST_FanMode                                  KnxDatapointSubtype = 230
+	KnxDatapointSubtype_DPST_MasterSlaveMode                          KnxDatapointSubtype = 231
+	KnxDatapointSubtype_DPST_StatusRoomSetp                           KnxDatapointSubtype = 232
+	KnxDatapointSubtype_DPST_Metering_DeviceType                      KnxDatapointSubtype = 233
+	KnxDatapointSubtype_DPST_HumDehumMode                             KnxDatapointSubtype = 234
+	KnxDatapointSubtype_DPST_EnableHCStage                            KnxDatapointSubtype = 235
+	KnxDatapointSubtype_DPST_ADAType                                  KnxDatapointSubtype = 236
+	KnxDatapointSubtype_DPST_BackupMode                               KnxDatapointSubtype = 237
+	KnxDatapointSubtype_DPST_StartSynchronization                     KnxDatapointSubtype = 238
+	KnxDatapointSubtype_DPST_Behaviour_Lock_Unlock                    KnxDatapointSubtype = 239
+	KnxDatapointSubtype_DPST_Behaviour_Bus_Power_Up_Down              KnxDatapointSubtype = 240
+	KnxDatapointSubtype_DPST_DALI_Fade_Time                           KnxDatapointSubtype = 241
+	KnxDatapointSubtype_DPST_BlinkingMode                             KnxDatapointSubtype = 242
+	KnxDatapointSubtype_DPST_LightControlMode                         KnxDatapointSubtype = 243
+	KnxDatapointSubtype_DPST_SwitchPBModel                            KnxDatapointSubtype = 244
+	KnxDatapointSubtype_DPST_PBAction                                 KnxDatapointSubtype = 245
+	KnxDatapointSubtype_DPST_DimmPBModel                              KnxDatapointSubtype = 246
+	KnxDatapointSubtype_DPST_SwitchOnMode                             KnxDatapointSubtype = 247
+	KnxDatapointSubtype_DPST_LoadTypeSet                              KnxDatapointSubtype = 248
+	KnxDatapointSubtype_DPST_LoadTypeDetected                         KnxDatapointSubtype = 249
+	KnxDatapointSubtype_DPST_Converter_Test_Control                   KnxDatapointSubtype = 250
+	KnxDatapointSubtype_DPST_SABExcept_Behaviour                      KnxDatapointSubtype = 251
+	KnxDatapointSubtype_DPST_SABBehaviour_Lock_Unlock                 KnxDatapointSubtype = 252
+	KnxDatapointSubtype_DPST_SSSBMode                                 KnxDatapointSubtype = 253
+	KnxDatapointSubtype_DPST_BlindsControlMode                        KnxDatapointSubtype = 254
+	KnxDatapointSubtype_DPST_CommMode                                 KnxDatapointSubtype = 255
+	KnxDatapointSubtype_DPST_AddInfoTypes                             KnxDatapointSubtype = 256
+	KnxDatapointSubtype_DPST_RF_ModeSelect                            KnxDatapointSubtype = 257
+	KnxDatapointSubtype_DPST_RF_FilterSelect                          KnxDatapointSubtype = 258
+	KnxDatapointSubtype_DPST_StatusGen                                KnxDatapointSubtype = 259
+	KnxDatapointSubtype_DPST_Device_Control                           KnxDatapointSubtype = 260
+	KnxDatapointSubtype_DPST_ForceSign                                KnxDatapointSubtype = 261
+	KnxDatapointSubtype_DPST_ForceSignCool                            KnxDatapointSubtype = 262
+	KnxDatapointSubtype_DPST_StatusRHC                                KnxDatapointSubtype = 263
+	KnxDatapointSubtype_DPST_StatusSDHWC                              KnxDatapointSubtype = 264
+	KnxDatapointSubtype_DPST_FuelTypeSet                              KnxDatapointSubtype = 265
+	KnxDatapointSubtype_DPST_StatusRCC                                KnxDatapointSubtype = 266
+	KnxDatapointSubtype_DPST_StatusAHU                                KnxDatapointSubtype = 267
+	KnxDatapointSubtype_DPST_CombinedStatus_RTSM                      KnxDatapointSubtype = 268
+	KnxDatapointSubtype_DPST_LightActuatorErrorInfo                   KnxDatapointSubtype = 269
+	KnxDatapointSubtype_DPST_RF_ModeInfo                              KnxDatapointSubtype = 270
+	KnxDatapointSubtype_DPST_RF_FilterInfo                            KnxDatapointSubtype = 271
+	KnxDatapointSubtype_DPST_Channel_Activation_8                     KnxDatapointSubtype = 272
+	KnxDatapointSubtype_DPST_StatusDHWC                               KnxDatapointSubtype = 273
+	KnxDatapointSubtype_DPST_StatusRHCC                               KnxDatapointSubtype = 274
+	KnxDatapointSubtype_DPST_CombinedStatus_HVA                       KnxDatapointSubtype = 275
+	KnxDatapointSubtype_DPST_CombinedStatus_RTC                       KnxDatapointSubtype = 276
+	KnxDatapointSubtype_DPST_Media                                    KnxDatapointSubtype = 277
+	KnxDatapointSubtype_DPST_Channel_Activation_16                    KnxDatapointSubtype = 278
+	KnxDatapointSubtype_DPST_OnOffAction                              KnxDatapointSubtype = 279
+	KnxDatapointSubtype_DPST_Alarm_Reaction                           KnxDatapointSubtype = 280
+	KnxDatapointSubtype_DPST_UpDown_Action                            KnxDatapointSubtype = 281
+	KnxDatapointSubtype_DPST_HVAC_PB_Action                           KnxDatapointSubtype = 282
+	KnxDatapointSubtype_DPST_DoubleNibble                             KnxDatapointSubtype = 283
+	KnxDatapointSubtype_DPST_SceneInfo                                KnxDatapointSubtype = 284
+	KnxDatapointSubtype_DPST_CombinedInfoOnOff                        KnxDatapointSubtype = 285
+	KnxDatapointSubtype_DPST_ActiveEnergy_V64                         KnxDatapointSubtype = 286
+	KnxDatapointSubtype_DPST_ApparantEnergy_V64                       KnxDatapointSubtype = 287
+	KnxDatapointSubtype_DPST_ReactiveEnergy_V64                       KnxDatapointSubtype = 288
+	KnxDatapointSubtype_DPST_Channel_Activation_24                    KnxDatapointSubtype = 289
+	KnxDatapointSubtype_DPST_HVACModeNext                             KnxDatapointSubtype = 290
+	KnxDatapointSubtype_DPST_DHWModeNext                              KnxDatapointSubtype = 291
+	KnxDatapointSubtype_DPST_OccModeNext                              KnxDatapointSubtype = 292
+	KnxDatapointSubtype_DPST_BuildingModeNext                         KnxDatapointSubtype = 293
+	KnxDatapointSubtype_DPST_Version                                  KnxDatapointSubtype = 294
+	KnxDatapointSubtype_DPST_AlarmInfo                                KnxDatapointSubtype = 295
+	KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3                     KnxDatapointSubtype = 296
+	KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_3                KnxDatapointSubtype = 297
+	KnxDatapointSubtype_DPST_Scaling_Speed                            KnxDatapointSubtype = 298
+	KnxDatapointSubtype_DPST_Scaling_Step_Time                        KnxDatapointSubtype = 299
+	KnxDatapointSubtype_DPST_MeteringValue                            KnxDatapointSubtype = 300
+	KnxDatapointSubtype_DPST_MBus_Address                             KnxDatapointSubtype = 301
+	KnxDatapointSubtype_DPST_Colour_RGB                               KnxDatapointSubtype = 302
+	KnxDatapointSubtype_DPST_LanguageCodeAlpha2_ASCII                 KnxDatapointSubtype = 303
+	KnxDatapointSubtype_DPST_Tariff_ActiveEnergy                      KnxDatapointSubtype = 304
+	KnxDatapointSubtype_DPST_Prioritised_Mode_Control                 KnxDatapointSubtype = 305
+	KnxDatapointSubtype_DPST_DALI_Control_Gear_Diagnostic             KnxDatapointSubtype = 306
+	KnxDatapointSubtype_DPST_DALI_Diagnostics                         KnxDatapointSubtype = 307
+	KnxDatapointSubtype_DPST_CombinedPosition                         KnxDatapointSubtype = 308
+	KnxDatapointSubtype_DPST_StatusSAB                                KnxDatapointSubtype = 309
+	KnxDatapointSubtype_DPST_Colour_xyY                               KnxDatapointSubtype = 310
+	KnxDatapointSubtype_DPST_Converter_Status                         KnxDatapointSubtype = 311
+	KnxDatapointSubtype_DPST_Converter_Test_Result                    KnxDatapointSubtype = 312
+	KnxDatapointSubtype_DPST_Battery_Info                             KnxDatapointSubtype = 313
+	KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Transition KnxDatapointSubtype = 314
+	KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control    KnxDatapointSubtype = 315
+	KnxDatapointSubtype_DPST_Colour_RGBW                              KnxDatapointSubtype = 316
+	KnxDatapointSubtype_DPST_Relative_Control_RGBW                    KnxDatapointSubtype = 317
+	KnxDatapointSubtype_DPST_Relative_Control_RGB                     KnxDatapointSubtype = 318
+	KnxDatapointSubtype_DPST_GeographicalLocation                     KnxDatapointSubtype = 319
+	KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4                     KnxDatapointSubtype = 320
+	KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4                KnxDatapointSubtype = 321
 )
 
-func (e KnxDatapointSubtype) DatapointType() KnxDatapointType {
+func (e KnxDatapointSubtype) Number() uint16 {
 	switch e {
-	case 100001:
-		{ /* '100001' */
-			return KnxDatapointType_DPT_TIME
-		}
-	case 10001:
-		{ /* '10001' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10002:
-		{ /* '10002' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10003:
-		{ /* '10003' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10004:
-		{ /* '10004' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10005:
-		{ /* '10005' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10006:
-		{ /* '10006' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10007:
-		{ /* '10007' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10008:
-		{ /* '10008' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10009:
-		{ /* '10009' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10010:
-		{ /* '10010' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10011:
-		{ /* '10011' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10012:
-		{ /* '10012' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10013:
-		{ /* '10013' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10014:
-		{ /* '10014' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10015:
-		{ /* '10015' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10016:
-		{ /* '10016' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10017:
-		{ /* '10017' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10018:
-		{ /* '10018' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10019:
-		{ /* '10019' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10021:
-		{ /* '10021' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10022:
-		{ /* '10022' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10023:
-		{ /* '10023' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10024:
-		{ /* '10024' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 10100:
-		{ /* '10100' */
-			return KnxDatapointType_DPT_1_BIT
-		}
-	case 110001:
-		{ /* '110001' */
-			return KnxDatapointType_DPT_DATE
-		}
-	case 120001:
-		{ /* '120001' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 120100:
-		{ /* '120100' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 120101:
-		{ /* '120101' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 120102:
-		{ /* '120102' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 121200:
-		{ /* '121200' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 121201:
-		{ /* '121201' */
-			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
-		}
-	case 130001:
-		{ /* '130001' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130002:
-		{ /* '130002' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130010:
-		{ /* '130010' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130011:
-		{ /* '130011' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130012:
-		{ /* '130012' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130013:
-		{ /* '130013' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130014:
-		{ /* '130014' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130015:
-		{ /* '130015' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130016:
-		{ /* '130016' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 130100:
-		{ /* '130100' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 131200:
-		{ /* '131200' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 131201:
-		{ /* '131201' */
-			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
-		}
-	case 140000:
-		{ /* '140000' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140001:
-		{ /* '140001' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140002:
-		{ /* '140002' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140003:
-		{ /* '140003' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140004:
-		{ /* '140004' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140005:
-		{ /* '140005' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140006:
-		{ /* '140006' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140007:
-		{ /* '140007' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140008:
-		{ /* '140008' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140009:
-		{ /* '140009' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140010:
-		{ /* '140010' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140011:
-		{ /* '140011' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140012:
-		{ /* '140012' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140013:
-		{ /* '140013' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140014:
-		{ /* '140014' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140015:
-		{ /* '140015' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140016:
-		{ /* '140016' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140017:
-		{ /* '140017' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140018:
-		{ /* '140018' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140019:
-		{ /* '140019' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140020:
-		{ /* '140020' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140021:
-		{ /* '140021' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140022:
-		{ /* '140022' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140023:
-		{ /* '140023' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140024:
-		{ /* '140024' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140025:
-		{ /* '140025' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140026:
-		{ /* '140026' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140027:
-		{ /* '140027' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140028:
-		{ /* '140028' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140029:
-		{ /* '140029' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140030:
-		{ /* '140030' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140031:
-		{ /* '140031' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140032:
-		{ /* '140032' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140033:
-		{ /* '140033' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140034:
-		{ /* '140034' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140035:
-		{ /* '140035' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140036:
-		{ /* '140036' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140037:
-		{ /* '140037' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140038:
-		{ /* '140038' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140039:
-		{ /* '140039' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140040:
-		{ /* '140040' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140041:
-		{ /* '140041' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140042:
-		{ /* '140042' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140043:
-		{ /* '140043' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140044:
-		{ /* '140044' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140045:
-		{ /* '140045' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140046:
-		{ /* '140046' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140047:
-		{ /* '140047' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140048:
-		{ /* '140048' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140049:
-		{ /* '140049' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140050:
-		{ /* '140050' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140051:
-		{ /* '140051' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140052:
-		{ /* '140052' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140053:
-		{ /* '140053' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140054:
-		{ /* '140054' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140055:
-		{ /* '140055' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140056:
-		{ /* '140056' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140057:
-		{ /* '140057' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140058:
-		{ /* '140058' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140059:
-		{ /* '140059' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140060:
-		{ /* '140060' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140061:
-		{ /* '140061' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140062:
-		{ /* '140062' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140063:
-		{ /* '140063' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140064:
-		{ /* '140064' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140065:
-		{ /* '140065' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140066:
-		{ /* '140066' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140067:
-		{ /* '140067' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140068:
-		{ /* '140068' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140069:
-		{ /* '140069' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140070:
-		{ /* '140070' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140071:
-		{ /* '140071' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140072:
-		{ /* '140072' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140073:
-		{ /* '140073' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140074:
-		{ /* '140074' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140075:
-		{ /* '140075' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140076:
-		{ /* '140076' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140077:
-		{ /* '140077' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140078:
-		{ /* '140078' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 140079:
-		{ /* '140079' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 141200:
-		{ /* '141200' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 141201:
-		{ /* '141201' */
-			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
-		}
-	case 150000:
-		{ /* '150000' */
-			return KnxDatapointType_DPT_ENTRANCE_ACCESS
-		}
-	case 160000:
-		{ /* '160000' */
-			return KnxDatapointType_DPT_CHARACTER_STRING
-		}
-	case 160001:
-		{ /* '160001' */
-			return KnxDatapointType_DPT_CHARACTER_STRING
-		}
-	case 170001:
-		{ /* '170001' */
-			return KnxDatapointType_DPT_SCENE_NUMBER
-		}
-	case 180001:
-		{ /* '180001' */
-			return KnxDatapointType_DPT_SCENE_CONTROL
-		}
-	case 190001:
-		{ /* '190001' */
-			return KnxDatapointType_DPT_DATE_TIME
-		}
-	case 200001:
-		{ /* '200001' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200002:
-		{ /* '200002' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200003:
-		{ /* '200003' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200004:
-		{ /* '200004' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200005:
-		{ /* '200005' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200006:
-		{ /* '200006' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200007:
-		{ /* '200007' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200008:
-		{ /* '200008' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 20001:
-		{ /* '20001' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 200011:
-		{ /* '200011' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200012:
-		{ /* '200012' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200013:
-		{ /* '200013' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200014:
-		{ /* '200014' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200017:
-		{ /* '200017' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 20002:
-		{ /* '20002' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 200020:
-		{ /* '200020' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200021:
-		{ /* '200021' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200022:
-		{ /* '200022' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 20003:
-		{ /* '20003' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20004:
-		{ /* '20004' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20005:
-		{ /* '20005' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20006:
-		{ /* '20006' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20007:
-		{ /* '20007' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20008:
-		{ /* '20008' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20009:
-		{ /* '20009' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 20010:
-		{ /* '20010' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 200100:
-		{ /* '200100' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200101:
-		{ /* '200101' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200102:
-		{ /* '200102' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200103:
-		{ /* '200103' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200104:
-		{ /* '200104' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200105:
-		{ /* '200105' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200106:
-		{ /* '200106' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200107:
-		{ /* '200107' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200108:
-		{ /* '200108' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200109:
-		{ /* '200109' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 20011:
-		{ /* '20011' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 200110:
-		{ /* '200110' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200111:
-		{ /* '200111' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200112:
-		{ /* '200112' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200113:
-		{ /* '200113' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200114:
-		{ /* '200114' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200115:
-		{ /* '200115' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200116:
-		{ /* '200116' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 20012:
-		{ /* '20012' */
-			return KnxDatapointType_DPT_1_BIT_CONTROLLED
-		}
-	case 200120:
-		{ /* '200120' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200121:
-		{ /* '200121' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200122:
-		{ /* '200122' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200600:
-		{ /* '200600' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200601:
-		{ /* '200601' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200602:
-		{ /* '200602' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200603:
-		{ /* '200603' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200604:
-		{ /* '200604' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200605:
-		{ /* '200605' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200606:
-		{ /* '200606' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200607:
-		{ /* '200607' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200608:
-		{ /* '200608' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200609:
-		{ /* '200609' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200610:
-		{ /* '200610' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200611:
-		{ /* '200611' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200801:
-		{ /* '200801' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200802:
-		{ /* '200802' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200803:
-		{ /* '200803' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 200804:
-		{ /* '200804' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 201000:
-		{ /* '201000' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 201001:
-		{ /* '201001' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 201002:
-		{ /* '201002' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 201003:
-		{ /* '201003' */
-			return KnxDatapointType_DPT_1_BYTE
-		}
-	case 2060100:
-		{ /* '2060100' */
-			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
-		}
-	case 2060102:
-		{ /* '2060102' */
-			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
-		}
-	case 2060104:
-		{ /* '2060104' */
-			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
-		}
-	case 2060105:
-		{ /* '2060105' */
-			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
-		}
-	case 210001:
-		{ /* '210001' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210002:
-		{ /* '210002' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210100:
-		{ /* '210100' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210101:
-		{ /* '210101' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210102:
-		{ /* '210102' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210103:
-		{ /* '210103' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210104:
-		{ /* '210104' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210105:
-		{ /* '210105' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210106:
-		{ /* '210106' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210107:
-		{ /* '210107' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 210601:
-		{ /* '210601' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 211000:
-		{ /* '211000' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 211001:
-		{ /* '211001' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 211010:
-		{ /* '211010' */
-			return KnxDatapointType_DPT_8_BIT_SET
-		}
-	case 2170001:
-		{ /* '2170001' */
-			return KnxDatapointType_DPT_DATAPOINT_TYPE_VERSION
-		}
-	case 2190001:
-		{ /* '2190001' */
-			return KnxDatapointType_DPT_ALARM_INFO
-		}
-	case 220100:
-		{ /* '220100' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 220101:
-		{ /* '220101' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 220102:
-		{ /* '220102' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 220103:
-		{ /* '220103' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 221000:
-		{ /* '221000' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 221010:
-		{ /* '221010' */
-			return KnxDatapointType_DPT_16_BIT_SET
-		}
-	case 2220100:
-		{ /* '2220100' */
-			return KnxDatapointType_DPT_3X_2_BYTE_FLOAT_VALUE
-		}
-	case 2220101:
-		{ /* '2220101' */
-			return KnxDatapointType_DPT_3X_2_BYTE_FLOAT_VALUE
-		}
-	case 2250001:
-		{ /* '2250001' */
-			return KnxDatapointType_DPT_SCALING_SPEED
-		}
-	case 2250002:
-		{ /* '2250002' */
-			return KnxDatapointType_DPT_SCALING_SPEED
-		}
-	case 2290001:
-		{ /* '2290001' */
-			return KnxDatapointType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
-		}
-	case 230001:
-		{ /* '230001' */
-			return KnxDatapointType_DPT_2_BIT_SET
-		}
-	case 230002:
-		{ /* '230002' */
-			return KnxDatapointType_DPT_2_BIT_SET
-		}
-	case 230003:
-		{ /* '230003' */
-			return KnxDatapointType_DPT_2_BIT_SET
-		}
-	case 2301000:
-		{ /* '2301000' */
-			return KnxDatapointType_DPT_MBUS_ADDRESS
-		}
-	case 230102:
-		{ /* '230102' */
-			return KnxDatapointType_DPT_2_BIT_SET
-		}
-	case 2320600:
-		{ /* '2320600' */
-			return KnxDatapointType_DPT_3_BYTE_COLOUR_RGB
-		}
-	case 2340001:
-		{ /* '2340001' */
-			return KnxDatapointType_DPT_LANGUAGE_CODE_ISO_639_1
-		}
-	case 2350001:
-		{ /* '2350001' */
-			return KnxDatapointType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
-		}
-	case 2360001:
-		{ /* '2360001' */
-			return KnxDatapointType_DPT_PRIORITISED_MODE_CONTROL
-		}
-	case 2370600:
-		{ /* '2370600' */
-			return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
-		}
-	case 2380600:
-		{ /* '2380600' */
-			return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
-		}
-	case 2400800:
-		{ /* '2400800' */
-			return KnxDatapointType_DPT_POSITIONS
-		}
-	case 2410800:
-		{ /* '2410800' */
-			return KnxDatapointType_DPT_STATUS_32_BIT
-		}
-	case 2420600:
-		{ /* '2420600' */
-			return KnxDatapointType_DPT_STATUS_48_BIT
-		}
-	case 2440600:
-		{ /* '2440600' */
-			return KnxDatapointType_DPT_CONVERTER_STATUS
-		}
-	case 2450600:
-		{ /* '2450600' */
-			return KnxDatapointType_DPT_CONVERTER_TEST_RESULT
-		}
-	case 2460600:
-		{ /* '2460600' */
-			return KnxDatapointType_DPT_BATTERY_INFORMATION
-		}
-	case 2490600:
-		{ /* '2490600' */
-			return KnxDatapointType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
-		}
-	case 2500600:
-		{ /* '2500600' */
-			return KnxDatapointType_DPT_STATUS_24_BIT
-		}
-	case 251000:
-		{ /* '251000' */
-			return KnxDatapointType_DPT_2_NIBBLE_SET
-		}
-	case 2510600:
-		{ /* '2510600' */
-			return KnxDatapointType_DPT_COLOUR_RGBW
-		}
-	case 2520600:
-		{ /* '2520600' */
-			return KnxDatapointType_DPT_RELATIVE_CONTROL_RGBW
-		}
-	case 2540600:
-		{ /* '2540600' */
-			return KnxDatapointType_DPT_RELATIVE_CONTROL_RGB
-		}
-	case 2550001:
-		{ /* '2550001' */
-			return KnxDatapointType_DPT_F32F32
-		}
-	case 260001:
-		{ /* '260001' */
-			return KnxDatapointType_DPT_8_BIT_SET_2
-		}
-	case 270001:
-		{ /* '270001' */
-			return KnxDatapointType_DPT_32_BIT_SET
-		}
-	case 2750100:
-		{ /* '2750100' */
-			return KnxDatapointType_DPT_F16F16F16F16
-		}
-	case 2750101:
-		{ /* '2750101' */
-			return KnxDatapointType_DPT_F16F16F16F16
-		}
-	case 290010:
-		{ /* '290010' */
-			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
-		}
-	case 290011:
-		{ /* '290011' */
-			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
-		}
-	case 290012:
-		{ /* '290012' */
-			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
-		}
-	case 30007:
-		{ /* '30007' */
-			return KnxDatapointType_DPT_3_BIT_CONTROLLED
-		}
-	case 30008:
-		{ /* '30008' */
-			return KnxDatapointType_DPT_3_BIT_CONTROLLED
-		}
-	case 301010:
-		{ /* '301010' */
-			return KnxDatapointType_DPT_24_TIMES_CHANNEL_ACTIVATION
-		}
-	case 40001:
-		{ /* '40001' */
-			return KnxDatapointType_DPT_CHARACTER
-		}
-	case 40002:
-		{ /* '40002' */
-			return KnxDatapointType_DPT_CHARACTER
-		}
-	case 50001:
-		{ /* '50001' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50003:
-		{ /* '50003' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50004:
-		{ /* '50004' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50005:
-		{ /* '50005' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50006:
-		{ /* '50006' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50010:
-		{ /* '50010' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 50100:
-		{ /* '50100' */
-			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
-		}
-	case 60001:
-		{ /* '60001' */
-			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
-		}
-	case 60010:
-		{ /* '60010' */
-			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
-		}
-	case 60020:
-		{ /* '60020' */
-			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
-		}
-	case 70001:
-		{ /* '70001' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70002:
-		{ /* '70002' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70003:
-		{ /* '70003' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70004:
-		{ /* '70004' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70005:
-		{ /* '70005' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70006:
-		{ /* '70006' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70007:
-		{ /* '70007' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70010:
-		{ /* '70010' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70011:
-		{ /* '70011' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70012:
-		{ /* '70012' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70013:
-		{ /* '70013' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 70600:
-		{ /* '70600' */
-			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
-		}
-	case 80001:
-		{ /* '80001' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80002:
-		{ /* '80002' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80003:
-		{ /* '80003' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80004:
-		{ /* '80004' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80005:
-		{ /* '80005' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80006:
-		{ /* '80006' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80007:
-		{ /* '80007' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80010:
-		{ /* '80010' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80011:
-		{ /* '80011' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 80012:
-		{ /* '80012' */
-			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
-		}
-	case 90001:
-		{ /* '90001' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90002:
-		{ /* '90002' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90003:
-		{ /* '90003' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90004:
-		{ /* '90004' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90005:
-		{ /* '90005' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90006:
-		{ /* '90006' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90007:
-		{ /* '90007' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90008:
-		{ /* '90008' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90009:
-		{ /* '90009' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90010:
-		{ /* '90010' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90011:
-		{ /* '90011' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90020:
-		{ /* '90020' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90021:
-		{ /* '90021' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90022:
-		{ /* '90022' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90023:
-		{ /* '90023' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90024:
-		{ /* '90024' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90025:
-		{ /* '90025' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90026:
-		{ /* '90026' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90027:
-		{ /* '90027' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90028:
-		{ /* '90028' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90029:
-		{ /* '90029' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
-		}
-	case 90030:
-		{ /* '90030' */
-			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+	case 0:
+		{ /* '0' */
+			return 0
+		}
+	case 1:
+		{ /* '1' */
+			return 1
+		}
+	case 10:
+		{ /* '10' */
+			return 10
+		}
+	case 100:
+		{ /* '100' */
+			return 102
+		}
+	case 101:
+		{ /* '101' */
+			return 1200
+		}
+	case 102:
+		{ /* '102' */
+			return 1201
+		}
+	case 103:
+		{ /* '103' */
+			return 1
+		}
+	case 104:
+		{ /* '104' */
+			return 2
+		}
+	case 105:
+		{ /* '105' */
+			return 10
+		}
+	case 106:
+		{ /* '106' */
+			return 11
+		}
+	case 107:
+		{ /* '107' */
+			return 12
+		}
+	case 108:
+		{ /* '108' */
+			return 13
+		}
+	case 109:
+		{ /* '109' */
+			return 14
+		}
+	case 11:
+		{ /* '11' */
+			return 11
+		}
+	case 110:
+		{ /* '110' */
+			return 15
+		}
+	case 111:
+		{ /* '111' */
+			return 16
+		}
+	case 112:
+		{ /* '112' */
+			return 100
+		}
+	case 113:
+		{ /* '113' */
+			return 1200
+		}
+	case 114:
+		{ /* '114' */
+			return 1201
+		}
+	case 115:
+		{ /* '115' */
+			return 0
+		}
+	case 116:
+		{ /* '116' */
+			return 1
+		}
+	case 117:
+		{ /* '117' */
+			return 2
+		}
+	case 118:
+		{ /* '118' */
+			return 3
+		}
+	case 119:
+		{ /* '119' */
+			return 4
+		}
+	case 12:
+		{ /* '12' */
+			return 12
+		}
+	case 120:
+		{ /* '120' */
+			return 5
+		}
+	case 121:
+		{ /* '121' */
+			return 6
+		}
+	case 122:
+		{ /* '122' */
+			return 7
+		}
+	case 123:
+		{ /* '123' */
+			return 8
+		}
+	case 124:
+		{ /* '124' */
+			return 9
+		}
+	case 125:
+		{ /* '125' */
+			return 10
+		}
+	case 126:
+		{ /* '126' */
+			return 11
+		}
+	case 127:
+		{ /* '127' */
+			return 12
+		}
+	case 128:
+		{ /* '128' */
+			return 13
+		}
+	case 129:
+		{ /* '129' */
+			return 14
+		}
+	case 13:
+		{ /* '13' */
+			return 13
+		}
+	case 130:
+		{ /* '130' */
+			return 15
+		}
+	case 131:
+		{ /* '131' */
+			return 16
+		}
+	case 132:
+		{ /* '132' */
+			return 17
+		}
+	case 133:
+		{ /* '133' */
+			return 18
+		}
+	case 134:
+		{ /* '134' */
+			return 19
+		}
+	case 135:
+		{ /* '135' */
+			return 20
+		}
+	case 136:
+		{ /* '136' */
+			return 21
+		}
+	case 137:
+		{ /* '137' */
+			return 22
+		}
+	case 138:
+		{ /* '138' */
+			return 23
+		}
+	case 139:
+		{ /* '139' */
+			return 24
+		}
+	case 14:
+		{ /* '14' */
+			return 14
+		}
+	case 140:
+		{ /* '140' */
+			return 25
+		}
+	case 141:
+		{ /* '141' */
+			return 26
+		}
+	case 142:
+		{ /* '142' */
+			return 27
+		}
+	case 143:
+		{ /* '143' */
+			return 28
+		}
+	case 144:
+		{ /* '144' */
+			return 29
+		}
+	case 145:
+		{ /* '145' */
+			return 30
+		}
+	case 146:
+		{ /* '146' */
+			return 31
+		}
+	case 147:
+		{ /* '147' */
+			return 32
+		}
+	case 148:
+		{ /* '148' */
+			return 33
+		}
+	case 149:
+		{ /* '149' */
+			return 34
+		}
+	case 15:
+		{ /* '15' */
+			return 15
+		}
+	case 150:
+		{ /* '150' */
+			return 35
+		}
+	case 151:
+		{ /* '151' */
+			return 36
+		}
+	case 152:
+		{ /* '152' */
+			return 37
+		}
+	case 153:
+		{ /* '153' */
+			return 38
+		}
+	case 154:
+		{ /* '154' */
+			return 39
+		}
+	case 155:
+		{ /* '155' */
+			return 40
+		}
+	case 156:
+		{ /* '156' */
+			return 41
+		}
+	case 157:
+		{ /* '157' */
+			return 42
+		}
+	case 158:
+		{ /* '158' */
+			return 43
+		}
+	case 159:
+		{ /* '159' */
+			return 44
+		}
+	case 16:
+		{ /* '16' */
+			return 16
+		}
+	case 160:
+		{ /* '160' */
+			return 45
+		}
+	case 161:
+		{ /* '161' */
+			return 46
+		}
+	case 162:
+		{ /* '162' */
+			return 47
+		}
+	case 163:
+		{ /* '163' */
+			return 48
+		}
+	case 164:
+		{ /* '164' */
+			return 49
+		}
+	case 165:
+		{ /* '165' */
+			return 50
+		}
+	case 166:
+		{ /* '166' */
+			return 51
+		}
+	case 167:
+		{ /* '167' */
+			return 52
+		}
+	case 168:
+		{ /* '168' */
+			return 53
+		}
+	case 169:
+		{ /* '169' */
+			return 54
+		}
+	case 17:
+		{ /* '17' */
+			return 17
+		}
+	case 170:
+		{ /* '170' */
+			return 55
+		}
+	case 171:
+		{ /* '171' */
+			return 56
+		}
+	case 172:
+		{ /* '172' */
+			return 57
+		}
+	case 173:
+		{ /* '173' */
+			return 58
+		}
+	case 174:
+		{ /* '174' */
+			return 59
+		}
+	case 175:
+		{ /* '175' */
+			return 60
+		}
+	case 176:
+		{ /* '176' */
+			return 61
+		}
+	case 177:
+		{ /* '177' */
+			return 62
+		}
+	case 178:
+		{ /* '178' */
+			return 63
+		}
+	case 179:
+		{ /* '179' */
+			return 64
+		}
+	case 18:
+		{ /* '18' */
+			return 18
+		}
+	case 180:
+		{ /* '180' */
+			return 65
+		}
+	case 181:
+		{ /* '181' */
+			return 66
+		}
+	case 182:
+		{ /* '182' */
+			return 67
+		}
+	case 183:
+		{ /* '183' */
+			return 68
+		}
+	case 184:
+		{ /* '184' */
+			return 69
+		}
+	case 185:
+		{ /* '185' */
+			return 70
+		}
+	case 186:
+		{ /* '186' */
+			return 71
+		}
+	case 187:
+		{ /* '187' */
+			return 72
+		}
+	case 188:
+		{ /* '188' */
+			return 73
+		}
+	case 189:
+		{ /* '189' */
+			return 74
+		}
+	case 19:
+		{ /* '19' */
+			return 19
+		}
+	case 190:
+		{ /* '190' */
+			return 75
+		}
+	case 191:
+		{ /* '191' */
+			return 76
+		}
+	case 192:
+		{ /* '192' */
+			return 77
+		}
+	case 193:
+		{ /* '193' */
+			return 78
+		}
+	case 194:
+		{ /* '194' */
+			return 79
+		}
+	case 195:
+		{ /* '195' */
+			return 1200
+		}
+	case 196:
+		{ /* '196' */
+			return 1201
+		}
+	case 197:
+		{ /* '197' */
+			return 0
+		}
+	case 198:
+		{ /* '198' */
+			return 0
+		}
+	case 199:
+		{ /* '199' */
+			return 1
+		}
+	case 2:
+		{ /* '2' */
+			return 2
+		}
+	case 20:
+		{ /* '20' */
+			return 21
+		}
+	case 200:
+		{ /* '200' */
+			return 1
+		}
+	case 201:
+		{ /* '201' */
+			return 1
+		}
+	case 202:
+		{ /* '202' */
+			return 1
+		}
+	case 203:
+		{ /* '203' */
+			return 1
+		}
+	case 204:
+		{ /* '204' */
+			return 2
+		}
+	case 205:
+		{ /* '205' */
+			return 3
+		}
+	case 206:
+		{ /* '206' */
+			return 4
+		}
+	case 207:
+		{ /* '207' */
+			return 5
+		}
+	case 208:
+		{ /* '208' */
+			return 6
+		}
+	case 209:
+		{ /* '209' */
+			return 7
+		}
+	case 21:
+		{ /* '21' */
+			return 22
+		}
+	case 210:
+		{ /* '210' */
+			return 8
+		}
+	case 211:
+		{ /* '211' */
+			return 11
+		}
+	case 212:
+		{ /* '212' */
+			return 12
+		}
+	case 213:
+		{ /* '213' */
+			return 13
+		}
+	case 214:
+		{ /* '214' */
+			return 14
+		}
+	case 215:
+		{ /* '215' */
+			return 17
+		}
+	case 216:
+		{ /* '216' */
+			return 20
+		}
+	case 217:
+		{ /* '217' */
+			return 21
+		}
+	case 218:
+		{ /* '218' */
+			return 22
+		}
+	case 219:
+		{ /* '219' */
+			return 100
+		}
+	case 22:
+		{ /* '22' */
+			return 23
+		}
+	case 220:
+		{ /* '220' */
+			return 101
+		}
+	case 221:
+		{ /* '221' */
+			return 102
+		}
+	case 222:
+		{ /* '222' */
+			return 103
+		}
+	case 223:
+		{ /* '223' */
+			return 104
+		}
+	case 224:
+		{ /* '224' */
+			return 105
+		}
+	case 225:
+		{ /* '225' */
+			return 106
+		}
+	case 226:
+		{ /* '226' */
+			return 107
+		}
+	case 227:
+		{ /* '227' */
+			return 108
+		}
+	case 228:
+		{ /* '228' */
+			return 109
+		}
+	case 229:
+		{ /* '229' */
+			return 110
+		}
+	case 23:
+		{ /* '23' */
+			return 24
+		}
+	case 230:
+		{ /* '230' */
+			return 111
+		}
+	case 231:
+		{ /* '231' */
+			return 112
+		}
+	case 232:
+		{ /* '232' */
+			return 113
+		}
+	case 233:
+		{ /* '233' */
+			return 114
+		}
+	case 234:
+		{ /* '234' */
+			return 115
+		}
+	case 235:
+		{ /* '235' */
+			return 116
+		}
+	case 236:
+		{ /* '236' */
+			return 120
+		}
+	case 237:
+		{ /* '237' */
+			return 121
+		}
+	case 238:
+		{ /* '238' */
+			return 122
+		}
+	case 239:
+		{ /* '239' */
+			return 600
+		}
+	case 24:
+		{ /* '24' */
+			return 100
+		}
+	case 240:
+		{ /* '240' */
+			return 601
+		}
+	case 241:
+		{ /* '241' */
+			return 602
+		}
+	case 242:
+		{ /* '242' */
+			return 603
+		}
+	case 243:
+		{ /* '243' */
+			return 604
+		}
+	case 244:
+		{ /* '244' */
+			return 605
+		}
+	case 245:
+		{ /* '245' */
+			return 606
+		}
+	case 246:
+		{ /* '246' */
+			return 607
+		}
+	case 247:
+		{ /* '247' */
+			return 608
+		}
+	case 248:
+		{ /* '248' */
+			return 609
+		}
+	case 249:
+		{ /* '249' */
+			return 610
+		}
+	case 25:
+		{ /* '25' */
+			return 1
+		}
+	case 250:
+		{ /* '250' */
+			return 611
+		}
+	case 251:
+		{ /* '251' */
+			return 801
+		}
+	case 252:
+		{ /* '252' */
+			return 802
+		}
+	case 253:
+		{ /* '253' */
+			return 803
+		}
+	case 254:
+		{ /* '254' */
+			return 804
+		}
+	case 255:
+		{ /* '255' */
+			return 1000
+		}
+	case 256:
+		{ /* '256' */
+			return 1001
+		}
+	case 257:
+		{ /* '257' */
+			return 1002
+		}
+	case 258:
+		{ /* '258' */
+			return 1003
+		}
+	case 259:
+		{ /* '259' */
+			return 1
+		}
+	case 26:
+		{ /* '26' */
+			return 2
+		}
+	case 260:
+		{ /* '260' */
+			return 2
+		}
+	case 261:
+		{ /* '261' */
+			return 100
+		}
+	case 262:
+		{ /* '262' */
+			return 101
+		}
+	case 263:
+		{ /* '263' */
+			return 102
+		}
+	case 264:
+		{ /* '264' */
+			return 103
+		}
+	case 265:
+		{ /* '265' */
+			return 104
+		}
+	case 266:
+		{ /* '266' */
+			return 105
+		}
+	case 267:
+		{ /* '267' */
+			return 106
+		}
+	case 268:
+		{ /* '268' */
+			return 107
+		}
+	case 269:
+		{ /* '269' */
+			return 601
+		}
+	case 27:
+		{ /* '27' */
+			return 3
+		}
+	case 270:
+		{ /* '270' */
+			return 1000
+		}
+	case 271:
+		{ /* '271' */
+			return 1001
+		}
+	case 272:
+		{ /* '272' */
+			return 1010
+		}
+	case 273:
+		{ /* '273' */
+			return 100
+		}
+	case 274:
+		{ /* '274' */
+			return 101
+		}
+	case 275:
+		{ /* '275' */
+			return 102
+		}
+	case 276:
+		{ /* '276' */
+			return 103
+		}
+	case 277:
+		{ /* '277' */
+			return 1000
+		}
+	case 278:
+		{ /* '278' */
+			return 1010
+		}
+	case 279:
+		{ /* '279' */
+			return 1
+		}
+	case 28:
+		{ /* '28' */
+			return 4
+		}
+	case 280:
+		{ /* '280' */
+			return 2
+		}
+	case 281:
+		{ /* '281' */
+			return 3
+		}
+	case 282:
+		{ /* '282' */
+			return 102
+		}
+	case 283:
+		{ /* '283' */
+			return 1000
+		}
+	case 284:
+		{ /* '284' */
+			return 1
+		}
+	case 285:
+		{ /* '285' */
+			return 1
+		}
+	case 286:
+		{ /* '286' */
+			return 10
+		}
+	case 287:
+		{ /* '287' */
+			return 11
+		}
+	case 288:
+		{ /* '288' */
+			return 12
+		}
+	case 289:
+		{ /* '289' */
+			return 1010
+		}
+	case 29:
+		{ /* '29' */
+			return 5
+		}
+	case 290:
+		{ /* '290' */
+			return 100
+		}
+	case 291:
+		{ /* '291' */
+			return 102
+		}
+	case 292:
+		{ /* '292' */
+			return 104
+		}
+	case 293:
+		{ /* '293' */
+			return 105
+		}
+	case 294:
+		{ /* '294' */
+			return 1
+		}
+	case 295:
+		{ /* '295' */
+			return 1
+		}
+	case 296:
+		{ /* '296' */
+			return 100
+		}
+	case 297:
+		{ /* '297' */
+			return 101
+		}
+	case 298:
+		{ /* '298' */
+			return 1
+		}
+	case 299:
+		{ /* '299' */
+			return 2
+		}
+	case 3:
+		{ /* '3' */
+			return 3
+		}
+	case 30:
+		{ /* '30' */
+			return 6
+		}
+	case 300:
+		{ /* '300' */
+			return 1
+		}
+	case 301:
+		{ /* '301' */
+			return 1000
+		}
+	case 302:
+		{ /* '302' */
+			return 600
+		}
+	case 303:
+		{ /* '303' */
+			return 1
+		}
+	case 304:
+		{ /* '304' */
+			return 1
+		}
+	case 305:
+		{ /* '305' */
+			return 1
+		}
+	case 306:
+		{ /* '306' */
+			return 600
+		}
+	case 307:
+		{ /* '307' */
+			return 600
+		}
+	case 308:
+		{ /* '308' */
+			return 800
+		}
+	case 309:
+		{ /* '309' */
+			return 800
+		}
+	case 31:
+		{ /* '31' */
+			return 7
+		}
+	case 310:
+		{ /* '310' */
+			return 600
+		}
+	case 311:
+		{ /* '311' */
+			return 600
+		}
+	case 312:
+		{ /* '312' */
+			return 600
+		}
+	case 313:
+		{ /* '313' */
+			return 600
+		}
+	case 314:
+		{ /* '314' */
+			return 600
+		}
+	case 315:
+		{ /* '315' */
+			return 600
+		}
+	case 316:
+		{ /* '316' */
+			return 600
+		}
+	case 317:
+		{ /* '317' */
+			return 600
+		}
+	case 318:
+		{ /* '318' */
+			return 600
+		}
+	case 319:
+		{ /* '319' */
+			return 1
+		}
+	case 32:
+		{ /* '32' */
+			return 8
+		}
+	case 320:
+		{ /* '320' */
+			return 100
+		}
+	case 321:
+		{ /* '321' */
+			return 101
+		}
+	case 33:
+		{ /* '33' */
+			return 9
+		}
+	case 34:
+		{ /* '34' */
+			return 10
+		}
+	case 35:
+		{ /* '35' */
+			return 11
+		}
+	case 36:
+		{ /* '36' */
+			return 12
+		}
+	case 37:
+		{ /* '37' */
+			return 7
+		}
+	case 38:
+		{ /* '38' */
+			return 8
+		}
+	case 39:
+		{ /* '39' */
+			return 1
+		}
+	case 4:
+		{ /* '4' */
+			return 4
+		}
+	case 40:
+		{ /* '40' */
+			return 2
+		}
+	case 41:
+		{ /* '41' */
+			return 1
+		}
+	case 42:
+		{ /* '42' */
+			return 3
+		}
+	case 43:
+		{ /* '43' */
+			return 4
+		}
+	case 44:
+		{ /* '44' */
+			return 5
+		}
+	case 45:
+		{ /* '45' */
+			return 6
+		}
+	case 46:
+		{ /* '46' */
+			return 10
+		}
+	case 47:
+		{ /* '47' */
+			return 100
+		}
+	case 48:
+		{ /* '48' */
+			return 1
+		}
+	case 49:
+		{ /* '49' */
+			return 10
+		}
+	case 5:
+		{ /* '5' */
+			return 5
+		}
+	case 50:
+		{ /* '50' */
+			return 20
+		}
+	case 51:
+		{ /* '51' */
+			return 1
+		}
+	case 52:
+		{ /* '52' */
+			return 2
+		}
+	case 53:
+		{ /* '53' */
+			return 3
+		}
+	case 54:
+		{ /* '54' */
+			return 4
+		}
+	case 55:
+		{ /* '55' */
+			return 5
+		}
+	case 56:
+		{ /* '56' */
+			return 6
+		}
+	case 57:
+		{ /* '57' */
+			return 7
+		}
+	case 58:
+		{ /* '58' */
+			return 10
+		}
+	case 59:
+		{ /* '59' */
+			return 11
+		}
+	case 6:
+		{ /* '6' */
+			return 6
+		}
+	case 60:
+		{ /* '60' */
+			return 12
+		}
+	case 61:
+		{ /* '61' */
+			return 13
+		}
+	case 62:
+		{ /* '62' */
+			return 600
+		}
+	case 63:
+		{ /* '63' */
+			return 1
+		}
+	case 64:
+		{ /* '64' */
+			return 2
+		}
+	case 65:
+		{ /* '65' */
+			return 3
+		}
+	case 66:
+		{ /* '66' */
+			return 4
+		}
+	case 67:
+		{ /* '67' */
+			return 5
+		}
+	case 68:
+		{ /* '68' */
+			return 6
+		}
+	case 69:
+		{ /* '69' */
+			return 7
+		}
+	case 7:
+		{ /* '7' */
+			return 7
+		}
+	case 70:
+		{ /* '70' */
+			return 10
+		}
+	case 71:
+		{ /* '71' */
+			return 11
+		}
+	case 72:
+		{ /* '72' */
+			return 12
+		}
+	case 73:
+		{ /* '73' */
+			return 1
+		}
+	case 74:
+		{ /* '74' */
+			return 2
+		}
+	case 75:
+		{ /* '75' */
+			return 3
+		}
+	case 76:
+		{ /* '76' */
+			return 4
+		}
+	case 77:
+		{ /* '77' */
+			return 5
+		}
+	case 78:
+		{ /* '78' */
+			return 6
+		}
+	case 79:
+		{ /* '79' */
+			return 7
+		}
+	case 8:
+		{ /* '8' */
+			return 8
+		}
+	case 80:
+		{ /* '80' */
+			return 8
+		}
+	case 81:
+		{ /* '81' */
+			return 9
+		}
+	case 82:
+		{ /* '82' */
+			return 10
+		}
+	case 83:
+		{ /* '83' */
+			return 11
+		}
+	case 84:
+		{ /* '84' */
+			return 20
+		}
+	case 85:
+		{ /* '85' */
+			return 21
+		}
+	case 86:
+		{ /* '86' */
+			return 22
+		}
+	case 87:
+		{ /* '87' */
+			return 23
+		}
+	case 88:
+		{ /* '88' */
+			return 24
+		}
+	case 89:
+		{ /* '89' */
+			return 25
+		}
+	case 9:
+		{ /* '9' */
+			return 9
+		}
+	case 90:
+		{ /* '90' */
+			return 26
+		}
+	case 91:
+		{ /* '91' */
+			return 27
+		}
+	case 92:
+		{ /* '92' */
+			return 28
+		}
+	case 93:
+		{ /* '93' */
+			return 29
+		}
+	case 94:
+		{ /* '94' */
+			return 30
+		}
+	case 95:
+		{ /* '95' */
+			return 1
+		}
+	case 96:
+		{ /* '96' */
+			return 1
+		}
+	case 97:
+		{ /* '97' */
+			return 1
+		}
+	case 98:
+		{ /* '98' */
+			return 100
+		}
+	case 99:
+		{ /* '99' */
+			return 101
 		}
 	default:
 		{
@@ -1647,1291 +1653,2592 @@ func (e KnxDatapointSubtype) DatapointType() KnxDatapointType {
 	}
 }
 
-func (e KnxDatapointSubtype) Text() string {
+func (e KnxDatapointSubtype) DatapointType() KnxDatapointType {
 	switch e {
-	case 100001:
-		{ /* '100001' */
-			return "time of day"
+	case 0:
+		{ /* '0' */
+			return KnxDatapointType_DPT_UNKNOWN
 		}
-	case 10001:
-		{ /* '10001' */
+	case 1:
+		{ /* '1' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 10:
+		{ /* '10' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 100:
+		{ /* '100' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	case 101:
+		{ /* '101' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	case 102:
+		{ /* '102' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	case 103:
+		{ /* '103' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 104:
+		{ /* '104' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 105:
+		{ /* '105' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 106:
+		{ /* '106' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 107:
+		{ /* '107' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 108:
+		{ /* '108' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 109:
+		{ /* '109' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 11:
+		{ /* '11' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 110:
+		{ /* '110' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 111:
+		{ /* '111' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 112:
+		{ /* '112' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 113:
+		{ /* '113' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 114:
+		{ /* '114' */
+			return KnxDatapointType_DPT_4_BYTE_SIGNED_VALUE
+		}
+	case 115:
+		{ /* '115' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 116:
+		{ /* '116' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 117:
+		{ /* '117' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 118:
+		{ /* '118' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 119:
+		{ /* '119' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 12:
+		{ /* '12' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 120:
+		{ /* '120' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 121:
+		{ /* '121' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 122:
+		{ /* '122' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 123:
+		{ /* '123' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 124:
+		{ /* '124' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 125:
+		{ /* '125' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 126:
+		{ /* '126' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 127:
+		{ /* '127' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 128:
+		{ /* '128' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 129:
+		{ /* '129' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 13:
+		{ /* '13' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 130:
+		{ /* '130' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 131:
+		{ /* '131' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 132:
+		{ /* '132' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 133:
+		{ /* '133' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 134:
+		{ /* '134' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 135:
+		{ /* '135' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 136:
+		{ /* '136' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 137:
+		{ /* '137' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 138:
+		{ /* '138' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 139:
+		{ /* '139' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 14:
+		{ /* '14' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 140:
+		{ /* '140' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 141:
+		{ /* '141' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 142:
+		{ /* '142' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 143:
+		{ /* '143' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 144:
+		{ /* '144' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 145:
+		{ /* '145' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 146:
+		{ /* '146' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 147:
+		{ /* '147' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 148:
+		{ /* '148' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 149:
+		{ /* '149' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 15:
+		{ /* '15' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 150:
+		{ /* '150' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 151:
+		{ /* '151' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 152:
+		{ /* '152' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 153:
+		{ /* '153' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 154:
+		{ /* '154' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 155:
+		{ /* '155' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 156:
+		{ /* '156' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 157:
+		{ /* '157' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 158:
+		{ /* '158' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 159:
+		{ /* '159' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 16:
+		{ /* '16' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 160:
+		{ /* '160' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 161:
+		{ /* '161' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 162:
+		{ /* '162' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 163:
+		{ /* '163' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 164:
+		{ /* '164' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 165:
+		{ /* '165' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 166:
+		{ /* '166' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 167:
+		{ /* '167' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 168:
+		{ /* '168' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 169:
+		{ /* '169' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 17:
+		{ /* '17' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 170:
+		{ /* '170' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 171:
+		{ /* '171' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 172:
+		{ /* '172' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 173:
+		{ /* '173' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 174:
+		{ /* '174' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 175:
+		{ /* '175' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 176:
+		{ /* '176' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 177:
+		{ /* '177' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 178:
+		{ /* '178' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 179:
+		{ /* '179' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 18:
+		{ /* '18' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 180:
+		{ /* '180' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 181:
+		{ /* '181' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 182:
+		{ /* '182' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 183:
+		{ /* '183' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 184:
+		{ /* '184' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 185:
+		{ /* '185' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 186:
+		{ /* '186' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 187:
+		{ /* '187' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 188:
+		{ /* '188' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 189:
+		{ /* '189' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 19:
+		{ /* '19' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 190:
+		{ /* '190' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 191:
+		{ /* '191' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 192:
+		{ /* '192' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 193:
+		{ /* '193' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 194:
+		{ /* '194' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 195:
+		{ /* '195' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 196:
+		{ /* '196' */
+			return KnxDatapointType_DPT_4_BYTE_FLOAT_VALUE
+		}
+	case 197:
+		{ /* '197' */
+			return KnxDatapointType_DPT_ENTRANCE_ACCESS
+		}
+	case 198:
+		{ /* '198' */
+			return KnxDatapointType_DPT_CHARACTER_STRING
+		}
+	case 199:
+		{ /* '199' */
+			return KnxDatapointType_DPT_CHARACTER_STRING
+		}
+	case 2:
+		{ /* '2' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 20:
+		{ /* '20' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 200:
+		{ /* '200' */
+			return KnxDatapointType_DPT_SCENE_NUMBER
+		}
+	case 201:
+		{ /* '201' */
+			return KnxDatapointType_DPT_SCENE_CONTROL
+		}
+	case 202:
+		{ /* '202' */
+			return KnxDatapointType_DPT_DATE_TIME
+		}
+	case 203:
+		{ /* '203' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 204:
+		{ /* '204' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 205:
+		{ /* '205' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 206:
+		{ /* '206' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 207:
+		{ /* '207' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 208:
+		{ /* '208' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 209:
+		{ /* '209' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 21:
+		{ /* '21' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 210:
+		{ /* '210' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 211:
+		{ /* '211' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 212:
+		{ /* '212' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 213:
+		{ /* '213' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 214:
+		{ /* '214' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 215:
+		{ /* '215' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 216:
+		{ /* '216' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 217:
+		{ /* '217' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 218:
+		{ /* '218' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 219:
+		{ /* '219' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 22:
+		{ /* '22' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 220:
+		{ /* '220' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 221:
+		{ /* '221' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 222:
+		{ /* '222' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 223:
+		{ /* '223' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 224:
+		{ /* '224' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 225:
+		{ /* '225' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 226:
+		{ /* '226' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 227:
+		{ /* '227' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 228:
+		{ /* '228' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 229:
+		{ /* '229' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 23:
+		{ /* '23' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 230:
+		{ /* '230' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 231:
+		{ /* '231' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 232:
+		{ /* '232' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 233:
+		{ /* '233' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 234:
+		{ /* '234' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 235:
+		{ /* '235' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 236:
+		{ /* '236' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 237:
+		{ /* '237' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 238:
+		{ /* '238' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 239:
+		{ /* '239' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 24:
+		{ /* '24' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 240:
+		{ /* '240' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 241:
+		{ /* '241' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 242:
+		{ /* '242' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 243:
+		{ /* '243' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 244:
+		{ /* '244' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 245:
+		{ /* '245' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 246:
+		{ /* '246' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 247:
+		{ /* '247' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 248:
+		{ /* '248' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 249:
+		{ /* '249' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 25:
+		{ /* '25' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 250:
+		{ /* '250' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 251:
+		{ /* '251' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 252:
+		{ /* '252' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 253:
+		{ /* '253' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 254:
+		{ /* '254' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 255:
+		{ /* '255' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 256:
+		{ /* '256' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 257:
+		{ /* '257' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 258:
+		{ /* '258' */
+			return KnxDatapointType_DPT_1_BYTE
+		}
+	case 259:
+		{ /* '259' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 26:
+		{ /* '26' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 260:
+		{ /* '260' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 261:
+		{ /* '261' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 262:
+		{ /* '262' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 263:
+		{ /* '263' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 264:
+		{ /* '264' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 265:
+		{ /* '265' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 266:
+		{ /* '266' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 267:
+		{ /* '267' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 268:
+		{ /* '268' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 269:
+		{ /* '269' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 27:
+		{ /* '27' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 270:
+		{ /* '270' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 271:
+		{ /* '271' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 272:
+		{ /* '272' */
+			return KnxDatapointType_DPT_8_BIT_SET
+		}
+	case 273:
+		{ /* '273' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 274:
+		{ /* '274' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 275:
+		{ /* '275' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 276:
+		{ /* '276' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 277:
+		{ /* '277' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 278:
+		{ /* '278' */
+			return KnxDatapointType_DPT_16_BIT_SET
+		}
+	case 279:
+		{ /* '279' */
+			return KnxDatapointType_DPT_2_BIT_SET
+		}
+	case 28:
+		{ /* '28' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 280:
+		{ /* '280' */
+			return KnxDatapointType_DPT_2_BIT_SET
+		}
+	case 281:
+		{ /* '281' */
+			return KnxDatapointType_DPT_2_BIT_SET
+		}
+	case 282:
+		{ /* '282' */
+			return KnxDatapointType_DPT_2_BIT_SET
+		}
+	case 283:
+		{ /* '283' */
+			return KnxDatapointType_DPT_2_NIBBLE_SET
+		}
+	case 284:
+		{ /* '284' */
+			return KnxDatapointType_DPT_8_BIT_SET_2
+		}
+	case 285:
+		{ /* '285' */
+			return KnxDatapointType_DPT_32_BIT_SET
+		}
+	case 286:
+		{ /* '286' */
+			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
+		}
+	case 287:
+		{ /* '287' */
+			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
+		}
+	case 288:
+		{ /* '288' */
+			return KnxDatapointType_DPT_ELECTRICAL_ENERGY
+		}
+	case 289:
+		{ /* '289' */
+			return KnxDatapointType_DPT_24_TIMES_CHANNEL_ACTIVATION
+		}
+	case 29:
+		{ /* '29' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 290:
+		{ /* '290' */
+			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		}
+	case 291:
+		{ /* '291' */
+			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		}
+	case 292:
+		{ /* '292' */
+			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		}
+	case 293:
+		{ /* '293' */
+			return KnxDatapointType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+		}
+	case 294:
+		{ /* '294' */
+			return KnxDatapointType_DPT_DATAPOINT_TYPE_VERSION
+		}
+	case 295:
+		{ /* '295' */
+			return KnxDatapointType_DPT_ALARM_INFO
+		}
+	case 296:
+		{ /* '296' */
+			return KnxDatapointType_DPT_3X_2_BYTE_FLOAT_VALUE
+		}
+	case 297:
+		{ /* '297' */
+			return KnxDatapointType_DPT_3X_2_BYTE_FLOAT_VALUE
+		}
+	case 298:
+		{ /* '298' */
+			return KnxDatapointType_DPT_SCALING_SPEED
+		}
+	case 299:
+		{ /* '299' */
+			return KnxDatapointType_DPT_SCALING_SPEED
+		}
+	case 3:
+		{ /* '3' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 30:
+		{ /* '30' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 300:
+		{ /* '300' */
+			return KnxDatapointType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+		}
+	case 301:
+		{ /* '301' */
+			return KnxDatapointType_DPT_MBUS_ADDRESS
+		}
+	case 302:
+		{ /* '302' */
+			return KnxDatapointType_DPT_3_BYTE_COLOUR_RGB
+		}
+	case 303:
+		{ /* '303' */
+			return KnxDatapointType_DPT_LANGUAGE_CODE_ISO_639_1
+		}
+	case 304:
+		{ /* '304' */
+			return KnxDatapointType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+		}
+	case 305:
+		{ /* '305' */
+			return KnxDatapointType_DPT_PRIORITISED_MODE_CONTROL
+		}
+	case 306:
+		{ /* '306' */
+			return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+		}
+	case 307:
+		{ /* '307' */
+			return KnxDatapointType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+		}
+	case 308:
+		{ /* '308' */
+			return KnxDatapointType_DPT_POSITIONS
+		}
+	case 309:
+		{ /* '309' */
+			return KnxDatapointType_DPT_STATUS_32_BIT
+		}
+	case 31:
+		{ /* '31' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 310:
+		{ /* '310' */
+			return KnxDatapointType_DPT_STATUS_48_BIT
+		}
+	case 311:
+		{ /* '311' */
+			return KnxDatapointType_DPT_CONVERTER_STATUS
+		}
+	case 312:
+		{ /* '312' */
+			return KnxDatapointType_DPT_CONVERTER_TEST_RESULT
+		}
+	case 313:
+		{ /* '313' */
+			return KnxDatapointType_DPT_BATTERY_INFORMATION
+		}
+	case 314:
+		{ /* '314' */
+			return KnxDatapointType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+		}
+	case 315:
+		{ /* '315' */
+			return KnxDatapointType_DPT_STATUS_24_BIT
+		}
+	case 316:
+		{ /* '316' */
+			return KnxDatapointType_DPT_COLOUR_RGBW
+		}
+	case 317:
+		{ /* '317' */
+			return KnxDatapointType_DPT_RELATIVE_CONTROL_RGBW
+		}
+	case 318:
+		{ /* '318' */
+			return KnxDatapointType_DPT_RELATIVE_CONTROL_RGB
+		}
+	case 319:
+		{ /* '319' */
+			return KnxDatapointType_DPT_F32F32
+		}
+	case 32:
+		{ /* '32' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 320:
+		{ /* '320' */
+			return KnxDatapointType_DPT_F16F16F16F16
+		}
+	case 321:
+		{ /* '321' */
+			return KnxDatapointType_DPT_F16F16F16F16
+		}
+	case 33:
+		{ /* '33' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 34:
+		{ /* '34' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 35:
+		{ /* '35' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 36:
+		{ /* '36' */
+			return KnxDatapointType_DPT_1_BIT_CONTROLLED
+		}
+	case 37:
+		{ /* '37' */
+			return KnxDatapointType_DPT_3_BIT_CONTROLLED
+		}
+	case 38:
+		{ /* '38' */
+			return KnxDatapointType_DPT_3_BIT_CONTROLLED
+		}
+	case 39:
+		{ /* '39' */
+			return KnxDatapointType_DPT_CHARACTER
+		}
+	case 4:
+		{ /* '4' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 40:
+		{ /* '40' */
+			return KnxDatapointType_DPT_CHARACTER
+		}
+	case 41:
+		{ /* '41' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 42:
+		{ /* '42' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 43:
+		{ /* '43' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 44:
+		{ /* '44' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 45:
+		{ /* '45' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 46:
+		{ /* '46' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 47:
+		{ /* '47' */
+			return KnxDatapointType_DPT_8_BIT_UNSIGNED_VALUE
+		}
+	case 48:
+		{ /* '48' */
+			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
+		}
+	case 49:
+		{ /* '49' */
+			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
+		}
+	case 5:
+		{ /* '5' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 50:
+		{ /* '50' */
+			return KnxDatapointType_DPT_8_BIT_SIGNED_VALUE
+		}
+	case 51:
+		{ /* '51' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 52:
+		{ /* '52' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 53:
+		{ /* '53' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 54:
+		{ /* '54' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 55:
+		{ /* '55' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 56:
+		{ /* '56' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 57:
+		{ /* '57' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 58:
+		{ /* '58' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 59:
+		{ /* '59' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 6:
+		{ /* '6' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 60:
+		{ /* '60' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 61:
+		{ /* '61' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 62:
+		{ /* '62' */
+			return KnxDatapointType_DPT_2_BYTE_UNSIGNED_VALUE
+		}
+	case 63:
+		{ /* '63' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 64:
+		{ /* '64' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 65:
+		{ /* '65' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 66:
+		{ /* '66' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 67:
+		{ /* '67' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 68:
+		{ /* '68' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 69:
+		{ /* '69' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 7:
+		{ /* '7' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 70:
+		{ /* '70' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 71:
+		{ /* '71' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 72:
+		{ /* '72' */
+			return KnxDatapointType_DPT_2_BYTE_SIGNED_VALUE
+		}
+	case 73:
+		{ /* '73' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 74:
+		{ /* '74' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 75:
+		{ /* '75' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 76:
+		{ /* '76' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 77:
+		{ /* '77' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 78:
+		{ /* '78' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 79:
+		{ /* '79' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 8:
+		{ /* '8' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 80:
+		{ /* '80' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 81:
+		{ /* '81' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 82:
+		{ /* '82' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 83:
+		{ /* '83' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 84:
+		{ /* '84' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 85:
+		{ /* '85' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 86:
+		{ /* '86' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 87:
+		{ /* '87' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 88:
+		{ /* '88' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 89:
+		{ /* '89' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 9:
+		{ /* '9' */
+			return KnxDatapointType_DPT_1_BIT
+		}
+	case 90:
+		{ /* '90' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 91:
+		{ /* '91' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 92:
+		{ /* '92' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 93:
+		{ /* '93' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 94:
+		{ /* '94' */
+			return KnxDatapointType_DPT_2_BYTE_FLOAT_VALUE
+		}
+	case 95:
+		{ /* '95' */
+			return KnxDatapointType_DPT_TIME
+		}
+	case 96:
+		{ /* '96' */
+			return KnxDatapointType_DPT_DATE
+		}
+	case 97:
+		{ /* '97' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	case 98:
+		{ /* '98' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	case 99:
+		{ /* '99' */
+			return KnxDatapointType_DPT_4_BYTE_UNSIGNED_VALUE
+		}
+	default:
+		{
+			return 0
+		}
+	}
+}
+
+func (e KnxDatapointSubtype) Name() string {
+	switch e {
+	case 0:
+		{ /* '0' */
+			return "Unknown Datapoint Subtype"
+		}
+	case 1:
+		{ /* '1' */
 			return "switch"
 		}
-	case 10002:
-		{ /* '10002' */
-			return "boolean"
-		}
-	case 10003:
-		{ /* '10003' */
-			return "enable"
-		}
-	case 10004:
-		{ /* '10004' */
-			return "ramp"
-		}
-	case 10005:
-		{ /* '10005' */
-			return "alarm"
-		}
-	case 10006:
-		{ /* '10006' */
-			return "binary value"
-		}
-	case 10007:
-		{ /* '10007' */
-			return "step"
-		}
-	case 10008:
-		{ /* '10008' */
-			return "up/down"
-		}
-	case 10009:
-		{ /* '10009' */
-			return "open/close"
-		}
-	case 10010:
-		{ /* '10010' */
+	case 10:
+		{ /* '10' */
 			return "start/stop"
 		}
-	case 10011:
-		{ /* '10011' */
-			return "state"
-		}
-	case 10012:
-		{ /* '10012' */
-			return "invert"
-		}
-	case 10013:
-		{ /* '10013' */
-			return "dim send style"
-		}
-	case 10014:
-		{ /* '10014' */
-			return "input source"
-		}
-	case 10015:
-		{ /* '10015' */
-			return "reset"
-		}
-	case 10016:
-		{ /* '10016' */
-			return "acknowledge"
-		}
-	case 10017:
-		{ /* '10017' */
-			return "trigger"
-		}
-	case 10018:
-		{ /* '10018' */
-			return "occupancy"
-		}
-	case 10019:
-		{ /* '10019' */
-			return "window/door"
-		}
-	case 10021:
-		{ /* '10021' */
-			return "logical function"
-		}
-	case 10022:
-		{ /* '10022' */
-			return "scene"
-		}
-	case 10023:
-		{ /* '10023' */
-			return "shutter/blinds mode"
-		}
-	case 10024:
-		{ /* '10024' */
-			return "day/night"
-		}
-	case 10100:
-		{ /* '10100' */
-			return "cooling/heating"
-		}
-	case 110001:
-		{ /* '110001' */
-			return "date"
-		}
-	case 120001:
-		{ /* '120001' */
-			return "counter pulses (unsigned)"
-		}
-	case 120100:
-		{ /* '120100' */
-			return "counter timesec (s)"
-		}
-	case 120101:
-		{ /* '120101' */
-			return "counter timemin (min)"
-		}
-	case 120102:
-		{ /* '120102' */
+	case 100:
+		{ /* '100' */
 			return "counter timehrs (h)"
 		}
-	case 121200:
-		{ /* '121200' */
+	case 101:
+		{ /* '101' */
 			return "volume liquid (l)"
 		}
-	case 121201:
-		{ /* '121201' */
+	case 102:
+		{ /* '102' */
 			return "volume (m³)"
 		}
-	case 130001:
-		{ /* '130001' */
+	case 103:
+		{ /* '103' */
 			return "counter pulses (signed)"
 		}
-	case 130002:
-		{ /* '130002' */
+	case 104:
+		{ /* '104' */
 			return "flow rate (m³/h)"
 		}
-	case 130010:
-		{ /* '130010' */
+	case 105:
+		{ /* '105' */
 			return "active energy (Wh)"
 		}
-	case 130011:
-		{ /* '130011' */
+	case 106:
+		{ /* '106' */
 			return "apparant energy (VAh)"
 		}
-	case 130012:
-		{ /* '130012' */
+	case 107:
+		{ /* '107' */
 			return "reactive energy (VARh)"
 		}
-	case 130013:
-		{ /* '130013' */
+	case 108:
+		{ /* '108' */
 			return "active energy (kWh)"
 		}
-	case 130014:
-		{ /* '130014' */
+	case 109:
+		{ /* '109' */
 			return "apparant energy (kVAh)"
 		}
-	case 130015:
-		{ /* '130015' */
+	case 11:
+		{ /* '11' */
+			return "state"
+		}
+	case 110:
+		{ /* '110' */
 			return "reactive energy (kVARh)"
 		}
-	case 130016:
-		{ /* '130016' */
+	case 111:
+		{ /* '111' */
 			return "active energy (MWh)"
 		}
-	case 130100:
-		{ /* '130100' */
+	case 112:
+		{ /* '112' */
 			return "time lag (s)"
 		}
-	case 131200:
-		{ /* '131200' */
+	case 113:
+		{ /* '113' */
 			return "delta volume liquid (l)"
 		}
-	case 131201:
-		{ /* '131201' */
+	case 114:
+		{ /* '114' */
 			return "delta volume (m³)"
 		}
-	case 140000:
-		{ /* '140000' */
+	case 115:
+		{ /* '115' */
 			return "acceleration (m/s²)"
 		}
-	case 140001:
-		{ /* '140001' */
+	case 116:
+		{ /* '116' */
 			return "angular acceleration (rad/s²)"
 		}
-	case 140002:
-		{ /* '140002' */
+	case 117:
+		{ /* '117' */
 			return "activation energy (J/mol)"
 		}
-	case 140003:
-		{ /* '140003' */
+	case 118:
+		{ /* '118' */
 			return "radioactive activity (1/s)"
 		}
-	case 140004:
-		{ /* '140004' */
+	case 119:
+		{ /* '119' */
 			return "amount of substance (mol)"
 		}
-	case 140005:
-		{ /* '140005' */
+	case 12:
+		{ /* '12' */
+			return "invert"
+		}
+	case 120:
+		{ /* '120' */
 			return "amplitude"
 		}
-	case 140006:
-		{ /* '140006' */
+	case 121:
+		{ /* '121' */
 			return "angle (radiant)"
 		}
-	case 140007:
-		{ /* '140007' */
+	case 122:
+		{ /* '122' */
 			return "angle (degree)"
 		}
-	case 140008:
-		{ /* '140008' */
+	case 123:
+		{ /* '123' */
 			return "angular momentum (Js)"
 		}
-	case 140009:
-		{ /* '140009' */
+	case 124:
+		{ /* '124' */
 			return "angular velocity (rad/s)"
 		}
-	case 140010:
-		{ /* '140010' */
+	case 125:
+		{ /* '125' */
 			return "area (m*m)"
 		}
-	case 140011:
-		{ /* '140011' */
+	case 126:
+		{ /* '126' */
 			return "capacitance (F)"
 		}
-	case 140012:
-		{ /* '140012' */
+	case 127:
+		{ /* '127' */
 			return "flux density (C/m²)"
 		}
-	case 140013:
-		{ /* '140013' */
+	case 128:
+		{ /* '128' */
 			return "charge density (C/m³)"
 		}
-	case 140014:
-		{ /* '140014' */
+	case 129:
+		{ /* '129' */
 			return "compressibility (m²/N)"
 		}
-	case 140015:
-		{ /* '140015' */
+	case 13:
+		{ /* '13' */
+			return "dim send style"
+		}
+	case 130:
+		{ /* '130' */
 			return "conductance (S)"
 		}
-	case 140016:
-		{ /* '140016' */
+	case 131:
+		{ /* '131' */
 			return "conductivity  (S/m)"
 		}
-	case 140017:
-		{ /* '140017' */
+	case 132:
+		{ /* '132' */
 			return "density (kg/m³)"
 		}
-	case 140018:
-		{ /* '140018' */
+	case 133:
+		{ /* '133' */
 			return "electric charge (C)"
 		}
-	case 140019:
-		{ /* '140019' */
+	case 134:
+		{ /* '134' */
 			return "electric current (A)"
 		}
-	case 140020:
-		{ /* '140020' */
+	case 135:
+		{ /* '135' */
 			return "electric current density (A/m²)"
 		}
-	case 140021:
-		{ /* '140021' */
+	case 136:
+		{ /* '136' */
 			return "electric dipole moment (Cm)"
 		}
-	case 140022:
-		{ /* '140022' */
+	case 137:
+		{ /* '137' */
 			return "electric displacement (C/m²)"
 		}
-	case 140023:
-		{ /* '140023' */
+	case 138:
+		{ /* '138' */
 			return "electric field strength (V/m)"
 		}
-	case 140024:
-		{ /* '140024' */
+	case 139:
+		{ /* '139' */
 			return "electric flux (C)"
 		}
-	case 140025:
-		{ /* '140025' */
+	case 14:
+		{ /* '14' */
+			return "input source"
+		}
+	case 140:
+		{ /* '140' */
 			return "electric flux density (C/m²)"
 		}
-	case 140026:
-		{ /* '140026' */
+	case 141:
+		{ /* '141' */
 			return "electric polarization (C/m²)"
 		}
-	case 140027:
-		{ /* '140027' */
+	case 142:
+		{ /* '142' */
 			return "electric potential (V)"
 		}
-	case 140028:
-		{ /* '140028' */
+	case 143:
+		{ /* '143' */
 			return "electric potential difference (V)"
 		}
-	case 140029:
-		{ /* '140029' */
+	case 144:
+		{ /* '144' */
 			return "electromagnetic moment (Am²)"
 		}
-	case 140030:
-		{ /* '140030' */
+	case 145:
+		{ /* '145' */
 			return "electromotive force (V)"
 		}
-	case 140031:
-		{ /* '140031' */
+	case 146:
+		{ /* '146' */
 			return "energy (J)"
 		}
-	case 140032:
-		{ /* '140032' */
+	case 147:
+		{ /* '147' */
 			return "force (N)"
 		}
-	case 140033:
-		{ /* '140033' */
+	case 148:
+		{ /* '148' */
 			return "frequency (Hz)"
 		}
-	case 140034:
-		{ /* '140034' */
+	case 149:
+		{ /* '149' */
 			return "angular frequency (rad/s)"
 		}
-	case 140035:
-		{ /* '140035' */
+	case 15:
+		{ /* '15' */
+			return "reset"
+		}
+	case 150:
+		{ /* '150' */
 			return "heat capacity (J/K)"
 		}
-	case 140036:
-		{ /* '140036' */
+	case 151:
+		{ /* '151' */
 			return "heat flow rate (W)"
 		}
-	case 140037:
-		{ /* '140037' */
+	case 152:
+		{ /* '152' */
 			return "heat quantity"
 		}
-	case 140038:
-		{ /* '140038' */
+	case 153:
+		{ /* '153' */
 			return "impedance (Ω)"
 		}
-	case 140039:
-		{ /* '140039' */
+	case 154:
+		{ /* '154' */
 			return "length (m)"
 		}
-	case 140040:
-		{ /* '140040' */
+	case 155:
+		{ /* '155' */
 			return "light quantity (J)"
 		}
-	case 140041:
-		{ /* '140041' */
+	case 156:
+		{ /* '156' */
 			return "luminance (cd/m²)"
 		}
-	case 140042:
-		{ /* '140042' */
+	case 157:
+		{ /* '157' */
 			return "luminous flux (lm)"
 		}
-	case 140043:
-		{ /* '140043' */
+	case 158:
+		{ /* '158' */
 			return "luminous intensity (cd)"
 		}
-	case 140044:
-		{ /* '140044' */
+	case 159:
+		{ /* '159' */
 			return "magnetic field strength (A/m)"
 		}
-	case 140045:
-		{ /* '140045' */
+	case 16:
+		{ /* '16' */
+			return "acknowledge"
+		}
+	case 160:
+		{ /* '160' */
 			return "magnetic flux (Wb)"
 		}
-	case 140046:
-		{ /* '140046' */
+	case 161:
+		{ /* '161' */
 			return "magnetic flux density (T)"
 		}
-	case 140047:
-		{ /* '140047' */
+	case 162:
+		{ /* '162' */
 			return "magnetic moment (Am²)"
 		}
-	case 140048:
-		{ /* '140048' */
+	case 163:
+		{ /* '163' */
 			return "magnetic polarization (T)"
 		}
-	case 140049:
-		{ /* '140049' */
+	case 164:
+		{ /* '164' */
 			return "magnetization (A/m)"
 		}
-	case 140050:
-		{ /* '140050' */
+	case 165:
+		{ /* '165' */
 			return "magnetomotive force (A)"
 		}
-	case 140051:
-		{ /* '140051' */
+	case 166:
+		{ /* '166' */
 			return "mass (kg)"
 		}
-	case 140052:
-		{ /* '140052' */
+	case 167:
+		{ /* '167' */
 			return "mass flux (kg/s)"
 		}
-	case 140053:
-		{ /* '140053' */
+	case 168:
+		{ /* '168' */
 			return "momentum (N/s)"
 		}
-	case 140054:
-		{ /* '140054' */
+	case 169:
+		{ /* '169' */
 			return "phase angle (rad)"
 		}
-	case 140055:
-		{ /* '140055' */
+	case 17:
+		{ /* '17' */
+			return "trigger"
+		}
+	case 170:
+		{ /* '170' */
 			return "phase angle (°)"
 		}
-	case 140056:
-		{ /* '140056' */
+	case 171:
+		{ /* '171' */
 			return "power (W)"
 		}
-	case 140057:
-		{ /* '140057' */
+	case 172:
+		{ /* '172' */
 			return "power factor (cos Φ)"
 		}
-	case 140058:
-		{ /* '140058' */
+	case 173:
+		{ /* '173' */
 			return "pressure (Pa)"
 		}
-	case 140059:
-		{ /* '140059' */
+	case 174:
+		{ /* '174' */
 			return "reactance (Ω)"
 		}
-	case 140060:
-		{ /* '140060' */
+	case 175:
+		{ /* '175' */
 			return "resistance (Ω)"
 		}
-	case 140061:
-		{ /* '140061' */
+	case 176:
+		{ /* '176' */
 			return "resistivity (Ωm)"
 		}
-	case 140062:
-		{ /* '140062' */
+	case 177:
+		{ /* '177' */
 			return "self inductance (H)"
 		}
-	case 140063:
-		{ /* '140063' */
+	case 178:
+		{ /* '178' */
 			return "solid angle (sr)"
 		}
-	case 140064:
-		{ /* '140064' */
+	case 179:
+		{ /* '179' */
 			return "sound intensity (W/m²)"
 		}
-	case 140065:
-		{ /* '140065' */
+	case 18:
+		{ /* '18' */
+			return "occupancy"
+		}
+	case 180:
+		{ /* '180' */
 			return "speed (m/s)"
 		}
-	case 140066:
-		{ /* '140066' */
+	case 181:
+		{ /* '181' */
 			return "stress (Pa)"
 		}
-	case 140067:
-		{ /* '140067' */
+	case 182:
+		{ /* '182' */
 			return "surface tension (N/m)"
 		}
-	case 140068:
-		{ /* '140068' */
+	case 183:
+		{ /* '183' */
 			return "temperature (°C)"
 		}
-	case 140069:
-		{ /* '140069' */
+	case 184:
+		{ /* '184' */
 			return "temperature absolute (K)"
 		}
-	case 140070:
-		{ /* '140070' */
+	case 185:
+		{ /* '185' */
 			return "temperature difference (K)"
 		}
-	case 140071:
-		{ /* '140071' */
+	case 186:
+		{ /* '186' */
 			return "thermal capacity (J/K)"
 		}
-	case 140072:
-		{ /* '140072' */
+	case 187:
+		{ /* '187' */
 			return "thermal conductivity (W/mK)"
 		}
-	case 140073:
-		{ /* '140073' */
+	case 188:
+		{ /* '188' */
 			return "thermoelectric power (V/K)"
 		}
-	case 140074:
-		{ /* '140074' */
+	case 189:
+		{ /* '189' */
 			return "time (s)"
 		}
-	case 140075:
-		{ /* '140075' */
+	case 19:
+		{ /* '19' */
+			return "window/door"
+		}
+	case 190:
+		{ /* '190' */
 			return "torque (Nm)"
 		}
-	case 140076:
-		{ /* '140076' */
+	case 191:
+		{ /* '191' */
 			return "volume (m³)"
 		}
-	case 140077:
-		{ /* '140077' */
+	case 192:
+		{ /* '192' */
 			return "volume flux (m³/s)"
 		}
-	case 140078:
-		{ /* '140078' */
+	case 193:
+		{ /* '193' */
 			return "weight (N)"
 		}
-	case 140079:
-		{ /* '140079' */
+	case 194:
+		{ /* '194' */
 			return "work (J)"
 		}
-	case 141200:
-		{ /* '141200' */
+	case 195:
+		{ /* '195' */
 			return "volume flux for meters (m³/h)"
 		}
-	case 141201:
-		{ /* '141201' */
+	case 196:
+		{ /* '196' */
 			return "volume flux for meters (1/ls)"
 		}
-	case 150000:
-		{ /* '150000' */
+	case 197:
+		{ /* '197' */
 			return "entrance access"
 		}
-	case 160000:
-		{ /* '160000' */
+	case 198:
+		{ /* '198' */
 			return "Character String (ASCII)"
 		}
-	case 160001:
-		{ /* '160001' */
+	case 199:
+		{ /* '199' */
 			return "Character String (ISO 8859-1)"
 		}
-	case 170001:
-		{ /* '170001' */
+	case 2:
+		{ /* '2' */
+			return "boolean"
+		}
+	case 20:
+		{ /* '20' */
+			return "logical function"
+		}
+	case 200:
+		{ /* '200' */
 			return "scene number"
 		}
-	case 180001:
-		{ /* '180001' */
+	case 201:
+		{ /* '201' */
 			return "scene control"
 		}
-	case 190001:
-		{ /* '190001' */
+	case 202:
+		{ /* '202' */
 			return "date time"
 		}
-	case 200001:
-		{ /* '200001' */
+	case 203:
+		{ /* '203' */
 			return "SCLO mode"
 		}
-	case 200002:
-		{ /* '200002' */
+	case 204:
+		{ /* '204' */
 			return "building mode"
 		}
-	case 200003:
-		{ /* '200003' */
+	case 205:
+		{ /* '205' */
 			return "occupied"
 		}
-	case 200004:
-		{ /* '200004' */
+	case 206:
+		{ /* '206' */
 			return "priority"
 		}
-	case 200005:
-		{ /* '200005' */
+	case 207:
+		{ /* '207' */
 			return "light application mode"
 		}
-	case 200006:
-		{ /* '200006' */
+	case 208:
+		{ /* '208' */
 			return "light application area"
 		}
-	case 200007:
-		{ /* '200007' */
+	case 209:
+		{ /* '209' */
 			return "alarm class"
 		}
-	case 200008:
-		{ /* '200008' */
+	case 21:
+		{ /* '21' */
+			return "scene"
+		}
+	case 210:
+		{ /* '210' */
 			return "PSU mode"
 		}
-	case 20001:
-		{ /* '20001' */
-			return "switch control"
-		}
-	case 200011:
-		{ /* '200011' */
+	case 211:
+		{ /* '211' */
 			return "system error class"
 		}
-	case 200012:
-		{ /* '200012' */
+	case 212:
+		{ /* '212' */
 			return "HVAC error class"
 		}
-	case 200013:
-		{ /* '200013' */
+	case 213:
+		{ /* '213' */
 			return "time delay"
 		}
-	case 200014:
-		{ /* '200014' */
+	case 214:
+		{ /* '214' */
 			return "wind force scale (0..12)"
 		}
-	case 200017:
-		{ /* '200017' */
+	case 215:
+		{ /* '215' */
 			return "sensor mode"
 		}
-	case 20002:
-		{ /* '20002' */
-			return "boolean control"
-		}
-	case 200020:
-		{ /* '200020' */
+	case 216:
+		{ /* '216' */
 			return "actuator connect type"
 		}
-	case 200021:
-		{ /* '200021' */
+	case 217:
+		{ /* '217' */
 			return "cloud cover"
 		}
-	case 200022:
-		{ /* '200022' */
+	case 218:
+		{ /* '218' */
 			return "power return mode"
 		}
-	case 20003:
-		{ /* '20003' */
-			return "enable control"
-		}
-	case 20004:
-		{ /* '20004' */
-			return "ramp control"
-		}
-	case 20005:
-		{ /* '20005' */
-			return "alarm control"
-		}
-	case 20006:
-		{ /* '20006' */
-			return "binary value control"
-		}
-	case 20007:
-		{ /* '20007' */
-			return "step control"
-		}
-	case 20008:
-		{ /* '20008' */
-			return "direction control 1"
-		}
-	case 20009:
-		{ /* '20009' */
-			return "direction control 2"
-		}
-	case 20010:
-		{ /* '20010' */
-			return "start control"
-		}
-	case 200100:
-		{ /* '200100' */
+	case 219:
+		{ /* '219' */
 			return "fuel type"
 		}
-	case 200101:
-		{ /* '200101' */
+	case 22:
+		{ /* '22' */
+			return "shutter/blinds mode"
+		}
+	case 220:
+		{ /* '220' */
 			return "burner type"
 		}
-	case 200102:
-		{ /* '200102' */
+	case 221:
+		{ /* '221' */
 			return "HVAC mode"
 		}
-	case 200103:
-		{ /* '200103' */
+	case 222:
+		{ /* '222' */
 			return "DHW mode"
 		}
-	case 200104:
-		{ /* '200104' */
+	case 223:
+		{ /* '223' */
 			return "load priority"
 		}
-	case 200105:
-		{ /* '200105' */
+	case 224:
+		{ /* '224' */
 			return "HVAC control mode"
 		}
-	case 200106:
-		{ /* '200106' */
+	case 225:
+		{ /* '225' */
 			return "HVAC emergency mode"
 		}
-	case 200107:
-		{ /* '200107' */
+	case 226:
+		{ /* '226' */
 			return "changeover mode"
 		}
-	case 200108:
-		{ /* '200108' */
+	case 227:
+		{ /* '227' */
 			return "valve mode"
 		}
-	case 200109:
-		{ /* '200109' */
+	case 228:
+		{ /* '228' */
 			return "damper mode"
 		}
-	case 20011:
-		{ /* '20011' */
-			return "state control"
-		}
-	case 200110:
-		{ /* '200110' */
+	case 229:
+		{ /* '229' */
 			return "heater mode"
 		}
-	case 200111:
-		{ /* '200111' */
+	case 23:
+		{ /* '23' */
+			return "day/night"
+		}
+	case 230:
+		{ /* '230' */
 			return "fan mode"
 		}
-	case 200112:
-		{ /* '200112' */
+	case 231:
+		{ /* '231' */
 			return "master/slave mode"
 		}
-	case 200113:
-		{ /* '200113' */
+	case 232:
+		{ /* '232' */
 			return "status room setpoint"
 		}
-	case 200114:
-		{ /* '200114' */
+	case 233:
+		{ /* '233' */
 			return "metering device type"
 		}
-	case 200115:
-		{ /* '200115' */
+	case 234:
+		{ /* '234' */
 			return "hum dehum mode"
 		}
-	case 200116:
-		{ /* '200116' */
+	case 235:
+		{ /* '235' */
 			return "enable H/C stage"
 		}
-	case 20012:
-		{ /* '20012' */
-			return "invert control"
-		}
-	case 200120:
-		{ /* '200120' */
+	case 236:
+		{ /* '236' */
 			return "ADA type"
 		}
-	case 200121:
-		{ /* '200121' */
+	case 237:
+		{ /* '237' */
 			return "backup mode"
 		}
-	case 200122:
-		{ /* '200122' */
+	case 238:
+		{ /* '238' */
 			return "start syncronization type"
 		}
-	case 200600:
-		{ /* '200600' */
+	case 239:
+		{ /* '239' */
 			return "behavior lock/unlock"
 		}
-	case 200601:
-		{ /* '200601' */
+	case 24:
+		{ /* '24' */
+			return "cooling/heating"
+		}
+	case 240:
+		{ /* '240' */
 			return "behavior bus power up/down"
 		}
-	case 200602:
-		{ /* '200602' */
+	case 241:
+		{ /* '241' */
 			return "dali fade time"
 		}
-	case 200603:
-		{ /* '200603' */
+	case 242:
+		{ /* '242' */
 			return "blink mode"
 		}
-	case 200604:
-		{ /* '200604' */
+	case 243:
+		{ /* '243' */
 			return "light control mode"
 		}
-	case 200605:
-		{ /* '200605' */
+	case 244:
+		{ /* '244' */
 			return "PB switch mode"
 		}
-	case 200606:
-		{ /* '200606' */
+	case 245:
+		{ /* '245' */
 			return "PB action mode"
 		}
-	case 200607:
-		{ /* '200607' */
+	case 246:
+		{ /* '246' */
 			return "PB dimm mode"
 		}
-	case 200608:
-		{ /* '200608' */
+	case 247:
+		{ /* '247' */
 			return "switch on mode"
 		}
-	case 200609:
-		{ /* '200609' */
+	case 248:
+		{ /* '248' */
 			return "load type"
 		}
-	case 200610:
-		{ /* '200610' */
+	case 249:
+		{ /* '249' */
 			return "load type detection"
 		}
-	case 200611:
-		{ /* '200611' */
+	case 25:
+		{ /* '25' */
+			return "switch control"
+		}
+	case 250:
+		{ /* '250' */
 			return "converter test control"
 		}
-	case 200801:
-		{ /* '200801' */
+	case 251:
+		{ /* '251' */
 			return "SAB except behavior"
 		}
-	case 200802:
-		{ /* '200802' */
+	case 252:
+		{ /* '252' */
 			return "SAB behavior on lock/unlock"
 		}
-	case 200803:
-		{ /* '200803' */
+	case 253:
+		{ /* '253' */
 			return "SSSB mode"
 		}
-	case 200804:
-		{ /* '200804' */
+	case 254:
+		{ /* '254' */
 			return "blinds control mode"
 		}
-	case 201000:
-		{ /* '201000' */
+	case 255:
+		{ /* '255' */
 			return "communication mode"
 		}
-	case 201001:
-		{ /* '201001' */
+	case 256:
+		{ /* '256' */
 			return "additional information type"
 		}
-	case 201002:
-		{ /* '201002' */
+	case 257:
+		{ /* '257' */
 			return "RF mode selection"
 		}
-	case 201003:
-		{ /* '201003' */
+	case 258:
+		{ /* '258' */
 			return "RF filter mode selection"
 		}
-	case 2060100:
-		{ /* '2060100' */
-			return "time delay & HVAC mode"
-		}
-	case 2060102:
-		{ /* '2060102' */
-			return "time delay & DHW mode"
-		}
-	case 2060104:
-		{ /* '2060104' */
-			return "time delay & occupancy mode"
-		}
-	case 2060105:
-		{ /* '2060105' */
-			return "time delay & building mode"
-		}
-	case 210001:
-		{ /* '210001' */
+	case 259:
+		{ /* '259' */
 			return "general status"
 		}
-	case 210002:
-		{ /* '210002' */
+	case 26:
+		{ /* '26' */
+			return "boolean control"
+		}
+	case 260:
+		{ /* '260' */
 			return "device control"
 		}
-	case 210100:
-		{ /* '210100' */
+	case 261:
+		{ /* '261' */
 			return "forcing signal"
 		}
-	case 210101:
-		{ /* '210101' */
+	case 262:
+		{ /* '262' */
 			return "forcing signal cool"
 		}
-	case 210102:
-		{ /* '210102' */
+	case 263:
+		{ /* '263' */
 			return "room heating controller status"
 		}
-	case 210103:
-		{ /* '210103' */
+	case 264:
+		{ /* '264' */
 			return "solar DHW controller status"
 		}
-	case 210104:
-		{ /* '210104' */
+	case 265:
+		{ /* '265' */
 			return "fuel type set"
 		}
-	case 210105:
-		{ /* '210105' */
+	case 266:
+		{ /* '266' */
 			return "room cooling controller status"
 		}
-	case 210106:
-		{ /* '210106' */
+	case 267:
+		{ /* '267' */
 			return "ventilation controller status"
 		}
-	case 210107:
-		{ /* '210107' */
+	case 268:
+		{ /* '268' */
 			return "combined status RTSM"
 		}
-	case 210601:
-		{ /* '210601' */
+	case 269:
+		{ /* '269' */
 			return "lighting actuator error information"
 		}
-	case 211000:
-		{ /* '211000' */
+	case 27:
+		{ /* '27' */
+			return "enable control"
+		}
+	case 270:
+		{ /* '270' */
 			return "RF communication mode info"
 		}
-	case 211001:
-		{ /* '211001' */
+	case 271:
+		{ /* '271' */
 			return "cEMI server supported RF filtering modes"
 		}
-	case 211010:
-		{ /* '211010' */
+	case 272:
+		{ /* '272' */
 			return "channel activation for 8 channels"
 		}
-	case 2170001:
-		{ /* '2170001' */
-			return "DPT version"
-		}
-	case 2190001:
-		{ /* '2190001' */
-			return "alarm info"
-		}
-	case 220100:
-		{ /* '220100' */
+	case 273:
+		{ /* '273' */
 			return "DHW controller status"
 		}
-	case 220101:
-		{ /* '220101' */
+	case 274:
+		{ /* '274' */
 			return "RHCC status"
 		}
-	case 220102:
-		{ /* '220102' */
+	case 275:
+		{ /* '275' */
 			return "combined status HVA"
 		}
-	case 220103:
-		{ /* '220103' */
+	case 276:
+		{ /* '276' */
 			return "combined status RTC"
 		}
-	case 221000:
-		{ /* '221000' */
+	case 277:
+		{ /* '277' */
 			return "media"
 		}
-	case 221010:
-		{ /* '221010' */
+	case 278:
+		{ /* '278' */
 			return "channel activation for 16 channels"
 		}
-	case 2220100:
-		{ /* '2220100' */
-			return "room temperature setpoint"
-		}
-	case 2220101:
-		{ /* '2220101' */
-			return "room temperature setpoint shift"
-		}
-	case 2250001:
-		{ /* '2250001' */
-			return "scaling speed"
-		}
-	case 2250002:
-		{ /* '2250002' */
-			return "scaling step time"
-		}
-	case 2290001:
-		{ /* '2290001' */
-			return "metering value (value,encoding,cmd)"
-		}
-	case 230001:
-		{ /* '230001' */
+	case 279:
+		{ /* '279' */
 			return "on/off action"
 		}
-	case 230002:
-		{ /* '230002' */
+	case 28:
+		{ /* '28' */
+			return "ramp control"
+		}
+	case 280:
+		{ /* '280' */
 			return "alarm reaction"
 		}
-	case 230003:
-		{ /* '230003' */
+	case 281:
+		{ /* '281' */
 			return "up/down action"
 		}
-	case 2301000:
-		{ /* '2301000' */
-			return "MBus address"
-		}
-	case 230102:
-		{ /* '230102' */
+	case 282:
+		{ /* '282' */
 			return "HVAC push button action"
 		}
-	case 2320600:
-		{ /* '2320600' */
-			return "RGB value 3x(0..255)"
-		}
-	case 2340001:
-		{ /* '2340001' */
-			return "language code (ASCII)"
-		}
-	case 2350001:
-		{ /* '2350001' */
-			return "electrical energy with tariff"
-		}
-	case 2360001:
-		{ /* '2360001' */
-			return "priority control"
-		}
-	case 2370600:
-		{ /* '2370600' */
-			return "diagnostic value"
-		}
-	case 2380600:
-		{ /* '2380600' */
-			return "diagnostic value"
-		}
-	case 2400800:
-		{ /* '2400800' */
-			return "combined position"
-		}
-	case 2410800:
-		{ /* '2410800' */
-			return "status sunblind & shutter actuator"
-		}
-	case 2420600:
-		{ /* '2420600' */
-			return "colour xyY"
-		}
-	case 2440600:
-		{ /* '2440600' */
-			return "DALI converter status"
-		}
-	case 2450600:
-		{ /* '2450600' */
-			return "DALI converter test result"
-		}
-	case 2460600:
-		{ /* '2460600' */
-			return "Battery Information"
-		}
-	case 2490600:
-		{ /* '2490600' */
-			return "brightness colour temperature transition"
-		}
-	case 2500600:
-		{ /* '2500600' */
-			return "brightness colour temperature control"
-		}
-	case 251000:
-		{ /* '251000' */
+	case 283:
+		{ /* '283' */
 			return "busy/nak repetitions"
 		}
-	case 2510600:
-		{ /* '2510600' */
-			return "RGBW value 4x(0..100%)"
-		}
-	case 2520600:
-		{ /* '2520600' */
-			return "RGBW relative control"
-		}
-	case 2540600:
-		{ /* '2540600' */
-			return "RGB relative control"
-		}
-	case 2550001:
-		{ /* '2550001' */
-			return "geographical location (longitude and latitude) expressed in degrees"
-		}
-	case 260001:
-		{ /* '260001' */
+	case 284:
+		{ /* '284' */
 			return "scene information"
 		}
-	case 270001:
-		{ /* '270001' */
+	case 285:
+		{ /* '285' */
 			return "bit-combined info on/off"
 		}
-	case 2750100:
-		{ /* '2750100' */
-			return "Temperature setpoint setting for 4 HVAC Modes"
-		}
-	case 2750101:
-		{ /* '2750101' */
-			return "Temperature setpoint shift setting for 4 HVAC Modes"
-		}
-	case 290010:
-		{ /* '290010' */
+	case 286:
+		{ /* '286' */
 			return "active energy (Wh)"
 		}
-	case 290011:
-		{ /* '290011' */
+	case 287:
+		{ /* '287' */
 			return "apparant energy (VAh)"
 		}
-	case 290012:
-		{ /* '290012' */
+	case 288:
+		{ /* '288' */
 			return "reactive energy (VARh)"
 		}
-	case 30007:
-		{ /* '30007' */
-			return "dimming control"
-		}
-	case 30008:
-		{ /* '30008' */
-			return "blind control"
-		}
-	case 301010:
-		{ /* '301010' */
+	case 289:
+		{ /* '289' */
 			return "activation state 0..23"
 		}
-	case 40001:
-		{ /* '40001' */
+	case 29:
+		{ /* '29' */
+			return "alarm control"
+		}
+	case 290:
+		{ /* '290' */
+			return "time delay & HVAC mode"
+		}
+	case 291:
+		{ /* '291' */
+			return "time delay & DHW mode"
+		}
+	case 292:
+		{ /* '292' */
+			return "time delay & occupancy mode"
+		}
+	case 293:
+		{ /* '293' */
+			return "time delay & building mode"
+		}
+	case 294:
+		{ /* '294' */
+			return "DPT version"
+		}
+	case 295:
+		{ /* '295' */
+			return "alarm info"
+		}
+	case 296:
+		{ /* '296' */
+			return "room temperature setpoint"
+		}
+	case 297:
+		{ /* '297' */
+			return "room temperature setpoint shift"
+		}
+	case 298:
+		{ /* '298' */
+			return "scaling speed"
+		}
+	case 299:
+		{ /* '299' */
+			return "scaling step time"
+		}
+	case 3:
+		{ /* '3' */
+			return "enable"
+		}
+	case 30:
+		{ /* '30' */
+			return "binary value control"
+		}
+	case 300:
+		{ /* '300' */
+			return "metering value (value,encoding,cmd)"
+		}
+	case 301:
+		{ /* '301' */
+			return "MBus address"
+		}
+	case 302:
+		{ /* '302' */
+			return "RGB value 3x(0..255)"
+		}
+	case 303:
+		{ /* '303' */
+			return "language code (ASCII)"
+		}
+	case 304:
+		{ /* '304' */
+			return "electrical energy with tariff"
+		}
+	case 305:
+		{ /* '305' */
+			return "priority control"
+		}
+	case 306:
+		{ /* '306' */
+			return "diagnostic value"
+		}
+	case 307:
+		{ /* '307' */
+			return "diagnostic value"
+		}
+	case 308:
+		{ /* '308' */
+			return "combined position"
+		}
+	case 309:
+		{ /* '309' */
+			return "status sunblind & shutter actuator"
+		}
+	case 31:
+		{ /* '31' */
+			return "step control"
+		}
+	case 310:
+		{ /* '310' */
+			return "colour xyY"
+		}
+	case 311:
+		{ /* '311' */
+			return "DALI converter status"
+		}
+	case 312:
+		{ /* '312' */
+			return "DALI converter test result"
+		}
+	case 313:
+		{ /* '313' */
+			return "Battery Information"
+		}
+	case 314:
+		{ /* '314' */
+			return "brightness colour temperature transition"
+		}
+	case 315:
+		{ /* '315' */
+			return "brightness colour temperature control"
+		}
+	case 316:
+		{ /* '316' */
+			return "RGBW value 4x(0..100%)"
+		}
+	case 317:
+		{ /* '317' */
+			return "RGBW relative control"
+		}
+	case 318:
+		{ /* '318' */
+			return "RGB relative control"
+		}
+	case 319:
+		{ /* '319' */
+			return "geographical location (longitude and latitude) expressed in degrees"
+		}
+	case 32:
+		{ /* '32' */
+			return "direction control 1"
+		}
+	case 320:
+		{ /* '320' */
+			return "Temperature setpoint setting for 4 HVAC Modes"
+		}
+	case 321:
+		{ /* '321' */
+			return "Temperature setpoint shift setting for 4 HVAC Modes"
+		}
+	case 33:
+		{ /* '33' */
+			return "direction control 2"
+		}
+	case 34:
+		{ /* '34' */
+			return "start control"
+		}
+	case 35:
+		{ /* '35' */
+			return "state control"
+		}
+	case 36:
+		{ /* '36' */
+			return "invert control"
+		}
+	case 37:
+		{ /* '37' */
+			return "dimming control"
+		}
+	case 38:
+		{ /* '38' */
+			return "blind control"
+		}
+	case 39:
+		{ /* '39' */
 			return "character (ASCII)"
 		}
-	case 40002:
-		{ /* '40002' */
+	case 4:
+		{ /* '4' */
+			return "ramp"
+		}
+	case 40:
+		{ /* '40' */
 			return "character (ISO 8859-1)"
 		}
-	case 50001:
-		{ /* '50001' */
+	case 41:
+		{ /* '41' */
 			return "percentage (0..100%)"
 		}
-	case 50003:
-		{ /* '50003' */
+	case 42:
+		{ /* '42' */
 			return "angle (degrees)"
 		}
-	case 50004:
-		{ /* '50004' */
+	case 43:
+		{ /* '43' */
 			return "percentage (0..255%)"
 		}
-	case 50005:
-		{ /* '50005' */
+	case 44:
+		{ /* '44' */
 			return "ratio (0..255)"
 		}
-	case 50006:
-		{ /* '50006' */
+	case 45:
+		{ /* '45' */
 			return "tariff (0..255)"
 		}
-	case 50010:
-		{ /* '50010' */
+	case 46:
+		{ /* '46' */
 			return "counter pulses (0..255)"
 		}
-	case 50100:
-		{ /* '50100' */
+	case 47:
+		{ /* '47' */
 			return "fan stage (0..255)"
 		}
-	case 60001:
-		{ /* '60001' */
+	case 48:
+		{ /* '48' */
 			return "percentage (-128..127%)"
 		}
-	case 60010:
-		{ /* '60010' */
+	case 49:
+		{ /* '49' */
 			return "counter pulses (-128..127)"
 		}
-	case 60020:
-		{ /* '60020' */
+	case 5:
+		{ /* '5' */
+			return "alarm"
+		}
+	case 50:
+		{ /* '50' */
 			return "status with mode"
 		}
-	case 70001:
-		{ /* '70001' */
+	case 51:
+		{ /* '51' */
 			return "pulses"
 		}
-	case 70002:
-		{ /* '70002' */
+	case 52:
+		{ /* '52' */
 			return "time (ms)"
 		}
-	case 70003:
-		{ /* '70003' */
+	case 53:
+		{ /* '53' */
 			return "time (10 ms)"
 		}
-	case 70004:
-		{ /* '70004' */
+	case 54:
+		{ /* '54' */
 			return "time (100 ms)"
 		}
-	case 70005:
-		{ /* '70005' */
+	case 55:
+		{ /* '55' */
 			return "time (s)"
 		}
-	case 70006:
-		{ /* '70006' */
+	case 56:
+		{ /* '56' */
 			return "time (min)"
 		}
-	case 70007:
-		{ /* '70007' */
+	case 57:
+		{ /* '57' */
 			return "time (h)"
 		}
-	case 70010:
-		{ /* '70010' */
+	case 58:
+		{ /* '58' */
 			return "property data type"
 		}
-	case 70011:
-		{ /* '70011' */
+	case 59:
+		{ /* '59' */
 			return "length (mm)"
 		}
-	case 70012:
-		{ /* '70012' */
+	case 6:
+		{ /* '6' */
+			return "binary value"
+		}
+	case 60:
+		{ /* '60' */
 			return "current (mA)"
 		}
-	case 70013:
-		{ /* '70013' */
+	case 61:
+		{ /* '61' */
 			return "brightness (lux)"
 		}
-	case 70600:
-		{ /* '70600' */
+	case 62:
+		{ /* '62' */
 			return "absolute colour temperature (K)"
 		}
-	case 80001:
-		{ /* '80001' */
+	case 63:
+		{ /* '63' */
 			return "pulses difference"
 		}
-	case 80002:
-		{ /* '80002' */
+	case 64:
+		{ /* '64' */
 			return "time lag (ms)"
 		}
-	case 80003:
-		{ /* '80003' */
+	case 65:
+		{ /* '65' */
 			return "time lag(10 ms)"
 		}
-	case 80004:
-		{ /* '80004' */
+	case 66:
+		{ /* '66' */
 			return "time lag (100 ms)"
 		}
-	case 80005:
-		{ /* '80005' */
+	case 67:
+		{ /* '67' */
 			return "time lag (s)"
 		}
-	case 80006:
-		{ /* '80006' */
+	case 68:
+		{ /* '68' */
 			return "time lag (min)"
 		}
-	case 80007:
-		{ /* '80007' */
+	case 69:
+		{ /* '69' */
 			return "time lag (h)"
 		}
-	case 80010:
-		{ /* '80010' */
+	case 7:
+		{ /* '7' */
+			return "step"
+		}
+	case 70:
+		{ /* '70' */
 			return "percentage difference (%)"
 		}
-	case 80011:
-		{ /* '80011' */
+	case 71:
+		{ /* '71' */
 			return "rotation angle (°)"
 		}
-	case 80012:
-		{ /* '80012' */
+	case 72:
+		{ /* '72' */
 			return "length (m)"
 		}
-	case 90001:
-		{ /* '90001' */
+	case 73:
+		{ /* '73' */
 			return "temperature (°C)"
 		}
-	case 90002:
-		{ /* '90002' */
+	case 74:
+		{ /* '74' */
 			return "temperature difference (K)"
 		}
-	case 90003:
-		{ /* '90003' */
+	case 75:
+		{ /* '75' */
 			return "kelvin/hour (K/h)"
 		}
-	case 90004:
-		{ /* '90004' */
+	case 76:
+		{ /* '76' */
 			return "lux (Lux)"
 		}
-	case 90005:
-		{ /* '90005' */
+	case 77:
+		{ /* '77' */
 			return "speed (m/s)"
 		}
-	case 90006:
-		{ /* '90006' */
+	case 78:
+		{ /* '78' */
 			return "pressure (Pa)"
 		}
-	case 90007:
-		{ /* '90007' */
+	case 79:
+		{ /* '79' */
 			return "humidity (%)"
 		}
-	case 90008:
-		{ /* '90008' */
+	case 8:
+		{ /* '8' */
+			return "up/down"
+		}
+	case 80:
+		{ /* '80' */
 			return "parts/million (ppm)"
 		}
-	case 90009:
-		{ /* '90009' */
+	case 81:
+		{ /* '81' */
 			return "air flow (m³/h)"
 		}
-	case 90010:
-		{ /* '90010' */
+	case 82:
+		{ /* '82' */
 			return "time (s)"
 		}
-	case 90011:
-		{ /* '90011' */
+	case 83:
+		{ /* '83' */
 			return "time (ms)"
 		}
-	case 90020:
-		{ /* '90020' */
+	case 84:
+		{ /* '84' */
 			return "voltage (mV)"
 		}
-	case 90021:
-		{ /* '90021' */
+	case 85:
+		{ /* '85' */
 			return "current (mA)"
 		}
-	case 90022:
-		{ /* '90022' */
+	case 86:
+		{ /* '86' */
 			return "power denisity (W/m²)"
 		}
-	case 90023:
-		{ /* '90023' */
+	case 87:
+		{ /* '87' */
 			return "kelvin/percent (K/%)"
 		}
-	case 90024:
-		{ /* '90024' */
+	case 88:
+		{ /* '88' */
 			return "power (kW)"
 		}
-	case 90025:
-		{ /* '90025' */
+	case 89:
+		{ /* '89' */
 			return "volume flow (l/h)"
 		}
-	case 90026:
-		{ /* '90026' */
+	case 9:
+		{ /* '9' */
+			return "open/close"
+		}
+	case 90:
+		{ /* '90' */
 			return "rain amount (l/m²)"
 		}
-	case 90027:
-		{ /* '90027' */
+	case 91:
+		{ /* '91' */
 			return "temperature (°F)"
 		}
-	case 90028:
-		{ /* '90028' */
+	case 92:
+		{ /* '92' */
 			return "wind speed (km/h)"
 		}
-	case 90029:
-		{ /* '90029' */
+	case 93:
+		{ /* '93' */
 			return "absolute humidity (g/m³)"
 		}
-	case 90030:
-		{ /* '90030' */
+	case 94:
+		{ /* '94' */
 			return "concentration (µg/m³)"
+		}
+	case 95:
+		{ /* '95' */
+			return "time of day"
+		}
+	case 96:
+		{ /* '96' */
+			return "date"
+		}
+	case 97:
+		{ /* '97' */
+			return "counter pulses (unsigned)"
+		}
+	case 98:
+		{ /* '98' */
+			return "counter timesec (s)"
+		}
+	case 99:
+		{ /* '99' */
+			return "counter timemin (min)"
 		}
 	default:
 		{
@@ -2941,712 +4248,662 @@ func (e KnxDatapointSubtype) Text() string {
 }
 func KnxDatapointSubtypeByValue(value uint32) KnxDatapointSubtype {
 	switch value {
-	case 100001:
-		return KnxDatapointSubtype_DPST_TimeOfDay
-	case 10001:
+	case 0:
+		return KnxDatapointSubtype_DPST_UNKNOWN
+	case 1:
 		return KnxDatapointSubtype_DPST_Switch
-	case 10002:
-		return KnxDatapointSubtype_DPST_Bool
-	case 10003:
-		return KnxDatapointSubtype_DPST_Enable
-	case 10004:
-		return KnxDatapointSubtype_DPST_Ramp
-	case 10005:
-		return KnxDatapointSubtype_DPST_Alarm
-	case 10006:
-		return KnxDatapointSubtype_DPST_BinaryValue
-	case 10007:
-		return KnxDatapointSubtype_DPST_Step
-	case 10008:
-		return KnxDatapointSubtype_DPST_UpDown
-	case 10009:
-		return KnxDatapointSubtype_DPST_OpenClose
-	case 10010:
+	case 10:
 		return KnxDatapointSubtype_DPST_Start
-	case 10011:
-		return KnxDatapointSubtype_DPST_State
-	case 10012:
-		return KnxDatapointSubtype_DPST_Invert
-	case 10013:
-		return KnxDatapointSubtype_DPST_DimSendStyle
-	case 10014:
-		return KnxDatapointSubtype_DPST_InputSource
-	case 10015:
-		return KnxDatapointSubtype_DPST_Reset
-	case 10016:
-		return KnxDatapointSubtype_DPST_Ack
-	case 10017:
-		return KnxDatapointSubtype_DPST_Trigger
-	case 10018:
-		return KnxDatapointSubtype_DPST_Occupancy
-	case 10019:
-		return KnxDatapointSubtype_DPST_Window_Door
-	case 10021:
-		return KnxDatapointSubtype_DPST_LogicalFunction
-	case 10022:
-		return KnxDatapointSubtype_DPST_Scene_AB
-	case 10023:
-		return KnxDatapointSubtype_DPST_ShutterBlinds_Mode
-	case 10024:
-		return KnxDatapointSubtype_DPST_DayNight
-	case 10100:
-		return KnxDatapointSubtype_DPST_Heat_Cool
-	case 110001:
-		return KnxDatapointSubtype_DPST_Date
-	case 120001:
-		return KnxDatapointSubtype_DPST_Value_4_Ucount
-	case 120100:
-		return KnxDatapointSubtype_DPST_LongTimePeriod_Sec
-	case 120101:
-		return KnxDatapointSubtype_DPST_LongTimePeriod_Min
-	case 120102:
+	case 100:
 		return KnxDatapointSubtype_DPST_LongTimePeriod_Hrs
-	case 121200:
+	case 101:
 		return KnxDatapointSubtype_DPST_VolumeLiquid_Litre
-	case 121201:
+	case 102:
 		return KnxDatapointSubtype_DPST_Volume_m_3
-	case 130001:
+	case 103:
 		return KnxDatapointSubtype_DPST_Value_4_Count
-	case 130002:
+	case 104:
 		return KnxDatapointSubtype_DPST_FlowRate_m3h
-	case 130010:
+	case 105:
 		return KnxDatapointSubtype_DPST_ActiveEnergy
-	case 130011:
+	case 106:
 		return KnxDatapointSubtype_DPST_ApparantEnergy
-	case 130012:
+	case 107:
 		return KnxDatapointSubtype_DPST_ReactiveEnergy
-	case 130013:
+	case 108:
 		return KnxDatapointSubtype_DPST_ActiveEnergy_kWh
-	case 130014:
+	case 109:
 		return KnxDatapointSubtype_DPST_ApparantEnergy_kVAh
-	case 130015:
+	case 11:
+		return KnxDatapointSubtype_DPST_State
+	case 110:
 		return KnxDatapointSubtype_DPST_ReactiveEnergy_kVARh
-	case 130016:
+	case 111:
 		return KnxDatapointSubtype_DPST_ActiveEnergy_MWh
-	case 130100:
+	case 112:
 		return KnxDatapointSubtype_DPST_LongDeltaTimeSec
-	case 131200:
+	case 113:
 		return KnxDatapointSubtype_DPST_DeltaVolumeLiquid_Litre
-	case 131201:
+	case 114:
 		return KnxDatapointSubtype_DPST_DeltaVolume_m_3
-	case 140000:
+	case 115:
 		return KnxDatapointSubtype_DPST_Value_Acceleration
-	case 140001:
+	case 116:
 		return KnxDatapointSubtype_DPST_Value_Acceleration_Angular
-	case 140002:
+	case 117:
 		return KnxDatapointSubtype_DPST_Value_Activation_Energy
-	case 140003:
+	case 118:
 		return KnxDatapointSubtype_DPST_Value_Activity
-	case 140004:
+	case 119:
 		return KnxDatapointSubtype_DPST_Value_Mol
-	case 140005:
+	case 12:
+		return KnxDatapointSubtype_DPST_Invert
+	case 120:
 		return KnxDatapointSubtype_DPST_Value_Amplitude
-	case 140006:
+	case 121:
 		return KnxDatapointSubtype_DPST_Value_AngleRad
-	case 140007:
+	case 122:
 		return KnxDatapointSubtype_DPST_Value_AngleDeg
-	case 140008:
+	case 123:
 		return KnxDatapointSubtype_DPST_Value_Angular_Momentum
-	case 140009:
+	case 124:
 		return KnxDatapointSubtype_DPST_Value_Angular_Velocity
-	case 140010:
+	case 125:
 		return KnxDatapointSubtype_DPST_Value_Area
-	case 140011:
+	case 126:
 		return KnxDatapointSubtype_DPST_Value_Capacitance
-	case 140012:
+	case 127:
 		return KnxDatapointSubtype_DPST_Value_Charge_DensitySurface
-	case 140013:
+	case 128:
 		return KnxDatapointSubtype_DPST_Value_Charge_DensityVolume
-	case 140014:
+	case 129:
 		return KnxDatapointSubtype_DPST_Value_Compressibility
-	case 140015:
+	case 13:
+		return KnxDatapointSubtype_DPST_DimSendStyle
+	case 130:
 		return KnxDatapointSubtype_DPST_Value_Conductance
-	case 140016:
+	case 131:
 		return KnxDatapointSubtype_DPST_Value_Electrical_Conductivity
-	case 140017:
+	case 132:
 		return KnxDatapointSubtype_DPST_Value_Density
-	case 140018:
+	case 133:
 		return KnxDatapointSubtype_DPST_Value_Electric_Charge
-	case 140019:
+	case 134:
 		return KnxDatapointSubtype_DPST_Value_Electric_Current
-	case 140020:
+	case 135:
 		return KnxDatapointSubtype_DPST_Value_Electric_CurrentDensity
-	case 140021:
+	case 136:
 		return KnxDatapointSubtype_DPST_Value_Electric_DipoleMoment
-	case 140022:
+	case 137:
 		return KnxDatapointSubtype_DPST_Value_Electric_Displacement
-	case 140023:
+	case 138:
 		return KnxDatapointSubtype_DPST_Value_Electric_FieldStrength
-	case 140024:
+	case 139:
 		return KnxDatapointSubtype_DPST_Value_Electric_Flux
-	case 140025:
+	case 14:
+		return KnxDatapointSubtype_DPST_InputSource
+	case 140:
 		return KnxDatapointSubtype_DPST_Value_Electric_FluxDensity
-	case 140026:
+	case 141:
 		return KnxDatapointSubtype_DPST_Value_Electric_Polarization
-	case 140027:
+	case 142:
 		return KnxDatapointSubtype_DPST_Value_Electric_Potential
-	case 140028:
+	case 143:
 		return KnxDatapointSubtype_DPST_Value_Electric_PotentialDifference
-	case 140029:
+	case 144:
 		return KnxDatapointSubtype_DPST_Value_ElectromagneticMoment
-	case 140030:
+	case 145:
 		return KnxDatapointSubtype_DPST_Value_Electromotive_Force
-	case 140031:
+	case 146:
 		return KnxDatapointSubtype_DPST_Value_Energy
-	case 140032:
+	case 147:
 		return KnxDatapointSubtype_DPST_Value_Force
-	case 140033:
+	case 148:
 		return KnxDatapointSubtype_DPST_Value_Frequency
-	case 140034:
+	case 149:
 		return KnxDatapointSubtype_DPST_Value_Angular_Frequency
-	case 140035:
+	case 15:
+		return KnxDatapointSubtype_DPST_Reset
+	case 150:
 		return KnxDatapointSubtype_DPST_Value_Heat_Capacity
-	case 140036:
+	case 151:
 		return KnxDatapointSubtype_DPST_Value_Heat_FlowRate
-	case 140037:
+	case 152:
 		return KnxDatapointSubtype_DPST_Value_Heat_Quantity
-	case 140038:
+	case 153:
 		return KnxDatapointSubtype_DPST_Value_Impedance
-	case 140039:
+	case 154:
 		return KnxDatapointSubtype_DPST_Value_Length
-	case 140040:
+	case 155:
 		return KnxDatapointSubtype_DPST_Value_Light_Quantity
-	case 140041:
+	case 156:
 		return KnxDatapointSubtype_DPST_Value_Luminance
-	case 140042:
+	case 157:
 		return KnxDatapointSubtype_DPST_Value_Luminous_Flux
-	case 140043:
+	case 158:
 		return KnxDatapointSubtype_DPST_Value_Luminous_Intensity
-	case 140044:
+	case 159:
 		return KnxDatapointSubtype_DPST_Value_Magnetic_FieldStrength
-	case 140045:
+	case 16:
+		return KnxDatapointSubtype_DPST_Ack
+	case 160:
 		return KnxDatapointSubtype_DPST_Value_Magnetic_Flux
-	case 140046:
+	case 161:
 		return KnxDatapointSubtype_DPST_Value_Magnetic_FluxDensity
-	case 140047:
+	case 162:
 		return KnxDatapointSubtype_DPST_Value_Magnetic_Moment
-	case 140048:
+	case 163:
 		return KnxDatapointSubtype_DPST_Value_Magnetic_Polarization
-	case 140049:
+	case 164:
 		return KnxDatapointSubtype_DPST_Value_Magnetization
-	case 140050:
+	case 165:
 		return KnxDatapointSubtype_DPST_Value_MagnetomotiveForce
-	case 140051:
+	case 166:
 		return KnxDatapointSubtype_DPST_Value_Mass
-	case 140052:
+	case 167:
 		return KnxDatapointSubtype_DPST_Value_MassFlux
-	case 140053:
+	case 168:
 		return KnxDatapointSubtype_DPST_Value_Momentum
-	case 140054:
+	case 169:
 		return KnxDatapointSubtype_DPST_Value_Phase_AngleRad
-	case 140055:
+	case 17:
+		return KnxDatapointSubtype_DPST_Trigger
+	case 170:
 		return KnxDatapointSubtype_DPST_Value_Phase_AngleDeg
-	case 140056:
+	case 171:
 		return KnxDatapointSubtype_DPST_Value_Power
-	case 140057:
+	case 172:
 		return KnxDatapointSubtype_DPST_Value_Power_Factor
-	case 140058:
+	case 173:
 		return KnxDatapointSubtype_DPST_Value_Pressure
-	case 140059:
+	case 174:
 		return KnxDatapointSubtype_DPST_Value_Reactance
-	case 140060:
+	case 175:
 		return KnxDatapointSubtype_DPST_Value_Resistance
-	case 140061:
+	case 176:
 		return KnxDatapointSubtype_DPST_Value_Resistivity
-	case 140062:
+	case 177:
 		return KnxDatapointSubtype_DPST_Value_SelfInductance
-	case 140063:
+	case 178:
 		return KnxDatapointSubtype_DPST_Value_SolidAngle
-	case 140064:
+	case 179:
 		return KnxDatapointSubtype_DPST_Value_Sound_Intensity
-	case 140065:
+	case 18:
+		return KnxDatapointSubtype_DPST_Occupancy
+	case 180:
 		return KnxDatapointSubtype_DPST_Value_Speed
-	case 140066:
+	case 181:
 		return KnxDatapointSubtype_DPST_Value_Stress
-	case 140067:
+	case 182:
 		return KnxDatapointSubtype_DPST_Value_Surface_Tension
-	case 140068:
+	case 183:
 		return KnxDatapointSubtype_DPST_Value_Common_Temperature
-	case 140069:
+	case 184:
 		return KnxDatapointSubtype_DPST_Value_Absolute_Temperature
-	case 140070:
+	case 185:
 		return KnxDatapointSubtype_DPST_Value_TemperatureDifference
-	case 140071:
+	case 186:
 		return KnxDatapointSubtype_DPST_Value_Thermal_Capacity
-	case 140072:
+	case 187:
 		return KnxDatapointSubtype_DPST_Value_Thermal_Conductivity
-	case 140073:
+	case 188:
 		return KnxDatapointSubtype_DPST_Value_ThermoelectricPower
-	case 140074:
+	case 189:
 		return KnxDatapointSubtype_DPST_Value_Time
-	case 140075:
+	case 19:
+		return KnxDatapointSubtype_DPST_Window_Door
+	case 190:
 		return KnxDatapointSubtype_DPST_Value_Torque
-	case 140076:
+	case 191:
 		return KnxDatapointSubtype_DPST_Value_Volume
-	case 140077:
+	case 192:
 		return KnxDatapointSubtype_DPST_Value_Volume_Flux
-	case 140078:
+	case 193:
 		return KnxDatapointSubtype_DPST_Value_Weight
-	case 140079:
+	case 194:
 		return KnxDatapointSubtype_DPST_Value_Work
-	case 141200:
+	case 195:
 		return KnxDatapointSubtype_DPST_Volume_Flux_Meter
-	case 141201:
+	case 196:
 		return KnxDatapointSubtype_DPST_Volume_Flux_ls
-	case 150000:
+	case 197:
 		return KnxDatapointSubtype_DPST_Access_Data
-	case 160000:
+	case 198:
 		return KnxDatapointSubtype_DPST_String_ASCII
-	case 160001:
+	case 199:
 		return KnxDatapointSubtype_DPST_String_8859_1
-	case 170001:
+	case 2:
+		return KnxDatapointSubtype_DPST_Bool
+	case 20:
+		return KnxDatapointSubtype_DPST_LogicalFunction
+	case 200:
 		return KnxDatapointSubtype_DPST_SceneNumber
-	case 180001:
+	case 201:
 		return KnxDatapointSubtype_DPST_SceneControl
-	case 190001:
+	case 202:
 		return KnxDatapointSubtype_DPST_DateTime
-	case 200001:
+	case 203:
 		return KnxDatapointSubtype_DPST_SCLOMode
-	case 200002:
+	case 204:
 		return KnxDatapointSubtype_DPST_BuildingMode
-	case 200003:
+	case 205:
 		return KnxDatapointSubtype_DPST_OccMode
-	case 200004:
+	case 206:
 		return KnxDatapointSubtype_DPST_Priority
-	case 200005:
+	case 207:
 		return KnxDatapointSubtype_DPST_LightApplicationMode
-	case 200006:
+	case 208:
 		return KnxDatapointSubtype_DPST_ApplicationArea
-	case 200007:
+	case 209:
 		return KnxDatapointSubtype_DPST_AlarmClassType
-	case 200008:
+	case 21:
+		return KnxDatapointSubtype_DPST_Scene_AB
+	case 210:
 		return KnxDatapointSubtype_DPST_PSUMode
-	case 20001:
-		return KnxDatapointSubtype_DPST_Switch_Control
-	case 200011:
+	case 211:
 		return KnxDatapointSubtype_DPST_ErrorClass_System
-	case 200012:
+	case 212:
 		return KnxDatapointSubtype_DPST_ErrorClass_HVAC
-	case 200013:
+	case 213:
 		return KnxDatapointSubtype_DPST_Time_Delay
-	case 200014:
+	case 214:
 		return KnxDatapointSubtype_DPST_Beaufort_Wind_Force_Scale
-	case 200017:
+	case 215:
 		return KnxDatapointSubtype_DPST_SensorSelect
-	case 20002:
-		return KnxDatapointSubtype_DPST_Bool_Control
-	case 200020:
+	case 216:
 		return KnxDatapointSubtype_DPST_ActuatorConnectType
-	case 200021:
+	case 217:
 		return KnxDatapointSubtype_DPST_Cloud_Cover
-	case 200022:
+	case 218:
 		return KnxDatapointSubtype_DPST_PowerReturnMode
-	case 20003:
-		return KnxDatapointSubtype_DPST_Enable_Control
-	case 20004:
-		return KnxDatapointSubtype_DPST_Ramp_Control
-	case 20005:
-		return KnxDatapointSubtype_DPST_Alarm_Control
-	case 20006:
-		return KnxDatapointSubtype_DPST_BinaryValue_Control
-	case 20007:
-		return KnxDatapointSubtype_DPST_Step_Control
-	case 20008:
-		return KnxDatapointSubtype_DPST_Direction1_Control
-	case 20009:
-		return KnxDatapointSubtype_DPST_Direction2_Control
-	case 20010:
-		return KnxDatapointSubtype_DPST_Start_Control
-	case 200100:
+	case 219:
 		return KnxDatapointSubtype_DPST_FuelType
-	case 200101:
+	case 22:
+		return KnxDatapointSubtype_DPST_ShutterBlinds_Mode
+	case 220:
 		return KnxDatapointSubtype_DPST_BurnerType
-	case 200102:
+	case 221:
 		return KnxDatapointSubtype_DPST_HVACMode
-	case 200103:
+	case 222:
 		return KnxDatapointSubtype_DPST_DHWMode
-	case 200104:
+	case 223:
 		return KnxDatapointSubtype_DPST_LoadPriority
-	case 200105:
+	case 224:
 		return KnxDatapointSubtype_DPST_HVACContrMode
-	case 200106:
+	case 225:
 		return KnxDatapointSubtype_DPST_HVACEmergMode
-	case 200107:
+	case 226:
 		return KnxDatapointSubtype_DPST_ChangeoverMode
-	case 200108:
+	case 227:
 		return KnxDatapointSubtype_DPST_ValveMode
-	case 200109:
+	case 228:
 		return KnxDatapointSubtype_DPST_DamperMode
-	case 20011:
-		return KnxDatapointSubtype_DPST_State_Control
-	case 200110:
+	case 229:
 		return KnxDatapointSubtype_DPST_HeaterMode
-	case 200111:
+	case 23:
+		return KnxDatapointSubtype_DPST_DayNight
+	case 230:
 		return KnxDatapointSubtype_DPST_FanMode
-	case 200112:
+	case 231:
 		return KnxDatapointSubtype_DPST_MasterSlaveMode
-	case 200113:
+	case 232:
 		return KnxDatapointSubtype_DPST_StatusRoomSetp
-	case 200114:
+	case 233:
 		return KnxDatapointSubtype_DPST_Metering_DeviceType
-	case 200115:
+	case 234:
 		return KnxDatapointSubtype_DPST_HumDehumMode
-	case 200116:
+	case 235:
 		return KnxDatapointSubtype_DPST_EnableHCStage
-	case 20012:
-		return KnxDatapointSubtype_DPST_Invert_Control
-	case 200120:
+	case 236:
 		return KnxDatapointSubtype_DPST_ADAType
-	case 200121:
+	case 237:
 		return KnxDatapointSubtype_DPST_BackupMode
-	case 200122:
+	case 238:
 		return KnxDatapointSubtype_DPST_StartSynchronization
-	case 200600:
+	case 239:
 		return KnxDatapointSubtype_DPST_Behaviour_Lock_Unlock
-	case 200601:
+	case 24:
+		return KnxDatapointSubtype_DPST_Heat_Cool
+	case 240:
 		return KnxDatapointSubtype_DPST_Behaviour_Bus_Power_Up_Down
-	case 200602:
+	case 241:
 		return KnxDatapointSubtype_DPST_DALI_Fade_Time
-	case 200603:
+	case 242:
 		return KnxDatapointSubtype_DPST_BlinkingMode
-	case 200604:
+	case 243:
 		return KnxDatapointSubtype_DPST_LightControlMode
-	case 200605:
+	case 244:
 		return KnxDatapointSubtype_DPST_SwitchPBModel
-	case 200606:
+	case 245:
 		return KnxDatapointSubtype_DPST_PBAction
-	case 200607:
+	case 246:
 		return KnxDatapointSubtype_DPST_DimmPBModel
-	case 200608:
+	case 247:
 		return KnxDatapointSubtype_DPST_SwitchOnMode
-	case 200609:
+	case 248:
 		return KnxDatapointSubtype_DPST_LoadTypeSet
-	case 200610:
+	case 249:
 		return KnxDatapointSubtype_DPST_LoadTypeDetected
-	case 200611:
+	case 25:
+		return KnxDatapointSubtype_DPST_Switch_Control
+	case 250:
 		return KnxDatapointSubtype_DPST_Converter_Test_Control
-	case 200801:
+	case 251:
 		return KnxDatapointSubtype_DPST_SABExcept_Behaviour
-	case 200802:
+	case 252:
 		return KnxDatapointSubtype_DPST_SABBehaviour_Lock_Unlock
-	case 200803:
+	case 253:
 		return KnxDatapointSubtype_DPST_SSSBMode
-	case 200804:
+	case 254:
 		return KnxDatapointSubtype_DPST_BlindsControlMode
-	case 201000:
+	case 255:
 		return KnxDatapointSubtype_DPST_CommMode
-	case 201001:
+	case 256:
 		return KnxDatapointSubtype_DPST_AddInfoTypes
-	case 201002:
+	case 257:
 		return KnxDatapointSubtype_DPST_RF_ModeSelect
-	case 201003:
+	case 258:
 		return KnxDatapointSubtype_DPST_RF_FilterSelect
-	case 2060100:
-		return KnxDatapointSubtype_DPST_HVACModeNext
-	case 2060102:
-		return KnxDatapointSubtype_DPST_DHWModeNext
-	case 2060104:
-		return KnxDatapointSubtype_DPST_OccModeNext
-	case 2060105:
-		return KnxDatapointSubtype_DPST_BuildingModeNext
-	case 210001:
+	case 259:
 		return KnxDatapointSubtype_DPST_StatusGen
-	case 210002:
+	case 26:
+		return KnxDatapointSubtype_DPST_Bool_Control
+	case 260:
 		return KnxDatapointSubtype_DPST_Device_Control
-	case 210100:
+	case 261:
 		return KnxDatapointSubtype_DPST_ForceSign
-	case 210101:
+	case 262:
 		return KnxDatapointSubtype_DPST_ForceSignCool
-	case 210102:
+	case 263:
 		return KnxDatapointSubtype_DPST_StatusRHC
-	case 210103:
+	case 264:
 		return KnxDatapointSubtype_DPST_StatusSDHWC
-	case 210104:
+	case 265:
 		return KnxDatapointSubtype_DPST_FuelTypeSet
-	case 210105:
+	case 266:
 		return KnxDatapointSubtype_DPST_StatusRCC
-	case 210106:
+	case 267:
 		return KnxDatapointSubtype_DPST_StatusAHU
-	case 210107:
+	case 268:
 		return KnxDatapointSubtype_DPST_CombinedStatus_RTSM
-	case 210601:
+	case 269:
 		return KnxDatapointSubtype_DPST_LightActuatorErrorInfo
-	case 211000:
+	case 27:
+		return KnxDatapointSubtype_DPST_Enable_Control
+	case 270:
 		return KnxDatapointSubtype_DPST_RF_ModeInfo
-	case 211001:
+	case 271:
 		return KnxDatapointSubtype_DPST_RF_FilterInfo
-	case 211010:
+	case 272:
 		return KnxDatapointSubtype_DPST_Channel_Activation_8
-	case 2170001:
-		return KnxDatapointSubtype_DPST_Version
-	case 2190001:
-		return KnxDatapointSubtype_DPST_AlarmInfo
-	case 220100:
+	case 273:
 		return KnxDatapointSubtype_DPST_StatusDHWC
-	case 220101:
+	case 274:
 		return KnxDatapointSubtype_DPST_StatusRHCC
-	case 220102:
+	case 275:
 		return KnxDatapointSubtype_DPST_CombinedStatus_HVA
-	case 220103:
+	case 276:
 		return KnxDatapointSubtype_DPST_CombinedStatus_RTC
-	case 221000:
+	case 277:
 		return KnxDatapointSubtype_DPST_Media
-	case 221010:
+	case 278:
 		return KnxDatapointSubtype_DPST_Channel_Activation_16
-	case 2220100:
-		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3
-	case 2220101:
-		return KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_3
-	case 2250001:
-		return KnxDatapointSubtype_DPST_Scaling_Speed
-	case 2250002:
-		return KnxDatapointSubtype_DPST_Scaling_Step_Time
-	case 2290001:
-		return KnxDatapointSubtype_DPST_MeteringValue
-	case 230001:
+	case 279:
 		return KnxDatapointSubtype_DPST_OnOffAction
-	case 230002:
+	case 28:
+		return KnxDatapointSubtype_DPST_Ramp_Control
+	case 280:
 		return KnxDatapointSubtype_DPST_Alarm_Reaction
-	case 230003:
+	case 281:
 		return KnxDatapointSubtype_DPST_UpDown_Action
-	case 2301000:
-		return KnxDatapointSubtype_DPST_MBus_Address
-	case 230102:
+	case 282:
 		return KnxDatapointSubtype_DPST_HVAC_PB_Action
-	case 2320600:
-		return KnxDatapointSubtype_DPST_Colour_RGB
-	case 2340001:
-		return KnxDatapointSubtype_DPST_LanguageCodeAlpha2_ASCII
-	case 2350001:
-		return KnxDatapointSubtype_DPST_Tariff_ActiveEnergy
-	case 2360001:
-		return KnxDatapointSubtype_DPST_Prioritised_Mode_Control
-	case 2370600:
-		return KnxDatapointSubtype_DPST_DALI_Control_Gear_Diagnostic
-	case 2380600:
-		return KnxDatapointSubtype_DPST_DALI_Diagnostics
-	case 2400800:
-		return KnxDatapointSubtype_DPST_CombinedPosition
-	case 2410800:
-		return KnxDatapointSubtype_DPST_StatusSAB
-	case 2420600:
-		return KnxDatapointSubtype_DPST_Colour_xyY
-	case 2440600:
-		return KnxDatapointSubtype_DPST_Converter_Status
-	case 2450600:
-		return KnxDatapointSubtype_DPST_Converter_Test_Result
-	case 2460600:
-		return KnxDatapointSubtype_DPST_Battery_Info
-	case 2490600:
-		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Transition
-	case 2500600:
-		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control
-	case 251000:
+	case 283:
 		return KnxDatapointSubtype_DPST_DoubleNibble
-	case 2510600:
-		return KnxDatapointSubtype_DPST_Colour_RGBW
-	case 2520600:
-		return KnxDatapointSubtype_DPST_Relative_Control_RGBW
-	case 2540600:
-		return KnxDatapointSubtype_DPST_Relative_Control_RGB
-	case 2550001:
-		return KnxDatapointSubtype_DPST_GeographicalLocation
-	case 260001:
+	case 284:
 		return KnxDatapointSubtype_DPST_SceneInfo
-	case 270001:
+	case 285:
 		return KnxDatapointSubtype_DPST_CombinedInfoOnOff
-	case 2750100:
-		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4
-	case 2750101:
-		return KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4
-	case 290010:
+	case 286:
 		return KnxDatapointSubtype_DPST_ActiveEnergy_V64
-	case 290011:
+	case 287:
 		return KnxDatapointSubtype_DPST_ApparantEnergy_V64
-	case 290012:
+	case 288:
 		return KnxDatapointSubtype_DPST_ReactiveEnergy_V64
-	case 30007:
-		return KnxDatapointSubtype_DPST_Control_Dimming
-	case 30008:
-		return KnxDatapointSubtype_DPST_Control_Blinds
-	case 301010:
+	case 289:
 		return KnxDatapointSubtype_DPST_Channel_Activation_24
-	case 40001:
+	case 29:
+		return KnxDatapointSubtype_DPST_Alarm_Control
+	case 290:
+		return KnxDatapointSubtype_DPST_HVACModeNext
+	case 291:
+		return KnxDatapointSubtype_DPST_DHWModeNext
+	case 292:
+		return KnxDatapointSubtype_DPST_OccModeNext
+	case 293:
+		return KnxDatapointSubtype_DPST_BuildingModeNext
+	case 294:
+		return KnxDatapointSubtype_DPST_Version
+	case 295:
+		return KnxDatapointSubtype_DPST_AlarmInfo
+	case 296:
+		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3
+	case 297:
+		return KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_3
+	case 298:
+		return KnxDatapointSubtype_DPST_Scaling_Speed
+	case 299:
+		return KnxDatapointSubtype_DPST_Scaling_Step_Time
+	case 3:
+		return KnxDatapointSubtype_DPST_Enable
+	case 30:
+		return KnxDatapointSubtype_DPST_BinaryValue_Control
+	case 300:
+		return KnxDatapointSubtype_DPST_MeteringValue
+	case 301:
+		return KnxDatapointSubtype_DPST_MBus_Address
+	case 302:
+		return KnxDatapointSubtype_DPST_Colour_RGB
+	case 303:
+		return KnxDatapointSubtype_DPST_LanguageCodeAlpha2_ASCII
+	case 304:
+		return KnxDatapointSubtype_DPST_Tariff_ActiveEnergy
+	case 305:
+		return KnxDatapointSubtype_DPST_Prioritised_Mode_Control
+	case 306:
+		return KnxDatapointSubtype_DPST_DALI_Control_Gear_Diagnostic
+	case 307:
+		return KnxDatapointSubtype_DPST_DALI_Diagnostics
+	case 308:
+		return KnxDatapointSubtype_DPST_CombinedPosition
+	case 309:
+		return KnxDatapointSubtype_DPST_StatusSAB
+	case 31:
+		return KnxDatapointSubtype_DPST_Step_Control
+	case 310:
+		return KnxDatapointSubtype_DPST_Colour_xyY
+	case 311:
+		return KnxDatapointSubtype_DPST_Converter_Status
+	case 312:
+		return KnxDatapointSubtype_DPST_Converter_Test_Result
+	case 313:
+		return KnxDatapointSubtype_DPST_Battery_Info
+	case 314:
+		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Transition
+	case 315:
+		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control
+	case 316:
+		return KnxDatapointSubtype_DPST_Colour_RGBW
+	case 317:
+		return KnxDatapointSubtype_DPST_Relative_Control_RGBW
+	case 318:
+		return KnxDatapointSubtype_DPST_Relative_Control_RGB
+	case 319:
+		return KnxDatapointSubtype_DPST_GeographicalLocation
+	case 32:
+		return KnxDatapointSubtype_DPST_Direction1_Control
+	case 320:
+		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4
+	case 321:
+		return KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4
+	case 33:
+		return KnxDatapointSubtype_DPST_Direction2_Control
+	case 34:
+		return KnxDatapointSubtype_DPST_Start_Control
+	case 35:
+		return KnxDatapointSubtype_DPST_State_Control
+	case 36:
+		return KnxDatapointSubtype_DPST_Invert_Control
+	case 37:
+		return KnxDatapointSubtype_DPST_Control_Dimming
+	case 38:
+		return KnxDatapointSubtype_DPST_Control_Blinds
+	case 39:
 		return KnxDatapointSubtype_DPST_Char_ASCII
-	case 40002:
+	case 4:
+		return KnxDatapointSubtype_DPST_Ramp
+	case 40:
 		return KnxDatapointSubtype_DPST_Char_8859_1
-	case 50001:
+	case 41:
 		return KnxDatapointSubtype_DPST_Scaling
-	case 50003:
+	case 42:
 		return KnxDatapointSubtype_DPST_Angle
-	case 50004:
+	case 43:
 		return KnxDatapointSubtype_DPST_Percent_U8
-	case 50005:
+	case 44:
 		return KnxDatapointSubtype_DPST_DecimalFactor
-	case 50006:
+	case 45:
 		return KnxDatapointSubtype_DPST_Tariff
-	case 50010:
+	case 46:
 		return KnxDatapointSubtype_DPST_Value_1_Ucount
-	case 50100:
+	case 47:
 		return KnxDatapointSubtype_DPST_FanStage
-	case 60001:
+	case 48:
 		return KnxDatapointSubtype_DPST_Percent_V8
-	case 60010:
+	case 49:
 		return KnxDatapointSubtype_DPST_Value_1_Count
-	case 60020:
+	case 5:
+		return KnxDatapointSubtype_DPST_Alarm
+	case 50:
 		return KnxDatapointSubtype_DPST_Status_Mode3
-	case 70001:
+	case 51:
 		return KnxDatapointSubtype_DPST_Value_2_Ucount
-	case 70002:
+	case 52:
 		return KnxDatapointSubtype_DPST_TimePeriodMsec
-	case 70003:
+	case 53:
 		return KnxDatapointSubtype_DPST_TimePeriod10Msec
-	case 70004:
+	case 54:
 		return KnxDatapointSubtype_DPST_TimePeriod100Msec
-	case 70005:
+	case 55:
 		return KnxDatapointSubtype_DPST_TimePeriodSec
-	case 70006:
+	case 56:
 		return KnxDatapointSubtype_DPST_TimePeriodMin
-	case 70007:
+	case 57:
 		return KnxDatapointSubtype_DPST_TimePeriodHrs
-	case 70010:
+	case 58:
 		return KnxDatapointSubtype_DPST_PropDataType
-	case 70011:
+	case 59:
 		return KnxDatapointSubtype_DPST_Length_mm
-	case 70012:
+	case 6:
+		return KnxDatapointSubtype_DPST_BinaryValue
+	case 60:
 		return KnxDatapointSubtype_DPST_UElCurrentmA
-	case 70013:
+	case 61:
 		return KnxDatapointSubtype_DPST_Brightness
-	case 70600:
+	case 62:
 		return KnxDatapointSubtype_DPST_Absolute_Colour_Temperature
-	case 80001:
+	case 63:
 		return KnxDatapointSubtype_DPST_Value_2_Count
-	case 80002:
+	case 64:
 		return KnxDatapointSubtype_DPST_DeltaTimeMsec
-	case 80003:
+	case 65:
 		return KnxDatapointSubtype_DPST_DeltaTime10Msec
-	case 80004:
+	case 66:
 		return KnxDatapointSubtype_DPST_DeltaTime100Msec
-	case 80005:
+	case 67:
 		return KnxDatapointSubtype_DPST_DeltaTimeSec
-	case 80006:
+	case 68:
 		return KnxDatapointSubtype_DPST_DeltaTimeMin
-	case 80007:
+	case 69:
 		return KnxDatapointSubtype_DPST_DeltaTimeHrs
-	case 80010:
+	case 7:
+		return KnxDatapointSubtype_DPST_Step
+	case 70:
 		return KnxDatapointSubtype_DPST_Percent_V16
-	case 80011:
+	case 71:
 		return KnxDatapointSubtype_DPST_Rotation_Angle
-	case 80012:
+	case 72:
 		return KnxDatapointSubtype_DPST_Length_m
-	case 90001:
+	case 73:
 		return KnxDatapointSubtype_DPST_Value_Temp
-	case 90002:
+	case 74:
 		return KnxDatapointSubtype_DPST_Value_Tempd
-	case 90003:
+	case 75:
 		return KnxDatapointSubtype_DPST_Value_Tempa
-	case 90004:
+	case 76:
 		return KnxDatapointSubtype_DPST_Value_Lux
-	case 90005:
+	case 77:
 		return KnxDatapointSubtype_DPST_Value_Wsp
-	case 90006:
+	case 78:
 		return KnxDatapointSubtype_DPST_Value_Pres
-	case 90007:
+	case 79:
 		return KnxDatapointSubtype_DPST_Value_Humidity
-	case 90008:
+	case 8:
+		return KnxDatapointSubtype_DPST_UpDown
+	case 80:
 		return KnxDatapointSubtype_DPST_Value_AirQuality
-	case 90009:
+	case 81:
 		return KnxDatapointSubtype_DPST_Value_AirFlow
-	case 90010:
+	case 82:
 		return KnxDatapointSubtype_DPST_Value_Time1
-	case 90011:
+	case 83:
 		return KnxDatapointSubtype_DPST_Value_Time2
-	case 90020:
+	case 84:
 		return KnxDatapointSubtype_DPST_Value_Volt
-	case 90021:
+	case 85:
 		return KnxDatapointSubtype_DPST_Value_Curr
-	case 90022:
+	case 86:
 		return KnxDatapointSubtype_DPST_PowerDensity
-	case 90023:
+	case 87:
 		return KnxDatapointSubtype_DPST_KelvinPerPercent
-	case 90024:
+	case 88:
 		return KnxDatapointSubtype_DPST_Power
-	case 90025:
+	case 89:
 		return KnxDatapointSubtype_DPST_Value_Volume_Flow
-	case 90026:
+	case 9:
+		return KnxDatapointSubtype_DPST_OpenClose
+	case 90:
 		return KnxDatapointSubtype_DPST_Rain_Amount
-	case 90027:
+	case 91:
 		return KnxDatapointSubtype_DPST_Value_Temp_F
-	case 90028:
+	case 92:
 		return KnxDatapointSubtype_DPST_Value_Wsp_kmh
-	case 90029:
+	case 93:
 		return KnxDatapointSubtype_DPST_Value_Absolute_Humidity
-	case 90030:
+	case 94:
 		return KnxDatapointSubtype_DPST_Concentration_ygm3
+	case 95:
+		return KnxDatapointSubtype_DPST_TimeOfDay
+	case 96:
+		return KnxDatapointSubtype_DPST_Date
+	case 97:
+		return KnxDatapointSubtype_DPST_Value_4_Ucount
+	case 98:
+		return KnxDatapointSubtype_DPST_LongTimePeriod_Sec
+	case 99:
+		return KnxDatapointSubtype_DPST_LongTimePeriod_Min
 	}
 	return 0
 }
 
 func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 	switch value {
-	case "DPST_TimeOfDay":
-		return KnxDatapointSubtype_DPST_TimeOfDay
+	case "DPST_UNKNOWN":
+		return KnxDatapointSubtype_DPST_UNKNOWN
 	case "DPST_Switch":
 		return KnxDatapointSubtype_DPST_Switch
-	case "DPST_Bool":
-		return KnxDatapointSubtype_DPST_Bool
-	case "DPST_Enable":
-		return KnxDatapointSubtype_DPST_Enable
-	case "DPST_Ramp":
-		return KnxDatapointSubtype_DPST_Ramp
-	case "DPST_Alarm":
-		return KnxDatapointSubtype_DPST_Alarm
-	case "DPST_BinaryValue":
-		return KnxDatapointSubtype_DPST_BinaryValue
-	case "DPST_Step":
-		return KnxDatapointSubtype_DPST_Step
-	case "DPST_UpDown":
-		return KnxDatapointSubtype_DPST_UpDown
-	case "DPST_OpenClose":
-		return KnxDatapointSubtype_DPST_OpenClose
 	case "DPST_Start":
 		return KnxDatapointSubtype_DPST_Start
-	case "DPST_State":
-		return KnxDatapointSubtype_DPST_State
-	case "DPST_Invert":
-		return KnxDatapointSubtype_DPST_Invert
-	case "DPST_DimSendStyle":
-		return KnxDatapointSubtype_DPST_DimSendStyle
-	case "DPST_InputSource":
-		return KnxDatapointSubtype_DPST_InputSource
-	case "DPST_Reset":
-		return KnxDatapointSubtype_DPST_Reset
-	case "DPST_Ack":
-		return KnxDatapointSubtype_DPST_Ack
-	case "DPST_Trigger":
-		return KnxDatapointSubtype_DPST_Trigger
-	case "DPST_Occupancy":
-		return KnxDatapointSubtype_DPST_Occupancy
-	case "DPST_Window_Door":
-		return KnxDatapointSubtype_DPST_Window_Door
-	case "DPST_LogicalFunction":
-		return KnxDatapointSubtype_DPST_LogicalFunction
-	case "DPST_Scene_AB":
-		return KnxDatapointSubtype_DPST_Scene_AB
-	case "DPST_ShutterBlinds_Mode":
-		return KnxDatapointSubtype_DPST_ShutterBlinds_Mode
-	case "DPST_DayNight":
-		return KnxDatapointSubtype_DPST_DayNight
-	case "DPST_Heat_Cool":
-		return KnxDatapointSubtype_DPST_Heat_Cool
-	case "DPST_Date":
-		return KnxDatapointSubtype_DPST_Date
-	case "DPST_Value_4_Ucount":
-		return KnxDatapointSubtype_DPST_Value_4_Ucount
-	case "DPST_LongTimePeriod_Sec":
-		return KnxDatapointSubtype_DPST_LongTimePeriod_Sec
-	case "DPST_LongTimePeriod_Min":
-		return KnxDatapointSubtype_DPST_LongTimePeriod_Min
 	case "DPST_LongTimePeriod_Hrs":
 		return KnxDatapointSubtype_DPST_LongTimePeriod_Hrs
 	case "DPST_VolumeLiquid_Litre":
@@ -3667,6 +4924,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_ActiveEnergy_kWh
 	case "DPST_ApparantEnergy_kVAh":
 		return KnxDatapointSubtype_DPST_ApparantEnergy_kVAh
+	case "DPST_State":
+		return KnxDatapointSubtype_DPST_State
 	case "DPST_ReactiveEnergy_kVARh":
 		return KnxDatapointSubtype_DPST_ReactiveEnergy_kVARh
 	case "DPST_ActiveEnergy_MWh":
@@ -3687,6 +4946,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Activity
 	case "DPST_Value_Mol":
 		return KnxDatapointSubtype_DPST_Value_Mol
+	case "DPST_Invert":
+		return KnxDatapointSubtype_DPST_Invert
 	case "DPST_Value_Amplitude":
 		return KnxDatapointSubtype_DPST_Value_Amplitude
 	case "DPST_Value_AngleRad":
@@ -3707,6 +4968,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Charge_DensityVolume
 	case "DPST_Value_Compressibility":
 		return KnxDatapointSubtype_DPST_Value_Compressibility
+	case "DPST_DimSendStyle":
+		return KnxDatapointSubtype_DPST_DimSendStyle
 	case "DPST_Value_Conductance":
 		return KnxDatapointSubtype_DPST_Value_Conductance
 	case "DPST_Value_Electrical_Conductivity":
@@ -3727,6 +4990,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Electric_FieldStrength
 	case "DPST_Value_Electric_Flux":
 		return KnxDatapointSubtype_DPST_Value_Electric_Flux
+	case "DPST_InputSource":
+		return KnxDatapointSubtype_DPST_InputSource
 	case "DPST_Value_Electric_FluxDensity":
 		return KnxDatapointSubtype_DPST_Value_Electric_FluxDensity
 	case "DPST_Value_Electric_Polarization":
@@ -3747,6 +5012,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Frequency
 	case "DPST_Value_Angular_Frequency":
 		return KnxDatapointSubtype_DPST_Value_Angular_Frequency
+	case "DPST_Reset":
+		return KnxDatapointSubtype_DPST_Reset
 	case "DPST_Value_Heat_Capacity":
 		return KnxDatapointSubtype_DPST_Value_Heat_Capacity
 	case "DPST_Value_Heat_FlowRate":
@@ -3767,6 +5034,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Luminous_Intensity
 	case "DPST_Value_Magnetic_FieldStrength":
 		return KnxDatapointSubtype_DPST_Value_Magnetic_FieldStrength
+	case "DPST_Ack":
+		return KnxDatapointSubtype_DPST_Ack
 	case "DPST_Value_Magnetic_Flux":
 		return KnxDatapointSubtype_DPST_Value_Magnetic_Flux
 	case "DPST_Value_Magnetic_FluxDensity":
@@ -3787,6 +5056,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Momentum
 	case "DPST_Value_Phase_AngleRad":
 		return KnxDatapointSubtype_DPST_Value_Phase_AngleRad
+	case "DPST_Trigger":
+		return KnxDatapointSubtype_DPST_Trigger
 	case "DPST_Value_Phase_AngleDeg":
 		return KnxDatapointSubtype_DPST_Value_Phase_AngleDeg
 	case "DPST_Value_Power":
@@ -3807,6 +5078,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_SolidAngle
 	case "DPST_Value_Sound_Intensity":
 		return KnxDatapointSubtype_DPST_Value_Sound_Intensity
+	case "DPST_Occupancy":
+		return KnxDatapointSubtype_DPST_Occupancy
 	case "DPST_Value_Speed":
 		return KnxDatapointSubtype_DPST_Value_Speed
 	case "DPST_Value_Stress":
@@ -3827,6 +5100,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_ThermoelectricPower
 	case "DPST_Value_Time":
 		return KnxDatapointSubtype_DPST_Value_Time
+	case "DPST_Window_Door":
+		return KnxDatapointSubtype_DPST_Window_Door
 	case "DPST_Value_Torque":
 		return KnxDatapointSubtype_DPST_Value_Torque
 	case "DPST_Value_Volume":
@@ -3847,6 +5122,10 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_String_ASCII
 	case "DPST_String_8859_1":
 		return KnxDatapointSubtype_DPST_String_8859_1
+	case "DPST_Bool":
+		return KnxDatapointSubtype_DPST_Bool
+	case "DPST_LogicalFunction":
+		return KnxDatapointSubtype_DPST_LogicalFunction
 	case "DPST_SceneNumber":
 		return KnxDatapointSubtype_DPST_SceneNumber
 	case "DPST_SceneControl":
@@ -3867,10 +5146,10 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_ApplicationArea
 	case "DPST_AlarmClassType":
 		return KnxDatapointSubtype_DPST_AlarmClassType
+	case "DPST_Scene_AB":
+		return KnxDatapointSubtype_DPST_Scene_AB
 	case "DPST_PSUMode":
 		return KnxDatapointSubtype_DPST_PSUMode
-	case "DPST_Switch_Control":
-		return KnxDatapointSubtype_DPST_Switch_Control
 	case "DPST_ErrorClass_System":
 		return KnxDatapointSubtype_DPST_ErrorClass_System
 	case "DPST_ErrorClass_HVAC":
@@ -3881,32 +5160,16 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Beaufort_Wind_Force_Scale
 	case "DPST_SensorSelect":
 		return KnxDatapointSubtype_DPST_SensorSelect
-	case "DPST_Bool_Control":
-		return KnxDatapointSubtype_DPST_Bool_Control
 	case "DPST_ActuatorConnectType":
 		return KnxDatapointSubtype_DPST_ActuatorConnectType
 	case "DPST_Cloud_Cover":
 		return KnxDatapointSubtype_DPST_Cloud_Cover
 	case "DPST_PowerReturnMode":
 		return KnxDatapointSubtype_DPST_PowerReturnMode
-	case "DPST_Enable_Control":
-		return KnxDatapointSubtype_DPST_Enable_Control
-	case "DPST_Ramp_Control":
-		return KnxDatapointSubtype_DPST_Ramp_Control
-	case "DPST_Alarm_Control":
-		return KnxDatapointSubtype_DPST_Alarm_Control
-	case "DPST_BinaryValue_Control":
-		return KnxDatapointSubtype_DPST_BinaryValue_Control
-	case "DPST_Step_Control":
-		return KnxDatapointSubtype_DPST_Step_Control
-	case "DPST_Direction1_Control":
-		return KnxDatapointSubtype_DPST_Direction1_Control
-	case "DPST_Direction2_Control":
-		return KnxDatapointSubtype_DPST_Direction2_Control
-	case "DPST_Start_Control":
-		return KnxDatapointSubtype_DPST_Start_Control
 	case "DPST_FuelType":
 		return KnxDatapointSubtype_DPST_FuelType
+	case "DPST_ShutterBlinds_Mode":
+		return KnxDatapointSubtype_DPST_ShutterBlinds_Mode
 	case "DPST_BurnerType":
 		return KnxDatapointSubtype_DPST_BurnerType
 	case "DPST_HVACMode":
@@ -3925,10 +5188,10 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_ValveMode
 	case "DPST_DamperMode":
 		return KnxDatapointSubtype_DPST_DamperMode
-	case "DPST_State_Control":
-		return KnxDatapointSubtype_DPST_State_Control
 	case "DPST_HeaterMode":
 		return KnxDatapointSubtype_DPST_HeaterMode
+	case "DPST_DayNight":
+		return KnxDatapointSubtype_DPST_DayNight
 	case "DPST_FanMode":
 		return KnxDatapointSubtype_DPST_FanMode
 	case "DPST_MasterSlaveMode":
@@ -3941,8 +5204,6 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_HumDehumMode
 	case "DPST_EnableHCStage":
 		return KnxDatapointSubtype_DPST_EnableHCStage
-	case "DPST_Invert_Control":
-		return KnxDatapointSubtype_DPST_Invert_Control
 	case "DPST_ADAType":
 		return KnxDatapointSubtype_DPST_ADAType
 	case "DPST_BackupMode":
@@ -3951,6 +5212,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_StartSynchronization
 	case "DPST_Behaviour_Lock_Unlock":
 		return KnxDatapointSubtype_DPST_Behaviour_Lock_Unlock
+	case "DPST_Heat_Cool":
+		return KnxDatapointSubtype_DPST_Heat_Cool
 	case "DPST_Behaviour_Bus_Power_Up_Down":
 		return KnxDatapointSubtype_DPST_Behaviour_Bus_Power_Up_Down
 	case "DPST_DALI_Fade_Time":
@@ -3971,6 +5234,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_LoadTypeSet
 	case "DPST_LoadTypeDetected":
 		return KnxDatapointSubtype_DPST_LoadTypeDetected
+	case "DPST_Switch_Control":
+		return KnxDatapointSubtype_DPST_Switch_Control
 	case "DPST_Converter_Test_Control":
 		return KnxDatapointSubtype_DPST_Converter_Test_Control
 	case "DPST_SABExcept_Behaviour":
@@ -3989,16 +5254,10 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_RF_ModeSelect
 	case "DPST_RF_FilterSelect":
 		return KnxDatapointSubtype_DPST_RF_FilterSelect
-	case "DPST_HVACModeNext":
-		return KnxDatapointSubtype_DPST_HVACModeNext
-	case "DPST_DHWModeNext":
-		return KnxDatapointSubtype_DPST_DHWModeNext
-	case "DPST_OccModeNext":
-		return KnxDatapointSubtype_DPST_OccModeNext
-	case "DPST_BuildingModeNext":
-		return KnxDatapointSubtype_DPST_BuildingModeNext
 	case "DPST_StatusGen":
 		return KnxDatapointSubtype_DPST_StatusGen
+	case "DPST_Bool_Control":
+		return KnxDatapointSubtype_DPST_Bool_Control
 	case "DPST_Device_Control":
 		return KnxDatapointSubtype_DPST_Device_Control
 	case "DPST_ForceSign":
@@ -4019,16 +5278,14 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_CombinedStatus_RTSM
 	case "DPST_LightActuatorErrorInfo":
 		return KnxDatapointSubtype_DPST_LightActuatorErrorInfo
+	case "DPST_Enable_Control":
+		return KnxDatapointSubtype_DPST_Enable_Control
 	case "DPST_RF_ModeInfo":
 		return KnxDatapointSubtype_DPST_RF_ModeInfo
 	case "DPST_RF_FilterInfo":
 		return KnxDatapointSubtype_DPST_RF_FilterInfo
 	case "DPST_Channel_Activation_8":
 		return KnxDatapointSubtype_DPST_Channel_Activation_8
-	case "DPST_Version":
-		return KnxDatapointSubtype_DPST_Version
-	case "DPST_AlarmInfo":
-		return KnxDatapointSubtype_DPST_AlarmInfo
 	case "DPST_StatusDHWC":
 		return KnxDatapointSubtype_DPST_StatusDHWC
 	case "DPST_StatusRHCC":
@@ -4041,6 +5298,44 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Media
 	case "DPST_Channel_Activation_16":
 		return KnxDatapointSubtype_DPST_Channel_Activation_16
+	case "DPST_OnOffAction":
+		return KnxDatapointSubtype_DPST_OnOffAction
+	case "DPST_Ramp_Control":
+		return KnxDatapointSubtype_DPST_Ramp_Control
+	case "DPST_Alarm_Reaction":
+		return KnxDatapointSubtype_DPST_Alarm_Reaction
+	case "DPST_UpDown_Action":
+		return KnxDatapointSubtype_DPST_UpDown_Action
+	case "DPST_HVAC_PB_Action":
+		return KnxDatapointSubtype_DPST_HVAC_PB_Action
+	case "DPST_DoubleNibble":
+		return KnxDatapointSubtype_DPST_DoubleNibble
+	case "DPST_SceneInfo":
+		return KnxDatapointSubtype_DPST_SceneInfo
+	case "DPST_CombinedInfoOnOff":
+		return KnxDatapointSubtype_DPST_CombinedInfoOnOff
+	case "DPST_ActiveEnergy_V64":
+		return KnxDatapointSubtype_DPST_ActiveEnergy_V64
+	case "DPST_ApparantEnergy_V64":
+		return KnxDatapointSubtype_DPST_ApparantEnergy_V64
+	case "DPST_ReactiveEnergy_V64":
+		return KnxDatapointSubtype_DPST_ReactiveEnergy_V64
+	case "DPST_Channel_Activation_24":
+		return KnxDatapointSubtype_DPST_Channel_Activation_24
+	case "DPST_Alarm_Control":
+		return KnxDatapointSubtype_DPST_Alarm_Control
+	case "DPST_HVACModeNext":
+		return KnxDatapointSubtype_DPST_HVACModeNext
+	case "DPST_DHWModeNext":
+		return KnxDatapointSubtype_DPST_DHWModeNext
+	case "DPST_OccModeNext":
+		return KnxDatapointSubtype_DPST_OccModeNext
+	case "DPST_BuildingModeNext":
+		return KnxDatapointSubtype_DPST_BuildingModeNext
+	case "DPST_Version":
+		return KnxDatapointSubtype_DPST_Version
+	case "DPST_AlarmInfo":
+		return KnxDatapointSubtype_DPST_AlarmInfo
 	case "DPST_TempRoomSetpSetF16_3":
 		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3
 	case "DPST_TempRoomSetpSetShiftF16_3":
@@ -4049,18 +5344,14 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Scaling_Speed
 	case "DPST_Scaling_Step_Time":
 		return KnxDatapointSubtype_DPST_Scaling_Step_Time
+	case "DPST_Enable":
+		return KnxDatapointSubtype_DPST_Enable
+	case "DPST_BinaryValue_Control":
+		return KnxDatapointSubtype_DPST_BinaryValue_Control
 	case "DPST_MeteringValue":
 		return KnxDatapointSubtype_DPST_MeteringValue
-	case "DPST_OnOffAction":
-		return KnxDatapointSubtype_DPST_OnOffAction
-	case "DPST_Alarm_Reaction":
-		return KnxDatapointSubtype_DPST_Alarm_Reaction
-	case "DPST_UpDown_Action":
-		return KnxDatapointSubtype_DPST_UpDown_Action
 	case "DPST_MBus_Address":
 		return KnxDatapointSubtype_DPST_MBus_Address
-	case "DPST_HVAC_PB_Action":
-		return KnxDatapointSubtype_DPST_HVAC_PB_Action
 	case "DPST_Colour_RGB":
 		return KnxDatapointSubtype_DPST_Colour_RGB
 	case "DPST_LanguageCodeAlpha2_ASCII":
@@ -4077,6 +5368,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_CombinedPosition
 	case "DPST_StatusSAB":
 		return KnxDatapointSubtype_DPST_StatusSAB
+	case "DPST_Step_Control":
+		return KnxDatapointSubtype_DPST_Step_Control
 	case "DPST_Colour_xyY":
 		return KnxDatapointSubtype_DPST_Colour_xyY
 	case "DPST_Converter_Status":
@@ -4089,8 +5382,6 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Transition
 	case "DPST_Brightness_Colour_Temperature_Control":
 		return KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control
-	case "DPST_DoubleNibble":
-		return KnxDatapointSubtype_DPST_DoubleNibble
 	case "DPST_Colour_RGBW":
 		return KnxDatapointSubtype_DPST_Colour_RGBW
 	case "DPST_Relative_Control_RGBW":
@@ -4099,28 +5390,28 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Relative_Control_RGB
 	case "DPST_GeographicalLocation":
 		return KnxDatapointSubtype_DPST_GeographicalLocation
-	case "DPST_SceneInfo":
-		return KnxDatapointSubtype_DPST_SceneInfo
-	case "DPST_CombinedInfoOnOff":
-		return KnxDatapointSubtype_DPST_CombinedInfoOnOff
+	case "DPST_Direction1_Control":
+		return KnxDatapointSubtype_DPST_Direction1_Control
 	case "DPST_TempRoomSetpSetF16_4":
 		return KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4
 	case "DPST_TempRoomSetpSetShiftF16_4":
 		return KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4
-	case "DPST_ActiveEnergy_V64":
-		return KnxDatapointSubtype_DPST_ActiveEnergy_V64
-	case "DPST_ApparantEnergy_V64":
-		return KnxDatapointSubtype_DPST_ApparantEnergy_V64
-	case "DPST_ReactiveEnergy_V64":
-		return KnxDatapointSubtype_DPST_ReactiveEnergy_V64
+	case "DPST_Direction2_Control":
+		return KnxDatapointSubtype_DPST_Direction2_Control
+	case "DPST_Start_Control":
+		return KnxDatapointSubtype_DPST_Start_Control
+	case "DPST_State_Control":
+		return KnxDatapointSubtype_DPST_State_Control
+	case "DPST_Invert_Control":
+		return KnxDatapointSubtype_DPST_Invert_Control
 	case "DPST_Control_Dimming":
 		return KnxDatapointSubtype_DPST_Control_Dimming
 	case "DPST_Control_Blinds":
 		return KnxDatapointSubtype_DPST_Control_Blinds
-	case "DPST_Channel_Activation_24":
-		return KnxDatapointSubtype_DPST_Channel_Activation_24
 	case "DPST_Char_ASCII":
 		return KnxDatapointSubtype_DPST_Char_ASCII
+	case "DPST_Ramp":
+		return KnxDatapointSubtype_DPST_Ramp
 	case "DPST_Char_8859_1":
 		return KnxDatapointSubtype_DPST_Char_8859_1
 	case "DPST_Scaling":
@@ -4141,6 +5432,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Percent_V8
 	case "DPST_Value_1_Count":
 		return KnxDatapointSubtype_DPST_Value_1_Count
+	case "DPST_Alarm":
+		return KnxDatapointSubtype_DPST_Alarm
 	case "DPST_Status_Mode3":
 		return KnxDatapointSubtype_DPST_Status_Mode3
 	case "DPST_Value_2_Ucount":
@@ -4161,6 +5454,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_PropDataType
 	case "DPST_Length_mm":
 		return KnxDatapointSubtype_DPST_Length_mm
+	case "DPST_BinaryValue":
+		return KnxDatapointSubtype_DPST_BinaryValue
 	case "DPST_UElCurrentmA":
 		return KnxDatapointSubtype_DPST_UElCurrentmA
 	case "DPST_Brightness":
@@ -4181,6 +5476,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_DeltaTimeMin
 	case "DPST_DeltaTimeHrs":
 		return KnxDatapointSubtype_DPST_DeltaTimeHrs
+	case "DPST_Step":
+		return KnxDatapointSubtype_DPST_Step
 	case "DPST_Percent_V16":
 		return KnxDatapointSubtype_DPST_Percent_V16
 	case "DPST_Rotation_Angle":
@@ -4201,6 +5498,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Pres
 	case "DPST_Value_Humidity":
 		return KnxDatapointSubtype_DPST_Value_Humidity
+	case "DPST_UpDown":
+		return KnxDatapointSubtype_DPST_UpDown
 	case "DPST_Value_AirQuality":
 		return KnxDatapointSubtype_DPST_Value_AirQuality
 	case "DPST_Value_AirFlow":
@@ -4221,6 +5520,8 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Power
 	case "DPST_Value_Volume_Flow":
 		return KnxDatapointSubtype_DPST_Value_Volume_Flow
+	case "DPST_OpenClose":
+		return KnxDatapointSubtype_DPST_OpenClose
 	case "DPST_Rain_Amount":
 		return KnxDatapointSubtype_DPST_Rain_Amount
 	case "DPST_Value_Temp_F":
@@ -4231,6 +5532,16 @@ func KnxDatapointSubtypeByName(value string) KnxDatapointSubtype {
 		return KnxDatapointSubtype_DPST_Value_Absolute_Humidity
 	case "DPST_Concentration_ygm3":
 		return KnxDatapointSubtype_DPST_Concentration_ygm3
+	case "DPST_TimeOfDay":
+		return KnxDatapointSubtype_DPST_TimeOfDay
+	case "DPST_Date":
+		return KnxDatapointSubtype_DPST_Date
+	case "DPST_Value_4_Ucount":
+		return KnxDatapointSubtype_DPST_Value_4_Ucount
+	case "DPST_LongTimePeriod_Sec":
+		return KnxDatapointSubtype_DPST_LongTimePeriod_Sec
+	case "DPST_LongTimePeriod_Min":
+		return KnxDatapointSubtype_DPST_LongTimePeriod_Min
 	}
 	return 0
 }
@@ -4268,64 +5579,12 @@ func (e KnxDatapointSubtype) Serialize(io utils.WriteBuffer) error {
 
 func (e KnxDatapointSubtype) String() string {
 	switch e {
-	case KnxDatapointSubtype_DPST_TimeOfDay:
-		return "DPST_TimeOfDay"
+	case KnxDatapointSubtype_DPST_UNKNOWN:
+		return "DPST_UNKNOWN"
 	case KnxDatapointSubtype_DPST_Switch:
 		return "DPST_Switch"
-	case KnxDatapointSubtype_DPST_Bool:
-		return "DPST_Bool"
-	case KnxDatapointSubtype_DPST_Enable:
-		return "DPST_Enable"
-	case KnxDatapointSubtype_DPST_Ramp:
-		return "DPST_Ramp"
-	case KnxDatapointSubtype_DPST_Alarm:
-		return "DPST_Alarm"
-	case KnxDatapointSubtype_DPST_BinaryValue:
-		return "DPST_BinaryValue"
-	case KnxDatapointSubtype_DPST_Step:
-		return "DPST_Step"
-	case KnxDatapointSubtype_DPST_UpDown:
-		return "DPST_UpDown"
-	case KnxDatapointSubtype_DPST_OpenClose:
-		return "DPST_OpenClose"
 	case KnxDatapointSubtype_DPST_Start:
 		return "DPST_Start"
-	case KnxDatapointSubtype_DPST_State:
-		return "DPST_State"
-	case KnxDatapointSubtype_DPST_Invert:
-		return "DPST_Invert"
-	case KnxDatapointSubtype_DPST_DimSendStyle:
-		return "DPST_DimSendStyle"
-	case KnxDatapointSubtype_DPST_InputSource:
-		return "DPST_InputSource"
-	case KnxDatapointSubtype_DPST_Reset:
-		return "DPST_Reset"
-	case KnxDatapointSubtype_DPST_Ack:
-		return "DPST_Ack"
-	case KnxDatapointSubtype_DPST_Trigger:
-		return "DPST_Trigger"
-	case KnxDatapointSubtype_DPST_Occupancy:
-		return "DPST_Occupancy"
-	case KnxDatapointSubtype_DPST_Window_Door:
-		return "DPST_Window_Door"
-	case KnxDatapointSubtype_DPST_LogicalFunction:
-		return "DPST_LogicalFunction"
-	case KnxDatapointSubtype_DPST_Scene_AB:
-		return "DPST_Scene_AB"
-	case KnxDatapointSubtype_DPST_ShutterBlinds_Mode:
-		return "DPST_ShutterBlinds_Mode"
-	case KnxDatapointSubtype_DPST_DayNight:
-		return "DPST_DayNight"
-	case KnxDatapointSubtype_DPST_Heat_Cool:
-		return "DPST_Heat_Cool"
-	case KnxDatapointSubtype_DPST_Date:
-		return "DPST_Date"
-	case KnxDatapointSubtype_DPST_Value_4_Ucount:
-		return "DPST_Value_4_Ucount"
-	case KnxDatapointSubtype_DPST_LongTimePeriod_Sec:
-		return "DPST_LongTimePeriod_Sec"
-	case KnxDatapointSubtype_DPST_LongTimePeriod_Min:
-		return "DPST_LongTimePeriod_Min"
 	case KnxDatapointSubtype_DPST_LongTimePeriod_Hrs:
 		return "DPST_LongTimePeriod_Hrs"
 	case KnxDatapointSubtype_DPST_VolumeLiquid_Litre:
@@ -4346,6 +5605,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_ActiveEnergy_kWh"
 	case KnxDatapointSubtype_DPST_ApparantEnergy_kVAh:
 		return "DPST_ApparantEnergy_kVAh"
+	case KnxDatapointSubtype_DPST_State:
+		return "DPST_State"
 	case KnxDatapointSubtype_DPST_ReactiveEnergy_kVARh:
 		return "DPST_ReactiveEnergy_kVARh"
 	case KnxDatapointSubtype_DPST_ActiveEnergy_MWh:
@@ -4366,6 +5627,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Activity"
 	case KnxDatapointSubtype_DPST_Value_Mol:
 		return "DPST_Value_Mol"
+	case KnxDatapointSubtype_DPST_Invert:
+		return "DPST_Invert"
 	case KnxDatapointSubtype_DPST_Value_Amplitude:
 		return "DPST_Value_Amplitude"
 	case KnxDatapointSubtype_DPST_Value_AngleRad:
@@ -4386,6 +5649,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Charge_DensityVolume"
 	case KnxDatapointSubtype_DPST_Value_Compressibility:
 		return "DPST_Value_Compressibility"
+	case KnxDatapointSubtype_DPST_DimSendStyle:
+		return "DPST_DimSendStyle"
 	case KnxDatapointSubtype_DPST_Value_Conductance:
 		return "DPST_Value_Conductance"
 	case KnxDatapointSubtype_DPST_Value_Electrical_Conductivity:
@@ -4406,6 +5671,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Electric_FieldStrength"
 	case KnxDatapointSubtype_DPST_Value_Electric_Flux:
 		return "DPST_Value_Electric_Flux"
+	case KnxDatapointSubtype_DPST_InputSource:
+		return "DPST_InputSource"
 	case KnxDatapointSubtype_DPST_Value_Electric_FluxDensity:
 		return "DPST_Value_Electric_FluxDensity"
 	case KnxDatapointSubtype_DPST_Value_Electric_Polarization:
@@ -4426,6 +5693,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Frequency"
 	case KnxDatapointSubtype_DPST_Value_Angular_Frequency:
 		return "DPST_Value_Angular_Frequency"
+	case KnxDatapointSubtype_DPST_Reset:
+		return "DPST_Reset"
 	case KnxDatapointSubtype_DPST_Value_Heat_Capacity:
 		return "DPST_Value_Heat_Capacity"
 	case KnxDatapointSubtype_DPST_Value_Heat_FlowRate:
@@ -4446,6 +5715,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Luminous_Intensity"
 	case KnxDatapointSubtype_DPST_Value_Magnetic_FieldStrength:
 		return "DPST_Value_Magnetic_FieldStrength"
+	case KnxDatapointSubtype_DPST_Ack:
+		return "DPST_Ack"
 	case KnxDatapointSubtype_DPST_Value_Magnetic_Flux:
 		return "DPST_Value_Magnetic_Flux"
 	case KnxDatapointSubtype_DPST_Value_Magnetic_FluxDensity:
@@ -4466,6 +5737,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Momentum"
 	case KnxDatapointSubtype_DPST_Value_Phase_AngleRad:
 		return "DPST_Value_Phase_AngleRad"
+	case KnxDatapointSubtype_DPST_Trigger:
+		return "DPST_Trigger"
 	case KnxDatapointSubtype_DPST_Value_Phase_AngleDeg:
 		return "DPST_Value_Phase_AngleDeg"
 	case KnxDatapointSubtype_DPST_Value_Power:
@@ -4486,6 +5759,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_SolidAngle"
 	case KnxDatapointSubtype_DPST_Value_Sound_Intensity:
 		return "DPST_Value_Sound_Intensity"
+	case KnxDatapointSubtype_DPST_Occupancy:
+		return "DPST_Occupancy"
 	case KnxDatapointSubtype_DPST_Value_Speed:
 		return "DPST_Value_Speed"
 	case KnxDatapointSubtype_DPST_Value_Stress:
@@ -4506,6 +5781,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_ThermoelectricPower"
 	case KnxDatapointSubtype_DPST_Value_Time:
 		return "DPST_Value_Time"
+	case KnxDatapointSubtype_DPST_Window_Door:
+		return "DPST_Window_Door"
 	case KnxDatapointSubtype_DPST_Value_Torque:
 		return "DPST_Value_Torque"
 	case KnxDatapointSubtype_DPST_Value_Volume:
@@ -4526,6 +5803,10 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_String_ASCII"
 	case KnxDatapointSubtype_DPST_String_8859_1:
 		return "DPST_String_8859_1"
+	case KnxDatapointSubtype_DPST_Bool:
+		return "DPST_Bool"
+	case KnxDatapointSubtype_DPST_LogicalFunction:
+		return "DPST_LogicalFunction"
 	case KnxDatapointSubtype_DPST_SceneNumber:
 		return "DPST_SceneNumber"
 	case KnxDatapointSubtype_DPST_SceneControl:
@@ -4546,10 +5827,10 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_ApplicationArea"
 	case KnxDatapointSubtype_DPST_AlarmClassType:
 		return "DPST_AlarmClassType"
+	case KnxDatapointSubtype_DPST_Scene_AB:
+		return "DPST_Scene_AB"
 	case KnxDatapointSubtype_DPST_PSUMode:
 		return "DPST_PSUMode"
-	case KnxDatapointSubtype_DPST_Switch_Control:
-		return "DPST_Switch_Control"
 	case KnxDatapointSubtype_DPST_ErrorClass_System:
 		return "DPST_ErrorClass_System"
 	case KnxDatapointSubtype_DPST_ErrorClass_HVAC:
@@ -4560,32 +5841,16 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Beaufort_Wind_Force_Scale"
 	case KnxDatapointSubtype_DPST_SensorSelect:
 		return "DPST_SensorSelect"
-	case KnxDatapointSubtype_DPST_Bool_Control:
-		return "DPST_Bool_Control"
 	case KnxDatapointSubtype_DPST_ActuatorConnectType:
 		return "DPST_ActuatorConnectType"
 	case KnxDatapointSubtype_DPST_Cloud_Cover:
 		return "DPST_Cloud_Cover"
 	case KnxDatapointSubtype_DPST_PowerReturnMode:
 		return "DPST_PowerReturnMode"
-	case KnxDatapointSubtype_DPST_Enable_Control:
-		return "DPST_Enable_Control"
-	case KnxDatapointSubtype_DPST_Ramp_Control:
-		return "DPST_Ramp_Control"
-	case KnxDatapointSubtype_DPST_Alarm_Control:
-		return "DPST_Alarm_Control"
-	case KnxDatapointSubtype_DPST_BinaryValue_Control:
-		return "DPST_BinaryValue_Control"
-	case KnxDatapointSubtype_DPST_Step_Control:
-		return "DPST_Step_Control"
-	case KnxDatapointSubtype_DPST_Direction1_Control:
-		return "DPST_Direction1_Control"
-	case KnxDatapointSubtype_DPST_Direction2_Control:
-		return "DPST_Direction2_Control"
-	case KnxDatapointSubtype_DPST_Start_Control:
-		return "DPST_Start_Control"
 	case KnxDatapointSubtype_DPST_FuelType:
 		return "DPST_FuelType"
+	case KnxDatapointSubtype_DPST_ShutterBlinds_Mode:
+		return "DPST_ShutterBlinds_Mode"
 	case KnxDatapointSubtype_DPST_BurnerType:
 		return "DPST_BurnerType"
 	case KnxDatapointSubtype_DPST_HVACMode:
@@ -4604,10 +5869,10 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_ValveMode"
 	case KnxDatapointSubtype_DPST_DamperMode:
 		return "DPST_DamperMode"
-	case KnxDatapointSubtype_DPST_State_Control:
-		return "DPST_State_Control"
 	case KnxDatapointSubtype_DPST_HeaterMode:
 		return "DPST_HeaterMode"
+	case KnxDatapointSubtype_DPST_DayNight:
+		return "DPST_DayNight"
 	case KnxDatapointSubtype_DPST_FanMode:
 		return "DPST_FanMode"
 	case KnxDatapointSubtype_DPST_MasterSlaveMode:
@@ -4620,8 +5885,6 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_HumDehumMode"
 	case KnxDatapointSubtype_DPST_EnableHCStage:
 		return "DPST_EnableHCStage"
-	case KnxDatapointSubtype_DPST_Invert_Control:
-		return "DPST_Invert_Control"
 	case KnxDatapointSubtype_DPST_ADAType:
 		return "DPST_ADAType"
 	case KnxDatapointSubtype_DPST_BackupMode:
@@ -4630,6 +5893,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_StartSynchronization"
 	case KnxDatapointSubtype_DPST_Behaviour_Lock_Unlock:
 		return "DPST_Behaviour_Lock_Unlock"
+	case KnxDatapointSubtype_DPST_Heat_Cool:
+		return "DPST_Heat_Cool"
 	case KnxDatapointSubtype_DPST_Behaviour_Bus_Power_Up_Down:
 		return "DPST_Behaviour_Bus_Power_Up_Down"
 	case KnxDatapointSubtype_DPST_DALI_Fade_Time:
@@ -4650,6 +5915,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_LoadTypeSet"
 	case KnxDatapointSubtype_DPST_LoadTypeDetected:
 		return "DPST_LoadTypeDetected"
+	case KnxDatapointSubtype_DPST_Switch_Control:
+		return "DPST_Switch_Control"
 	case KnxDatapointSubtype_DPST_Converter_Test_Control:
 		return "DPST_Converter_Test_Control"
 	case KnxDatapointSubtype_DPST_SABExcept_Behaviour:
@@ -4668,16 +5935,10 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_RF_ModeSelect"
 	case KnxDatapointSubtype_DPST_RF_FilterSelect:
 		return "DPST_RF_FilterSelect"
-	case KnxDatapointSubtype_DPST_HVACModeNext:
-		return "DPST_HVACModeNext"
-	case KnxDatapointSubtype_DPST_DHWModeNext:
-		return "DPST_DHWModeNext"
-	case KnxDatapointSubtype_DPST_OccModeNext:
-		return "DPST_OccModeNext"
-	case KnxDatapointSubtype_DPST_BuildingModeNext:
-		return "DPST_BuildingModeNext"
 	case KnxDatapointSubtype_DPST_StatusGen:
 		return "DPST_StatusGen"
+	case KnxDatapointSubtype_DPST_Bool_Control:
+		return "DPST_Bool_Control"
 	case KnxDatapointSubtype_DPST_Device_Control:
 		return "DPST_Device_Control"
 	case KnxDatapointSubtype_DPST_ForceSign:
@@ -4698,16 +5959,14 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_CombinedStatus_RTSM"
 	case KnxDatapointSubtype_DPST_LightActuatorErrorInfo:
 		return "DPST_LightActuatorErrorInfo"
+	case KnxDatapointSubtype_DPST_Enable_Control:
+		return "DPST_Enable_Control"
 	case KnxDatapointSubtype_DPST_RF_ModeInfo:
 		return "DPST_RF_ModeInfo"
 	case KnxDatapointSubtype_DPST_RF_FilterInfo:
 		return "DPST_RF_FilterInfo"
 	case KnxDatapointSubtype_DPST_Channel_Activation_8:
 		return "DPST_Channel_Activation_8"
-	case KnxDatapointSubtype_DPST_Version:
-		return "DPST_Version"
-	case KnxDatapointSubtype_DPST_AlarmInfo:
-		return "DPST_AlarmInfo"
 	case KnxDatapointSubtype_DPST_StatusDHWC:
 		return "DPST_StatusDHWC"
 	case KnxDatapointSubtype_DPST_StatusRHCC:
@@ -4720,6 +5979,44 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Media"
 	case KnxDatapointSubtype_DPST_Channel_Activation_16:
 		return "DPST_Channel_Activation_16"
+	case KnxDatapointSubtype_DPST_OnOffAction:
+		return "DPST_OnOffAction"
+	case KnxDatapointSubtype_DPST_Ramp_Control:
+		return "DPST_Ramp_Control"
+	case KnxDatapointSubtype_DPST_Alarm_Reaction:
+		return "DPST_Alarm_Reaction"
+	case KnxDatapointSubtype_DPST_UpDown_Action:
+		return "DPST_UpDown_Action"
+	case KnxDatapointSubtype_DPST_HVAC_PB_Action:
+		return "DPST_HVAC_PB_Action"
+	case KnxDatapointSubtype_DPST_DoubleNibble:
+		return "DPST_DoubleNibble"
+	case KnxDatapointSubtype_DPST_SceneInfo:
+		return "DPST_SceneInfo"
+	case KnxDatapointSubtype_DPST_CombinedInfoOnOff:
+		return "DPST_CombinedInfoOnOff"
+	case KnxDatapointSubtype_DPST_ActiveEnergy_V64:
+		return "DPST_ActiveEnergy_V64"
+	case KnxDatapointSubtype_DPST_ApparantEnergy_V64:
+		return "DPST_ApparantEnergy_V64"
+	case KnxDatapointSubtype_DPST_ReactiveEnergy_V64:
+		return "DPST_ReactiveEnergy_V64"
+	case KnxDatapointSubtype_DPST_Channel_Activation_24:
+		return "DPST_Channel_Activation_24"
+	case KnxDatapointSubtype_DPST_Alarm_Control:
+		return "DPST_Alarm_Control"
+	case KnxDatapointSubtype_DPST_HVACModeNext:
+		return "DPST_HVACModeNext"
+	case KnxDatapointSubtype_DPST_DHWModeNext:
+		return "DPST_DHWModeNext"
+	case KnxDatapointSubtype_DPST_OccModeNext:
+		return "DPST_OccModeNext"
+	case KnxDatapointSubtype_DPST_BuildingModeNext:
+		return "DPST_BuildingModeNext"
+	case KnxDatapointSubtype_DPST_Version:
+		return "DPST_Version"
+	case KnxDatapointSubtype_DPST_AlarmInfo:
+		return "DPST_AlarmInfo"
 	case KnxDatapointSubtype_DPST_TempRoomSetpSetF16_3:
 		return "DPST_TempRoomSetpSetF16_3"
 	case KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_3:
@@ -4728,18 +6025,14 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Scaling_Speed"
 	case KnxDatapointSubtype_DPST_Scaling_Step_Time:
 		return "DPST_Scaling_Step_Time"
+	case KnxDatapointSubtype_DPST_Enable:
+		return "DPST_Enable"
+	case KnxDatapointSubtype_DPST_BinaryValue_Control:
+		return "DPST_BinaryValue_Control"
 	case KnxDatapointSubtype_DPST_MeteringValue:
 		return "DPST_MeteringValue"
-	case KnxDatapointSubtype_DPST_OnOffAction:
-		return "DPST_OnOffAction"
-	case KnxDatapointSubtype_DPST_Alarm_Reaction:
-		return "DPST_Alarm_Reaction"
-	case KnxDatapointSubtype_DPST_UpDown_Action:
-		return "DPST_UpDown_Action"
 	case KnxDatapointSubtype_DPST_MBus_Address:
 		return "DPST_MBus_Address"
-	case KnxDatapointSubtype_DPST_HVAC_PB_Action:
-		return "DPST_HVAC_PB_Action"
 	case KnxDatapointSubtype_DPST_Colour_RGB:
 		return "DPST_Colour_RGB"
 	case KnxDatapointSubtype_DPST_LanguageCodeAlpha2_ASCII:
@@ -4756,6 +6049,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_CombinedPosition"
 	case KnxDatapointSubtype_DPST_StatusSAB:
 		return "DPST_StatusSAB"
+	case KnxDatapointSubtype_DPST_Step_Control:
+		return "DPST_Step_Control"
 	case KnxDatapointSubtype_DPST_Colour_xyY:
 		return "DPST_Colour_xyY"
 	case KnxDatapointSubtype_DPST_Converter_Status:
@@ -4768,8 +6063,6 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Brightness_Colour_Temperature_Transition"
 	case KnxDatapointSubtype_DPST_Brightness_Colour_Temperature_Control:
 		return "DPST_Brightness_Colour_Temperature_Control"
-	case KnxDatapointSubtype_DPST_DoubleNibble:
-		return "DPST_DoubleNibble"
 	case KnxDatapointSubtype_DPST_Colour_RGBW:
 		return "DPST_Colour_RGBW"
 	case KnxDatapointSubtype_DPST_Relative_Control_RGBW:
@@ -4778,28 +6071,28 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Relative_Control_RGB"
 	case KnxDatapointSubtype_DPST_GeographicalLocation:
 		return "DPST_GeographicalLocation"
-	case KnxDatapointSubtype_DPST_SceneInfo:
-		return "DPST_SceneInfo"
-	case KnxDatapointSubtype_DPST_CombinedInfoOnOff:
-		return "DPST_CombinedInfoOnOff"
+	case KnxDatapointSubtype_DPST_Direction1_Control:
+		return "DPST_Direction1_Control"
 	case KnxDatapointSubtype_DPST_TempRoomSetpSetF16_4:
 		return "DPST_TempRoomSetpSetF16_4"
 	case KnxDatapointSubtype_DPST_TempRoomSetpSetShiftF16_4:
 		return "DPST_TempRoomSetpSetShiftF16_4"
-	case KnxDatapointSubtype_DPST_ActiveEnergy_V64:
-		return "DPST_ActiveEnergy_V64"
-	case KnxDatapointSubtype_DPST_ApparantEnergy_V64:
-		return "DPST_ApparantEnergy_V64"
-	case KnxDatapointSubtype_DPST_ReactiveEnergy_V64:
-		return "DPST_ReactiveEnergy_V64"
+	case KnxDatapointSubtype_DPST_Direction2_Control:
+		return "DPST_Direction2_Control"
+	case KnxDatapointSubtype_DPST_Start_Control:
+		return "DPST_Start_Control"
+	case KnxDatapointSubtype_DPST_State_Control:
+		return "DPST_State_Control"
+	case KnxDatapointSubtype_DPST_Invert_Control:
+		return "DPST_Invert_Control"
 	case KnxDatapointSubtype_DPST_Control_Dimming:
 		return "DPST_Control_Dimming"
 	case KnxDatapointSubtype_DPST_Control_Blinds:
 		return "DPST_Control_Blinds"
-	case KnxDatapointSubtype_DPST_Channel_Activation_24:
-		return "DPST_Channel_Activation_24"
 	case KnxDatapointSubtype_DPST_Char_ASCII:
 		return "DPST_Char_ASCII"
+	case KnxDatapointSubtype_DPST_Ramp:
+		return "DPST_Ramp"
 	case KnxDatapointSubtype_DPST_Char_8859_1:
 		return "DPST_Char_8859_1"
 	case KnxDatapointSubtype_DPST_Scaling:
@@ -4820,6 +6113,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Percent_V8"
 	case KnxDatapointSubtype_DPST_Value_1_Count:
 		return "DPST_Value_1_Count"
+	case KnxDatapointSubtype_DPST_Alarm:
+		return "DPST_Alarm"
 	case KnxDatapointSubtype_DPST_Status_Mode3:
 		return "DPST_Status_Mode3"
 	case KnxDatapointSubtype_DPST_Value_2_Ucount:
@@ -4840,6 +6135,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_PropDataType"
 	case KnxDatapointSubtype_DPST_Length_mm:
 		return "DPST_Length_mm"
+	case KnxDatapointSubtype_DPST_BinaryValue:
+		return "DPST_BinaryValue"
 	case KnxDatapointSubtype_DPST_UElCurrentmA:
 		return "DPST_UElCurrentmA"
 	case KnxDatapointSubtype_DPST_Brightness:
@@ -4860,6 +6157,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_DeltaTimeMin"
 	case KnxDatapointSubtype_DPST_DeltaTimeHrs:
 		return "DPST_DeltaTimeHrs"
+	case KnxDatapointSubtype_DPST_Step:
+		return "DPST_Step"
 	case KnxDatapointSubtype_DPST_Percent_V16:
 		return "DPST_Percent_V16"
 	case KnxDatapointSubtype_DPST_Rotation_Angle:
@@ -4880,6 +6179,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Pres"
 	case KnxDatapointSubtype_DPST_Value_Humidity:
 		return "DPST_Value_Humidity"
+	case KnxDatapointSubtype_DPST_UpDown:
+		return "DPST_UpDown"
 	case KnxDatapointSubtype_DPST_Value_AirQuality:
 		return "DPST_Value_AirQuality"
 	case KnxDatapointSubtype_DPST_Value_AirFlow:
@@ -4900,6 +6201,8 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Power"
 	case KnxDatapointSubtype_DPST_Value_Volume_Flow:
 		return "DPST_Value_Volume_Flow"
+	case KnxDatapointSubtype_DPST_OpenClose:
+		return "DPST_OpenClose"
 	case KnxDatapointSubtype_DPST_Rain_Amount:
 		return "DPST_Rain_Amount"
 	case KnxDatapointSubtype_DPST_Value_Temp_F:
@@ -4910,6 +6213,16 @@ func (e KnxDatapointSubtype) String() string {
 		return "DPST_Value_Absolute_Humidity"
 	case KnxDatapointSubtype_DPST_Concentration_ygm3:
 		return "DPST_Concentration_ygm3"
+	case KnxDatapointSubtype_DPST_TimeOfDay:
+		return "DPST_TimeOfDay"
+	case KnxDatapointSubtype_DPST_Date:
+		return "DPST_Date"
+	case KnxDatapointSubtype_DPST_Value_4_Ucount:
+		return "DPST_Value_4_Ucount"
+	case KnxDatapointSubtype_DPST_LongTimePeriod_Sec:
+		return "DPST_LongTimePeriod_Sec"
+	case KnxDatapointSubtype_DPST_LongTimePeriod_Min:
+		return "DPST_LongTimePeriod_Min"
 	}
 	return ""
 }

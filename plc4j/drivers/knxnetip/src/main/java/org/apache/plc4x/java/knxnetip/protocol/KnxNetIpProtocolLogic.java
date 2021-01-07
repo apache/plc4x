@@ -288,7 +288,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
                     final WriteBuffer writeBuffer = KnxDatapointIO.staticSerialize(value,
-                        groupAddress.getType().getText());
+                        groupAddress.getType().getName());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
                     data =  new byte[serialized.length - 1];
@@ -472,7 +472,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 // Parse the payload depending on the type of the group-address.
                 ReadBuffer rawDataReader = new ReadBuffer(payload);
                 final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
-                    groupAddress.getType().getText());
+                    groupAddress.getType().getName());
 
                 // Assemble the plc4x return data-structure.
                 Map<String, PlcValue> dataPointMap = new HashMap<>();
@@ -492,7 +492,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     dataPointMap.put("line", new PlcSTRING(lineName));
                 }
                 dataPointMap.put("description", new PlcSTRING(groupAddress.getName()));
-                dataPointMap.put("unitOfMeasurement", new PlcSTRING(groupAddress.getType().getText()));
+                dataPointMap.put("unitOfMeasurement", new PlcSTRING(groupAddress.getType().getName()));
                 dataPointMap.put("value", value);
                 final PlcStruct dataPoint = new PlcStruct(dataPointMap);
 
