@@ -54,7 +54,13 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>pytest</executable>
+              <executable>poetry</executable>
+              <arguments>
+                <argument>run</argument>
+                <argument>pytest</argument>
+                <argument>-v</argument>
+                <argument>tests</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
