@@ -67,6 +67,7 @@ import java.time.Duration;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.stream.IntStream;
@@ -125,6 +126,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     @Override
+    public void onDisconnect(ConversationContext<OpcuaAPU> context) {
+
+    }
+
+    @Override
     public void close(ConversationContext<OpcuaAPU> context) {
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == 0xFFFF) {
@@ -162,13 +168,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             transactionId,
             closeSessionRequest);
 
+        CompletableFuture<Boolean> voidCompletableFuture = new CompletableFuture<>();
+
         context.sendRequest(new OpcuaAPU(messageRequest))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
-                LOGGER.debug("Got Close Session Response Connection Response");
+                LOGGER.info("Got Close Session Response Connection Response");
+                voidCompletableFuture.complete(true);
             });
+
+        try {
+            voidCompletableFuture.get(REQUEST_TIMEOUT_LONG, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            LOGGER.debug("Timeout while waiting for session to close");
+        }
     }
 
     @Override
@@ -648,6 +663,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     protected void decode(ConversationContext<OpcuaAPU> context, OpcuaAPU msg) throws Exception {
+        LOGGER.info("Error while reading value from OPC UA server error code 11");
         super.decode(context, msg);
     }
 
