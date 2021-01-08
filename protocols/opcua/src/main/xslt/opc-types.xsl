@@ -17,7 +17,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:opc="http://opcfoundation.org/BinarySchema/"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -32,9 +32,14 @@
     />
 
     <xsl:param name="services"></xsl:param>
+    <xsl:param name="statusCodes"></xsl:param>
+    <xsl:param name="servicesEnum"></xsl:param>
 
+    <xsl:variable name="originaldoc" select="/"/>
 
     <xsl:param name="file" select="document($services)"/>
+    <xsl:param name="statusCodeFile" select="unparsed-text($statusCodes)"/>
+    <xsl:param name="servicesEnumFile" select="unparsed-text($servicesEnum)"/>
 
     <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'"/>
     <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
@@ -55,7 +60,11 @@
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ReadResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteResponse']"/>
-        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSessionRequest']"/>
+        ['473' CloseSessionRequest
+            [simple RequestHeader 'requestHeader']
+            [reserved uint 7 '0x00']
+            [simple bit 'deleteSubscriptions']
+        ]
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSessionResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSecureChannelRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSecureChannelResponse']"/>
@@ -223,7 +232,7 @@
         ]
         ['16' VariantXmlElement [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array XmlElement 'value' count 'arrayLength == null ? 1 : arrayLength']
+            [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
         ['17' VariantNodeId [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
@@ -393,7 +402,8 @@
     <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='WriteValue']"/>
 ]
 
-
+        <xsl:call-template name="statusCodeParsing"/>
+        <xsl:call-template name="servicesEnumParsing"/>
 
     </xsl:template>
 
@@ -402,12 +412,11 @@
             <xsl:value-of select='@BrowseName'/>
         </xsl:variable>
         <xsl:choose>
-            <xsl:when test="/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
+            <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
                 <xsl:choose>
                     <xsl:when test="not(@BrowseName='Vector') and not(substring(@BrowseName,1,1) = '&lt;') and not(number(substring(@BrowseName,1,1)))">
-                [type '<xsl:value-of select='@BrowseName'/>'
-                    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>
-                ]
+    [type '<xsl:value-of select='@BrowseName'/>'
+                    <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
@@ -419,13 +428,12 @@
             <xsl:value-of select='@BrowseName'/>
         </xsl:variable>
         <xsl:choose>
-            <xsl:when test="/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
+            <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
                 <xsl:choose>
                     <xsl:when test="not(Definition) and not(@BrowseName = 'Duration') and not(number(substring(@BrowseName,1,1))) and not(@IsAbstract) and number(substring(@NodeId,3)) &gt; 29">
-                    ['<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>' </xsl:text><xsl:value-of select='@BrowseName'/><xsl:text>
+    ['<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>' </xsl:text><xsl:value-of select='@BrowseName'/><xsl:text>
                 </xsl:text>
-                        <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>
-                        ]
+                        <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
@@ -503,7 +511,7 @@
             <xsl:when test="@LengthField">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
             </xsl:when>
             <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
-            </xsl:otherwise>
+        </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
@@ -554,6 +562,28 @@
             <xsl:when test="$datatype = 'opc:String'">PascalString</xsl:when>
             <xsl:otherwise><xsl:value-of select="substring-after($datatype,':')"/></xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+
+    <xsl:template name="statusCodeParsing" >
+        <xsl:variable name="tokenizedLine" select="tokenize($statusCodeFile, '\r\n|\r|\n')" />
+[enum int 32 'OpcuaStatusCodes'
+<xsl:for-each select="$tokenizedLine">
+    <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>'  <xsl:value-of select="$values[1]"/>]
+</xsl:for-each>
+]
+</xsl:template>
+
+    <xsl:template name="servicesEnumParsing" >
+        <xsl:variable name="tokenizedLine" select="tokenize($servicesEnumFile, '\r\n|\r|\n')" />
+[enum int 32 'OpcuaNodeIdServices'
+        <xsl:for-each select="$tokenizedLine">
+            <xsl:variable select="tokenize(., ',')" name="values" />
+            <xsl:choose>
+                <xsl:when test="$values[2]">['<xsl:value-of select="$values[2]"/>'  <xsl:value-of select="$values[1]"/>]
+    </xsl:when>
+            </xsl:choose>
+        </xsl:for-each>
+]
     </xsl:template>
 
 </xsl:stylesheet>

@@ -49,11 +49,31 @@
                   <url>https://opcfoundation.org/UA/schemas/1.04/Opc.Ua.Types.bsd</url>
                   <unpack>false</unpack>
                   <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-                  <outputFileName>opc-datatypes.xml</outputFileName>
+                  <outputFileName>Opc.Ua.Types.bsd</outputFileName>
                 </configuration>
               </execution>
             </executions>
           </plugin>
+        <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+        <plugin>
+          <groupId>com.googlecode.maven-download-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>fetch-opc-statuscodes</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>wget</goal>
+              </goals>
+              <configuration>
+                <url>https://opcfoundation.org/UA/schemas/1.04/StatusCode.csv</url>
+                <unpack>false</unpack>
+                <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                <outputFileName>StatusCode.csv</outputFileName>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
           <plugin>
             <groupId>com.googlecode.maven-download-plugin</groupId>
             <artifactId>download-maven-plugin</artifactId>
@@ -68,7 +88,26 @@
                   <url>https://opcfoundation.org/UA/schemas/1.04/Opc.Ua.NodeSet2.Services.xml</url>
                   <unpack>false</unpack>
                   <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-                  <outputFileName>opc-discriminators.xml</outputFileName>
+                  <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>fetch-opc-services-enum</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>https://opcfoundation.org/UA/schemas/1.04/Opc.Ua.NodeIds.Services.csv</url>
+                  <unpack>false</unpack>
+                  <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                  <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
                 </configuration>
               </execution>
             </executions>
@@ -89,7 +128,7 @@
               <transformationSets>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
-                  <includes>opc-datatypes.xml</includes>
+                  <includes>Opc.Ua.Types.bsd</includes>
                   <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
                   <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
                   <fileMappers>
@@ -100,7 +139,15 @@
                   <parameters>
                     <parameter>
                       <name>services</name>
-                      <value>${project.build.directory}/downloads/opc-discriminators.xml</value>
+                      <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                    </parameter>
+                    <parameter>
+                      <name>servicesEnum</name>
+                      <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                    </parameter>
+                    <parameter>
+                      <name>statusCodes</name>
+                      <value>${project.build.directory}/downloads/StatusCode.csv</value>
                     </parameter>
                   </parameters>                  
                   <outputProperties>
@@ -112,6 +159,13 @@
                 </transformationSet>
               </transformationSets>
             </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>saxon</artifactId>
+                <version>8.7</version>
+              </dependency>
+            </dependencies>
           </plugin>
       </plugins>
   </build>

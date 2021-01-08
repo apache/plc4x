@@ -24,9 +24,7 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -60,11 +58,13 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.*;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -82,7 +82,8 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.confi
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000000);
+    public static final long REQUEST_TIMEOUT_LONG = 10000L;
     private static final String CHUNK = "F";
     private static final int VERSION = 0;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
@@ -125,7 +126,49 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void close(ConversationContext<OpcuaAPU> context) {
-        // Nothing to do here ...
+        int transactionId = transactionIdentifierGenerator.getAndIncrement();
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        int requestHandle = requestHandleGenerator.getAndIncrement();
+        if(requestHandleGenerator.get() == 0xFFFF) {
+            requestHandleGenerator.set(1);
+        }
+
+        ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
+            false,            //Server Index Specified
+            NULL_STRING,                      //Namespace Uri
+            1L,                     //Server Index
+            new FourByteNodeId((short) 0, 473));    //Identifier for OpenSecureChannel
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            requestHandle,                                         //RequestHandle
+            0L,
+            NULL_STRING,
+            5000L,
+            NULL_EXTENSION_OBJECT);
+
+        CloseSessionRequest closeSessionRequest = new CloseSessionRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            true);
+
+        OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(CHUNK,
+            channelId.get(),
+            tokenId.get(),
+            transactionId,
+            transactionId,
+            closeSessionRequest);
+
+        context.sendRequest(new OpcuaAPU(messageRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaMessageResponse -> {
+                LOGGER.debug("Got Close Session Response Connection Response");
+            });
     }
 
     @Override
@@ -182,7 +225,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             0L,                                         //RequestHandle
             0L,
             NULL_STRING,
-            10000L,
+            REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
         OpenSecureChannelRequest openSecureChannelRequest = new OpenSecureChannelRequest((byte) 1,
@@ -241,7 +284,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             0L,
             0L,
             NULL_STRING,
-            10000L,
+            REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
         LocalizedText applicationName = new LocalizedText((short) 0,
@@ -330,7 +373,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             requestHandle,
             0L,
             NULL_STRING,
-            10000L,
+            REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
         SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_STRING);
@@ -415,7 +458,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 requestHandle,
                 0L,
                 NULL_STRING,
-                10000L,
+                REQUEST_TIMEOUT_LONG,
                 NULL_EXTENSION_OBJECT);
 
             ReadValueId[] readValueArray = new ReadValueId[1];
@@ -459,21 +502,137 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     // Try to decode the response data based on the corresponding request.
                     ReadResponse readResponse = (ReadResponse) opcuaResponse.getMessage();
 
-                    //TODO;- Fix this
                     DataValue[] results = readResponse.getResults();
-                    Integer value = null;
+                    PlcValue value = null;
+                    PlcResponseCode responseCode = PlcResponseCode.OK;
                     if (results.length > 0) {
-                        Variant variant = results[0].getValue();
-                        LOGGER.info("Repsponse Include Variant of type " + variant.getClass().toString());
-                        if (variant instanceof VariantInt32) {
-                            value = ((VariantInt32) variant).getValue()[0];
+                        if (results[0].getStatusCode() == null) {
+                            Variant variant = results[0].getValue();
+                            LOGGER.info("Repsponse includes Variant of type " + variant.getClass().toString());
+                            if (variant instanceof VariantBoolean) {
+                                boolean[] array = ((VariantBoolean) variant).getValue();
+                                int length = array.length;
+                                Boolean[] tmpValue = new Boolean[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantSByte) {
+                                byte[] array = ((VariantSByte) variant).getValue();
+                                int length = array.length;
+                                Byte[] tmpValue = new Byte[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantByte) {
+                                short[] array = ((VariantByte) variant).getValue();
+                                int length = array.length;
+                                Short[] tmpValue = new Short[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantInt16) {
+                                short[] array = ((VariantInt16) variant).getValue();
+                                int length = array.length;
+                                Short[] tmpValue = new Short[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantUInt16) {
+                                int[] array = ((VariantUInt16) variant).getValue();
+                                int length = array.length;
+                                Integer[] tmpValue = new Integer[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantInt32) {
+                                int[] array = ((VariantInt32) variant).getValue();
+                                int length = array.length;
+                                Integer[] tmpValue = new Integer[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantUInt32) {
+                                long[] array = ((VariantUInt32) variant).getValue();
+                                int length = array.length;
+                                Long[] tmpValue = new Long[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantInt64) {
+                                long[] array = ((VariantInt64) variant).getValue();
+                                int length = array.length;
+                                Long[] tmpValue = new Long[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantUInt64) {
+                                value = IEC61131ValueHandler.of(((VariantUInt64) variant).getValue());
+                            } else if (variant instanceof VariantFloat) {
+                                float[] array = ((VariantFloat) variant).getValue();
+                                int length = array.length;
+                                Float[] tmpValue = new Float[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantDouble) {
+                                double[] array = ((VariantDouble) variant).getValue();
+                                int length = array.length;
+                                Double[] tmpValue = new Double[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = array[i];
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantString) {
+                                int length = ((VariantString) variant).getValue().length;
+                                PascalString[] stringArray = ((VariantString) variant).getValue();
+                                String[] tmpValue = new String[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = stringArray[i].getStringValue();
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantDateTime) {
+                                long[] array = ((VariantDateTime) variant).getValue();
+                                int length = array.length;
+                                DateTime[] tmpValue = new DateTime[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = new DateTime(array[i]);
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else if (variant instanceof VariantGuid) {
+                                int length = ((VariantGuid) variant).getValue().length;
+                                String[] stringArray = ((VariantGuid) variant).getValue();
+                                value = IEC61131ValueHandler.of(stringArray);
+                            } else if (variant instanceof VariantXmlElement) {
+                                int length = ((VariantXmlElement) variant).getValue().length;
+                                PascalString[] stringArray = ((VariantXmlElement) variant).getValue();
+                                String[] tmpValue = new String[length];
+                                for (int i = 0; i < length; i++) {
+                                    tmpValue[i] = stringArray[i].getStringValue();
+                                }
+                                value = IEC61131ValueHandler.of(tmpValue);
+                            } else {
+                                responseCode = PlcResponseCode.UNSUPPORTED;
+                                LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
+                            }
+                        } else {
+                            responseCode = PlcResponseCode.UNSUPPORTED;
+                            LOGGER.error("Error while reading value from OPC UA server error code:- " + results[0].getStatusCode().toString());
                         }
+
                     }
 
-                    PlcValue plcValue = new PlcDINT(value);
                     // Prepare the response.
                     PlcReadResponse response = new DefaultPlcReadResponse(request,
-                        Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+                        Collections.singletonMap(fieldName, new ResponseItem<>(responseCode, value)));
 
                     // Pass the response back to the application.
                     future.complete(response);
@@ -495,5 +654,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private long getCurrentDateTime() {
         return (System.currentTimeMillis() * 10000) + epochOffset;
+    }
+
+    private long getDateTime(long dateTime) {
+        return (dateTime - epochOffset) / 10000;
     }
 }

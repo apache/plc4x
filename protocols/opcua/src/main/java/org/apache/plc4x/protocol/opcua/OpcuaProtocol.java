@@ -47,7 +47,7 @@ public class OpcuaProtocol implements Protocol {
             new LinkedHashMap<>(new MessageFormatParser().parse(schemaInputStream));
 
         InputStream masterDataInputStream = OpcuaProtocol.class.getResourceAsStream(
-            "/protocols/opcua/opc-datatypes.mspec");
+            "/protocols/opcua/Opc.Ua.Types.mspec");
         if(masterDataInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
