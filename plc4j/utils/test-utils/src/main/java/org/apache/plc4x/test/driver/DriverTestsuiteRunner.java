@@ -154,6 +154,9 @@ public class DriverTestsuiteRunner {
             // Force the driver to not wait for the connection before returning the connection.
             System.setProperty(GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE, "false");
 
+            // Force the driver to not wait for the disconnection before returning closing the channel.
+            System.setProperty(GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE, "false");
+
             TimeUnit.MILLISECONDS.sleep(200);
 
             return new DriverTestsuite(testsuiteName, driverName, driverParameters, setupSteps, teardownSteps, testcases, bigEndian);
