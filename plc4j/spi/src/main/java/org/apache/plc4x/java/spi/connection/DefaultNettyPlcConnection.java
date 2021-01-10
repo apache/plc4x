@@ -42,13 +42,15 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
+    protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
+    protected final boolean awaitSessionDisconnectComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
-    private final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
+    protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
     protected Channel channel;
     protected boolean connected;
@@ -56,11 +58,12 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
                                      PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+                                     boolean awaitSessionDisconnectComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
         super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
+        this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
         this.stackConfigurer = stackConfigurer;
 
         this.connected = false;
@@ -109,17 +112,23 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     @Override
     public void close() throws PlcConnectionException {
-        // TODO call protocols close method
 
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
-            sessionDisconnectCompleteFuture.get(10000L, TimeUnit.MILLISECONDS);
+            if (awaitSessionDisconnectComplete) {
+                sessionDisconnectCompleteFuture.get(DEFAULT_DISCONNECT_WAIT_TIME, TimeUnit.MILLISECONDS);
+            }
         } catch (Exception e) {
-            //Do Nothing
+            logger.error("Timeout while trying to close connection");
         }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
 
         channel.close().awaitUninterruptibly();
+
+        if (!sessionDisconnectCompleteFuture.isDone()) {
+            sessionDisconnectCompleteFuture.complete(null );
+        }
+
         channel = null;
         connected = false;
     }

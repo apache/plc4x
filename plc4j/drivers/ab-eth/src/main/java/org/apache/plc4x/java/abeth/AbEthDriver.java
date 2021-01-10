@@ -70,6 +70,15 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
         return new IEC61131ValueHandler();
     }
 
+    /**
+     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitDisconnectComplete() {
+        return false;
+    }
+
     @Override
     protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacketIO.class)
