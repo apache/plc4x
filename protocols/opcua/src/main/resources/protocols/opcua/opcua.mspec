@@ -80,6 +80,13 @@
            [simple          OpcuaMessage       'message']
        ]
        ['CLO','false'     OpcuaCloseRequest
+           [simple          string '8'         'chunk']
+           [implicit        int 32             'messageSize' 'lengthInBytes']
+           [simple          int 32             'secureChannelId']
+           [simple          int 32             'secureTokenId']
+           [simple          int 32             'sequenceNumber']
+           [simple          int 32             'requestId']
+           [simple          OpcuaMessage       'message']
        ]
        ['CLO','true'     OpcuaCloseResponse
        ]

@@ -58,13 +58,15 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.*;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -174,8 +176,50 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
                     LOGGER.info("Got Close Session Response Connection Response" + opcuaMessageResponse.toString());
-                    context.fireDisconnected();
+                    closeSecureChannel(context);
                 });
+    }
+
+    private void closeSecureChannel(ConversationContext<OpcuaAPU> context) {
+
+        int transactionId = transactionIdentifierGenerator.getAndIncrement();
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
+            false,            //Server Index Specified
+            NULL_STRING,                      //Namespace Uri
+            1L,                     //Server Index
+            new FourByteNodeId((short) 0, 452));    //Identifier for OpenSecureChannel
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            0L,                                         //RequestHandle
+            0L,
+            NULL_STRING,
+            REQUEST_TIMEOUT_LONG,
+            NULL_EXTENSION_OBJECT);
+
+        CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest((byte) 1,
+            (byte) 0,
+            requestHeader);
+
+        OpcuaCloseRequest closeRequest = new OpcuaCloseRequest(CHUNK,
+            channelId.get(),
+            tokenId.get(),
+            transactionId,
+            transactionId,
+            closeSecureChannelRequest);
+
+        context.sendRequest(new OpcuaAPU(closeRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaMessageResponse -> {
+                LOGGER.info("Got Close Secure Channel Response" + opcuaMessageResponse.toString());
+            });
+        context.fireDisconnected();
     }
 
     @Override
@@ -611,9 +655,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             } else if (variant instanceof VariantDateTime) {
                                 long[] array = ((VariantDateTime) variant).getValue();
                                 int length = array.length;
-                                DateTime[] tmpValue = new DateTime[length];
+                                LocalDateTime[] tmpValue = new LocalDateTime[length];
                                 for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = new DateTime(array[i]);
+                                    tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(array[i]), ZoneId.systemDefault());
                                 }
                                 value = IEC61131ValueHandler.of(tmpValue);
                             } else if (variant instanceof VariantGuid) {
@@ -633,7 +677,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                 LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
                             }
                         } else {
-                            responseCode = PlcResponseCode.UNSUPPORTED;
+                            if (results[0].getStatusCode().getStatusCode() == OpcuaStatusCodes.BadNodeIdUnknown.getValue()) {
+                                responseCode = PlcResponseCode.NOT_FOUND;
+                            } else {
+                                responseCode = PlcResponseCode.UNSUPPORTED;
+                            }
                             LOGGER.error("Error while reading value from OPC UA server error code:- " + results[0].getStatusCode().toString());
                         }
 

@@ -18,18 +18,13 @@
 */
 package org.apache.plc4x.java.opcua;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.readwrite.io.*;
-import org.apache.plc4x.java.opcua.readwrite.types.*;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -40,8 +35,6 @@ import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import io.netty.buffer.ByteBuf;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,8 +68,6 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
 
     private static final int requestTimeout = 10000;
-    private OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
-
 
     @Override
     public String getProtocolCode() {
