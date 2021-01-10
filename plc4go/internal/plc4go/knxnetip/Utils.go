@@ -20,6 +20,7 @@ package knxnetip
 
 import (
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"strconv"
 )
 
@@ -38,4 +39,45 @@ func GroupAddressToString(groupAddress *driverModel.KnxGroupAddress) string {
 		}
 	}
 	return ""
+}
+
+func FieldToKnxAddress(field KnxNetIpField) *driverModel.KnxAddress {
+	if field.IsPatternField() {
+		return nil
+	}
+	var mainAddress int
+	var middleAddress int
+	var subAddress int
+	switch field.(type) {
+	case KnxNetIpDevicePropertyAddressPlcField:
+		plcField := field.(KnxNetIpDevicePropertyAddressPlcField)
+		mainAddress, _ = strconv.Atoi(plcField.MainGroup)
+		middleAddress, _ = strconv.Atoi(plcField.MiddleGroup)
+		subAddress, _ = strconv.Atoi(plcField.SubGroup)
+	case KnxNetIpGroupAddress3LevelPlcField:
+		plcField := field.(KnxNetIpGroupAddress3LevelPlcField)
+		mainAddress, _ = strconv.Atoi(plcField.MainGroup)
+		middleAddress, _ = strconv.Atoi(plcField.MiddleGroup)
+		subAddress, _ = strconv.Atoi(plcField.SubGroup)
+	default:
+		return nil
+	}
+
+	return driverModel.NewKnxAddress(uint8(mainAddress), uint8(middleAddress), uint8(subAddress))
+}
+
+func Int8ArrayToKnxAddress(data []int8) *driverModel.KnxAddress {
+	readBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(data))
+	knxAddress, err := driverModel.KnxAddressParse(readBuffer)
+	if err != nil {
+		return nil
+	}
+	return knxAddress
+}
+
+func KnxAddressToInt8Array(knxAddress driverModel.KnxAddress) []int8 {
+	targetAddress := make([]int8, 2)
+	targetAddress[0] = int8((knxAddress.MainGroup&0xF)<<4 | (knxAddress.MiddleGroup & 0xF))
+	targetAddress[1] = int8(knxAddress.SubGroup)
+	return targetAddress
 }

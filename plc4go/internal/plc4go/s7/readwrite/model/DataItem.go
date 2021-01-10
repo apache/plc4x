@@ -20,8 +20,8 @@ package model
 
 import (
             "errors"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
             api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
             "time"
 )

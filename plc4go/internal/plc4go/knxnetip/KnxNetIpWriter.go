@@ -22,7 +22,7 @@ import (
 	"errors"
 	knxnetipModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 

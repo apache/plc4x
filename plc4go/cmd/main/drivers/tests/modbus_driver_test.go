@@ -20,7 +20,7 @@ package tests
 
 import (
     "github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/testutils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
     "testing"
 )
 
