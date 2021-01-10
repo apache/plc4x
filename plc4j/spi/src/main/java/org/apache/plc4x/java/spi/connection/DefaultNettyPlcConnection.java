@@ -18,21 +18,14 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
-import org.apache.plc4x.java.spi.events.ConnectEvent;
-import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +33,7 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection {
 
@@ -54,6 +48,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
+    private final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
     protected Channel channel;
     protected boolean connected;
@@ -87,7 +82,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
-            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
+            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
@@ -115,8 +110,15 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     @Override
     public void close() throws PlcConnectionException {
         // TODO call protocols close method
+
+        channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
+        try {
+            sessionDisconnectCompleteFuture.get(10000L, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            //Do Nothing
+        }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-        // Close channel
+
         channel.close().awaitUninterruptibly();
         channel = null;
         connected = false;
@@ -136,7 +138,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         return channel;
     }
 
-    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture) {
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
@@ -153,6 +155,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                         if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
+                        } else if (evt instanceof DisconnectedEvent) {
+                            sessionDisconnectCompleteFuture.complete(null);
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
