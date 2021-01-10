@@ -98,6 +98,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
+                System.out.println("Testing BH ---");
                 return new DefaultExpectRequestContext<>(handler -> {
                     logger.trace("Adding Request Handler ...");
                     registeredHandlers.add(handler);
@@ -235,6 +236,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
         @Override
         public SendRequestContext<T1> sendRequest(T1 packet) {
+            System.out.println("Testing BH ---&&");
             return new DefaultSendRequestContext<>(handler -> {
                 logger.trace("Adding Response Handler ...");
                 registeredHandlers.add(handler);

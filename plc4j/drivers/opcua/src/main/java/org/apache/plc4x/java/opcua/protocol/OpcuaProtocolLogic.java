@@ -126,12 +126,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     @Override
-    public void onDisconnect(ConversationContext<OpcuaAPU> context) {
-
+    public void close(ConversationContext<OpcuaAPU> context) {
+        //Nothing
     }
 
     @Override
-    public void close(ConversationContext<OpcuaAPU> context) {
+    public void onDisconnect(ConversationContext<OpcuaAPU> context) {
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == 0xFFFF) {
             transactionIdentifierGenerator.set(1);
@@ -168,22 +168,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             transactionId,
             closeSessionRequest);
 
-        CompletableFuture<Boolean> voidCompletableFuture = new CompletableFuture<>();
-
         context.sendRequest(new OpcuaAPU(messageRequest))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
-                LOGGER.info("Got Close Session Response Connection Response");
-                voidCompletableFuture.complete(true);
-            });
-
-        try {
-            voidCompletableFuture.get(REQUEST_TIMEOUT_LONG, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            LOGGER.debug("Timeout while waiting for session to close");
-        }
+                    LOGGER.info("Got Close Session Response Connection Response" + opcuaMessageResponse.toString());
+                    context.fireDisconnected();
+                });
     }
 
     @Override
@@ -260,6 +252,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             transactionId,
             transactionId,
             openSecureChannelRequest);
+
+
 
         context.sendRequest(new OpcuaAPU(openRequest))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
@@ -661,11 +655,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return future;
     }
 
-    @Override
-    protected void decode(ConversationContext<OpcuaAPU> context, OpcuaAPU msg) throws Exception {
-        LOGGER.info("Error while reading value from OPC UA server error code 11");
-        super.decode(context, msg);
-    }
 
 
     private long getCurrentDateTime() {

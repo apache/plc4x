@@ -233,8 +233,10 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     /** Estimate the Length of a Packet */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
-        public int applyAsInt(ByteBuf byteBuf) {            
+        public int applyAsInt(ByteBuf byteBuf) {
+            System.out.println("Estimate:- ");
             if (byteBuf.readableBytes() >= 8) {
+                System.out.println("Estimate:- " + Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4)));
                 return Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4));
             }
             return -1;

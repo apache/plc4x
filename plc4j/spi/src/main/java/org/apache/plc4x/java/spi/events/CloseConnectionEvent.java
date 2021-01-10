@@ -18,6 +18,10 @@
  */
 package org.apache.plc4x.java.spi.events;
 
+import io.netty.util.concurrent.CompleteFuture;
+
+import java.util.concurrent.CompletableFuture;
+
 /** Signals the Protocol to Close the Connection */
 public class CloseConnectionEvent {
 }
