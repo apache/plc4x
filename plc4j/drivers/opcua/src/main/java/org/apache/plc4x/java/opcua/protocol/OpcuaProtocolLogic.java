@@ -69,13 +69,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -176,11 +177,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
                     LOGGER.info("Got Close Session Response Connection Response" + opcuaMessageResponse.toString());
-                    closeSecureChannel(context);
+                    onDisconnectCloseSecureChannel(context);
                 });
     }
 
-    private void closeSecureChannel(ConversationContext<OpcuaAPU> context) {
+    private void onDisconnectCloseSecureChannel(ConversationContext<OpcuaAPU> context) {
 
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == 0xFFFF) {
@@ -496,214 +497,233 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 
-        if(request.getFieldNames().size() == 1) {
-            String fieldName = request.getFieldNames().iterator().next();
+
+        int requestHandle = requestHandleGenerator.getAndIncrement();
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if(requestHandleGenerator.get() == 0xFFFF) {
+            requestHandleGenerator.set(1);
+        }
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            requestHandle,
+            0L,
+            NULL_STRING,
+            REQUEST_TIMEOUT_LONG,
+            NULL_EXTENSION_OBJECT);
+
+        ReadValueId[] readValueArray = new ReadValueId[request.getFieldNames().size()];
+        Iterator<String> iterator = request.getFieldNames().iterator();
+        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
+            String fieldName = iterator.next();
             OpcuaField field = (OpcuaField) request.getField(fieldName);
 
-            int requestHandle = requestHandleGenerator.getAndIncrement();
-            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-            if(requestHandleGenerator.get() == 0xFFFF) {
-                requestHandleGenerator.set(1);
+            NodeId nodeId = null;
+            if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
+                nodeId = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte, new TwoByteNodeId(Short.valueOf(field.getIdentifier())));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
+                nodeId = new NodeIdNumeric(NodeIdType.nodeIdTypeNumeric, new NumericNodeId(field.getNamespace(),Long.valueOf(field.getIdentifier())));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
+                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), field.getIdentifier()));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
+                nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
             }
-
-            RequestHeader requestHeader = new RequestHeader(authenticationToken,
-                getCurrentDateTime(),
-                requestHandle,
-                0L,
-                NULL_STRING,
-                REQUEST_TIMEOUT_LONG,
-                NULL_EXTENSION_OBJECT);
-
-            ReadValueId[] readValueArray = new ReadValueId[1];
-
-            NodeIdString nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
-
-            readValueArray[0] = new ReadValueId(nodeId,
+            readValueArray[i] = new ReadValueId(nodeId,
                 0xD,
                 NULL_STRING,
                 new QualifiedName(0, NULL_STRING));
-
-            ReadRequest opcuaReadRequest = new ReadRequest((byte) 1,
-                (byte) 0,
-                requestHeader,
-                0.0d,
-                TimestampsToReturn.timestampsToReturnNeither,
-                readValueArray.length,
-                readValueArray);
-
-            int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
-            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-            if(transactionIdentifierGenerator.get() == 0xFFFF) {
-                transactionIdentifierGenerator.set(1);
-            }
-
-            OpcuaMessageRequest readMessageRequest = new OpcuaMessageRequest(CHUNK,
-                channelId.get(),
-                tokenId.get(),
-                transactionIdentifier,
-                transactionIdentifier,
-                opcuaReadRequest);
-
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(new OpcuaAPU(readMessageRequest))
-                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-                .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-                .handle(opcuaResponse -> {
-                    // Try to decode the response data based on the corresponding request.
-                    ReadResponse readResponse = (ReadResponse) opcuaResponse.getMessage();
-
-                    DataValue[] results = readResponse.getResults();
-                    PlcValue value = null;
-                    PlcResponseCode responseCode = PlcResponseCode.OK;
-                    if (results.length > 0) {
-                        if (results[0].getStatusCode() == null) {
-                            Variant variant = results[0].getValue();
-                            LOGGER.info("Repsponse includes Variant of type " + variant.getClass().toString());
-                            if (variant instanceof VariantBoolean) {
-                                boolean[] array = ((VariantBoolean) variant).getValue();
-                                int length = array.length;
-                                Boolean[] tmpValue = new Boolean[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantSByte) {
-                                byte[] array = ((VariantSByte) variant).getValue();
-                                int length = array.length;
-                                Byte[] tmpValue = new Byte[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantByte) {
-                                short[] array = ((VariantByte) variant).getValue();
-                                int length = array.length;
-                                Short[] tmpValue = new Short[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantInt16) {
-                                short[] array = ((VariantInt16) variant).getValue();
-                                int length = array.length;
-                                Short[] tmpValue = new Short[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantUInt16) {
-                                int[] array = ((VariantUInt16) variant).getValue();
-                                int length = array.length;
-                                Integer[] tmpValue = new Integer[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantInt32) {
-                                int[] array = ((VariantInt32) variant).getValue();
-                                int length = array.length;
-                                Integer[] tmpValue = new Integer[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantUInt32) {
-                                long[] array = ((VariantUInt32) variant).getValue();
-                                int length = array.length;
-                                Long[] tmpValue = new Long[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantInt64) {
-                                long[] array = ((VariantInt64) variant).getValue();
-                                int length = array.length;
-                                Long[] tmpValue = new Long[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantUInt64) {
-                                value = IEC61131ValueHandler.of(((VariantUInt64) variant).getValue());
-                            } else if (variant instanceof VariantFloat) {
-                                float[] array = ((VariantFloat) variant).getValue();
-                                int length = array.length;
-                                Float[] tmpValue = new Float[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantDouble) {
-                                double[] array = ((VariantDouble) variant).getValue();
-                                int length = array.length;
-                                Double[] tmpValue = new Double[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = array[i];
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantString) {
-                                int length = ((VariantString) variant).getValue().length;
-                                PascalString[] stringArray = ((VariantString) variant).getValue();
-                                String[] tmpValue = new String[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = stringArray[i].getStringValue();
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantDateTime) {
-                                long[] array = ((VariantDateTime) variant).getValue();
-                                int length = array.length;
-                                LocalDateTime[] tmpValue = new LocalDateTime[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(array[i]), ZoneId.systemDefault());
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else if (variant instanceof VariantGuid) {
-                                int length = ((VariantGuid) variant).getValue().length;
-                                String[] stringArray = ((VariantGuid) variant).getValue();
-                                value = IEC61131ValueHandler.of(stringArray);
-                            } else if (variant instanceof VariantXmlElement) {
-                                int length = ((VariantXmlElement) variant).getValue().length;
-                                PascalString[] stringArray = ((VariantXmlElement) variant).getValue();
-                                String[] tmpValue = new String[length];
-                                for (int i = 0; i < length; i++) {
-                                    tmpValue[i] = stringArray[i].getStringValue();
-                                }
-                                value = IEC61131ValueHandler.of(tmpValue);
-                            } else {
-                                responseCode = PlcResponseCode.UNSUPPORTED;
-                                LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
-                            }
-                        } else {
-                            if (results[0].getStatusCode().getStatusCode() == OpcuaStatusCodes.BadNodeIdUnknown.getValue()) {
-                                responseCode = PlcResponseCode.NOT_FOUND;
-                            } else {
-                                responseCode = PlcResponseCode.UNSUPPORTED;
-                            }
-                            LOGGER.error("Error while reading value from OPC UA server error code:- " + results[0].getStatusCode().toString());
-                        }
-
-                    }
-
-                    // Prepare the response.
-                    PlcReadResponse response = new DefaultPlcReadResponse(request,
-                        Collections.singletonMap(fieldName, new ResponseItem<>(responseCode, value)));
-
-                    // Pass the response back to the application.
-                    future.complete(response);
-
-                    // Finish the request-transaction.
-                    transaction.endRequest();
-                }));
-        } else {
-            future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
         }
+
+        ReadRequest opcuaReadRequest = new ReadRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            0.0d,
+            TimestampsToReturn.timestampsToReturnNeither,
+            readValueArray.length,
+            readValueArray);
+
+        int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if(transactionIdentifierGenerator.get() == 0xFFFF) {
+            transactionIdentifierGenerator.set(1);
+        }
+
+        OpcuaMessageRequest readMessageRequest = new OpcuaMessageRequest(CHUNK,
+            channelId.get(),
+            tokenId.get(),
+            transactionIdentifier,
+            transactionIdentifier,
+            opcuaReadRequest);
+
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(new OpcuaAPU(readMessageRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaResponse -> {
+                // Prepare the response.
+                PlcReadResponse response = new DefaultPlcReadResponse(request,
+                    readResponse(request.getFieldNames(), (ReadResponse) opcuaResponse.getMessage()));
+
+                // Pass the response back to the application.
+                future.complete(response);
+
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
+
         return future;
     }
 
+    private Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> fieldNames, ReadResponse readResponse) {
+        DataValue[] results = readResponse.getResults();
 
+        PlcResponseCode responseCode = PlcResponseCode.OK;
+        Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
+        int count = 0;
+        for ( String field : fieldNames ) {
+            PlcValue value = null;
+            if (results[count].getStatusCode() == null) {
+                Variant variant = results[count].getValue();
+                LOGGER.info("Repsponse includes Variant of type " + variant.getClass().toString());
+                if (variant instanceof VariantBoolean) {
+                    byte[] array = ((VariantBoolean) variant).getValue();
+                    int length = array.length;
+                    Byte[] tmpValue = new Byte[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantSByte) {
+                    byte[] array = ((VariantSByte) variant).getValue();
+                    int length = array.length;
+                    Byte[] tmpValue = new Byte[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantByte) {
+                    short[] array = ((VariantByte) variant).getValue();
+                    int length = array.length;
+                    Short[] tmpValue = new Short[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantInt16) {
+                    short[] array = ((VariantInt16) variant).getValue();
+                    int length = array.length;
+                    Short[] tmpValue = new Short[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantUInt16) {
+                    int[] array = ((VariantUInt16) variant).getValue();
+                    int length = array.length;
+                    Integer[] tmpValue = new Integer[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantInt32) {
+                    int[] array = ((VariantInt32) variant).getValue();
+                    int length = array.length;
+                    Integer[] tmpValue = new Integer[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantUInt32) {
+                    long[] array = ((VariantUInt32) variant).getValue();
+                    int length = array.length;
+                    Long[] tmpValue = new Long[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantInt64) {
+                    long[] array = ((VariantInt64) variant).getValue();
+                    int length = array.length;
+                    Long[] tmpValue = new Long[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantUInt64) {
+                    value = IEC61131ValueHandler.of(((VariantUInt64) variant).getValue());
+                } else if (variant instanceof VariantFloat) {
+                    float[] array = ((VariantFloat) variant).getValue();
+                    int length = array.length;
+                    Float[] tmpValue = new Float[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantDouble) {
+                    double[] array = ((VariantDouble) variant).getValue();
+                    int length = array.length;
+                    Double[] tmpValue = new Double[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i];
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantString) {
+                    int length = ((VariantString) variant).getValue().length;
+                    PascalString[] stringArray = ((VariantString) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = stringArray[i].getStringValue();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantDateTime) {
+                    long[] array = ((VariantDateTime) variant).getValue();
+                    int length = array.length;
+                    LocalDateTime[] tmpValue = new LocalDateTime[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(array[i]), ZoneId.systemDefault());
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantGuid) {
+                    int length = ((VariantGuid) variant).getValue().length;
+                    String[] stringArray = ((VariantGuid) variant).getValue();
+                    value = IEC61131ValueHandler.of(stringArray);
+                } else if (variant instanceof VariantXmlElement) {
+                    int length = ((VariantXmlElement) variant).getValue().length;
+                    PascalString[] stringArray = ((VariantXmlElement) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = stringArray[i].getStringValue();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantByteString) {
+                    //TODO:- Looking into returning structures.
+                    ByteStringArray[] array = ((VariantByteString) variant).getValue();
+                    int length = array.length;
+                    Short[] tmpValue = new Short[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = array[i].getValue();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else {
+                    responseCode = PlcResponseCode.UNSUPPORTED;
+                    LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
+                }
+            } else {
+                if (results[count].getStatusCode().getStatusCode() == OpcuaStatusCodes.BadNodeIdUnknown.getValue()) {
+                    responseCode = PlcResponseCode.NOT_FOUND;
+                } else {
+                    responseCode = PlcResponseCode.UNSUPPORTED;
+                }
+                LOGGER.error("Error while reading value from OPC UA server error code:- " + results[count].getStatusCode().toString());
+            }
+            count++;
+            response.put(field, new ResponseItem<>(responseCode, value));
+        }
+        return response;
+    }
 
     private long getCurrentDateTime() {
         return (System.currentTimeMillis() * 10000) + epochOffset;

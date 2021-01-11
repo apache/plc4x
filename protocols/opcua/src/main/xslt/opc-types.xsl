@@ -165,6 +165,11 @@
     [optional uint 16 'serverPicoseconds' 'serverPicosecondsSpecified']
 ]
 
+[type 'ByteStringArray'
+    [simple int 32 'arrayLength']
+    [array uint 8 'value' count 'arrayLength']
+]
+
 [discriminatedType 'Variant'
     [discriminator bit 'arrayLengthSpecified']
     [simple bit 'arrayDimensionsSpecified']
@@ -172,7 +177,7 @@
     [typeSwitch 'VariantType','arrayLengthSpecified'
         ['1' VariantBoolean [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array bit 'value' count 'arrayLength == null ? 1 : arrayLength']
+            [array int 8 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
         ['2' VariantSByte [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
@@ -228,7 +233,7 @@
         ]
         ['15' VariantByteString [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
+            [array ByteStringArray 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
         ['16' VariantXmlElement [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
@@ -274,6 +279,8 @@
     [optional int 32 'noOfArrayDimensions' 'arrayDimensionsSpecified']
     [array bit 'arrayDimensions' count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
+
+
 
 [discriminatedType 'NodeId'
     [reserved int 2 '0x00']

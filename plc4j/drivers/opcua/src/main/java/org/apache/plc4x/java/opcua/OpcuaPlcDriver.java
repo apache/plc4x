@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
 import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
 import org.apache.plc4x.java.opcua.readwrite.*;
@@ -109,8 +110,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected BaseOptimizer getOptimizer() {
-        return new SingleFieldOptimizer();
+    protected OpcuaOptimizer getOptimizer() {
+        return new OpcuaOptimizer();
     }
 
     @Override
