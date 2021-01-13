@@ -63,6 +63,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
+        //Used to signal that a disconnect has completed while closing a connection.
         this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
         this.stackConfigurer = stackConfigurer;
 
@@ -110,8 +111,15 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         }
     }
 
+    /**
+     * Close the connection by firstly calling disconnect and waiting for a DisconnectedEvent occurs and then calling
+     * Close() to finish up any other clean up.
+     * @throws PlcConnectionException
+     */
     @Override
     public void close() throws PlcConnectionException {
+
+        logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
 
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {

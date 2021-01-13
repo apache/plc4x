@@ -30,7 +30,7 @@ import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
-import org.apache.plc4x.java.knxnetip.model .KnxNetIpSubscriptionHandle;
+import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
@@ -251,6 +251,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Send an event that connection disconnect is complete.
                 context.fireDisconnected();
+                LOGGER.debug("Disconnected event fired from KNX protocol");
             });
     }
 
