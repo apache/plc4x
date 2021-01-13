@@ -67,7 +67,9 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -88,6 +90,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final int DEFAULT_CONNECTION_LIFETIME = 36000000;
     private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
+    private static final int DEFAULT_MAX_REQUEST_ID = 0xFFFFFFFF;
     private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
@@ -122,6 +125,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private AtomicInteger tokenId = new AtomicInteger(1);
     private AtomicInteger channelId = new AtomicInteger(1);
 
+    private AtomicBoolean securedConnection = new AtomicBoolean(false);
+
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
         this.endpoint = configuration.getEndpoint();
@@ -135,15 +140,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
-        int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
-        int requestHandle = requestHandleGenerator.getAndIncrement();
-        if(requestHandleGenerator.get() == 0xFFFF) {
-            requestHandleGenerator.set(1);
-        }
+        int requestHandle = getRequestHandle(securedConnection.get());
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
             false,            //Server Index Specified
@@ -183,10 +182,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private void onDisconnectCloseSecureChannel(ConversationContext<OpcuaAPU> context) {
 
-        int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
             false,            //Server Index Specified
@@ -261,10 +257,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     public void onConnectOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
 
-        int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
                                                                     false,            //Server Index Specified
@@ -320,10 +313,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
         channelId.set((int) openSecureChannelResponse.getSecurityToken().getChannelId());
 
-        int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
         Integer nextSequenceNumber = opcuaOpenResponse.getSequenceNumber() + 1;
         Integer nextRequestId = opcuaOpenResponse.getRequestId() + 1;
@@ -402,10 +392,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         tokenId.set((int) opcuaMessageResponse.getSecureTokenId());
         channelId.set((int) opcuaMessageResponse.getSecureChannelId());
 
-        int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
         Integer nextSequenceNumber = opcuaMessageResponse.getSequenceNumber() + 1;
         Integer nextRequestId = opcuaMessageResponse.getRequestId() + 1;
@@ -415,10 +402,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
         }
 
-        int requestHandle = requestHandleGenerator.getAndIncrement();
-        if(requestHandleGenerator.get() == 0xFFFF) {
-            requestHandleGenerator.set(1);
-        }
+        int requestHandle = getRequestHandle(securedConnection.get());
 
         RequestHeader requestHeader = new RequestHeader(authenticationToken,
             getCurrentDateTime(),
@@ -496,11 +480,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 
 
-        int requestHandle = requestHandleGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if(requestHandleGenerator.get() == 0xFFFF) {
-            requestHandleGenerator.set(1);
-        }
+        int requestHandle = getRequestHandle(securedConnection.get());
 
         RequestHeader requestHeader = new RequestHeader(authenticationToken,
             getCurrentDateTime(),
@@ -540,17 +520,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             readValueArray.length,
             readValueArray);
 
-        int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if(transactionIdentifierGenerator.get() == 0xFFFF) {
-            transactionIdentifierGenerator.set(1);
-        }
+        int transactionId = getTransactionIdentifier(securedConnection.get());
 
         OpcuaMessageRequest readMessageRequest = new OpcuaMessageRequest(CHUNK,
             channelId.get(),
             tokenId.get(),
-            transactionIdentifier,
-            transactionIdentifier,
+            transactionId,
+            transactionId,
             opcuaReadRequest);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -783,6 +759,139 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             response.put(field, new ResponseItem<>(responseCode, value));
         }
         return response;
+    }
+
+    private Variant fromPlcValue(OpcuaField field, PlcWriteRequest request) {
+        return new VariantInt32(false,
+            null,
+            null,
+            request.getFieldNames().size(),
+            new int[] {request.getPlcValue("value-0").getInt()});
+    }
+
+    @Override
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        LOGGER.info("Writing Value");
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+
+        int requestHandle = getRequestHandle(securedConnection.get());
+
+        RequestHeader requestHeader = new RequestHeader(authenticationToken,
+            getCurrentDateTime(),
+            requestHandle,
+            0L,
+            NULL_STRING,
+            REQUEST_TIMEOUT_LONG,
+            NULL_EXTENSION_OBJECT);
+
+        WriteValue[] writeValueArray = new WriteValue[request.getFieldNames().size()];
+        Iterator<String> iterator = request.getFieldNames().iterator();
+        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
+            String fieldName = iterator.next();
+            OpcuaField field = (OpcuaField) request.getField(fieldName);
+
+            NodeId nodeId = null;
+            if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
+                nodeId = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte, new TwoByteNodeId(Short.valueOf(field.getIdentifier())));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
+                nodeId = new NodeIdNumeric(NodeIdType.nodeIdTypeNumeric, new NumericNodeId(field.getNamespace(),Long.valueOf(field.getIdentifier())));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
+                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), field.getIdentifier()));
+            } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
+                nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
+            }
+            writeValueArray[i] = new WriteValue(nodeId,
+                0xD,
+                NULL_STRING,
+                new DataValue(false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    fromPlcValue(field, writeRequest),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null));
+        }
+
+        WriteRequest opcuaWriteRequest = new WriteRequest((byte) 1,
+            (byte) 0,
+            requestHeader,
+            writeValueArray.length,
+            writeValueArray);
+
+        int transactionId = getTransactionIdentifier(securedConnection.get());
+
+        OpcuaMessageRequest writeMessageRequest = new OpcuaMessageRequest(CHUNK,
+            channelId.get(),
+            tokenId.get(),
+            transactionId,
+            transactionId,
+            opcuaWriteRequest);
+
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(new OpcuaAPU(writeMessageRequest))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
+            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .handle(opcuaResponse -> {
+
+                Map<String, PlcResponseCode> responseMap = new HashMap<>();
+                responseMap.put("value-0", PlcResponseCode.OK);
+
+                // Prepare the response.
+                PlcWriteResponse response = new DefaultPlcWriteResponse(request, responseMap);
+
+                // Pass the response back to the application.
+                future.complete(response);
+
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
+
+        return future;
+    }
+
+    /**
+     * Returns the next transaction identifier, for a secured connection we should return a random number.
+     * @param random - Select if we return a random number or the next value
+     * @return
+     */
+    private int getTransactionIdentifier(boolean random) {
+        if (random) {
+            return ThreadLocalRandom.current().nextInt();
+        } else {
+            int transactionId = transactionIdentifierGenerator.getAndIncrement();
+            if(transactionIdentifierGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
+                transactionIdentifierGenerator.set(1);
+            }
+            return transactionId;
+        }
+    }
+
+    /**
+     * Returns the next request handle, for a secured connection we should return a random number.
+     * @param random - Select if we return a random number or the next value
+     * @return
+     */
+    private int getRequestHandle(boolean random) {
+        if (random) {
+            return ThreadLocalRandom.current().nextInt();
+        } else {
+            int transactionId = requestHandleGenerator.getAndIncrement();
+            if(requestHandleGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
+                requestHandleGenerator.set(1);
+            }
+            return transactionId;
+        }
     }
 
     private long getCurrentDateTime() {
