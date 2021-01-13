@@ -54,17 +54,25 @@
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='OpenSecureChannelResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateSessionRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateSessionResponse']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateSubscriptionRequest']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateSubscriptionResponse']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateMonitoredItemsRequest']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CreateMonitoredItemsRequest']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='DeleteSubscriptionsRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ActivateSessionRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ActivateSessionResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ReadRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ReadResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteResponse']"/>
-        ['473' CloseSessionRequest
-            [simple RequestHeader 'requestHeader']
-            [reserved uint 7 '0x00']
-            [simple bit 'deleteSubscriptions']
-        ]
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseRequest']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseResponse']"/>
+
+    ['473' CloseSessionRequest
+        [simple RequestHeader 'requestHeader']
+        [reserved uint 7 '0x00']
+        [simple bit 'deleteSubscriptions']
+    ]
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSessionResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSecureChannelRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='CloseSecureChannelResponse']"/>
@@ -85,6 +93,46 @@
 ]
 [type 'ChannelSecurityToken'
     <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='ChannelSecurityToken']"/>
+]
+
+[type 'MonitoredItemCreateRequest'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='MonitoredItemCreateRequest']"/>
+]
+
+[type 'BrowseResult'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='BrowseResult']"/>
+]
+
+[type 'ViewDescription'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='ViewDescription']"/>
+]
+
+[type 'BrowseDescription'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='BrowseDescription']"/>
+]
+
+[type 'ReferenceDescription'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='ReferenceDescription']"/>
+]
+
+[enum int 32 'MonitoringMode'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType[@Name='MonitoringMode']"/>
+]
+
+[type 'MonitoringParameters'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='MonitoringParameters']"/>
+]
+
+[enum int 32 'BrowseDirection'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType[@Name='BrowseDirection']"/>
+]
+
+[type 'ReferenceDescription'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='ReferenceDescription']"/>
+]
+
+[enum int 32 'NodeClass'
+<xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType[@Name='NodeClass']"/>
 ]
 
 [type 'DiagnosticInfo'
@@ -170,6 +218,14 @@
     [array uint 8 'value' count 'arrayLength']
 ]
 
+[type 'GuidValue'
+    [simple uint 32 'data1']
+    [simple uint 16 'data2']
+    [simple uint 16 'data3']
+    [array int 8 'data4' count '2']
+    [array int 8 'data5' count '6']
+]
+
 [discriminatedType 'Variant'
     [discriminator bit 'arrayLengthSpecified']
     [simple bit 'arrayDimensionsSpecified']
@@ -229,7 +285,7 @@
         ]
         ['14' VariantGuid [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array string '-1' 'value' count 'arrayLength == null ? 1 : arrayLength']
+            [array GuidValue 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
         ['15' VariantByteString [bit 'arrayLengthSpecified']
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
@@ -423,7 +479,7 @@
                 <xsl:choose>
                     <xsl:when test="not(@BrowseName='Vector') and not(substring(@BrowseName,1,1) = '&lt;') and not(number(substring(@BrowseName,1,1)))">
     [type '<xsl:value-of select='@BrowseName'/>'
-                    <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
+        <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
@@ -516,9 +572,9 @@
 
         <xsl:choose>
             <xsl:when test="@LengthField">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
-            </xsl:when>
+    </xsl:when>
             <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
-        </xsl:otherwise>
+    </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 

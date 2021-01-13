@@ -62,11 +62,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Duration;
+import java.time.*;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -88,12 +85,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000000);
     public static final long REQUEST_TIMEOUT_LONG = 10000L;
-    private static final String CHUNK = "F";
-    private static final int VERSION = 0;
+
+    private static final int DEFAULT_CONNECTION_LIFETIME = 36000000;
+    private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
+    private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
-    private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
+    private static final int VERSION = 0;
+
     private NodeId authenticationToken = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte, new TwoByteNodeId((short) 0));
     private static final PascalString NULL_STRING = new PascalString(-1,null);
     private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeIdTwoByte(false,
@@ -106,14 +105,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                                                                                 null,               //Body Length
                                                                                     null);               // Body
     private static final long epochOffset = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
-    private static final int DEFAULT_CONNECTION_LIFETIME = 36000000;
+
+    private static final String CHUNK = "F";
     private static final String nameSpaceSecurityPolicyNone = "http://opcfoundation.org/UA/SecurityPolicy#None";
     private static final String applicationUri = "urn:apache:plc4x:client";
     private static final String productUri = "urn:apache:plc4x:client";
     private static final String applicationText = "OPCUA client for the Apache PLC4X:PLC4J project";
 
-    private String sessionName = "UaSession:" + applicationText + ":" + RandomStringUtils.random(20, true, true);
-    private String clientNonce = RandomStringUtils.random(40, true, true);
+    private final String sessionName = "UaSession:" + applicationText + ":" + RandomStringUtils.random(20, true, true);
+    private final String clientNonce = RandomStringUtils.random(40, true, true);
     private RequestTransactionManager tm;
 
     private String endpoint;
@@ -360,8 +360,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             discoveryProfileUri,
             noOfDiscoveryUrls,
             discoveryUrls);
-
-        clientNonce = RandomStringUtils.random(40, true, true);
 
         CreateSessionRequest createSessionRequest = new CreateSessionRequest((byte) 1,
             (byte) 0,
@@ -683,13 +681,30 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     int length = array.length;
                     LocalDateTime[] tmpValue = new LocalDateTime[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(array[i]), ZoneId.systemDefault());
+                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array[i])), ZoneOffset.UTC);
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantGuid) {
-                    int length = ((VariantGuid) variant).getValue().length;
-                    String[] stringArray = ((VariantGuid) variant).getValue();
-                    value = IEC61131ValueHandler.of(stringArray);
+                    GuidValue[] array = ((VariantGuid) variant).getValue();
+                    int length = array.length;
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        //These two data section aren't little endian like the rest.
+                        byte[] data4Bytes = array[i].getData4();
+                        int data4 = 0;
+                        for (int k = 0; k < data4Bytes.length; k++)
+                        {
+                            data4 = (data4 << 8) + (data4Bytes[k] & 0xff);
+                        }
+                        byte[] data5Bytes = array[i].getData5();
+                        long data5 = 0;
+                        for (int k = 0; k < data5Bytes.length; k++)
+                        {
+                            data5 = (data5 << 8) + (data5Bytes[k] & 0xff);
+                        }
+                        tmpValue[i] = Long.toHexString(array[i].getData1()) + "-" + Integer.toHexString(array[i].getData2()) + "-" + Integer.toHexString(array[i].getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantXmlElement) {
                     int length = ((VariantXmlElement) variant).getValue().length;
                     PascalString[] stringArray = ((VariantXmlElement) variant).getValue();
@@ -698,15 +713,60 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         tmpValue[i] = stringArray[i].getStringValue();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
-                } else if (variant instanceof VariantByteString) {
-                    //TODO:- Looking into returning structures.
-                    ByteStringArray[] array = ((VariantByteString) variant).getValue();
-                    int length = array.length;
-                    Short[] tmpValue = new Short[length];
+                } else if (variant instanceof VariantLocalizedText) {
+                    int length = ((VariantLocalizedText) variant).getValue().length;
+                    LocalizedText[] stringArray = ((VariantLocalizedText) variant).getValue();
+                    String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i].getValue();
+                        tmpValue[i] = "";
+                        tmpValue[i] += stringArray[i].getLocaleSpecified() ? stringArray[i].getLocale().getStringValue() + "|" : "";
+                        tmpValue[i] += stringArray[i].getTextSpecified() ? stringArray[i].getText().getStringValue() : "";
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantQualifiedName) {
+                    int length = ((VariantQualifiedName) variant).getValue().length;
+                    QualifiedName[] stringArray = ((VariantQualifiedName) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = "ns=" + stringArray[i].getNamespaceIndex() + ";s=" + stringArray[i].getName().getStringValue();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantExtensionObject) {
+                    int length = ((VariantExtensionObject) variant).getValue().length;
+                    ExtensionObject[] stringArray = ((VariantExtensionObject) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = stringArray[i].toString();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantNodeId) {
+                    int length = ((VariantNodeId) variant).getValue().length;
+                    NodeId[] stringArray = ((VariantNodeId) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = stringArray[i].toString();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                }else if (variant instanceof VariantStatusCode) {
+                    int length = ((VariantStatusCode) variant).getValue().length;
+                    StatusCode[] stringArray = ((VariantStatusCode) variant).getValue();
+                    String[] tmpValue = new String[length];
+                    for (int i = 0; i < length; i++) {
+                        tmpValue[i] = stringArray[i].toString();
+                    }
+                    value = IEC61131ValueHandler.of(tmpValue);
+                } else if (variant instanceof VariantByteString) {
+                    PlcList plcList = new PlcList();
+                    ByteStringArray[] array = ((VariantByteString) variant).getValue();
+                    for (int k = 0; k < array.length; k++) {
+                        int length = array[k].getValue().length;
+                        Short[] tmpValue = new Short[length];
+                        for (int i = 0; i < length; i++) {
+                            tmpValue[i] = array[k].getValue()[i];
+                        }
+                        plcList.add(IEC61131ValueHandler.of(tmpValue));
+                    }
+                    value = plcList;
                 } else {
                     responseCode = PlcResponseCode.UNSUPPORTED;
                     LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");

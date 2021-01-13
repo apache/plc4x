@@ -65,7 +65,7 @@ public class OpcuaPlcDriverTest {
     private static final String DATE_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/DateTime";
     private static final String DURATION_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Duration";
     private static final String GUID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Guid";
-    private static final String LOCALISED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
+    private static final String LOCALIZED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
     private static final String NODE_ID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/NodeId";
     private static final String QUALIFIED_NAM_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/QualifiedName";
     private static final String UTC_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/UtcTime";
@@ -87,6 +87,7 @@ public class OpcuaPlcDriverTest {
     private static final String UINT16_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt16Array";
     private static final String UINT32_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt32Array";
     private static final String UINT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt64Array";
+    private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
 
 
     // Address of local milo server
@@ -194,6 +195,16 @@ public class OpcuaPlcDriverTest {
         builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE);
         builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE);
         builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+        builder.addItem("ByteString", BYTE_STRING_IDENTIFIER_READ_WRITE);
+        builder.addItem("DateTime", DATE_TIME_READ_WRITE);
+        builder.addItem("Duration", DURATION_READ_WRITE);
+        builder.addItem("GUID", GUID_READ_WRITE);
+        builder.addItem("XmlElement", XML_ELEMENT_READ_WRITE);
+        builder.addItem("Variant", VARIANT_READ_WRITE);
+        builder.addItem("LocalizedText", LOCALIZED_READ_WRITE);
+        builder.addItem("QualifiedName", QUALIFIED_NAM_READ_WRITE);
+        builder.addItem("NodeId", NODE_ID_READ_WRITE);
+        builder.addItem("UtcTime", UTC_TIME_READ_WRITE);
 
         builder.addItem("BoolArray", BOOL_ARRAY_IDENTIFIER);
         builder.addItem("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
@@ -208,6 +219,7 @@ public class OpcuaPlcDriverTest {
         builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER);
         builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER);
         builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER);
+        builder.addItem("DateTimeArray", DATE_TIME_ARRAY_IDENTIFIER);
 
         builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
 
@@ -227,6 +239,14 @@ public class OpcuaPlcDriverTest {
         assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
         assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
         assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("ByteString").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("DateTime").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Duration").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("GUID").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("XmlElement").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Variant").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("LocalizedText").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("QualifiedName").equals(PlcResponseCode.OK);
 
         assert response.getResponseCode("BoolArray").equals(PlcResponseCode.OK);
         assert response.getResponseCode("ByteArray").equals(PlcResponseCode.OK);
@@ -240,6 +260,7 @@ public class OpcuaPlcDriverTest {
         assert response.getResponseCode("UInt16Array").equals(PlcResponseCode.OK);
         assert response.getResponseCode("UInt32Array").equals(PlcResponseCode.OK);
         assert response.getResponseCode("UInt64Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("DateTimeArray").equals(PlcResponseCode.OK);
 
         assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
 
