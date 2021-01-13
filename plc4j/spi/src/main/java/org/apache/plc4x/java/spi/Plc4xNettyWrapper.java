@@ -182,6 +182,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
+        logger.debug("User Event triggered {}", evt);
         if (evt instanceof ConnectEvent) {
             this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof DisconnectEvent) {
