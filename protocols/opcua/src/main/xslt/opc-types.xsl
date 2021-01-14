@@ -67,6 +67,7 @@
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseResponse']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ServiceFault']"/>
 
     ['473' CloseSessionRequest
         [simple RequestHeader 'requestHeader']
@@ -132,7 +133,11 @@
 ]
 
 [enum int 32 'NodeClass'
-<xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType[@Name='NodeClass']"/>
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType[@Name='NodeClass']"/>
+]
+
+[type 'UserNameIdentityToken'
+    <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[@Name='UserNameIdentityToken']"/>
 ]
 
 [type 'DiagnosticInfo'
@@ -227,7 +232,7 @@
 ]
 
 [discriminatedType 'Variant'
-    [discriminator bit 'arrayLengthSpecified']
+    [simple bit 'arrayLengthSpecified']
     [simple bit 'arrayDimensionsSpecified']
     [discriminator uint 6 'VariantType']
     [typeSwitch 'VariantType','arrayLengthSpecified'
@@ -402,6 +407,11 @@
 [type 'PascalString'
     [simple int 32 'stringLength']
     [optional string 'stringLength == -1 ? 0 : stringLength * 8' 'UTF-8' 'stringValue' 'stringLength >= 0']
+]
+
+[type 'PascalByteString'
+    [simple int 32 'stringLength']
+    [array int 8 'stringValue' count 'stringLength == -1 ? 0 : stringLength']
 ]
 
 [type 'LocalizedText'
@@ -620,7 +630,7 @@
             <xsl:when test="$datatype = 'opc:Char'">string '1'</xsl:when>
             <xsl:when test="$datatype = 'opc:CharArray'">PascalString</xsl:when>
             <xsl:when test="$datatype = 'opc:Guid'">string '-1'</xsl:when>
-            <xsl:when test="$datatype = 'opc:ByteString'">PascalString</xsl:when>
+            <xsl:when test="$datatype = 'opc:ByteString'">PascalByteString</xsl:when>
             <xsl:when test="$datatype = 'opc:DateTime'">int 64</xsl:when>
             <xsl:when test="$datatype = 'opc:String'">PascalString</xsl:when>
             <xsl:otherwise><xsl:value-of select="substring-after($datatype,':')"/></xsl:otherwise>

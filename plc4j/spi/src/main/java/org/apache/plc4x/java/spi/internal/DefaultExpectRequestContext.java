@@ -51,7 +51,6 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     private HandlerRegistration registration;
 
     public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext context) {
-        System.out.println("Testing BH");
         this.finisher = finisher;
         this.expectClazz = expectClazz;
         this.timeout = timeout;

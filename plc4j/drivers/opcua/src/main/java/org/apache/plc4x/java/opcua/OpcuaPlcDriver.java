@@ -26,6 +26,7 @@ import org.apache.plc4x.java.opcua.protocol.*;
 import org.apache.plc4x.java.opcua.config.*;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.readwrite.io.*;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -63,8 +64,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
                                                                     INET_ADDRESS_PATTERN +
-                                                                    "(?<transportEndpoint>[\\w/=]+)" +
-                                                                    "(?<paramString>[(\\?|\\&)\\w=]+\\=[\\w&]+)*"
+                                                                    "(?<transportEndpoint>[\\w/=]+)[\\?]?" +
+                                                                    "(?<paramString>[\\&\\w=]+\\=[\\w&]+)*"
                                                                 );
 
 
@@ -163,15 +164,15 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         }
 
         // Create the configuration object.
-        OpcuaConfiguration configuration = new OpcuaConfiguration(  transportCode,
-                                                                    transportHost,
-                                                                    transportPort,
-                                                                    transportEndpoint,
-                                                                    paramString);
-
+        OpcuaConfiguration configuration = (OpcuaConfiguration) new ConfigurationFactory().createConfiguration(
+            getConfigurationType(), paramString);
         if(configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
+        configuration.setTransportCode(transportCode);
+        configuration.setHost(transportHost);
+        configuration.setPort(transportPort);
+        configuration.setEndpoint("opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint);
 
         // Try to find a transport in order to create a communication channel.
         Transport transport = null;
@@ -226,9 +227,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            System.out.println("Estimate:- ");
             if (byteBuf.readableBytes() >= 8) {
-                System.out.println("Estimate:- " + Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4)));
                 return Integer.reverseBytes(byteBuf.getInt(byteBuf.readerIndex() + 4));
             }
             return -1;

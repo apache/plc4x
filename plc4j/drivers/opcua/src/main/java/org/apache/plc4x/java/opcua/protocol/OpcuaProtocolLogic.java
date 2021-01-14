@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -61,7 +62,11 @@ import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.time.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -75,6 +80,15 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.nio.charset.StandardCharsets;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 
 /**
@@ -95,9 +109,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
     private static final int VERSION = 0;
+    private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
 
     private NodeId authenticationToken = new NodeIdTwoByte(NodeIdType.nodeIdTypeTwoByte, new TwoByteNodeId((short) 0));
     private static final PascalString NULL_STRING = new PascalString(-1,null);
+    private static final PascalByteString NULL_BYTE_STRING = new PascalByteString(-1, new byte[0]);
     private static ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeIdTwoByte(false,
                                                                                     false,
                                                                                     null,
@@ -111,25 +127,42 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final String CHUNK = "F";
     private static final String nameSpaceSecurityPolicyNone = "http://opcfoundation.org/UA/SecurityPolicy#None";
+    private static final String nameSpaceSecurityPolicyUserName = "http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256";
     private static final String applicationUri = "urn:apache:plc4x:client";
     private static final String productUri = "urn:apache:plc4x:client";
     private static final String applicationText = "OPCUA client for the Apache PLC4X:PLC4J project";
 
+
     private final String sessionName = "UaSession:" + applicationText + ":" + RandomStringUtils.random(20, true, true);
-    private final String clientNonce = RandomStringUtils.random(40, true, true);
+    private final byte[] clientNonce = RandomUtils.nextBytes(40);
     private RequestTransactionManager tm;
 
     private String endpoint;
+    private boolean discovery;
+    private String username;
+    private String password;
+    private String certFile;
+    private String securityPolicy;
+    private String keyStoreFile;
     private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     private AtomicInteger requestHandleGenerator = new AtomicInteger(1);
     private AtomicInteger tokenId = new AtomicInteger(1);
     private AtomicInteger channelId = new AtomicInteger(1);
+    private byte[] senderCertificate = null;
+    private String certificateThumbprint = null;
 
     private AtomicBoolean securedConnection = new AtomicBoolean(false);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
         this.endpoint = configuration.getEndpoint();
+        this.discovery = configuration.isDiscovery();
+        this.username = configuration.getUsername();
+        this.password = configuration.getPassword();
+        this.certFile = configuration.getCertFile();
+        this.securityPolicy = configuration.getSecurityPolicy();
+        this.keyStoreFile = configuration.getKeyStoreFile();
+
         this.tm = new RequestTransactionManager(1);
     }
 
@@ -279,7 +312,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             VERSION,
             SecurityTokenRequestType.securityTokenRequestTypeIssue,
             MessageSecurityMode.messageSecurityModeNone,
-            NULL_STRING,
+            NULL_BYTE_STRING,
             DEFAULT_CONNECTION_LIFETIME);
 
         OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
@@ -309,9 +342,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     }
 
     public void onConnectCreateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
+
+        certificateThumbprint = opcuaOpenResponse.getReceiverCertificateThumbprint();
         OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
         tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
         channelId.set((int) openSecureChannelResponse.getSecurityToken().getChannelId());
+
 
         int transactionId = getTransactionIdentifier(securedConnection.get());
 
@@ -358,8 +394,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NULL_STRING,
             new PascalString(endpoint.length(), endpoint),
             new PascalString(sessionName.length(), sessionName),
-            new PascalString(clientNonce.length(), clientNonce),
-            NULL_STRING,
+            new PascalByteString(clientNonce.length, clientNonce),
+            NULL_BYTE_STRING,
             120000L,
             0L);
 
@@ -387,7 +423,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private void onConnectActivateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaMessageResponse opcuaMessageResponse) throws PlcConnectionException {
 
         CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
-
+        senderCertificate = createSessionResponse.getServerCertificate().getStringValue();
         authenticationToken = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
         tokenId.set((int) opcuaMessageResponse.getSecureTokenId());
         channelId.set((int) opcuaMessageResponse.getSecureChannelId());
@@ -398,7 +434,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         Integer nextRequestId = opcuaMessageResponse.getRequestId() + 1;
 
         if (!(transactionId == nextSequenceNumber)) {
-            LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
+            LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}" , transactionId, nextSequenceNumber);
             throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
         }
 
@@ -412,29 +448,54 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_STRING);
+        SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
 
         SignedSoftwareCertificate[] signedSoftwareCertificate = new SignedSoftwareCertificate[1];
 
-        signedSoftwareCertificate[0] = new SignedSoftwareCertificate(NULL_STRING, NULL_STRING);
+        signedSoftwareCertificate[0] = new SignedSoftwareCertificate(NULL_BYTE_STRING, NULL_BYTE_STRING);
 
-        //Manually serialize this object
-        PascalString anonymousIdentityToken = new PascalString("anonymous".length(), "anonymous");
-        WriteBuffer buffer = new WriteBuffer(anonymousIdentityToken.getLengthInBytes(), true);
-        try{
-            PascalStringIO.staticSerialize(buffer, anonymousIdentityToken);
-        } catch (ParseException e) {
-            LOGGER.error("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
-            throw new PlcConnectionException("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
+
+        ExpandedNodeId extExpandedNodeId = null;
+        ExtensionObject userIdentityToken = null;
+        if (this.username == null) {
+            //Manually serialize this object
+            PascalString anonymousIdentityToken = new PascalString("anonymous".length(), "anonymous");
+            WriteBuffer buffer = new WriteBuffer(anonymousIdentityToken.getLengthInBytes(), true);
+            try{
+                PascalStringIO.staticSerialize(buffer, anonymousIdentityToken);
+            } catch (ParseException e) {
+                LOGGER.error("Failed to serialize the user identity token - {}", anonymousIdentityToken.getStringValue());
+                throw new PlcConnectionException("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
+            }
+            extExpandedNodeId = new ExpandedNodeIdFourByte(false,
+                false,
+                null,
+                null,
+                new FourByteNodeId((short) 0,  OpcuaNodeIdServices.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()));
+            userIdentityToken = new ExtensionObject(extExpandedNodeId, (short) 1, buffer.getData().length, buffer.getData());
+        } else {
+            //Manually serialize this object
+            byte[] encryptedPassword = encrypt(this.password, senderCertificate);
+            UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
+                new PascalString("username".length(), "username"),
+                new PascalString(this.username.length(), this.username),
+                new PascalByteString(encryptedPassword.length, encryptedPassword),
+                new PascalString(PASSWORD_ENCRYPTION_ALGORITHM.length(), PASSWORD_ENCRYPTION_ALGORITHM)
+            );
+            WriteBuffer buffer = new WriteBuffer(userNameIdentityToken.getLengthInBytes(), true);
+            try{
+                UserNameIdentityTokenIO.staticSerialize(buffer, userNameIdentityToken);
+            } catch (ParseException e) {
+                LOGGER.error("Failed to serialize the user identity token - {}", userNameIdentityToken);
+                throw new PlcConnectionException("Failed to serialize the user identity token - " + userNameIdentityToken);
+            }
+            extExpandedNodeId = new ExpandedNodeIdFourByte(false,
+                false,
+                null,
+                null,
+                new FourByteNodeId((short) 0,  OpcuaNodeIdServices.UserNameIdentityToken_Encoding_DefaultBinary.getValue()));
+            userIdentityToken = new ExtensionObject(extExpandedNodeId, (short) 1, buffer.getData().length, buffer.getData());
         }
-
-        ExpandedNodeId extExpandedNodeId4 = new ExpandedNodeIdFourByte(false,
-            false,
-            null,
-            null,
-            new FourByteNodeId((short) 0,  321));
-
-        ExtensionObject userIdentityToken = new ExtensionObject(extExpandedNodeId4, (short) 1, buffer.getData().length, buffer.getData());
 
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest((byte) 1,
             (byte) 0,
@@ -465,7 +526,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
                 long returnedRequestHandle = activateMessageResponse.getResponseHeader().getRequestHandle();
                 if (!(requestHandle == returnedRequestHandle)) {
-                    LOGGER.error("Request handle isn't as expected, we might have missed a packet. - " +  requestHandle + " != " + returnedRequestHandle);
+                    LOGGER.error("Request handle isn't as expected, we might have missed a packet. {} != {}" ,requestHandle,  returnedRequestHandle);
                 }
 
                 // Send an event that connection setup is complete.
@@ -561,7 +622,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             PlcValue value = null;
             if (results[count].getStatusCode() == null) {
                 Variant variant = results[count].getValue();
-                LOGGER.info("Repsponse includes Variant of type " + variant.getClass().toString());
+                LOGGER.info("Response of type {}", variant.getClass().toString());
                 if (variant instanceof VariantBoolean) {
                     byte[] array = ((VariantBoolean) variant).getValue();
                     int length = array.length;
@@ -761,13 +822,214 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return response;
     }
 
-    private Variant fromPlcValue(OpcuaField field, PlcWriteRequest request) {
-        return new VariantInt32(false,
-            null,
-            null,
-            request.getFieldNames().size(),
-            new int[] {request.getPlcValue("value-0").getInt()});
+    private Variant fromPlcValue(String fieldName, OpcuaField field, PlcWriteRequest request) {
+
+        PlcList valueObject;
+        if (request.getPlcValue(fieldName).getObject() instanceof ArrayList) {
+            valueObject = (PlcList) request.getPlcValue(fieldName);
+        } else {
+            ArrayList<PlcValue> list = new ArrayList<>();
+            list.add(request.getPlcValue(fieldName));
+            valueObject = new PlcList(list);
+        }
+
+        List<PlcValue> plcValueList = valueObject.getList();
+        String dataType = field.getPlcDataType();
+        if (dataType.equals("IEC61131_NULL")) {
+            if (plcValueList.get(0).getObject() instanceof Boolean) {
+                dataType = "IEC61131_BOOL";
+            } else if (plcValueList.get(0).getObject() instanceof Byte) {
+                dataType = "IEC61131_SINT";
+            } else if (plcValueList.get(0).getObject() instanceof Short) {
+                dataType = "IEC61131_INT";
+            } else if (plcValueList.get(0).getObject() instanceof Integer) {
+                dataType = "IEC61131_DINT";
+            } else if (plcValueList.get(0).getObject() instanceof Long) {
+                dataType = "IEC61131_LINT";
+            } else if (plcValueList.get(0).getObject() instanceof Float) {
+                dataType = "IEC61131_REAL";
+            } else if (plcValueList.get(0).getObject() instanceof Double) {
+                dataType = "IEC61131_LREAL";
+            } else if (plcValueList.get(0).getObject() instanceof String) {
+                dataType = "IEC61131_STRING";
+            }
+        }
+        int length = valueObject.getLength();
+        switch (dataType) {
+            case "IEC61131_BOOL":
+            case "IEC61131_BIT":
+                byte[] tmpBOOL = new byte[length];
+                for (int i = 0; i < length; i++) {
+                    tmpBOOL[i] = valueObject.getIndex(i).getByte();
+                }
+                return new VariantBoolean(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpBOOL);
+            case "IEC61131_BYTE":
+            case "IEC61131_BITARR8":
+            case "IEC61131_USINT":
+            case "IEC61131_UINT8":
+            case "IEC61131_BIT8":
+                short[] tmpBYTE = new short[length];
+                for (int i = 0; i < length; i++) {
+                    tmpBYTE[i] = valueObject.getIndex(i).getByte();
+                }
+                return new VariantByte(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpBYTE);
+            case "IEC61131_SINT":
+            case "IEC61131_INT8":
+                byte[] tmpSINT = new byte[length];
+                for (int i = 0; i < length; i++) {
+                    tmpSINT[i] = valueObject.getIndex(i).getByte();
+                }
+                return new VariantSByte(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpSINT);
+            case "IEC61131_INT":
+            case "IEC61131_INT16":
+                short[] tmpINT16 = new short[length];
+                for (int i = 0; i < length; i++) {
+                    tmpINT16[i] = valueObject.getIndex(i).getShort();
+                }
+                return new VariantInt16(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpINT16);
+            case "IEC61131_UINT":
+            case "IEC61131_UINT16":
+            case "IEC61131_WORD":
+            case "IEC61131_BITARR16":
+                int[] tmpUINT = new int[length];
+                for (int i = 0; i < length; i++) {
+                    tmpUINT[i] = valueObject.getIndex(i).getInt();
+                }
+                return new VariantUInt16(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpUINT);
+            case "IEC61131_DINT":
+            case "IEC61131_INT32":
+                int[] tmpDINT = new int[length];
+                for (int i = 0; i < length; i++) {
+                    tmpDINT[i] = valueObject.getIndex(i).getInt();
+                }
+                return new VariantInt32(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpDINT);
+            case "IEC61131_UDINT":
+            case "IEC61131_UINT32":
+            case "IEC61131_DWORD":
+            case "IEC61131_BITARR32":
+                long[] tmpUDINT = new long[length];
+                for (int i = 0; i < length; i++) {
+                    tmpUDINT[i] = valueObject.getIndex(i).getLong();
+                }
+                return new VariantUInt32(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpUDINT);
+            case "IEC61131_LINT":
+            case "IEC61131_INT64":
+                long[] tmpLINT = new long[length];
+                for (int i = 0; i < length; i++) {
+                    tmpLINT[i] = valueObject.getIndex(i).getLong();
+                }
+                return new VariantInt64(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpLINT);
+            case "IEC61131_ULINT":
+            case "IEC61131_UINT64":
+            case "IEC61131_LWORD":
+            case "IEC61131_BITARR64":
+                BigInteger[] tmpULINT = new BigInteger[length];
+                for (int i = 0; i < length; i++) {
+                    tmpULINT[i] = valueObject.getIndex(i).getBigInteger();
+                }
+                return new VariantUInt64(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpULINT);
+            case "IEC61131_REAL":
+            case "IEC61131_FLOAT":
+                float[] tmpREAL = new float[length];
+                for (int i = 0; i < length; i++) {
+                    tmpREAL[i] = valueObject.getIndex(i).getFloat();
+                }
+                return new VariantFloat(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpREAL);
+            case "IEC61131_LREAL":
+            case "IEC61131_DOUBLE":
+                double[] tmpLREAL = new double[length];
+                for (int i = 0; i < length; i++) {
+                    tmpLREAL[i] = valueObject.getIndex(i).getDouble();
+                }
+                return new VariantDouble(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpLREAL);
+            case "IEC61131_CHAR":
+            case "IEC61131_WCHAR":
+            case "IEC61131_STRING":
+            case "IEC61131_WSTRING":
+            case "IEC61131_STRING16":
+                PascalString[] tmpString = new PascalString[length];
+                for (int i = 0; i < length; i++) {
+                    String s = valueObject.getIndex(i).getString();
+                    tmpString[i] = new PascalString(s.length(), s);
+                }
+                return new VariantString(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpString);
+            case "IEC61131_DATE_AND_TIME":
+                long[] tmpDateTime = new long[length];
+                for (int i = 0; i < length; i++) {
+                    tmpDateTime[i] = valueObject.getIndex(i).getDateTime().toEpochSecond(ZoneOffset.UTC);
+                }
+                return new VariantDateTime(length == 1 ? false : true,
+                    false,
+                    null,
+                    null,
+                    length == 1 ? null : length,
+                    tmpDateTime);
+            default:
+                throw new PlcRuntimeException("Unsupported write field type " + dataType);
+        }
+
     }
+
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
@@ -811,8 +1073,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     false,
                     false,
                     false,
-                    false,
-                    fromPlcValue(field, writeRequest),
+                    true,
+                    fromPlcValue(fieldName, field, writeRequest),
                     null,
                     null,
                     null,
@@ -843,12 +1105,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaResponse -> {
-
-                Map<String, PlcResponseCode> responseMap = new HashMap<>();
-                responseMap.put("value-0", PlcResponseCode.OK);
-
-                // Prepare the response.
-                PlcWriteResponse response = new DefaultPlcWriteResponse(request, responseMap);
+                WriteResponse responseMessage = (WriteResponse) opcuaResponse.getMessage();
+                PlcWriteResponse response = writeResponse(request, responseMessage);
 
                 // Pass the response back to the application.
                 future.complete(response);
@@ -858,6 +1116,29 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             }));
 
         return future;
+    }
+
+    private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
+        Map<String, PlcResponseCode> responseMap = new HashMap<>();
+
+        StatusCode[] results = writeResponse.getResults();
+        Iterator<String> responseIterator = request.getFieldNames().iterator();
+        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
+            String fieldName = responseIterator.next();
+            OpcuaStatusCodes statusCode = OpcuaStatusCodes.enumForValue(results[i].getStatusCode());
+            switch (statusCode) {
+                case Good:
+                    responseMap.put(fieldName, PlcResponseCode.OK);
+                    break;
+                case BadNodeIdUnknown:
+                    responseMap.put(fieldName, PlcResponseCode.NOT_FOUND);
+                    break;
+                default:
+                    responseMap.put(fieldName, PlcResponseCode.REMOTE_ERROR);
+            }
+        }
+
+        return new DefaultPlcWriteResponse(request, responseMap);
     }
 
     /**
@@ -900,5 +1181,26 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private long getDateTime(long dateTime) {
         return (dateTime - epochOffset) / 10000;
+    }
+
+    public byte[] encrypt(String data, byte[] publicKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, getCertificateX509().getPublicKey());
+            return cipher.doFinal(data.getBytes());
+        } catch (Exception e) {
+            LOGGER.error("Unable to encrypt Data");
+            return null;
+        }
+    }
+
+    public X509Certificate getCertificateX509() {
+        try {
+            CertificateFactory factory =  CertificateFactory.getInstance("X.509");
+            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(this.senderCertificate));
+        } catch (Exception e) {
+            LOGGER.error("Unable to get certificate from String {}", this.senderCertificate);
+            return null;
+        }
     }
 }

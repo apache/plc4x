@@ -24,6 +24,8 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
@@ -35,6 +37,8 @@ import static org.assertj.core.api.Assertions.fail;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 /**
  */
@@ -269,6 +273,82 @@ public class OpcuaPlcDriverTest {
     }
 
     @Test
+    public void writeVariables() throws Exception {
+        PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+        assert opcuaConnection.isConnected();
+
+        PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
+        builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ":BYTE", 3);
+        builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
+        builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
+        builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + ":INT", 1);
+        builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
+        builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
+        builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
+        builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ":SINT", -127);
+        builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
+        builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ":UINT", 65535);
+        builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ":UDINT", 101010101L);
+        builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ":ULINT", new BigInteger("1337"));
+        builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ":UDINT", 102020202L);
+
+
+        builder.addItem("BooleanArray", BOOL_ARRAY_IDENTIFIER, new Boolean[] {true, true, true, true, true});
+        builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER + ":BYTE", new Short[] {1, 100, 100, 255, 123});
+        builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER, new Double[] {1.0,2.0,3.0,4.0,5.0});
+        builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER, new Float[] {1.0F,2.0F,3.0F,4.0F,5.0F});
+        builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER, new Short[] {1,2,3,4,5});
+        builder.addItem("Int32Array", INT32_ARRAY_IDENTIFIER, new Integer[] {1,2,3,4,5});
+        builder.addItem("Int64Array", INT64_ARRAY_IDENTIFIER, new Long[] {1L,2L,3L,4L,5L});
+        builder.addItem("IntegerArray", INT32_ARRAY_IDENTIFIER, new Integer[] {1,2,3,4,5});
+        builder.addItem("SByteArray", SBYTE_ARRAY_IDENTIFIER, new Byte[] {1,2,3,4,5});
+        builder.addItem("StringArray", STRING_ARRAY_IDENTIFIER, new String[] {"1","2","3","4","5"});
+        builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER + ":UINT", new Short[] {1,2,3,4,5});
+        builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER + ":UDINT", new Integer[] {1,2,3,4,5});
+        builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER + ":ULINT", new Long[] {1L,2L,3L,4L,5L});
+
+        builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "11");
+
+        PlcWriteRequest request = builder.build();
+        PlcWriteResponse response = request.execute().get();
+
+        assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("String").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+
+        assert response.getResponseCode("BooleanArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("ByteArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("DoubleArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("FloatArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int16Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int32Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("Int64Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("IntegerArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("SByteArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("StringArray").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt16Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt32Array").equals(PlcResponseCode.OK);
+        assert response.getResponseCode("UInt64Array").equals(PlcResponseCode.OK);
+
+        assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
+
+        opcuaConnection.close();
+        assert !opcuaConnection.isConnected();
+    }
+
+    @Test
     public void testOpcuaAddressPattern() {
 
         assertMatching(INET_ADDRESS_PATTERN, ":tcp://localhost");
@@ -290,7 +370,7 @@ public class OpcuaPlcDriverTest {
         assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
         assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254");
 
-        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1&discovery=false");
+        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=false");
         assertMatching(URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false");
 
     }

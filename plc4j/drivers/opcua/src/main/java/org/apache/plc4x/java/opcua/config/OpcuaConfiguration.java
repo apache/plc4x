@@ -21,23 +21,83 @@ package org.apache.plc4x.java.opcua.config;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
 
-    private final String code;
-    private final String host;
-    private final String port;
-    private final String endpoint;
-    private final String params;
+    private String code;
+    private String host;
+    private String port;
+    private String endpoint;
+    private String params;
 
-    public OpcuaConfiguration(String transportCode, String transportHost, String transportPort, String transportEndpoint, String paramString) {
-        this.code = transportCode;
-        this.host = transportHost;
-        this.port = transportPort;
-        this.endpoint = "opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint;
-        this.params = paramString;
+    @ConfigurationParameter("discovery")
+    @BooleanDefaultValue(true)
+    private boolean discovery;
+
+    @ConfigurationParameter("username")
+    private String username;
+
+    @ConfigurationParameter("password")
+    private String password;
+
+    @ConfigurationParameter("certFile")
+    private String certFile;
+
+    @ConfigurationParameter("securityPolicy")
+    private String securityPolicy;
+
+    @ConfigurationParameter("keyStoreFile")
+    private String keyStoreFile;
+
+    public boolean isDiscovery() {
+        return discovery;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getCertFile() {
+        return certFile;
+    }
+
+    public String getSecurityPolicy() {
+        return securityPolicy;
+    }
+
+    public String getKeyStoreFile() {
+        return keyStoreFile;
+    }
+
+    public void setDiscovery(boolean discovery) {
+        this.discovery = discovery;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCertFile(String certFile) {
+        this.certFile = certFile;
+    }
+
+    public void setSecurityPolicy(String securityPolicy) {
+        this.securityPolicy = securityPolicy;
+    }
+
+    public void setKeyStoreFile(String keyStoreFile) {
+        this.keyStoreFile = keyStoreFile;
     }
 
     public String getTransportCode() {
@@ -56,14 +116,23 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return endpoint;
     }
 
-    public String getParams() {
-        return params;
+    public void setTransportCode(String code) {
+        this.code = code;
     }
-        
-    @Override
-    public int getDefaultPort() {
-        return 12687;
+
+    public void setHost(String host) {
+        this.host = host;
     }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+
 
     @Override
     public String toString() {
@@ -72,3 +141,4 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     }
 
 }
+

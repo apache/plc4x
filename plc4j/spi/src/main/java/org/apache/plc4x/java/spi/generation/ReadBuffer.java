@@ -89,7 +89,6 @@ public class ReadBuffer {
     public boolean readBit() throws ParseException {
         try {
             boolean ret = bi.readBoolean();
-            LOGGER.info("Reading Bit:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -105,7 +104,6 @@ public class ReadBuffer {
         }
         try {
             byte ret = bi.readByte(true, bitLength);
-            LOGGER.info("Reading Unsigned Byte:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -122,7 +120,6 @@ public class ReadBuffer {
         try {
             // No need to flip here as we're only reading one byte.
             short ret =  bi.readShort(true, bitLength);
-            LOGGER.info("Reading Unsigned Short:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -140,11 +137,9 @@ public class ReadBuffer {
             if (littleEndian) {
                 int intValue = bi.readInt(true, bitLength);
                 int ret =  Integer.reverseBytes(intValue) >>> 16;
-                LOGGER.info("Reading Unsigned Int:- " + ret);
                 return ret;
             }
             int ret =  bi.readInt(true, bitLength);
-            LOGGER.info("Reading Unsigned Int:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -162,11 +157,9 @@ public class ReadBuffer {
             if (littleEndian) {
                 final long longValue = bi.readLong(true, bitLength);
                 long ret = Long.reverseBytes(longValue) >>> 32;
-                LOGGER.info("Reading Unsigned Long:- " + ret);
                 return ret;
             }
             long ret =  bi.readLong(true, bitLength);
-            LOGGER.info("Reading Unsigned Long:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -207,7 +200,6 @@ public class ReadBuffer {
         }
         try {
             byte ret = bi.readByte(false, bitLength);
-            LOGGER.info("Reading Byte:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -224,11 +216,9 @@ public class ReadBuffer {
         try {
             if (littleEndian) {
                 short ret =  Short.reverseBytes(bi.readShort(false, bitLength));
-                LOGGER.info("Reading Short:- " + ret);
                 return ret;
             }
             short ret = bi.readShort(false, bitLength);
-            LOGGER.info("Reading Short:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -245,11 +235,9 @@ public class ReadBuffer {
         try {
             if (littleEndian) {
                 int ret =  Integer.reverseBytes(bi.readInt(false, bitLength));
-                LOGGER.info("Reading Integer:- " + ret);
                 return ret;
             }
             int ret = bi.readInt(false, bitLength);
-            LOGGER.info("Reading Int:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -266,11 +254,9 @@ public class ReadBuffer {
         try {
             if (littleEndian) {
                 long ret = Long.reverseBytes(bi.readLong(false, bitLength));
-                LOGGER.info("Reading Read Long:- " + ret);
                 return ret;
             }
             long ret = bi.readLong(false, bitLength);
-            LOGGER.info("Reading Read Long:- " + ret);
             return ret;
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -320,7 +306,6 @@ public class ReadBuffer {
         if(bitLength == 64) {
             long longValue = readLong(64);
             double ret = Double.longBitsToDouble(longValue);
-            LOGGER.info("Reading Double:- " + ret);
             return ret;
         } else {
             throw new UnsupportedOperationException("unsupported bit length (only 64 supported)");
@@ -342,7 +327,6 @@ public class ReadBuffer {
         }
         //replaceAll function removes and leading ' char or hypens.
         String ret =  new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
-        LOGGER.info("Reading String:- " + ret);
         return ret;
     }
 
