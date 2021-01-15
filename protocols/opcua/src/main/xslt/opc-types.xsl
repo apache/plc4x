@@ -629,7 +629,7 @@
             <xsl:when test="$datatype = 'opc:Double'">float 11.52</xsl:when>
             <xsl:when test="$datatype = 'opc:Char'">string '1'</xsl:when>
             <xsl:when test="$datatype = 'opc:CharArray'">PascalString</xsl:when>
-            <xsl:when test="$datatype = 'opc:Guid'">string '-1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:Guid'">GuidValue</xsl:when>
             <xsl:when test="$datatype = 'opc:ByteString'">PascalByteString</xsl:when>
             <xsl:when test="$datatype = 'opc:DateTime'">int 64</xsl:when>
             <xsl:when test="$datatype = 'opc:String'">PascalString</xsl:when>

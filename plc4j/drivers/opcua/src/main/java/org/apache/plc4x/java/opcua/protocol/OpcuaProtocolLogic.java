@@ -65,6 +65,8 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.*;
@@ -137,6 +139,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private final byte[] clientNonce = RandomUtils.nextBytes(40);
     private RequestTransactionManager tm;
 
+    private PascalString policyId = null;
     private String endpoint;
     private boolean discovery;
     private String username;
@@ -149,6 +152,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private AtomicInteger tokenId = new AtomicInteger(1);
     private AtomicInteger channelId = new AtomicInteger(1);
     private byte[] senderCertificate = null;
+    private byte[] senderNonce = null;
     private String certificateThumbprint = null;
 
     private AtomicBoolean securedConnection = new AtomicBoolean(false);
@@ -331,11 +335,16 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
             .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
             .handle(opcuaOpenResponse -> {
-                LOGGER.debug("Got Secure Response Connection Response");
-                try {
-                    onConnectCreateSessionRequest(context, opcuaOpenResponse);
-                } catch (PlcConnectionException e) {
-                    LOGGER.error("Error occurred while connecting to OPC UA server");
+                if (opcuaOpenResponse.getMessage() instanceof ServiceFault) {
+                    ServiceFault fault = (ServiceFault) opcuaOpenResponse.getMessage();
+                    LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
+                } else {
+                    LOGGER.debug("Got Secure Response Connection Response");
+                    try {
+                        onConnectCreateSessionRequest(context, opcuaOpenResponse);
+                    } catch (PlcConnectionException e) {
+                        LOGGER.error("Error occurred while connecting to OPC UA server");
+                    }
                 }
             });
 
@@ -411,11 +420,16 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
-                LOGGER.debug("Got Create Session Response Connection Response");
-                try {
-                    onConnectActivateSessionRequest(context, opcuaMessageResponse);
-                } catch (PlcConnectionException e) {
-                    LOGGER.error("Error occurred while connecting to OPC UA server");
+                if (opcuaMessageResponse.getMessage() instanceof ServiceFault) {
+                    ServiceFault fault = (ServiceFault) opcuaMessageResponse.getMessage();
+                    LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
+                } else {
+                    LOGGER.debug("Got Create Session Response Connection Response");
+                    try {
+                        onConnectActivateSessionRequest(context, opcuaMessageResponse);
+                    } catch (PlcConnectionException e) {
+                        LOGGER.error("Error occurred while connecting to OPC UA server");
+                    }
                 }
             });
     }
@@ -424,7 +438,27 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         CreateSessionResponse createSessionResponse = (CreateSessionResponse) opcuaMessageResponse.getMessage();
         senderCertificate = createSessionResponse.getServerCertificate().getStringValue();
-        authenticationToken = (NodeIdByteString) createSessionResponse.getAuthenticationToken();
+        senderNonce = createSessionResponse.getServerNonce().getStringValue();
+
+        for (EndpointDescription endpointDescription: createSessionResponse.getServerEndpoints()) {
+            LOGGER.info("{} - {}", endpointDescription.getEndpointUrl().getStringValue(), this.endpoint);
+            if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint)) {
+                for (UserTokenPolicy identityToken : endpointDescription.getUserIdentityTokens()) {
+                    if (identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) {
+                        if (this.username == null) {
+                            policyId = identityToken.getPolicyId();
+                        }
+                    } else if (identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) {
+                        if (this.username != null) {
+                            policyId = identityToken.getPolicyId();
+                        }
+                    }
+                }
+            }
+        }
+        LOGGER.info(policyId.getStringValue());
+
+        authenticationToken = createSessionResponse.getAuthenticationToken();
         tokenId.set((int) opcuaMessageResponse.getSecureTokenId());
         channelId.set((int) opcuaMessageResponse.getSecureChannelId());
 
@@ -455,46 +489,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         signedSoftwareCertificate[0] = new SignedSoftwareCertificate(NULL_BYTE_STRING, NULL_BYTE_STRING);
 
 
-        ExpandedNodeId extExpandedNodeId = null;
         ExtensionObject userIdentityToken = null;
         if (this.username == null) {
-            //Manually serialize this object
-            PascalString anonymousIdentityToken = new PascalString("anonymous".length(), "anonymous");
-            WriteBuffer buffer = new WriteBuffer(anonymousIdentityToken.getLengthInBytes(), true);
-            try{
-                PascalStringIO.staticSerialize(buffer, anonymousIdentityToken);
-            } catch (ParseException e) {
-                LOGGER.error("Failed to serialize the user identity token - {}", anonymousIdentityToken.getStringValue());
-                throw new PlcConnectionException("Failed to serialize the user identity token - " + anonymousIdentityToken.getStringValue());
-            }
-            extExpandedNodeId = new ExpandedNodeIdFourByte(false,
-                false,
-                null,
-                null,
-                new FourByteNodeId((short) 0,  OpcuaNodeIdServices.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()));
-            userIdentityToken = new ExtensionObject(extExpandedNodeId, (short) 1, buffer.getData().length, buffer.getData());
+            userIdentityToken = getIdentityToken("none");
         } else {
-            //Manually serialize this object
-            byte[] encryptedPassword = encrypt(this.password, senderCertificate);
-            UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
-                new PascalString("username".length(), "username"),
-                new PascalString(this.username.length(), this.username),
-                new PascalByteString(encryptedPassword.length, encryptedPassword),
-                new PascalString(PASSWORD_ENCRYPTION_ALGORITHM.length(), PASSWORD_ENCRYPTION_ALGORITHM)
-            );
-            WriteBuffer buffer = new WriteBuffer(userNameIdentityToken.getLengthInBytes(), true);
-            try{
-                UserNameIdentityTokenIO.staticSerialize(buffer, userNameIdentityToken);
-            } catch (ParseException e) {
-                LOGGER.error("Failed to serialize the user identity token - {}", userNameIdentityToken);
-                throw new PlcConnectionException("Failed to serialize the user identity token - " + userNameIdentityToken);
-            }
-            extExpandedNodeId = new ExpandedNodeIdFourByte(false,
-                false,
-                null,
-                null,
-                new FourByteNodeId((short) 0,  OpcuaNodeIdServices.UserNameIdentityToken_Encoding_DefaultBinary.getValue()));
-            userIdentityToken = new ExtensionObject(extExpandedNodeId, (short) 1, buffer.getData().length, buffer.getData());
+            userIdentityToken = getIdentityToken("username");
         }
 
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest((byte) 1,
@@ -521,16 +520,20 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaActivateResponse -> {
                 LOGGER.debug("Got Activate Session Response Connection Response");
+                if (opcuaActivateResponse.getMessage() instanceof ServiceFault) {
+                    ServiceFault fault = (ServiceFault) opcuaActivateResponse.getMessage();
+                    LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
+                } else {
+                    ActivateSessionResponse activateMessageResponse = (ActivateSessionResponse) opcuaActivateResponse.getMessage();
 
-                ActivateSessionResponse activateMessageResponse = (ActivateSessionResponse) opcuaActivateResponse.getMessage();
+                    long returnedRequestHandle = activateMessageResponse.getResponseHeader().getRequestHandle();
+                    if (!(requestHandle == returnedRequestHandle)) {
+                        LOGGER.error("Request handle isn't as expected, we might have missed a packet. {} != {}" ,requestHandle,  returnedRequestHandle);
+                    }
 
-                long returnedRequestHandle = activateMessageResponse.getResponseHeader().getRequestHandle();
-                if (!(requestHandle == returnedRequestHandle)) {
-                    LOGGER.error("Request handle isn't as expected, we might have missed a packet. {} != {}" ,requestHandle,  returnedRequestHandle);
+                    // Send an event that connection setup is complete.
+                    context.fireConnected();
                 }
-
-                // Send an event that connection setup is complete.
-                context.fireConnected();
             });
     }
 
@@ -563,7 +566,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
                 nodeId = new NodeIdNumeric(NodeIdType.nodeIdTypeNumeric, new NumericNodeId(field.getNamespace(),Long.valueOf(field.getIdentifier())));
             } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), field.getIdentifier()));
+                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), toGuidValue(field.getIdentifier())));
             } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
                 nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
             }
@@ -620,7 +623,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         int count = 0;
         for ( String field : fieldNames ) {
             PlcValue value = null;
-            if (results[count].getStatusCode() == null) {
+            if (results[count].getValueSpecified()) {
                 Variant variant = results[count].getValue();
                 LOGGER.info("Response of type {}", variant.getClass().toString());
                 if (variant instanceof VariantBoolean) {
@@ -1059,7 +1062,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
                 nodeId = new NodeIdNumeric(NodeIdType.nodeIdTypeNumeric, new NumericNodeId(field.getNamespace(),Long.valueOf(field.getIdentifier())));
             } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), field.getIdentifier()));
+                nodeId = new NodeIdGuid(NodeIdType.nodeIdTypeGuid, new GuidNodeId(field.getNamespace(), toGuidValue(field.getIdentifier())));
             } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
                 nodeId = new NodeIdString(NodeIdType.nodeIdTypeString, new StringNodeId(field.getNamespace(), new PascalString(field.getIdentifier().length(), field.getIdentifier())));
             }
@@ -1183,11 +1186,71 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return (dateTime - epochOffset) / 10000;
     }
 
-    public byte[] encrypt(String data, byte[] publicKey) {
+    /**
+     * Creates an IdentityToken to authenticate with a server.
+     * @param securityPolicy
+     * @return returns an ExtensionObject with an IdentityToken.
+     */
+    private ExtensionObject getIdentityToken(String securityPolicy) {
+        ExpandedNodeId extExpandedNodeId = null;
+        ExtensionObject userIdentityToken = null;
+        switch (securityPolicy) {
+            case "none":
+                //If we aren't using authentication tell the server we would like to login anonymously
+                PascalString anonymousIdentityToken = this.policyId;
+
+                WriteBuffer buffer = new WriteBuffer(anonymousIdentityToken.getLengthInBytes(), true);
+                try{
+                    PascalStringIO.staticSerialize(buffer, anonymousIdentityToken);
+                } catch (ParseException e) {
+                    LOGGER.error("Failed to serialize the user identity token - {}", anonymousIdentityToken.getStringValue());
+                }
+                extExpandedNodeId = new ExpandedNodeIdFourByte(false,
+                    false,
+                    null,
+                    null,
+                    new FourByteNodeId((short) 0,  OpcuaNodeIdServices.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()));
+                return new ExtensionObject(extExpandedNodeId, (short) 1, buffer.getData().length, buffer.getData());
+            case "username":
+                //Encrypt the password using the server nonce and server public key
+                byte[] passwordBytes = this.password.getBytes();
+                ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + this.senderNonce.length);
+                encodeableBuffer.order(ByteOrder.LITTLE_ENDIAN);
+                encodeableBuffer.putInt(passwordBytes.length + this.senderNonce.length);
+                encodeableBuffer.put(passwordBytes);
+                encodeableBuffer.put(this.senderNonce);
+                byte[] encodeablePassword = new byte[4 + passwordBytes.length + this.senderNonce.length];
+                encodeableBuffer.position(0);
+                encodeableBuffer.get(encodeablePassword);
+
+                byte[] encryptedPassword = encrypt(encodeablePassword, senderCertificate);
+                UserNameIdentityToken userNameIdentityToken =  new UserNameIdentityToken(
+                    new PascalString("username".length(), "username"),
+                    new PascalString(this.username.length(), this.username),
+                    new PascalByteString(encryptedPassword.length, encryptedPassword),
+                    new PascalString(PASSWORD_ENCRYPTION_ALGORITHM.length(), PASSWORD_ENCRYPTION_ALGORITHM)
+                );
+                WriteBuffer bufferUserName = new WriteBuffer(userNameIdentityToken.getLengthInBytes(), true);
+                try{
+                    UserNameIdentityTokenIO.staticSerialize(bufferUserName, userNameIdentityToken);
+                } catch (ParseException e) {
+                    LOGGER.error("Failed to serialize the user identity token - {}", userNameIdentityToken);
+                }
+                extExpandedNodeId = new ExpandedNodeIdFourByte(false,
+                    false,
+                    null,
+                    null,
+                    new FourByteNodeId((short) 0,  OpcuaNodeIdServices.UserNameIdentityToken_Encoding_DefaultBinary.getValue()));
+                return new ExtensionObject(extExpandedNodeId, (short) 1, bufferUserName.getData().length, bufferUserName.getData());
+        }
+        return null;
+    }
+
+    public byte[] encrypt(byte[] data, byte[] publicKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getCertificateX509().getPublicKey());
-            return cipher.doFinal(data.getBytes());
+            return cipher.doFinal(data);
         } catch (Exception e) {
             LOGGER.error("Unable to encrypt Data");
             return null;
@@ -1202,5 +1265,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             LOGGER.error("Unable to get certificate from String {}", this.senderCertificate);
             return null;
         }
+    }
+
+    private GuidValue toGuidValue(String identifier) {
+        LOGGER.error("Querying Guid nodes is not supported");
+        byte[] data4 = new byte[] {0,0};
+        byte[] data5 = new byte[] {0,0,0,0,0,0};
+        return new GuidValue(0L,0,0,data4, data5);
+
     }
 }

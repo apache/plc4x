@@ -64,7 +64,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
                                                                     INET_ADDRESS_PATTERN +
-                                                                    "(?<transportEndpoint>[\\w/=]+)[\\?]?" +
+                                                                    "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
                                                                     "(?<paramString>[\\&\\w=]+\\=[\\w&]+)*"
                                                                 );
 
