@@ -162,7 +162,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/components/packages/${project.artifactId}-${project.version}.zip</file>
+                  <file>${project.build.directory}/components/packages/plc4x-${project.artifactId}-${project.version}.zip</file>
                   <type>zip</type>
                   <classifier>standalone</classifier>
                 </artifact>
