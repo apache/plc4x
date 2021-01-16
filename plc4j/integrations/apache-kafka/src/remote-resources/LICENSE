@@ -1,0 +1,7 @@
+===============================================================
+
+The files:
+src/main/java/org/apache/plc4x/java/opcuaserver/OPCUAServer.java
+src/main/java/org/apache/plc4x/java/opcuaserver/KeyStoreLoader.java
+src/main/java/org/apache/plc4x/java/opcuaserver/backend/Plc4xNamespace.java
+are derivative works of the Eclipse Milo project and are licensed under the EPL 2.0 license.
