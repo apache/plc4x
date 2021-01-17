@@ -74,8 +74,8 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 
 			// Create a read-request to read the manufacturer and hardware ids
 			readRequestBuilder := connection.ReadRequestBuilder()
-            readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
-            readRequestBuilder.AddItem("programVersion", result.Address+"/0/13")
+			readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
+			readRequestBuilder.AddItem("programVersion", result.Address+"/0/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
 				t.Errorf("Error creating read-request. %s", err.Error())
@@ -94,18 +94,19 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 
 			// Check the response
 			readResponse := readResult.Response
-            if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
-                t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
-                t.Fail()
-                return
-            }if readResponse.GetResponseCode("programVersion") != apiModel.PlcResponseCode_OK {
+			if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
+				t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
+				t.Fail()
+				return
+			}
+			if readResponse.GetResponseCode("programVersion") != apiModel.PlcResponseCode_OK {
 				t.Errorf("Got response code %d for 'hardwareType'", readResponse.GetResponseCode("programVersion"))
 				t.Fail()
 				return
 			}
 
-            manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
-            programVersion := readResponse.GetValue("programVersion").GetRaw()
+			manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
+			programVersion := readResponse.GetValue("programVersion").GetRaw()
 			fmt.Printf(" - Manufacturer Id: %d, Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersion))
 		}
 	}
