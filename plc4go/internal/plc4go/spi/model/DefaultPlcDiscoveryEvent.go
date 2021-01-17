@@ -23,36 +23,31 @@ import (
 )
 
 type DefaultPlcDiscoveryEvent struct {
-    protocolCode string
-    transportCode string
-    transportUrl url.URL
-    options map[string][]string
+	protocolCode  string
+	transportCode string
+	transportUrl  url.URL
+	options       map[string][]string
 }
 
 func (d DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-    return d.transportCode
+	return d.transportCode
 }
 
 func (d DefaultPlcDiscoveryEvent) GetTransportCode() string {
-    return d.transportCode
+	return d.transportCode
 }
 
 func (d DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
-    return d.transportUrl
+	return d.transportUrl
 }
 
 func (d DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
-    return d.options
+	return d.options
 }
 
 func (d DefaultPlcDiscoveryEvent) GetConnectionString() string {
-    if d.options != nil {
-        panic("Not implemented")
-    }
-    return d.protocolCode + ":" + d.transportCode + "//" + d.transportUrl.Host
+	if d.options != nil {
+		panic("Not implemented")
+	}
+	return d.protocolCode + ":" + d.transportCode + "//" + d.transportUrl.Host
 }
-
-
-
-
-

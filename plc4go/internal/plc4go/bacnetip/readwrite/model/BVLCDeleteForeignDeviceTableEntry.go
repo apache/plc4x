@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BVLCDeleteForeignDeviceTableEntry struct {
-    Parent *BVLC
-    IBVLCDeleteForeignDeviceTableEntry
+	Parent *BVLC
+	IBVLCDeleteForeignDeviceTableEntry
 }
 
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
-    return 0x08
+	return 0x08
 }
-
 
 func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {
 }
 
 func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
-    child := &BVLCDeleteForeignDeviceTableEntry{
-        Parent: NewBVLC(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BVLCDeleteForeignDeviceTableEntry{
+		Parent: NewBVLC(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) *BVLCDeleteForeignDeviceTableEntry {
-    castFunc := func(typ interface{}) *BVLCDeleteForeignDeviceTableEntry {
-        if casted, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BVLCDeleteForeignDeviceTableEntry); ok {
-            return casted
-        }
-        if casted, ok := typ.(BVLC); ok {
-            return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
-        }
-        if casted, ok := typ.(*BVLC); ok {
-            return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BVLCDeleteForeignDeviceTableEntry {
+		if casted, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BVLCDeleteForeignDeviceTableEntry); ok {
+			return casted
+		}
+		if casted, ok := typ.(BVLC); ok {
+			return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
+		}
+		if casted, ok := typ.(*BVLC); ok {
+			return CastBVLCDeleteForeignDeviceTableEntry(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
-    return "BVLCDeleteForeignDeviceTableEntry"
+	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-    // Create a partially initialized instance
-    _child := &BVLCDeleteForeignDeviceTableEntry{
-        Parent: &BVLC{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BVLCDeleteForeignDeviceTableEntry{
+		Parent: &BVLC{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

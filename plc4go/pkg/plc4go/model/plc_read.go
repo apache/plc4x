@@ -33,16 +33,15 @@ type PlcReadRequestResult struct {
 
 type PlcReadRequest interface {
 	Execute() <-chan PlcReadRequestResult
-    GetFieldNames() []string
+	GetFieldNames() []string
 	GetField(name string) PlcField
 	PlcRequest
 }
 
 type PlcReadResponse interface {
-    GetRequest() PlcReadRequest
-    GetFieldNames() []string
-    GetResponseCode(name string) PlcResponseCode
-    GetValue(name string) values.PlcValue
-    PlcResponse
+	GetRequest() PlcReadRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	GetValue(name string) values.PlcValue
+	PlcResponse
 }
-

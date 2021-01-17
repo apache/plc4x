@@ -19,75 +19,75 @@
 package values
 
 import (
-    "encoding/xml"
-    api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"encoding/xml"
+	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type PlcBitString struct {
-    Values []api.PlcValue
-    PlcValueAdapter
+	Values []api.PlcValue
+	PlcValueAdapter
 }
 
 func NewPlcBitString(value interface{}) PlcBitString {
-    var bools []api.PlcValue
+	var bools []api.PlcValue
 
-    switch value.(type) {
-    case uint8:
-        bools = make([]api.PlcValue, 8)
-        for i := 0; i < 8; i++ {
-            bools[0] = NewPlcBOOL(((value.(uint8) >> ((8 - 1) - i)) & 0x01) == 0x01)
-        }
-    case uint16:
-        bools = make([]api.PlcValue, 16)
-        for i := 0; i < 16; i++ {
-            bools[0] = NewPlcBOOL(((value.(uint16) >> ((16 - 1) - i)) & 0x01) == 0x01)
-        }
-    case uint32:
-        bools = make([]api.PlcValue, 32)
-        for i := 0; i < 32; i++ {
-            bools[0] = NewPlcBOOL(((value.(uint32) >> ((32 - 1) - i)) & 0x01) == 0x01)
-        }
-    case uint64:
-        bools = make([]api.PlcValue, 64)
-        for i := 0; i < 64; i++ {
-            bools[0] = NewPlcBOOL(((value.(uint64) >> ((64 - 1) - i)) & 0x01) == 0x01)
-        }
-    }
+	switch value.(type) {
+	case uint8:
+		bools = make([]api.PlcValue, 8)
+		for i := 0; i < 8; i++ {
+			bools[0] = NewPlcBOOL(((value.(uint8) >> ((8 - 1) - i)) & 0x01) == 0x01)
+		}
+	case uint16:
+		bools = make([]api.PlcValue, 16)
+		for i := 0; i < 16; i++ {
+			bools[0] = NewPlcBOOL(((value.(uint16) >> ((16 - 1) - i)) & 0x01) == 0x01)
+		}
+	case uint32:
+		bools = make([]api.PlcValue, 32)
+		for i := 0; i < 32; i++ {
+			bools[0] = NewPlcBOOL(((value.(uint32) >> ((32 - 1) - i)) & 0x01) == 0x01)
+		}
+	case uint64:
+		bools = make([]api.PlcValue, 64)
+		for i := 0; i < 64; i++ {
+			bools[0] = NewPlcBOOL(((value.(uint64) >> ((64 - 1) - i)) & 0x01) == 0x01)
+		}
+	}
 
-    return PlcBitString{
-        Values: bools,
-    }
+	return PlcBitString{
+		Values: bools,
+	}
 }
 
 func (m PlcBitString) IsList() bool {
-    return true
+	return true
 }
 
 func (m PlcBitString) GetLength() uint32 {
-    return uint32(len(m.Values))
+	return uint32(len(m.Values))
 }
 
 func (m PlcBitString) GetIndex(i uint32) api.PlcValue {
-    return m.Values[i]
+	return m.Values[i]
 }
 
 func (m PlcBitString) GetList() []api.PlcValue {
-    return m.Values
+	return m.Values
 }
 
 func (m PlcBitString) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
-        return err
-    }
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
+		return err
+	}
 
-    for _, value := range m.Values {
-        if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
-            return err
-        }
-    }
+	for _, value := range m.Values {
+		if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
+			return err
+		}
+	}
 
-    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
+		return err
+	}
+	return nil
 }

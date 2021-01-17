@@ -19,125 +19,123 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusRequest struct {
-    Parent *ModbusPDU
-    IModbusPDUReadExceptionStatusRequest
+	Parent *ModbusPDU
+	IModbusPDUReadExceptionStatusRequest
 }
 
 // The corresponding interface
 type IModbusPDUReadExceptionStatusRequest interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadExceptionStatusRequest) ErrorFlag() bool {
-    return false
+	return false
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) FunctionFlag() uint8 {
-    return 0x07
+	return 0x07
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) Response() bool {
-    return false
+	return false
 }
-
 
 func (m *ModbusPDUReadExceptionStatusRequest) InitializeParent(parent *ModbusPDU) {
 }
 
 func NewModbusPDUReadExceptionStatusRequest() *ModbusPDU {
-    child := &ModbusPDUReadExceptionStatusRequest{
-        Parent: NewModbusPDU(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ModbusPDUReadExceptionStatusRequest{
+		Parent: NewModbusPDU(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastModbusPDUReadExceptionStatusRequest(structType interface{}) *ModbusPDUReadExceptionStatusRequest {
-    castFunc := func(typ interface{}) *ModbusPDUReadExceptionStatusRequest {
-        if casted, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ModbusPDUReadExceptionStatusRequest); ok {
-            return casted
-        }
-        if casted, ok := typ.(ModbusPDU); ok {
-            return CastModbusPDUReadExceptionStatusRequest(casted.Child)
-        }
-        if casted, ok := typ.(*ModbusPDU); ok {
-            return CastModbusPDUReadExceptionStatusRequest(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ModbusPDUReadExceptionStatusRequest {
+		if casted, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ModbusPDUReadExceptionStatusRequest); ok {
+			return casted
+		}
+		if casted, ok := typ.(ModbusPDU); ok {
+			return CastModbusPDUReadExceptionStatusRequest(casted.Child)
+		}
+		if casted, ok := typ.(*ModbusPDU); ok {
+			return CastModbusPDUReadExceptionStatusRequest(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) GetTypeName() string {
-    return "ModbusPDUReadExceptionStatusRequest"
+	return "ModbusPDUReadExceptionStatusRequest"
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadExceptionStatusRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
-    // Create a partially initialized instance
-    _child := &ModbusPDUReadExceptionStatusRequest{
-        Parent: &ModbusPDU{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ModbusPDUReadExceptionStatusRequest{
+		Parent: &ModbusPDU{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ModbusPDUReadExceptionStatusRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

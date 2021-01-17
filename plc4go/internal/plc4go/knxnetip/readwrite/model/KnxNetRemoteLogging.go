@@ -19,146 +19,144 @@
 package model
 
 import (
-    "encoding/xml"
-    "errors"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type KnxNetRemoteLogging struct {
-    Version uint8
-    Parent *ServiceId
-    IKnxNetRemoteLogging
+	Version uint8
+	Parent  *ServiceId
+	IKnxNetRemoteLogging
 }
 
 // The corresponding interface
 type IKnxNetRemoteLogging interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *KnxNetRemoteLogging) ServiceType() uint8 {
-    return 0x06
+	return 0x06
 }
-
 
 func (m *KnxNetRemoteLogging) InitializeParent(parent *ServiceId) {
 }
 
-func NewKnxNetRemoteLogging(version uint8, ) *ServiceId {
-    child := &KnxNetRemoteLogging{
-        Version: version,
-        Parent: NewServiceId(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+func NewKnxNetRemoteLogging(version uint8) *ServiceId {
+	child := &KnxNetRemoteLogging{
+		Version: version,
+		Parent:  NewServiceId(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastKnxNetRemoteLogging(structType interface{}) *KnxNetRemoteLogging {
-    castFunc := func(typ interface{}) *KnxNetRemoteLogging {
-        if casted, ok := typ.(KnxNetRemoteLogging); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*KnxNetRemoteLogging); ok {
-            return casted
-        }
-        if casted, ok := typ.(ServiceId); ok {
-            return CastKnxNetRemoteLogging(casted.Child)
-        }
-        if casted, ok := typ.(*ServiceId); ok {
-            return CastKnxNetRemoteLogging(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *KnxNetRemoteLogging {
+		if casted, ok := typ.(KnxNetRemoteLogging); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*KnxNetRemoteLogging); ok {
+			return casted
+		}
+		if casted, ok := typ.(ServiceId); ok {
+			return CastKnxNetRemoteLogging(casted.Child)
+		}
+		if casted, ok := typ.(*ServiceId); ok {
+			return CastKnxNetRemoteLogging(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *KnxNetRemoteLogging) GetTypeName() string {
-    return "KnxNetRemoteLogging"
+	return "KnxNetRemoteLogging"
 }
 
 func (m *KnxNetRemoteLogging) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Simple field (version)
-    lengthInBits += 8
+	// Simple field (version)
+	lengthInBits += 8
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *KnxNetRemoteLogging) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func KnxNetRemoteLoggingParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
-    // Simple Field (version)
-    version, _versionErr := io.ReadUint8(8)
-    if _versionErr != nil {
-        return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
-    }
+	// Simple Field (version)
+	version, _versionErr := io.ReadUint8(8)
+	if _versionErr != nil {
+		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+	}
 
-    // Create a partially initialized instance
-    _child := &KnxNetRemoteLogging{
-        Version: version,
-        Parent: &ServiceId{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &KnxNetRemoteLogging{
+		Version: version,
+		Parent:  &ServiceId{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-    // Simple Field (version)
-    version := uint8(m.Version)
-    _versionErr := io.WriteUint8(8, (version))
-    if _versionErr != nil {
-        return errors.New("Error serializing 'version' field " + _versionErr.Error())
-    }
+		// Simple Field (version)
+		version := uint8(m.Version)
+		_versionErr := io.WriteUint8(8, (version))
+		if _versionErr != nil {
+			return errors.New("Error serializing 'version' field " + _versionErr.Error())
+		}
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *KnxNetRemoteLogging) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "version":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Version = data
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "version":
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.Version = data
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *KnxNetRemoteLogging) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
+		return err
+	}
+	return nil
 }
-

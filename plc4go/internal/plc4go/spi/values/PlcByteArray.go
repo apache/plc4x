@@ -19,13 +19,13 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type PlcByteArray struct {
 	Values []byte
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func NewPlcByteArray(values []byte) PlcByteArray {

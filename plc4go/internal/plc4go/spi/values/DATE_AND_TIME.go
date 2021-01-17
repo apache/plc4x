@@ -19,13 +19,13 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"time"
 )
 
 type PlcDATE_AND_TIME struct {
 	value time.Time
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {

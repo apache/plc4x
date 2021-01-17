@@ -37,7 +37,7 @@ func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, res
 }
 
 func (m DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionRequest {
-    return m.request
+	return m.request
 }
 
 func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {

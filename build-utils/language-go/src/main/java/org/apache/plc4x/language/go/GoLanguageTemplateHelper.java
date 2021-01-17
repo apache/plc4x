@@ -793,7 +793,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"errors\"");
         }
 
-        imports.add("\"io\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
 
         // At least one reserved field or simple field with complex type
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
@@ -801,13 +801,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("log \"github.com/sirupsen/logrus\"");
         }
 
+        imports.add("\"io\"");
+
         // For CEIL functions: "math"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
             FieldUtils.contains(field, "CEIL"))) {
             imports.add("\"math\"");
         }
-
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
 
         // For Constant field: "strconv"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->

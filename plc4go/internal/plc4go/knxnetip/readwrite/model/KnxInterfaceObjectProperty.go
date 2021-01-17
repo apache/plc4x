@@ -3742,7 +3742,6 @@ func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
 		}
 	}
 }
-
 func KnxInterfaceObjectPropertyByValue(value uint32) KnxInterfaceObjectProperty {
 	switch value {
 	case 0:

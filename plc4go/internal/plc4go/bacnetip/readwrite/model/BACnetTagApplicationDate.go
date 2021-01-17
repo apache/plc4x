@@ -19,121 +19,119 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationDate struct {
-    Parent *BACnetTag
-    IBACnetTagApplicationDate
+	Parent *BACnetTag
+	IBACnetTagApplicationDate
 }
 
 // The corresponding interface
 type IBACnetTagApplicationDate interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetTagApplicationDate) ContextSpecificTag() uint8 {
-    return 0
+	return 0
 }
 
-
 func (m *BACnetTagApplicationDate) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-    m.Parent.TypeOrTagNumber = typeOrTagNumber
-    m.Parent.LengthValueType = lengthValueType
-    m.Parent.ExtTagNumber = extTagNumber
-    m.Parent.ExtLength = extLength
+	m.Parent.TypeOrTagNumber = typeOrTagNumber
+	m.Parent.LengthValueType = lengthValueType
+	m.Parent.ExtTagNumber = extTagNumber
+	m.Parent.ExtLength = extLength
 }
 
 func NewBACnetTagApplicationDate(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
-    child := &BACnetTagApplicationDate{
-        Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BACnetTagApplicationDate{
+		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBACnetTagApplicationDate(structType interface{}) *BACnetTagApplicationDate {
-    castFunc := func(typ interface{}) *BACnetTagApplicationDate {
-        if casted, ok := typ.(BACnetTagApplicationDate); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BACnetTagApplicationDate); ok {
-            return casted
-        }
-        if casted, ok := typ.(BACnetTag); ok {
-            return CastBACnetTagApplicationDate(casted.Child)
-        }
-        if casted, ok := typ.(*BACnetTag); ok {
-            return CastBACnetTagApplicationDate(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BACnetTagApplicationDate {
+		if casted, ok := typ.(BACnetTagApplicationDate); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BACnetTagApplicationDate); ok {
+			return casted
+		}
+		if casted, ok := typ.(BACnetTag); ok {
+			return CastBACnetTagApplicationDate(casted.Child)
+		}
+		if casted, ok := typ.(*BACnetTag); ok {
+			return CastBACnetTagApplicationDate(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BACnetTagApplicationDate) GetTypeName() string {
-    return "BACnetTagApplicationDate"
+	return "BACnetTagApplicationDate"
 }
 
 func (m *BACnetTagApplicationDate) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BACnetTagApplicationDate) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BACnetTagApplicationDateParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 
-    // Create a partially initialized instance
-    _child := &BACnetTagApplicationDate{
-        Parent: &BACnetTag{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BACnetTagApplicationDate{
+		Parent: &BACnetTag{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BACnetTagApplicationDate) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetTagApplicationDate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BACnetTagApplicationDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

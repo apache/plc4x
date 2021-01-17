@@ -21,7 +21,7 @@ package values
 import "encoding/xml"
 
 type PlcNULL struct {
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func NewPlcNULL() PlcNULL {

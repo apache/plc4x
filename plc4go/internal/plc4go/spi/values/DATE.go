@@ -19,29 +19,29 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"time"
 )
 
 type PlcDATE struct {
 	value time.Time
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func NewPlcDATE(value interface{}) PlcDATE {
-    var timeValue time.Time
-    switch value.(type) {
-    case time.Time:
-        timeValue = value.(time.Time)
-    case uint16:
-        // In this case the date is the number of days since 1990-01-01
-        // So we gotta add 7305 days to the value to have it relative to epoch
-        // Then we also need to transform it from days to seconds by multiplying by 86400
-        timeValue = time.Unix((int64(value.(uint16)) + 7305) * 86400, 0)
-    case uint32:
-        // Interpreted as "seconds since epoch"
-        timeValue = time.Unix(int64(value.(uint32)), 0)
-    }
+	var timeValue time.Time
+	switch value.(type) {
+	case time.Time:
+		timeValue = value.(time.Time)
+	case uint16:
+		// In this case the date is the number of days since 1990-01-01
+		// So we gotta add 7305 days to the value to have it relative to epoch
+		// Then we also need to transform it from days to seconds by multiplying by 86400
+		timeValue = time.Unix((int64(value.(uint16))+7305)*86400, 0)
+	case uint32:
+		// Interpreted as "seconds since epoch"
+		timeValue = time.Unix(int64(value.(uint32)), 0)
+	}
 	safeValue := time.Date(timeValue.Year(), timeValue.Month(), timeValue.Day(), 0, 0, 0, 0, timeValue.Location())
 	return PlcDATE{
 		value: safeValue,
