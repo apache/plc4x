@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKAtomicWriteFile struct {
-    Parent *BACnetConfirmedServiceACK
-    IBACnetConfirmedServiceACKAtomicWriteFile
+	Parent *BACnetConfirmedServiceACK
+	IBACnetConfirmedServiceACKAtomicWriteFile
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicWriteFile interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) ServiceChoice() uint8 {
-    return 0x07
+	return 0x07
 }
-
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
 func NewBACnetConfirmedServiceACKAtomicWriteFile() *BACnetConfirmedServiceACK {
-    child := &BACnetConfirmedServiceACKAtomicWriteFile{
-        Parent: NewBACnetConfirmedServiceACK(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BACnetConfirmedServiceACKAtomicWriteFile{
+		Parent: NewBACnetConfirmedServiceACK(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKAtomicWriteFile(structType interface{}) *BACnetConfirmedServiceACKAtomicWriteFile {
-    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKAtomicWriteFile {
-        if casted, ok := typ.(BACnetConfirmedServiceACKAtomicWriteFile); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BACnetConfirmedServiceACKAtomicWriteFile); ok {
-            return casted
-        }
-        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-            return CastBACnetConfirmedServiceACKAtomicWriteFile(casted.Child)
-        }
-        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-            return CastBACnetConfirmedServiceACKAtomicWriteFile(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKAtomicWriteFile {
+		if casted, ok := typ.(BACnetConfirmedServiceACKAtomicWriteFile); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BACnetConfirmedServiceACKAtomicWriteFile); ok {
+			return casted
+		}
+		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+			return CastBACnetConfirmedServiceACKAtomicWriteFile(casted.Child)
+		}
+		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+			return CastBACnetConfirmedServiceACKAtomicWriteFile(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetTypeName() string {
-    return "BACnetConfirmedServiceACKAtomicWriteFile"
+	return "BACnetConfirmedServiceACKAtomicWriteFile"
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKAtomicWriteFileParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-    // Create a partially initialized instance
-    _child := &BACnetConfirmedServiceACKAtomicWriteFile{
-        Parent: &BACnetConfirmedServiceACK{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BACnetConfirmedServiceACKAtomicWriteFile{
+		Parent: &BACnetConfirmedServiceACK{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

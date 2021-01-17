@@ -23,5 +23,5 @@ import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 type Message interface {
 	LengthInBytes() uint16
 	LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
+	Serialize(io utils.WriteBuffer) error
 }

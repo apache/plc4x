@@ -41,4 +41,3 @@ type PlcWriteRequest interface {
 
 type PlcWriteResponse interface {
 }
-

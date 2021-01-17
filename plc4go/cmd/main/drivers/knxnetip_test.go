@@ -22,7 +22,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -75,8 +74,8 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 
 			// Create a read-request to read the manufacturer and hardware ids
 			readRequestBuilder := connection.ReadRequestBuilder()
-			readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
-			readRequestBuilder.AddItem("hardwareType", result.Address+"/0/78")
+            readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
+            readRequestBuilder.AddItem("programVersion", result.Address+"/0/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
 				t.Errorf("Error creating read-request. %s", err.Error())
@@ -95,28 +94,19 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 
 			// Check the response
 			readResponse := readResult.Response
-			if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
-				t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
-				t.Fail()
-				return
-			}
-			if readResponse.GetResponseCode("hardwareType") != apiModel.PlcResponseCode_OK {
-				t.Errorf("Got response code %d for 'hardwareType'", readResponse.GetResponseCode("hardwareType"))
+            if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
+                t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
+                t.Fail()
+                return
+            }if readResponse.GetResponseCode("programVersion") != apiModel.PlcResponseCode_OK {
+				t.Errorf("Got response code %d for 'hardwareType'", readResponse.GetResponseCode("programVersion"))
 				t.Fail()
 				return
 			}
 
-			// Process the results
-			manufacturerId := readResponse.GetValue("manufacturerId")
-			manufacturerName := ""
-			for manufacturer := model.KnxManufacturer_M_UNKNOWN; manufacturer <= model.KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED; manufacturer++ {
-				if manufacturer.Number() == manufacturerId.GetUint16() {
-					manufacturerName = manufacturer.Name()
-					break
-				}
-			}
-			hardwareType := readResponse.GetValue("hardwareType").GetRaw()
-			fmt.Printf(" - Manufacturer: %d: %s\n - Hardware Type: %s\n", manufacturerId.GetUint16(), manufacturerName, hex.EncodeToString(hardwareType))
+            manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
+            programVersion := readResponse.GetValue("programVersion").GetRaw()
+			fmt.Printf(" - Manufacturer Id: %d, Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersion))
 		}
 	}
 }
@@ -291,7 +281,8 @@ func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
 
 	readRequestBuilder := connection.ReadRequestBuilder()
 	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
-	readRequestBuilder.AddItem("hardwareType", "1.1.10/0/78")
+	readRequestBuilder.AddItem("programVersion", "1.1.10/3/13")
+	//readRequestBuilder.AddItem("hardwareType", "1.1.10/0/78")
 	readRequest, _ := readRequestBuilder.Build()
 
 	rrr := readRequest.Execute()

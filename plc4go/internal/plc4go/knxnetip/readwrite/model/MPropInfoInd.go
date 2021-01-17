@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type MPropInfoInd struct {
-    Parent *CEMI
-    IMPropInfoInd
+	Parent *CEMI
+	IMPropInfoInd
 }
 
 // The corresponding interface
 type IMPropInfoInd interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *MPropInfoInd) MessageCode() uint8 {
-    return 0xF7
+	return 0xF7
 }
-
 
 func (m *MPropInfoInd) InitializeParent(parent *CEMI) {
 }
 
 func NewMPropInfoInd() *CEMI {
-    child := &MPropInfoInd{
-        Parent: NewCEMI(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &MPropInfoInd{
+		Parent: NewCEMI(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastMPropInfoInd(structType interface{}) *MPropInfoInd {
-    castFunc := func(typ interface{}) *MPropInfoInd {
-        if casted, ok := typ.(MPropInfoInd); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*MPropInfoInd); ok {
-            return casted
-        }
-        if casted, ok := typ.(CEMI); ok {
-            return CastMPropInfoInd(casted.Child)
-        }
-        if casted, ok := typ.(*CEMI); ok {
-            return CastMPropInfoInd(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *MPropInfoInd {
+		if casted, ok := typ.(MPropInfoInd); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*MPropInfoInd); ok {
+			return casted
+		}
+		if casted, ok := typ.(CEMI); ok {
+			return CastMPropInfoInd(casted.Child)
+		}
+		if casted, ok := typ.(*CEMI); ok {
+			return CastMPropInfoInd(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *MPropInfoInd) GetTypeName() string {
-    return "MPropInfoInd"
+	return "MPropInfoInd"
 }
 
 func (m *MPropInfoInd) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *MPropInfoInd) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func MPropInfoIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-    // Create a partially initialized instance
-    _child := &MPropInfoInd{
-        Parent: &CEMI{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &MPropInfoInd{
+		Parent: &CEMI{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *MPropInfoInd) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *MPropInfoInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *MPropInfoInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

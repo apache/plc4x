@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
-    Parent *BACnetConfirmedServiceRequest
-    IBACnetConfirmedServiceRequestDeviceCommunicationControl
+	Parent *BACnetConfirmedServiceRequest
+	IBACnetConfirmedServiceRequestDeviceCommunicationControl
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) ServiceChoice() uint8 {
-    return 0x11
+	return 0x11
 }
-
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
 
 func NewBACnetConfirmedServiceRequestDeviceCommunicationControl() *BACnetConfirmedServiceRequest {
-    child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
-        Parent: NewBACnetConfirmedServiceRequest(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		Parent: NewBACnetConfirmedServiceRequest(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
-    castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
-        if casted, ok := typ.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
-            return casted
-        }
-        if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
-            return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
-        }
-        if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
-            return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BACnetConfirmedServiceRequestDeviceCommunicationControl {
+		if casted, ok := typ.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
+			return casted
+		}
+		if casted, ok := typ.(BACnetConfirmedServiceRequest); ok {
+			return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
+		}
+		if casted, ok := typ.(*BACnetConfirmedServiceRequest); ok {
+			return CastBACnetConfirmedServiceRequestDeviceCommunicationControl(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTypeName() string {
-    return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
+	return "BACnetConfirmedServiceRequestDeviceCommunicationControl"
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
-    // Create a partially initialized instance
-    _child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
-        Parent: &BACnetConfirmedServiceRequest{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		Parent: &BACnetConfirmedServiceRequest{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

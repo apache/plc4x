@@ -19,7 +19,7 @@
 package testutils
 
 import (
-    "errors"
+	"errors"
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"os"

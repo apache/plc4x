@@ -19,13 +19,13 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"unicode/utf16"
 )
 
 type PlcWSTRING struct {
 	value []rune
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcWSTRING(value []uint16) PlcWSTRING {

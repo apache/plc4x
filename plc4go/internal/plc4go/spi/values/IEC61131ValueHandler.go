@@ -19,7 +19,7 @@
 package values
 
 import (
-    "errors"
+	"errors"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"reflect"

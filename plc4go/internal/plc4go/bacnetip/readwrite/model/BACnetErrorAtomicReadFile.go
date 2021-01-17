@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BACnetErrorAtomicReadFile struct {
-    Parent *BACnetError
-    IBACnetErrorAtomicReadFile
+	Parent *BACnetError
+	IBACnetErrorAtomicReadFile
 }
 
 // The corresponding interface
 type IBACnetErrorAtomicReadFile interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
-    return 0x06
+	return 0x06
 }
-
 
 func (m *BACnetErrorAtomicReadFile) InitializeParent(parent *BACnetError) {
 }
 
 func NewBACnetErrorAtomicReadFile() *BACnetError {
-    child := &BACnetErrorAtomicReadFile{
-        Parent: NewBACnetError(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BACnetErrorAtomicReadFile{
+		Parent: NewBACnetError(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBACnetErrorAtomicReadFile(structType interface{}) *BACnetErrorAtomicReadFile {
-    castFunc := func(typ interface{}) *BACnetErrorAtomicReadFile {
-        if casted, ok := typ.(BACnetErrorAtomicReadFile); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BACnetErrorAtomicReadFile); ok {
-            return casted
-        }
-        if casted, ok := typ.(BACnetError); ok {
-            return CastBACnetErrorAtomicReadFile(casted.Child)
-        }
-        if casted, ok := typ.(*BACnetError); ok {
-            return CastBACnetErrorAtomicReadFile(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BACnetErrorAtomicReadFile {
+		if casted, ok := typ.(BACnetErrorAtomicReadFile); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BACnetErrorAtomicReadFile); ok {
+			return casted
+		}
+		if casted, ok := typ.(BACnetError); ok {
+			return CastBACnetErrorAtomicReadFile(casted.Child)
+		}
+		if casted, ok := typ.(*BACnetError); ok {
+			return CastBACnetErrorAtomicReadFile(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BACnetErrorAtomicReadFile) GetTypeName() string {
-    return "BACnetErrorAtomicReadFile"
+	return "BACnetErrorAtomicReadFile"
 }
 
 func (m *BACnetErrorAtomicReadFile) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BACnetErrorAtomicReadFileParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-    // Create a partially initialized instance
-    _child := &BACnetErrorAtomicReadFile{
-        Parent: &BACnetError{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BACnetErrorAtomicReadFile{
+		Parent: &BACnetError{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BACnetErrorAtomicReadFile) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BACnetErrorAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

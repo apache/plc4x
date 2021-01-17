@@ -19,141 +19,140 @@
 package model
 
 import (
-    "encoding/base64"
-    "encoding/xml"
-    "errors"
-    "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"encoding/base64"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type MACAddress struct {
-    Addr []int8
-    IMACAddress
+	Addr []int8
+	IMACAddress
 }
 
 // The corresponding interface
 type IMACAddress interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 func NewMACAddress(addr []int8) *MACAddress {
-    return &MACAddress{Addr: addr}
+	return &MACAddress{Addr: addr}
 }
 
 func CastMACAddress(structType interface{}) *MACAddress {
-    castFunc := func(typ interface{}) *MACAddress {
-        if casted, ok := typ.(MACAddress); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*MACAddress); ok {
-            return casted
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *MACAddress {
+		if casted, ok := typ.(MACAddress); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*MACAddress); ok {
+			return casted
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *MACAddress) GetTypeName() string {
-    return "MACAddress"
+	return "MACAddress"
 }
 
 func (m *MACAddress) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Array field
-    if len(m.Addr) > 0 {
-        lengthInBits += 8 * uint16(len(m.Addr))
-    }
+	// Array field
+	if len(m.Addr) > 0 {
+		lengthInBits += 8 * uint16(len(m.Addr))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *MACAddress) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
 
-    // Array field (addr)
-    // Count array
-    addr := make([]int8, uint16(6))
-    for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-        _item, _err := io.ReadInt8(8)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'addr' field " + _err.Error())
-        }
-        addr[curItem] = _item
-    }
+	// Array field (addr)
+	// Count array
+	addr := make([]int8, uint16(6))
+	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'addr' field " + _err.Error())
+		}
+		addr[curItem] = _item
+	}
 
-    // Create the instance
-    return NewMACAddress(addr), nil
+	// Create the instance
+	return NewMACAddress(addr), nil
 }
 
 func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
 
-    // Array Field (addr)
-    if m.Addr != nil {
-        for _, _element := range m.Addr {
-            _elementErr := io.WriteInt8(8, _element)
-            if _elementErr != nil {
-                return errors.New("Error serializing 'addr' field " + _elementErr.Error())
-            }
-        }
-    }
+	// Array Field (addr)
+	if m.Addr != nil {
+		for _, _element := range m.Addr {
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'addr' field " + _elementErr.Error())
+			}
+		}
+	}
 
-    return nil
+	return nil
 }
 
 func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    for {
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "addr":
-                var _encoded string
-                if err := d.DecodeElement(&_encoded, &tok); err != nil {
-                    return err
-                }
-                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
-                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
-                if err != nil {
-                    return err
-                }
-                m.Addr = utils.ByteArrayToInt8Array(_decoded[0:_len])
-            }
-        }
-    }
+	var token xml.Token
+	var err error
+	for {
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "addr":
+				var _encoded string
+				if err := d.DecodeElement(&_encoded, &tok); err != nil {
+					return err
+				}
+				_decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+				_len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+				if err != nil {
+					return err
+				}
+				m.Addr = utils.ByteArrayToInt8Array(_decoded[0:_len])
+			}
+		}
+	}
 }
 
 func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    className := "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: className},
-        }}); err != nil {
-        return err
-    }
-    _encodedAddr := make([]byte, base64.StdEncoding.EncodedLen(len(m.Addr)))
-    base64.StdEncoding.Encode(_encodedAddr, utils.Int8ArrayToByteArray(m.Addr))
-    if err := e.EncodeElement(_encodedAddr, xml.StartElement{Name: xml.Name{Local: "addr"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
-        return err
-    }
-    return nil
+	className := "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"
+	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "className"}, Value: className},
+	}}); err != nil {
+		return err
+	}
+	_encodedAddr := make([]byte, base64.StdEncoding.EncodedLen(len(m.Addr)))
+	base64.StdEncoding.Encode(_encodedAddr, utils.Int8ArrayToByteArray(m.Addr))
+	if err := e.EncodeElement(_encodedAddr, xml.StartElement{Name: xml.Name{Local: "addr"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+		return err
+	}
+	return nil
 }
-
