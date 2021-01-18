@@ -56,7 +56,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 }
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string) {
-<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+<#list type.enumValues as enumValue>
     if(strcmp(value_string, "${enumValue.name}") == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
@@ -70,7 +70,7 @@ int ${helper.getCTypeName(type.name)}_num_values() {
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_index(int index) {
     switch(index) {
-    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    <#list type.enumValues as enumValue>
       case ${enumValue?index}: {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
       }

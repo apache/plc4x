@@ -57,6 +57,14 @@ plc4c_return_code plc4c_transport_tcp_open_function(void* config) {
 
   plc4c_transport_tcp_config* tcp_config = config;
 
+#ifdef _WIN32
+  WSADATA wsa;
+  int wsa_res = WSAStartup(MAKEWORD(2,2), &wsa);
+  // Something happened when initializing the WinSock API usage
+  if (wsa_res != 0) {
+    return INTERNAL_ERROR;
+  }
+#endif
   tcp_config->sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (tcp_config->sockfd < 0) {
     return CONNECTION_ERROR;

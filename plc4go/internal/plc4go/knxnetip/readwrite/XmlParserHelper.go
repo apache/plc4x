@@ -16,7 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package readwrite
+package model
 
 import (
     "encoding/xml"
@@ -44,20 +44,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "DeviceDescriptorType2":
-        var obj *model.DeviceDescriptorType2
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "ChannelInformation":
-        var obj *model.ChannelInformation
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "DeviceConfigurationAckDataBlock":
         var obj *model.DeviceConfigurationAckDataBlock
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -67,13 +53,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
         return obj, nil
     case "ConnectionRequestInformation":
         var obj *model.ConnectionRequestInformation
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "Apdu":
-        var obj *model.Apdu
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())
@@ -198,20 +177,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
             return nil, errors.New("error unmarshalling xml: " + err.Error())
         }
         return obj, nil
-    case "ApduDataExt":
-        var obj *model.ApduDataExt
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "ApduControl":
-        var obj *model.ApduControl
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
     case "KnxGroupAddress":
         var obj *model.KnxGroupAddress
         err := xml.Unmarshal([]byte(xmlString), &obj)
@@ -221,13 +186,6 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
         return obj, nil
     case "MACAddress":
         var obj *model.MACAddress
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "ApduData":
-        var obj *model.ApduData
         err := xml.Unmarshal([]byte(xmlString), &obj)
         if err != nil {
             return nil, errors.New("error unmarshalling xml: " + err.Error())

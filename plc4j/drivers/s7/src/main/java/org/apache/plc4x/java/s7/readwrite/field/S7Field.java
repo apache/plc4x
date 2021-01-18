@@ -187,7 +187,7 @@ public class S7Field implements PlcField, XmlSerializable {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
-            if ((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
+            if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
@@ -224,7 +224,7 @@ public class S7Field implements PlcField, XmlSerializable {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
-            if((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
+            if((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
@@ -284,7 +284,7 @@ public class S7Field implements PlcField, XmlSerializable {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
-            if ((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
+            if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
