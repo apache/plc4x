@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKGetEventInformation struct {
-	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKGetEventInformation
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKGetEventInformation
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetEventInformation interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConfirmedServiceACKGetEventInformation) ServiceChoice() uint8 {
-	return 0x1D
+    return 0x1D
 }
+
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
 func NewBACnetConfirmedServiceACKGetEventInformation() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKGetEventInformation{
-		Parent: NewBACnetConfirmedServiceACK(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &BACnetConfirmedServiceACKGetEventInformation{
+        Parent: NewBACnetConfirmedServiceACK(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKGetEventInformation(structType interface{}) *BACnetConfirmedServiceACKGetEventInformation {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKGetEventInformation {
-		if casted, ok := typ.(BACnetConfirmedServiceACKGetEventInformation); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKGetEventInformation); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKGetEventInformation(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKGetEventInformation(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKGetEventInformation {
+        if casted, ok := typ.(BACnetConfirmedServiceACKGetEventInformation); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACKGetEventInformation); ok {
+            return casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKGetEventInformation(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKGetEventInformation(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) GetTypeName() string {
-	return "BACnetConfirmedServiceACKGetEventInformation"
+    return "BACnetConfirmedServiceACKGetEventInformation"
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKGetEventInformationParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-	// Create a partially initialized instance
-	_child := &BACnetConfirmedServiceACKGetEventInformation{
-		Parent: &BACnetConfirmedServiceACK{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKGetEventInformation{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+

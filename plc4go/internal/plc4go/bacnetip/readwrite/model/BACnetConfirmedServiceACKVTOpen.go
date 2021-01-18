@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKVTOpen struct {
-	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKVTOpen
+    Parent *BACnetConfirmedServiceACK
+    IBACnetConfirmedServiceACKVTOpen
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTOpen interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetConfirmedServiceACKVTOpen) ServiceChoice() uint8 {
-	return 0x15
+    return 0x15
 }
+
 
 func (m *BACnetConfirmedServiceACKVTOpen) InitializeParent(parent *BACnetConfirmedServiceACK) {
 }
 
 func NewBACnetConfirmedServiceACKVTOpen() *BACnetConfirmedServiceACK {
-	child := &BACnetConfirmedServiceACKVTOpen{
-		Parent: NewBACnetConfirmedServiceACK(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &BACnetConfirmedServiceACKVTOpen{
+        Parent: NewBACnetConfirmedServiceACK(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetConfirmedServiceACKVTOpen(structType interface{}) *BACnetConfirmedServiceACKVTOpen {
-	castFunc := func(typ interface{}) *BACnetConfirmedServiceACKVTOpen {
-		if casted, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACKVTOpen); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
-			return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *BACnetConfirmedServiceACKVTOpen {
+        if casted, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACKVTOpen); ok {
+            return casted
+        }
+        if casted, ok := typ.(BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetConfirmedServiceACK); ok {
+            return CastBACnetConfirmedServiceACKVTOpen(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) GetTypeName() string {
-	return "BACnetConfirmedServiceACKVTOpen"
+    return "BACnetConfirmedServiceACKVTOpen"
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKVTOpenParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
-	// Create a partially initialized instance
-	_child := &BACnetConfirmedServiceACKVTOpen{
-		Parent: &BACnetConfirmedServiceACK{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &BACnetConfirmedServiceACKVTOpen{
+        Parent: &BACnetConfirmedServiceACK{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *BACnetConfirmedServiceACKVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+

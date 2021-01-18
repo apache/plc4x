@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type MFuncPropStateReadReq struct {
-	Parent *CEMI
-	IMFuncPropStateReadReq
+    Parent *CEMI
+    IMFuncPropStateReadReq
 }
 
 // The corresponding interface
 type IMFuncPropStateReadReq interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *MFuncPropStateReadReq) MessageCode() uint8 {
-	return 0xF9
+    return 0xF9
 }
+
 
 func (m *MFuncPropStateReadReq) InitializeParent(parent *CEMI) {
 }
 
 func NewMFuncPropStateReadReq() *CEMI {
-	child := &MFuncPropStateReadReq{
-		Parent: NewCEMI(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &MFuncPropStateReadReq{
+        Parent: NewCEMI(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastMFuncPropStateReadReq(structType interface{}) *MFuncPropStateReadReq {
-	castFunc := func(typ interface{}) *MFuncPropStateReadReq {
-		if casted, ok := typ.(MFuncPropStateReadReq); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MFuncPropStateReadReq); ok {
-			return casted
-		}
-		if casted, ok := typ.(CEMI); ok {
-			return CastMFuncPropStateReadReq(casted.Child)
-		}
-		if casted, ok := typ.(*CEMI); ok {
-			return CastMFuncPropStateReadReq(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *MFuncPropStateReadReq {
+        if casted, ok := typ.(MFuncPropStateReadReq); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*MFuncPropStateReadReq); ok {
+            return casted
+        }
+        if casted, ok := typ.(CEMI); ok {
+            return CastMFuncPropStateReadReq(casted.Child)
+        }
+        if casted, ok := typ.(*CEMI); ok {
+            return CastMFuncPropStateReadReq(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *MFuncPropStateReadReq) GetTypeName() string {
-	return "MFuncPropStateReadReq"
+    return "MFuncPropStateReadReq"
 }
 
 func (m *MFuncPropStateReadReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *MFuncPropStateReadReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func MFuncPropStateReadReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-	// Create a partially initialized instance
-	_child := &MFuncPropStateReadReq{
-		Parent: &CEMI{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &MFuncPropStateReadReq{
+        Parent: &CEMI{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *MFuncPropStateReadReq) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *MFuncPropStateReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *MFuncPropStateReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+

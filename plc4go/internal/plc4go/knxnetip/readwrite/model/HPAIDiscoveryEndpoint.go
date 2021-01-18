@@ -19,188 +19,189 @@
 package model
 
 import (
-	"encoding/xml"
-	"errors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "errors"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type HPAIDiscoveryEndpoint struct {
-	HostProtocolCode HostProtocolCode
-	IpAddress        *IPAddress
-	IpPort           uint16
-	IHPAIDiscoveryEndpoint
+    HostProtocolCode HostProtocolCode
+    IpAddress *IPAddress
+    IpPort uint16
+    IHPAIDiscoveryEndpoint
 }
 
 // The corresponding interface
 type IHPAIDiscoveryEndpoint interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDiscoveryEndpoint {
-	return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+    return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
 func CastHPAIDiscoveryEndpoint(structType interface{}) *HPAIDiscoveryEndpoint {
-	castFunc := func(typ interface{}) *HPAIDiscoveryEndpoint {
-		if casted, ok := typ.(HPAIDiscoveryEndpoint); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*HPAIDiscoveryEndpoint); ok {
-			return casted
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *HPAIDiscoveryEndpoint {
+        if casted, ok := typ.(HPAIDiscoveryEndpoint); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*HPAIDiscoveryEndpoint); ok {
+            return casted
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *HPAIDiscoveryEndpoint) GetTypeName() string {
-	return "HPAIDiscoveryEndpoint"
+    return "HPAIDiscoveryEndpoint"
 }
 
 func (m *HPAIDiscoveryEndpoint) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	// Implicit Field (structureLength)
-	lengthInBits += 8
+    // Implicit Field (structureLength)
+    lengthInBits += 8
 
-	// Simple field (hostProtocolCode)
-	lengthInBits += 8
+    // Simple field (hostProtocolCode)
+    lengthInBits += 8
 
-	// Simple field (ipAddress)
-	lengthInBits += m.IpAddress.LengthInBits()
+    // Simple field (ipAddress)
+    lengthInBits += m.IpAddress.LengthInBits()
 
-	// Simple field (ipPort)
-	lengthInBits += 16
+    // Simple field (ipPort)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func HPAIDiscoveryEndpointParse(io *utils.ReadBuffer) (*HPAIDiscoveryEndpoint, error) {
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
-	if _structureLengthErr != nil {
-		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
-	}
+    // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    _, _structureLengthErr := io.ReadUint8(8)
+    if _structureLengthErr != nil {
+        return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+    }
 
-	// Simple Field (hostProtocolCode)
-	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
-	if _hostProtocolCodeErr != nil {
-		return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
-	}
+    // Simple Field (hostProtocolCode)
+    hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
+    if _hostProtocolCodeErr != nil {
+        return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
+    }
 
-	// Simple Field (ipAddress)
-	ipAddress, _ipAddressErr := IPAddressParse(io)
-	if _ipAddressErr != nil {
-		return nil, errors.New("Error parsing 'ipAddress' field " + _ipAddressErr.Error())
-	}
+    // Simple Field (ipAddress)
+    ipAddress, _ipAddressErr := IPAddressParse(io)
+    if _ipAddressErr != nil {
+        return nil, errors.New("Error parsing 'ipAddress' field " + _ipAddressErr.Error())
+    }
 
-	// Simple Field (ipPort)
-	ipPort, _ipPortErr := io.ReadUint16(16)
-	if _ipPortErr != nil {
-		return nil, errors.New("Error parsing 'ipPort' field " + _ipPortErr.Error())
-	}
+    // Simple Field (ipPort)
+    ipPort, _ipPortErr := io.ReadUint16(16)
+    if _ipPortErr != nil {
+        return nil, errors.New("Error parsing 'ipPort' field " + _ipPortErr.Error())
+    }
 
-	// Create the instance
-	return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
+    // Create the instance
+    return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
 }
 
 func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
-	if _structureLengthErr != nil {
-		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
-	}
+    // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    structureLength := uint8(uint8(m.LengthInBytes()))
+    _structureLengthErr := io.WriteUint8(8, (structureLength))
+    if _structureLengthErr != nil {
+        return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+    }
 
-	// Simple Field (hostProtocolCode)
-	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
-	if _hostProtocolCodeErr != nil {
-		return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
-	}
+    // Simple Field (hostProtocolCode)
+    _hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
+    if _hostProtocolCodeErr != nil {
+        return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
+    }
 
-	// Simple Field (ipAddress)
-	_ipAddressErr := m.IpAddress.Serialize(io)
-	if _ipAddressErr != nil {
-		return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
-	}
+    // Simple Field (ipAddress)
+    _ipAddressErr := m.IpAddress.Serialize(io)
+    if _ipAddressErr != nil {
+        return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
+    }
 
-	// Simple Field (ipPort)
-	ipPort := uint16(m.IpPort)
-	_ipPortErr := io.WriteUint16(16, (ipPort))
-	if _ipPortErr != nil {
-		return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())
-	}
+    // Simple Field (ipPort)
+    ipPort := uint16(m.IpPort)
+    _ipPortErr := io.WriteUint16(16, (ipPort))
+    if _ipPortErr != nil {
+        return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())
+    }
 
-	return nil
+    return nil
 }
 
 func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	for {
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			case "hostProtocolCode":
-				var data HostProtocolCode
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.HostProtocolCode = data
-			case "ipAddress":
-				var data *IPAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
-					return err
-				}
-				m.IpAddress = data
-			case "ipPort":
-				var data uint16
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.IpPort = data
-			}
-		}
-	}
+    var token xml.Token
+    var err error
+    for {
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "hostProtocolCode":
+                var data HostProtocolCode
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HostProtocolCode = data
+            case "ipAddress":
+                var data *IPAddress
+                if err := d.DecodeElement(data, &tok); err != nil {
+                    return err
+                }
+                m.IpAddress = data
+            case "ipPort":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.IpPort = data
+            }
+        }
+    }
 }
 
 func (m *HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	className := "org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint"
-	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "className"}, Value: className},
-	}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.HostProtocolCode, xml.StartElement{Name: xml.Name{Local: "hostProtocolCode"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.IpAddress, xml.StartElement{Name: xml.Name{Local: "ipAddress"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.IpPort, xml.StartElement{Name: xml.Name{Local: "ipPort"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
-		return err
-	}
-	return nil
+    className := "org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint"
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: className},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HostProtocolCode, xml.StartElement{Name: xml.Name{Local: "hostProtocolCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IpAddress, xml.StartElement{Name: xml.Name{Local: "ipAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IpPort, xml.StartElement{Name: xml.Name{Local: "ipPort"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
 }
+

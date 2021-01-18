@@ -85,6 +85,8 @@ PLC4X-255   Kafka Connector Source Task doesn't block within poll()
             resulting in high CPU usage.
 PLC4X-261   Pooled connection manager returns a connection that isn't
             connected in some situations.
+PLC4X-272   When splitting up large requests, too big sub-requests
+            are generated (S7)
 
 ==============================================================
 Apache PLC4X 0.7.0
