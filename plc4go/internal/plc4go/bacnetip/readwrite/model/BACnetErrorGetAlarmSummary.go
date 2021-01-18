@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type BACnetErrorGetAlarmSummary struct {
-	Parent *BACnetError
-	IBACnetErrorGetAlarmSummary
+    Parent *BACnetError
+    IBACnetErrorGetAlarmSummary
 }
 
 // The corresponding interface
 type IBACnetErrorGetAlarmSummary interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetErrorGetAlarmSummary) ServiceChoice() uint8 {
-	return 0x03
+    return 0x03
 }
+
 
 func (m *BACnetErrorGetAlarmSummary) InitializeParent(parent *BACnetError) {
 }
 
 func NewBACnetErrorGetAlarmSummary() *BACnetError {
-	child := &BACnetErrorGetAlarmSummary{
-		Parent: NewBACnetError(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &BACnetErrorGetAlarmSummary{
+        Parent: NewBACnetError(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorGetAlarmSummary(structType interface{}) *BACnetErrorGetAlarmSummary {
-	castFunc := func(typ interface{}) *BACnetErrorGetAlarmSummary {
-		if casted, ok := typ.(BACnetErrorGetAlarmSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorGetAlarmSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorGetAlarmSummary(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorGetAlarmSummary(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *BACnetErrorGetAlarmSummary {
+        if casted, ok := typ.(BACnetErrorGetAlarmSummary); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*BACnetErrorGetAlarmSummary); ok {
+            return casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorGetAlarmSummary(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorGetAlarmSummary(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *BACnetErrorGetAlarmSummary) GetTypeName() string {
-	return "BACnetErrorGetAlarmSummary"
+    return "BACnetErrorGetAlarmSummary"
 }
 
 func (m *BACnetErrorGetAlarmSummary) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *BACnetErrorGetAlarmSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorGetAlarmSummaryParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-	// Create a partially initialized instance
-	_child := &BACnetErrorGetAlarmSummary{
-		Parent: &BACnetError{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorGetAlarmSummary{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *BACnetErrorGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *BACnetErrorGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+

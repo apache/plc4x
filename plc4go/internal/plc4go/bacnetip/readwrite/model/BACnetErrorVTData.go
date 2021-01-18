@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type BACnetErrorVTData struct {
-	Parent *BACnetError
-	IBACnetErrorVTData
+    Parent *BACnetError
+    IBACnetErrorVTData
 }
 
 // The corresponding interface
 type IBACnetErrorVTData interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetErrorVTData) ServiceChoice() uint8 {
-	return 0x17
+    return 0x17
 }
+
 
 func (m *BACnetErrorVTData) InitializeParent(parent *BACnetError) {
 }
 
 func NewBACnetErrorVTData() *BACnetError {
-	child := &BACnetErrorVTData{
-		Parent: NewBACnetError(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &BACnetErrorVTData{
+        Parent: NewBACnetError(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBACnetErrorVTData(structType interface{}) *BACnetErrorVTData {
-	castFunc := func(typ interface{}) *BACnetErrorVTData {
-		if casted, ok := typ.(BACnetErrorVTData); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BACnetErrorVTData); ok {
-			return casted
-		}
-		if casted, ok := typ.(BACnetError); ok {
-			return CastBACnetErrorVTData(casted.Child)
-		}
-		if casted, ok := typ.(*BACnetError); ok {
-			return CastBACnetErrorVTData(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *BACnetErrorVTData {
+        if casted, ok := typ.(BACnetErrorVTData); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*BACnetErrorVTData); ok {
+            return casted
+        }
+        if casted, ok := typ.(BACnetError); ok {
+            return CastBACnetErrorVTData(casted.Child)
+        }
+        if casted, ok := typ.(*BACnetError); ok {
+            return CastBACnetErrorVTData(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *BACnetErrorVTData) GetTypeName() string {
-	return "BACnetErrorVTData"
+    return "BACnetErrorVTData"
 }
 
 func (m *BACnetErrorVTData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *BACnetErrorVTData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorVTDataParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
-	// Create a partially initialized instance
-	_child := &BACnetErrorVTData{
-		Parent: &BACnetError{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &BACnetErrorVTData{
+        Parent: &BACnetError{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *BACnetErrorVTData) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetErrorVTData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *BACnetErrorVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+

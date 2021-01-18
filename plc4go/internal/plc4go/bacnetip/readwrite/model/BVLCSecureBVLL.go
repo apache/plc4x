@@ -19,115 +19,117 @@
 package model
 
 import (
-	"encoding/xml"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type BVLCSecureBVLL struct {
-	Parent *BVLC
-	IBVLCSecureBVLL
+    Parent *BVLC
+    IBVLCSecureBVLL
 }
 
 // The corresponding interface
 type IBVLCSecureBVLL interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BVLCSecureBVLL) BvlcFunction() uint8 {
-	return 0x0C
+    return 0x0C
 }
+
 
 func (m *BVLCSecureBVLL) InitializeParent(parent *BVLC) {
 }
 
 func NewBVLCSecureBVLL() *BVLC {
-	child := &BVLCSecureBVLL{
-		Parent: NewBVLC(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &BVLCSecureBVLL{
+        Parent: NewBVLC(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastBVLCSecureBVLL(structType interface{}) *BVLCSecureBVLL {
-	castFunc := func(typ interface{}) *BVLCSecureBVLL {
-		if casted, ok := typ.(BVLCSecureBVLL); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*BVLCSecureBVLL); ok {
-			return casted
-		}
-		if casted, ok := typ.(BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		if casted, ok := typ.(*BVLC); ok {
-			return CastBVLCSecureBVLL(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *BVLCSecureBVLL {
+        if casted, ok := typ.(BVLCSecureBVLL); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*BVLCSecureBVLL); ok {
+            return casted
+        }
+        if casted, ok := typ.(BVLC); ok {
+            return CastBVLCSecureBVLL(casted.Child)
+        }
+        if casted, ok := typ.(*BVLC); ok {
+            return CastBVLCSecureBVLL(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *BVLCSecureBVLL) GetTypeName() string {
-	return "BVLCSecureBVLL"
+    return "BVLCSecureBVLL"
 }
 
 func (m *BVLCSecureBVLL) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCSecureBVLLParse(io *utils.ReadBuffer) (*BVLC, error) {
 
-	// Create a partially initialized instance
-	_child := &BVLCSecureBVLL{
-		Parent: &BVLC{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &BVLCSecureBVLL{
+        Parent: &BVLC{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *BVLCSecureBVLL) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	return nil
+    return nil
 }
+
