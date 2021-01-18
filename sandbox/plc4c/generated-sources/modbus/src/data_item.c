@@ -21,6 +21,7 @@
 #include <string.h>
 #include <time.h>
 #include <plc4c/data.h>
+#include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_modbus.h>
 #include "data_item.h"
@@ -31,7 +32,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
-        if((strcmp(dataType, "IEC61131_BOOL") == 0) && (numberOfValues == 1)) { /* BOOL */
+    if((strcmp(dataType, "IEC61131_BOOL") == 0) && (numberOfValues == 1)) { /* BOOL */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -54,12 +55,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_bool_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_BOOL") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_BOOL") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_BYTE") == 0) && (numberOfValues == 1)) { /* BitString */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_bit(io, (bool*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_BYTE") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -70,12 +87,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_BYTE") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_BYTE") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_WORD") == 0) && (numberOfValues == 1)) { /* BitString */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_WORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -86,12 +119,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_WORD") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_WORD") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_DWORD") == 0) && (numberOfValues == 1)) { /* BitString */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_DWORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -102,12 +151,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_DWORD") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_DWORD") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_LWORD") == 0) && (numberOfValues == 1)) { /* BitString */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_LWORD") == 0) && (numberOfValues == 1)) { /* BitString */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -118,12 +183,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_LWORD") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_LWORD") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_SINT") == 0) && (numberOfValues == 1)) { /* SINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_long(io, 64, (uint64_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_SINT") == 0) && (numberOfValues == 1)) { /* SINT */
 
                 // Simple Field (value)
                 int8_t value = 0;
@@ -134,12 +215,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_int8_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_SINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_SINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_INT") == 0) && (numberOfValues == 1)) { /* INT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_INT") == 0) && (numberOfValues == 1)) { /* INT */
 
                 // Simple Field (value)
                 int16_t value = 0;
@@ -150,12 +247,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_int16_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_INT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_INT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_DINT") == 0) && (numberOfValues == 1)) { /* DINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_signed_short(io, 16, (int16_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_DINT") == 0) && (numberOfValues == 1)) { /* DINT */
 
                 // Simple Field (value)
                 int32_t value = 0;
@@ -166,12 +279,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_int32_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_DINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_DINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_LINT") == 0) && (numberOfValues == 1)) { /* LINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_signed_int(io, 32, (int32_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_LINT") == 0) && (numberOfValues == 1)) { /* LINT */
 
                 // Simple Field (value)
                 int64_t value = 0;
@@ -182,12 +311,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_int64_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_LINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_LINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_USINT") == 0) && (numberOfValues == 1)) { /* USINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_signed_long(io, 64, (int64_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_USINT") == 0) && (numberOfValues == 1)) { /* USINT */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -198,12 +343,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_USINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_USINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_UINT") == 0) && (numberOfValues == 1)) { /* UINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_UINT") == 0) && (numberOfValues == 1)) { /* UINT */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -214,12 +375,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_UINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_UINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_UDINT") == 0) && (numberOfValues == 1)) { /* UDINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_UDINT") == 0) && (numberOfValues == 1)) { /* UDINT */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -230,12 +407,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_UDINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_UDINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_ULINT") == 0) && (numberOfValues == 1)) { /* ULINT */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_ULINT") == 0) && (numberOfValues == 1)) { /* ULINT */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -246,12 +439,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_ULINT") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_ULINT") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_REAL") == 0) && (numberOfValues == 1)) { /* REAL */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_long(io, 64, (uint64_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_REAL") == 0) && (numberOfValues == 1)) { /* REAL */
 
                 // Simple Field (value)
                 float value = 0.0;
@@ -262,12 +471,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_float_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_REAL") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_REAL") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_LREAL") == 0) && (numberOfValues == 1)) { /* LREAL */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_float(io, 32, (float*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_LREAL") == 0) && (numberOfValues == 1)) { /* LREAL */
 
                 // Simple Field (value)
                 double value = 0.0;
@@ -278,12 +503,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_double_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_LREAL") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_LREAL") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_CHAR") == 0) && (numberOfValues == 1)) { /* CHAR */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_double(io, 64, (double*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_CHAR") == 0) && (numberOfValues == 1)) { /* CHAR */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -294,12 +535,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_CHAR") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_CHAR") == 0) { /* List */
 
-                    // Array field (value)
-        } else 
-        if((strcmp(dataType, "IEC61131_WCHAR") == 0) && (numberOfValues == 1)) { /* WCHAR */
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    } else     if((strcmp(dataType, "IEC61131_WCHAR") == 0) && (numberOfValues == 1)) { /* WCHAR */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -310,11 +567,28 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
-        } else 
-        if(strcmp(dataType, "IEC61131_WCHAR") == 0) { /* List */
+    } else     if(strcmp(dataType, "IEC61131_WCHAR") == 0) { /* List */
 
-                    // Array field (value)
+        // Array field (value)
+        // Count array
+        if(numberOfValues > INT_MAX) {
+            return INTERNAL_ERROR;
         }
+        plc4c_list* value;
+        plc4c_utils_list_create(&value);
+        int itemCount = (int) numberOfValues;
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            plc4c_list* _val = malloc(sizeof(plc4c_list) * 1);
+            _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) _val);
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_plc4c_list_data(_val);
+            plc4c_utils_list_insert_head_value(value, _item);
+        }
+        *data_item = plc4c_data_create_list_data(*value);
+
+    }
 
   return OK;
 }

@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type LDataFrame struct {
     Repeated bool
-    NotAckFrame bool
     Priority CEMIPriority
     AcknowledgeRequested bool
     ErrorFlag bool
@@ -42,6 +41,7 @@ type LDataFrame struct {
 // The corresponding interface
 type ILDataFrame interface {
     ExtendedFrame() bool
+    NotAckFrame() bool
     Polling() bool
     LengthInBytes() uint16
     LengthInBits() uint16
@@ -56,13 +56,13 @@ type ILDataFrameParent interface {
 
 type ILDataFrameChild interface {
     Serialize(io utils.WriteBuffer) error
-    InitializeParent(parent *LDataFrame, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
+    InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
     GetTypeName() string
     ILDataFrame
 }
 
-func NewLDataFrame(repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-    return &LDataFrame{Repeated: repeated, NotAckFrame: notAckFrame, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
+func NewLDataFrame(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+    return &LDataFrame{Repeated: repeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
 }
 
 func CastLDataFrame(structType interface{}) *LDataFrame {
@@ -94,7 +94,7 @@ func (m *LDataFrame) LengthInBits() uint16 {
     // Simple field (repeated)
     lengthInBits += 1
 
-    // Simple field (notAckFrame)
+    // Discriminator Field (notAckFrame)
     lengthInBits += 1
 
     // Enum Field (priority)
@@ -136,7 +136,7 @@ func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         return nil, errors.New("Error parsing 'repeated' field " + _repeatedErr.Error())
     }
 
-    // Simple Field (notAckFrame)
+    // Discriminator Field (notAckFrame) (Used as input to a switch field)
     notAckFrame, _notAckFrameErr := io.ReadBit()
     if _notAckFrameErr != nil {
         return nil, errors.New("Error parsing 'notAckFrame' field " + _notAckFrameErr.Error())
@@ -164,21 +164,23 @@ func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
     var _parent *LDataFrame
     var typeSwitchError error
     switch {
-    case extendedFrame == false && polling == false:
+    case notAckFrame == false:
+        _parent, typeSwitchError = LDataFrameAckParse(io)
+    case notAckFrame == true && extendedFrame == false && polling == false:
         _parent, typeSwitchError = LDataFrameDataParse(io)
-    case extendedFrame == true && polling == false:
+    case notAckFrame == true && extendedFrame == true && polling == true:
+        _parent, typeSwitchError = LDataFramePollingDataParse(io)
+    case notAckFrame == true && extendedFrame == false && polling == true:
+        _parent, typeSwitchError = LDataFramePollingDataParse(io)
+    case notAckFrame == true && extendedFrame == true && polling == false:
         _parent, typeSwitchError = LDataFrameDataExtParse(io)
-    case extendedFrame == true && polling == true:
-        _parent, typeSwitchError = LDataFramePollingDataParse(io)
-    case extendedFrame == false && polling == true:
-        _parent, typeSwitchError = LDataFramePollingDataParse(io)
     }
     if typeSwitchError != nil {
         return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
 
     // Finish initializing
-    _parent.Child.InitializeParent(_parent, repeated, notAckFrame, priority, acknowledgeRequested, errorFlag)
+    _parent.Child.InitializeParent(_parent, repeated, priority, acknowledgeRequested, errorFlag)
     return _parent, nil
 }
 
@@ -209,8 +211,8 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
         return errors.New("Error serializing 'repeated' field " + _repeatedErr.Error())
     }
 
-    // Simple Field (notAckFrame)
-    notAckFrame := bool(m.NotAckFrame)
+    // Discriminator Field (notAckFrame) (Used as input to a switch field)
+    notAckFrame := bool(child.NotAckFrame())
     _notAckFrameErr := io.WriteBit((notAckFrame))
     if _notAckFrameErr != nil {
         return errors.New("Error serializing 'notAckFrame' field " + _notAckFrameErr.Error())
@@ -267,12 +269,6 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                     return err
                 }
                 m.Repeated = data
-            case "notAckFrame":
-                var data bool
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.NotAckFrame = data
             case "priority":
                 var data CEMIPriority
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -293,6 +289,18 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                 m.ErrorFlag = data
             default:
                 switch start.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameAck":
+                        var dt *LDataFrameAck
+                        if m.Child != nil {
+                            dt = m.Child.(*LDataFrameAck)
+                        }
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        if m.Child == nil {
+                            dt.Parent = m
+                            m.Child = dt
+                        }
                     case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameData":
                         var dt *LDataFrameData
                         if m.Child != nil {
@@ -305,10 +313,10 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             dt.Parent = m
                             m.Child = dt
                         }
-                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt":
-                        var dt *LDataFrameDataExt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
+                        var dt *LDataFramePollingData
                         if m.Child != nil {
-                            dt = m.Child.(*LDataFrameDataExt)
+                            dt = m.Child.(*LDataFramePollingData)
                         }
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
@@ -317,10 +325,10 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                             dt.Parent = m
                             m.Child = dt
                         }
-                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFramePollingData":
-                        var dt *LDataFramePollingData
+                    case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt":
+                        var dt *LDataFrameDataExt
                         if m.Child != nil {
-                            dt = m.Child.(*LDataFramePollingData)
+                            dt = m.Child.(*LDataFrameDataExt)
                         }
                         if err := d.DecodeElement(&dt, &tok); err != nil {
                             return err
@@ -344,9 +352,6 @@ func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
         return err
     }
     if err := e.EncodeElement(m.Repeated, xml.StartElement{Name: xml.Name{Local: "repeated"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.NotAckFrame, xml.StartElement{Name: xml.Name{Local: "notAckFrame"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Priority, xml.StartElement{Name: xml.Name{Local: "priority"}}); err != nil {

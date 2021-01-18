@@ -65,6 +65,7 @@
 #include <string.h>
 #include <time.h>
 #include <plc4c/data.h>
+#include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_${helper.getProtocolName()}.h>
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
@@ -76,114 +77,120 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     plc4c_return_code _res = OK;
 
     <#list type.switchField.cases as case>
-        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}</#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+    <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}</#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
 <#--        (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};-->
         <#assign skipReturn=false>
         <#list case.fields as field>
             <#switch field.typeName>
                 <#case "array">
 
-                    // Array field (${field.name})
-                <#-- Only update curPos if the length expression uses it
+        // Array field (${field.name})
+                <#-- Only update curPos if the length expression uses it -->
                     <#if field.loopExpression.contains("curPos")>
-                        curPos = io.getPos() - startPos;
+        curPos = io.getPos() - startPos;
                     </#if>
-                <#- If this is a count array, we can directly initialize an array with the given size ->
+                <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if helper.isCountArrayField(field)>
-                        // Count array
-                        if(${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
-                        throw new ParseException("Array count of " + (${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-                        }
-                        ${helper.getLanguageTypeNameForField(field)}[] ${field.name};
-                        {
-                        int itemCount = (int) ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
-                        ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
-                        for(int curItem = 0; curItem < itemCount; curItem++) {
-                        ${field.name}[curItem] = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
-                        }
-                        }
-                    <#- In all other cases do we have to work with a list, that is later converted to an array ->
+        // Count array
+        if(${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)} > INT_MAX) {
+            return INTERNAL_ERROR;
+        }
+        plc4c_list* ${field.name};
+        plc4c_utils_list_create(&${field.name});
+        int itemCount = (int) ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+            ${helper.getLanguageTypeNameForField(field)}* _val = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}) * 1);
+            _res = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "_val")}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            if(_res != OK) {
+                return _res;
+            }
+            plc4c_data* _item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_data(_val);
+            plc4c_utils_list_insert_head_value(${field.name}, _item);
+        }
+                    <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                     <#else>
-                    <#- For a length array, we read data till the read position of the buffer reaches a given position ->
+                    <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                         <#if helper.isLengthArrayField(field)>
-                            // Length array
-                            int _${field.name}Length = ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
-                            List<${helper.getLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-                            int ${field.name}EndPos = io.getPos() + _${field.name}Length;
-                            while(io.getPos() < ${field.name}EndPos) {
-                            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
-                        <#- After parsing, update the current position, but only if it's needed ->
+        // Length array
+        int _${field.name}Length = ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
+        List<${helper.getLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
+        int ${field.name}EndPos = io.getPos() + _${field.name}Length;
+        while(io.getPos() < ${field.name}EndPos) {
+            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                        <#-- After parsing, update the current position, but only if it's needed -->
                             <#if field.loopExpression.contains("curPos")>
-                                curPos = io.getPos() - startPos;
+            curPos = io.getPos() - startPos;
                             </#if>
-                            }
-                        <#- A terminated array keeps on reading data as long as the termination expression evaluates to false ->
+        }
+                        <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                         <#elseif helper.isTerminatedArrayField(field)>
-                            // Terminated array
-                            List<${helper.getLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-                            while(!((boolean) (${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)}))) {
-                            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+        // Terminated array
+        List<${helper.getLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
+        while(!((boolean) (${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)}))) {
+            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
-                        <#- After parsing, update the current position, but only if it's needed ->
+                        <#-- After parsing, update the current position, but only if it's needed -->
                             <#if field.loopExpression.contains("curPos")>
-                                curPos = io.getPos() - startPos;
+            curPos = io.getPos() - startPos;
                             </#if>
-                            }
+        }
                         </#if>
-                    <#-
+                    <#--
                         Convert the list into an array. However if the array is of a primitive
                         type we have to iterate over it's elements and explicitly cast them.
                         Otherwise a simple toArray call is fine.
-                    ->
+                    -->
                         <#if helper.isSimpleTypeReference(field.type)>
-                            ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}List.size()];
-                            for(int i = 0; i < _${field.name}List.size(); i++) {
-                            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${field.name}List.get(i);
-                            }
+        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}List.size()];
+        for(int i = 0; i < _${field.name}List.size(); i++) {
+            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${field.name}List.get(i);
+        }
                         <#else>
-                            ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = _${field.name}List.toArray(new ${helper.getLanguageTypeNameForField(field)}[0]);
+        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = _${field.name}List.toArray(new ${helper.getLanguageTypeNameForField(field)}[0]);
                         </#if>
                     </#if>
-                    -->
+        *data_item = plc4c_data_create_list_data(*${field.name});
+
                     <#break>
                 <#case "const">
 
-                    // Const Field (${field.name})
-                    ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)};
-                    if(${field.name} != ${type.name}.${field.name?upper_case}) {
+                // Const Field (${field.name})
+                ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)};
+                if(${field.name} != ${type.name}.${field.name?upper_case}) {
                     throw new ParseException("Expected constant value " + ${type.name}.${field.name?upper_case} + " but got " + ${field.name});
-                    }
+                }
                     <#break>
                 <#case "enum">
 
-                    // Enum field (${field.name})
-                    ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+                // Enum field (${field.name})
+                ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
                     <#break>
                 <#case "manual">
 
-                    // Manual Field (${field.name})
-                    ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(type, field, field.parseExpression, type.parserArguments)});
-                    <#--<#switch case.name>
-                        <#case "Time">
-                            return new PlcTime(${field.name});
+                // Manual Field (${field.name})
+                ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(type, field, field.parseExpression, type.parserArguments)});
+
+                    <#switch case.name>
+                        <#--#case "Time">
+                return new PlcTime(${field.name});
                             <#break>
                         <#case "Date">
-                            return new PlcDate(${field.name});
+                return new PlcDate(${field.name});
                             <#break>
                         <#case "DateTime">
-                            return new PlcDateTime(${field.name});
+                return new PlcDateTime(${field.name});
                             <#break>
                         <#case "Struct">
-                            return new PlcStruct(${field.name});
-                            <#break>
-                        <#case "String">
-                            return new PlcString(${field.name});
+                return new PlcStruct(${field.name});
+                            <#break-->
+                        <#case "STRING">
+                *data_item = plc4c_data_create_string_data(stringLength, ${field.name});
                             <#break>
                         <#default>
-                            return new Plc${case.name}(${field.name});
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(${field.name});
                     </#switch>
                     <#assign skipReturn=true>
-                    -->
+
                     <#break>
                 <#case "reserved">
 
@@ -220,8 +227,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                     <#break>
             </#switch>
         </#list>
-        }<#sep> else </#sep>
-    </#list>
+    }<#sep> else </#sep></#list>
 
   return OK;
 }
