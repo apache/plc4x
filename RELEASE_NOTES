@@ -1,18 +1,5 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.9.0-SNAPSHOT
-==============================================================
-
-New Features
-------------
-
-Incompatible changes
---------------------
-
-Bug Fixes
----------
-
-==============================================================
-Apache PLC4X 0.8.0
+(Unreleased) Apache PLC4X 0.8.0-SNAPSHOT
 ==============================================================
 
 This is an ordinary PLC4X release, containing changes that
@@ -92,7 +79,6 @@ PLC4X-218   [Scraper] After stopping the scraper still the
             terminate
 PLC4X-239   Read DTL (Date and Time)
 PLC4X-240   Protocol error in reading string
-PLC4X-246	S7 driver hangs on read
 PLC4X-245   [Modbus] Apache NiFi processor throws
             java.io.IOException after a while
 PLC4X-255   Kafka Connector Source Task doesn't block within poll()
@@ -101,9 +87,6 @@ PLC4X-261   Pooled connection manager returns a connection that isn't
             connected in some situations.
 PLC4X-272   When splitting up large requests, too big sub-requests
             are generated (S7)
-PLC4X-256	ReadBuffer truncate last byte of even small payloads
-PLC4X-262	Error in reading Array
-PLC4X-270	Ads driver does not accept double-digit array indexes
 
 ==============================================================
 Apache PLC4X 0.7.0
