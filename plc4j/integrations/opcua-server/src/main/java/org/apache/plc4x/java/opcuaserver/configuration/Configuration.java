@@ -47,9 +47,6 @@ public class Configuration {
     @JsonProperty
     private Integer tcpPort = 12686;
 
-    @JsonProperty
-    private Integer httpPort = 8443;
-
     public Configuration() {
     }
 
@@ -71,10 +68,6 @@ public class Configuration {
 
     public Integer getTcpPort() {
         return tcpPort;
-    }
-
-    public Integer getHttpPort() {
-        return httpPort;
     }
 
     public List<DeviceConfiguration> getDevices() {
