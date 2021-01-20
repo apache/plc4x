@@ -21,6 +21,8 @@ package org.apache.plc4x.java.opcuaserver.backend;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+
+import org.eclipse.milo.opcua.sdk.server.AbstractLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
@@ -29,6 +31,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +59,7 @@ import java.math.BigInteger;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
 
 
-public class Plc4xCommunication {
+public class Plc4xCommunication extends AbstractLifecycle {
 
     private PlcDriverManager driverManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -68,7 +71,17 @@ public class Plc4xCommunication {
     Map<NodeId, DataItem> monitoredList = new HashMap<>();
 
     public Plc4xCommunication () {
+
+    }
+
+    @Override
+    protected void onStartup() {
         driverManager = new PooledPlcDriverManager();
+    }
+
+    @Override
+    protected void onShutdown() {
+
     }
 
     public PlcDriverManager getDriverManager() {
@@ -156,93 +169,110 @@ public class Plc4xCommunication {
     }
 
     public DataValue getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
-        PlcConnection connection = null;
         DataValue resp = new DataValue(new Variant(null), StatusCode.BAD);
+        PlcConnection connection = null;
+        try {
 
-        //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
-        if (failedConnectionList.containsKey(connectionString)) {
-            if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
-                failedConnectionList.remove(connectionString);
-            } else {
-                logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
+            //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
+            if (failedConnectionList.containsKey(connectionString)) {
+                if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
+                    failedConnectionList.remove(connectionString);
+                } else {
+                    logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
+                    return resp;
+                }
+            }
+
+            //Try to connect to PLC
+            try {
+                connection = driverManager.getConnection(connectionString);
+                logger.debug(connectionString + " Connected");
+            } catch (PlcConnectionException e) {
+                logger.error("Failed to connect to device, error raised - " + e);
+                failedConnectionList.put(connectionString, System.currentTimeMillis());
                 return resp;
             }
-        }
 
-        //Try to connect to PLC
-        try {
-            connection = driverManager.getConnection(connectionString);            
-            logger.debug(connectionString + " Connected");
-        } catch (PlcConnectionException e) {
-            logger.error("Failed to connect to device, error raised - " + e);
-            failedConnectionList.put(connectionString, System.currentTimeMillis());
-            return resp;
-        }
-
-        if (!connection.getMetadata().canRead()) {
-            logger.error("This connection doesn't support reading.");
-            try {
-                connection.close();
-            } catch (Exception exception) {
-                logger.warn("Closing connection failed with error - " + exception);
+            if (!connection.getMetadata().canRead()) {
+                logger.error("This connection doesn't support reading.");
+                try {
+                    connection.close();
+                } catch (Exception exception) {
+                    logger.warn("Closing connection failed with error - " + exception);
+                }
+                return resp;
             }
-            return resp;
-        }
 
-        long timeout = DEFAULT_TIMEOUT;
-        if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
-            timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval()*1000;
-        }
-
-        // Create a new read request:
-        // - Give the single item requested an alias name
-        PlcReadRequest.Builder builder = connection.readRequestBuilder();
-        builder.addItem("value-1", tag);
-        PlcReadRequest readRequest = builder.build();
-
-        PlcReadResponse response = null;
-        try {
-            response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.warn(e + " Occurred while reading value, using timeout of " + timeout/1000 + "ms");
-            try {
-                connection.close();
-            } catch (Exception exception) {
-                logger.warn("Closing connection failed with error - " + exception);
+            long timeout = DEFAULT_TIMEOUT;
+            if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
+                timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval() * 1000;
             }
-            return resp;
-        }
 
-        for (String fieldName : response.getFieldNames()) {
-          if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-              int numValues = response.getNumberOfValues(fieldName);
-              if(numValues == 1) {
-                  if (response.getObject(fieldName) instanceof BigInteger) {
-                      resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
-                  } else {
-                      resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
-                  }
-              } else {
-                Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
-                for (int i = 0; i < numValues; i++) {
-                    if (response.getObject(fieldName, i) instanceof BigInteger) {
-                        Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+            // Create a new read request:
+            // - Give the single item requested an alias name
+            PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addItem("value-1", tag);
+            PlcReadRequest readRequest = builder.build();
+
+            PlcReadResponse response = null;
+            try {
+                response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                logger.warn(e + " Occurred while reading value, using timeout of " + timeout / 1000 + "ms");
+                try {
+                    connection.close();
+                } catch (Exception exception) {
+                    logger.warn("Closing connection failed with error - " + exception);
+                }
+                return resp;
+            }
+
+            for (String fieldName : response.getFieldNames()) {
+                if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
+                    int numValues = response.getNumberOfValues(fieldName);
+                    if (numValues == 1) {
+                        if (response.getObject(fieldName) instanceof BigInteger) {
+                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
+                        } else {
+                            resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
+                        }
                     } else {
-                        Array.set(array, i, response.getObject(fieldName, i));
+                        Object array = null;
+                        if (response.getObject(fieldName, 0) instanceof BigInteger) {
+                            array = Array.newInstance(ULong.class, numValues);
+                        } else {
+                            array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                        }
+                        for (int i = 0; i < numValues; i++) {
+                            if (response.getObject(fieldName, i) instanceof BigInteger) {
+                                Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                            } else {
+                                Array.set(array, i, response.getObject(fieldName, i));
+                            }
+                        }
+                        resp = new DataValue(new Variant(array), StatusCode.GOOD);
                     }
                 }
-                resp = new DataValue(new Variant(array), StatusCode.GOOD);
-              }
-          }
-        }
+            }
 
-        try {
-          connection.close();
+            try {
+                connection.close();
+            } catch (Exception e) {
+                failedConnectionList.put(connectionString, System.currentTimeMillis());
+                logger.warn("Closing connection failed with error " + e);
+            }
+            return resp;
         } catch (Exception e) {
-          failedConnectionList.put(connectionString, System.currentTimeMillis());
-          logger.warn("Closing connection failed with error " + e);
+            logger.warn("General error reading value " + e.getStackTrace()[0].toString());
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception ex) {
+                    //Do Nothing
+                }
+            }
+            return resp;
         }
-        return resp;
     }
 
     public void setValue(String tag, String value, String connectionString) {

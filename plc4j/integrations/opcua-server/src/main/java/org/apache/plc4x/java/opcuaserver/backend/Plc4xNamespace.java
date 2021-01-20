@@ -64,13 +64,13 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
     public Plc4xNamespace(OpcUaServer server, Configuration c) {
         super(server, APPLICATIONID);
-
         this.config = c;
         subscriptionModel = new SubscriptionModel(server, this);
         dictionaryManager = new DataTypeDictionaryManager(getNodeContext(), APPLICATIONID);
         plc4xServer = new Plc4xCommunication();
         getLifecycleManager().addLifecycle(dictionaryManager);
         getLifecycleManager().addLifecycle(subscriptionModel);
+        getLifecycleManager().addLifecycle(plc4xServer);
         getLifecycleManager().addStartupTask(this::addNodes);
     }
 
