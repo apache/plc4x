@@ -19,17 +19,15 @@
 
 package org.apache.plc4x.java.opcuaserver;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.security.*;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import java.io.IOException;
-import java.io.Console;
 import java.nio.file.Path;
 import java.nio.file.FileSystems;
 
@@ -38,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import org.apache.plc4x.java.opcuaserver.context.CertificateKeyPair;
-import org.apache.plc4x.java.opcuaserver.context.Encryption;
+import org.apache.plc4x.java.opcuaserver.context.CertificateGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig;
@@ -249,12 +247,16 @@ public class OPCUAServer {
                 logger.info("Please re-run with the -i switch to setup the security certificate key store");
                 System.exit(1);
             }
-            certificate = Encryption.generateCertificate();
+            certificate = CertificateGenerator.generateCertificate();
+            logger.info("Creating new KeyStore at {}", serverKeyStore);
+            keyStore.load(null, passwordConfig.getSecurityPassword().toCharArray());
+            keyStore.setKeyEntry("plc4x-certificate-alias", certificate.getKeyPair().getPrivate(), passwordConfig.getSecurityPassword().toCharArray(), new X509Certificate[] { certificate.getCertificate() });
+            keyStore.store(new FileOutputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
         } else {
             logger.info("Loading KeyStore at {}", serverKeyStore);
             keyStore.load(new FileInputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
             String alias = keyStore.aliases().nextElement();
-            KeyPair kp = new KeyPair((PublicKey) keyStore.getCertificate(alias).getPublicKey(),
+            KeyPair kp = new KeyPair(keyStore.getCertificate(alias).getPublicKey(),
                 (PrivateKey) keyStore.getKey(alias, passwordConfig.getSecurityPassword().toCharArray()));
             certificate = new CertificateKeyPair(kp,(X509Certificate) keyStore.getCertificate(alias));
         }
@@ -334,10 +336,11 @@ public class OPCUAServer {
             .setSecurityMode(MessageSecurityMode.None);
         endpointConfigurations.add(noSecurityBuilder.build());
 
-
         DefaultCertificateManager certificateManager = new DefaultCertificateManager(
             certificate.getKeyPair(),
-            certificate.getCertificate()
+            Arrays.stream(keyStore.getCertificateChain(keyStore.getCertificateAlias(certificate.getCertificate())))// Added so that existing certificates are loaded on startup
+                .map(X509Certificate.class::cast)
+                .toArray(X509Certificate[]::new)
         );
 
         OpcUaServerConfig serverConfig = OpcUaServerConfig.builder()

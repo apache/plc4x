@@ -65,6 +65,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
+    private final DataValue BAD_RESPONSE = new DataValue(new Variant(null), StatusCode.BAD);
 
     private Map<String, Long> failedConnectionList = new HashMap<>();
 
@@ -81,7 +82,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     @Override
     protected void onShutdown() {
-
+        //Do Nothing
     }
 
     public PlcDriverManager getDriverManager() {
@@ -169,7 +170,6 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public DataValue getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
-        DataValue resp = new DataValue(new Variant(null), StatusCode.BAD);
         PlcConnection connection = null;
         try {
 
@@ -179,7 +179,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
                     failedConnectionList.remove(connectionString);
                 } else {
                     logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
-                    return resp;
+                    return BAD_RESPONSE;
                 }
             }
 
@@ -190,7 +190,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
             } catch (PlcConnectionException e) {
                 logger.error("Failed to connect to device, error raised - " + e);
                 failedConnectionList.put(connectionString, System.currentTimeMillis());
-                return resp;
+                return BAD_RESPONSE;
             }
 
             if (!connection.getMetadata().canRead()) {
@@ -200,7 +200,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 } catch (Exception exception) {
                     logger.warn("Closing connection failed with error - " + exception);
                 }
-                return resp;
+                return BAD_RESPONSE;
             }
 
             long timeout = DEFAULT_TIMEOUT;
@@ -224,9 +224,9 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 } catch (Exception exception) {
                     logger.warn("Closing connection failed with error - " + exception);
                 }
-                return resp;
+                return BAD_RESPONSE;
             }
-
+            DataValue resp = BAD_RESPONSE;
             for (String fieldName : response.getFieldNames()) {
                 if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
                     int numValues = response.getNumberOfValues(fieldName);
@@ -261,6 +261,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 failedConnectionList.put(connectionString, System.currentTimeMillis());
                 logger.warn("Closing connection failed with error " + e);
             }
+
             return resp;
         } catch (Exception e) {
             logger.warn("General error reading value " + e.getStackTrace()[0].toString());
@@ -271,7 +272,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
                     //Do Nothing
                 }
             }
-            return resp;
+            return BAD_RESPONSE;
         }
     }
 
