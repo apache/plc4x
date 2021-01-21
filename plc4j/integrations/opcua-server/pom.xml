@@ -51,11 +51,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
 
     <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -183,7 +178,7 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->    
+    <!-- Logging dependancies -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
@@ -208,7 +203,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
     </dependency>
-
     <dependency>
 	    <groupId>commons-io</groupId>
 	    <artifactId>commons-io</artifactId>
@@ -217,6 +211,11 @@
     <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
   </dependencies>
@@ -278,7 +277,6 @@
           <configuration>
             <usedDependencies combine.children="append">
                 <usedDependency>org.slf4j:slf4j-simple</usedDependency>
-                <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
                 <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
                 <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
                 <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->

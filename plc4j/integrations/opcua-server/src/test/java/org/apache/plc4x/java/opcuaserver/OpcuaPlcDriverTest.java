@@ -27,51 +27,46 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.junit.jupiter.api.*;
 
 import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
+
 
 import org.apache.commons.io.FileUtils;
 import java.io.File;
 
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
-import static org.apache.plc4x.java.opcuaserver.UtilsTest.assertMatching;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
  */
 public class OpcuaPlcDriverTest {
     // Read only variables of milo example server of version 3.6
-    private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_BOOL";
-    private static final String BYTE_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_BYTE";
-    private static final String DOUBLE_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_LREAL";
-    private static final String FLOAT_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_REAL";
-    private static final String INT16_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_INT";
-    private static final String INT32_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_DINT";
-    private static final String INT64_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_LINT";
-    private static final String INTEGER_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_DINT";
-    private static final String SBYTE_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_USINT";
-    private static final String STRING_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_STRING";
-    private static final String UINT16_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_UINT";
-    private static final String UINT32_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_UDINT";
-    private static final String UINT64_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_ULINT";
-    private static final String UINTEGER_IDENTIFIER_READ_WRITE = "ns=2;s=Simulated_OPC_UDINT";
-    private static final String DOES_NOT_EXIST_IDENTIFIER_READ_WRITE = "ns=2;i=12512623";
+    private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_BOOL";
+    private static final String BYTE_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_BYTE";
+    private static final String DOUBLE_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_LREAL";
+    private static final String FLOAT_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_REAL";
+    private static final String INT16_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_INT";
+    private static final String INT32_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_DINT";
+    private static final String INT64_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_LINT";
+    private static final String INTEGER_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_DINT";
+    private static final String SBYTE_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_USINT";
+    private static final String STRING_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_STRING";
+    private static final String UINT16_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_UINT";
+    private static final String UINT32_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_UDINT";
+    private static final String UINT64_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_ULINT";
+    private static final String UINTEGER_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_UDINT";
+    private static final String DOES_NOT_EXIST_IDENTIFIER_READ_WRITE = "ns=1;i=12512623";
     // At the moment not used in PLC4X or in the OPC UA driver
-    private static final String BYTE_STRING_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/ByteString";
-    private static final String DATE_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/DateTime";
-    private static final String DURATION_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Duration";
-    private static final String GUID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Guid";
-    private static final String LOCALISED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
-    private static final String NODE_ID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/NodeId";
-    private static final String QUALIFIED_NAM_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/QualifiedName";
-    private static final String UTC_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/UtcTime";
-    private static final String VARIANT_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Variant";
-    private static final String XML_ELEMENT_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/XmlElement";
+    private static final String BYTE_STRING_IDENTIFIER_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/ByteString";
+    private static final String DATE_TIME_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/DateTime";
+    private static final String DURATION_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/Duration";
+    private static final String GUID_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/Guid";
+    private static final String LOCALISED_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/LocalizedText";
+    private static final String NODE_ID_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/NodeId";
+    private static final String QUALIFIED_NAM_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/QualifiedName";
+    private static final String UTC_TIME_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/UtcTime";
+    private static final String VARIANT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/Variant";
+    private static final String XML_ELEMENT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/XmlElement";
     // Address of local milo server
     private String miloLocalAddress = "127.0.0.1:12673/plc4x";
     //Tcp pattern of OPC UA
@@ -113,7 +108,6 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionNoParams(){
-
         connectionStringValidSet.forEach(connectionAddress -> {
                 String connectionString = connectionAddress;
                 try {
@@ -153,8 +147,8 @@ public class OpcuaPlcDriverTest {
     }
 
     @Test
-    public void readVariables() {
-        try {
+    public void readVariables() throws Exception{
+
             PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
@@ -198,14 +192,12 @@ public class OpcuaPlcDriverTest {
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
-        } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
-        }
+
     }
 
     @Test
-    public void writeVariables() {
-        try {
+    public void writeVariables() throws Exception {
+
             PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
@@ -218,7 +210,7 @@ public class OpcuaPlcDriverTest {
             builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
             builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
             builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ":SINT", -100);
+            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ":USINT", 100);
             builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
             builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ":UINT", 65535);
             builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ":UDINT", 100);
@@ -248,9 +240,6 @@ public class OpcuaPlcDriverTest {
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
-        } catch (Exception e) {
-            fail("Exception during writeVariables Test EXCEPTION: " + e.getMessage());
-        }
     }
 
 }
