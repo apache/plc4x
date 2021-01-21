@@ -44,9 +44,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class Encryption<PKCS10CertificateRequest> {
+public class CertificateGenerator<PKCS10CertificateRequest> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Encryption.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
     private static final String APPURI = "urn:eclipse:milo:plc4x:server";
 
     public static CertificateKeyPair generateCertificate() {
