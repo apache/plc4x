@@ -148,7 +148,7 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
 		brr := browseRequest.Execute()
 		browseRequestResults := <-brr
 		if browseRequestResults.Err != nil {
-			fmt.Printf("Got error executing browse-request: %s", connectionResult.Err.Error())
+			fmt.Printf("Got error executing browse-request: %s\n", connectionResult.Err.Error())
 			return
 		}
 
@@ -156,7 +156,7 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
 		for _, queryName := range browseRequestResults.Response.GetQueryNames() {
 			results := browseRequestResults.Response.GetQueryResults(queryName)
 			for _, result := range results {
-				fmt.Printf("Found KNX device at address: %v", result.Address)
+				fmt.Printf("Found KNX device at address: %v\n", result.Address)
 			}
 		}
 		//}()
@@ -172,8 +172,8 @@ func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
 			time.Sleep(time.Second * 2)
 			fmt.Print("Found devices")
 			return
-		case <-time.After(time.Second * 60):
-			t.Error("Couldn't find device in the last 60 seconds")
+		case <-time.After(time.Second * 600):
+			t.Error("Couldn't find device in the last 600 seconds")
 			t.Fail()
 			return
 		}
@@ -300,4 +300,24 @@ func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
 				fieldName, groupAddress, event.GetValue(fieldName).GetString())
 		}
 	}
+}
+
+func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	driverManager.RegisterTransport(udp.NewUdpTransport())
+
+	// Get a connection to a remote PLC
+	crc := driverManager.GetConnection("knxnet-ip://192.168.42.11")
+
+	// Wait for the driver to connect (or not)
+	connectionResult := <-crc
+	if connectionResult.Err != nil {
+		t.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+	connection := connectionResult.Connection
+	defer connection.Close()
+
 }
