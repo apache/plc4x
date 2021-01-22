@@ -1677,4 +1677,93 @@
     ['0x37' RADIO_CONVERTER           ['enables_the_radio_transmission_of_a_meter_without_a_radio_interface',   'false']]
 ]
 
+// The definition of the constants for medium type in the device descriptor differs from that of the other parts
+// 03_05_01 Resources v01.09.03 AS.pdf Page 22
+[enum uint 4 DeviceDescriptorMediumType
+    ['0x0' TP1      ]
+    ['0x1' PL110    ]
+    ['0x2' RF       ]
+    ['0x3' TP0      ]
+    ['0x4' PL132    ]
+    ['0x5' KNX_IP   ]
+]
 
+// 03_05_01 Resources v01.09.03 AS.pdf Page 22
+[enum uint 8 FirmwareType
+    ['0xAF' NONE                      ]
+    ['0x00' BCU_1                     ]
+    ['0x01' BCU_1_SYSTEM_1            ]
+    ['0x02' BCU_2_SYSTEM_2            ]
+    ['0x70' BIM_M112                  ]
+    ['0x7B' SYSTEM_B                  ]
+    ['0x81' IR_DECODER                ]
+    ['0x90' MEDIA_COUPLER_PL_TP       ]
+    ['0x91' COUPLER                   ]
+    ['0x20' RF_BI_DIRECTIONAL_DEVICES ]
+    ['0x21' RF_UNI_DIRECTIONAL_DEVICES]
+    ['0x' SYSTEM_300                  ]
+    ['0x' SYSTEM_7                    ]
+]
+
+// Helper enum that binds the combinations of medium type and firmware
+// type to the pre-defined constants the spec defines
+// 03_05_01 Resources v01.09.03 AS.pdf Page 22
+[enum uint 16 'DeviceDescriptorType0'   [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
+    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
+    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
+    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
+    ['0x0300' TP1_SYSTEM_300            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_300'                ]]
+    ['0x0700' TP1_BIM_M112_0            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
+    ['0x0701' TP1_BIM_M112_1            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
+    ['0x0705' TP1_BIM_M112_5            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
+    ['0x07B0' TP1_SYSTEM_B              ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_B'                  ]]
+    ['0x0810' TP1_IR_DECODER_0          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
+    ['0x0811' TP1_IR_DECODER_1          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
+    ['0x0910' TP1_COUPLER_0             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
+    ['0x0911' TP1_COUPLER_1             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
+    ['0x0912' TP1_COUPLER_2             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
+    ['0x091A' TP1_KNXNETIP_ROUTER       ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
+    ['0x0AFD' TP1_NONE_D                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
+    ['0x0AFE' TP1_NONE_E                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
+    ['0x1012' PL110_BCU_1_2             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x1013' PL110_BCU_1_3             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x17B0' PL110_SYSTEM_B            ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_B'                  ]]
+    ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['DeviceDescriptorMediumType.PL110',        'FirmwareType.MEDIA_COUPLER_PL_TP'       ]]
+    ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_BI_DIRECTIONAL_DEVICES' ]]
+    ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_UNI_DIRECTIONAL_DEVICES']]
+    // This should actually be BCU_1 and not BCU_1_SYSTEM_1, unfortunately the code seems to be different in this case
+    ['0x3012' TP0_BCU_1                 ['DeviceDescriptorMediumType.TP0',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    // This should actually be BCU_1 and not BCU_1_SYSTEM_1, unfortunately the code seems to be different in this case
+    ['0x4012' PL132_BCU_1               ['DeviceDescriptorMediumType.PL132',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    // This should actually be SYSTEM7 and not BIM_M112, unfortunately the code seems to be the same in this case
+    ['0x5705' KNX_IP_SYSTEM7            ['DeviceDescriptorMediumType.KNX_IP',       'FirmwareType.BIM_M112'                  ]]
+]
+
+// 03_05_01 Resources v01.09.03 AS.pdf Page 23ff
+[type 'DeviceDescriptorType2'
+    // Same manufacturer id as used elsewhere (Assigned by KNX Association)
+    [simple uint 16            'manufacturerId' ]
+    // Manufacturer specific device type id
+    [simple uint 16            'deviceType'     ]
+    // Manufacturer specific device type version
+    [simple uint 8             'version'        ]
+    // Indicates the Network Management procedures based on A_Link_Read-service are supported
+    [simple bit                'readSupported'  ]
+    // Indicates the Network Management procedures based on A_Link_Write-service are supported
+    [simple bit                'writeSupported' ]
+    [simple uint 6             'logicalTagBase' ]
+    [simple ChannelInformation 'channelInfo1'   ]
+    [simple ChannelInformation 'channelInfo2'   ]
+    [simple ChannelInformation 'channelInfo3'   ]
+    [simple ChannelInformation 'channelInfo4'   ]
+]
+
+// 03_05_01 Resources v01.09.03 AS.pdf Page 24
+[type 'ChannelInformation'
+    [simple uint 3  'numChannels']
+    [simple uint 13 'channelCode']
+]
