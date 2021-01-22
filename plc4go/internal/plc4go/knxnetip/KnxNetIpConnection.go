@@ -304,6 +304,8 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 							return nil
 						},
 						time.Second*1)
+				} else {
+					return errors.New("current device doesn't support tunneling")
 				}
 				return nil
 			},
