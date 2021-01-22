@@ -282,6 +282,11 @@ func (m KnxNetIpReader) disconnectFromDevice(sourceAddress driverModel.KnxAddres
 	return nil
 }
 
+type readPropertyResult struct {
+	plcValue     apiValues.PlcValue
+	responseCode apiModel.PlcResponseCode
+}
+
 func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPlcField, counter uint8) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	// TODO: We'll add this as time progresses, for now we only support fully qualified addresses
 	if field.IsPatternField() {
@@ -317,7 +322,7 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 				false, true, counter, nil, &apci, &extendedApci,
 				nil, data, true, 3, false, false)))
 
-	result := make(chan apiValues.PlcValue)
+	result := make(chan readPropertyResult)
 	err = m.connection.SendRequest(
 		request,
 		// Even if there are multiple messages being exchanged because of the request
@@ -375,25 +380,40 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 			_, _ = readBuffer.ReadUint8(8)
 			_, _ = readBuffer.ReadUint8(8)
 
-			_ /*count*/, _ = readBuffer.ReadUint8(4)
+			count, _ := readBuffer.ReadUint8(4)
 			_ /*index*/, _ = readBuffer.ReadUint16(12)
 
-			// Read the data payload.
-			dataLength := dataFrameExt.DataLength - 5
+			// If the return is a count of 0, then we can't access this property (Doesn't exist or not allowed to)
+			// As we don't have a return code for "doesn't exist or doesn't have access to" we'll stick to "not found"
+			// as this can be understood as "found no property we have access to"
+			// ("03_03_07 Application Layer v01.06.02 AS" Page 52)
+			var propResult readPropertyResult
+			if count == 0 {
+				propResult = readPropertyResult{
+					responseCode: apiModel.PlcResponseCode_NOT_FOUND,
+				}
+			} else {
+				// Read the data payload.
+				dataLength := dataFrameExt.DataLength - 5
 
-			// Depending on the object id and property id, parse the remaining data accordingly.
-			property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
-			for i := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; i < driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; i++ {
-				// If the propertyId matches and this is either a general object or the object id matches, add it to the result
-				if i.PropertyId() == uint8(propertyId) && (i.ObjectType().Code() == "G" || i.ObjectType().Code() == strconv.Itoa(objectId)) {
-					property = i
-					break
+				// Depending on the object id and property id, parse the remaining data accordingly.
+				property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
+				for i := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; i < driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; i++ {
+					// If the propertyId matches and this is either a general object or the object id matches, add it to the result
+					if i.PropertyId() == uint8(propertyId) && (i.ObjectType().Code() == "G" || i.ObjectType().Code() == strconv.Itoa(objectId)) {
+						property = i
+						break
+					}
+				}
+
+				// Parse the payload according to the specified datatype
+				dataType := property.PropertyDataType()
+				plcValue := readwrite.ParsePropertyDataType(*readBuffer, dataType, dataLength)
+				propResult = readPropertyResult{
+					plcValue:     plcValue,
+					responseCode: apiModel.PlcResponseCode_OK,
 				}
 			}
-
-			// Parse the payload according to the specified datatype
-			dataType := property.PropertyDataType()
-			plcValue := readwrite.ParsePropertyDataType(*readBuffer, dataType, dataLength)
 
 			// Send back an ACK
 			controlType := driverModel.ControlType_ACK
@@ -407,14 +427,16 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 							nil, nil, nil, true, driverModel.CEMIPriority_SYSTEM,
 							false, false))))
 
-			result <- plcValue
+			result <- propResult
 			return nil
 		},
 		time.Second*5)
 
 	select {
 	case value := <-result:
-		return apiModel.PlcResponseCode_OK, value
+		responseCode := value.responseCode
+		plcValue := value.plcValue
+		return responseCode, plcValue
 		/*case <-time.After(time.Second * 5):
 		  return apiModel.PlcResponseCode_REMOTE_ERROR, nil*/
 	}
