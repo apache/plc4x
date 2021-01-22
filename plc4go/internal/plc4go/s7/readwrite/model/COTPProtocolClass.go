@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type COTPProtocolClass int8
@@ -36,7 +36,7 @@ const(
     COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
 
-func COTPProtocolClassValueOf(value int8) COTPProtocolClass {
+func COTPProtocolClassByValue(value int8) COTPProtocolClass {
     switch value {
         case 0x00:
             return COTPProtocolClass_CLASS_0
@@ -48,6 +48,22 @@ func COTPProtocolClassValueOf(value int8) COTPProtocolClass {
             return COTPProtocolClass_CLASS_3
         case 0x40:
             return COTPProtocolClass_CLASS_4
+    }
+    return 0
+}
+
+func COTPProtocolClassByName(value string) COTPProtocolClass {
+    switch value {
+    case "CLASS_0":
+        return COTPProtocolClass_CLASS_0
+    case "CLASS_1":
+        return COTPProtocolClass_CLASS_1
+    case "CLASS_2":
+        return COTPProtocolClass_CLASS_2
+    case "CLASS_3":
+        return COTPProtocolClass_CLASS_3
+    case "CLASS_4":
+        return COTPProtocolClass_CLASS_4
     }
     return 0
 }
@@ -75,7 +91,7 @@ func COTPProtocolClassParse(io *utils.ReadBuffer) (COTPProtocolClass, error) {
     if err != nil {
         return 0, nil
     }
-    return COTPProtocolClassValueOf(val), nil
+    return COTPProtocolClassByValue(val), nil
 }
 
 func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {

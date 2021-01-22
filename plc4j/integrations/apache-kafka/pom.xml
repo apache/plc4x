@@ -74,8 +74,10 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -135,6 +137,7 @@
                         <tag>firmata</tag>
                         <tag>knx</tag>
                         <tag>simulated</tag>
+                        <tag>canopen</tag>
                     </tags>
 
                     <deliveryGuarantee>
@@ -146,6 +149,28 @@
             </execution>
         </executions>
     </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-confluent-zip</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/components/packages/plc4x-${project.artifactId}-${project.version}.zip</file>
+                  <type>zip</type>
+                  <classifier>standalone</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -186,15 +211,27 @@
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency-->
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -227,6 +264,11 @@
       <artifactId>plc4j-driver-simulated</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!--dependency>

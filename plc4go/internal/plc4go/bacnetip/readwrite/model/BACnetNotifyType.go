@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type BACnetNotifyType uint8
@@ -34,7 +34,7 @@ const(
     BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
-func BACnetNotifyTypeValueOf(value uint8) BACnetNotifyType {
+func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
     switch value {
         case 0x0:
             return BACnetNotifyType_ALARM
@@ -42,6 +42,18 @@ func BACnetNotifyTypeValueOf(value uint8) BACnetNotifyType {
             return BACnetNotifyType_EVENT
         case 0x2:
             return BACnetNotifyType_ACK_NOTIFICATION
+    }
+    return 0
+}
+
+func BACnetNotifyTypeByName(value string) BACnetNotifyType {
+    switch value {
+    case "ALARM":
+        return BACnetNotifyType_ALARM
+    case "EVENT":
+        return BACnetNotifyType_EVENT
+    case "ACK_NOTIFICATION":
+        return BACnetNotifyType_ACK_NOTIFICATION
     }
     return 0
 }
@@ -69,7 +81,7 @@ func BACnetNotifyTypeParse(io *utils.ReadBuffer) (BACnetNotifyType, error) {
     if err != nil {
         return 0, nil
     }
-    return BACnetNotifyTypeValueOf(val), nil
+    return BACnetNotifyTypeByValue(val), nil
 }
 
 func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {

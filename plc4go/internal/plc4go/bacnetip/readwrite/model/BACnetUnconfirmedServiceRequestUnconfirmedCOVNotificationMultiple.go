@@ -20,8 +20,8 @@ package model
 
 import (
     "encoding/xml"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "io"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
 )
 
 // The data-structure of this message

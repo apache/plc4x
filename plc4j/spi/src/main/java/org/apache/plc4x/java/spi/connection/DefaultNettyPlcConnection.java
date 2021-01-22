@@ -42,13 +42,19 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
+    protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
+    protected final boolean awaitSessionDisconnectComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
+<<<<<<< HEAD
     private final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
+=======
+    protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
+>>>>>>> develop
 
     protected Channel channel;
     protected boolean connected;
@@ -56,11 +62,13 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
                                      PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+                                     boolean awaitSessionDisconnectComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
         super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
+        //Used to signal that a disconnect has completed while closing a connection.
+        this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
         this.stackConfigurer = stackConfigurer;
 
         this.connected = false;
@@ -107,8 +115,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         }
     }
 
+    /**
+     * Close the connection by firstly calling disconnect and waiting for a DisconnectedEvent occurs and then calling
+     * Close() to finish up any other clean up.
+     * @throws PlcConnectionException
+     */
     @Override
     public void close() throws PlcConnectionException {
+<<<<<<< HEAD
         // TODO call protocols close method
 
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
@@ -116,10 +130,27 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             sessionDisconnectCompleteFuture.get(10000L, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             //Do Nothing
+=======
+
+        logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
+
+        channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
+        try {
+            if (awaitSessionDisconnectComplete) {
+                sessionDisconnectCompleteFuture.get(DEFAULT_DISCONNECT_WAIT_TIME, TimeUnit.MILLISECONDS);
+            }
+        } catch (Exception e) {
+            logger.error("Timeout while trying to close connection");
+>>>>>>> develop
         }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
 
         channel.close().awaitUninterruptibly();
+
+        if (!sessionDisconnectCompleteFuture.isDone()) {
+            sessionDisconnectCompleteFuture.complete(null );
+        }
+
         channel = null;
         connected = false;
     }

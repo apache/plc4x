@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type CEMIPriority uint8
@@ -35,7 +35,7 @@ const(
     CEMIPriority_LOW CEMIPriority = 0x3
 )
 
-func CEMIPriorityValueOf(value uint8) CEMIPriority {
+func CEMIPriorityByValue(value uint8) CEMIPriority {
     switch value {
         case 0x0:
             return CEMIPriority_SYSTEM
@@ -45,6 +45,20 @@ func CEMIPriorityValueOf(value uint8) CEMIPriority {
             return CEMIPriority_URGENT
         case 0x3:
             return CEMIPriority_LOW
+    }
+    return 0
+}
+
+func CEMIPriorityByName(value string) CEMIPriority {
+    switch value {
+    case "SYSTEM":
+        return CEMIPriority_SYSTEM
+    case "NORMAL":
+        return CEMIPriority_NORMAL
+    case "URGENT":
+        return CEMIPriority_URGENT
+    case "LOW":
+        return CEMIPriority_LOW
     }
     return 0
 }
@@ -72,7 +86,7 @@ func CEMIPriorityParse(io *utils.ReadBuffer) (CEMIPriority, error) {
     if err != nil {
         return 0, nil
     }
-    return CEMIPriorityValueOf(val), nil
+    return CEMIPriorityByValue(val), nil
 }
 
 func (e CEMIPriority) Serialize(io utils.WriteBuffer) error {

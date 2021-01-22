@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ControlType uint8
@@ -35,7 +35,7 @@ const(
     ControlType_NACK ControlType = 0x3
 )
 
-func ControlTypeValueOf(value uint8) ControlType {
+func ControlTypeByValue(value uint8) ControlType {
     switch value {
         case 0x0:
             return ControlType_CONNECT
@@ -45,6 +45,20 @@ func ControlTypeValueOf(value uint8) ControlType {
             return ControlType_ACK
         case 0x3:
             return ControlType_NACK
+    }
+    return 0
+}
+
+func ControlTypeByName(value string) ControlType {
+    switch value {
+    case "CONNECT":
+        return ControlType_CONNECT
+    case "DISCONNECT":
+        return ControlType_DISCONNECT
+    case "ACK":
+        return ControlType_ACK
+    case "NACK":
+        return ControlType_NACK
     }
     return 0
 }
@@ -72,7 +86,7 @@ func ControlTypeParse(io *utils.ReadBuffer) (ControlType, error) {
     if err != nil {
         return 0, nil
     }
-    return ControlTypeValueOf(val), nil
+    return ControlTypeByValue(val), nil
 }
 
 func (e ControlType) Serialize(io utils.WriteBuffer) error {

@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ModbusDataTypeSizes string
@@ -148,7 +148,7 @@ func (e ModbusDataTypeSizes) DataTypeSize() uint8 {
         }
     }
 }
-func ModbusDataTypeSizesValueOf(value string) ModbusDataTypeSizes {
+func ModbusDataTypeSizesByValue(value string) ModbusDataTypeSizes {
     switch value {
         case "IEC61131_BOOL":
             return ModbusDataTypeSizes_BOOL
@@ -204,6 +204,66 @@ func ModbusDataTypeSizesValueOf(value string) ModbusDataTypeSizes {
             return ModbusDataTypeSizes_WORD
         case "IEC61131_WSTRING":
             return ModbusDataTypeSizes_WSTRING
+    }
+    return ""
+}
+
+func ModbusDataTypeSizesByName(value string) ModbusDataTypeSizes {
+    switch value {
+    case "BOOL":
+        return ModbusDataTypeSizes_BOOL
+    case "BYTE":
+        return ModbusDataTypeSizes_BYTE
+    case "CHAR":
+        return ModbusDataTypeSizes_CHAR
+    case "DATE":
+        return ModbusDataTypeSizes_DATE
+    case "DATE_AND_TIME":
+        return ModbusDataTypeSizes_DATE_AND_TIME
+    case "DINT":
+        return ModbusDataTypeSizes_DINT
+    case "DWORD":
+        return ModbusDataTypeSizes_DWORD
+    case "INT":
+        return ModbusDataTypeSizes_INT
+    case "LDATE":
+        return ModbusDataTypeSizes_LDATE
+    case "LDATE_AND_TIME":
+        return ModbusDataTypeSizes_LDATE_AND_TIME
+    case "LINT":
+        return ModbusDataTypeSizes_LINT
+    case "LREAL":
+        return ModbusDataTypeSizes_LREAL
+    case "LTIME":
+        return ModbusDataTypeSizes_LTIME
+    case "LTIME_OF_DAY":
+        return ModbusDataTypeSizes_LTIME_OF_DAY
+    case "LWORD":
+        return ModbusDataTypeSizes_LWORD
+    case "REAL":
+        return ModbusDataTypeSizes_REAL
+    case "SINT":
+        return ModbusDataTypeSizes_SINT
+    case "STRING":
+        return ModbusDataTypeSizes_STRING
+    case "TIME":
+        return ModbusDataTypeSizes_TIME
+    case "TIME_OF_DAY":
+        return ModbusDataTypeSizes_TIME_OF_DAY
+    case "UDINT":
+        return ModbusDataTypeSizes_UDINT
+    case "UINT":
+        return ModbusDataTypeSizes_UINT
+    case "ULINT":
+        return ModbusDataTypeSizes_ULINT
+    case "USINT":
+        return ModbusDataTypeSizes_USINT
+    case "WCHAR":
+        return ModbusDataTypeSizes_WCHAR
+    case "WORD":
+        return ModbusDataTypeSizes_WORD
+    case "WSTRING":
+        return ModbusDataTypeSizes_WSTRING
     }
     return ""
 }

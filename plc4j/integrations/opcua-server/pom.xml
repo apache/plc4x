@@ -51,11 +51,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
 
     <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -208,8 +203,25 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
     </dependency>
+<<<<<<< HEAD
 
     
+=======
+    <dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	</dependency>
+
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
+    </dependency>
+>>>>>>> develop
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
 
   </dependencies>
 
@@ -270,7 +282,6 @@
           <configuration>
             <usedDependencies combine.children="append">
                 <usedDependency>org.slf4j:slf4j-simple</usedDependency>
-                <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
                 <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
                 <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
                 <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->

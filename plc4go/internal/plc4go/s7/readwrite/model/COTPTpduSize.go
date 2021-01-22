@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type COTPTpduSize int8
@@ -68,7 +68,7 @@ func (e COTPTpduSize) SizeInBytes() uint16 {
         }
     }
 }
-func COTPTpduSizeValueOf(value int8) COTPTpduSize {
+func COTPTpduSizeByValue(value int8) COTPTpduSize {
     switch value {
         case 0x07:
             return COTPTpduSize_SIZE_128
@@ -84,6 +84,26 @@ func COTPTpduSizeValueOf(value int8) COTPTpduSize {
             return COTPTpduSize_SIZE_4096
         case 0x0d:
             return COTPTpduSize_SIZE_8192
+    }
+    return 0
+}
+
+func COTPTpduSizeByName(value string) COTPTpduSize {
+    switch value {
+    case "SIZE_128":
+        return COTPTpduSize_SIZE_128
+    case "SIZE_256":
+        return COTPTpduSize_SIZE_256
+    case "SIZE_512":
+        return COTPTpduSize_SIZE_512
+    case "SIZE_1024":
+        return COTPTpduSize_SIZE_1024
+    case "SIZE_2048":
+        return COTPTpduSize_SIZE_2048
+    case "SIZE_4096":
+        return COTPTpduSize_SIZE_4096
+    case "SIZE_8192":
+        return COTPTpduSize_SIZE_8192
     }
     return 0
 }
@@ -111,7 +131,7 @@ func COTPTpduSizeParse(io *utils.ReadBuffer) (COTPTpduSize, error) {
     if err != nil {
         return 0, nil
     }
-    return COTPTpduSizeValueOf(val), nil
+    return COTPTpduSizeByValue(val), nil
 }
 
 func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {

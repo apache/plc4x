@@ -22,12 +22,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/url"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-    "strconv"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"net/url"
+	"strconv"
 )
 
 type ModbusDriver struct {
@@ -84,7 +85,7 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 			adu := msg.(model.ModbusTcpADU)
 			serialized, err := json.Marshal(adu)
 			if err != nil {
-                fmt.Printf("got error serializing adu: %s\n", err.Error())
+				fmt.Printf("got error serializing adu: %s\n", err.Error())
 			} else {
 				fmt.Printf("got message in the default handler %s\n", serialized)
 			}
@@ -95,14 +96,22 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
 	if value, ok := options["unit-identifier"]; ok {
-	    var intValue int
-        intValue, err = strconv.Atoi(value[0])
-        if err == nil {
-            unitIdentifier = uint8(intValue)
-        }
-    }
+		var intValue int
+		intValue, err = strconv.Atoi(value[0])
+		if err == nil {
+			unitIdentifier = uint8(intValue)
+		}
+	}
 
 	// Create the new connection
 	connection := NewModbusConnection(unitIdentifier, codec, options, m.fieldHandler)
 	return connection.Connect()
+}
+
+func (m ModbusDriver) SupportsDiscovery() bool {
+	return false
+}
+
+func (m ModbusDriver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
+	panic("implement me")
 }

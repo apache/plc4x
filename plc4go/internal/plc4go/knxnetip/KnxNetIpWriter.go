@@ -22,18 +22,18 @@ import (
 	"errors"
 	knxnetipModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type KnxNetIpWriter struct {
-	messageCodec          spi.MessageCodec
+	messageCodec spi.MessageCodec
 	spi.PlcWriter
 }
 
 func NewKnxNetIpWriter(messageCodec spi.MessageCodec) KnxNetIpWriter {
 	return KnxNetIpWriter{
-		messageCodec:          messageCodec,
+		messageCodec: messageCodec,
 	}
 }
 
@@ -41,31 +41,31 @@ func (m KnxNetIpWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.P
 	result := make(chan model.PlcWriteRequestResult)
 	// If we are requesting only one field, use a
 	if len(writeRequest.GetFieldNames()) == 1 {
-        fieldName := writeRequest.GetFieldNames()[0]
+		fieldName := writeRequest.GetFieldNames()[0]
 
-        // Get the KnxNetIp field instance from the request
-        field := writeRequest.GetField(fieldName)
-        knxNetIpField, err := CastToKnxNetIpFieldFromPlcField(field)
-        if err != nil {
-            result <- model.PlcWriteRequestResult{
-                Request:  writeRequest,
-                Response: nil,
-                Err:      errors.New("invalid field item type"),
-            }
-            return result
-        }
+		// Get the KnxNetIp field instance from the request
+		field := writeRequest.GetField(fieldName)
+		knxNetIpField, err := CastToKnxNetIpFieldFromPlcField(field)
+		if err != nil {
+			result <- model.PlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.New("invalid field item type"),
+			}
+			return result
+		}
 
-        // Get the value from the request and serialize it to a byte array
-        value := writeRequest.GetValue(fieldName)
-        io := utils.NewWriteBuffer()
-        if err := knxnetipModel.KnxDatapointSerialize(io, value, knxNetIpField.GetTypeName()); err != nil {
-            result <- model.PlcWriteRequestResult{
-                Request:  writeRequest,
-                Response: nil,
-                Err:      errors.New("error serializing value: " + err.Error()),
-            }
-            return result
-        }
-    }
+		// Get the value from the request and serialize it to a byte array
+		value := writeRequest.GetValue(fieldName)
+		io := utils.NewWriteBuffer()
+		if err := knxnetipModel.KnxDatapointSerialize(io, value, knxNetIpField.GetTypeName()); err != nil {
+			result <- model.PlcWriteRequestResult{
+				Request:  writeRequest,
+				Response: nil,
+				Err:      errors.New("error serializing value: " + err.Error()),
+			}
+			return result
+		}
+	}
 	return result
 }

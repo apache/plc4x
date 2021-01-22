@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type BACnetNodeType uint8
@@ -53,7 +53,7 @@ const(
     BACnetNodeType_ZONE BACnetNodeType = 0x15
 )
 
-func BACnetNodeTypeValueOf(value uint8) BACnetNodeType {
+func BACnetNodeTypeByValue(value uint8) BACnetNodeType {
     switch value {
         case 0x00:
             return BACnetNodeType_UNKNOWN
@@ -103,6 +103,56 @@ func BACnetNodeTypeValueOf(value uint8) BACnetNodeType {
     return 0
 }
 
+func BACnetNodeTypeByName(value string) BACnetNodeType {
+    switch value {
+    case "UNKNOWN":
+        return BACnetNodeType_UNKNOWN
+    case "SYSTEM":
+        return BACnetNodeType_SYSTEM
+    case "NETWORK":
+        return BACnetNodeType_NETWORK
+    case "DEVICE":
+        return BACnetNodeType_DEVICE
+    case "ORGANIZATIONAL":
+        return BACnetNodeType_ORGANIZATIONAL
+    case "AREA":
+        return BACnetNodeType_AREA
+    case "EQUIPMENT":
+        return BACnetNodeType_EQUIPMENT
+    case "POINT":
+        return BACnetNodeType_POINT
+    case "COLLECTION":
+        return BACnetNodeType_COLLECTION
+    case "PROPERTY":
+        return BACnetNodeType_PROPERTY
+    case "FUNCTIONAL":
+        return BACnetNodeType_FUNCTIONAL
+    case "OTHER":
+        return BACnetNodeType_OTHER
+    case "SUBSYSTEM":
+        return BACnetNodeType_SUBSYSTEM
+    case "BUILDING":
+        return BACnetNodeType_BUILDING
+    case "FLOOR":
+        return BACnetNodeType_FLOOR
+    case "SECTION":
+        return BACnetNodeType_SECTION
+    case "MODULE":
+        return BACnetNodeType_MODULE
+    case "TREE":
+        return BACnetNodeType_TREE
+    case "MEMBER":
+        return BACnetNodeType_MEMBER
+    case "PROTOCOL":
+        return BACnetNodeType_PROTOCOL
+    case "ROOM":
+        return BACnetNodeType_ROOM
+    case "ZONE":
+        return BACnetNodeType_ZONE
+    }
+    return 0
+}
+
 func CastBACnetNodeType(structType interface{}) BACnetNodeType {
     castFunc := func(typ interface{}) BACnetNodeType {
         if sBACnetNodeType, ok := typ.(BACnetNodeType); ok {
@@ -126,7 +176,7 @@ func BACnetNodeTypeParse(io *utils.ReadBuffer) (BACnetNodeType, error) {
     if err != nil {
         return 0, nil
     }
-    return BACnetNodeTypeValueOf(val), nil
+    return BACnetNodeTypeByValue(val), nil
 }
 
 func (e BACnetNodeType) Serialize(io utils.WriteBuffer) error {

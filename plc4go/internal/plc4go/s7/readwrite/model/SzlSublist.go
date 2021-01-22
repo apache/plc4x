@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type SzlSublist uint8
@@ -50,7 +50,7 @@ const(
     SzlSublist_MODULE_DIAGNOSTIC_DATA SzlSublist = 0xB1
 )
 
-func SzlSublistValueOf(value uint8) SzlSublist {
+func SzlSublistByValue(value uint8) SzlSublist {
     switch value {
         case 0x11:
             return SzlSublist_MODULE_IDENTIFICATION
@@ -94,6 +94,50 @@ func SzlSublistValueOf(value uint8) SzlSublist {
     return 0
 }
 
+func SzlSublistByName(value string) SzlSublist {
+    switch value {
+    case "MODULE_IDENTIFICATION":
+        return SzlSublist_MODULE_IDENTIFICATION
+    case "CPU_FEATURES":
+        return SzlSublist_CPU_FEATURES
+    case "USER_MEMORY_AREA":
+        return SzlSublist_USER_MEMORY_AREA
+    case "SYSTEM_AREAS":
+        return SzlSublist_SYSTEM_AREAS
+    case "BLOCK_TYPES":
+        return SzlSublist_BLOCK_TYPES
+    case "STATUS_MODULE_LEDS":
+        return SzlSublist_STATUS_MODULE_LEDS
+    case "COMPONENT_IDENTIFICATION":
+        return SzlSublist_COMPONENT_IDENTIFICATION
+    case "INTERRUPT_STATUS":
+        return SzlSublist_INTERRUPT_STATUS
+    case "ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS":
+        return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+    case "COMMUNICATION_STATUS_DATA":
+        return SzlSublist_COMMUNICATION_STATUS_DATA
+    case "STATUS_SINGLE_MODULE_LED":
+        return SzlSublist_STATUS_SINGLE_MODULE_LED
+    case "DP_MASTER_SYSTEM_INFORMATION":
+        return SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+    case "MODULE_STATUS_INFORMATION":
+        return SzlSublist_MODULE_STATUS_INFORMATION
+    case "RACK_OR_STATION_STATUS_INFORMATION":
+        return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+    case "RACK_OR_STATION_STATUS_INFORMATION_2":
+        return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+    case "ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION":
+        return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+    case "MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP":
+        return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+    case "DIAGNOSTIC_BUFFER":
+        return SzlSublist_DIAGNOSTIC_BUFFER
+    case "MODULE_DIAGNOSTIC_DATA":
+        return SzlSublist_MODULE_DIAGNOSTIC_DATA
+    }
+    return 0
+}
+
 func CastSzlSublist(structType interface{}) SzlSublist {
     castFunc := func(typ interface{}) SzlSublist {
         if sSzlSublist, ok := typ.(SzlSublist); ok {
@@ -117,7 +161,7 @@ func SzlSublistParse(io *utils.ReadBuffer) (SzlSublist, error) {
     if err != nil {
         return 0, nil
     }
-    return SzlSublistValueOf(val), nil
+    return SzlSublistByValue(val), nil
 }
 
 func (e SzlSublist) Serialize(io utils.WriteBuffer) error {

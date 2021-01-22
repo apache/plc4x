@@ -399,7 +399,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String toTypedParseExpression(TypeReference fieldType, Term term, Argument[] parserArguments) {
-        return toExpression(fieldType, term, parserArguments, null, false, false);
+        return toExpression(fieldType, term, parserArguments, null, false, isComplexTypeReference(fieldType));
     }
 
     public String toTypedSerializationExpression(TypeReference fieldType, Term term, Argument[] serializerArguments) {
@@ -512,9 +512,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 ((vl.getChild().getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild().getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        // If we are accessing optional fields, we need to use pointer-access.
+        // If we are accessing optional fields, (we might need to use pointer-access).
         else if (!serialize && (getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField)) {
-            return "(*" + vl.getName() + ")" +
+            return "(" + (suppressPointerAccess ? "" : "*") + vl.getName() + ")" +
                 ((vl.getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess) : "");
         }
@@ -747,9 +747,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             if ("null".equals(valueString)) {
                 return "0";
             }
-            String typeName = valueString.substring(0, valueString.indexOf('.'));
-            String constantName = valueString.substring(valueString.indexOf('.') + 1);
-            return typeName + "_" + constantName;
+            if(valueString.contains(".")) {
+                String typeName = valueString.substring(0, valueString.indexOf('.'));
+                String constantName = valueString.substring(valueString.indexOf('.') + 1);
+                return typeName + "_" + constantName;
+            }
+            return valueString;
         } else {
             return escapeValue(typeReference, valueString);
         }
@@ -790,7 +793,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"errors\"");
         }
 
-        imports.add("\"io\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
 
         // At least one reserved field or simple field with complex type
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
@@ -798,13 +801,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("log \"github.com/sirupsen/logrus\"");
         }
 
+        imports.add("\"io\"");
+
         // For CEIL functions: "math"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
             FieldUtils.contains(field, "CEIL"))) {
             imports.add("\"math\"");
         }
-
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/utils\"");
 
         // For Constant field: "strconv"
         if(complexTypeDefinition.getFields().stream().anyMatch(field ->
@@ -827,8 +830,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         List<String> imports = new ArrayList<>();
 
         imports.add("\"errors\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/model/values\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/utils\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values\"");
+        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
         imports.add("api \"github.com/apache/plc4x/plc4go/pkg/plc4go/values\"");
 
         if(dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->

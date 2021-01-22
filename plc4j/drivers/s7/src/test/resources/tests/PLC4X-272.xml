@@ -1,0 +1,2282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       bigEndian="true">
+
+  <name>S7</name>
+
+  <driver-name>s7</driver-name>
+
+  <!--
+      As the request if pretty large, it should be split up into 3 separate requests.
+      However as the max AMQ is 2, only the first two should be sent out instantly,
+      the last should only be sent out after one of the first two are responded to.
+
+      In this issue reported, the driver was correctly sending out 39 items for the first
+      request, however it sent out 40 items for the second, which exceeded the max PDU
+      size.
+
+      In the end the S7Optimizer correctly split up the elements, however didn't add the
+      sizes of the element causing the split to the size of the new message, therefore not
+      counting that element.
+  -->
+
+  <setup>
+    <!-- First the driver is expected to send a COTP connection request -->
+    <outgoing-plc-message name="Send COTP Connection Request">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest">
+          <parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap">
+              <tsapId>256</tsapId>
+            </parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap">
+              <tsapId>785</tsapId>
+            </parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize">
+              <tpduSize>SIZE_1024</tpduSize>
+            </parameters>
+          </parameters>
+          <payload/>
+          <destinationReference>0</destinationReference>
+          <sourceReference>15</sourceReference>
+          <protocolClass>CLASS_0</protocolClass>
+        </payload>
+      </TPKTPacket>
+    </outgoing-plc-message>
+    <!-- The PLC will send a COTP connection response -->
+    <incoming-plc-message name="Receive COTP Connection Response">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse">
+          <parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize">
+              <tpduSize>SIZE_1024</tpduSize>
+            </parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap">
+              <tsapId>785</tsapId>
+            </parameters>
+            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap">
+              <tsapId>256</tsapId>
+            </parameters>
+          </parameters>
+          <payload/>
+          <destinationReference>15</destinationReference>
+          <sourceReference>11</sourceReference>
+          <protocolClass>CLASS_0</protocolClass>
+        </payload>
+      </TPKTPacket>
+    </incoming-plc-message>
+    <!-- After that the driver will send a S7 connection request -->
+    <outgoing-plc-message name="Send S7 Connection Request">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+            <tpduReference>0</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication">
+              <maxAmqCaller>8</maxAmqCaller>
+              <maxAmqCallee>8</maxAmqCallee>
+              <pduLength>1008</pduLength>
+            </parameter>
+            <payload/>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>1</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </outgoing-plc-message>
+    <!-- The PLC will send a S7 connection response -->
+    <incoming-plc-message name="Receive S7 Connection Response">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+            <tpduReference>0</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication">
+              <maxAmqCaller>2</maxAmqCaller>
+              <maxAmqCallee>2</maxAmqCallee>
+              <pduLength>480</pduLength>
+            </parameter>
+            <payload/>
+            <errorClass>0</errorClass>
+            <errorCode>0</errorCode>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>0</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </incoming-plc-message>
+    <!-- Next we'll query some type information -->
+    <outgoing-plc-message name="Send S7 Identification Request">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageUserData">
+            <tpduReference>1</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserData">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions">
+                  <method>17</method>
+                  <cpuFunctionType>4</cpuFunctionType>
+                  <cpuFunctionGroup>4</cpuFunctionGroup>
+                  <cpuSubfunction>1</cpuSubfunction>
+                  <sequenceNumber>0</sequenceNumber>
+                  <dataUnitReferenceNumber/>
+                  <lastDataUnit/>
+                  <errorCode/>
+                </items>
+              </items>
+            </parameter>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserData">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest">
+                  <returnCode>OK</returnCode>
+                  <transportSize>OCTET_STRING</transportSize>
+                  <szlId className="org.apache.plc4x.java.s7.readwrite.SzlId">
+                    <typeClass>CPU</typeClass>
+                    <sublistExtract>0</sublistExtract>
+                    <sublistList>MODULE_IDENTIFICATION</sublistList>
+                  </szlId>
+                  <szlIndex>0</szlIndex>
+                </items>
+              </items>
+            </payload>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>2</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </outgoing-plc-message>
+    <!-- Which the PLC will gladly provide to us -->
+    <incoming-plc-message name="Receive S7 Identification Response">
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageUserData">
+            <tpduReference>1</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserData">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions">
+                  <method>18</method>
+                  <cpuFunctionType>8</cpuFunctionType>
+                  <cpuFunctionGroup>4</cpuFunctionGroup>
+                  <cpuSubfunction>1</cpuSubfunction>
+                  <sequenceNumber>1</sequenceNumber>
+                  <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
+                  <lastDataUnit>0</lastDataUnit>
+                  <errorCode>0</errorCode>
+                </items>
+              </items>
+            </parameter>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserData">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse">
+                  <returnCode>OK</returnCode>
+                  <transportSize>OCTET_STRING</transportSize>
+                  <szlId className="org.apache.plc4x.java.s7.readwrite.SzlId">
+                    <typeClass>CPU</typeClass>
+                    <sublistExtract>0</sublistExtract>
+                    <sublistList>MODULE_IDENTIFICATION</sublistList>
+                  </szlId>
+                  <szlIndex>0</szlIndex>
+                  <items>
+                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
+                      <itemIndex>1</itemIndex>
+                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <moduleTypeId>8224</moduleTypeId>
+                      <ausbg>1</ausbg>
+                      <ausbe>8224</ausbe>
+                    </items>
+                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
+                      <itemIndex>6</itemIndex>
+                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <moduleTypeId>8224</moduleTypeId>
+                      <ausbg>1</ausbg>
+                      <ausbe>8224</ausbe>
+                    </items>
+                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
+                      <itemIndex>7</itemIndex>
+                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <moduleTypeId>8224</moduleTypeId>
+                      <ausbg>22018</ausbg>
+                      <ausbe>2</ausbe>
+                    </items>
+                  </items>
+                </items>
+              </items>
+            </payload>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>0</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </incoming-plc-message>
+  </setup>
+
+  <testcase>
+    <name>100 element read request</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field1</name>
+              <address>%DB1.DBD0:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field2</name>
+              <address>%DB1.DBD4:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field3</name>
+              <address>%DB1.DBD12:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field4</name>
+              <address>%DB1.DBD16:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field5</name>
+              <address>%DB1.DBD20:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field6</name>
+              <address>%DB1.DBD24:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field7</name>
+              <address>%DB1.DBD28:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field8</name>
+              <address>%DB1.DBD32:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field9</name>
+              <address>%DB1.DBD36:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field10</name>
+              <address>%DB1.DBD40:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field11</name>
+              <address>%DB1.DBD44:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field12</name>
+              <address>%DB1.DBD48:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field13</name>
+              <address>%DB1.DBD52:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field14</name>
+              <address>%DB1.DBD56:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field15</name>
+              <address>%DB1.DBD60:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field16</name>
+              <address>%DB1.DBD64:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field17</name>
+              <address>%DB1.DBD68:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field18</name>
+              <address>%DB1.DBD72:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field19</name>
+              <address>%DB1.DBD76:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field20</name>
+              <address>%DB1.DBD80:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field21</name>
+              <address>%DB1.DBD84:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field22</name>
+              <address>%DB1.DBD88:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field23</name>
+              <address>%DB1.DBD92:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field24</name>
+              <address>%DB1.DBD96:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field25</name>
+              <address>%DB1.DBD100:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field26</name>
+              <address>%DB1.DBD104:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field27</name>
+              <address>%DB1.DBD108:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field28</name>
+              <address>%DB1.DBD112:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field29</name>
+              <address>%DB1.DBD116:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field30</name>
+              <address>%DB1.DBD120:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field31</name>
+              <address>%DB1.DBD124:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field32</name>
+              <address>%DB1.DBD128:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field33</name>
+              <address>%DB1.DBD132:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field34</name>
+              <address>%DB1.DBD136:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field35</name>
+              <address>%DB1.DBD140:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field36</name>
+              <address>%DB1.DBD144:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field37</name>
+              <address>%DB1.DBD148:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field38</name>
+              <address>%DB1.DBD152:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field39</name>
+              <address>%DB1.DBD156:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field40</name>
+              <address>%DB1.DBD160:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field41</name>
+              <address>%DB1.DBD164:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field42</name>
+              <address>%DB1.DBD168:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field43</name>
+              <address>%DB1.DBD172:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field44</name>
+              <address>%DB1.DBD176:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field45</name>
+              <address>%DB1.DBD180:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field46</name>
+              <address>%DB1.DBD184:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field47</name>
+              <address>%DB1.DBD188:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field48</name>
+              <address>%DB1.DBD192:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field49</name>
+              <address>%DB1.DBD196:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field50</name>
+              <address>%DB1.DBD200:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field51</name>
+              <address>%DB1.DBD204:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field52</name>
+              <address>%DB1.DBD208:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field53</name>
+              <address>%DB1.DBD212:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field54</name>
+              <address>%DB1.DBD216:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field55</name>
+              <address>%DB1.DBD220:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field56</name>
+              <address>%DB1.DBD224:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field57</name>
+              <address>%DB1.DBD228:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field58</name>
+              <address>%DB1.DBD232:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field59</name>
+              <address>%DB1.DBD236:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field60</name>
+              <address>%DB1.DBD240:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field61</name>
+              <address>%DB1.DBD244:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field62</name>
+              <address>%DB1.DBD248:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field63</name>
+              <address>%DB1.DBD252:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field64</name>
+              <address>%DB1.DBD256:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field65</name>
+              <address>%DB1.DBD260:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field66</name>
+              <address>%DB1.DBD264:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field67</name>
+              <address>%DB1.DBD268:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field68</name>
+              <address>%DB1.DBD272:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field69</name>
+              <address>%DB1.DBD276:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field70</name>
+              <address>%DB1.DBD280:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field71</name>
+              <address>%DB1.DBD284:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field72</name>
+              <address>%DB1.DBD288:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field73</name>
+              <address>%DB1.DBD292:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field74</name>
+              <address>%DB1.DBD296:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field75</name>
+              <address>%DB1.DBD300:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field76</name>
+              <address>%DB1.DBD304:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field77</name>
+              <address>%DB1.DBD308:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field78</name>
+              <address>%DB1.DBD312:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field79</name>
+              <address>%DB1.DBD316:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field80</name>
+              <address>%DB1.DBD320:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field81</name>
+              <address>%DB1.DBD324:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field82</name>
+              <address>%DB1.DBD328:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field83</name>
+              <address>%DB1.DBD332:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field84</name>
+              <address>%DB1.DBD336:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field85</name>
+              <address>%DB1.DBD340:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field86</name>
+              <address>%DB1.DBD344:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field87</name>
+              <address>%DB1.DBD348:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field88</name>
+              <address>%DB1.DBD352:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field89</name>
+              <address>%DB1.DBD356:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field90</name>
+              <address>%DB1.DBD360:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field91</name>
+              <address>%DB1.DBD364:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field92</name>
+              <address>%DB1.DBD368:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field93</name>
+              <address>%DB1.DBD372:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field94</name>
+              <address>%DB1.DBD376:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field95</name>
+              <address>%DB1.DBD380:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field96</name>
+              <address>%DB1.DBD384:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field97</name>
+              <address>%DB1.DBD388:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field98</name>
+              <address>%DB1.DBD392:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field99</name>
+              <address>%DB1.DBD396:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>field100</name>
+              <address>%DB1.DBD400:REAL</address>
+            </field>
+         </fields>
+        </TestReadRequest>
+      </api-request>
+      <!--outgoing-plc-message name="Send first part of the S7 Read Request">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+              <tpduReference>10</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>0</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>4</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>12</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>16</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>20</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>24</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>28</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>32</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>36</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>40</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>44</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>48</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>52</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>56</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>60</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>64</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>68</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>72</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>76</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>80</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>84</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>88</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>92</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>96</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>100</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>104</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>108</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>112</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>116</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>120</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>124</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>128</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>132</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>136</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>140</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>144</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>148</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>152</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>156</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                </items>
+              </parameter>
+              <payload/>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>10</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </outgoing-plc-message>
+      <outgoing-plc-message name="Send second part of the S7 Read Request">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+              <tpduReference>11</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>160</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>164</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>168</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>172</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>176</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>180</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>184</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>188</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>192</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>196</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>200</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>204</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>208</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>212</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>216</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>220</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>224</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>228</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>232</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>236</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>240</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>244</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>248</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>252</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>256</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>260</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>264</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>268</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>272</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>276</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>280</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>284</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>288</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>292</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>296</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>300</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>304</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>308</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>312</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                </items>
+              </parameter>
+              <payload/>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>11</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive first part S7 Read Response">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+              <tpduReference>10</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse">
+                <numItems>39</numItems>
+              </parameter>
+              <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                </items>
+              </payload>
+              <errorClass>0</errorClass>
+              <errorCode>0</errorCode>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>10</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </incoming-plc-message>
+      <outgoing-plc-message name="Send second part of the S7 Read Request">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+              <tpduReference>12</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>316</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>320</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>324</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>328</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>332</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>336</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>340</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>344</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>348</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>352</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>356</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>360</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>364</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>368</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>372</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>376</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>380</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>384</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>388</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>392</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>396</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>REAL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>1</dbNumber>
+                      <area>DATA_BLOCKS</area>
+                      <byteAddress>400</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                </items>
+              </parameter>
+              <payload/>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>12</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive second part S7 Read Response">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+              <tpduReference>11</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse">
+                <numItems>39</numItems>
+              </parameter>
+              <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                </items>
+              </payload>
+              <errorClass>0</errorClass>
+              <errorCode>0</errorCode>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>11</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </incoming-plc-message>
+      <incoming-plc-message name="Receive third part S7 Read Response">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+              <tpduReference>12</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse">
+                <numItems>22</numItems>
+              </parameter>
+              <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                    <returnCode>OK</returnCode>
+                    <transportSize>REAL</transportSize>
+                    <data>Qusykw==</data>
+                  </items>
+                </items>
+              </payload>
+              <errorClass>0</errorClass>
+              <errorCode>0</errorCode>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>12</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <S7Field>
+                  <memoryArea>OUTPUTS</memoryArea>
+                  <blockNumber>0</blockNumber>
+                  <byteOffset>0</byteOffset>
+                  <bitOffset>0</bitOffset>
+                  <numElements>1</numElements>
+                  <dataType>BOOL</dataType>
+                </S7Field>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcBOOL>true</PlcBOOL>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response-->
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

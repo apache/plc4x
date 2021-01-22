@@ -22,18 +22,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"time"
 )
 
 type ModbusExpectation struct {
-	timestamp       time.Time
-	check           func(interface{}) (bool, bool)
-	responseChannel chan interface{}
+	expiration     time.Time
+	acceptsMessage spi.AcceptsMessage
+	handleMessage  spi.HandleMessage
 }
 
 type ModbusMessageCodec struct {
+	expectationCounter            int32
 	transportInstance             transports.TransportInstance
 	defaultIncomingMessageChannel chan interface{}
 	expectations                  []ModbusExpectation
@@ -41,6 +43,7 @@ type ModbusMessageCodec struct {
 
 func NewModbusMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *ModbusMessageCodec {
 	codec := &ModbusMessageCodec{
+		expectationCounter:            1,
 		transportInstance:             transportInstance,
 		defaultIncomingMessageChannel: defaultIncomingMessageChannel,
 		expectations:                  []ModbusExpectation{},
@@ -76,7 +79,30 @@ func (m *ModbusMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *ModbusMessageCodec) Receive() (interface{}, error) {
+func (m *ModbusMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+	expectation := ModbusExpectation{
+		expiration:     time.Now().Add(ttl),
+		acceptsMessage: acceptsMessage,
+		handleMessage:  handleMessage,
+	}
+	m.expectations = append(m.expectations, expectation)
+	return nil
+}
+
+func (m *ModbusMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+	// Send the actual message
+	err := m.Send(message)
+	if err != nil {
+		return err
+	}
+	return m.Expect(acceptsMessage, handleMessage, ttl)
+}
+
+func (m *ModbusMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
+	return m.defaultIncomingMessageChannel
+}
+
+func (m *ModbusMessageCodec) receive() (interface{}, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		data, err := m.transportInstance.PeekReadableBytes(6)
@@ -104,46 +130,43 @@ func (m *ModbusMessageCodec) Receive() (interface{}, error) {
 	return nil, nil
 }
 
-func (m *ModbusMessageCodec) Expect(check func(interface{}) (bool, bool)) chan interface{} {
-	responseChanel := make(chan interface{})
-	expectation := ModbusExpectation{
-		timestamp:       time.Now(),
-		check:           check,
-		responseChannel: responseChanel,
-	}
-	m.expectations = append(m.expectations, expectation)
-	return responseChanel
-}
-
-func work(codec *ModbusMessageCodec) {
+func work(m *ModbusMessageCodec) {
 	// Start an endless loop
 	// TODO: Provide some means to terminate this ...
 	for {
-		if len(codec.expectations) > 0 {
-			message, err := codec.Receive()
+		if len(m.expectations) > 0 {
+			message, err := m.receive()
 			if err != nil {
 				fmt.Printf("got an error reading from transport %s", err.Error())
 			} else if message != nil {
+				now := time.Now()
 				messageHandled := false
 				// Go through all expectations
-				for index, expectation := range codec.expectations {
+				for index, expectation := range m.expectations {
+					// Check if this expectation has expired.
+					if now.After(expectation.expiration) {
+						// Remove this expectation from the list.
+						m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+						break
+					}
+
 					// Check if the current message matches the expectations
-					if match, keepExpectation := expectation.check(message); match {
-						// Send the decoded message back
-						expectation.responseChannel <- message
-                        // If the expectation doesn't want to keep the expectation active, remove it
-                        if !keepExpectation {
-                            // Remove this expectation from the list.
-                            codec.expectations = append(codec.expectations[:index], codec.expectations[index+1:]...)
-                        }
-						messageHandled = true
+					// If it does, let it handle the message.
+					if accepts := expectation.acceptsMessage(message); accepts {
+						err = expectation.handleMessage(message)
+						if err == nil {
+							messageHandled = true
+							// Remove this expectation from the list.
+							m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+						}
 						break
 					}
 				}
+
 				// If the message has not been handled and a default handler is provided, call this ...
 				if !messageHandled {
-					if codec.defaultIncomingMessageChannel != nil {
-						codec.defaultIncomingMessageChannel <- message
+					if m.defaultIncomingMessageChannel != nil {
+						m.defaultIncomingMessageChannel <- message
 					} else {
 						fmt.Printf("No handler registered for handling message %s", message)
 					}

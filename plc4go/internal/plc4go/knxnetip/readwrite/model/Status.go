@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type Status uint8
@@ -43,7 +43,7 @@ const(
     Status_TUNNELLING_LAYER_NOT_SUPPORTED Status = 0x29
 )
 
-func StatusValueOf(value uint8) Status {
+func StatusByValue(value uint8) Status {
     switch value {
         case 0x00:
             return Status_NO_ERROR
@@ -73,6 +73,36 @@ func StatusValueOf(value uint8) Status {
     return 0
 }
 
+func StatusByName(value string) Status {
+    switch value {
+    case "NO_ERROR":
+        return Status_NO_ERROR
+    case "PROTOCOL_TYPE_NOT_SUPPORTED":
+        return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+    case "UNSUPPORTED_PROTOCOL_VERSION":
+        return Status_UNSUPPORTED_PROTOCOL_VERSION
+    case "OUT_OF_ORDER_SEQUENCE_NUMBER":
+        return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+    case "INVALID_CONNECTION_ID":
+        return Status_INVALID_CONNECTION_ID
+    case "CONNECTION_TYPE_NOT_SUPPORTED":
+        return Status_CONNECTION_TYPE_NOT_SUPPORTED
+    case "CONNECTION_OPTION_NOT_SUPPORTED":
+        return Status_CONNECTION_OPTION_NOT_SUPPORTED
+    case "NO_MORE_CONNECTIONS":
+        return Status_NO_MORE_CONNECTIONS
+    case "NO_MORE_UNIQUE_CONNECTIONS":
+        return Status_NO_MORE_UNIQUE_CONNECTIONS
+    case "DATA_CONNECTION":
+        return Status_DATA_CONNECTION
+    case "KNX_CONNECTION":
+        return Status_KNX_CONNECTION
+    case "TUNNELLING_LAYER_NOT_SUPPORTED":
+        return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+    }
+    return 0
+}
+
 func CastStatus(structType interface{}) Status {
     castFunc := func(typ interface{}) Status {
         if sStatus, ok := typ.(Status); ok {
@@ -96,7 +126,7 @@ func StatusParse(io *utils.ReadBuffer) (Status, error) {
     if err != nil {
         return 0, nil
     }
-    return StatusValueOf(val), nil
+    return StatusByValue(val), nil
 }
 
 func (e Status) Serialize(io utils.WriteBuffer) error {

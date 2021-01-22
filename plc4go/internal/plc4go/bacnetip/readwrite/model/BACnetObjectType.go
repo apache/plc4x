@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type BACnetObjectType uint16
@@ -90,7 +90,7 @@ const(
     BACnetObjectType_ESCALATOR BACnetObjectType = 0x03A
 )
 
-func BACnetObjectTypeValueOf(value uint16) BACnetObjectType {
+func BACnetObjectTypeByValue(value uint16) BACnetObjectType {
     switch value {
         case 0x000:
             return BACnetObjectType_ANALOG_INPUT
@@ -214,6 +214,130 @@ func BACnetObjectTypeValueOf(value uint16) BACnetObjectType {
     return 0
 }
 
+func BACnetObjectTypeByName(value string) BACnetObjectType {
+    switch value {
+    case "ANALOG_INPUT":
+        return BACnetObjectType_ANALOG_INPUT
+    case "ANALOG_OUTPUT":
+        return BACnetObjectType_ANALOG_OUTPUT
+    case "ANALOG_VALUE":
+        return BACnetObjectType_ANALOG_VALUE
+    case "BINARY_INPUT":
+        return BACnetObjectType_BINARY_INPUT
+    case "BINARY_OUTPUT":
+        return BACnetObjectType_BINARY_OUTPUT
+    case "BINARY_VALUE":
+        return BACnetObjectType_BINARY_VALUE
+    case "CALENDAR":
+        return BACnetObjectType_CALENDAR
+    case "COMMAND":
+        return BACnetObjectType_COMMAND
+    case "DEVICE":
+        return BACnetObjectType_DEVICE
+    case "EVENT_ENROLLMENT":
+        return BACnetObjectType_EVENT_ENROLLMENT
+    case "FILE":
+        return BACnetObjectType_FILE
+    case "GROUP":
+        return BACnetObjectType_GROUP
+    case "LOOP":
+        return BACnetObjectType_LOOP
+    case "MULTISTATE_INPUT":
+        return BACnetObjectType_MULTISTATE_INPUT
+    case "MULTISTATE_OUTPUT":
+        return BACnetObjectType_MULTISTATE_OUTPUT
+    case "NOTIFICATION_CLASS":
+        return BACnetObjectType_NOTIFICATION_CLASS
+    case "PROGRAM":
+        return BACnetObjectType_PROGRAM
+    case "SCHEDULE":
+        return BACnetObjectType_SCHEDULE
+    case "AVERAGING":
+        return BACnetObjectType_AVERAGING
+    case "MULTISTATE_VALUE":
+        return BACnetObjectType_MULTISTATE_VALUE
+    case "TREND_LOG":
+        return BACnetObjectType_TREND_LOG
+    case "LIFE_SAFETY_POINT":
+        return BACnetObjectType_LIFE_SAFETY_POINT
+    case "LIFE_SAFETY_ZONE":
+        return BACnetObjectType_LIFE_SAFETY_ZONE
+    case "ACCUMULATOR":
+        return BACnetObjectType_ACCUMULATOR
+    case "PULSE_CONVERTER":
+        return BACnetObjectType_PULSE_CONVERTER
+    case "EVENT_LOG":
+        return BACnetObjectType_EVENT_LOG
+    case "GLOBAL_GROUP":
+        return BACnetObjectType_GLOBAL_GROUP
+    case "TREND_LOG_MULTIPLE":
+        return BACnetObjectType_TREND_LOG_MULTIPLE
+    case "LOAD_CONTROL":
+        return BACnetObjectType_LOAD_CONTROL
+    case "STRUCTURED_VIEW":
+        return BACnetObjectType_STRUCTURED_VIEW
+    case "ACCESS_DOOR":
+        return BACnetObjectType_ACCESS_DOOR
+    case "TIMER":
+        return BACnetObjectType_TIMER
+    case "ACCESS_CREDENTIAL":
+        return BACnetObjectType_ACCESS_CREDENTIAL
+    case "ACCESS_POINT":
+        return BACnetObjectType_ACCESS_POINT
+    case "ACCESS_RIGHTS":
+        return BACnetObjectType_ACCESS_RIGHTS
+    case "ACCESS_USER":
+        return BACnetObjectType_ACCESS_USER
+    case "ACCESS_ZONE":
+        return BACnetObjectType_ACCESS_ZONE
+    case "CREDENTIAL_DATA_INPUT":
+        return BACnetObjectType_CREDENTIAL_DATA_INPUT
+    case "NETWORK_SECURITY":
+        return BACnetObjectType_NETWORK_SECURITY
+    case "BITSTRING_VALUE":
+        return BACnetObjectType_BITSTRING_VALUE
+    case "CHARACTERSTRING_VALUE":
+        return BACnetObjectType_CHARACTERSTRING_VALUE
+    case "DATEPATTERN_VALUE":
+        return BACnetObjectType_DATEPATTERN_VALUE
+    case "DATE_VALUE":
+        return BACnetObjectType_DATE_VALUE
+    case "DATETIMEPATTERN_VALUE":
+        return BACnetObjectType_DATETIMEPATTERN_VALUE
+    case "DATETIME_VALUE":
+        return BACnetObjectType_DATETIME_VALUE
+    case "INTEGER_VALUE":
+        return BACnetObjectType_INTEGER_VALUE
+    case "LARGE_ANALOG_VALUE":
+        return BACnetObjectType_LARGE_ANALOG_VALUE
+    case "OCTETSTRING_VALUE":
+        return BACnetObjectType_OCTETSTRING_VALUE
+    case "POSITIVE_INTEGER_VALUE":
+        return BACnetObjectType_POSITIVE_INTEGER_VALUE
+    case "TIMEPATTERN_VALUE":
+        return BACnetObjectType_TIMEPATTERN_VALUE
+    case "TIME_VALUE":
+        return BACnetObjectType_TIME_VALUE
+    case "NOTIFICATION_FORWARDER":
+        return BACnetObjectType_NOTIFICATION_FORWARDER
+    case "ALERT_ENROLLMENT":
+        return BACnetObjectType_ALERT_ENROLLMENT
+    case "CHANNEL":
+        return BACnetObjectType_CHANNEL
+    case "LIGHTING_OUTPUT":
+        return BACnetObjectType_LIGHTING_OUTPUT
+    case "BINARY_LIGHTING_OUTPUT":
+        return BACnetObjectType_BINARY_LIGHTING_OUTPUT
+    case "NETWORK_PORT":
+        return BACnetObjectType_NETWORK_PORT
+    case "ELEVATOR_GROUP":
+        return BACnetObjectType_ELEVATOR_GROUP
+    case "ESCALATOR":
+        return BACnetObjectType_ESCALATOR
+    }
+    return 0
+}
+
 func CastBACnetObjectType(structType interface{}) BACnetObjectType {
     castFunc := func(typ interface{}) BACnetObjectType {
         if sBACnetObjectType, ok := typ.(BACnetObjectType); ok {
@@ -237,7 +361,7 @@ func BACnetObjectTypeParse(io *utils.ReadBuffer) (BACnetObjectType, error) {
     if err != nil {
         return 0, nil
     }
-    return BACnetObjectTypeValueOf(val), nil
+    return BACnetObjectTypeByValue(val), nil
 }
 
 func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {

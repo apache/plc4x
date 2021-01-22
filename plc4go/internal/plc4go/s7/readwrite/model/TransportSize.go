@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type TransportSize int8
@@ -567,7 +567,7 @@ func (e TransportSize) DataProtocolId() string {
         }
     }
 }
-func TransportSizeValueOf(value int8) TransportSize {
+func TransportSizeByValue(value int8) TransportSize {
     switch value {
         case 0x00:
             return TransportSize_LWORD
@@ -601,6 +601,40 @@ func TransportSizeValueOf(value int8) TransportSize {
     return 0
 }
 
+func TransportSizeByName(value string) TransportSize {
+    switch value {
+    case "LWORD":
+        return TransportSize_LWORD
+    case "BOOL":
+        return TransportSize_BOOL
+    case "BYTE":
+        return TransportSize_BYTE
+    case "CHAR":
+        return TransportSize_CHAR
+    case "WORD":
+        return TransportSize_WORD
+    case "INT":
+        return TransportSize_INT
+    case "DWORD":
+        return TransportSize_DWORD
+    case "DINT":
+        return TransportSize_DINT
+    case "REAL":
+        return TransportSize_REAL
+    case "DATE":
+        return TransportSize_DATE
+    case "TIME":
+        return TransportSize_TIME
+    case "DATE_AND_TIME":
+        return TransportSize_DATE_AND_TIME
+    case "WCHAR":
+        return TransportSize_WCHAR
+    case "LREAL":
+        return TransportSize_LREAL
+    }
+    return 0
+}
+
 func CastTransportSize(structType interface{}) TransportSize {
     castFunc := func(typ interface{}) TransportSize {
         if sTransportSize, ok := typ.(TransportSize); ok {
@@ -624,7 +658,7 @@ func TransportSizeParse(io *utils.ReadBuffer) (TransportSize, error) {
     if err != nil {
         return 0, nil
     }
-    return TransportSizeValueOf(val), nil
+    return TransportSizeByValue(val), nil
 }
 
 func (e TransportSize) Serialize(io utils.WriteBuffer) error {

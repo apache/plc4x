@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsStringField extends DirectAdsField implements AdsStringField {
 
-    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?");
 
     private final int stringLength;
 

@@ -19,60 +19,19 @@
 
 package org.apache.plc4x.java.opcuaserver.backend;
 
-
 import java.lang.reflect.Array;
-import java.util.List;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
 
-import org.eclipse.milo.opcua.sdk.core.AccessLevel;
-import org.eclipse.milo.opcua.sdk.core.Reference;
-import org.eclipse.milo.opcua.sdk.core.ValueRank;
-import org.eclipse.milo.opcua.sdk.core.ValueRanks;
-import org.eclipse.milo.opcua.sdk.server.Lifecycle;
-import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
+import org.eclipse.milo.opcua.sdk.server.AbstractLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
-import org.eclipse.milo.opcua.sdk.server.api.DataTypeDictionaryManager;
-import org.eclipse.milo.opcua.sdk.server.api.ManagedNamespaceWithLifecycle;
-import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
-import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.BaseEventTypeNode;
-import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.ServerTypeNode;
-import org.eclipse.milo.opcua.sdk.server.model.nodes.variables.AnalogItemTypeNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaFolderNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaObjectTypeNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.UaVariableNode;
-import org.eclipse.milo.opcua.sdk.server.nodes.factories.NodeFactory;
-import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilters;
-import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
-import org.eclipse.milo.opcua.stack.core.AttributeId;
-import org.eclipse.milo.opcua.stack.core.BuiltinDataType;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
-import org.eclipse.milo.opcua.stack.core.UaException;
-import org.eclipse.milo.opcua.stack.core.types.builtin.ByteString;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
-import org.eclipse.milo.opcua.stack.core.types.builtin.ExtensionObject;
-import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
-import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
-import org.eclipse.milo.opcua.stack.core.types.builtin.XmlElement;
-import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
-import org.eclipse.milo.opcua.stack.core.types.enumerated.StructureType;
-import org.eclipse.milo.opcua.stack.core.types.structured.EnumDefinition;
-import org.eclipse.milo.opcua.stack.core.types.structured.EnumDescription;
-import org.eclipse.milo.opcua.stack.core.types.structured.EnumField;
-import org.eclipse.milo.opcua.stack.core.types.structured.Range;
-import org.eclipse.milo.opcua.stack.core.types.structured.StructureDefinition;
-import org.eclipse.milo.opcua.stack.core.types.structured.StructureDescription;
-import org.eclipse.milo.opcua.stack.core.types.structured.StructureField;
 
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,15 +40,14 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
+
 import org.apache.plc4x.java.utils.connectionpool.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+
 import org.apache.plc4x.java.api.model.PlcField;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
@@ -98,24 +56,41 @@ import java.util.HashMap;
 
 import java.math.BigInteger;
 
-import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
-import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
-import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
-public class Plc4xCommunication {
+
+public class Plc4xCommunication extends AbstractLifecycle {
 
     private PlcDriverManager driverManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
+    private final DataValue BAD_RESPONSE = new DataValue(new Variant(null), StatusCode.BAD);
 
     private Map<String, Long> failedConnectionList = new HashMap<>();
 
     Map<NodeId, DataItem> monitoredList = new HashMap<>();
 
     public Plc4xCommunication () {
+
+    }
+
+    @Override
+    protected void onStartup() {
         driverManager = new PooledPlcDriverManager();
+    }
+
+    @Override
+    protected void onShutdown() {
+        //Do Nothing
+    }
+
+    public PlcDriverManager getDriverManager() {
+        return driverManager;
+    }
+
+    public void setDriverManager(PlcDriverManager driverManager) {
+        this.driverManager =  driverManager;
     }
 
     public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
@@ -196,92 +171,109 @@ public class Plc4xCommunication {
 
     public DataValue getValue(AttributeFilterContext.GetAttributeContext ctx, String tag, String connectionString) {
         PlcConnection connection = null;
-        DataValue resp = new DataValue(new Variant(null), StatusCode.BAD);
-
-        //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
-        if (failedConnectionList.containsKey(connectionString)) {
-            if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
-                failedConnectionList.remove(connectionString);
-            } else {
-                logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
-                return resp;
-            }
-        }
-
-        //Try to connect to PLC
         try {
-            connection = driverManager.getConnection(connectionString);            
-            logger.debug(connectionString + " Connected");
-        } catch (PlcConnectionException e) {
-            logger.error("Failed to connect to device, error raised - " + e);
-            failedConnectionList.put(connectionString, System.currentTimeMillis());
-            return resp;
-        }
 
-        if (!connection.getMetadata().canRead()) {
-            logger.error("This connection doesn't support reading.");
-            try {
-                connection.close();
-            } catch (Exception exception) {
-                logger.warn("Closing connection failed with error - " + exception);
+            //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
+            if (failedConnectionList.containsKey(connectionString)) {
+                if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
+                    failedConnectionList.remove(connectionString);
+                } else {
+                    logger.debug("Waiting for back off timer - " + ((failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) - System.currentTimeMillis()) + " ms left");
+                    return BAD_RESPONSE;
+                }
             }
-            return resp;
-        }
 
-        long timeout = DEFAULT_TIMEOUT;
-        if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
-            timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval()*1000;
-        }
-
-        // Create a new read request:
-        // - Give the single item requested an alias name
-        PlcReadRequest.Builder builder = connection.readRequestBuilder();
-        builder.addItem("value-1", tag);
-        PlcReadRequest readRequest = builder.build();
-
-        PlcReadResponse response = null;
-        try {
-            response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.warn(e + " Occurred while reading value, using timeout of " + timeout/1000 + "ms");
+            //Try to connect to PLC
             try {
-                connection.close();
-            } catch (Exception exception) {
-                logger.warn("Closing connection failed with error - " + exception);
+                connection = driverManager.getConnection(connectionString);
+                logger.debug(connectionString + " Connected");
+            } catch (PlcConnectionException e) {
+                logger.error("Failed to connect to device, error raised - " + e);
+                failedConnectionList.put(connectionString, System.currentTimeMillis());
+                return BAD_RESPONSE;
             }
-            return resp;
-        }
 
-        for (String fieldName : response.getFieldNames()) {
-          if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-              int numValues = response.getNumberOfValues(fieldName);
-              if(numValues == 1) {
-                  if (response.getObject(fieldName) instanceof BigInteger) {
-                      resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
-                  } else {
-                      resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
-                  }
-              } else {
-                Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
-                for (int i = 0; i < numValues; i++) {
-                    if (response.getObject(fieldName, i) instanceof BigInteger) {
-                        Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+            if (!connection.getMetadata().canRead()) {
+                logger.error("This connection doesn't support reading.");
+                try {
+                    connection.close();
+                } catch (Exception exception) {
+                    logger.warn("Closing connection failed with error - " + exception);
+                }
+                return BAD_RESPONSE;
+            }
+
+            long timeout = DEFAULT_TIMEOUT;
+            if (monitoredList.containsKey(ctx.getNode().getNodeId())) {
+                timeout = (long) monitoredList.get(ctx.getNode().getNodeId()).getSamplingInterval() * 1000;
+            }
+
+            // Create a new read request:
+            // - Give the single item requested an alias name
+            PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addItem("value-1", tag);
+            PlcReadRequest readRequest = builder.build();
+
+            PlcReadResponse response = null;
+            try {
+                response = readRequest.execute().get(timeout, TimeUnit.MICROSECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                logger.warn(e + " Occurred while reading value, using timeout of " + timeout / 1000 + "ms");
+                try {
+                    connection.close();
+                } catch (Exception exception) {
+                    logger.warn("Closing connection failed with error - " + exception);
+                }
+                return BAD_RESPONSE;
+            }
+            DataValue resp = BAD_RESPONSE;
+            for (String fieldName : response.getFieldNames()) {
+                if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
+                    int numValues = response.getNumberOfValues(fieldName);
+                    if (numValues == 1) {
+                        if (response.getObject(fieldName) instanceof BigInteger) {
+                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
+                        } else {
+                            resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
+                        }
                     } else {
-                        Array.set(array, i, response.getObject(fieldName, i));
+                        Object array = null;
+                        if (response.getObject(fieldName, 0) instanceof BigInteger) {
+                            array = Array.newInstance(ULong.class, numValues);
+                        } else {
+                            array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                        }
+                        for (int i = 0; i < numValues; i++) {
+                            if (response.getObject(fieldName, i) instanceof BigInteger) {
+                                Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                            } else {
+                                Array.set(array, i, response.getObject(fieldName, i));
+                            }
+                        }
+                        resp = new DataValue(new Variant(array), StatusCode.GOOD);
                     }
                 }
-                resp = new DataValue(new Variant(array), StatusCode.GOOD);
-              }
-          }
-        }
+            }
 
-        try {
-          connection.close();
+            try {
+                connection.close();
+            } catch (Exception e) {
+                failedConnectionList.put(connectionString, System.currentTimeMillis());
+                logger.warn("Closing connection failed with error " + e);
+            }
+
+            return resp;
         } catch (Exception e) {
-          failedConnectionList.put(connectionString, System.currentTimeMillis());
-          logger.warn("Closing connection failed with error " + e);
+            logger.warn("General error reading value " + e.getStackTrace()[0].toString());
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception ex) {
+                    //Do Nothing
+                }
+            }
+            return BAD_RESPONSE;
         }
-        return resp;
     }
 
     public void setValue(String tag, String value, String connectionString) {

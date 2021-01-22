@@ -20,8 +20,8 @@ package knxnetip
 
 import (
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	internalMode "github.com/apache/plc4x/plc4go/internal/plc4go/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	internalMode "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"time"

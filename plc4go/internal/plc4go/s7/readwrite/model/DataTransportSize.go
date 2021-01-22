@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type DataTransportSize uint8
@@ -68,7 +68,7 @@ func (e DataTransportSize) SizeInBits() bool {
         }
     }
 }
-func DataTransportSizeValueOf(value uint8) DataTransportSize {
+func DataTransportSizeByValue(value uint8) DataTransportSize {
     switch value {
         case 0x00:
             return DataTransportSize_NULL
@@ -84,6 +84,26 @@ func DataTransportSizeValueOf(value uint8) DataTransportSize {
             return DataTransportSize_REAL
         case 0x09:
             return DataTransportSize_OCTET_STRING
+    }
+    return 0
+}
+
+func DataTransportSizeByName(value string) DataTransportSize {
+    switch value {
+    case "NULL":
+        return DataTransportSize_NULL
+    case "BIT":
+        return DataTransportSize_BIT
+    case "BYTE_WORD_DWORD":
+        return DataTransportSize_BYTE_WORD_DWORD
+    case "INTEGER":
+        return DataTransportSize_INTEGER
+    case "DINTEGER":
+        return DataTransportSize_DINTEGER
+    case "REAL":
+        return DataTransportSize_REAL
+    case "OCTET_STRING":
+        return DataTransportSize_OCTET_STRING
     }
     return 0
 }
@@ -111,7 +131,7 @@ func DataTransportSizeParse(io *utils.ReadBuffer) (DataTransportSize, error) {
     if err != nil {
         return 0, nil
     }
-    return DataTransportSizeValueOf(val), nil
+    return DataTransportSizeByValue(val), nil
 }
 
 func (e DataTransportSize) Serialize(io utils.WriteBuffer) error {

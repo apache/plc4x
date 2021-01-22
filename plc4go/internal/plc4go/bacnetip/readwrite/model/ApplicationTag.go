@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ApplicationTag int8
@@ -44,7 +44,7 @@ const(
     ApplicationTag_BACNET_OBJECT_IDENTIFIER ApplicationTag = 0xC
 )
 
-func ApplicationTagValueOf(value int8) ApplicationTag {
+func ApplicationTagByValue(value int8) ApplicationTag {
     switch value {
         case 0x0:
             return ApplicationTag_NULL
@@ -76,6 +76,38 @@ func ApplicationTagValueOf(value int8) ApplicationTag {
     return 0
 }
 
+func ApplicationTagByName(value string) ApplicationTag {
+    switch value {
+    case "NULL":
+        return ApplicationTag_NULL
+    case "BOOLEAN":
+        return ApplicationTag_BOOLEAN
+    case "UNSIGNED_INTEGER":
+        return ApplicationTag_UNSIGNED_INTEGER
+    case "SIGNED_INTEGER":
+        return ApplicationTag_SIGNED_INTEGER
+    case "REAL":
+        return ApplicationTag_REAL
+    case "DOUBLE":
+        return ApplicationTag_DOUBLE
+    case "OCTET_STRING":
+        return ApplicationTag_OCTET_STRING
+    case "CHARACTER_STRING":
+        return ApplicationTag_CHARACTER_STRING
+    case "BIT_STRING":
+        return ApplicationTag_BIT_STRING
+    case "ENUMERATED":
+        return ApplicationTag_ENUMERATED
+    case "DATE":
+        return ApplicationTag_DATE
+    case "TIME":
+        return ApplicationTag_TIME
+    case "BACNET_OBJECT_IDENTIFIER":
+        return ApplicationTag_BACNET_OBJECT_IDENTIFIER
+    }
+    return 0
+}
+
 func CastApplicationTag(structType interface{}) ApplicationTag {
     castFunc := func(typ interface{}) ApplicationTag {
         if sApplicationTag, ok := typ.(ApplicationTag); ok {
@@ -99,7 +131,7 @@ func ApplicationTagParse(io *utils.ReadBuffer) (ApplicationTag, error) {
     if err != nil {
         return 0, nil
     }
-    return ApplicationTagValueOf(val), nil
+    return ApplicationTagByValue(val), nil
 }
 
 func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {

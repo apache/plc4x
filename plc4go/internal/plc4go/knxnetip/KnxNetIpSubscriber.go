@@ -19,141 +19,141 @@
 package knxnetip
 
 import (
-    driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-    internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
-    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "time"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"time"
 )
 
 type KnxNetIpSubscriber struct {
-    connection           *KnxNetIpConnection
-    subscriptionRequests []internalModel.DefaultPlcSubscriptionRequest
-    spi.PlcWriter
+	connection           *KnxNetIpConnection
+	subscriptionRequests []internalModel.DefaultPlcSubscriptionRequest
+	spi.PlcWriter
 }
 
 func NewKnxNetIpSubscriber(connection *KnxNetIpConnection) *KnxNetIpSubscriber {
-    return &KnxNetIpSubscriber{
-        connection: connection,
-        subscriptionRequests: []internalModel.DefaultPlcSubscriptionRequest{},
-    }
+	return &KnxNetIpSubscriber{
+		connection:           connection,
+		subscriptionRequests: []internalModel.DefaultPlcSubscriptionRequest{},
+	}
 }
 
 func (m *KnxNetIpSubscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-    result := make(chan apiModel.PlcSubscriptionRequestResult)
-    go func() {
-        // Add this subscriber to the connection.
-        m.connection.addSubscriber(m)
+	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	go func() {
+		// Add this subscriber to the connection.
+		m.connection.addSubscriber(m)
 
-        // Save the subscription request
-        m.subscriptionRequests = append(m.subscriptionRequests, subscriptionRequest.(internalModel.DefaultPlcSubscriptionRequest))
+		// Save the subscription request
+		m.subscriptionRequests = append(m.subscriptionRequests, subscriptionRequest.(internalModel.DefaultPlcSubscriptionRequest))
 
-        // Just populate all requests with an OK
-        responseCodes := map[string]apiModel.PlcResponseCode{}
-        for _, fieldName := range subscriptionRequest.GetFieldNames() {
-            responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-        }
+		// Just populate all requests with an OK
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		for _, fieldName := range subscriptionRequest.GetFieldNames() {
+			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+		}
 
-        result <- apiModel.PlcSubscriptionRequestResult{
-            Request:  subscriptionRequest,
-            Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
-            Err:      nil,
-        }
-    }()
-    return result
+		result <- apiModel.PlcSubscriptionRequestResult{
+			Request:  subscriptionRequest,
+			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
+			Err:      nil,
+		}
+	}()
+	return result
 }
 
 func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
-    result := make(chan apiModel.PlcUnsubscriptionRequestResult)
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
 
-    // TODO: As soon as we establish a connection, we start getting data...
-    // subscriptions are more an internal handling of which values to pass where.
+	// TODO: As soon as we establish a connection, we start getting data...
+	// subscriptions are more an internal handling of which values to pass where.
 
-    return result
+	return result
 }
 
 /*
  * Callback for incoming value change events from the KNX bus
  */
 func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFrame, changed bool) {
-    var destinationAddress []int8
-    var dataFirstByte *int8
-    var data []int8
-    switch lDataFrame.Child.(type) {
-    case *driverModel.LDataFrameData:
-        dataFrame := driverModel.CastLDataFrameData(lDataFrame)
-        destinationAddress = dataFrame.DestinationAddress
-        dataFirstByte = dataFrame.DataFirstByte
-        data = dataFrame.Data
-    case *driverModel.LDataFrameDataExt:
-        dataFrame := driverModel.CastLDataFrameDataExt(lDataFrame)
-        destinationAddress = dataFrame.DestinationAddress
-        dataFirstByte = dataFrame.DataFirstByte
-        data = dataFrame.Data
-    }
+	var destinationAddress []int8
+	var dataFirstByte *int8
+	var data []int8
+	switch lDataFrame.Child.(type) {
+	case *driverModel.LDataFrameData:
+		dataFrame := driverModel.CastLDataFrameData(lDataFrame)
+		destinationAddress = dataFrame.DestinationAddress
+		dataFirstByte = dataFrame.DataFirstByte
+		data = dataFrame.Data
+	case *driverModel.LDataFrameDataExt:
+		dataFrame := driverModel.CastLDataFrameDataExt(lDataFrame)
+		destinationAddress = dataFrame.DestinationAddress
+		dataFirstByte = dataFrame.DataFirstByte
+		data = dataFrame.Data
+	}
 
-    if destinationAddress != nil {
-        // Decode the group-address according to the settings in the driver
-        // Group addresses can be 1, 2 or 3 levels (3 being the default)
-        garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
-        groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
-        if err != nil {
-            return
-        }
+	if destinationAddress != nil {
+		// Decode the group-address according to the settings in the driver
+		// Group addresses can be 1, 2 or 3 levels (3 being the default)
+		garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
+		groupAddress, err := driverModel.KnxGroupAddressParse(garb, m.connection.getGroupAddressNumLevels())
+		if err != nil {
+			return
+		}
 
-        // Go through all subscription-requests and process each separately
-        for _, subscriptionRequest := range m.subscriptionRequests {
-            fields := map[string]apiModel.PlcField{}
-            types := map[string]internalModel.SubscriptionType{}
-            intervals := map[string]time.Duration{}
-            responseCodes := map[string]apiModel.PlcResponseCode{}
-            addresses := map[string][]int8{}
-            plcValues := map[string]values.PlcValue{}
+		// Go through all subscription-requests and process each separately
+		for _, subscriptionRequest := range m.subscriptionRequests {
+			fields := map[string]apiModel.PlcField{}
+			types := map[string]internalModel.SubscriptionType{}
+			intervals := map[string]time.Duration{}
+			responseCodes := map[string]apiModel.PlcResponseCode{}
+			addresses := map[string][]int8{}
+			plcValues := map[string]values.PlcValue{}
 
-            // Check if this datagram matches any address in this subscription request
-            // As depending on the address used for fields, the decoding is different, we need to decode on-demand here.
-            for _, fieldName := range subscriptionRequest.GetFieldNames() {
-                field, err := CastToKnxNetIpFieldFromPlcField(subscriptionRequest.GetField(fieldName))
-                if err != nil {
-                    continue
-                }
-                subscriptionType := subscriptionRequest.GetType(fieldName)
-                // If it matches, take the datatype of each matching field and try to decode the payload
-                if field.matches(groupAddress) {
-                    // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
-                    if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
-                        if dataFirstByte != nil {
-                            var payload []uint8
-                            payload = append(payload, uint8(*dataFirstByte))
-                            payload = append(payload, utils.Int8ArrayToByteArray(data)...)
-                            rb := utils.NewReadBuffer(payload)
-                            plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
-                            fields[fieldName] = field
-                            types[fieldName] = subscriptionRequest.GetType(fieldName)
-                            intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
-                            addresses[fieldName] = destinationAddress
-                            if err == nil {
-                                responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-                                plcValues[fieldName] = plcValue
-                            } else {
-                                // TODO: Do a little more here ...
-                                responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-                                plcValues[fieldName] = nil
-                            }
-                        }
-                    }
-                }
-            }
+			// Check if this datagram matches any address in this subscription request
+			// As depending on the address used for fields, the decoding is different, we need to decode on-demand here.
+			for _, fieldName := range subscriptionRequest.GetFieldNames() {
+				field, err := CastToKnxNetIpFieldFromPlcField(subscriptionRequest.GetField(fieldName))
+				if err != nil {
+					continue
+				}
+				subscriptionType := subscriptionRequest.GetType(fieldName)
+				// If it matches, take the datatype of each matching field and try to decode the payload
+				if field.matches(groupAddress) {
+					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
+					if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
+						if dataFirstByte != nil {
+							var payload []uint8
+							payload = append(payload, uint8(*dataFirstByte))
+							payload = append(payload, utils.Int8ArrayToByteArray(data)...)
+							rb := utils.NewReadBuffer(payload)
+							plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
+							fields[fieldName] = field
+							types[fieldName] = subscriptionRequest.GetType(fieldName)
+							intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+							addresses[fieldName] = destinationAddress
+							if err == nil {
+								responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+								plcValues[fieldName] = plcValue
+							} else {
+								// TODO: Do a little more here ...
+								responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+								plcValues[fieldName] = nil
+							}
+						}
+					}
+				}
+			}
 
-            // Assemble a PlcSubscription event
-            if len(plcValues) > 0 {
-                event := NewKnxNetIpSubscriptionEvent(
-                    fields, types, intervals, responseCodes, addresses, plcValues)
-                eventHandler := subscriptionRequest.GetEventHandler()
-                eventHandler(event)
-            }
-        }
-    }
+			// Assemble a PlcSubscription event
+			if len(plcValues) > 0 {
+				event := NewKnxNetIpSubscriptionEvent(
+					fields, types, intervals, responseCodes, addresses, plcValues)
+				eventHandler := subscriptionRequest.GetEventHandler()
+				eventHandler(event)
+			}
+		}
+	}
 }

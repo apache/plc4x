@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type APCI uint8
@@ -47,7 +47,7 @@ const(
     APCI_OTHER_PDU APCI = 0xF
 )
 
-func APCIValueOf(value uint8) APCI {
+func APCIByValue(value uint8) APCI {
     switch value {
         case 0x0:
             return APCI_GROUP_VALUE_READ_PDU
@@ -85,6 +85,44 @@ func APCIValueOf(value uint8) APCI {
     return 0
 }
 
+func APCIByName(value string) APCI {
+    switch value {
+    case "GROUP_VALUE_READ_PDU":
+        return APCI_GROUP_VALUE_READ_PDU
+    case "GROUP_VALUE_RESPONSE_PDU":
+        return APCI_GROUP_VALUE_RESPONSE_PDU
+    case "GROUP_VALUE_WRITE_PDU":
+        return APCI_GROUP_VALUE_WRITE_PDU
+    case "INDIVIDUAL_ADDRESS_WRITE_PDU":
+        return APCI_INDIVIDUAL_ADDRESS_WRITE_PDU
+    case "INDIVIDUAL_ADDRESS_READ_PDU":
+        return APCI_INDIVIDUAL_ADDRESS_READ_PDU
+    case "INDIVIDUAL_ADDRESS_RESPONSE_PDU":
+        return APCI_INDIVIDUAL_ADDRESS_RESPONSE_PDU
+    case "ADC_READ_PDU":
+        return APCI_ADC_READ_PDU
+    case "ADC_RESPONSE_PDU":
+        return APCI_ADC_RESPONSE_PDU
+    case "MEMORY_READ_PDU":
+        return APCI_MEMORY_READ_PDU
+    case "MEMORY_RESPONSE_PDU":
+        return APCI_MEMORY_RESPONSE_PDU
+    case "MEMORY_WRITE_PDU":
+        return APCI_MEMORY_WRITE_PDU
+    case "USER_MESSAGE_PDU":
+        return APCI_USER_MESSAGE_PDU
+    case "DEVICE_DESCRIPTOR_READ_PDU":
+        return APCI_DEVICE_DESCRIPTOR_READ_PDU
+    case "DEVICE_DESCRIPTOR_RESPONSE_PDU":
+        return APCI_DEVICE_DESCRIPTOR_RESPONSE_PDU
+    case "RESTART_PDU":
+        return APCI_RESTART_PDU
+    case "OTHER_PDU":
+        return APCI_OTHER_PDU
+    }
+    return 0
+}
+
 func CastAPCI(structType interface{}) APCI {
     castFunc := func(typ interface{}) APCI {
         if sAPCI, ok := typ.(APCI); ok {
@@ -108,7 +146,7 @@ func APCIParse(io *utils.ReadBuffer) (APCI, error) {
     if err != nil {
         return 0, nil
     }
-    return APCIValueOf(val), nil
+    return APCIByValue(val), nil
 }
 
 func (e APCI) Serialize(io utils.WriteBuffer) error {

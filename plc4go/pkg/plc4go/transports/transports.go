@@ -19,8 +19,8 @@
 package transports
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/transports/tcp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/transports/udp"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 

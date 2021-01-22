@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type KnxMedium uint8
@@ -37,7 +37,7 @@ const(
     KnxMedium_MEDIUM_KNX_IP KnxMedium = 0x20
 )
 
-func KnxMediumValueOf(value uint8) KnxMedium {
+func KnxMediumByValue(value uint8) KnxMedium {
     switch value {
         case 0x01:
             return KnxMedium_MEDIUM_RESERVED_1
@@ -51,6 +51,24 @@ func KnxMediumValueOf(value uint8) KnxMedium {
             return KnxMedium_MEDIUM_RF
         case 0x20:
             return KnxMedium_MEDIUM_KNX_IP
+    }
+    return 0
+}
+
+func KnxMediumByName(value string) KnxMedium {
+    switch value {
+    case "MEDIUM_RESERVED_1":
+        return KnxMedium_MEDIUM_RESERVED_1
+    case "MEDIUM_TP1":
+        return KnxMedium_MEDIUM_TP1
+    case "MEDIUM_PL110":
+        return KnxMedium_MEDIUM_PL110
+    case "MEDIUM_RESERVED_2":
+        return KnxMedium_MEDIUM_RESERVED_2
+    case "MEDIUM_RF":
+        return KnxMedium_MEDIUM_RF
+    case "MEDIUM_KNX_IP":
+        return KnxMedium_MEDIUM_KNX_IP
     }
     return 0
 }
@@ -78,7 +96,7 @@ func KnxMediumParse(io *utils.ReadBuffer) (KnxMedium, error) {
     if err != nil {
         return 0, nil
     }
-    return KnxMediumValueOf(val), nil
+    return KnxMediumByValue(val), nil
 }
 
 func (e KnxMedium) Serialize(io utils.WriteBuffer) error {

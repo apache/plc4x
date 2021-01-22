@@ -22,9 +22,9 @@ import (
     "encoding/base64"
     "encoding/xml"
     "errors"
-    "io"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     log "github.com/sirupsen/logrus"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "io"
 )
 
 // The data-structure of this message

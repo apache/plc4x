@@ -21,7 +21,6 @@ dir: "target/test-tmp/"
 name: Plc4x.OPC.UA.Server
 disableInsecureEndpoint: true
 tcpPort: 12673
-httpPort: 8445
 devices:
 - name: "Simulated Device"
   connectionString: "simulated://127.0.0.1"

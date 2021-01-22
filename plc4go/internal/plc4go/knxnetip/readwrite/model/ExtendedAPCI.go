@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ExtendedAPCI uint8
@@ -72,7 +72,7 @@ const(
     ExtendedAPCI_FILE_STREAM_INFO_REPORT ExtendedAPCI = 0x30
 )
 
-func ExtendedAPCIValueOf(value uint8) ExtendedAPCI {
+func ExtendedAPCIByValue(value uint8) ExtendedAPCI {
     switch value {
         case 0x00:
             return ExtendedAPCI_OPEN_ROUTING_TABLE_REQUEST_PDU
@@ -160,6 +160,94 @@ func ExtendedAPCIValueOf(value uint8) ExtendedAPCI {
     return 0
 }
 
+func ExtendedAPCIByName(value string) ExtendedAPCI {
+    switch value {
+    case "OPEN_ROUTING_TABLE_REQUEST_PDU":
+        return ExtendedAPCI_OPEN_ROUTING_TABLE_REQUEST_PDU
+    case "READ_ROUTING_TABLE_REQUEST_PDU":
+        return ExtendedAPCI_READ_ROUTING_TABLE_REQUEST_PDU
+    case "READ_ROUTING_TABLE_RESPONSE_PDU":
+        return ExtendedAPCI_READ_ROUTING_TABLE_RESPONSE_PDU
+    case "WRITE_ROUTING_TABLE_REQUEST_PDU":
+        return ExtendedAPCI_WRITE_ROUTING_TABLE_REQUEST_PDU
+    case "READ_ROUTER_MEMORY_REQUEST_PDU":
+        return ExtendedAPCI_READ_ROUTER_MEMORY_REQUEST_PDU
+    case "READ_ROUTER_MEMORY_RESPONSE_PDU":
+        return ExtendedAPCI_READ_ROUTER_MEMORY_RESPONSE_PDU
+    case "WRITE_ROUTER_MEMORY_REQUEST_PDU":
+        return ExtendedAPCI_WRITE_ROUTER_MEMORY_REQUEST_PDU
+    case "READ_ROUTER_STATUS_REQUEST_PDU":
+        return ExtendedAPCI_READ_ROUTER_STATUS_REQUEST_PDU
+    case "READ_ROUTER_STATUS_RESPONSE_PDU":
+        return ExtendedAPCI_READ_ROUTER_STATUS_RESPONSE_PDU
+    case "WRITE_ROUTER_STATUS_REQUEST_PDU":
+        return ExtendedAPCI_WRITE_ROUTER_STATUS_REQUEST_PDU
+    case "MEMORY_BIT_WRITE_PDU":
+        return ExtendedAPCI_MEMORY_BIT_WRITE_PDU
+    case "AUTHORIZE_REQUEST_PDU":
+        return ExtendedAPCI_AUTHORIZE_REQUEST_PDU
+    case "AUTHORIZE_RESPONSE_PDU":
+        return ExtendedAPCI_AUTHORIZE_RESPONSE_PDU
+    case "KEY_WRITE_PDU":
+        return ExtendedAPCI_KEY_WRITE_PDU
+    case "KEY_RESPONSE_PDU":
+        return ExtendedAPCI_KEY_RESPONSE_PDU
+    case "PROPERTY_VALUE_READ_PDU":
+        return ExtendedAPCI_PROPERTY_VALUE_READ_PDU
+    case "PROPERTY_VALUE_RESPONSE_PDU":
+        return ExtendedAPCI_PROPERTY_VALUE_RESPONSE_PDU
+    case "PROPERTY_VALUE_WRITE_PDU":
+        return ExtendedAPCI_PROPERTY_VALUE_WRITE_PDU
+    case "PROPERTY_DESCRIPTION_READ_PDU":
+        return ExtendedAPCI_PROPERTY_DESCRIPTION_READ_PDU
+    case "PROPERTY_DESCRIPTION_RESPONSE_PDU":
+        return ExtendedAPCI_PROPERTY_DESCRIPTION_RESPONSE_PDU
+    case "NETWORK_PARAMETER_READ_PDU":
+        return ExtendedAPCI_NETWORK_PARAMETER_READ_PDU
+    case "NETWORK_PARAMETER_RESPONSE_PDU":
+        return ExtendedAPCI_NETWORK_PARAMETER_RESPONSE_PDU
+    case "INDIVIDUAL_ADDRESS_SERIAL_NUMBER_READ_PDU":
+        return ExtendedAPCI_INDIVIDUAL_ADDRESS_SERIAL_NUMBER_READ_PDU
+    case "INDIVIDUAL_ADDRESS_SERIAL_NUMBER_RESPONSE_PDU":
+        return ExtendedAPCI_INDIVIDUAL_ADDRESS_SERIAL_NUMBER_RESPONSE_PDU
+    case "INDIVIDUAL_ADDRESS_SERIAL_NUMBER_WRITE_PDU":
+        return ExtendedAPCI_INDIVIDUAL_ADDRESS_SERIAL_NUMBER_WRITE_PDU
+    case "DOMAIN_ADDRESS_WRITE":
+        return ExtendedAPCI_DOMAIN_ADDRESS_WRITE
+    case "DOMAIN_ADDRESS_READ":
+        return ExtendedAPCI_DOMAIN_ADDRESS_READ
+    case "DOMAIN_ADDRESS_RESPONSE":
+        return ExtendedAPCI_DOMAIN_ADDRESS_RESPONSE
+    case "DOMAIN_ADDRESS_SELECTIVE_READ":
+        return ExtendedAPCI_DOMAIN_ADDRESS_SELECTIVE_READ
+    case "NETWORK_PARAMETER_WRITE":
+        return ExtendedAPCI_NETWORK_PARAMETER_WRITE
+    case "LINK_READ":
+        return ExtendedAPCI_LINK_READ
+    case "LINK_RESPONSE":
+        return ExtendedAPCI_LINK_RESPONSE
+    case "LINK_WRITE":
+        return ExtendedAPCI_LINK_WRITE
+    case "GROUP_PROPERTY_VALUE_READ":
+        return ExtendedAPCI_GROUP_PROPERTY_VALUE_READ
+    case "GROUP_PROPERTY_VALUE_RESPONSE":
+        return ExtendedAPCI_GROUP_PROPERTY_VALUE_RESPONSE
+    case "GROUP_PROPERTY_VALUE_WRITE":
+        return ExtendedAPCI_GROUP_PROPERTY_VALUE_WRITE
+    case "GROUP_PROPERTY_VALUE_INFO_REPORT":
+        return ExtendedAPCI_GROUP_PROPERTY_VALUE_INFO_REPORT
+    case "DOMAIN_ADDRESS_SERIAL_NUMBER_READ":
+        return ExtendedAPCI_DOMAIN_ADDRESS_SERIAL_NUMBER_READ
+    case "DOMAIN_ADDRESS_SERIAL_NUMBER_RESPONSE":
+        return ExtendedAPCI_DOMAIN_ADDRESS_SERIAL_NUMBER_RESPONSE
+    case "DOMAIN_ADDRESS_SERIAL_NUMBER_WRITE":
+        return ExtendedAPCI_DOMAIN_ADDRESS_SERIAL_NUMBER_WRITE
+    case "FILE_STREAM_INFO_REPORT":
+        return ExtendedAPCI_FILE_STREAM_INFO_REPORT
+    }
+    return 0
+}
+
 func CastExtendedAPCI(structType interface{}) ExtendedAPCI {
     castFunc := func(typ interface{}) ExtendedAPCI {
         if sExtendedAPCI, ok := typ.(ExtendedAPCI); ok {
@@ -183,7 +271,7 @@ func ExtendedAPCIParse(io *utils.ReadBuffer) (ExtendedAPCI, error) {
     if err != nil {
         return 0, nil
     }
-    return ExtendedAPCIValueOf(val), nil
+    return ExtendedAPCIByValue(val), nil
 }
 
 func (e ExtendedAPCI) Serialize(io utils.WriteBuffer) error {

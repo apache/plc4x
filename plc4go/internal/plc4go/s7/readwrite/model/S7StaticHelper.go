@@ -19,9 +19,9 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "time"
+	"time"
 )
 
 func StaticHelperParseTiaTime(io *utils.ReadBuffer) (uint32, error) {

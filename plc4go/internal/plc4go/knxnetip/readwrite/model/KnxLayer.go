@@ -19,7 +19,7 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type KnxLayer uint8
@@ -34,7 +34,7 @@ const(
     KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
-func KnxLayerValueOf(value uint8) KnxLayer {
+func KnxLayerByValue(value uint8) KnxLayer {
     switch value {
         case 0x02:
             return KnxLayer_TUNNEL_LINK_LAYER
@@ -42,6 +42,18 @@ func KnxLayerValueOf(value uint8) KnxLayer {
             return KnxLayer_TUNNEL_RAW
         case 0x80:
             return KnxLayer_TUNNEL_BUSMONITOR
+    }
+    return 0
+}
+
+func KnxLayerByName(value string) KnxLayer {
+    switch value {
+    case "TUNNEL_LINK_LAYER":
+        return KnxLayer_TUNNEL_LINK_LAYER
+    case "TUNNEL_RAW":
+        return KnxLayer_TUNNEL_RAW
+    case "TUNNEL_BUSMONITOR":
+        return KnxLayer_TUNNEL_BUSMONITOR
     }
     return 0
 }
@@ -69,7 +81,7 @@ func KnxLayerParse(io *utils.ReadBuffer) (KnxLayer, error) {
     if err != nil {
         return 0, nil
     }
-    return KnxLayerValueOf(val), nil
+    return KnxLayerByValue(val), nil
 }
 
 func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
