@@ -136,8 +136,6 @@ func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
 		}
 	} else if err != nil {
 		fmt.Printf("Got error reading: %s\n", err.Error())
-	} else {
-		fmt.Printf("Only %d bytes available\n", num)
 	}
 	return nil, nil
 }
