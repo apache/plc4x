@@ -163,7 +163,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         this.discovery = configuration.isDiscovery();
         this.username = configuration.getUsername();
         this.password = configuration.getPassword();
-        this.certFile = configuration.getCertFile();
+        this.certFile = configuration.getCertDirectory();
         this.securityPolicy = configuration.getSecurityPolicy();
         this.keyStoreFile = configuration.getKeyStoreFile();
 

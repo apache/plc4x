@@ -136,8 +136,6 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             .build();
     }
 
-
-
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
         // Split up the connection string into it's individual segments.

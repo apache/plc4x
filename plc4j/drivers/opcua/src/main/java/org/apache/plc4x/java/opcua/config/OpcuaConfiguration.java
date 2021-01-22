@@ -19,19 +19,50 @@ under the License.
 package org.apache.plc4x.java.opcua.config;
 
 
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.opcua.context.CertificateGenerator;
+import org.apache.plc4x.java.opcua.context.CertificateKeyPair;
+import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConfiguration.class);
 
     private String code;
     private String host;
     private String port;
     private String endpoint;
     private String params;
+
+    public OpcuaConfiguration() {
+        if (!(securityPolicy == "None")) {
+            try {
+                if (!(keyStoreFile == null) & !(certDirectory == null) & !(keyStorePassword == null)) {
+                    openKeyStore();
+                }
+            } catch (Exception e) {
+                LOGGER.info("Unable to open keystore, please confirm you have the correct permissions");
+            }
+        }
+    }
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
@@ -43,14 +74,20 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     @ConfigurationParameter("password")
     private String password;
 
-    @ConfigurationParameter("certFile")
-    private String certFile;
-
     @ConfigurationParameter("securityPolicy")
+    @StringDefaultValue("None")
     private String securityPolicy;
 
     @ConfigurationParameter("keyStoreFile")
     private String keyStoreFile;
+
+    @ConfigurationParameter("certDirectory")
+    private String certDirectory;
+
+    @ConfigurationParameter("keyStorePassword")
+    private String keyStorePassword;
+
+    private CertificateKeyPair ckp;
 
     public boolean isDiscovery() {
         return discovery;
@@ -64,8 +101,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return password;
     }
 
-    public String getCertFile() {
-        return certFile;
+    public String getCertDirectory() {
+        return certDirectory;
     }
 
     public String getSecurityPolicy() {
@@ -74,6 +111,14 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
 
     public String getKeyStoreFile() {
         return keyStoreFile;
+    }
+
+    public String getKeyStorePassword() {
+        return keyStorePassword;
+    }
+
+    public CertificateKeyPair getCertificateKeyPair() {
+        return ckp;
     }
 
     public void setDiscovery(boolean discovery) {
@@ -89,7 +134,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     }
 
     public void setCertFile(String certFile) {
-        this.certFile = certFile;
+        this.certDirectory = certFile;
     }
 
     public void setSecurityPolicy(String securityPolicy) {
@@ -98,6 +143,10 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
+    }
+
+    public void setKeyStorePassword(String keyStorePassword) {
+        this.keyStorePassword = keyStorePassword;
     }
 
     public String getTransportCode() {
@@ -132,6 +181,30 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.endpoint = endpoint;
     }
 
+    private void openKeyStore() throws KeyStoreException, PlcConnectionException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException {
+        File securityTempDir = new File(certDirectory, "security");
+        if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
+            throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);
+        }
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        File serverKeyStore = securityTempDir.toPath().resolve(keyStoreFile).toFile();
+
+        File pkiDir = FileSystems.getDefault().getPath(certDirectory).resolve("pki").toFile();
+        if (!serverKeyStore.exists()) {
+            ckp = CertificateGenerator.generateCertificate();
+            LOGGER.info("Creating new KeyStore at {}", serverKeyStore);
+            keyStore.load(null, keyStorePassword.toCharArray());
+            keyStore.setKeyEntry("plc4x-certificate-alias", ckp.getKeyPair().getPrivate(), keyStorePassword.toCharArray(), new X509Certificate[] { ckp.getCertificate() });
+            keyStore.store(new FileOutputStream(serverKeyStore), keyStorePassword.toCharArray());
+        } else {
+            LOGGER.info("Loading KeyStore at {}", serverKeyStore);
+            keyStore.load(new FileInputStream(serverKeyStore), keyStorePassword.toCharArray());
+            String alias = keyStore.aliases().nextElement();
+            KeyPair kp = new KeyPair(keyStore.getCertificate(alias).getPublicKey(),
+                (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray()));
+            ckp = new CertificateKeyPair(kp,(X509Certificate) keyStore.getCertificate(alias));
+        }
+    }
 
 
     @Override

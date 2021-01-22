@@ -107,6 +107,8 @@
               <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-opcua</usedDependency>
+            <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
+            <usedDependency>org.bouncycastle:bcprov-jdk15on</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -206,6 +208,18 @@
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-annotations</artifactId>
   </dependency>
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <dependencyManagement>
@@ -220,7 +234,7 @@
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
         <version>${milo.version}</version>
-        <scope>scope</scope>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
@@ -234,7 +248,6 @@
         <version>${milo.version}</version>
         <scope>test</scope>
       </dependency>
-
 
     </dependencies>
   </dependencyManagement>
