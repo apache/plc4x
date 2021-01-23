@@ -29,6 +29,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefau
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,11 @@ import java.security.cert.X509Certificate;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
 
+    static {
+        // Required for SecurityPolicy.Aes256_Sha256_RsaPss
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConfiguration.class);
 
     private String code;
@@ -51,18 +57,6 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     private String port;
     private String endpoint;
     private String params;
-
-    public OpcuaConfiguration() {
-        if (!(securityPolicy == "None")) {
-            try {
-                if (!(keyStoreFile == null) & !(certDirectory == null) & !(keyStorePassword == null)) {
-                    openKeyStore();
-                }
-            } catch (Exception e) {
-                LOGGER.info("Unable to open keystore, please confirm you have the correct permissions");
-            }
-        }
-    }
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
@@ -133,8 +127,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.password = password;
     }
 
-    public void setCertFile(String certFile) {
-        this.certDirectory = certFile;
+    public void setCertDirectory(String certDirectory) {
+        this.certDirectory = certDirectory;
     }
 
     public void setSecurityPolicy(String securityPolicy) {
@@ -181,7 +175,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.endpoint = endpoint;
     }
 
-    private void openKeyStore() throws KeyStoreException, PlcConnectionException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException {
+    public void openKeyStore() throws KeyStoreException, PlcConnectionException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException {
         File securityTempDir = new File(certDirectory, "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
             throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);

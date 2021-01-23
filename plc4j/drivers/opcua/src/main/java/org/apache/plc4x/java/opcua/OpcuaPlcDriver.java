@@ -33,9 +33,9 @@ import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import io.netty.buffer.ByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -45,14 +45,9 @@ import java.util.function.ToIntFunction;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
-/**
- * Implementation of the OPC UA protocol, based on:
- * - Eclipse Milo (https://github.com/eclipse/milo)
- *
- * Created by Matthias Milan Strljic on 10.05.2019
- */
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriver.class);
 
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
 
@@ -65,7 +60,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
                                                                     INET_ADDRESS_PATTERN +
                                                                     "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
-                                                                    "(?<paramString>[\\&\\w=]+\\=[\\w&]+)*"
+                                                                    "(?<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)"
                                                                 );
 
 
@@ -123,6 +118,10 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     @Override
     protected PlcValueHandler getValueHandler() {
         return new IEC61131ValueHandler();
+    }
+
+    protected boolean awaitDisconnectComplete() {
+        return true;
     }
 
     @Override
@@ -190,6 +189,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         configure(configuration, transport);
 
         // Create an instance of the communication channel which the driver should use.
+        System.out.println(transportHost + ":" + transportPort);
         ChannelFactory channelFactory = transport.createChannelFactory(transportHost + ":" + transportPort);
         if(channelFactory == null) {
             throw new PlcConnectionException("Unable to get channel factory from url " + transportHost + ":" + transportPort);
@@ -205,6 +205,23 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
 
+        // Make the "await disconnect complete" overridable via system property.
+        boolean awaitDisconnectComplete = awaitDisconnectComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
+            awaitDisconnectComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE));
+        }
+
+        if (!(configuration.getSecurityPolicy().equals("None"))) {
+            try {
+                LOGGER.info(configuration.getKeyStoreFile());
+                LOGGER.info(configuration.getCertDirectory());
+                LOGGER.info(configuration.getKeyStorePassword());
+                configuration.openKeyStore();
+            } catch (Exception e) {
+                throw new PlcConnectionException("Unable to open keystore, please confirm you have the correct permissions");
+            }
+        }
+
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
@@ -212,6 +229,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             configuration,
             channelFactory,
             awaitSetupComplete,
+            awaitDisconnectComplete,
             getStackConfigurer(),
             getOptimizer());
     }

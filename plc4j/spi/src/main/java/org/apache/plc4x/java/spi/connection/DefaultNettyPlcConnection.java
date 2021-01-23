@@ -50,11 +50,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
-<<<<<<< HEAD
-    private final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
-=======
     protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
->>>>>>> develop
 
     protected Channel channel;
     protected boolean connected;
@@ -122,15 +118,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
-<<<<<<< HEAD
-        // TODO call protocols close method
-
-        channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
-        try {
-            sessionDisconnectCompleteFuture.get(10000L, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            //Do Nothing
-=======
 
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
 
@@ -141,7 +128,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             }
         } catch (Exception e) {
             logger.error("Timeout while trying to close connection");
->>>>>>> develop
         }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
 

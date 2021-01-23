@@ -47,45 +47,35 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-[enum uint 16 'KnxDatapointType' [uint 16 'number', uint 8 'sizeInBits', string 'name']
+[enum uint 16 'KnxDatapointType' [uint 16 'number', uint 8 'sizeInBits', string '-1' 'name']
     ['0' DPT_UNKNOWN ['0', '0', '"Unknown Datapoint Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType"/>
 ]
 
-[enum uint 32 'KnxDatapointSubtype' [uint 16 'number', KnxDatapointType 'datapointType', string 'name']
+[enum uint 32 'KnxDatapointSubtype' [uint 16 'number', KnxDatapointType 'datapointType', string '-1' 'name']
     ['0' DPST_UNKNOWN ['0', 'KnxDatapointType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
 
-[enum uint 16 'KnxInterfaceObjectType' [string 'code', string 'name']
+[enum uint 16 'KnxInterfaceObjectType' [string '-1' 'code', string '-1' 'name']
     ['0' OT_UNKNOWN ['U', '"Unknown Interface Object Type"']]
     ['1' OT_GENERAL ['G', '"General Interface Object Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
-<<<<<<< HEAD
-[enum uint 8 'KnxObjectType' [string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
-]
-
-[enum uint 8 'KnxObjectProperties' [string '-1' 'name', string '-1' 'dataTypeId', string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
-]
-
-[enum uint 16 'KnxManufacturers' [string '-1' 'text']<xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
-=======
-[enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 'name']
+[enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string '-1' 'name']
     ['0' PID_UNKNOWN ['0', 'KnxInterfaceObjectType.OT_UNKNOWN', 'KnxPropertyDataType.PDT_UNKNOWN', '"Unknown Interface Object Property"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
-[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 'name']
+[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string '-1' 'name']
     ['0' PDT_UNKNOWN ['0', '0', '"Unknown Property Data Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
 ]
 
-[enum uint 16 'KnxManufacturer' [uint 16 'number', string 'name']
+[enum uint 16 'KnxManufacturer' [uint 16 'number', string '-1' 'name']
     ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
->>>>>>> develop
 ]
     </xsl:template>
 
@@ -188,9 +178,6 @@
         </xsl:choose>
     </xsl:template>
 
-<<<<<<< HEAD
-</xsl:stylesheet>
-=======
     <xsl:template name="getIdFromText">
         <xsl:param name="text"/>
         <xsl:variable name="cleanedText" select="fn:replace(fn:replace(fn:replace(fn:replace(fn:upper-case($text), '/', ''), '\(', ''), '\)', ''), '&#x2013;', '_')"/>
@@ -199,4 +186,3 @@
     </xsl:template>
 
 </xsl:stylesheet>
->>>>>>> develop

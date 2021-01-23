@@ -203,10 +203,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
     </dependency>
-<<<<<<< HEAD
 
-    
-=======
     <dependency>
 	    <groupId>commons-io</groupId>
 	    <artifactId>commons-io</artifactId>
@@ -216,7 +213,7 @@
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
     </dependency>
->>>>>>> develop
+
 
     <dependency>
       <groupId>org.apache.commons</groupId>
