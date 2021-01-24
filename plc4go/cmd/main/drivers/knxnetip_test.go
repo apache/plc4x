@@ -204,11 +204,9 @@ func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 		attributes["GatewayKnxAddress"],
 		attributes["ClientKnxAddress"])
 
-	// TODO: Find out why a connection-state request breaks everything ...
 	// Try to ping the remote device
 	pingResultChannel := connection.Ping()
 	pingResult := <-pingResultChannel
-	fmt.Println("Ping Received")
 	if pingResult.Err != nil {
 		t.Errorf("couldn't ping device: %s", pingResult.Err.Error())
 		t.Fail()

@@ -25,13 +25,13 @@ import (
 )
 
 // The data-structure of this message
-type LDataFrameAck struct {
-    Parent *LDataFrame
-    ILDataFrameAck
+type ApduDataExtReadRoutingTableResponse struct {
+    Parent *ApduDataExt
+    IApduDataExtReadRoutingTableResponse
 }
 
 // The corresponding interface
-type ILDataFrameAck interface {
+type IApduDataExtReadRoutingTableResponse interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -41,78 +41,66 @@ type ILDataFrameAck interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFrameAck) NotAckFrame() bool {
-    return false
-}
-
-func (m *LDataFrameAck) ExtendedFrame() bool {
-    return false
-}
-
-func (m *LDataFrameAck) Polling() bool {
-    return false
+func (m *ApduDataExtReadRoutingTableResponse) ExtApciType() uint8 {
+    return 0x02
 }
 
 
-func (m *LDataFrameAck) InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-    m.Parent.Repeated = repeated
-    m.Parent.Priority = priority
-    m.Parent.AcknowledgeRequested = acknowledgeRequested
-    m.Parent.ErrorFlag = errorFlag
+func (m *ApduDataExtReadRoutingTableResponse) InitializeParent(parent *ApduDataExt) {
 }
 
-func NewLDataFrameAck(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-    child := &LDataFrameAck{
-        Parent: NewLDataFrame(repeated, priority, acknowledgeRequested, errorFlag),
+func NewApduDataExtReadRoutingTableResponse() *ApduDataExt {
+    child := &ApduDataExtReadRoutingTableResponse{
+        Parent: NewApduDataExt(),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastLDataFrameAck(structType interface{}) *LDataFrameAck {
-    castFunc := func(typ interface{}) *LDataFrameAck {
-        if casted, ok := typ.(LDataFrameAck); ok {
+func CastApduDataExtReadRoutingTableResponse(structType interface{}) *ApduDataExtReadRoutingTableResponse {
+    castFunc := func(typ interface{}) *ApduDataExtReadRoutingTableResponse {
+        if casted, ok := typ.(ApduDataExtReadRoutingTableResponse); ok {
             return &casted
         }
-        if casted, ok := typ.(*LDataFrameAck); ok {
+        if casted, ok := typ.(*ApduDataExtReadRoutingTableResponse); ok {
             return casted
         }
-        if casted, ok := typ.(LDataFrame); ok {
-            return CastLDataFrameAck(casted.Child)
+        if casted, ok := typ.(ApduDataExt); ok {
+            return CastApduDataExtReadRoutingTableResponse(casted.Child)
         }
-        if casted, ok := typ.(*LDataFrame); ok {
-            return CastLDataFrameAck(casted.Child)
+        if casted, ok := typ.(*ApduDataExt); ok {
+            return CastApduDataExtReadRoutingTableResponse(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *LDataFrameAck) GetTypeName() string {
-    return "LDataFrameAck"
+func (m *ApduDataExtReadRoutingTableResponse) GetTypeName() string {
+    return "ApduDataExtReadRoutingTableResponse"
 }
 
-func (m *LDataFrameAck) LengthInBits() uint16 {
+func (m *ApduDataExtReadRoutingTableResponse) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     return lengthInBits
 }
 
-func (m *LDataFrameAck) LengthInBytes() uint16 {
+func (m *ApduDataExtReadRoutingTableResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func LDataFrameAckParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func ApduDataExtReadRoutingTableResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
 
     // Create a partially initialized instance
-    _child := &LDataFrameAck{
-        Parent: &LDataFrame{},
+    _child := &ApduDataExtReadRoutingTableResponse{
+        Parent: &ApduDataExt{},
     }
     _child.Parent.Child = _child
     return _child.Parent, nil
 }
 
-func (m *LDataFrameAck) Serialize(io utils.WriteBuffer) error {
+func (m *ApduDataExtReadRoutingTableResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil
@@ -120,7 +108,7 @@ func (m *LDataFrameAck) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *LDataFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *ApduDataExtReadRoutingTableResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -141,7 +129,7 @@ func (m *LDataFrameAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
     }
 }
 
-func (m *LDataFrameAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *ApduDataExtReadRoutingTableResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     return nil
 }
 

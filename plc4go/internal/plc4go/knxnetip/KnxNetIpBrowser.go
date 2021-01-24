@@ -105,16 +105,15 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 
 					curSequenceCounter := b.sequenceCounter
 					b.sequenceCounter++
-					controlType := driverModel.ControlType_CONNECT
 					deviceConnectionRequest := driverModel.NewTunnelingRequest(
 						driverModel.NewTunnelingRequestDataBlock(
 							b.connection.CommunicationChannelId,
 							curSequenceCounter),
 						driverModel.NewLDataReq(0, nil,
 							driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
-								sourceAddress, targetAddress, uint8(0), true, false,
-								uint8(0), &controlType, nil, nil, nil, nil,
-								true, driverModel.CEMIPriority_SYSTEM, false, false)))
+								sourceAddress, targetAddress,
+								driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), 0, false, 0),
+								true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
 
 					// Send the request
 					done := make(chan bool)
@@ -123,7 +122,8 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 						// The Gateway is now supposed to send an Ack to this request.
 						func(message interface{}) bool {
 							tunnelingRequest := driverModel.CastTunnelingRequest(message)
-							if tunnelingRequest == nil || tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != b.connection.CommunicationChannelId {
+							if tunnelingRequest == nil ||
+							    tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != b.connection.CommunicationChannelId {
 								return false
 							}
 							lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)

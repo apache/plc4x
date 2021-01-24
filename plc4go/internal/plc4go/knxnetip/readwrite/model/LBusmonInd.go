@@ -30,7 +30,6 @@ type LBusmonInd struct {
     AdditionalInformationLength uint8
     AdditionalInformation []*CEMIAdditionalInformation
     DataFrame *LDataFrame
-    Crc *uint8
     Parent *CEMI
     ILBusmonInd
 }
@@ -54,12 +53,11 @@ func (m *LBusmonInd) MessageCode() uint8 {
 func (m *LBusmonInd) InitializeParent(parent *CEMI) {
 }
 
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, crc *uint8, ) *CEMI {
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []*CEMIAdditionalInformation, dataFrame *LDataFrame, ) *CEMI {
     child := &LBusmonInd{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
         DataFrame: dataFrame,
-        Crc: crc,
         Parent: NewCEMI(),
     }
     child.Parent.Child = child
@@ -105,11 +103,6 @@ func (m *LBusmonInd) LengthInBits() uint16 {
     // Simple field (dataFrame)
     lengthInBits += m.DataFrame.LengthInBits()
 
-    // Optional Field (crc)
-    if m.Crc != nil {
-        lengthInBits += 8
-    }
-
     return lengthInBits
 }
 
@@ -144,22 +137,11 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
         return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
     }
 
-    // Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
-    var crc *uint8 = nil
-    if CastLDataFrame(dataFrame).NotAckFrame() {
-        _val, _err := io.ReadUint8(8)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'crc' field " + _err.Error())
-        }
-        crc = &_val
-    }
-
     // Create a partially initialized instance
     _child := &LBusmonInd{
         AdditionalInformationLength: additionalInformationLength,
         AdditionalInformation: additionalInformation,
         DataFrame: dataFrame,
-        Crc: crc,
         Parent: &CEMI{},
     }
     _child.Parent.Child = _child
@@ -190,16 +172,6 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
     _dataFrameErr := m.DataFrame.Serialize(io)
     if _dataFrameErr != nil {
         return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
-    }
-
-    // Optional Field (crc) (Can be skipped, if the value is null)
-    var crc *uint8 = nil
-    if m.Crc != nil {
-        crc = m.Crc
-        _crcErr := io.WriteUint8(8, *(crc))
-        if _crcErr != nil {
-            return errors.New("Error serializing 'crc' field " + _crcErr.Error())
-        }
     }
 
         return nil
@@ -236,12 +208,6 @@ func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
                     return err
                 }
                 m.DataFrame = dt
-            case "crc":
-                var data *uint8
-                if err := d.DecodeElement(data, &tok); err != nil {
-                    return err
-                }
-                m.Crc = data
             }
         }
         token, err = d.Token()
@@ -268,9 +234,6 @@ func (m *LBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
         return err
     }
     if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Crc, xml.StartElement{Name: xml.Name{Local: "crc"}}); err != nil {
         return err
     }
     return nil
