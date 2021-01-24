@@ -47,13 +47,13 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-[enum uint 16 'KnxDatapointType' [uint 16 'number', uint 8 'sizeInBits', string 'name']
+[enum uint 16 'KnxDatapointMainType' [uint 16 'number', uint 8 'sizeInBits', string 'name']
     ['0' DPT_UNKNOWN ['0', '0', '"Unknown Datapoint Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType"/>
 ]
 
-[enum uint 32 'KnxDatapointSubtype' [uint 16 'number', KnxDatapointType 'datapointType', string 'name']
-    ['0' DPST_UNKNOWN ['0', 'KnxDatapointType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
+[enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointType 'datapointType', string 'name']
+    ['0' DPT_UNKNOWN ['0', 'KnxDatapointType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
 
@@ -77,6 +77,16 @@
     ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
 ]
+
+[dataIo 'KnxDatapoint' [KnxDatapointType 'datapointType']
+    [typeSwitch 'datapointType'
+    <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">
+        <xsl:call-template name="generateDataIoEntry">
+            <xsl:with-param name="datapointSubtype" select="."/>
+        </xsl:call-template>
+    </xsl:for-each>
+    ]
+]
     </xsl:template>
 
     <xsl:template match="knx:DatapointType">
@@ -90,8 +100,8 @@
     <xsl:template match="knx:DatapointSubtype">
         <xsl:variable name="datapointSubtypeId">
             <xsl:choose>
-                <xsl:when test="fn:starts-with(@Name, 'DPT')">DPST_<xsl:value-of select="fn:substring-after(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(@Name, '\[', '_'), '\]', ''), '&#x00B3;', '_3'), '&#xB5;', 'y'), '/', ''), '-', '_'), 'DPT_')"/></xsl:when>
-                <xsl:otherwise>DPST_<xsl:for-each select="tokenize(@Name, ' ')"><xsl:value-of select="concat(upper-case(substring(.,1,1)), substring(., 2))"/><xsl:if test="position()!=last()">_</xsl:if></xsl:for-each></xsl:otherwise>
+                <xsl:when test="fn:starts-with(@Name, 'DPT')">DPT_<xsl:value-of select="fn:substring-after(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(@Name, '\[', '_'), '\]', ''), '&#x00B3;', '_3'), '&#xB5;', 'y'), '/', ''), '-', '_'), 'DPT_')"/></xsl:when>
+                <xsl:otherwise>DPT_<xsl:for-each select="tokenize(@Name, ' ')"><xsl:value-of select="concat(upper-case(substring(.,1,1)), substring(., 2))"/><xsl:if test="position()!=last()">_</xsl:if></xsl:for-each></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <xsl:variable name="datapointTypeId">
@@ -183,6 +193,247 @@
         <xsl:variable name="cleanedText" select="fn:replace(fn:replace(fn:replace(fn:replace(fn:upper-case($text), '/', ''), '\(', ''), '\)', ''), '&#x2013;', '_')"/>
         <xsl:variable name="cleanedText2" select="fn:replace(fn:replace($cleanedText, '&#x00B3;', '_3'), '&#xC9;', 'E')"/>
         <xsl:value-of select="fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(normalize-space($cleanedText2),'&#xa0;', '_'), '&amp;', 'AND'), '-', '_'), ' ', '_'), '\.', '_'), ',', '_'), '\+', 'Plus'), '/', '_'), 'Ä', 'AE'), 'Ö', 'OE'), 'Ü', 'UE'), 'ß', 'SS'), ':', '_')"/>
+    </xsl:template>
+
+    <xsl:template name="generateDataIoEntry">
+        <xsl:param name="datapointSubtype"/>
+        <xsl:variable name="datapointSubtypeId">
+            <xsl:choose>
+                <xsl:when test="fn:starts-with(@Name, 'DPT')">DPT_<xsl:value-of select="fn:substring-after(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(fn:replace(@Name, '\[', '_'), '\]', ''), '&#x00B3;', '_3'), '&#xB5;', 'y'), '/', ''), '-', '_'), 'DPT_')"/></xsl:when>
+                <xsl:otherwise>DPT_<xsl:for-each select="tokenize(@Name, ' ')"><xsl:value-of select="concat(upper-case(substring(.,1,1)), substring(., 2))"/><xsl:if test="position()!=last()">_</xsl:if></xsl:for-each></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="datapointValueType">
+            <xsl:choose>
+                <xsl:when test="count($datapointSubtype/knx:Format/knx:Bit|$datapointSubtype/knx:Format/knx:String|$datapointSubtype/knx:Format/knx:UnsignedInteger|$datapointSubtype/knx:Format/knx:SignedInteger|$datapointSubtype/knx:Format/knx:Float|$datapointSubtype/knx:Format/knx:Enumeration|$datapointSubtype/knx:Format/knx:RefType) &gt; 1">Struct</xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:Bit">BOOL</xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:String">STRING</xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
+                    <xsl:choose>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt;= 8">USINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt;= 16">UINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt;= 32">UDINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt;= 64">ULINT</xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:SignedInteger">
+                    <xsl:choose>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt;= 8">SINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt;= 16">INT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt;= 32">DINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt;= 64">LINT</xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:Float">
+                    <xsl:choose>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) &lt;= 16">REAL</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) &lt;= 32">REAL</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) &lt;= 64">LREAL</xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">STRING</xsl:when>
+                <xsl:otherwise>Hurz:<xsl:value-of select="name($datapointSubtype/*)"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        ['KnxDatapointType.<xsl:value-of select="$datapointSubtypeId"/>' <xsl:value-of select="$datapointValueType"/>
+        <xsl:choose>
+            <xsl:when test="count($datapointSubtype/knx:Format/knx:Bit|$datapointSubtype/knx:Format/knx:String|$datapointSubtype/knx:Format/knx:UnsignedInteger|$datapointSubtype/knx:Format/knx:SignedInteger|$datapointSubtype/knx:Format/knx:Float|$datapointSubtype/knx:Format/knx:Enumeration|$datapointSubtype/knx:Format/knx:RefType) &gt; 1">
+                <xsl:variable name="resolvedFields">
+                    <xsl:call-template name="resolveTypeReferences">
+                        <xsl:with-param name="fields" select="$datapointSubtype/knx:Format/*"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:variable name="size">
+                    <xsl:call-template name="fieldsSize">
+                        <xsl:with-param name="fields" select="$resolvedFields/*"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:choose>
+                    <xsl:when test="(($size mod 8) != 0) and (($size mod 8) &lt;= 6)">
+            [reserved uint <xsl:value-of select="8 - ($size mod 8)"/> '0x00']
+                    </xsl:when>
+                    <xsl:when test="(($size mod 8) = 0) and (name($resolvedFields/*[1]) = 'Reserved') and (number($resolvedFields/*[1]/@Width) > 2)"></xsl:when>
+                    <xsl:otherwise>
+            [reserved uint 8 '0x00']
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:for-each select="$resolvedFields/*">
+                    <xsl:variable name="fieldType">
+                        <xsl:choose>
+                            <xsl:when test="name() = 'Reserved'">reserved</xsl:when>
+                            <xsl:otherwise>simple</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:variable name="fieldName">
+                        <xsl:choose>
+                            <xsl:when test="name() = 'Reserved'">0x00</xsl:when>
+                            <xsl:when test="@Name">
+                                <xsl:call-template name="getFieldName">
+                                    <xsl:with-param name="fieldName" select="@Name"/>
+                                </xsl:call-template>
+                            </xsl:when>
+                            <xsl:when test="@Set">
+                                <xsl:call-template name="getFieldName">
+                                    <xsl:with-param name="fieldName" select="@Set"/>
+                                </xsl:call-template>
+                            </xsl:when>
+                            <xsl:when test="@Unit">
+                                <xsl:call-template name="getFieldName">
+                                    <xsl:with-param name="fieldName" select="@Unit"/>
+                                </xsl:call-template>
+                            </xsl:when>
+                            <!-- Special case for one enum -->
+                            <xsl:when test="@Id = 'DPST-6-20_F-6'">Mode</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value1</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value2</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value3</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value4</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value5</xsl:when>
+                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value6</xsl:when>
+                            <xsl:otherwise>Hurz</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:variable name="dataType">
+                        <xsl:call-template name="getMspecType">
+                            <xsl:with-param name="field" select="."/>
+                        </xsl:call-template>
+                    </xsl:variable>                    
+            [<xsl:value-of select="$fieldType"/><xsl:text disable-output-escaping="yes"> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$fieldName"/>']
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:Bit">
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:String">
+                <xsl:variable name="encoding">
+                    <xsl:choose>
+                        <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'us-ascii'">ASCII</xsl:when>
+                        <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
+                    </xsl:choose>
+                </xsl:variable>
+            [reserved uint 8   '0x0']
+            [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> '<xsl:value-of select="$encoding"/>' 'value']
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
+                <xsl:choose>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &gt; 6">
+            [reserved uint 8 '0x00']
+                    </xsl:when>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt; 6">
+            [reserved uint <xsl:value-of select="6 - fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width)"/> '0x00']
+                    </xsl:when>
+                </xsl:choose>
+            [simple   uint <xsl:value-of select="$datapointSubtype/knx:Format/knx:UnsignedInteger/@Width"/> 'value']
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:SignedInteger">
+                <xsl:choose>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &gt; 6">
+            [reserved uint 8 '0x00']
+                    </xsl:when>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt; 6">
+            [reserved uint <xsl:value-of select="6 - fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width)"/> '0x00']
+                    </xsl:when>
+                </xsl:choose>
+            [simple   int <xsl:value-of select="$datapointSubtype/knx:Format/knx:SignedInteger/@Width"/> 'value']
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:Float">
+            [reserved uint 8 '0x00']
+                <xsl:choose>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 16">
+            [simple   float 4.11 'value']
+                    </xsl:when>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 32">
+            [simple   float 8.23 'value']
+                    </xsl:when>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 64">
+            [simple   float 11.52 'value']
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration"></xsl:when>
+        </xsl:choose>
+        ]
+    </xsl:template>
+
+    <xsl:template name="resolveTypeReferences">
+        <xsl:param name="fields"/>
+        <xsl:for-each select="$fields">
+            <xsl:choose>
+                <xsl:when test="name(.) = 'RefType'">
+                    <xsl:variable name="curNode" select="."/>
+                    <xsl:copy-of select="//*[@Id = $curNode/@RefId]"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:copy-of select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="getMspecType">
+        <xsl:param name="field"/>
+        <xsl:choose>
+            <xsl:when test="name($field) = 'Bit'">bit</xsl:when>
+            <xsl:when test="name($field) = 'String'">
+                <xsl:variable name="encoding">
+                    <xsl:choose>
+                        <xsl:when test="$field/@Encoding = 'us-ascii'">ASCII</xsl:when>
+                        <xsl:when test="$field/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
+                    </xsl:choose>
+                </xsl:variable>
+                string <xsl:value-of select="$field/@Width"/> '<xsl:value-of select="$encoding"/>'</xsl:when>
+            <xsl:when test="name($field) = 'UnsignedInteger'">uint <xsl:value-of select="$field/@Width"/></xsl:when>
+            <xsl:when test="name($field) = 'SignedInteger'">int <xsl:value-of select="$field/@Width"/></xsl:when>
+            <xsl:when test="name($field) = 'Float'">
+                <xsl:choose>
+                    <xsl:when test="$field/@Width = 16">float 4.11</xsl:when>
+                    <xsl:when test="$field/@Width = 32">float 8.23</xsl:when>
+                    <xsl:when test="$field/@Width = 64">float 11.52</xsl:when>
+                    <xsl:otherwise>hurz</xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:when test="name($field) = 'Enumeration'">uint <xsl:value-of select="$field/@Width"/></xsl:when>
+            <xsl:when test="name($field) = 'Reserved'">uint <xsl:value-of select="$field/@Width"/></xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template name="getFieldName">
+        <xsl:param name="fieldName"/>
+        <xsl:variable name="cleanedName" select="fn:replace(fn:replace($fieldName, '%', 'Percent'), '[^a-zA-Z0-9]', ' ')"/>
+        <xsl:for-each select="fn:tokenize($cleanedName, ' ')">
+            <xsl:choose>
+                <xsl:when test="fn:string-length(.) = 1"><xsl:value-of select="fn:upper-case(.)"/></xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="firstLetter" select="fn:upper-case(fn:substring(., 1, 1))"/>
+                    <xsl:variable name="rest" select="fn:lower-case(fn:substring(., 2))"/>
+                    <xsl:value-of select="fn:concat($firstLetter, $rest)"/>                   
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:template>
+    
+    <xsl:template name="fieldsSize">
+        <xsl:param name="fields"/>
+        <xsl:choose>
+            <xsl:when test="count($fields) &gt; 1">
+                <xsl:variable name="restSize">
+                    <xsl:call-template name="fieldsSize">
+                        <xsl:with-param name="fields" select="$fields[position() &gt; 1]"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:choose>
+                    <xsl:when test="name($fields[1]) = 'Bit'"><xsl:value-of select="1 + $restSize"/></xsl:when>
+                    <xsl:otherwise><xsl:value-of select="number($fields[1]/@Width) + $restSize"/></xsl:otherwise>
+                </xsl:choose>               
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:choose>
+                    <xsl:when test="name($fields[1]) = 'Bit'"><xsl:value-of select="1"/></xsl:when>
+                    <xsl:otherwise><xsl:value-of select="number($fields[1]/@Width)"/></xsl:otherwise>
+                </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
 </xsl:stylesheet>
