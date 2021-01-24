@@ -80,7 +80,7 @@ func (m *ApduDataExt) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Discriminator Field (extApciType)
-    lengthInBits += 8
+    lengthInBits += 6
 
     // Length of sub-type elements will be added by sub-type...
     lengthInBits += m.Child.LengthInBits()
@@ -95,7 +95,7 @@ func (m *ApduDataExt) LengthInBytes() uint16 {
 func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 
     // Discriminator Field (extApciType) (Used as input to a switch field)
-    extApciType, _extApciTypeErr := io.ReadUint8(8)
+    extApciType, _extApciTypeErr := io.ReadUint8(6)
     if _extApciTypeErr != nil {
         return nil, errors.New("Error parsing 'extApciType' field " + _extApciTypeErr.Error())
     }
@@ -204,7 +204,7 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 
     // Discriminator Field (extApciType) (Used as input to a switch field)
     extApciType := uint8(child.ExtApciType())
-    _extApciTypeErr := io.WriteUint8(8, (extApciType))
+    _extApciTypeErr := io.WriteUint8(6, (extApciType))
     if _extApciTypeErr != nil {
         return errors.New("Error serializing 'extApciType' field " + _extApciTypeErr.Error())
     }
