@@ -127,6 +127,7 @@ func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
 			rb := utils.NewReadBuffer(data)
 			knxMessage, err := model.KnxNetIpMessageParse(rb)
 			if err != nil {
+			    fmt.Printf("Got error parsing message: %s\n", err.Error())
 				// TODO: Possibly clean up ...
 				return nil, nil
 			}
@@ -155,7 +156,7 @@ func work(m *KnxNetIpMessageCodec) {
 				continue
 			}
 
-			// If this is an incoming KNXNet/IP UDP Packet, automatically send an ACK
+            // If this is an incoming KNXNet/IP UDP Packet, automatically send an ACK
 			tunnelingRequest := model.CastTunnelingRequest(message)
 			if tunnelingRequest != nil {
 				response := model.NewTunnelingResponse(

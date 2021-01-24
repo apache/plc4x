@@ -47,10 +47,6 @@ type ILDataFramePollingData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFramePollingData) NotAckFrame() bool {
-    return true
-}
-
 func (m *LDataFramePollingData) ExtendedFrame() bool {
     return false
 }
@@ -60,19 +56,20 @@ func (m *LDataFramePollingData) Polling() bool {
 }
 
 
-func (m *LDataFramePollingData) InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+func (m *LDataFramePollingData) InitializeParent(parent *LDataFrame, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
     m.Parent.Repeated = repeated
+    m.Parent.NotAckFrame = notAckFrame
     m.Parent.Priority = priority
     m.Parent.AcknowledgeRequested = acknowledgeRequested
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataFramePollingData(sourceAddress *KnxAddress, targetAddress []int8, numberExpectedPollData uint8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+func NewLDataFramePollingData(sourceAddress *KnxAddress, targetAddress []int8, numberExpectedPollData uint8, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
     child := &LDataFramePollingData{
         SourceAddress: sourceAddress,
         TargetAddress: targetAddress,
         NumberExpectedPollData: numberExpectedPollData,
-        Parent: NewLDataFrame(repeated, priority, acknowledgeRequested, errorFlag),
+        Parent: NewLDataFrame(repeated, notAckFrame, priority, acknowledgeRequested, errorFlag),
     }
     child.Parent.Child = child
     return child.Parent

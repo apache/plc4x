@@ -63,30 +63,30 @@ func NewFieldHandler() FieldHandler {
 func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.knxNetIpDeviceQuery, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		var fieldType driverModel.KnxDatapointSubtype
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType = driverModel.KnxDatapointSubtypeByName(fieldTypeName)
 		}
 		return NewKnxNetIpDevicePropertyAddressPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"], match["objectId"], match["propertyId"]), nil
 	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress3Level, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		var fieldType driverModel.KnxDatapointSubtype
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType = driverModel.KnxDatapointSubtypeByName(fieldTypeName)
 		}
 		return NewKnxNetIpGroupAddress3LevelPlcField(&fieldType, match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
 	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress2Level, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		var fieldType driverModel.KnxDatapointSubtype
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType = driverModel.KnxDatapointSubtypeByName(fieldTypeName)
 		}
 		return NewKnxNetIpGroupAddress2LevelPlcField(&fieldType, match["mainGroup"], match["subGroup"]), nil
 	} else if match := utils.GetSubgroupMatches(m.knxNetIpGroupAddress1Level, query); match != nil {
 		fieldTypeName, ok := match["datatype"]
-		var fieldType driverModel.KnxDatapointType
+		var fieldType driverModel.KnxDatapointSubtype
 		if ok {
-			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
+			fieldType = driverModel.KnxDatapointSubtypeByName(fieldTypeName)
 		}
 		return NewKnxNetIpGroupAddress1LevelPlcField(&fieldType, match["mainGroup"]), nil
 	}

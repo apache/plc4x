@@ -127,15 +127,13 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 
 func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) error {
 	connectionSuccess := make(chan bool)
-	controlType := driverModel.ControlType_CONNECT
 	deviceConnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(0, 0),
 		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
+			driverModel.NewLDataFrameDataExt(false, 6, 0,
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
-				uint8(0), true, false, uint8(0), &controlType, nil, nil,
-				nil, nil, true, driverModel.CEMIPriority_SYSTEM, false,
-				false)))
+				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), 0, false, 0),
+				true, true, driverModel.CEMIPriority_SYSTEM,  false, false)))
 
 	// Send the request
 	err := m.connection.SendRequest(
@@ -159,16 +157,13 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 			}
 
 			// Now for some reason it seems as if we need to implement a Device Descriptor read.
-			apciType := driverModel.APCI_DEVICE_DESCRIPTOR_READ_PDU
-			dataFirstByte := int8(0)
 			deviceDescriptorReadRequest := driverModel.NewTunnelingRequest(
 				driverModel.NewTunnelingRequestDataBlock(0, 0),
 				driverModel.NewLDataReq(0, nil,
 					driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
 						driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
-						uint8(1), false, true, uint8(0), nil, &apciType, nil,
-						&dataFirstByte, nil, true, driverModel.CEMIPriority_LOW, false,
-						false)))
+                        driverModel.NewApduDataContainer(driverModel.NewApduDataDeviceDescriptorRead(), 0, false, 0),
+						true, true, driverModel.CEMIPriority_LOW, false, false)))
 			_ = m.connection.SendRequest(
 				deviceDescriptorReadRequest,
 				func(message interface{}) bool {
@@ -185,14 +180,14 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 					if dataFrame == nil {
 						return false
 					}
-					if dataFrame.Apci == nil {
+					if dataFrame.Apdu == nil {
 						return false
 					}
-					return *dataFrame.Apci == driverModel.APCI_DEVICE_DESCRIPTOR_RESPONSE_PDU
+					return true
+					//return *dataFrame.Apdu.Apci == driverModel.APCI_DEVICE_DESCRIPTOR_RESPONSE_PDU
 					// TODO: Do something with the request ...
 				},
 				func(message interface{}) error {
-					controlType = driverModel.ControlType_ACK
 					// Send back an ACK
 					_ = m.connection.Send(
 						driverModel.NewTunnelingRequest(
@@ -200,9 +195,8 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 							driverModel.NewLDataReq(0, nil,
 								driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
 									driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
-									uint8(0), true, true, uint8(0), &controlType, nil, nil,
-									nil, nil, true, driverModel.CEMIPriority_SYSTEM, false,
-									false))))
+									driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), 0, false, 0),
+									true, true, driverModel.CEMIPriority_SYSTEM, false, false))))
 					// Now we can finally read properties.
 					connectionSuccess <- true
 					return nil
@@ -227,14 +221,13 @@ func (m KnxNetIpReader) connectToDevice(targetAddress driverModel.KnxAddress) er
 }
 
 func (m KnxNetIpReader) disconnectFromDevice(sourceAddress driverModel.KnxAddress, targetAddress driverModel.KnxAddress) error {
-	controlType := driverModel.ControlType_DISCONNECT
 	deviceConnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(0, 0),
 		driverModel.NewLDataReq(0, nil,
 			driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
-				&sourceAddress, KnxAddressToInt8Array(targetAddress), uint8(0), true, false,
-				uint8(0), &controlType, nil, nil, nil, nil,
-				true, driverModel.CEMIPriority_SYSTEM, false, false)))
+				&sourceAddress, KnxAddressToInt8Array(targetAddress),
+                driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect(), 0, false,0),
+                true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
 
 	// Send the request
 	connectionSuccess := make(chan bool)
@@ -255,15 +248,16 @@ func (m KnxNetIpReader) disconnectFromDevice(sourceAddress driverModel.KnxAddres
 			if frameDataExt == nil {
 				return false
 			}
-			return frameDataExt.Control == true && frameDataExt.ControlType == nil
+			return true
+			//return frameDataExt.Control == true && frameDataExt.ControlType == nil
 		},
 		func(message interface{}) error {
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-			frameDataExt := driverModel.CastLDataFrameDataExt(lDataCon.DataFrame)
-			if *frameDataExt.ControlType == driverModel.ControlType_DISCONNECT {
+			_ = driverModel.CastLDataFrameDataExt(lDataCon.DataFrame)
+			//if *frameDataExt.ControlType == driverModel.ControlType_DISCONNECT {
 				connectionSuccess <- false
-			}
+			//}
 			return nil
 		},
 		time.Second*1)
@@ -303,24 +297,16 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 	objectId, _ := strconv.Atoi(field.ObjectId)
 	propertyId, _ := strconv.Atoi(field.PropertyId)
 
-	apci := driverModel.APCI_OTHER_PDU
-	extendedApci := driverModel.ExtendedAPCI_PROPERTY_VALUE_READ_PDU
-	data := make([]int8, 4)
-	// Object Id
-	data[0] = int8(objectId)
-	// Property Id
-	data[1] = int8(propertyId)
-	// First 4 bits = count
-	data[2] = 16
-	// Index (including last 4 bits of previous byte)
-	data[3] = 1
 	request := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(0, 0),
 		driverModel.NewLDataReq(0, nil,
 			driverModel.NewLDataFrameDataExt(false, 6, 0,
-				driverModel.NewKnxAddress(0, 0, 0), destinationAddressData, 5,
-				false, true, counter, nil, &apci, &extendedApci,
-				nil, data, true, 3, false, false)))
+				driverModel.NewKnxAddress(0, 0, 0),
+                destinationAddressData,
+				driverModel.NewApduDataContainer(driverModel.NewApduDataOther(
+				    // TODO: The counter should be incremented per KNX individual address
+				    driverModel.NewApduDataExtPropertyValueRead(uint8(objectId), uint8(propertyId), 1, 1)), 0, true, 1),
+				 true, true,  driverModel.CEMIPriority_SYSTEM, false, false)))
 
 	result := make(chan readPropertyResult)
 	err = m.connection.SendRequest(
@@ -339,11 +325,14 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 				return false
 			}
 			dataFrameExt := driverModel.CastLDataFrameDataExt(lDataInd.DataFrame)
-			if dataFrameExt != nil && dataFrameExt.Apci != nil {
-				if *dataFrameExt.Apci != driverModel.APCI_OTHER_PDU {
+			if dataFrameExt != nil && dataFrameExt.Apdu != nil {
+                otherPdu := driverModel.CastApduDataOther(*dataFrameExt.Apdu)
+                if otherPdu == nil {
 					return false
 				}
-				if *dataFrameExt.ExtendedApci != driverModel.ExtendedAPCI_PROPERTY_VALUE_RESPONSE_PDU {
+
+                propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(otherPdu.ExtendedApdu)
+                if propertyValueResponse == nil {
 					return false
 				}
 				if *dataFrameExt.SourceAddress != *destinationAddress {
@@ -352,21 +341,12 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 				if *Int8ArrayToKnxAddress(dataFrameExt.DestinationAddress) != *m.connection.ClientKnxAddress {
 					return false
 				}
-				if dataFrameExt.DataLength < 5 {
-					return false
-				}
-				if *dataFrameExt.Apci == driverModel.APCI_OTHER_PDU &&
-					*dataFrameExt.ExtendedApci == driverModel.ExtendedAPCI_PROPERTY_VALUE_RESPONSE_PDU &&
-					*dataFrameExt.SourceAddress == *destinationAddress &&
-					*Int8ArrayToKnxAddress(dataFrameExt.DestinationAddress) == *m.connection.ClientKnxAddress &&
-					dataFrameExt.DataLength >= 5 {
-					readBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(dataFrameExt.Data))
-					curObjectId, _ := readBuffer.ReadUint8(8)
-					curPropertyId, _ := readBuffer.ReadUint8(8)
-					if curObjectId == uint8(objectId) && curPropertyId == uint8(propertyId) {
-						return true
-					}
-				}
+                readBuffer := utils.NewReadBuffer(propertyValueResponse.Data)
+                curObjectId, _ := readBuffer.ReadUint8(8)
+                curPropertyId, _ := readBuffer.ReadUint8(8)
+                if curObjectId == uint8(objectId) && curPropertyId == uint8(propertyId) {
+                    return true
+                }
 			}
 			return false
 		},
@@ -374,13 +354,15 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 			tunnelingRequest := driverModel.CastTunnelingRequest(message)
 			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
 			dataFrameExt := driverModel.CastLDataFrameDataExt(lDataInd.DataFrame)
+            otherPdu := driverModel.CastApduDataOther(*dataFrameExt.Apdu)
+            propertyValueResponse := driverModel.CastApduDataExtPropertyValueResponse(otherPdu.ExtendedApdu)
 
-			readBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(dataFrameExt.Data))
+			readBuffer := utils.NewReadBuffer(propertyValueResponse.Data)
 			// Skip the object id and property id as we already checked them
 			_, _ = readBuffer.ReadUint8(8)
 			_, _ = readBuffer.ReadUint8(8)
 
-			count, _ := readBuffer.ReadUint8(4)
+			propertyCount, _ := readBuffer.ReadUint8(4)
 			_ /*index*/, _ = readBuffer.ReadUint16(12)
 
 			// If the return is a count of 0, then we can't access this property (Doesn't exist or not allowed to)
@@ -388,14 +370,11 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 			// as this can be understood as "found no property we have access to"
 			// ("03_03_07 Application Layer v01.06.02 AS" Page 52)
 			var propResult readPropertyResult
-			if count == 0 {
+			if propertyCount == 0 {
 				propResult = readPropertyResult{
 					responseCode: apiModel.PlcResponseCode_NOT_FOUND,
 				}
 			} else {
-				// Read the data payload.
-				dataLength := dataFrameExt.DataLength - 5
-
 				// Depending on the object id and property id, parse the remaining data accordingly.
 				property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
 				for i := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; i < driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; i++ {
@@ -408,24 +387,22 @@ func (m KnxNetIpReader) readDeviceProperty(field KnxNetIpDevicePropertyAddressPl
 
 				// Parse the payload according to the specified datatype
 				dataType := property.PropertyDataType()
-				plcValue := readwrite.ParsePropertyDataType(*readBuffer, dataType, dataLength)
+				plcValue := readwrite.ParsePropertyDataType(*readBuffer, dataType, dataType.SizeInBytes())
 				propResult = readPropertyResult{
 					plcValue:     plcValue,
 					responseCode: apiModel.PlcResponseCode_OK,
 				}
 			}
 
-			// Send back an ACK
-			controlType := driverModel.ControlType_ACK
-			_ = m.connection.Send(
-				driverModel.NewTunnelingRequest(
-					driverModel.NewTunnelingRequestDataBlock(0, 0),
-					driverModel.NewLDataReq(0, nil,
-						driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
-							driverModel.NewKnxAddress(0, 0, 0), destinationAddressData,
-							uint8(0), true, true, dataFrameExt.Counter, &controlType, nil,
-							nil, nil, nil, true, driverModel.CEMIPriority_SYSTEM,
-							false, false))))
+            // Send back an ACK
+            _ = m.connection.Send(
+                driverModel.NewTunnelingRequest(
+                    driverModel.NewTunnelingRequestDataBlock(0, 0),
+                    driverModel.NewLDataReq(0, nil,
+                        driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
+                            driverModel.NewKnxAddress(0, 0, 0), destinationAddressData,
+                            driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), 0, false, 0),
+                            true, true, driverModel.CEMIPriority_SYSTEM, false, false))))
 
 			result <- propResult
 			return nil
