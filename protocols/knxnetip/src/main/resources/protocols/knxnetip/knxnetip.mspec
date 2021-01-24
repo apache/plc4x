@@ -245,7 +245,7 @@
             [simple   uint 8                    'additionalInformationLength']
             [array    CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
             [simple   LDataFrame                'dataFrame']
-            //[optional uint 8                    'crc'                   'dataFrame.notAckFrame']
+            [optional uint 8                    'crc'                   'dataFrame.notAckFrame']
         ]
 
         // Page 72ff
@@ -452,8 +452,11 @@
         ['0xB' ApduDataUserMessage
         ]
         ['0xC' ApduDataDeviceDescriptorRead
+            [simple uint 6 'descriptorType']
         ]
-        ['0xD' ApduDataDeviceDescriptorResponse
+        ['0xD' ApduDataDeviceDescriptorResponse [uint 8 'dataLength']
+            [simple uint 6 'descriptorType']
+            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0xE' ApduDataRestart
         ]
@@ -465,7 +468,7 @@
 
 // 03_03_07 Application Layer v01.06.02 AS Page 9ff
 [discriminatedType 'ApduDataExt' [uint 8 'length']
-    [discriminator uint 8 'extApciType']
+    [discriminator uint 6 'extApciType']
     [typeSwitch 'extApciType'
         ['0x00' ApduDataExtOpenRoutingTableRequest
         ]

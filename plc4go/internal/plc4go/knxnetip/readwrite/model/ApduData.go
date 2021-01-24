@@ -131,7 +131,7 @@ func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
     case apciType == 0xC:
         _parent, typeSwitchError = ApduDataDeviceDescriptorReadParse(io)
     case apciType == 0xD:
-        _parent, typeSwitchError = ApduDataDeviceDescriptorResponseParse(io)
+        _parent, typeSwitchError = ApduDataDeviceDescriptorResponseParse(io, dataLength)
     case apciType == 0xE:
         _parent, typeSwitchError = ApduDataRestartParse(io)
     case apciType == 0xF:

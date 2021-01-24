@@ -279,9 +279,8 @@ func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
 	defer connection.Close()
 
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
+    readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
 	readRequestBuilder.AddItem("programVersion", "1.1.10/3/13")
-	//readRequestBuilder.AddItem("hardwareType", "1.1.10/0/78")
 	readRequest, _ := readRequestBuilder.Build()
 
 	rrr := readRequest.Execute()

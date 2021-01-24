@@ -52,8 +52,8 @@
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType"/>
 ]
 
-[enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointType 'datapointType', string 'name']
-    ['0' DPT_UNKNOWN ['0', 'KnxDatapointType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
+[enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointMainType 'datapointMainType', string 'name']
+    ['0' DPT_UNKNOWN ['0', 'KnxDatapointMainType.DPT_UNKNOWN', '"Unknown Datapoint Subtype"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
 
@@ -108,7 +108,7 @@
             <xsl:call-template name="getDatapointTypeId">
                 <xsl:with-param name="contextNode" select="../.."/>
             </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$datapointSubtypeId"/> ['<xsl:value-of select="@Number"/>', 'KnxDatapointType.<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$datapointSubtypeId"/> ['<xsl:value-of select="@Number"/>', 'KnxDatapointMainType.<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:InterfaceObjectType">
@@ -231,7 +231,14 @@
                         <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) &lt;= 64">LREAL</xsl:when>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">STRING</xsl:when>
+                <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">
+                    <xsl:choose>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt;= 8">USINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt;= 16">UINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt;= 32">UDINT</xsl:when>
+                        <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt;= 64">ULINT</xsl:when>
+                    </xsl:choose>
+                </xsl:when>
                 <xsl:otherwise>Hurz:<xsl:value-of select="name($datapointSubtype/*)"/></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -267,7 +274,16 @@
                     <xsl:variable name="fieldName">
                         <xsl:choose>
                             <xsl:when test="name() = 'Reserved'">0x00</xsl:when>
-                            <xsl:when test="@Name">
+                            <!-- Special case for one enum -->
+                            <xsl:when test="@Id = 'DPST-6-20_F-6'">mode</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 2">value1</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 3">value2</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 4">value3</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 5">value4</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 6">value5</xsl:when>
+                            <xsl:when test="(@Id = 'DPST-15-0_F-1') and fn:position() = 7">value6</xsl:when>
+                            <xsl:when test="@Id = 'DPST-1-2_F-1'">valueTrue</xsl:when>
+                            <xsl:when test="@Name and not(@Id = 'DPST-244-600_F-2' or @Id = 'DPST-244-600_F-3')">
                                 <xsl:call-template name="getFieldName">
                                     <xsl:with-param name="fieldName" select="@Name"/>
                                 </xsl:call-template>
@@ -282,14 +298,6 @@
                                     <xsl:with-param name="fieldName" select="@Unit"/>
                                 </xsl:call-template>
                             </xsl:when>
-                            <!-- Special case for one enum -->
-                            <xsl:when test="@Id = 'DPST-6-20_F-6'">Mode</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value1</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value2</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value3</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value4</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value5</xsl:when>
-                            <xsl:when test="@Id = 'DPST-15-0_F-1'">Value6</xsl:when>
                             <xsl:otherwise>Hurz</xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
@@ -298,7 +306,7 @@
                             <xsl:with-param name="field" select="."/>
                         </xsl:call-template>
                     </xsl:variable>                    
-            [<xsl:value-of select="$fieldType"/><xsl:text disable-output-escaping="yes"> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$fieldName"/>']
+                    [<xsl:value-of select="$fieldType"/><xsl:text disable-output-escaping="yes"> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="fn:concat(fn:lower-case(fn:substring($fieldName, 1, 1)), fn:substring($fieldName, 2))"/>']
                 </xsl:for-each>
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Bit">
@@ -321,7 +329,7 @@
             [reserved uint 8 '0x00']
                     </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt; 6">
-            [reserved uint <xsl:value-of select="6 - fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width)"/> '0x00']
+            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width)"/> '0x00']
                     </xsl:when>
                 </xsl:choose>
             [simple   uint <xsl:value-of select="$datapointSubtype/knx:Format/knx:UnsignedInteger/@Width"/> 'value']
@@ -332,7 +340,7 @@
             [reserved uint 8 '0x00']
                     </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt; 6">
-            [reserved uint <xsl:value-of select="6 - fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width)"/> '0x00']
+            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width)"/> '0x00']
                     </xsl:when>
                 </xsl:choose>
             [simple   int <xsl:value-of select="$datapointSubtype/knx:Format/knx:SignedInteger/@Width"/> 'value']
@@ -351,7 +359,17 @@
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
-            <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration"></xsl:when>
+            <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">
+                <xsl:choose>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &gt; 6">
+            [reserved uint 8 '0x00']
+                    </xsl:when>
+                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt; 6">
+            [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width)"/> '0x00']
+                    </xsl:when>
+                </xsl:choose>
+            [simple   uint <xsl:value-of select="$datapointSubtype/knx:Format/knx:Enumeration/@Width"/> 'value']               
+            </xsl:when>
         </xsl:choose>
         ]
     </xsl:template>

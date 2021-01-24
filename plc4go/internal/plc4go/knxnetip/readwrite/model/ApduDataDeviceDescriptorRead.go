@@ -20,12 +20,14 @@ package model
 
 import (
     "encoding/xml"
+    "errors"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "io"
 )
 
 // The data-structure of this message
 type ApduDataDeviceDescriptorRead struct {
+    DescriptorType uint8
     Parent *ApduData
     IApduDataDeviceDescriptorRead
 }
@@ -49,8 +51,9 @@ func (m *ApduDataDeviceDescriptorRead) ApciType() uint8 {
 func (m *ApduDataDeviceDescriptorRead) InitializeParent(parent *ApduData) {
 }
 
-func NewApduDataDeviceDescriptorRead() *ApduData {
+func NewApduDataDeviceDescriptorRead(descriptorType uint8, ) *ApduData {
     child := &ApduDataDeviceDescriptorRead{
+        DescriptorType: descriptorType,
         Parent: NewApduData(),
     }
     child.Parent.Child = child
@@ -83,6 +86,9 @@ func (m *ApduDataDeviceDescriptorRead) GetTypeName() string {
 func (m *ApduDataDeviceDescriptorRead) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
+    // Simple field (descriptorType)
+    lengthInBits += 6
+
     return lengthInBits
 }
 
@@ -92,8 +98,15 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBytes() uint16 {
 
 func ApduDataDeviceDescriptorReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 
+    // Simple Field (descriptorType)
+    descriptorType, _descriptorTypeErr := io.ReadUint8(6)
+    if _descriptorTypeErr != nil {
+        return nil, errors.New("Error parsing 'descriptorType' field " + _descriptorTypeErr.Error())
+    }
+
     // Create a partially initialized instance
     _child := &ApduDataDeviceDescriptorRead{
+        DescriptorType: descriptorType,
         Parent: &ApduData{},
     }
     _child.Parent.Child = _child
@@ -102,6 +115,13 @@ func ApduDataDeviceDescriptorReadParse(io *utils.ReadBuffer) (*ApduData, error) 
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
+
+    // Simple Field (descriptorType)
+    descriptorType := uint8(m.DescriptorType)
+    _descriptorTypeErr := io.WriteUint8(6, (descriptorType))
+    if _descriptorTypeErr != nil {
+        return errors.New("Error serializing 'descriptorType' field " + _descriptorTypeErr.Error())
+    }
 
         return nil
     }
@@ -117,6 +137,12 @@ func (m *ApduDataDeviceDescriptorRead) UnmarshalXML(d *xml.Decoder, start xml.St
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+            case "descriptorType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DescriptorType = data
             }
         }
         token, err = d.Token()
@@ -130,6 +156,9 @@ func (m *ApduDataDeviceDescriptorRead) UnmarshalXML(d *xml.Decoder, start xml.St
 }
 
 func (m *ApduDataDeviceDescriptorRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeElement(m.DescriptorType, xml.StartElement{Name: xml.Name{Local: "descriptorType"}}); err != nil {
+        return err
+    }
     return nil
 }
 

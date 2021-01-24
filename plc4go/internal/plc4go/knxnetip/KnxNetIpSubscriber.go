@@ -133,12 +133,17 @@ func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFram
                         payload = append(payload, groupValueWrite.DataFirstByte)
                         payload = append(payload, groupValueWrite.Data...)
                         rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
-                        plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
+                        if field.GetFieldType() == nil {
+                            responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
+                            plcValues[fieldName] = nil
+                            continue
+                        }
+                        plcValue, err2 := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
                         fields[fieldName] = field
                         types[fieldName] = subscriptionRequest.GetType(fieldName)
                         intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
                         addresses[fieldName] = destinationAddress
-                        if err == nil {
+                        if err2 == nil {
                             responseCodes[fieldName] = apiModel.PlcResponseCode_OK
                             plcValues[fieldName] = plcValue
                         } else {
