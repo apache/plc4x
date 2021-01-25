@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.8.1-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-webapp</artifactId>
@@ -109,12 +109,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <artifactId>commons-logging</artifactId>
@@ -245,7 +245,7 @@
       <dependency>
         <groupId>org.apache.plc4x.examples</groupId>
         <artifactId>plc4j-hello-webapp-client</artifactId>
-        <version>0.8.1-SNAPSHOT</version>
+        <version>0.8.0-SNAPSHOT</version>
         <type>war</type>
       </dependency>
 
