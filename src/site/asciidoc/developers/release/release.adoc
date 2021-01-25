@@ -152,14 +152,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=rel/{minor-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
