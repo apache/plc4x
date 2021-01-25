@@ -140,7 +140,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `release/{current-short-version}`.
+So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `rel/{current-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -489,14 +489,14 @@ This has to be done with git
 [subs="verbatim,attributes"]
 ----
 git checkout release
-git merge release/{current-full-version}
+git merge v{current-full-version}
 ----
 
 When there are conflicts it could help to use the `theirs` merge strategy, i.e.,
 
 [subs="verbatim,attributes"]
 ----
-git merge -X theirs release/{current-full-version}
+git merge -X theirs v{current-full-version}
 ----
 
 Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
