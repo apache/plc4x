@@ -1,5 +1,18 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.8.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.9.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+==============================================================
+Apache PLC4X 0.8.0-SNAPSHOT
 ==============================================================
 
 This is an ordinary PLC4X release, containing changes that
