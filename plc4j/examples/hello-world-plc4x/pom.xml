@@ -64,7 +64,7 @@
     <!--dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-java-amsads-driver</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency-->
   </dependencies>
