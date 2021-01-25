@@ -36,6 +36,29 @@
     <edgent.version>1.2.0</edgent.version>
   </properties>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -54,36 +77,67 @@
       <artifactId>gson</artifactId>
     </dependency>
 
-    <!-- TODO: most of the tests are commented out, please re-enable -->
-    <!--dependency>
+    <!-- Include all drivers -->
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
+      <artifactId>plc4j-driver-ab-eth</artifactId>
       <version>0.8.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-mock</artifactId>
+      <artifactId>plc4j-driver-ads</artifactId>
       <version>0.8.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
+      <artifactId>plc4j-driver-canopen</artifactId>
       <version>0.8.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency-->
-    <!--dependency>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-test</artifactId>
+      <artifactId>plc4j-driver-eip</artifactId>
       <version>0.8.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency-->
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-knxnetip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-modbus</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-opcua</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
 </project>

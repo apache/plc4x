@@ -221,14 +221,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <!-- Thrift based protocols -->
-        <module>proxy</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>

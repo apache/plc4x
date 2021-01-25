@@ -45,12 +45,6 @@
         <module>logstash</module>
       </modules>
     </profile>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>thrift</module>
-      </modules>
-    </profile>
   </profiles>
 
 </project>
