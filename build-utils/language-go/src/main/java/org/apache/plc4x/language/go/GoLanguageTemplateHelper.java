@@ -679,7 +679,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
         return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
-            "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+            "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, Argument[] parserArguments) {
