@@ -42,7 +42,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Perform the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:perform -DreleaseProfiles=apache-release,with-logstash
+   mvn release:perform -DreleaseProfiles=apache-release,with-go,with-logstash
 ----
 [%interactive]
 * [ ] Close the staging repo on `Nexus`
