@@ -60,13 +60,6 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
-
-    <!--dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-amsads-driver</artifactId>
-      <version>0.9.1-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency-->
   </dependencies>
 
   <build>
