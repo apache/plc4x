@@ -182,7 +182,7 @@ For `.Net`, you need the `Developer Pack` in order to build .Net applications. S
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
-The windows version of the PCAP library can be found here: https://sourceforge.net/projects/winpcap413-176/
+The Windows version of the PCAP library can be found here: https://sourceforge.net/projects/winpcap413-176/
 (In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
 Windows version is 1.0. At this location there is a patched version based on libpcap 1.7.4)
 
@@ -192,6 +192,8 @@ The letter at the end of the version is sort of a "sub-minor" version, so I usua
 Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH` as well as the directory containing the `openssl.exe`.
 
 ### Building with Docker
+
+WARNING: Currently the Docker build seems to be not working so please have patience till we fixed the issues.
 
 If you don't want to bother setting up the environment on your normal system and you have Docker installed, you can also build everything in a Docker container:
 
@@ -203,13 +205,14 @@ If you don't want to bother setting up the environment on your normal system and
 
 You must have at least Java 8 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). However in order to build all parts
-of PLC4X exactly Java 11 is required. Maven will be automatically downloaded and
-installed by the maven wrapper `mvnw`.
+of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
+
+NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
 Build PLC4X Java jars and install them in your local maven repository
 
 ```
-./mvnw install # add -DskipTests to omit running the tests
+mvn install # add -DskipTests to omit running the tests
 ```
 
 You can now construct Java applications that use PLC4X. The PLC4X examples
@@ -219,21 +222,21 @@ directory.
 The `Go` drivers can be built by enabling the `with-go` profile:
 
 ```
-./mvnw -P with-go install  # add -DskipTests to omit running the tests
+mvn -P with-go install  # add -DskipTests to omit running the tests
 ```
 
 The `C++` drivers are still under development and still not really usable. 
-Therefore they are located in the so-called `sandbox`. 
+Therefore, they are located in the so-called `sandbox`. 
 If you want to build them, this has to be enabled by activating the `with-sandbox` and `with-cpp` maven profiles:
 
 ```
-./mvnw -P with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
+mvn -P with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
 ```
 
 Same applies for the `C# / .Net` implementation with `with-dotnet` profiles.
 
 ```
-./mvnw -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
+mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
 ```
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
@@ -241,13 +244,13 @@ In order to be able to build the Python module, you currently need to activate t
 `with-sandbox`, `with-python` and `with-proxies` profiles.
 
 ```
-./mvnw -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit running the tests
+mvn -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit running the tests
 ```
 
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-go,with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
+mvn -P with-go,with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community
