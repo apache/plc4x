@@ -1517,7 +1517,7 @@ func (e KnxDatapointType) Name() string {
             return "heat quantity"
         }
         case 153: { /* '153' */
-            return "impedance (Ω)"
+            return "impedance (?)"
         }
         case 154: { /* '154' */
             return "length (m)"
@@ -1580,19 +1580,19 @@ func (e KnxDatapointType) Name() string {
             return "power (W)"
         }
         case 172: { /* '172' */
-            return "power factor (cos Φ)"
+            return "power factor (cos ?)"
         }
         case 173: { /* '173' */
             return "pressure (Pa)"
         }
         case 174: { /* '174' */
-            return "reactance (Ω)"
+            return "reactance (?)"
         }
         case 175: { /* '175' */
-            return "resistance (Ω)"
+            return "resistance (?)"
         }
         case 176: { /* '176' */
-            return "resistivity (Ωm)"
+            return "resistivity (?m)"
         }
         case 177: { /* '177' */
             return "self inductance (H)"
