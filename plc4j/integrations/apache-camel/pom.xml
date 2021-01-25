@@ -114,11 +114,18 @@
             </goals>
             <configuration>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies combine.children="append">
-                <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
-              </ignoredDependencies>
               <usedDependencies combine.children="append">
                 <usedDependency>javax.activation:javax.activation-api</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+                <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
               </usedDependencies>
             </configuration>
           </execution>
@@ -171,6 +178,68 @@
       <version>${camel.version}</version>
     </dependency>
 
+    <!-- Include all drivers -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ab-eth</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-knxnetip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-modbus</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-opcua</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- Support camel documentation-->
     <!-- TODO: Do we need this? -->
     <!--dependency>
@@ -209,12 +278,6 @@
       <version>0.8.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <!--dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency-->
     <dependency>
       <!-- avoids java.lang.NoClassDefFoundError: javax/activation/DataHandler in Plc4XProducerTest on Java 11-->
       <groupId>javax.activation</groupId>
@@ -229,19 +292,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- Camel BOM -->
-      <!-- TODO: version temporary disabled due to PLC4X-22-->
-      <!--dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-parent</artifactId>
-        <version>2.20.1</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency-->
-    </dependencies>
-  </dependencyManagement>
 
 </project>
