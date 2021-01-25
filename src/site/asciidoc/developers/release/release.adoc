@@ -29,7 +29,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=release/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
@@ -152,14 +152,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=release/{minor-version}
+   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=release/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -173,7 +173,7 @@ Here the suggested default has to be manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However, in the end the versions of the `develop` branch are updated and a new `release/{current-short-version}` branch is created.
+However, in the end the versions of the `develop` branch are updated and a new `rel/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
@@ -230,7 +230,7 @@ After that, the following command will to all preparation steps for the release:
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}` (`release/{current-full-version}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `v{release-version}` (`v{current-full-version}` in our case)
 3. The next development version (The version present in the pom after the release) (`{current-next-bugfix-version}` in our case)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -240,7 +240,7 @@ What the plugin now does, is automatically execute the following operations:
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (commit message: `[maven-release-plugin] prepare release release/{current-full-version}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release v{current-full-version}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
@@ -254,7 +254,7 @@ is in the correct state. Please select the release branch and verify the commit 
 
 image::release-git-history.png[]
 
-It is important that the commit with the message "[maven-release-plugin] prepare release release/{current-full-version}" is tagged with the release tag (in this case release/0.3.0)
+It is important that the commit with the message "[maven-release-plugin] prepare release v{release-version}" is tagged with the release tag (in this case v{current-full-version})
 
 If you check the commit itself, it should mainly consist of version updates like this:
 
@@ -379,7 +379,7 @@ Voting will be open for 72hr.
 A minimum of 3 binding +1 votes and more binding +1 than binding -1
 are required to pass.
 
-Release tag: release/{current-full-version}
+Release tag: v{current-full-version}
 Hash for the release tag: {replacethiswiththerealgitcommittag}
 
 Per [3] "Before voting +1 PMC members are required to download
@@ -455,7 +455,7 @@ As a lot of mirrors are serving our releases, it is the Apache policy to clean o
 
 This can be done like this:
 
-    svn delete https://dist.apache.org/repos/dist/release/plc4x/0.3.0/ -m"deleted version 0.3.0"
+    svn delete https://dist.apache.org/repos/dist/release/plc4x/{current-full-version}/ -m"deleted version {current-full-version}"
 
 After this https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
 
