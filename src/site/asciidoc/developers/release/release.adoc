@@ -42,7 +42,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Perform the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:perform -DreleaseProfiles=apache-release,with-go,with-logstash
+   mvn release:perform -DreleaseProfiles=apache-release,with-logstash
 ----
 [%interactive]
 * [ ] Close the staging repo on `Nexus`
@@ -284,14 +284,14 @@ However, it will not delete the tag in GIT (locally and remotely). So you have t
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform
+   mvn release:perform -DreleaseProfiles=apache-release,with-logstash
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare`-goal prepared.
 
 The first step is that the `perform`-goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P with-logstash
+   mvn clean deploy -P apache-release,with-logstash
 
 As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
