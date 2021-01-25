@@ -33,7 +33,6 @@
 
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
-    <plc4x.version>0.9.0-SNAPSHOT</plc4x.version>
     <guava.version>30.0-jre</guava.version>
   </properties>
 
@@ -99,74 +98,74 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-canopen</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 
