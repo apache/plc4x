@@ -159,7 +159,7 @@ So in case of preparing the release branch for `{current-full-version}-SNAPSHOT`
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
