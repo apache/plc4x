@@ -193,8 +193,6 @@ Make sure the `bin` directories of containing the executables `mingw32-make.exe`
 
 ### Building with Docker
 
-WARNING: Currently the Docker build seems to be not working so please have patience till we fixed the issues.
-
 If you don't want to bother setting up the environment on your normal system and you have Docker installed, you can also build everything in a Docker container:
 
 ```
@@ -225,6 +223,8 @@ The `Go` drivers can be built by enabling the `with-go` profile:
 mvn -P with-go install  # add -DskipTests to omit running the tests
 ```
 
+NOTE: The C++ build is considered experimental and currently not working properly.
+
 The `C++` drivers are still under development and still not really usable. 
 Therefore, they are located in the so-called `sandbox`. 
 If you want to build them, this has to be enabled by activating the `with-sandbox` and `with-cpp` maven profiles:
@@ -250,7 +250,7 @@ mvn -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit 
 In order to build everything the following command should work:
 
 ```
-mvn -P with-go,with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
+mvn -P with-go,with-boost,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community
