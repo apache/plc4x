@@ -63,6 +63,9 @@ RUN apt install -y bison flex gcc g++
 # Required for "with-python" profile
 RUN apt install -y python-setuptools python
 
+# Required for running on Windows systems
+RUN apt install -y dos2unix
+
 # Copy the project into the docker container
 COPY . /ws/
 
@@ -71,6 +74,9 @@ WORKDIR /ws
 
 # Make the maven wrapper script executalbe (needed when running on Windows)
 RUN chmod +x ./mvnw
+# Change the line endint to unix-style (needed when running on Windows)
+RUN dos2unix ./mvnw
+RUN dos2unix .mvn/wrapper/maven-wrapper.properties
 
 # Tell Maven to fetch all needed dependencies first, so they can get cached
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
@@ -78,7 +84,7 @@ RUN chmod +x ./mvnw
 RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-logstash,with-python,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 
 # Build everything with all tests
-RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-logstash,with-python,with-sandbox install
+RUN ./mvnw -P skip-prerequisite-check,with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-logstash,with-python,with-sandbox install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version
