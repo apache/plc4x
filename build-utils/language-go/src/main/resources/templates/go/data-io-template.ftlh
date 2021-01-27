@@ -73,7 +73,7 @@ import (
 func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
     switch {
     <#list type.switchField.cases as case>
-        case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else>default</#if>: // ${case.name}
         <#assign valueDefined=false>
         <#if case.name == "Struct">
             _map := map[string]api.PlcValue{}
@@ -169,8 +169,9 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 
 func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
     switch {
+    <#assign defaultSet=false>
     <#list type.switchField.cases as case>
-        case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else>default<#assign defaultSet=true></#if>: // ${case.name}
         <#list case.fields as field>
             <#switch field.typeName>
                 <#case "array">
@@ -178,6 +179,9 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 
             // Array Field (${field.name})
             for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, field.loopExpression, type.parserArguments)}); i++ {
+                    <#if case.name = "Struct">
+                ${arrayField.name} := value.GetValue("${arrayField.name}")
+                    </#if>
                 _itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()")}<#else>Complex type array in data-io serialization currently not implemented</#if>
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
@@ -212,9 +216,11 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
             </#switch>
         </#list>
     </#list>
+    <#if !defaultSet>
         default:
 
             return errors.New("unsupported type")
+    </#if>
     }
     return nil
 }

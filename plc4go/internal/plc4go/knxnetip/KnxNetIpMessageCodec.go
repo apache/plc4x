@@ -150,13 +150,12 @@ func work(m *KnxNetIpMessageCodec) {
 			fmt.Printf("got an error reading from transport %s", err.Error())
 		} else if message != nil {
 			// If this message is a simple KNXNet/IP UDP Ack, ignore it for now
-			// TODO: In the future use these to see if a packet needs to be received
 			tunnelingResponse := model.CastTunnelingResponse(message)
 			if tunnelingResponse != nil {
 				continue
 			}
 
-            // If this is an incoming KNXNet/IP UDP Packet, automatically send an ACK
+            // If this is an incoming tunneling request, automatically send a tunneling ACK
 			tunnelingRequest := model.CastTunnelingRequest(message)
 			if tunnelingRequest != nil {
 				response := model.NewTunnelingResponse(
@@ -168,8 +167,8 @@ func work(m *KnxNetIpMessageCodec) {
 				_ = m.Send(response)
 			}
 
-			// Otherwise handle it
-			now := time.Now()
+			// Handle the packet itself
+			//now := time.Now()
 			// Give a message interceptor a chance to intercept
 			if m.messageInterceptor != nil {
 				m.messageInterceptor(message)
@@ -178,11 +177,11 @@ func work(m *KnxNetIpMessageCodec) {
 			messageHandled := false
 			for index, expectation := range m.expectations {
 				// Check if this expectation has expired.
-				if now.After(expectation.expiration) {
+				/*if now.After(expectation.expiration) {
 					// Remove this expectation from the list.
 					m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-					break
-				}
+					continue
+				}*/
 
 				// Check if the current message matches the expectations
 				// If it does, let it handle the message.
@@ -192,8 +191,9 @@ func work(m *KnxNetIpMessageCodec) {
 						messageHandled = true
 						// Remove this expectation from the list.
 						m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-					}
-					break
+					} else {
+					    fmt.Printf("Got error")
+                    }
 				}
 			}
 

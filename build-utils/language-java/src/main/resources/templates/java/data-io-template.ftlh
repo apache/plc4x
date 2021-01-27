@@ -87,9 +87,9 @@ import java.util.function.Supplier;
 public class ${type.name}IO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}IO.class);
-
     public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
-        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{ // ${case.name}
+        <#assign defaultCaseOutput=false>
+        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
             <#assign valueDefined=false>
             <#list case.fields as field>
                 <#switch field.typeName>
@@ -212,7 +212,9 @@ public class ${type.name}IO {
                 <#-- In this case we need to wrap each field in a PlcValue that matches it's natural type -->
             Map<String, PlcValue> _map = new HashMap<>();
                 <#list case.fields as field>
-                    <#if helper.isPropertyField(field)>
+                    <#if helper.isArrayField(field)>
+            _map.put("${field.name}", new PlcList(${field.name}));
+                    <#elseif helper.isPropertyField(field)>
                         <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
                             <#case "Boolean">
             _map.put("${field.name}", new PlcBOOL(${field.name}));
@@ -297,7 +299,9 @@ public class ${type.name}IO {
                 </#switch>
             </#if>
         }<#sep> else </#sep></#list>
+        <#if !defaultCaseOutput>
         return null;
+        </#if>
     }
 
 <#if outputFlavor != "passive">
@@ -306,7 +310,8 @@ public class ${type.name}IO {
     }
 
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, boolean littleEndian) throws ParseException {
-        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{ // ${case.name}
+        <#assign defaultCaseOutput=false>
+        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
             WriteBuffer io = new WriteBuffer((int) Math.ceil(((float) ${helper.getSizeInBits(case, type.parserArguments)}) / 8.0f), littleEndian);
 
             <#list case.fields as field>
@@ -314,10 +319,17 @@ public class ${type.name}IO {
                     <#case "array">
             PlcList values = (PlcList) _value;
 
+                        <#if case.name == "Struct">
+            for (PlcValue val : ((List<PlcValue>) values.getStruct().get("${field.name}").getList())) {
+                ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${helper.getLanguageTypeNameForField(field)?cap_first}();
+                ${helper.getWriteBufferWriteMethodCall(field.type, "value")};
+            }
+                        <#else>
             for (PlcValue val : ((List<PlcValue>) values.getList())) {
                 ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${helper.getLanguageTypeNameForField(field)?cap_first}();
                 ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
             }
+                        </#if>
 
                     <#if case.name == "BOOL">
             while (io.getPos() < io.getData().length) {
@@ -364,7 +376,9 @@ public class ${type.name}IO {
             </#list>
             return io;
         }<#sep> else </#sep></#list>
+        <#if !defaultCaseOutput>
         return null;
+        </#if>
     }
 </#if>
 
