@@ -42,6 +42,7 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -69,10 +70,14 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 	private static final PropertyDescriptor RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
 			.name("plc4x-record-writer").displayName("Record Writer")
-			.description(
-					"Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
+			.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
 							+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
 			.identifiesControllerService(RecordSetWriterFactory.class).required(true).build();
+	
+	private static final PropertyDescriptor FORCE_RECONNECT = new PropertyDescriptor.Builder()
+			.name("plc4x-reconnect-force").displayName("Force Reconnect every request")
+			.description("Specifies if the connection to plc will be recreated on trigger event")
+			.required(true).addValidator(StandardValidators.BOOLEAN_VALIDATOR).build();
 
 	public Plc4xSourceRecordProcessor() {
 
@@ -87,12 +92,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
     public void onScheduled(final ProcessContext context) {
         super.onScheduled(context);
         //TODO: Change this to use NiFi service instead of direct connection and add @OnStopped Phase to close connection
-        try {        	
+        try {
 			this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
-			
 			//TODO how to infer protocol within the writer?
 			PROTOCOL = Plc4xCommon.getConnectionProtocol(getConnectionString());
-			
 		} catch (PlcConnectionException e) {
 			if(this.connection != null)
 				try {
@@ -100,7 +103,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				} catch (Exception e1) {
 					//do nothing
 				}
-			getLogger().error("Error creating the connection to "+getConnectionString(), e);
+			getLogger().error("Error while creating the connection to "+getConnectionString(), e);
 		}
     }
 	
@@ -116,6 +119,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final List<PropertyDescriptor> pds = new ArrayList<>();
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(RECORD_WRITER_FACTORY);
+		pds.add(FORCE_RECONNECT);
 		this.descriptors = Collections.unmodifiableList(pds);
 	}
 
@@ -137,11 +141,16 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 		final ComponentLog logger = getLogger();
 		Plc4xWriter plc4xWriter = new RecordPlc4xWriter(context.getProperty(RECORD_WRITER_FACTORY).asControllerService(RecordSetWriterFactory.class), fileToProcess == null ? Collections.emptyMap() : fileToProcess.getAttributes());
+		Boolean force =  context.getProperty(FORCE_RECONNECT).asBoolean();
 		// Get an instance of a component able to read from a PLC.
 		// TODO: Change this to use NiFi service instead of direct connection
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 		try {
+			if(force) {
+				logger.debug("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
+				this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+			}
 			if(this.connection != null) {
 				// Prepare the request.
 				if (!connection.getMetadata().canRead()) {
@@ -225,22 +234,27 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			if (fileToProcess == null) {
 				// This can happen if any exceptions occur while setting up the connection,
 				// statement, etc.
-				logger.error("Unable to execute PLC4X query {} due to {}. No FlowFile to route to failure",
-						new Object[] { getConnectionString(), e });
+				logger.error("Unable to execute PLC4X query {} due to {}. No FlowFile to route to failure", new Object[] { getConnectionString(), e });
 				context.yield();
 			} else {
 				if (context.hasIncomingConnection()) {
-					logger.error("Unable to execute SQL select query {} for {} due to {}; routing to failure",
-							new Object[] { getConnectionString(), fileToProcess, e });
+					logger.error("Unable to execute processor select query {} for {} due to {}; routing to failure", new Object[] { getConnectionString(), fileToProcess, e });
 					fileToProcess = session.penalize(fileToProcess);
 				} else {
-					logger.error("Unable to execute SQL select query {} due to {}; routing to failure",
-							new Object[] { getConnectionString(), e });
+					logger.error("Unable to execute processor select query {} due to {}; routing to failure",	new Object[] { getConnectionString(), e });
 					context.yield();
 				}
 				session.putAttribute(fileToProcess, RESULT_ERROR_MESSAGE, e.getMessage());
 				session.transfer(fileToProcess, REL_FAILURE);
 			}
+		} finally {
+			if(force && this.connection != null)
+				try {
+					this.connection.close();
+				} catch (Exception e) {
+					logger.error("Unable to close connection {} due to {}",	new Object[] { getConnectionString(), e });
+					throw new ProcessException("Connection closed problems");
+				}
 		}
 	}
 
