@@ -77,7 +77,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	private static final PropertyDescriptor FORCE_RECONNECT = new PropertyDescriptor.Builder()
 			.name("plc4x-reconnect-force").displayName("Force Reconnect every request")
 			.description("Specifies if the connection to plc will be recreated on trigger event")
-			.required(true).addValidator(StandardValidators.BOOLEAN_VALIDATOR).build();
+			.required(true).addValidator(StandardValidators.BOOLEAN_VALIDATOR).defaultValue("true").build();
 
 	public Plc4xSourceRecordProcessor() {
 
