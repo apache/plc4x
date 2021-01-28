@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4x-build-utils-language-base-freemarker</artifactId>
@@ -50,6 +50,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.objecthunter</groupId>
+      <artifactId>exp4j</artifactId>
     </dependency>
   </dependencies>
 

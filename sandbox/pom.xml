@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -36,9 +36,9 @@
 
   <modules>
     <module>code-gen</module>
+    <module>discovery</module>
     <module>plc-simulator</module>
 
-    <module>test-java-amsads-driver</module>
     <module>test-java-bacnetip-driver</module>
     <module>test-java-df1-driver</module>
 
@@ -50,16 +50,41 @@
     <module>hello-influx-data-collection</module>
   </modules>
 
+  <build>
+    <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <configuration>
+            <usedDependencies combine.children="append">
+                <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+            </usedDependencies>
+          </configuration>
+        </plugin>
+
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- JUnit 5 Support -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-test-junit5</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

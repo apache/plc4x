@@ -156,3 +156,24 @@ In the `CI Build` this profile is enabled.
 Some times, actually only on the build-server we have encountered random failures of the `prerequisite check` build step.
 
 In order to still be able to build in this case, activating this profile simply disables these checks.
+
+=== Use the compiled library with Gradle
+
+Compiling the library as explained here add the new version in the local Maven repository (i.e. usually under `~/.m2/repository` on linux like systems), if you would like to use Gradle as Build Tool for your project you have just to use a local repository in your Gradle `build.gradle` file.
+
+Here there's an example: 
+
+[source, groovy]
+:source-highlighter: prettify
+----
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation group: 'org.apache.plc4x', name: 'plc4j-api', version: '0.8.0-SNAPSHOT'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-driver-s7', version: '0.8.0-SNAPSHOT'
+    implementation group: 'org.apache.plc4x', name: 'plc4j-connection-pool', version: '0.8.0-SNAPSHOT'
+}
+----

@@ -47,6 +47,10 @@ Using libpcap usually requires root privileges, however the java process can be 
 
  setcap cap_net_raw,cap_net_admin=eip /path/to/java
 
+Some times I had to set the uid to execute the java executable with the permissions of the owner (root) ... however this is quite sub-optimal solution.
+
+ chmod 4755 /path/to/java
+
 === gcc
 
 Checking:

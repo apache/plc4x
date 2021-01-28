@@ -19,16 +19,35 @@
 
 include_directories("include" "../api/include")
 
-file(GLOB_RECURSE sources "src/*.c")
+add_library(plc4c-spi
+        src/utils/list.c
+        src/utils/queue.c
+        src/connection.c
+        src/data.c
+        src/evaluation_helper.c
+        src/read.c
+        src/read_buffer.c
+        src/subscribe.c
+        src/system.c
+        src/types.c
+        src/write.c
+        src/write_buffer.c
+        )
 
-add_library(plc4c-spi SHARED ${sources} "src/utils/list.c" "src/utils/queue.c")
+target_link_libraries(plc4c-spi
+    m)
 
 if (BUILD_PHASE STREQUAL test-compile)
-    file(GLOB testSources "test/*.c")
-    add_executable(plc4c-spi-test ${testSources} test/system_test.c)
+    add_executable(plc4c-spi-test
+            test/system_test.c
+            test/spi_test.c
+            test/read_buffer_test.c
+            test/write_buffer_test.c
+            )
     target_link_libraries(plc4c-spi-test
             plc4c-spi
             unity
+            m
             )
     add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
 endif ()

@@ -24,10 +24,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -223,6 +220,10 @@ public class ConfigurationFactory {
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {
             return booleanDefaultValue.value();
+        }
+        FloatDefaultValue floatDefaultValue = field.getAnnotation(FloatDefaultValue.class);
+        if (floatDefaultValue != null) {
+            return floatDefaultValue.value();
         }
         DoubleDefaultValue doubleDefaultValue = field.getAnnotation(DoubleDefaultValue.class);
         if (doubleDefaultValue != null) {

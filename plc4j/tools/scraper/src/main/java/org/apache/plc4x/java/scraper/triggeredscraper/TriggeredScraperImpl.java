@@ -70,6 +70,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     private final ScheduledExecutorService scheduler;
     private final ExecutorService executorService;
+    private ScheduledFuture<?> statisticsLogger;
 
     private final ResultHandler resultHandler;
 
@@ -237,7 +238,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         }
 
         // Add statistics tracker
-        scheduler.scheduleAtFixedRate(() -> {
+        statisticsLogger = scheduler.scheduleAtFixedRate(() -> {
             for (Map.Entry<ScrapeJob, ScraperTask> entry : tasks.entries()) {
                 DescriptiveStatistics statistics = entry.getValue().getLatencyStatistics();
                 String msg = String.format(Locale.ENGLISH, "Job statistics (%s, %s) number of requests: %d (%d success, %.1f %% failed, %.1f %% too slow), min latency: %.2f ms, mean latency: %.2f ms, median: %.2f ms",
@@ -246,7 +247,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
                     entry.getValue().getPercentageFailed(),
                     statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)),
                     statistics.getMin() * 1e-6, statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
-                if(LOGGER.isDebugEnabled()) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(msg);
                 }
             }
@@ -275,6 +276,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         }
         // Clear the map
         scraperTaskMap.clear();
+
+        // Stop the statistics logger, if it is currently running.
+        if((statisticsLogger != null) && (!statisticsLogger.isCancelled())) {
+            statisticsLogger.cancel(false);
+        }
     }
 
     /**

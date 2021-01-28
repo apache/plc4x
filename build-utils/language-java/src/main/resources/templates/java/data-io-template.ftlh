@@ -16,7 +16,32 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${typeName}IO.java
+<#-- Prevent freemarker from escaping stuff -->
+<#outputformat "undefined">
+<#-- Declare the name and type of variables passed in to the template -->
+<#-- @ftlvariable name="languageName" type="java.lang.String" -->
+<#-- @ftlvariable name="protocolName" type="java.lang.String" -->
+<#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
+<#-- Declare the name and type of variables declared locally inside the template -->
+<#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
+<#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
+<#-- @ftlvariable name="constField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ConstField" -->
+<#-- @ftlvariable name="discriminatorField" type="org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField" -->
+<#-- @ftlvariable name="enumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.EnumField" -->
+<#-- @ftlvariable name="implicitField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField" -->
+<#-- @ftlvariable name="manualArrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField" -->
+<#-- @ftlvariable name="manualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualField" -->
+<#-- @ftlvariable name="optionalField" type="org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField" -->
+<#-- @ftlvariable name="paddingField" type="org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField" -->
+<#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
+<#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
+<#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
+<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
+<#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${type.name}IO.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -48,6 +73,7 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,13 +84,13 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ${typeName}IO {
+public class ${type.name}IO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}IO.class);
 
-    public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
-        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
-            <#assign skipReturn=false>
+    public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{ // ${case.name}
+            <#assign valueDefined=false>
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
@@ -75,40 +101,48 @@ public class ${typeName}IO {
             curPos = io.getPos() - startPos;
                         </#if>
             <#-- If this is a count array, we can directly initialize an array with the given size -->
-                        <#if helper.isCountArray(field)>
+                        <#if helper.isCountArrayField(field)>
             // Count array
-            if(${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc} > Integer.MAX_VALUE) {
-                throw new ParseException("Array count of " + (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+            if(${helper.toParseExpression(field, field.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
+                throw new ParseException("Array count of " + (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
             }
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[] ${field.name};
+            List<PlcValue> ${field.name};
             {
-                int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc};
-                ${field.name} = new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[itemCount];
+                int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
+                ${field.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+                    ${field.name}.add(new ${helper.getPlcValueTypeForTypeReference(field.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(field)}) <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)})<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                            <#if helper.isLengthArray(field)>
+                            <#if helper.isLengthArrayField(field)>
             // Length array
-            int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc};
-            List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
+            int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
             int ${field.name}EndPos = io.getPos() + _${field.name}Length;
+            List<PlcValue> value = new LinkedList<>();
             while(io.getPos() < ${field.name}EndPos) {
-                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
-                <#-- After parsing, update the current position, but only if it's needed -->
-                                <#if field.loopExpression.contains("curPos")>
-                curPos = io.getPos() - startPos;
-                                </#if>
+                value.add(
+                <#if helper.isSimpleTypeReference(field.type)>
+                    new ${helper.getPlcValueTypeForTypeReference(field.type)}(${helper.getReadBufferReadMethodCall(field.type)})
+                <#else>${field.type.name}IO.staticParse(io
+                    <#if field.params?has_content>,
+                        <#list field.params as parserArgument>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})
+                            <#sep>, </#sep>
+                        </#list>
+                    </#if>
+                    )
+                </#if>
+                );
             }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                            <#elseif helper.isTerminatedArray(field)>
+                            <#elseif helper.isTerminatedArrayField(field)>
             // Terminated array
-            List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-            while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}))) {
-                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+            List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> ${field.name} = new LinkedList<>();
+            while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}))) {
+                ${field.name}.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if field.loopExpression.contains("curPos")>
@@ -116,66 +150,43 @@ public class ${typeName}IO {
                                 </#if>
             }
                             </#if>
-            <#--
-                Convert the list into an array. However if the array is of a primitive
-                type we have to iterate over it's elements and explicitly cast them.
-                Otherwise a simple toArray call is fine.
-            -->
-                            <#if helper.isSimpleType(field.type)>
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[_${field.name}List.size()];
-            for(int i = 0; i < _${field.name}List.size(); i++) {
-                ${field.name}[i] = (${helper.getNonPrimitiveLanguageTypeNameForField(field)}) _${field.name}List.get(i);
-            }
-                            <#else>
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[] ${field.name} = _${field.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[0]);
-                            </#if>
+                        </#if>
+                        <#if field.name == "value">
+                            <#assign valueDefined=true>
                         </#if>
                     <#break>
                     <#case "const">
 
             // Const Field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-            if(${field.name} != ${typeName}.${field.name?upper_case}) {
-                throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)};
+            if(${field.name} != ${type.name}.${field.name?upper_case}) {
+                throw new ParseException("Expected constant value " + ${type.name}.${field.name?upper_case} + " but got " + ${field.name});
             }
+                        <#if field.name == "value">
+                            <#assign valueDefined=true>
+                        </#if>
                     <#break>
                     <#case "enum">
 
             // Enum field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))?no_esc});
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+                        <#if field.name == "value">
+                            <#assign valueDefined=true>
+                        </#if>
                     <#break>
                     <#case "manual">
 
             // Manual Field (${field.name})
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)?no_esc});
-                        <#-- If a manual field is detected, the value returned by this is instantly treated as the value -->
-                        <#switch case.name>
-                            <#case "Time">
-            return new PlcTime(${field.name});
-                            <#break>
-                            <#case "Date">
-            return new PlcDate(${field.name});
-                            <#break>
-                            <#case "DateTime">
-            return new PlcDateTime(${field.name});
-                            <#break>
-                            <#case "Struct">
-            return new PlcStruct(${field.name});
-                            <#break>
-                            <#case "String">
-            return new PlcString(${field.name});
-                            <#break>
-                            <#default>
-            return new Plc${case.name}(${field.name});
-                        </#switch>
-                        <#-- As we returned early, skip outputting a return at the end -->
-                        <#assign skipReturn=true>
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+                        <#if field.name == "value">
+                            <#assign valueDefined=true>
+                        </#if>
                     <#break>
                     <#case "reserved">
 
             // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             {
-                ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
+                ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type)};
                 if(reserved != ${helper.getReservedValue(field)}) {
                     LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
                 }
@@ -183,37 +194,103 @@ public class ${typeName}IO {
                     <#break>
                     <#case "simple">
 
+                        <#if helper.isEnumField(field)>
+            // Enum field (${field.name})
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+                        <#else>
             // Simple Field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+                        </#if>
+                        <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">
+                            <#assign valueDefined=true>
+                        </#if>
                     <#break>
                 </#switch>
             </#list>
             <#if case.name == "Struct">
+
+                <#-- In this case we need to wrap each field in a PlcValue that matches it's natural type -->
             Map<String, PlcValue> _map = new HashMap<>();
                 <#list case.fields as field>
-            _map.put("${field.name}", PlcValues.of(${field.name}));
+                    <#if helper.isPropertyField(field)>
+                        <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
+                            <#case "Boolean">
+            _map.put("${field.name}", new PlcBOOL(${field.name}));
+                                <#break>
+                            <#case "Byte">
+            _map.put("${field.name}", new PlcSINT(${field.name}));
+                                <#break>
+                            <#case "Short">
+            _map.put("${field.name}", new PlcINT(${field.name}));
+                                <#break>
+                            <#case "Integer">
+            _map.put("${field.name}", new PlcDINT(${field.name}));
+                                <#break>
+                            <#case "Long">
+            _map.put("${field.name}", new PlcLINT(${field.name}));
+                                <#break>
+                            <#case "BigInteger">
+            _map.put("${field.name}", new PlcBigInteger(${field.name}));
+                                <#break>
+                            <#case "Float">
+            _map.put("${field.name}", new PlcREAL(${field.name}));
+                                <#break>
+                            <#case "Double">
+            _map.put("${field.name}", new PlcLREAL(${field.name}));
+                                <#break>
+                            <#case "BigDecimal">
+            _map.put("${field.name}", new PlcBigDecimal(${field.name}));
+                                <#break>
+                            <#case "String">
+            _map.put("${field.name}", new PlcSTRING(${field.name}));
+                                <#break>
+                            <#case "LocalTime">
+            _map.put("${field.name}", new PlcTIME_OF_DAY(${field.name}));
+                                <#break>
+                            <#case "LocalDate">
+            _map.put("${field.name}", new PlcDATE(${field.name}));
+                                <#break>
+                            <#case "LocalDateTime">
+            _map.put("${field.name}", new PlcDATE_AND_TIME(${field.name}));
+                                <#break>
+                        </#switch>
+                    </#if>
                 </#list>
+                <#assign valueDefined=true>
             </#if>
-            <#if !skipReturn>
+
+            <#if valueDefined>
                 <#switch case.name>
-                    <#case "Time">
-            return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds));
+                    <#case "TIME">
+            return new PlcTIME(value);
                     <#break>
-                    <#case "Date">
-            return new PlcDate(LocalDate.of((int) year, (int) month, (int) day));
+                    <#case "DATE">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
+            LocalDate value = LocalDate.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue());
+                    </#if>
+            return new PlcDATE(value);
                     <#break>
-                    <#case "DateTime">
-            return new PlcDateTime(LocalDateTime.of((int) year, (int) month, (int) day, (int) hours, (int) minutes, (int) seconds));
+                    <#case "TIME_OF_DAY">
+                    <#if helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds", "nanos")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
+            LocalTime value = LocalTime.of(hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
+            return new PlcTIME_OF_DAY(value);
+                    <#break>
+                    <#case "DATE_AND_TIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanos")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanos.intValue());
+                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds")>
+            LocalDateTime value = LocalDateTime.of(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue());
+                    </#if>
+            return new PlcDATE_AND_TIME(value);
                     <#break>
                     <#case "Struct">
             return new PlcStruct(_map);
                     <#break>
                     <#case "List">
-            return new PlcList(Arrays.asList(value));
-                    <#break>
-            <#-- Disable this for now as Strings will only be parsed as manual fields -->
-                    <#case "String">
-            //return new PlcString(_map);
+            return new PlcList(value);
                     <#break>
                     <#default>
             return new Plc${case.name}(value);
@@ -224,29 +301,46 @@ public class ${typeName}IO {
     }
 
 <#if outputFlavor != "passive">
-    public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
-        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
-            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case, type.parserArguments)} / 8 );
+    public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+        return staticSerialize(_value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, false);
+    }
+
+    public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, boolean littleEndian) throws ParseException {
+        <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{ // ${case.name}
+            WriteBuffer io = new WriteBuffer((int) Math.ceil(((float) ${helper.getSizeInBits(case, type.parserArguments)}) / 8.0f), littleEndian);
+
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
+            PlcList values = (PlcList) _value;
+
+            for (PlcValue val : ((List<PlcValue>) values.getList())) {
+                ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${helper.getLanguageTypeNameForField(field)?cap_first}();
+                ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
+            }
+
+                    <#if case.name == "BOOL">
+            while (io.getPos() < io.getData().length) {
+                io.writeBit(false);
+            }
+                    </#if>
                     <#break>
                     <#case "const">
             // Const Field (${field.name})
-            ${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)?no_esc};
+            ${helper.getWriteBufferWriteMethodCall(field.type, field.referenceValue)};
                     <#break>
                     <#case "enum">
             // Enum field (${field.name})
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${field.name?cap_first}();
-            ${helper.getWriteBufferReadMethodCall(helper.getEnumBaseType(field.type), "(" + field.name + ".getValue())")?no_esc};
+            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.type), "(" + field.name + ".getValue())")};
                     <#break>
                     <#case "manual">
             // Manual Field (${field.name})
-            ${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)?no_esc};
+            ${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)};
                     <#break>
                     <#case "reserved">
             // Reserved Field
-            ${helper.getWriteBufferReadMethodCall(field.type, helper.getReservedValue(field))?no_esc};
+            ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))};
                     <#break>
                     <#case "simple">
             // Simple Field (${field.name})
@@ -254,14 +348,14 @@ public class ${typeName}IO {
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${field.name}").get${helper.getLanguageTypeNameForField(field)?cap_first}();
                         <#else>
                             <#if field.name == "value">
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${case.name}();
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(field)?cap_first}();
                             <#else>
                                 <#-- Just for now -->
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForTypeReference(field.type)};
                             </#if>
                         </#if>
-                        <#if helper.isSimpleType(field.type)>
-            ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+                        <#if helper.isSimpleTypeReference(field.type)>
+            ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
                         <#else>
             ${field.type.name}IO.staticSerialize(io, ${field.name});
                         </#if>
@@ -275,3 +369,4 @@ public class ${typeName}IO {
 </#if>
 
 }
+</#outputformat>

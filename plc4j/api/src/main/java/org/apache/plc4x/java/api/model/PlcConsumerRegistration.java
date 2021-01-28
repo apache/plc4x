@@ -19,6 +19,18 @@
 
 package org.apache.plc4x.java.api.model;
 
+import java.util.List;
+
+/**
+ * Represents the registration of one consumer for a given subscription handle.
+ * Also provides the means to unsubscribe.
+ */
 public interface PlcConsumerRegistration {
+
+    Integer getConsumerId();
+
+    List<PlcSubscriptionHandle> getSubscriptionHandles();
+
     void unregister();
+
 }

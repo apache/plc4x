@@ -25,6 +25,13 @@
 #include "plc4c/spi/system_private.h"
 #include "plc4c/spi/types_private.h"
 
+// As we're doing some operations where byte-order is important, we need this
+// little helper to find out if we're on a big- or little-endian machine.
+const int hurz = 1;
+bool plc4c_is_bigendian() {
+  return (((char) &hurz) == 0);
+}
+
 static void delete_driver_list_element(plc4c_list_element *driver_element) {
   plc4c_driver *driver = (plc4c_driver *)driver_element->value;
   // plc4c_driver_destroy(driver);
@@ -364,7 +371,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   if (plc4c_utils_list_empty(system->driver_list)) {
     return NO_DRIVER_AVAILABLE;
   }
-  plc4c_list_element *cur_driver_list_element = system->driver_list->head;
+  plc4c_list_element *cur_driver_list_element = system->driver_list->tail;
   do {
     plc4c_driver *cur_driver = (plc4c_driver *)cur_driver_list_element->value;
     if (strcmp(cur_driver->protocol_code,
@@ -405,7 +412,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   if (plc4c_utils_list_empty(system->transport_list)) {
     return NO_TRANSPORT_AVAILABLE;
   }
-  plc4c_list_element *cur_transport_list_element = system->transport_list->head;
+  plc4c_list_element *cur_transport_list_element = system->transport_list->tail;
   do {
     plc4c_transport *cur_transport =
         (plc4c_transport *)cur_transport_list_element->value;
@@ -428,9 +435,22 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   // Initialize a new connection task and schedule that.
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  plc4c_driver* driver = plc4c_connection_get_driver(new_connection);
+
+  // Configure the driver configuration first.
+  void* configuration = NULL;
+  // TODO: Pass in the configuration options ...
+  driver->configure_function(NULL, &configuration);
+  plc4c_connection_set_configuration(new_connection, configuration);
+
+  // TODO: Somehow let the driver inject default values which the transport can then pickup ...
+
+  // Prepare a configuration data structure for the current transport.
+  new_connection->transport->configure(NULL, &new_connection->transport_configuration);
+
+  // Create a new connection task.
   plc4c_system_task *new_connection_task = NULL;
-  result = plc4c_connection_get_driver(new_connection)
-               ->connect_function(new_connection, &new_connection_task);
+  result = driver->connect_function(new_connection, &new_connection_task);
   if (result != OK) {
     return -1;
   }
@@ -486,3 +506,23 @@ plc4c_return_code plc4c_system_loop(plc4c_system *system) {
 
   return OK;
 }
+
+char* list_to_string(plc4c_list* list) {
+  uint8_t string_length = plc4c_utils_list_size(list);
+  char* chars = malloc(sizeof(char) * (string_length + 1));
+  if(chars == NULL) {
+    return NULL;
+  }
+  char* cur_pos = chars;
+  plc4c_list_element* cur_element = list->tail;
+  while(cur_element != NULL) {
+    char cur_char = *((char*)(cur_element->value));
+    *cur_pos = cur_char;
+    cur_element = cur_element->next;
+    cur_pos++;
+  }
+  // Terminate the string.
+  *cur_pos = '\0';
+  return chars;
+}
+

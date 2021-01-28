@@ -46,9 +46,16 @@ public class KnxHelper {
             boolean negative = value < 0;
             final int exponent = Math.getExponent(value);
             final double mantissa = value / Math.pow(2, exponent);
+            //io.writeBit(negative);
+            //io.writeInt(4, exponent);
+            //io.writeDouble(11, Math.getExponent(mantissa), mantissa); //Don't think this works BH
+
+            String mantissaString = Double.toString(mantissa);
+            int mantissaInteger = Integer.parseInt(mantissaString.substring(mantissaString.indexOf('.')));
             io.writeBit(negative);
-            io.writeInt(4, exponent);
-            io.writeDouble(11, mantissa);
+            io.writeUnsignedInt(4,exponent + 15);
+            io.writeUnsignedInt(11, mantissaInteger);
+
         } catch(ParseException e) {
             throw new PlcRuntimeException("Error serializing F16 value", e);
         }

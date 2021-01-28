@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd">
+
+  <name>Tests of CANopen frames from Wireshark sample PCAP files.</name>
+
+
+  <testcase>
+    <name>SDO initiate request: 4008100000000000</name>
+    <raw>4008100000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>INITIATE_UPLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>4104</index>
+            <subindex>0</subindex>
+          </address>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate response: 4108100015000000</name>
+    <raw>4108100015000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>INITIATE_UPLOAD</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
+          <expedited>false</expedited>
+          <indicated>true</indicated>
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>4104</index>
+            <subindex>0</subindex>
+          </address>
+          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateSegmentedUploadResponse">
+            <bytes>21</bytes>
+          </payload>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO segment upload request: 6000000000000000</name>
+    <raw>6000000000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>SEGMENT_UPLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
+          <toggle>false</toggle>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO abort: 8000000021000008</name>
+    <raw>8000000021000008</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>ABORT</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOAbortRequest">
+          <abort className="org.apache.plc4x.java.canopen.readwrite.SDOAbort">
+            <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+              <index>0</index>
+              <subindex>0</subindex>
+            </address>
+            <code>134217761</code>
+          </abort>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO upload segment response: 00556c7472614869</name>
+    <raw>00556c7472614869</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>SEGMENT_UPLOAD</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
+          <toggle>false</toggle>
+          <last>false</last>
+          <data>VWx0cmFIaQ==</data>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO upload segment request: 7000000000000000</name>
+    <raw>7000000000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>SEGMENT_UPLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
+          <toggle>true</toggle>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate upload request: 4008102a00000000</name>
+    <raw>4008102a00000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>INITIATE_UPLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>4104</index>
+            <subindex>42</subindex>
+          </address>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x42: 0142</name>
+    <raw>0142</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
+        <request>START</request>
+        <node>66</node>
+      </CANOpenNetworkPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x00 (all): 0100</name>
+    <raw>0100</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
+        <request>START</request>
+        <node>0</node>
+      </CANOpenNetworkPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NMT start node 0x42: 0263</name>
+    <raw>0263</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>NMT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
+        <request>STOP</request>
+        <node>99</node>
+      </CANOpenNetworkPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO initiate download request: 2300620161736466</name>
+    <raw>2300620161736466</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>INITIATE_DOWNLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateDownloadRequest">
+          <expedited>true</expedited>
+          <indicated>true</indicated>
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>25088</index>
+            <subindex>1</subindex>
+          </address>
+          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
+            <data>YXNkZg==</data>
+          </payload>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO abort: 8000620100000206</name>
+    <raw>8000620100000206</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>ABORT</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOAbortResponse">
+          <abort className="org.apache.plc4x.java.canopen.readwrite.SDOAbort">
+            <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+              <index>25088</index>
+              <subindex>1</subindex>
+            </address>
+            <code>100794368</code>
+          </abort>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO block upload: c208100015000000</name>
+    <raw>c208100015000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>BLOCK</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOBlockResponse">
+          <block className="org.apache.plc4x.java.canopen.readwrite.SDOBlockData">
+            <flags>2</flags>
+            <data>CBAAFQAAAA==</data>
+          </block>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+</test:testsuite>

@@ -21,17 +21,35 @@
 
 === Connection establishment
 
-
 [seqdiag,knx-connection]
 ....
 {
-    === Connect ===
+// Just added this in order to have the order of the columns right ...
+    "KNX Group Address (224.0.23.12)" <- "KNX Gateway" <- Client [label = "ignore this ..."]
 
-    Client -> "KNX Group Address (224.0.23.12)" [label = "Search Request"]
-    Client <- "KNX Gateway" [label = "Search Response"]
+    === Discover ===
+
+    "KNX Group Address (224.0.23.12)" <<-- Client [label = "Search Request"]
+    "KNX Gateway" -> Client [label = "Search Response"]
 
     Client -> "KNX Gateway" [label = "Description Request"]
     Client <- "KNX Gateway" [label = "Description Response"]
+
+    === Negotiate Parameters ===
+
+    Client -> "KNX Gateway" [label = "Config Connection Request"]
+    Client <- "KNX Gateway" [label = "Config Connection Response"]
+
+    Client -> "KNX Gateway" [label = "Property Read Request (Device Descriptor)"]
+    Client <- "KNX Gateway" [label = "Property Read Response (Device Descriptor)"]
+
+    Client -> "KNX Gateway" [label = "Property Read Request (Max APDU Length)"]
+    Client <- "KNX Gateway" [label = "Property Read Response (Max APDU Length)"]
+
+    Client -> "KNX Gateway" [label = "Disconnect Request"]
+    Client <- "KNX Gateway" [label = "Disconnect Response"]
+
+    === Connect ===
 
     Client -> "KNX Gateway" [label = "Connection Request"]
     Client <- "KNX Gateway" [label = "Connection Response"]
@@ -44,7 +62,7 @@
     === Data on the KNX Bus ===
 
     Client <- "KNX Gateway" [label = "Tunneling Request"]
-    Client -> "KNX Gateway" [label = "Tunneling Response"]
+    Client -> "KNX Gateway" [label = "Tunneling Ack"]
 
     === Disconnect ===
 
@@ -54,4 +72,88 @@
 }
 ....
 
-http://knxer.net/?p=78
+If we send a sear request to the pre-defined KNX broadcast address, normal KNXNet/IP Devices will respond.
+
+We then issue a description request in order to find out which capabilities the responding KNXNet/IP Device has. If it's a gateway and supports the tunneling service, we will try to connect to it.
+
+KNX seems to glue together a wide variety of differently functioning devices. In order to communicate with a given device, we first need to read the so-called device descriptor. Based on this information will we know how to interact with that device.
+
+NOTE: Please note that this device descriptor only applies to this particular device. This setting doesn't automatically apply to other devices in the KNX network.
+
+As soon as we know how to talk to the current device, we need to find out the maximum APDU size in order to be able to utilize the packets to the max.
+This will be the overall maximum size of APDU messages.
+
+NOTE: Please note that this max APDU only applies for the communication with the current device. Other devices in the KNX network might support other APDU sizes. However, keep in mind that even if a KNX device would support a larger message than the gateway we are not able to send bigger messages than the max APDU of the gateway.
+
+Now that we have all important information, we establish the actual tunneling connection, which will make us an official participant of the KNX network.
+
+We have to ensure at least every 60 seconds a message is exchanged, or the gateway will hang up. So in case of low activity, a heartbeat will be sent via "Connection State Request".
+
+As soon as we're finished communicating, the connection is terminated by actively sending a "Disconnect Request".
+
+=== Tunneling Mode
+
+As soon as the tunneling connection is established, we become part of the KNX bus, therefore the KNX gateway will forward all messages on the current segment of the KNX bus to us.
+
+In general most incoming messages will be so-called LData.ind messages containing GroupValueWrite messages. These are emitted by KNX devices if they are configured to send them upon events happening in the device.
+
+For example a KNX light-switch will send a GroupValueWrite indicating it was switched to "on" in order for the light actor to react on this and turn on the light. Similar if the thermostat sends a temperature change. The heating controller will use this in order to decide if he has to open the heating valve or not.
+
+[seqdiag,knx-tunneling]
+....
+{
+    "KNX Gateway" -> Client [label = "Tunnel Request (LData.ind)"]
+    "KNX Gateway" <- Client [label = "Tunnel Ack"]
+}
+....
+
+NOTE: Keep in mind, if we send messages to the KNX bus, these are sent to every bus participant. So we will also receive our request as well. This makes interactions appear overly complicated, but if you simply keep in mind this simple fact, it actually explains a lot.
+
+=== Read Property on KNX device
+
+In order to read a property on a device, we first need to connect to that device.
+
+At first this confused me a bit, as this connection wasn't assigned a connection identifier or anything similar, so it appeared as if it was just a formality.
+However, a KNX network can be partitioned into Areas and Lines. Filtering rules prevent flooding one segment with the message of another (unless it's explicitly configured to forward them by configuring the filter tables in the line- or area-connectors). I assume that the connection request will set up a temporary route to allow communication.
+
+I would even assume that this connection request isn't even processed on the targeted KNX device, but only by the routing devices involved.
+
+[seqdiag,knx-property-read]
+....
+{
+
+    === Connect ===
+
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.req (Connect)"]
+    Client <- "KNX Gateway" [label = "Tunnel Request (LData.con (Connect)"]
+
+    === Read Device Descriptor ===
+
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.req (Device Descriptor Read Request)"]
+    "KNX Gateway" -> "KNX Device" [label = "Tunnel Request (LData.con (Device Descriptor Read)"]
+    Client <- "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+    Client <- "KNX Gateway" <- "KNX Device" [label = "Tunnel Request (LData.ind (Device Descriptor Response)"]
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+
+    === Read max APDU Length ===
+
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.req (Prop Value Read Request Obj=0 Prop=78)"]
+    Client <- "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+    "KNX Gateway" -> "KNX Device" [label = "Tunnel Request (LData.con (Prop Value Read Request Obj=0 Prop=78))"]
+    Client <- "KNX Gateway" <- "KNX Device" [label = "Tunnel Request (LData.ind (Prop Value Read Response)"]
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+
+    === Read Property (Obj=?, Prop=?) ===
+
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.req (Prop Value Read Request Obj=? Prop=?)"]
+    Client <- "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+    "KNX Gateway" -> "KNX Device" [label = "Tunnel Request (LData.con (Prop Value Read Request Obj=? Prop=?))"]
+    Client <- "KNX Gateway" <- "KNX Device" [label = "Tunnel Request (LData.ind (Prop Value Read Response)"]
+    Client -> "KNX Gateway" [label = "Tunnel Request (LData.ind (ACK)"]
+
+}
+....
+
+So after connecting, the max APDU size the driver should use, would be "Min(Max APDU Gateway, Max APDU Device)". While reading of properties should be handled equally fo all devices, the availability of properties is highly dependent on the response of the Device Descriptor Read Request. This should be more important for internal workings of the driver.
+
+For example when Browsing a device there are great differences in the procedure of reading and processing the location and content of the "Group Address Table", "Association Table" and "ComObject Table".

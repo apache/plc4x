@@ -40,7 +40,7 @@
                         industrial
                         programmable logic controllers (PLCs) using a variety of protocols but with a shared API.</div>
                     <div class="center text-center">
-                    <a href="users/plc4j/gettingstarted.html"
+                    <a href="users/gettingstarted.html"
                        class="plc4x-button plc4x-button-large plc4x-button-primary text-center"><i
                             class="fas fa-rocket"></i> Get started
                     </a>
@@ -246,8 +246,8 @@
                <div class="row">
                    <div class="col-lg-12 mx-auto">
                        <i class="fas fa-info-circle fa-7x highlight-icon highlight-icon-secondary"></i>
-                       <h2 class="section-highlight-text-secondary">Get the commercial support you need.</h2>
-                       <p class="lead">Just because you can download and use PLC4X for free doesn't mean that you're left on your own. Some of our community member's companies can also provide you with the <b>commercial support</b> you need.</p>
+                       <h2 class="section-highlight-text-secondary">Get the <a href="users/commercial-support.html">commercial support</a> you need.</h2>
+                       <p class="lead">Just because you can download and use PLC4X for free doesn't mean that you're left on your own. Some of our community member's companies can also provide you with the <b><a href="users/commercial-support.html">commercial support</a></b> you need.</p>
                    </div>
                </div>
            </div>

@@ -41,6 +41,11 @@ public class PoolKeyFactory {
         }
         String protocol = connectionUri.getScheme().toLowerCase();
         switch (protocol) {
+            // Currently this is disabled due to 2 reasons
+            // First, see PLC4X-223 it needs to be migrated to new URI Syntax
+            // Second, we have to decide which parameters uniquely identify a connection and which
+            // not. See PLC4X-224
+            /*
             case "s7":
                 return new PoolKey(url, plcAuthentication) {
                     private final Pattern s7URIPattern = Pattern.compile("^(?<poolablePart>s7://((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9\\.\\-]+))(:(?<port>[0-9]{1,5}))?)(?<params>\\?.*)?");
@@ -92,6 +97,7 @@ public class PoolKeyFactory {
                         return Objects.requireNonNull(matcher.group("poolablePart"));
                     }
                 };
+             */
             default:
                 return new PoolKey(url, plcAuthentication) {
                     @Override

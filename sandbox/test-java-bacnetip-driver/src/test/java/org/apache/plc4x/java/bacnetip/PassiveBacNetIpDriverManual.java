@@ -20,13 +20,13 @@ package org.apache.plc4x.java.bacnetip;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.value.PlcStruct;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 
 public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {
-        final PassiveBacNetIpDriver driver = new PassiveBacNetIpDriver();
+        final BacNetIpDriver driver = new BacNetIpDriver();
         final PlcConnection connection = driver.getConnection(
             "bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
         connection.connect();

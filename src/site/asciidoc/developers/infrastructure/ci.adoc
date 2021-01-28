@@ -20,7 +20,7 @@
 
 We are currently using Apache's `Jenkins` as single CI system.
 
-- Apache's Jenkins at: https://builds.apache.org/view/M-R/job/PLC4X/
+- Apache's Jenkins at: https://ci-builds.apache.org/job/PLC4X/
 
 However we might add Travis for automatically building and testing Pull-Requests in the near future.
 

@@ -17,14 +17,34 @@
   under the License.
 ]]
 
-include_directories("include" "../../api/include" "../../spi/include")
-
-# Add the sources
-file(GLOB sources "src/*.c")
+include_directories("include" "../../api/include" "../../spi/include"
+    "../../generated-sources/s7/include")
 
 # Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/src/main/c/*.c")
+file(GLOB generatedSources "../../generated-sources/s7/src/*.c")
 
-add_library(plc4c-driver-s7 ${sources} ${generatedSources})
+add_library(plc4c-driver-s7
+        src/driver_s7.c
+        src/driver_s7_encode_decode.c
+        src/driver_s7_packets.c
+        src/driver_s7_sm_connect.c
+        src/driver_s7_sm_disconnect.c
+        src/driver_s7_sm_read.c
+        src/driver_s7_sm_write.c
+        ${generatedSources})
 
-target_link_libraries(plc4c-driver-s7 plc4c-spi ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-driver-s7
+        plc4c-spi)
+
+if (BUILD_PHASE STREQUAL test-compile)
+    add_executable(plc4c-driver-s7-test
+            test/s7_address_parser_test.c
+            test/s7_test.c
+            )
+    target_link_libraries(plc4c-driver-s7-test
+            plc4c-driver-s7
+            unity
+            m
+            )
+    add_test(NAME plc4c-driver-s7-test COMMAND plc4c-driver-s7-test)
+endif ()

@@ -39,4 +39,11 @@ public interface PlcConnectionMetadata {
      */
     boolean canSubscribe();
 
+    /**
+     * Indicates that the connection supports browsing.
+     */
+    default boolean canBrowse() {
+        return false;
+    }
+
 }

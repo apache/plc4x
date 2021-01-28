@@ -111,6 +111,11 @@ public class EipField implements PlcField {
     }
 
     @Override
+    public String getPlcDataType() {
+        return type.toString();
+    }
+
+    @Override
     public Class<?> getDefaultJavaType() {
         switch (type){
             //ToDo differenciate Short, Integer and Long

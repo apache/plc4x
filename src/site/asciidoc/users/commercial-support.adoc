@@ -1,0 +1,51 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+:icons: font
+
+== Commercial support offerings for Apache PLC4X
+
+image::toddy-loves-apache.png[width=200,float=left]
+
+As every Apache project, so is `Apache PLC4X` generally available and usable by anyone free of charge.
+
+Also does the `Apache PLC4X Community` offer free support on the official project `Mailinglist`.
+This support is however done voluntatily by the community, so there are no service-level-agreements, guaranteed reaction times or guarantee that an issue will be addressed or solved.
+
+If you or your business has higher demands on guaranteed availability and execution of support requests,
+the following individuals and companies have commercial support offerings.
+
+The information provided here was provided by the entities named, and is not verified (except the `Involvement Level`), updated or endorsed by the `Apache Software Foundation` or the `Apache PLC4X` project.
+
+|===
+||Name |Description |Contact Person(s) |Contact Email(s) |Contact Phone(s) |Involvement Level
+
+a|image::users/companies/logo-codecentric.png[cc, 200, 200] |https://www.codecentric.de/innovation/industrial-iot-mit-apache-plc4x/[codecentric AG^,opts=nofollow] |commercial support, training, workshops, consulting, individual software-development |Christofer Dutz |christofer.dutz@codecentric.de |  |PMC Member
+
+a|image::users/companies/logo-connectorio.png[cc, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow]|workshops, individual software development|Łukasz Dywicki |lukasz@connectorio.com |  |PMC Member
+
+|===
+
+=== Who can be added to this list?
+
+Anyone who provides `Apache PLC4X` related services can be added to this list (e.g. training, consulting, custom software development, support, installation or related services).
+
+=== How can I get added to this list?
+
+Please create a Pull-Request on GitHub as described https://plc4x.apache.org/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/src/site/asciidoc/users/commercial-support.adoc[here]
+
+We will then check if the entry fulfills the requirements and accept the changes as soon as all of these have been addressed.

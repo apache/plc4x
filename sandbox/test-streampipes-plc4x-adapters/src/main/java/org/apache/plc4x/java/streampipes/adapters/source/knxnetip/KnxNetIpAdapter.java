@@ -19,27 +19,27 @@ under the License.
 package org.apache.plc4x.java.streampipes.adapters.source.knxnetip;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxAddress;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.streampipes.connect.adapter.Adapter;
-import org.streampipes.connect.adapter.exception.AdapterException;
-import org.streampipes.connect.adapter.exception.ParseException;
-import org.streampipes.connect.adapter.model.specific.SpecificDataStreamAdapter;
-import org.streampipes.connect.adapter.sdk.ParameterExtractor;
-import org.streampipes.model.AdapterType;
-import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
-import org.streampipes.model.connect.guess.GuessSchema;
-import org.streampipes.model.schema.EventProperty;
-import org.streampipes.model.schema.EventSchema;
-import org.streampipes.model.staticproperty.FreeTextStaticProperty;
-import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
-import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
-import org.streampipes.sdk.helpers.Labels;
-import org.streampipes.sdk.utils.Datatypes;
-import org.streampipes.vocabulary.SO;
+import org.apache.streampipes.connect.adapter.Adapter;
+import org.apache.streampipes.connect.adapter.exception.AdapterException;
+import org.apache.streampipes.connect.adapter.exception.ParseException;
+import org.apache.streampipes.connect.adapter.model.specific.SpecificDataStreamAdapter;
+import org.apache.streampipes.connect.adapter.sdk.ParameterExtractor;
+import org.apache.streampipes.model.AdapterType;
+import org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
+import org.apache.streampipes.model.connect.guess.GuessSchema;
+import org.apache.streampipes.model.schema.EventProperty;
+import org.apache.streampipes.model.schema.EventSchema;
+import org.apache.streampipes.model.staticproperty.FreeTextStaticProperty;
+import org.apache.streampipes.sdk.builder.PrimitivePropertyBuilder;
+import org.apache.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
+import org.apache.streampipes.sdk.helpers.Labels;
+import org.apache.streampipes.sdk.utils.Datatypes;
+import org.apache.streampipes.vocabulary.SO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +215,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         return Constants.KNXNET_ID;
     }
 
-    private String addressToString(KNXAddress knxAddress) {
+    private String addressToString(KnxAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
     }
 

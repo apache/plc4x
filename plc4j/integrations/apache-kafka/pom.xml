@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4j-apache-kafka</artifactId>
@@ -32,8 +32,25 @@
   <description>Integration module for integrating PLC4X into Apache Kafka (Kafka-Connect-Plugin)</description>
 
   <properties>
-    <kafka.version>2.3.0</kafka.version>
+    <kafka.version>2.5.0</kafka.version>
+    <kafka.connect.maven.plugin.version>0.11.3</kafka.connect.maven.plugin.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+  </pluginRepository>
+</pluginRepositories>
 
   <!-- Build a fat jar so the user only needs to drop in this one jar -->
   <build>
@@ -57,8 +74,10 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -67,6 +86,91 @@
           </usedDependencies>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>io.confluent</groupId>
+        <version>${kafka.connect.maven.plugin.version}</version>
+        <artifactId>kafka-connect-maven-plugin</artifactId>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>kafka-connect</goal>
+                </goals>
+                <configuration>
+                    <title>Kafka Connect PLC4X</title>
+                    <documentationUrl>https://plc4x.apache.org/users/integrations/apache-kafka.html</documentationUrl>
+                    <description>
+                        The PLC4X connectors allow reading and writing to devices using industrial protocols.
+                    </description>
+                    <logo>../../../media/logos/300ppi/PLC4X.png</logo>
+
+                    <supportProviderName>PLC4X</supportProviderName>
+                    <supportSummary>The PLC4X Connnectors are supported by the community</supportSummary>
+                    <supportUrl>https://plc4x.apache.org/index.html</supportUrl>
+                    <supportLogo>../../../media/logos/300ppi/PLC4X.png</supportLogo>
+
+                    <ownerUsername>plc4x</ownerUsername>
+                    <ownerType>organization</ownerType>
+                    <ownerName>Apache</ownerName>
+                    <ownerUrl>https://plc4x.apache.org/index.html</ownerUrl>
+                    <ownerLogo>../../../media/logos/300ppi/PLC4X.png</ownerLogo>
+
+                    <componentTypes>
+                        <componentType>sink</componentType>
+                        <componentType>source</componentType>
+                    </componentTypes>
+
+                    <tags>
+                        <tag>PLC4X</tag>
+                        <tag>PLC</tag>
+                        <tag>iot</tag>
+                        <tag>iiot</tag>
+                        <tag>modbus</tag>
+                        <tag>AB</tag>
+                        <tag>S7</tag>
+                        <tag>OPC</tag>
+                        <tag>OPC UA</tag>
+                        <tag>bacnet</tag>
+                        <tag>ads</tag>
+                        <tag>deltav</tag>
+                        <tag>df1</tag>
+                        <tag>ethernet/ip</tag>
+                        <tag>firmata</tag>
+                        <tag>knx</tag>
+                        <tag>simulated</tag>
+                        <tag>canopen</tag>
+                    </tags>
+
+                    <deliveryGuarantee>
+                        <deliveryGuarantee>exactlyOnce</deliveryGuarantee>
+                    </deliveryGuarantee>
+
+                    <confluentControlCenterIntegration>true</confluentControlCenterIntegration>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-confluent-zip</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/components/packages/plc4x-${project.artifactId}-${project.version}.zip</file>
+                  <type>zip</type>
+                  <classifier>standalone</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -74,22 +178,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.7.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <version>0.8.0</version>
     </dependency>
 
     <dependency>
@@ -109,50 +208,67 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.7.0</version>
-      <scope>runtime</scope>
-    </dependency>
-    <!--dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ethernet-ip</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.8.0</version>
       <scope>runtime</scope>
-    </dependency-->
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!--dependency>

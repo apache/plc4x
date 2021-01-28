@@ -29,10 +29,10 @@ set(CMAKE_C_STANDARD 11)
 set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
 # Our link to the maven lifecycle
-set(BUILD_PHASE compile CACHE STRING "Phase of the Maven build we are executing cmake")
+set(BUILD_PHASE test-compile CACHE STRING "Phase of the Maven build we are executing cmake")
 
 # Access the Unity version the maven build is providing us with.
-set(UNITY_VERSION 0 CACHE STRING "Version of the used Unity test framework")
+set(UNITY_VERSION 2.5.0 CACHE STRING "Version of the used Unity test framework")
 
 # Depending on the phase of the build we are currently running, initialize
 # The test system.

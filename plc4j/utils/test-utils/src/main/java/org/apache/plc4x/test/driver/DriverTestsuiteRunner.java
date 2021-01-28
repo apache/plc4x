@@ -25,15 +25,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.model.DriverTestsuite;
 import org.apache.plc4x.test.driver.model.StepType;
@@ -55,8 +58,15 @@ import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -144,11 +154,12 @@ public class DriverTestsuiteRunner {
             // Force the driver to not wait for the connection before returning the connection.
             System.setProperty(GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE, "false");
 
-            PlcConnection connection = getConnection(driverName, driverParameters);
+            // Force the driver to not wait for the disconnection before returning closing the channel.
+            System.setProperty(GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE, "false");
 
             TimeUnit.MILLISECONDS.sleep(200);
 
-            return new DriverTestsuite(testsuiteName, connection, setupSteps, teardownSteps, testcases, bigEndian);
+            return new DriverTestsuite(testsuiteName, driverName, driverParameters, setupSteps, teardownSteps, testcases, bigEndian);
         } catch (DocumentException e) {
             throw new DriverTestsuiteException("Error parsing testsuite xml", e);
         } catch (InterruptedException e) {
@@ -176,10 +187,13 @@ public class DriverTestsuiteRunner {
     }
 
     private void run(DriverTestsuite testsuite, Testcase testcase) throws DriverTestsuiteException {
-        final PlcConnection plcConnection = testsuite.getConnection();
-        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(testsuite);
+        LOGGER.info(String.format("Starting testcase: %s", testcase.getName()));
+        final PlcConnection plcConnection = getConnection(testsuite.getDriverName(), testsuite.getDriverParameters());
+        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(plcConnection);
         final boolean bigEndian = testsuite.isBigEndian();
-        if(!testsuite.getSetupSteps().isEmpty()) {
+        // Be sure this is reset, just in case a previous testcase failed.
+        responseFuture = null;
+        if (!testsuite.getSetupSteps().isEmpty()) {
             LOGGER.info("Running setup steps");
             for (TestStep setupStep : testsuite.getSetupSteps()) {
                 executeStep(setupStep, plcConnection, embeddedChannel, bigEndian);
@@ -198,11 +212,11 @@ public class DriverTestsuiteRunner {
             }
             LOGGER.info("Finished teardown steps");
         }
+        LOGGER.info(String.format("Finished testcase: %s", testcase.getName()));
     }
 
     private void executeStep(TestStep testStep, PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
         LOGGER.info(String.format("  - Running step: '%s' - %s", testStep.getName(), testStep.getType()));
-        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final Element payload = testStep.getPayload();
         try {
             switch (testStep.getType()) {
@@ -221,10 +235,13 @@ public class DriverTestsuiteRunner {
                     // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
                     final byte[] data = getOutboundBytes(embeddedChannel);
                     // Validate the data actually matches the expected message.
-                    validateMessage(payload, data, bigEndian);
+                    validateMessage(payload, testStep.getParserArguments(), data, bigEndian);
                     break;
                 }
-                case INCOMING_PLC_BYTES:
+                case INCOMING_PLC_BYTES: {
+                    // TODO: Implement
+                    throw new NotImplementedException("incoming-plc-bytes not implemented yet");
+                }
                 case INCOMING_PLC_MESSAGE: {
                     // Get a byte representation of the incoming message.
                     final byte[] data = getBytesFromXml(payload, bigEndian);
@@ -233,38 +250,67 @@ public class DriverTestsuiteRunner {
                     break;
                 }
                 case API_REQUEST: {
-                    final String referenceXml = payload.asXML();
-                    final TestRequest request = mapper.readValue(referenceXml, TestRequest.class);
-                    if(request instanceof TestReadRequest) {
-                        final TestReadRequest readRequest = (TestReadRequest) request;
-                        final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                        for (TestField testField : readRequest.getFields()) {
-                            builder.addItem(testField.getName(), testField.getAddress());
+                    switch(payload.attributeValue("className")) {
+                        case "org.apache.plc4x.test.driver.model.api.TestReadRequest": {
+                            final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+                            if(payload.element("fields") != null) {
+                                for (Element fieldElement : payload.element("fields").elements("field")) {
+                                    builder.addItem(fieldElement.elementText("name"), fieldElement.elementText("address"));
+                                }
+                            }
+                            final PlcReadRequest plc4xRequest = builder.build();
+                            // Currently we can only process one response at at time, throw an error if more
+                            // are submitted.
+                            if (responseFuture != null) {
+                                throw new DriverTestsuiteException("Previous response not handled.");
+                            }
+                            // Save the response for being used later on.
+                            responseFuture = plc4xRequest.execute();
+                            break;
                         }
-                        final PlcReadRequest plc4xRequest = builder.build();
-                        // Currently we can only process one response at at time, throw an error if more
-                        // are submitted.
-                        if(responseFuture != null) {
-                            throw new DriverTestsuiteException("Previous response not handled.");
+                        case "org.apache.plc4x.test.driver.model.api.TestWriteRequest": {
+                            final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
+                            if(payload.element("fields") != null) {
+                                for (Element fieldElement : payload.element("fields").elements("field")) {
+                                    List<Element> valueElements = fieldElement.elements("value");
+                                    List<String> valueStrings = new ArrayList<>(valueElements.size());
+                                    for (Element valueElement : valueElements) {
+                                        valueStrings.add(valueElement.getTextTrim());
+                                    }
+                                    builder.addItem(fieldElement.elementText("name"),
+                                        fieldElement.elementText("address"), valueStrings.toArray(new Object[0]));
+                                }
+                            }
+                            final PlcWriteRequest plc4xRequest = builder.build();
+                            // Currently we can only process one response at at time, throw an error if more
+                            // are submitted.
+                            if (responseFuture != null) {
+                                throw new DriverTestsuiteException("Previous response not handled.");
+                            }
+                            // Save the response for being used later on.
+                            responseFuture = plc4xRequest.execute();
+                            break;
                         }
-                        // Save the response for being used later on.
-                        responseFuture = plc4xRequest.execute();
-                    } else if(request instanceof TestWriteRequest) {
-                        // TODO: Implement ...
                     }
+
                     break;
                 }
                 case API_RESPONSE: {
                     if(responseFuture == null) {
                         throw new DriverTestsuiteException("No response expected.");
                     }
+                    PlcResponse plcResponse;
                     try {
-                        final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
-                        final String serializedResponse = mapper.writeValueAsString(plcResponse);
-                        // TODO: Implement ...
+                        plcResponse = responseFuture.get(5000, TimeUnit.MILLISECONDS);
                     } catch(Exception e) {
-                        throw new DriverTestsuiteException("Got no response within 1000ms.");
+                        throw new DriverTestsuiteException("Got no response within 5000ms.");
                     }
+
+                    // Reset the future.
+                    responseFuture = null;
+                    final String serializedResponse = serializeToXmlString((XmlSerializable) plcResponse);
+                    validateApiMessage(payload, serializedResponse);
+
                     break;
                 }
                 case DELAY: {
@@ -275,26 +321,40 @@ public class DriverTestsuiteRunner {
                     embeddedChannel.close();
                 }
             }
-        } catch (IOException e) {
-            throw new DriverTestsuiteException("Error processing the xml", e);
+        } catch (Exception e) {
+            LOGGER.error("    Failed: Error running step: " + testStep.getName() + ": " + e.getMessage());
+            throw new DriverTestsuiteException("Error running the step " + testStep.getName(), e);
         }
         LOGGER.info("    Done");
     }
 
-    private TestStep parseTestStep(Element curElement) {
+    private TestStep parseTestStep(Element curElement) throws DriverTestsuiteException {
         final String elementName = curElement.getName();
         final StepType stepType = StepType.valueOf(elementName.toUpperCase().replace("-", "_"));
         final String stepName = curElement.attributeValue(new QName("name"));
-        Element definition = null;
-        if(curElement.hasMixedContent()) {
-            definition = curElement.elementIterator().next();
+        Element parserArgumentsNode = null;
+        Element definitionNode = null;
+        for (Element element : curElement.elements()) {
+            if(element.getName().equals("parser-arguments")) {
+                parserArgumentsNode = element;
+            } else if (definitionNode == null) {
+                definitionNode = element;
+            } else {
+                throw new DriverTestsuiteException("Error processing the xml. Only one content node allowed.");
+            }
         }
-        return new TestStep(stepType, stepName, definition);
+        final List<String> parserArguments = new ArrayList<>();
+        if(parserArgumentsNode != null) {
+            for (Element parserArgumentNode : parserArgumentsNode.elements()) {
+                parserArguments.add(parserArgumentNode.getTextTrim());
+            }
+        }
+        return new TestStep(stepType, stepName, parserArguments, definitionNode);
     }
 
-    private Plc4xEmbeddedChannel getEmbeddedChannel(DriverTestsuite testSuite) {
-        if(testSuite.getConnection() instanceof ChannelExposingConnection) {
-            ChannelExposingConnection connection = (ChannelExposingConnection) testSuite.getConnection();
+    private Plc4xEmbeddedChannel getEmbeddedChannel(PlcConnection plcConnection) {
+        if(plcConnection instanceof ChannelExposingConnection) {
+            ChannelExposingConnection connection = (ChannelExposingConnection) plcConnection;
             Channel channel = connection.getChannel();
             if(channel instanceof Plc4xEmbeddedChannel) {
                 return (Plc4xEmbeddedChannel) channel;
@@ -334,7 +394,7 @@ public class DriverTestsuiteRunner {
 
     private byte[] getOutboundBytes(Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
         ByteBuf byteBuf = null;
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 500; i++) {
             byteBuf = embeddedChannel.readOutbound();
             if(byteBuf != null) {
                 break;
@@ -342,7 +402,7 @@ public class DriverTestsuiteRunner {
             delay(10);
         }
         if(byteBuf == null) {
-            throw new DriverTestsuiteException("No outbound message available within 100ms");
+            throw new DriverTestsuiteException("No outbound message available within 5000ms");
         }
         final byte[] data = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(data);
@@ -374,22 +434,37 @@ public class DriverTestsuiteRunner {
         // TODO: Implement this ...
     }
 
-    private void validateMessage(Element referenceXml, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
+    private void validateMessage(Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
         final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
         try {
             final String className = referenceXml.attributeValue(new QName("className"));
             final MessageIO<?,?> messageIO = getMessageIOType(className).newInstance();
-            final Object parsedOutput = messageIO.parse(readBuffer);
+            final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray(new String[0]));
             final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
             final String referenceXmlString = referenceXml.asXML();
-            final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
+            final Diff diff = DiffBuilder.compare(referenceXmlString)
+                .withTest(xmlString).checkForSimilar().ignoreComments().ignoreWhitespace()
+                .build();
             if (diff.hasDifferences()) {
                 LOGGER.warn(xmlString);
+                LOGGER.warn(diff.toString());
                 throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
         } catch (ParseException | IllegalAccessException | JsonProcessingException | InstantiationException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
+        }
+    }
+
+    private void validateApiMessage(Element referenceXml, String apiMessage) throws DriverTestsuiteException {
+        final String referenceXmlString = referenceXml.asXML();
+        final Diff diff = DiffBuilder.compare(referenceXmlString)
+            .withTest(apiMessage).checkForSimilar().ignoreComments().ignoreWhitespace()
+            .build();
+        if (diff.hasDifferences()) {
+            LOGGER.warn(apiMessage);
+            LOGGER.warn(diff.toString());
+            throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
         }
     }
 
@@ -405,5 +480,34 @@ public class DriverTestsuiteRunner {
             throw new DriverTestsuiteException("Interrupted during delay.");
         }
     }
+
+    private String serializeToXmlString(XmlSerializable value) {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            org.w3c.dom.Document doc = builder.newDocument();
+            org.w3c.dom.Element root = doc.createElement("root");
+            doc.appendChild(root);
+            value.xmlSerialize(root);
+            DOMSource domSource = new DOMSource(doc.getDocumentElement().getFirstChild());
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty("omit-xml-declaration", "yes");
+            transformer.transform(domSource, result);
+            return writer.toString();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 }

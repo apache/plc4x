@@ -20,7 +20,7 @@
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
 # Fixed version of this in order to have a fixed JDK version
-FROM azul/zulu-openjdk:8 as build
+FROM azul/zulu-openjdk:11 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
@@ -50,6 +50,10 @@ RUN apt install -y apt-transport-https
 RUN apt update -y
 RUN apt install -y dotnet-sdk-2.2
 
+# Required for "with-go" profile
+RUN add-apt-repository ppa:ubuntu-lxc/stable
+RUN apt install -y golang
+
 # Required for the general build
 RUN apt install -y git
 
@@ -69,11 +73,11 @@ WORKDIR /ws
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
 #RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
-RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-opcua-werver,with-proxies,with-python,with-logstash,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 
 # Build everything with all tests
 #RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
-RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
+RUN ./mvnw -P with-boost,with-c,with-cpp,with-dotnet,with-go,with-logstash,with-opcua-werver,with-proxies,with-python,with-logstash,with-sandbox install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version

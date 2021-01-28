@@ -21,9 +21,11 @@ package org.apache.plc4x.java.spi.internal;
 
 import io.vavr.control.Either;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Deque;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -44,15 +46,20 @@ public class HandlerRegistration {
     private final Consumer<TimeoutException> onTimeoutConsumer;
 
     private final BiConsumer<?, ? extends Throwable> errorConsumer;
-    private final Instant timeout;
+    private final Duration timeout;
+    private final Instant timeoutAt;
 
-    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Instant timeout) {
+    private volatile boolean cancelled = false;
+    private volatile boolean handled = false;
+
+    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Duration timeout) {
         this.commands = commands;
         this.expectClazz = expectClazz;
         this.packetConsumer = packetConsumer;
         this.onTimeoutConsumer = onTimeoutConsumer;
         this.errorConsumer = errorConsumer;
         this.timeout = timeout;
+        this.timeoutAt = Instant.now().plus(timeout);
     }
 
     public Deque<Either<Function<?, ?>, Predicate<?>>> getCommands() {
@@ -75,8 +82,28 @@ public class HandlerRegistration {
         return errorConsumer;
     }
 
-    public Instant getTimeout() {
+    public Duration getTimeout() {
         return timeout;
+    }
+
+    public Instant getTimeoutAt() {
+        return timeoutAt;
+    }
+
+    public void cancel() {
+        this.cancelled = true;
+    }
+
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public void confirmHandled() {
+        this.handled = true;
+    }
+
+    public boolean hasHandled() {
+        return this.handled;
     }
 
     @Override

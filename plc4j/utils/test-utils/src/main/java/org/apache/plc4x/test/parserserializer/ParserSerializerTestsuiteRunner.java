@@ -59,6 +59,9 @@ public class ParserSerializerTestsuiteRunner {
     @TestFactory
     public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
         ParserSerializerTestsuite testSuite = parseTestsuite(ParserSerializerTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
+        if(testSuite == null) {
+            throw new ParserSerializerTestsuiteException("Couldn't find testsuite document");
+        }
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for(Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
@@ -209,6 +212,8 @@ public class ParserSerializerTestsuiteRunner {
                                 argValues[i] = Double.parseDouble(parameterValue);
                             } else if (parameterType == String.class) {
                                 argValues[i] = parameterValue;
+                            } else if (Enum.class.isAssignableFrom(parameterType)) {
+                                argValues[i] = Enum.valueOf((Class<? extends Enum>) parameterType, parameterValue);
                             } else {
                                 throw new ParseException("Currently unsupported parameter type");
                             }

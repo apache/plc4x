@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.api.value.PlcLong;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class SimulatedDeviceTest {
     @Test
     public void random() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("RANDOM/foo:INTEGER");
+        SimulatedField field = SimulatedField.of("RANDOM/foo:Integer");
 
         Optional<PlcValue> value = device.get(field);
 
@@ -42,12 +42,12 @@ public class SimulatedDeviceTest {
     @Test
     public void read() {
         SimulatedDevice device = new SimulatedDevice("foobar");
-        SimulatedField field = SimulatedField.of("STATE/bar:INTEGER");
+        SimulatedField field = SimulatedField.of("STATE/bar:Integer");
 
         Optional<PlcValue> value = device.get(field);
         assertFalse(value.isPresent());
 
-        device.set(field, new PlcLong(42));
+        device.set(field, new PlcLINT(42));
         value = device.get(field);
         assertTrue(value.isPresent());
         PlcValue plcValue = value.get();

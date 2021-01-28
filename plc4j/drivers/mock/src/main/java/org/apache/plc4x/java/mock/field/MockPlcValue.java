@@ -19,7 +19,9 @@
 
 package org.apache.plc4x.java.mock.field;
 
-import org.apache.plc4x.java.api.value.PlcValueAdapter;
+import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
+import org.apache.plc4x.java.spi.values.PlcValueAdapter;
+import org.w3c.dom.Element;
 
 public class MockPlcValue extends PlcValueAdapter {
 
@@ -31,6 +33,11 @@ public class MockPlcValue extends PlcValueAdapter {
 
     public Object getObject(int index) {
         return values[index];
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        throw new PlcNotImplementedException("Not implemented");
     }
 
 }

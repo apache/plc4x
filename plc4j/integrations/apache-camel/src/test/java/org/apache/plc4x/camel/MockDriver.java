@@ -23,7 +23,6 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.slf4j.Logger;
@@ -88,7 +87,7 @@ public class MockDriver implements PlcDriver {
                         mock(PlcSubscriptionHandle.class, RETURNS_DEEP_STUBS), PlcResponseCode.OK);
                 }).collect(Collectors.toList());
             PlcSubscriptionResponse response = new PlcSubscriptionResponse(subscriptionRequest, responseItems);*/
-            PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(mock(InternalPlcSubscriptionRequest.class), new HashMap<>());
+            PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(mock(PlcSubscriptionRequest.class), new HashMap<>());
             CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
             responseFuture.complete(response);
             return responseFuture;

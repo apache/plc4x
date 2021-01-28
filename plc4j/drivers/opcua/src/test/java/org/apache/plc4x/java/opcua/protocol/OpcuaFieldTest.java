@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
+import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
 import static org.apache.plc4x.java.opcua.protocol.OpcuaField.ADDRESS_PATTERN;
 
 /**
@@ -52,6 +53,24 @@ public class OpcuaFieldTest {
         assertMatching(ADDRESS_PATTERN, "ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a");
         // binary encoded addresses
         assertMatching(ADDRESS_PATTERN, "ns=2;b=asvaewavarahreb==");
+
+    }
+
+    @Test
+    public void testOpcuaAddressDataTypePattern() {
+
+        //standard integer based param
+        assertMatching(ADDRESS_PATTERN, "ns=2;i=10846:BOOL");
+        //string based address values
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=test.variable.name.inspect:DINT");
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=key param with some spaces:ULINT");
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param:LREAL");
+        //REGEX Valid, additional checks need to be done later
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-.,,:JIBBERISH");
+        // GUID address tests
+        assertNoMatching(ADDRESS_PATTERN, "ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a:*&#%^*$(*)");
+        // binary encoded addresses
+        assertNoMatching(ADDRESS_PATTERN, "ns=2;b=asvae:wavarahreb==");
 
     }
 }

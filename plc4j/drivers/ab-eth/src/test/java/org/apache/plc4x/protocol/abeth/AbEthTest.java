@@ -24,7 +24,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class AbEthTest extends ParserSerializerTestsuiteRunner {
 
     public AbEthTest() {
-        super("/testsuite/AbEthTestsuite.xml");
+        super("/protocols/abeth/ParserSerializerTestsuite.xml");
     }
 
 }

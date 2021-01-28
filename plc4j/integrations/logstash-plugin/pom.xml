@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4j-logstash-plugin</artifactId>
@@ -58,7 +58,7 @@
                 def currentVersion = project.version as String
                 def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
                 print "\nCurrent version:                  " + currentVersion
-                if(match.count &gt;= 1) {
+                if (match.count &gt;= 1) {
                   def majorVersion = match[0][1] as Integer
                   def minorVersion = match[0][2] as Integer
                   def bugfixVersion = match[0][3] as Integer
@@ -88,7 +88,9 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://repo1.maven.org/maven2/org/jruby/jruby-dist/${jruby.version}/jruby-dist-${jruby.version}-bin.tar.gz</url>
+              <url>
+                https://repo1.maven.org/maven2/org/jruby/jruby-dist/${jruby.version}/jruby-dist-${jruby.version}-bin.tar.gz
+              </url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}/jruby</outputDirectory>
             </configuration>
@@ -130,7 +132,9 @@
             </goals>
             <configuration>
               <!-- Ignore the error ... this variable is calculated in the "validate" phase -->
-              <outputFile>${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}/logstash-input-plc4x-${current-full-version}.jar</outputFile>
+              <outputFile>
+                ${project.build.directory}/gem/vendor/jar-dependencies/org/apache/plc4x/logstash-input-plc4x/${current-full-version}/logstash-input-plc4x-${current-full-version}.jar
+              </outputFile>
               <!-- The output is just an intermediate file, so make sure it's not installed or deployed -->
               <shadedArtifactAttached>false</shadedArtifactAttached>
             </configuration>
@@ -194,8 +198,10 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-                  <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -211,22 +217,22 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-logstash-core</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <classifier>${logstash.version}</classifier>
     </dependency>
 
@@ -234,49 +240,61 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
-    <!--dependency>
-        <groupId>org.apache.plc4x</groupId>
-        <artifactId>plc4j-driver-ads</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.plc4x</groupId>
-        <artifactId>plc4j-driver-ethernet-ip</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-        <scope>runtime</scope>
-      </dependency-->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-eip</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

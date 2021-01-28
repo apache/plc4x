@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4x-protocols</artifactId>
@@ -35,14 +35,17 @@
 
   <modules>
     <module>ab-eth</module>
-    <module>amsads</module>
+    <module>ads</module>
     <module>bacnetip</module>
+    <module>canopen</module>
     <module>df1</module>
     <module>eip</module>
     <module>firmata</module>
     <module>knxnetip</module>
     <module>modbus</module>
+    <module>opcua</module>
     <module>s7</module>
+    <module>simulated</module>
   </modules>
 
   <build>
@@ -71,7 +74,7 @@
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>surefireArgLine</propertyName>
+              <!--propertyName>surefireArgLine</propertyName-->
             </configuration>
           </execution>
           <!--
@@ -89,7 +92,7 @@
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>failsafeArgLine</propertyName>
+              <!--propertyName>failsafeArgLine</propertyName-->
             </configuration>
           </execution>
           <!--
@@ -139,7 +142,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{surefireArgLine}</argLine>
+          <!--argLine>-Xmx256m @{surefireArgLine}</argLine-->
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
@@ -175,11 +178,23 @@
       -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <configuration>
+              <archive>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-test-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <!--
@@ -200,20 +215,10 @@
           <!--
                 Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>@{failsafeArgLine}</argLine>
+          <!--argLine>@{failsafeArgLine}</argLine-->
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <!-- Thrift based protocols -->
-        <module>proxy</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

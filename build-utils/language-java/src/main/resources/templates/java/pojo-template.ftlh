@@ -16,7 +16,32 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${typeName}.java
+<#-- Prevent freemarker from escaping stuff -->
+<#outputformat "undefined">
+<#-- Declare the name and type of variables passed in to the template -->
+<#-- @ftlvariable name="languageName" type="java.lang.String" -->
+<#-- @ftlvariable name="protocolName" type="java.lang.String" -->
+<#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
+<#-- Declare the name and type of variables declared locally inside the template -->
+<#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
+<#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
+<#-- @ftlvariable name="constField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ConstField" -->
+<#-- @ftlvariable name="discriminatorField" type="org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField" -->
+<#-- @ftlvariable name="enumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.EnumField" -->
+<#-- @ftlvariable name="implicitField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField" -->
+<#-- @ftlvariable name="manualArrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField" -->
+<#-- @ftlvariable name="manualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualField" -->
+<#-- @ftlvariable name="optionalField" type="org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField" -->
+<#-- @ftlvariable name="paddingField" type="org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField" -->
+<#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
+<#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
+<#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
+<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
+<#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -55,18 +80,42 @@ import java.util.*;
 import java.math.BigInteger;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
+public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
 
-<#if helper.isDiscriminatedType(type)>
-
-    // Discriminator values used by the parser to determine the type to be used. All values have to apply.
-    public static final Object[] DISCRIMINATOR_VALUES = new Object[] {
-    <#list type.discriminatorValues as discriminatorValue>
-        <#-- There are rare occasions where the discriminator is defined by a parser argument, in this case we currently can't detect the type -->
-        (${helper.getDiscriminatorConstantType(type, discriminatorValue?index)}) ${discriminatorValue}<#sep>, </#sep>
+<#--
+    If this is a discriminated child type, we need to generate methods for accessing it's discriminator
+    values, as if they were normal java properties.
+-->
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    <#assign discriminatedChildType = type>
+    <#-- @ftlvariable name="discriminatedChildType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition" -->
+    // Accessors for discriminator values.
+    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+        <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+    @JsonIgnore
+    public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
+        return <#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+    }
+        </#if>
     </#list>
-    };
 </#if>
+<#--
+    If this is a discriminated parent type, we need to generate the abstract methods for accessing it's
+    discriminator values instead.
+-->
+<#if helper.isDiscriminatedParentTypeDefinition()>
+    <#assign discriminatedParentType = type>
+    <#-- @ftlvariable name="discriminatedParentType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
+    // Abstract accessors for discriminator values.
+    <#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
+        <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+    public abstract ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}();
+        </#if>
+    </#list>
+</#if>
+<#-- If the current type contains "const" fields, generate some java constants for holing their values -->
 <#if type.constFields?has_content>
 
     // Constant values.
@@ -85,7 +134,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-    public ${typeName}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+    public ${type.name}(<#list type.getAllPropertyFields() as field>@JsonProperty("${field.name}") ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
@@ -93,17 +142,6 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         this.${field.name} = ${field.name};
 </#list>
     }
-<#if type.abstract>
-
-    public abstract Object[] getDiscriminatorValues();
-</#if>
-<#if helper.isDiscriminatedType(type)>
-
-    @JsonIgnore
-    public Object[] getDiscriminatorValues() {
-        return DISCRIMINATOR_VALUES;
-    }
-</#if>
 
 <#list type.propertyFields as field>
     <#if helper.isAbstractField(field)>
@@ -134,91 +172,119 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
+        <#assign arrayField = field>
 
         // Array field
-        <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.sizeInBits} * ${field.name}.length;
+        if(${arrayField.name} != null) {
+        <#if helper.isSimpleTypeReference(arrayField.type)>
+            <#assign simpleTypeReference = arrayField.type>
+            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
         <#else>
-        if(${field.name} != null) {
-            for(Message element : ${field.name}) {
+            for(Message element : ${arrayField.name}) {
                 lengthInBits += element.getLengthInBits();
             }
-        }
         </#if>
+        }
         <#break>
     <#case "checksum">
+        <#assign checksumField = field>
+        <#assign simpleTypeReference = checksumField.type>
 
-        // Checksum Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        // Checksum Field (checksum)
+        lengthInBits += ${simpleTypeReference.sizeInBits};
         <#break>
     <#case "const">
+        <#assign constField = field>
+        <#assign simpleTypeReference = constField.type>
 
-        // Const Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        // Const Field (${constField.name})
+        lengthInBits += ${simpleTypeReference.sizeInBits};
         <#break>
     <#case "discriminator">
+        <#assign discriminatorField = field>
+        <#assign simpleTypeReference = discriminatorField.type>
 
-        // Discriminator Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        // Discriminator Field (${discriminatorField.name})
+        lengthInBits += ${simpleTypeReference.sizeInBits};
         <#break>
     <#case "enum">
+        <#assign enumField = field>
 
-        // Enum Field (${field.name})
-        lengthInBits += ${helper.getEnumBaseType(field.type).sizeInBits};
+        // Enum Field (${enumField.name})
+        lengthInBits += ${helper.getEnumBaseTypeReference(enumField.type).sizeInBits};
         <#break>
     <#case "implicit">
+        <#assign implicitField = field>
+        <#assign simpleTypeReference = implicitField.type>
 
-        // Implicit Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        // Implicit Field (${implicitField.name})
+        lengthInBits += ${simpleTypeReference.sizeInBits};
         <#break>
     <#case "manualArray">
+        <#assign manualArrayField = field>
 
-        // Manual Array Field (${field.name})
-        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
+        // Manual Array Field (${manualArrayField.name})
+        lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8;
         <#break>
     <#case "manual">
+        <#assign manualField = field>
 
-        // Manual Field (${field.name})
-        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
+        // Manual Field (${manualField.name})
+        lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8;
         <#break>
     <#case "optional">
+        <#assign optionalField = field>
 
-        // Optional Field (${field.name})
-        if(${field.name} != null) {
-        <#if helper.isSimpleType(field.type)>
-            lengthInBits += ${field.type.sizeInBits};
+        // Optional Field (${optionalField.name})
+        if(${optionalField.name} != null) {
+        <#if helper.isSimpleTypeReference(optionalField.type)>
+            <#assign simpleTypeReference = optionalField.type>
+            lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#elseif helper.isEnumField(field)>
+            lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits};
         <#else>
-            lengthInBits += ${field.name}.getLengthInBits();
+            lengthInBits += ${optionalField.name}.getLengthInBits();
         </#if>
         }
         <#break>
     <#case "padding">
+        <#assign paddingField = field>
+        <#assign simpleTypeReference = paddingField.type>
 
-        // Padding Field (${field.name})
+        // Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        if((boolean) (${helper.toParseExpression(field, field.paddingCondition, type.parserArguments)?replace("lastItem", "false")?no_esc})) {
-            lengthInBits += ${field.type.sizeInBits};
+        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")});
+        while (_timesPadding-- > 0) {
+            lengthInBits += ${simpleTypeReference.sizeInBits};
         }
         <#break>
     <#case "reserved">
+        <#assign reservedField = field>
+        <#assign simpleTypeReference = reservedField.type>
 
-        // Reserved Field
-        lengthInBits += ${field.type.sizeInBits};
+        // Reserved Field (reserved)
+        lengthInBits += ${simpleTypeReference.sizeInBits};
         <#break>
     <#case "simple">
+        <#assign simpleField = field>
 
-        // Simple field (${field.name})
-        <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.sizeInBits};
+        // Simple field (${simpleField.name})
+        <#if helper.isSimpleTypeReference(simpleField.type)>
+            <#assign simpleTypeReference = simpleField.type>
+        lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#elseif helper.isEnumField(field)>
+        lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits};
         <#else>
-        lengthInBits += ${field.name}.getLengthInBits();
+        lengthInBits += ${simpleField.name}.getLengthInBits();
         </#if>
         <#break>
     <#case "switch">
+        <#assign switchField = field>
 
         // Length of sub-type elements will be added by sub-type...
         <#break>
     <#case "virtual">
+        <#assign virtualField = field>
 
         // A virtual field doesn't have any in- or output.
         <#break>
@@ -228,75 +294,10 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         return lengthInBits;
     }
 
-    public PlcValue toPlcValue() {
-<#if type.propertyFields?has_content>
-        Map<String, PlcValue> fieldValues = new TreeMap<>();
-<#list type.propertyFields as field>
-<#switch field.typeName>
-<#case "array">
-<#case "manualArray">
-
-        {
-            List<PlcValue> plcValues = new ArrayList<>(${field.name}.length);
-            for(${helper.getLanguageTypeNameForField(field)} item : ${field.name}) {
-                <#if helper.isSimpleType(field.type)>
-                plcValues.add(PlcValues.of(item));
-                <#else>
-                plcValues.add(item.toPlcValue());
-                </#if>
-            }
-            fieldValues.put("${field.name}", new PlcList(plcValues));
-        }
-<#break>
-<#case "enum">
-
-        fieldValues.put("${field.name}", new PlcString(${field.name}.name()));
-<#break>
-<#case "manual">
-<#case "simple">
-
-    <#if helper.isSimpleType(field.type)>
-        fieldValues.put("${field.name}", PlcValues.of(${field.name}));
-    <#else>
-        fieldValues.put("${field.name}", ${field.name}.toPlcValue());
-    </#if>
-<#break>
-<#case "optional">
-
-        if(${field.name} != null) {
-            <#if helper.isSimpleType(field.type)>
-            fieldValues.put("${field.name}", PlcValues.of(${field.name}));
-            <#else>
-            fieldValues.put("${field.name}", ${field.name}.toPlcValue());
-            </#if>
-        } else {
-            fieldValues.put("${field.name}", null);
-        }
-<#break>
-<#case "switch">
-
-        PlcStruct superStruct = (PlcStruct) super.toPlcValue();
-        fieldValues.putAll(superStruct.getStruct());
-<#break>
-<#case "virtual">
-    <#if helper.isSimpleType(field.type)>
-
-        fieldValues.put("${field.name}", PlcValues.of(${field.name}));
-    </#if>
-<#break>
-</#switch>
-</#list>
-
-        return new PlcStruct(fieldValues);
-<#else>
-        return null;
-</#if>
-    }
-
     @Override
     @JsonIgnore
-    public MessageIO<<#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>, <#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>> getMessageIO() {
-        return new <#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>IO();
+    public MessageIO<<#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>, <#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>> getMessageIO() {
+        return new <#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>IO();
     }
 
     @Override
@@ -304,10 +305,10 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ${typeName})) {
+        if (!(o instanceof ${type.name})) {
             return false;
         }
-        ${typeName} that = (${typeName}) o;
+        ${type.name} that = (${type.name}) o;
         return
             <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>
@@ -356,3 +357,4 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     }
 
 }
+</#outputformat>

@@ -31,6 +31,11 @@ public class FirmataFieldAnalog extends FirmataField {
         super(address, quantity);
     }
 
+    @Override
+    public String getPlcDataType() {
+        return "INT";
+    }
+
     public static FirmataFieldAnalog of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {

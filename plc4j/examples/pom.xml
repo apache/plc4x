@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <groupId>org.apache.plc4x.examples</groupId>
@@ -45,11 +45,15 @@
     <module>hello-connectivity-kafka</module>
     <module>hello-connectivity-mqtt</module>
     <module>hello-integration-edgent</module>
+    <module>hello-integration-iotdb</module>
     <module>hello-opm</module>
     <module>hello-storage-elasticsearch</module>
     <module>hello-webapp</module>
+    <module>hello-webservice</module>
     <module>hello-world-plc4x</module>
-    <module>hello-integration-iotdb</module>
+    <module>hello-world-plc4x-subscription</module>
+    <module>hello-world-plc4x-write</module>
+    <module>poll-loop</module>
   </modules>
 
   <build>
@@ -90,10 +94,10 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
-            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -140,61 +144,61 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
-    <!--dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ethernet-ip</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

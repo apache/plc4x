@@ -49,6 +49,8 @@ bool plc4c_utils_list_empty(plc4c_list *list);
 
 bool plc4c_utils_list_contains(plc4c_list *list, plc4c_list_element *element);
 
+void* plc4c_utils_list_get_value(plc4c_list *list, size_t element_index);
+
 void plc4c_utils_list_insert_head(plc4c_list *list,
                                   plc4c_list_element *element);
 

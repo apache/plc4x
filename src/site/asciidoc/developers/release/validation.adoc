@@ -35,10 +35,9 @@ gpg --verify apache-plc4x-{current-full-version}-source-release.zip.asc apache-p
 * [ ] Verify the SHA512 hashes:
 [subs="attributes"]
 ----
-shasum -a512 apache-plc4x-{current-full-version}-source-release.zip
+Mac/Linux: shasum -a512 apache-plc4x-{current-full-version}-source-release.zip
 
-Alternatively (automatically compares the checkum):
-gsha512sum -c apache-plc4x-{current-full-version}-source-release.zip.sha512
+Windows (PowerShell): Get-FileHash -Algorithm SHA512 .\apache-plc4x-code-generation-{current-full-version}-source-release.zip | Format-List
 ----
 [%interactive]
 * [ ] Unzip the archive:
@@ -65,6 +64,7 @@ java -jar apache-rat-0.13.jar apache-plc4x-{current-full-version}-source-release
 ----
 find . -type f -name 'pom.xml' -exec grep -l "SNAPSHOT" {} \;
 ----
+NOTE: Especially in the `sandbox` there may be parts that are not formally released, `SNAPSHOT` versions in the `sandbox` therefore should not result in a `-1` vote ... in the other parts however they should.
 [%interactive]
 * [ ] Search for `Copyright` references, and if they are in headers, make sure these files containing them are mentioned in the LICENSE file.
 * [ ] Build the project according to the information in the README.md file.

@@ -26,21 +26,53 @@ import java.util.regex.Pattern;
 public class ModbusFieldHoldingRegister extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("holding-register:" + ModbusField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("4" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("4x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    protected ModbusFieldHoldingRegister(int address, Integer quantity) {
-        super(address, quantity);
+    protected static final int REGISTER_MAXADDRESS = 65535;
+
+    protected ModbusFieldHoldingRegister(int address, Integer quantity, String datatype) {
+        super(address, quantity, datatype.toUpperCase());
     }
 
-    public static ModbusFieldHoldingRegister of(String addressString) throws PlcInvalidFieldException {
+    public static boolean matches(String addressString) {
+        return ADDRESS_PATTERN.matcher(addressString).matches() ||
+            ADDRESS_SHORTER_PATTERN.matcher(addressString).matches() ||
+            ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
+    }
+
+    public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
-        if (!matcher.matches()) {
-            throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
+        if (matcher.matches()) {
+          return matcher;
         }
-        int address = Integer.parseInt(matcher.group("address"));
+        matcher = ADDRESS_SHORT_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        }
+        matcher = ADDRESS_SHORTER_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        }
+        throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
+    }
+
+    public static ModbusFieldHoldingRegister of(String addressString) {
+        Matcher matcher = getMatcher(addressString);
+        int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
+        if (address > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
+        }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldHoldingRegister(address, quantity);
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        if ((address + quantity) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
+        }
+
+        String datatype = "IEC61131_" + ((matcher.group("datatype") != null) ? matcher.group("datatype") : "INT");
+
+        return new ModbusFieldHoldingRegister(address, quantity, datatype.toUpperCase());
     }
 
 }

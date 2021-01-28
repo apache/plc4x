@@ -42,6 +42,9 @@ public class StaticHelper {
     }
 
     public static int COUNT(Object obj) {
+        if(obj == null) {
+            return 0;
+        }
         if (obj.getClass().isArray()) {
             if(obj.getClass().getComponentType() != null && obj.getClass().getComponentType().isPrimitive()) {
                 if(obj.getClass().getComponentType() == boolean.class) {
@@ -97,6 +100,11 @@ public class StaticHelper {
 
     public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
         try {
+            if (signed && bitsExponent == 8 && bitsMantissa == 23) {
+                return io.readFloat(32);
+            } else if (signed && bitsExponent == 11 & bitsMantissa == 52) {
+                return io.readDouble(64);
+            }
             boolean negative = (signed) && io.readBit();
             long exponent = io.readUnsignedLong(bitsExponent);
             exponent = exponent - (((long) Math.pow(2, bitsExponent) / 2) - 1);

@@ -29,16 +29,16 @@ import java.util.List;
 
 public class DefaultSwitchField implements SwitchField {
 
-    private final String[] discriminatorNames;
+    private final Term[] discriminatorExpressions;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(String[] discriminatorNames) {
-        this.discriminatorNames = discriminatorNames;
+    public DefaultSwitchField(Term[] discriminatorExpressions) {
+        this.discriminatorExpressions = discriminatorExpressions;
         this.cases = new LinkedList<>();
     }
 
-    public String[] getDiscriminatorNames() {
-        return discriminatorNames;
+    public Term[] getDiscriminatorExpressions() {
+        return discriminatorExpressions;
     }
 
     public void addCase(DiscriminatedComplexTypeDefinition caseType) {

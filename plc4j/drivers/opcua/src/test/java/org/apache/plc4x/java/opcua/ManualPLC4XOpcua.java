@@ -28,7 +28,7 @@ import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.eclipse.milo.examples.server.ExampleServer;
 
 import java.math.BigInteger;
@@ -63,6 +63,25 @@ public class ManualPLC4XOpcua {
     private static final String UINT32_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInt32";
     private static final String UINT64_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInt64";
     private static final String UINTEGER_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInteger";
+
+    //Arrays
+    private static final String BOOL_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/BooleanArray";
+    private static final String BYTE_STRING_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/ByteStringArray";
+    private static final String BYTE_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/ByteArray";
+    private static final String DOUBLE_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DoubleArray";
+    private static final String FLOAT_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/FloatArray";
+    private static final String INT16_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/Int16Array";
+    private static final String INT32_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/Int32Array";
+    private static final String INT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/Int64Array";
+    private static final String INTEGER_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/IntegerArray";
+    private static final String SBYTE_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/SByteArray";
+    private static final String STRING_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/StringArray";
+    private static final String UINT16_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt16Array";
+    private static final String UINT32_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt32Array";
+    private static final String UINT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt64Array";
+    private static final String UINTEGER_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UIntegerArray";
+
+    //Don't exists
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
     public static void main(String args[]) {
@@ -105,6 +124,22 @@ public class ManualPLC4XOpcua {
             builder.addItem("UInt64", UINT64_IDENTIFIER);
             builder.addItem("UInteger", UINTEGER_IDENTIFIER);
 
+            builder.addItem("BoolArray", BOOL_ARRAY_IDENTIFIER);
+            builder.addItem("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
+            builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER);
+            builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
+            builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER);
+            builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER);
+            builder.addItem("Int32Array", INT32_ARRAY_IDENTIFIER);
+            builder.addItem("Int64Array", INT64_ARRAY_IDENTIFIER);
+            builder.addItem("IntegerArray", INTEGER_ARRAY_IDENTIFIER);
+            builder.addItem("SByteArray", SBYTE_ARRAY_IDENTIFIER);
+            builder.addItem("StringArray", STRING_ARRAY_IDENTIFIER);
+            builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER);
+            builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER);
+            builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER);
+            builder.addItem("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER);
+
             builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
@@ -115,17 +150,17 @@ public class ManualPLC4XOpcua {
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             wBuilder.addItem("w-Bool", BOOL_IDENTIFIER, true);
             //wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
-            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 0x00);
+            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 1);
             wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double) 0.25);
             wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float) 0.25);
-            wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short) 12);
+            wBuilder.addItem("w-INT16", INT16_IDENTIFIER,  12);
             wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int) 314);
             wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long) 123125);
             wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int) 314);
-            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (byte) 23);
+            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (byte) 1);
             wBuilder.addItem("w-String", STRING_IDENTIFIER, "TEST");
-            wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int) 222);
-            wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long) 21412);
+            wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, new BigInteger("12"));
+            wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, new BigInteger("123"));
             wBuilder.addItem("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152"));
             wBuilder.addItem("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
             PlcWriteRequest writeRequest = wBuilder.build();
@@ -135,7 +170,7 @@ public class ManualPLC4XOpcua {
                 opcuaConnection,
                 new LinkedHashMap<>(
                     Collections.singletonMap("field1",
-                        new SubscriptionPlcField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
+                        new DefaultPlcSubscriptionField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
                 )
             )).get();
 
@@ -197,5 +232,3 @@ public class ManualPLC4XOpcua {
         }
     }
 }
-
-

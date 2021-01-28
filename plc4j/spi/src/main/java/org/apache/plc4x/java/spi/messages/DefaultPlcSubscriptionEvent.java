@@ -23,9 +23,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
@@ -34,7 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implements InternalPlcSubscriptionEvent {
+public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implements PlcSubscriptionEvent {
 
     public final Instant timestamp;
 

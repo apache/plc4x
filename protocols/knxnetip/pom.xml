@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4x-protocols-knxnetip</artifactId>
@@ -32,11 +32,71 @@
   <name>Protocols: KNXNet/IP</name>
   <description>Base protocol specifications for the KNXNet/IP protocol</description>
 
+  <build>
+    <plugins>
+      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fetch-knx-manufacturer-data</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://update.knx.org/data/XML/project-20/knx_master.xml</url>
+              <unpack>false</unpack>
+              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+              <outputFileName>knx-master-data.xml</outputFileName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0.2</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <transformationSets>
+            <transformationSet>
+              <dir>${project.build.directory}/downloads</dir>
+              <includes>*.xml</includes>
+              <stylesheet>src/main/xslt/knx-types.xsl</stylesheet>
+              <outputDir>${project.build.outputDirectory}/protocols/knxnetip</outputDir>
+              <fileMappers>
+                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                  <targetExtension>.mspec</targetExtension>
+                </fileMapper>
+              </fileMappers>
+            </transformationSet>
+          </transformationSets>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <version>9.1.0.8</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.0</version>
     </dependency>
   </dependencies>
 

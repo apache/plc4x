@@ -23,4 +23,5 @@
 - link:udp.html[UDP]
 - link:raw-socket.html[Raw Socket]
 - link:serial.html[Serial Port]
+- link:socketcan.html[SocketCAN]
 - link:pcap-replay.html[PCAP replay]

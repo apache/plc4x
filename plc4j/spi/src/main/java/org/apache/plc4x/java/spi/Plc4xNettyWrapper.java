@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -53,16 +54,23 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
     private final ChannelPipeline pipeline;
+    private final boolean passive;
 
-    public Plc4xNettyWrapper(ChannelPipeline pipeline, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
+    public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
         super(clazz, Object.class);
         this.pipeline = pipeline;
+        this.passive = passive;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.protocolBase.setContext(new ConversationContext<T>() {
             @Override
             public Channel getChannel() {
                 return pipeline.channel();
+            }
+
+            @Override
+            public boolean isPassive() {
+                return passive;
             }
 
             @Override
@@ -123,8 +131,19 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         for (Iterator<HandlerRegistration> iter = this.registeredHandlers.iterator(); iter.hasNext(); ) {
             HandlerRegistration registration = iter.next();
             // Check if the handler can still be used or should be removed
-            if (registration.getTimeout().isBefore(Instant.now())) {
-                logger.debug("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
+            // Was cancelled?
+            if (registration.isCancelled()) {
+                logger.debug("Removing {} as it was cancelled!", registration);
+                iter.remove();
+                continue;
+            }
+            // Timeout?
+            final Instant now = Instant.now();
+            if (registration.getTimeoutAt().isBefore(now)) {
+                logger.debug("Removing {} as its timed out (timeout of {} was set till {} and now is {})",
+                    registration, registration.getTimeout(), registration.getTimeoutAt(), now);
+                // pass timeout back to caller so it can do ie. transaction compensation
+                registration.getOnTimeoutConsumer().accept(new TimeoutException());
                 iter.remove();
                 continue;
             }
@@ -143,7 +162,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                         Predicate predicate = either.get();
                         if (predicate.test(instance) == false) {
                             // We do not match -> cannot handle
-                            logger.trace("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
+                            logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
+                                t.getClass().getSimpleName(), instance.getClass().getSimpleName());
                             continue registrations;
                         }
                     }
@@ -152,23 +172,26 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 this.registeredHandlers.remove(registration);
                 Consumer handler = registration.getPacketConsumer();
                 handler.accept(instance);
+                // Confirm that it was handled!
+                registration.confirmHandled();
                 return;
             }
         }
-        logger.trace("No registered handler found for message {}, using default decode method", t);
-        protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext), t);
+        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
+        protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, passive), t);
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
+        logger.debug("User Event triggered {}", evt);
         if (evt instanceof ConnectEvent) {
-            this.protocolBase.onConnect(new DefaultConversationContext<>(ctx));
+            this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof DisconnectEvent) {
-            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx));
+            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof CloseConnectionEvent) {
-            this.protocolBase.close(new DefaultConversationContext<>(ctx));
+            this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
         } else {
             super.userEventTriggered(ctx, evt);
         }
@@ -176,14 +199,21 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     public class DefaultConversationContext<T1> implements ConversationContext<T1> {
         private final ChannelHandlerContext channelHandlerContext;
+        private final boolean passive;
 
-        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext) {
+        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext, boolean passive) {
             this.channelHandlerContext = channelHandlerContext;
+            this.passive = passive;
         }
 
         @Override
         public Channel getChannel() {
             return channelHandlerContext.channel();
+        }
+
+        @Override
+        public boolean isPassive() {
+            return passive;
         }
 
         @Override

@@ -20,6 +20,7 @@
 #include <plc4c/utils/list.h>
 
 void plc4c_utils_list_create(plc4c_list **list) {
+  // TODO: Add a NULL-Check ...
   plc4c_list *new_list = malloc(sizeof(plc4c_list));
   new_list->head = NULL;
   new_list->tail = NULL;
@@ -27,10 +28,10 @@ void plc4c_utils_list_create(plc4c_list **list) {
 }
 
 size_t plc4c_utils_list_size(plc4c_list *list) {
-  if (list->head == NULL) {
+  if ((list == NULL) || (list->tail == NULL)) {
     return 0;
   }
-  plc4c_list_element *cur_element = list->head;
+  plc4c_list_element *cur_element = list->tail;
   int count = 1;
   while (cur_element->next != NULL) {
     count++;
@@ -55,10 +56,22 @@ bool plc4c_utils_list_contains(plc4c_list *list, plc4c_list_element *element) {
   return false;
 }
 
+void* plc4c_utils_list_get_value(plc4c_list *list, size_t element_index) {
+  plc4c_list_element* cur_element = list->tail;
+  for(int i = 0; i < element_index; i++) {
+    cur_element = cur_element->next;
+  }
+  if(cur_element != NULL) {
+    return cur_element->value;
+  }
+  return NULL;
+}
+
 void plc4c_utils_list_insert_head(plc4c_list *list,
                                   plc4c_list_element *element) {
   if (list->head == NULL) {
     list->head = element;
+    list->tail = element;
     return;
   }
   list->head->next = element;

@@ -24,4 +24,5 @@ public class Constants {
     public static final String KNXNET_ID_SOURCE_ADDRESS = KNXNET_ID + "/source-address";
     public static final String KNXNET_ID_DESTINATION_ADDRESS = KNXNET_ID + "/destination-address";
     public static final String KNXNET_ID_PAYLOAD = KNXNET_ID + "/payload";
+
 }

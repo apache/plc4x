@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>plc4j</artifactId>
@@ -48,7 +48,6 @@
 
   <build>
     <plugins>
-
       <!-- Compile any groovy code located in "src/test/groovy" -->
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
@@ -228,7 +227,7 @@
           <!--
                 Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>@{failsafeArgLine}</argLine>
+          <!--argLine>@{failsafeArgLine}</argLine-->
         </configuration>
       </plugin>
 
@@ -253,6 +252,7 @@
             </goals>
             <configuration>
               <failOnWarning>true</failOnWarning>
+              <ignoreNonCompile>true</ignoreNonCompile>
               <ignoredDependencies>
                 <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
@@ -345,5 +345,43 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <!--
+      It seems Java 8 has problems with the "illega-access" setting,
+      so we need to make this self-activating.
+    -->
+    <!--profile>
+      <id>_allow_illegal_access_reflection_in_tests</id>
+      <activation>
+        <jdk>[1.9,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>
+                  - -illegal-access=permit
+                </argLine>
+              </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration>
+                <argLine>
+                  - -illegal-access=permit
+                </argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile-->
+  </profiles>
 
 </project>

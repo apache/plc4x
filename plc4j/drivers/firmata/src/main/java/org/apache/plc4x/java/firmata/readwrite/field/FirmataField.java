@@ -57,7 +57,7 @@ public abstract class FirmataField implements PlcField {
         return address;
     }
 
-    public int getQuantity() {
+    public int getNumberOfElements() {
         return quantity;
     }
 

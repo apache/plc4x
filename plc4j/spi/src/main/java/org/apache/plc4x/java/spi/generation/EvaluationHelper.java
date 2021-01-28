@@ -22,6 +22,12 @@ package org.apache.plc4x.java.spi.generation;
 public class EvaluationHelper {
 
     public static boolean equals(Object val1, Object val2) {
+        if((val1 == null) && (val2 == null)) {
+            return true;
+        }
+        if((val1 == null) || (val2 == null)){
+            return false;
+        }
         if(val1 instanceof Number && val2 instanceof Number) {
             Number number1 = (Number) val1;
             Number number2 = (Number) val2;
@@ -31,6 +37,14 @@ public class EvaluationHelper {
             Boolean boolean1 = (Boolean) val1;
             Boolean boolean2 = (Boolean) val2;
             return boolean1.equals(boolean2);
+        }
+        if(val1 instanceof String && val2 instanceof String) {
+            String string1 = (String) val1;
+            String string2 = (String) val2;
+            return string1.equals(string2);
+        }
+        if(val1.getClass().isEnum() && val2.getClass().isEnum()) {
+            return val1.equals(val2);
         }
         return false;
     }
