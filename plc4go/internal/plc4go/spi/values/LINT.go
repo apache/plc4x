@@ -19,14 +19,14 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"math"
 	"strconv"
 )
 
 type PlcLINT struct {
 	value int64
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcLINT(value int64) PlcLINT {

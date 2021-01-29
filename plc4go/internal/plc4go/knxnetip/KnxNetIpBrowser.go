@@ -19,14 +19,13 @@
 package knxnetip
 
 import (
-	"fmt"
-	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"strconv"
-	"strings"
-	"time"
+    "fmt"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+    "strconv"
+    "strings"
+    "time"
 )
 
 type KnxNetIpBrowser struct {
@@ -47,13 +46,10 @@ func NewKnxNetIpBrowser(connection *KnxNetIpConnection, messageCodec spi.Message
 func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
-		select {
-		case result <- apiModel.PlcBrowseRequestResult{
+		result <- apiModel.PlcBrowseRequestResult{
 			Request:  browseRequest,
 			Response: browseResponse,
 			Err:      err,
-		}:
-		default:
 		}
 	}
 
@@ -88,70 +84,23 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 				//   - If an object-id is provided, check if this object id exists
 				//   - If a property-id is provided, check if this property exists and try to get more information about it
 				case KnxNetIpDevicePropertyAddressPlcField:
-					individualAddress := field.(KnxNetIpDevicePropertyAddressPlcField)
-					sourceAddress := &driverModel.KnxAddress{
-						MainGroup:   0,
-						MiddleGroup: 0,
-						SubGroup:    0,
-					}
+                    targetAddress := FieldToKnxAddress(field.(KnxNetIpDevicePropertyAddressPlcField))
 
-					// Serialize the target address to a 2-byte value
-					targetAddress := make([]int8, 2)
-					main, _ := strconv.Atoi(individualAddress.MainGroup)
-					middle, _ := strconv.Atoi(individualAddress.MiddleGroup)
-					sub, _ := strconv.Atoi(individualAddress.SubGroup)
-					targetAddress[0] = int8((main&0xF)<<4 | (middle & 0xF))
-					targetAddress[1] = int8(sub)
-
-					curSequenceCounter := b.sequenceCounter
-					b.sequenceCounter++
-					controlType := driverModel.ControlType_CONNECT
-					deviceConnectionRequest := driverModel.NewTunnelingRequest(
-						driverModel.NewTunnelingRequestDataBlock(
-							b.connection.CommunicationChannelId,
-							curSequenceCounter),
-						driverModel.NewLDataReq(0, nil,
-							driverModel.NewLDataFrameDataExt(false, 6, uint8(0),
-								sourceAddress, targetAddress, uint8(0), true, false,
-								uint8(0), &controlType, nil, nil, nil, nil,
-								true, driverModel.CEMIPriority_SYSTEM, false, false)))
-
-					// Send the request
-					done := make(chan bool)
-					err = b.connection.SendRequest(
-						deviceConnectionRequest,
-						// The Gateway is now supposed to send an Ack to this request.
-						func(message interface{}) bool {
-							tunnelingRequest := driverModel.CastTunnelingRequest(message)
-							if tunnelingRequest == nil || tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != b.connection.CommunicationChannelId {
-								return false
-							}
-							lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-							return lDataCon != nil
-						},
-						func(message interface{}) error {
-							tunnelingRequest := driverModel.CastTunnelingRequest(message)
-							lDataCon := driverModel.CastLDataCon(tunnelingRequest.Cemi)
-							// If the error flag is not set, we've found a device
-							if !lDataCon.DataFrame.ErrorFlag {
-								queryResult := apiModel.PlcBrowseQueryResult{
-									Address: fmt.Sprintf("%s.%s.%s",
-										individualAddress.MainGroup,
-										individualAddress.MiddleGroup,
-										individualAddress.SubGroup),
-									PossibleDataTypes: nil,
-								}
-								queryResults = append(queryResults, queryResult)
-							}
-							done <- true
-							return nil
-						},
-						time.Second*1)
-					select {
-					case <-done:
-					case <-time.After(time.Second * 2):
-					}
-
+					// Send a connection request to the device
+					deviceConnections := b.connection.ConnectToDevice(*targetAddress)
+                    select {
+                    case deviceConnection := <-deviceConnections:
+                        if deviceConnection != nil {
+                            queryResult := apiModel.PlcBrowseQueryResult{
+                                Address: fmt.Sprintf("%d.%d.%d",
+                                    targetAddress.MainGroup,
+                                    targetAddress.MiddleGroup,
+                                    targetAddress.SubGroup),
+                                PossibleDataTypes: nil,
+                            }
+                            queryResults = append(queryResults, queryResult)
+                        }
+                    }
 					// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
 					time.Sleep(time.Millisecond * 20)
 				// - A Group Address

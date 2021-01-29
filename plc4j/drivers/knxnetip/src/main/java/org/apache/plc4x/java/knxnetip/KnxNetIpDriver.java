@@ -93,6 +93,9 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
+    protected boolean awaitDisconnectComplete() { return true; }
+
+    @Override
     protected ProtocolStackConfigurer<KnxNetIpMessage> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(KnxNetIpMessage.class, KnxNetIpMessageIO.class)
             .withProtocol(KnxNetIpProtocolLogic.class)

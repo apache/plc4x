@@ -21,9 +21,9 @@ package model
 import (
     "encoding/xml"
     "errors"
-    "io"
-    log "github.com/sirupsen/logrus"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    log "github.com/sirupsen/logrus"
+    "io"
     "strconv"
 )
 

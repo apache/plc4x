@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -44,7 +44,6 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</developerConnection>
     <url>https://github.com/apache/plc4x</url>
-    <tag>HEAD</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -96,7 +95,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>2020-05-15T10:51:17Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2021-01-25T11:31:18Z</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
@@ -140,6 +139,7 @@
     <httpcore.version>4.4.13</httpcore.version>
     <jackson.version>2.11.3</jackson.version>
     <jaxb.version>2.3.3</jaxb.version>
+    <jetty-util.version>9.4.32.v20200930</jetty-util.version>
     <jna.version>5.3.1</jna.version>
     <joda-time.version>2.10.8</joda-time.version>
     <jserialcom.version>2.6.2</jserialcom.version>
@@ -507,6 +507,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty-util.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
         <version>${hamcrest.version}</version>
@@ -680,10 +686,13 @@
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
-              Explicitly exclude this file as I was unable
-              to add a new license to the configuration.
+              Explicitly exclude these files as I was unable
+              to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>
+            <exclude>**/KeyStoreLoader.java</exclude>
+            <exclude>**/OPCUAServer.java</exclude>
+            <exclude>**/Plc4xNamespace.java</exclude>
 
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>

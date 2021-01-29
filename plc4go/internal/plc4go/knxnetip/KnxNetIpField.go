@@ -28,6 +28,7 @@ import (
 
 type KnxNetIpField interface {
 	IsPatternField() bool
+    GetFieldType() *driverModel.KnxDatapointType
 	matches(knxGroupAddress *driverModel.KnxGroupAddress) bool
 	toGroupAddress() *driverModel.KnxGroupAddress
 	apiModel.PlcField
@@ -54,7 +55,11 @@ func NewKnxNetIpGroupAddress3LevelPlcField(fieldType *driverModel.KnxDatapointTy
 }
 
 func (k KnxNetIpGroupAddress3LevelPlcField) GetTypeName() string {
-	return k.FieldType.Text()
+	return k.FieldType.Name()
+}
+
+func (k KnxNetIpGroupAddress3LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
+    return k.FieldType
 }
 
 func (k KnxNetIpGroupAddress3LevelPlcField) GetQuantity() uint16 {
@@ -127,7 +132,11 @@ func NewKnxNetIpGroupAddress2LevelPlcField(fieldType *driverModel.KnxDatapointTy
 }
 
 func (k KnxNetIpGroupAddress2LevelPlcField) GetTypeName() string {
-	return k.FieldType.Text()
+	return k.FieldType.Name()
+}
+
+func (k KnxNetIpGroupAddress2LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
+    return k.FieldType
 }
 
 func (k KnxNetIpGroupAddress2LevelPlcField) GetQuantity() uint16 {
@@ -188,7 +197,11 @@ func NewKnxNetIpGroupAddress1LevelPlcField(fieldType *driverModel.KnxDatapointTy
 }
 
 func (k KnxNetIpGroupAddress1LevelPlcField) GetTypeName() string {
-	return k.FieldType.Text()
+	return k.FieldType.Name()
+}
+
+func (k KnxNetIpGroupAddress1LevelPlcField) GetFieldType() *driverModel.KnxDatapointType {
+    return k.FieldType
 }
 
 func (k KnxNetIpGroupAddress1LevelPlcField) GetQuantity() uint16 {
@@ -250,7 +263,11 @@ func NewKnxNetIpDevicePropertyAddressPlcField(fieldType *driverModel.KnxDatapoin
 }
 
 func (k KnxNetIpDevicePropertyAddressPlcField) GetTypeName() string {
-	return k.FieldType.Text()
+	return k.FieldType.Name()
+}
+
+func (k KnxNetIpDevicePropertyAddressPlcField) GetFieldType() *driverModel.KnxDatapointType {
+    return k.FieldType
 }
 
 func (k KnxNetIpDevicePropertyAddressPlcField) GetQuantity() uint16 {

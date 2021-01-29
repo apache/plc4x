@@ -19,13 +19,13 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"time"
 )
 
 type PlcLTIME struct {
 	value uint64
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcLTIME(value uint64) PlcLTIME {

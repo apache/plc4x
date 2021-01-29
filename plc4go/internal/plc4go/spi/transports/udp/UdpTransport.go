@@ -177,7 +177,7 @@ func (m *UdpTransportInstance) GetNumReadableBytes() (uint32, error) {
 		_, _ = m.reader.Peek(1)
 		return uint32(m.reader.Buffered()), nil
 	}
-	return 0, errors.New("error getting number of available bytes from transport. No reader available")
+	return 0, nil
 }
 
 func (m *UdpTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

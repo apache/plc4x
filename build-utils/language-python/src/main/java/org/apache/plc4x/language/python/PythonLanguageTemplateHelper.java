@@ -289,7 +289,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) + "\"))";
             }
         }
-        return "Hurz";
+        return "Pythonic";
     }
 
     @Override
@@ -333,9 +333,6 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.WriteFloat(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
-                }
-                if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteDouble(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
             }
             case STRING: {
