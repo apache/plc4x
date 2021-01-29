@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"net/url"
 	"time"
@@ -113,9 +114,9 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 			localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
 
 			// Prepare the discovery packet data
-            discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
-                driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
-            searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
+			discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
+				driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
+			searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 			err = codec.SendRequest(
 				searchRequestMessage,
 				func(message interface{}) bool {
@@ -138,6 +139,10 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 						"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
 					// Pass the event back to the callback
 					callback(discoveryEvent)
+					return nil
+				},
+				func(err error) error {
+					log.Error(fmt.Sprintf("got timeout waiting for search-response"))
 					return nil
 				},
 				time.Second*1)

@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -32,6 +33,7 @@ type KnxNetIpExpectation struct {
 	expiration     time.Time
 	acceptsMessage spi.AcceptsMessage
 	handleMessage  spi.HandleMessage
+	handleError    spi.HandleError
 }
 
 type KnxNetIpMessageCodec struct {
@@ -51,7 +53,12 @@ func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, mes
 		expectations:                  []KnxNetIpExpectation{},
 	}
 	// Start a worker that handles processing of responses
-	go work(codec)
+	go func() {
+		for {
+			work(codec)
+			fmt.Printf("Restarting Work loop")
+		}
+	}()
 	return codec
 }
 
@@ -83,23 +90,27 @@ func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *KnxNetIpMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+func (m *KnxNetIpMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	expectation := KnxNetIpExpectation{
 		expiration:     time.Now().Add(ttl),
 		acceptsMessage: acceptsMessage,
 		handleMessage:  handleMessage,
+		handleError:    handleError,
 	}
 	m.expectations = append(m.expectations, expectation)
 	return nil
 }
 
-func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
 		return err
 	}
-	return m.Expect(acceptsMessage, handleMessage, ttl)
+	err = m.Expect(acceptsMessage, handleMessage, handleError, ttl)
+	// Throttle the throughput.
+	time.Sleep(time.Millisecond * 20)
+	return err
 }
 
 func (m *KnxNetIpMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
@@ -127,7 +138,7 @@ func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
 			rb := utils.NewReadBuffer(data)
 			knxMessage, err := model.KnxNetIpMessageParse(rb)
 			if err != nil {
-			    fmt.Printf("Got error parsing message: %s\n", err.Error())
+				fmt.Printf("Got error parsing message: %s\n", err.Error())
 				// TODO: Possibly clean up ...
 				return nil, nil
 			}
@@ -155,7 +166,7 @@ func work(m *KnxNetIpMessageCodec) {
 				continue
 			}
 
-            // If this is an incoming tunneling request, automatically send a tunneling ACK
+			// If this is an incoming tunneling request, automatically send a tunneling ACK back to the gateway
 			tunnelingRequest := model.CastTunnelingRequest(message)
 			if tunnelingRequest != nil {
 				response := model.NewTunnelingResponse(
@@ -164,11 +175,14 @@ func work(m *KnxNetIpMessageCodec) {
 						tunnelingRequest.TunnelingRequestDataBlock.SequenceCounter,
 						model.Status_NO_ERROR),
 				)
-				_ = m.Send(response)
+				err = m.Send(response)
+				if err != nil {
+					fmt.Printf("got an error reading sending ACK from transport %s\n", err.Error())
+				}
 			}
 
 			// Handle the packet itself
-			//now := time.Now()
+			now := time.Now()
 			// Give a message interceptor a chance to intercept
 			if m.messageInterceptor != nil {
 				m.messageInterceptor(message)
@@ -177,11 +191,16 @@ func work(m *KnxNetIpMessageCodec) {
 			messageHandled := false
 			for index, expectation := range m.expectations {
 				// Check if this expectation has expired.
-				/*if now.After(expectation.expiration) {
+				if now.After(expectation.expiration) {
 					// Remove this expectation from the list.
 					m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+					// Call the error handler.
+					err := expectation.handleError(errors.New("expectation timed out"))
+					if err != nil {
+						log.Errorf("Got an error handling error on expectation: %s", err.Error())
+					}
 					continue
-				}*/
+				}
 
 				// Check if the current message matches the expectations
 				// If it does, let it handle the message.
@@ -189,11 +208,13 @@ func work(m *KnxNetIpMessageCodec) {
 					err = expectation.handleMessage(message)
 					if err == nil {
 						messageHandled = true
-						// Remove this expectation from the list.
-						m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-					} else {
-					    fmt.Printf("Got error")
-                    }
+						// If this is the last element of the list remove it differently than if it's before that
+						if (index + 1) == len(m.expectations) {
+							m.expectations = m.expectations[:index]
+						} else if (index + 1) < len(m.expectations) {
+							m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+						}
+					}
 				}
 			}
 

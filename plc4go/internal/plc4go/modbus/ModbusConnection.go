@@ -20,6 +20,7 @@ package modbus
 
 import (
 	"errors"
+	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
@@ -116,6 +117,11 @@ func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 				} else {
 					result <- plc4go.NewPlcConnectionPingResult(errors.New("no response"))
 				}
+				return nil
+			},
+			func(err error) error {
+				result <- plc4go.NewPlcConnectionPingResult(
+					errors.New(fmt.Sprintf("got error processing request: %s", err)))
 				return nil
 			},
 			time.Second*1)

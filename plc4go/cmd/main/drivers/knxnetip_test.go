@@ -25,13 +25,27 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	log "github.com/sirupsen/logrus"
+	"os"
 	"testing"
 	"time"
 )
 
+func Init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
+}
+
 func TestKnxNetIpPlc4goBrowse(t *testing.T) {
+	Init()
+
+	log.Debug("Initializing PLC4X")
 	driverManager := plc4go.NewPlcDriverManager()
+	log.Debug("Registering KNXnet/IP driver")
 	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	log.Debug("Registering UDP transport")
 	driverManager.RegisterTransport(udp.NewUdpTransport())
 
 	// Create a connection string from the discovery result.
@@ -39,10 +53,11 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	crc := driverManager.GetConnection(connectionString)
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
-		t.Errorf("Got error connecting: %s", connectionResult.Err.Error())
+		log.Errorf("Got an error getting a connection: %s", connectionResult.Err.Error())
 		t.Fail()
 		return
 	}
+	log.Info("Got a connection")
 	connection := connectionResult.Connection
 	defer connection.Close()
 
@@ -52,16 +67,17 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
 	browseRequest, err := browseRequestBuilder.Build()
 	if err != nil {
-		t.Errorf("Got error preparing browse-request: %s", connectionResult.Err.Error())
+		log.Errorf("Got an error preparing browse-request: %s", connectionResult.Err.Error())
 		t.Fail()
 		return
 	}
 
 	// Execute the browse-request
+	log.Info("Scanning for KNX devices")
 	brr := browseRequest.Execute()
 	browseRequestResults := <-brr
 	if browseRequestResults.Err != nil {
-		t.Errorf("Got error executing browse-request: %s", connectionResult.Err.Error())
+		log.Errorf("Got an error scanning for KNX devices: %s", connectionResult.Err.Error())
 		t.Fail()
 		return
 	}
@@ -70,15 +86,16 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	for _, queryName := range browseRequestResults.Response.GetQueryNames() {
 		results := browseRequestResults.Response.GetQueryResults(queryName)
 		for _, result := range results {
-			fmt.Printf("Found KNX device at address: %v querying device information: \n", result.Address)
+			log.Infof("Found KNX device at address: %v querying device information: \n", result.Address)
 
 			// Create a read-request to read the manufacturer and hardware ids
 			readRequestBuilder := connection.ReadRequestBuilder()
 			readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
-			readRequestBuilder.AddItem("programVersion", result.Address+"/0/13")
+			readRequestBuilder.AddItem("applicationProgramVersion", result.Address+"/3/13")
+			readRequestBuilder.AddItem("interfaceProgramVersion", result.Address+"/4/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
-				t.Errorf("Error creating read-request. %s", err.Error())
+				log.Errorf("Got an error creating read-request: %s", err.Error())
 				t.Fail()
 				return
 			}
@@ -87,7 +104,7 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 			rrr := readRequest.Execute()
 			readResult := <-rrr
 			if readResult.Err != nil {
-				t.Errorf("Error executing read-request. %s", readResult.Err.Error())
+				log.Errorf("got an error executing read-request: %s", readResult.Err.Error())
 				t.Fail()
 				return
 			}
@@ -95,87 +112,28 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 			// Check the response
 			readResponse := readResult.Response
 			if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
-				t.Errorf("Got response code %d for 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
+				log.Errorf("Got an error response code %d for field 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
 				t.Fail()
-				return
+				continue
 			}
-			if readResponse.GetResponseCode("programVersion") != apiModel.PlcResponseCode_OK {
-				t.Errorf("Got response code %d for 'hardwareType'", readResponse.GetResponseCode("programVersion"))
+			if readResponse.GetResponseCode("applicationProgramVersion") != apiModel.PlcResponseCode_OK && readResponse.GetResponseCode("interfaceProgramVersion") != apiModel.PlcResponseCode_OK {
+				log.Errorf("Got response code %d for address %s ('programVersion')",
+					readResponse.GetResponseCode("applicationProgramVersion"), result.Address+"/3/13")
+				log.Errorf("Got response code %d for address %s ('programVersion')",
+					readResponse.GetResponseCode("interfaceProgramVersion"), result.Address+"/4/13")
 				t.Fail()
-				return
 			}
 
 			manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
-			programVersion := readResponse.GetValue("programVersion").GetRaw()
-			fmt.Printf(" - Manufacturer Id: %d, Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersion))
-		}
-	}
-}
-
-func TestKnxNetIpPlc4goDiscovery(t *testing.T) {
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
-	driverManager.RegisterTransport(udp.NewUdpTransport())
-
-	found := make(chan bool)
-	err := driverManager.Discover(func(event apiModel.PlcDiscoveryEvent) {
-		fmt.Printf("Found device: %s:%s://%s\n - Name: %s\n", event.ProtocolCode, event.TransportCode,
-			event.TransportUrl.Host, event.Name)
-		//go func() {
-		// Create a connection string from the discovery result.
-		connectionString := fmt.Sprintf("%s:%s://%s", event.ProtocolCode, event.TransportCode,
-			event.TransportUrl.Host)
-		crc := driverManager.GetConnection(connectionString)
-		connectionResult := <-crc
-		if connectionResult.Err != nil {
-			fmt.Printf("Got error connecting: %s", connectionResult.Err.Error())
-			return
-		}
-		connection := connectionResult.Connection
-		defer connection.Close()
-
-		// Build a browse request, to scan the KNX network for KNX devices
-		// (Limiting the range to only the actually used range of addresses)
-		browseRequestBuilder := connection.BrowseRequestBuilder()
-		browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
-		browseRequest, err := browseRequestBuilder.Build()
-		if err != nil {
-			fmt.Printf("Got error preparing browse-request: %s", connectionResult.Err.Error())
-			return
-		}
-
-		// Execute the browse-request
-		brr := browseRequest.Execute()
-		browseRequestResults := <-brr
-		if browseRequestResults.Err != nil {
-			fmt.Printf("Got error executing browse-request: %s\n", connectionResult.Err.Error())
-			return
-		}
-
-		// Output the addresses found
-		for _, queryName := range browseRequestResults.Response.GetQueryNames() {
-			results := browseRequestResults.Response.GetQueryResults(queryName)
-			for _, result := range results {
-				fmt.Printf("Found KNX device at address: %v\n", result.Address)
+			if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
+				programVersion := readResponse.GetValue("applicationProgramVersion")
+				programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+				log.Infof(" - Manufacturer Id: %d, Application Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
+			} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
+				programVersion := readResponse.GetValue("interfaceProgramVersion")
+				programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+				log.Infof(" - Manufacturer Id: %d, Interface Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 			}
-		}
-		//}()
-		found <- true
-	})
-	if err != nil {
-		fmt.Printf("got error %s", err.Error())
-		return
-	}
-	for {
-		select {
-		case _ = <-found:
-			time.Sleep(time.Second * 2)
-			fmt.Print("Found devices")
-			return
-		case <-time.After(time.Second * 600):
-			t.Error("Couldn't find device in the last 600 seconds")
-			t.Fail()
-			return
 		}
 	}
 }
@@ -279,7 +237,7 @@ func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
 	defer connection.Close()
 
 	readRequestBuilder := connection.ReadRequestBuilder()
-    readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
+	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
 	readRequestBuilder.AddItem("programVersion", "1.1.10/3/13")
 	readRequest, _ := readRequestBuilder.Build()
 
@@ -317,4 +275,12 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	connection := connectionResult.Connection
 	defer connection.Close()
 
+}
+
+func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
+	var result []byte
+	for _, valueItem := range value.GetList() {
+		result = append(result, valueItem.GetUint8())
+	}
+	return result
 }
