@@ -48,7 +48,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>
@@ -90,12 +90,22 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 }
     </#list>
 </#if>
-func ${type.name}ValueOf(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>) ${type.name} {
+func ${type.name}ByValue(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>) ${type.name} {
     switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
         case <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>:
             return ${type.name}_${enumValue.name}
 </#list>
+    }
+    return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>
+}
+
+func ${type.name}ByName(value string) ${type.name} {
+    switch value {
+    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    case "${enumValue.name}":
+        return ${type.name}_${enumValue.name}
+    </#list>
     }
     return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>
 }
@@ -127,7 +137,7 @@ func ${type.name}Parse(io *utils.ReadBuffer) (${type.name}, error) {
     if err != nil {
         return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>, nil
     }
-    return ${type.name}ValueOf(val), nil
+    return ${type.name}ByValue(val), nil
 }
 
 func (e ${type.name}) Serialize(io utils.WriteBuffer) error {

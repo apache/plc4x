@@ -22,7 +22,7 @@ import (
     "errors"
     "github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type BacnetipParserHelper struct {

@@ -111,5 +111,11 @@ public enum ${type.name} {
     }
 </#if>
 
+<#if type.type?has_content>
+    public static Boolean isDefined(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
+        return map.containsKey(value);
+    }
+</#if>
+
 }
 </#outputformat>

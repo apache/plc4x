@@ -223,9 +223,17 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
         } else 
-        if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
-        } else 
         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
+
+                // Simple Field (value)
+                uint64_t value = 0;
+                _res = plc4c_spi_read_unsigned_long(io, 64, (uint64_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint64_t_data(value);
+
         } else 
         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
@@ -252,6 +260,86 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
         } else 
         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
+
+                // Simple Field (year)
+                uint16_t year = 0;
+                _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &year);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint16_t_data(year);
+
+
+                // Simple Field (month)
+                uint8_t month = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &month);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(month);
+
+
+                // Simple Field (day)
+                uint8_t day = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &day);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(day);
+
+
+                // Simple Field (dayOfWeek)
+                uint8_t dayOfWeek = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &dayOfWeek);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(dayOfWeek);
+
+
+                // Simple Field (hour)
+                uint8_t hour = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &hour);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(hour);
+
+
+                // Simple Field (minutes)
+                uint8_t minutes = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &minutes);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(minutes);
+
+
+                // Simple Field (seconds)
+                uint8_t seconds = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &seconds);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(seconds);
+
+
+                // Simple Field (nanos)
+                uint32_t nanos = 0;
+                _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) &nanos);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint32_t_data(nanos);
+
         }
 
   return OK;

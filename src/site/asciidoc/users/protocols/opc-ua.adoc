@@ -47,20 +47,19 @@
 2+| `tcp`
 
 |Compatible Transports:
-2+| - `tcp`
+2+| - `tcp` (Default Port: 4840)
 
 
 3+|Supported Operations
 
-| read      | |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
-| write     | |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
-| subscribe | |Subscriptions are possible with events on event- and cyclic-basis
+|| `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
+|| `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
+|| `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
 
 
-3+|'Options'
+3+|Options
 
-|`Key`         |   `Type [default]`    | `Description` |
-discovery  |   boolean [`true`] | Controls the feature of the discovery endpoint of an OPC UA server which every server
+|| `discovery`  |   Controls the feature of the discovery endpoint of an OPC UA server which every server
 will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
 configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
 configuring it with a `false` value. |

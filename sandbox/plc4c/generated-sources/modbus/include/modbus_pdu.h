@@ -198,8 +198,6 @@ struct plc4c_modbus_read_write_modbus_pdu {
     struct { /* ModbusPDUWriteFileRecordResponse */
       plc4c_list* modbus_pdu_write_file_record_response_items;
     };
-    struct { /* ModbusPDUReadExceptionStatusRequest */
-    };
     struct { /* ModbusPDUReadExceptionStatusResponse */
       uint8_t modbus_pdu_read_exception_status_response_value;
     };
@@ -211,13 +209,9 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_diagnostic_response_sub_function;
       uint16_t modbus_pdu_diagnostic_response_data;
     };
-    struct { /* ModbusPDUGetComEventCounterRequest */
-    };
     struct { /* ModbusPDUGetComEventCounterResponse */
       uint16_t modbus_pdu_get_com_event_counter_response_status;
       uint16_t modbus_pdu_get_com_event_counter_response_event_count;
-    };
-    struct { /* ModbusPDUGetComEventLogRequest */
     };
     struct { /* ModbusPDUGetComEventLogResponse */
       uint16_t modbus_pdu_get_com_event_log_response_status;
@@ -225,14 +219,8 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_get_com_event_log_response_message_count;
       plc4c_list* modbus_pdu_get_com_event_log_response_events;
     };
-    struct { /* ModbusPDUReportServerIdRequest */
-    };
     struct { /* ModbusPDUReportServerIdResponse */
       plc4c_list* modbus_pdu_report_server_id_response_value;
-    };
-    struct { /* ModbusPDUReadDeviceIdentificationRequest */
-    };
-    struct { /* ModbusPDUReadDeviceIdentificationResponse */
     };
   };
 };

@@ -23,7 +23,7 @@ import (
     "errors"
     "io"
     log "github.com/sirupsen/logrus"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "strconv"
     "reflect"
     "strings"
@@ -204,7 +204,7 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
     // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
     var payload *S7Payload = nil
     if bool((payloadLength) > ((0))) {
-        _val, _err := S7PayloadParse(io, messageType, parameter)
+        _val, _err := S7PayloadParse(io, messageType, (parameter))
         if _err != nil {
             return nil, errors.New("Error parsing 'payload' field " + _err.Error())
         }

@@ -20,8 +20,8 @@ package model
 
 import (
             "errors"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/model/values"
-            "github.com/apache/plc4x/plc4go/internal/plc4go/utils"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+            "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
             api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
             "time"
 )
@@ -209,12 +209,6 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcTIME(value), nil
-        case dataProtocolId == "S7_S5TIME": // TIME
-
-            // Reserved Field (Just skip the bytes)
-            if _, _err := io.ReadUint8(2); _err != nil {
-                return nil, errors.New("Error parsing reserved field " + _err.Error())
-            }
         case dataProtocolId == "IEC61131_LTIME": // LTIME
 
             // Simple Field (value)
@@ -436,12 +430,6 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
             // Simple Field (value)
             if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
-            }
-        case dataProtocolId == "S7_S5TIME": // TIME
-
-            // Reserved Field (Just skip the bytes)
-            if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
-                return errors.New("Error serializing reserved field " + _err.Error())
             }
         case dataProtocolId == "IEC61131_LTIME": // LTIME
 

@@ -600,7 +600,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         int numElements = s7Field.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
-        if((transportSize == TransportSize.TIME) || (transportSize == TransportSize.S5TIME) ||
+        if((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
             (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
             (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
             numElements = numElements * transportSize.getSizeInBytes();
