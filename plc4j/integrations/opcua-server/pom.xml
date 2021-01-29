@@ -18,14 +18,13 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-opcua-server</artifactId>
@@ -34,53 +33,34 @@
 
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
-    <plc4x.version>0.8.0-SNAPSHOT</plc4x.version>
     <guava.version>30.0-jre</guava.version>
   </properties>
 
   <dependencies>
-    <!-- Testing Dependencies -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
+      <groupId>org.eclipse.milo</groupId>
+      <artifactId>dictionary-manager</artifactId>
     </dependency>
 
-
-    <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>dictionary-manager</artifactId>
-        <scope>compile</scope>
-    </dependency>
-
-<!-- Milo OPC UA Dependencies -->
+    <!-- Milo OPC UA Dependencies -->
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-server</artifactId>
-      <version>${milo.version}</version>
     </dependency>
 
     <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>stack-server</artifactId>
-        <scope>compile</scope>
+      <groupId>org.eclipse.milo</groupId>
+      <artifactId>stack-server</artifactId>
     </dependency>
 
     <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>stack-core</artifactId>
-        <scope>compile</scope>
+      <groupId>org.eclipse.milo</groupId>
+      <artifactId>stack-core</artifactId>
     </dependency>
 
     <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>sdk-core</artifactId>
-        <scope>compile</scope>
+      <groupId>org.eclipse.milo</groupId>
+      <artifactId>sdk-core</artifactId>
     </dependency>
 
     <!-- Parsing Libraries -->
@@ -107,7 +87,6 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.32.v20200930</version>
     </dependency>
 
     <dependency>
@@ -115,66 +94,78 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
 
-<!-- PLC4X Dependencies -->
+    <!-- PLC4X Dependencies -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-canopen</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>${plc4x.version}</version>
+      <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -182,17 +173,14 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -205,9 +193,9 @@
     </dependency>
 
     <dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	</dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.vavr</groupId>
@@ -220,78 +208,91 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
+    <!-- Testing Dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
-      <plugins>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
 
-        <!-- Build a fat jar containing all dependencies -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>generate-uber-jar</id>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-                <transformers combine.children="append">
-                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                    <mainClass>org.apache.plc4x.java.opcuaserver.OPCUAServer</mainClass>
-                  </transformer>
-                </transformers>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>attach-uber-jar</id>
-              <phase>package</phase>
-              <goals>
-                <goal>attach-artifact</goal>
-              </goals>
-              <configuration>
-                <artifacts>
-                  <artifact>
-                    <file>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.jar</file>
-                    <type>jar</type>
-                    <classifier>standalone</classifier>
-                  </artifact>
-                </artifacts>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+      <!-- Build a fat jar containing all dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-uber-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers combine.children="append">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.apache.plc4x.java.opcuaserver.OPCUAServer</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-uber-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.jar</file>
+                  <type>jar</type>
+                  <classifier>standalone</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <configuration>
-            <usedDependencies combine.children="append">
-                <usedDependency>org.slf4j:slf4j-simple</usedDependency>
-                <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-                <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->
-                <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
-                <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
-            </usedDependencies>
-          </configuration>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.slf4j:slf4j-simple</usedDependency>
+            <usedDependency>org.bouncycastle:bcmail-jdk15on</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
 
-      </plugins>
+    </plugins>
   </build>
 </project>

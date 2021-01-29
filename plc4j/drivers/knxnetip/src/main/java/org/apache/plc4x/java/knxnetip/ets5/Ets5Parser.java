@@ -24,7 +24,7 @@ import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointSubtype;
+import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,9 +75,9 @@ public class Ets5Parser {
                 NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
 
                 // Build an index of the internal data-types.
-                Map<String, KnxDatapointSubtype> knxDatapointTypeMap = new HashMap<>();
-                for (KnxDatapointSubtype value : KnxDatapointSubtype.values()) {
-                    knxDatapointTypeMap.put(value.getDatapointType().getValue() + "#" + value.getValue(), value);
+                Map<String, KnxDatapointType> knxDatapointTypeMap = new HashMap<>();
+                for (KnxDatapointType value : KnxDatapointType.values()) {
+                    knxDatapointTypeMap.put(value.getDatapointMainType().getValue() + "#" + value.getValue(), value);
                 }
 
                 Map<String, AddressType> addressTypes = new HashMap<>();
@@ -153,7 +153,7 @@ public class Ets5Parser {
 
                     if(addressType != null) {
                         // Lookup the driver internal data-type.
-                        final KnxDatapointSubtype datapointType = knxDatapointTypeMap.get(
+                        final KnxDatapointType datapointType = knxDatapointTypeMap.get(
                             addressType.getMainType() + "#" + addressType.getSubType());
 
                         GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, datapointType, function);

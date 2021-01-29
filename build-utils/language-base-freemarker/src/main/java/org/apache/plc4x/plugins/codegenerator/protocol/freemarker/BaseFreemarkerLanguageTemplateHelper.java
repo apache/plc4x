@@ -150,6 +150,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return typeReference instanceof ComplexTypeReference;
     }
 
+    public boolean isEnumTypeReference(TypeReference typeReference) {
+        return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
+    }
+
     public boolean isStringTypeReference(TypeReference typeReference) {
         return typeReference instanceof StringTypeReference;
     }

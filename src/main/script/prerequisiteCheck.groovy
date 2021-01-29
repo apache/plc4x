@@ -425,7 +425,6 @@ def dotnetEnabled = false
 def javaEnabled = true
 def logstashEnabled = false
 def pythonEnabled = false
-def proxiesEnabled = false
 def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
@@ -451,9 +450,6 @@ for (def activeProfile : activeProfiles) {
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
         println "python"
-    } else if (activeProfile == "with-proxies") {
-        proxiesEnabled = true
-        println "proxies"
     } else if (activeProfile == "with-sandbox") {
         sandboxEnabled = true
         println "sandbox"
@@ -476,22 +472,10 @@ if (os == "win") {
     }
 }
 
-if (pythonEnabled && !proxiesEnabled) {
-    println "Currently the build of the python modules require the `with-proxies` profile to be enabled tpo."
-    allConditionsMet = false;
-}
-
 /////////////////////////////////////////////////////
 // Do the actual checks depending on the enabled
 // profiles.
 /////////////////////////////////////////////////////
-
-if (proxiesEnabled) {
-    checkBison()
-    if (!boostEnabled) {
-        checkBoost()
-    }
-}
 
 if (dotnetEnabled) {
     checkDotnet()
@@ -502,12 +486,7 @@ if (logstashEnabled) {
     checkJavaVersion(null, "11")
 }
 
-if (proxiesEnabled) {
-    checkFlex()
-    checkOpenSSL()
-}
-
-if (proxiesEnabled || cppEnabled) {
+if (cppEnabled) {
     checkClang()
     // The cmake-maven-plugin requires at least java 11
     checkJavaVersion("11", null)
@@ -524,7 +503,7 @@ if (cEnabled) {
     checkGcc()
 }
 
-if (proxiesEnabled || cppEnabled) {
+if (cppEnabled) {
     checkGpp()
 }
 
@@ -546,7 +525,7 @@ if (sandboxEnabled && dockerEnabled) {
     checkDocker()
 }
 
-if (proxiesEnabled || cppEnabled || cEnabled) {
+if (cppEnabled || cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
 }

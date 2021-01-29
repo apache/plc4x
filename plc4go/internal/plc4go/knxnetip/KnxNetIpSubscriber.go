@@ -79,20 +79,25 @@ func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsub
  */
 func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFrame, changed bool) {
 	var destinationAddress []int8
-	var dataFirstByte *int8
-	var data []int8
+    var apdu *driverModel.Apdu
 	switch lDataFrame.Child.(type) {
 	case *driverModel.LDataFrameData:
 		dataFrame := driverModel.CastLDataFrameData(lDataFrame)
 		destinationAddress = dataFrame.DestinationAddress
-		dataFirstByte = dataFrame.DataFirstByte
-		data = dataFrame.Data
+        apdu = dataFrame.Apdu
 	case *driverModel.LDataFrameDataExt:
 		dataFrame := driverModel.CastLDataFrameDataExt(lDataFrame)
 		destinationAddress = dataFrame.DestinationAddress
-		dataFirstByte = dataFrame.DataFirstByte
-		data = dataFrame.Data
+        apdu = dataFrame.Apdu
 	}
+    container := driverModel.CastApduDataContainer(apdu)
+    if container == nil {
+        return
+    }
+    groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
+    if groupValueWrite == nil {
+        return
+    }
 
 	if destinationAddress != nil {
 		// Decode the group-address according to the settings in the driver
@@ -122,27 +127,30 @@ func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFram
 				subscriptionType := subscriptionRequest.GetType(fieldName)
 				// If it matches, take the datatype of each matching field and try to decode the payload
 				if field.matches(groupAddress) {
-					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
+                    // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
 					if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
-						if dataFirstByte != nil {
-							var payload []uint8
-							payload = append(payload, uint8(*dataFirstByte))
-							payload = append(payload, utils.Int8ArrayToByteArray(data)...)
-							rb := utils.NewReadBuffer(payload)
-							plcValue, err := driverModel.KnxDatapointParse(rb, field.GetTypeName())
-							fields[fieldName] = field
-							types[fieldName] = subscriptionRequest.GetType(fieldName)
-							intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
-							addresses[fieldName] = destinationAddress
-							if err == nil {
-								responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-								plcValues[fieldName] = plcValue
-							} else {
-								// TODO: Do a little more here ...
-								responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-								plcValues[fieldName] = nil
-							}
-						}
+                        var payload []int8
+                        payload = append(payload, groupValueWrite.DataFirstByte)
+                        payload = append(payload, groupValueWrite.Data...)
+                        rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
+                        if field.GetFieldType() == nil {
+                            responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
+                            plcValues[fieldName] = nil
+                            continue
+                        }
+                        plcValue, err2 := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
+                        fields[fieldName] = field
+                        types[fieldName] = subscriptionRequest.GetType(fieldName)
+                        intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+                        addresses[fieldName] = destinationAddress
+                        if err2 == nil {
+                            responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+                            plcValues[fieldName] = plcValue
+                        } else {
+                            // TODO: Do a little more here ...
+                            responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+                            plcValues[fieldName] = nil
+                        }
 					}
 				}
 			}

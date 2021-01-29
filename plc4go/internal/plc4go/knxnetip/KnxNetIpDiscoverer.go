@@ -110,13 +110,12 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 				return errors.New("couldn't cast transport instance to UDP transport instance")
 			}
 			localAddress := udpTransportInstance.LocalAddress
+			localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
 
 			// Prepare the discovery packet data
-			searchRequestMessage := driverModel.NewSearchRequest(driverModel.NewHPAIDiscoveryEndpoint(
-				driverModel.HostProtocolCode_IPV4_UDP,
-				driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP.To4())),
-				uint16(localAddress.Port)))
-
+            discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
+                driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
+            searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
 			err = codec.SendRequest(
 				searchRequestMessage,
 				func(message interface{}) bool {

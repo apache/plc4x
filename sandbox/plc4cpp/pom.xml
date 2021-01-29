@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4cpp</artifactId>
@@ -119,43 +119,6 @@
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>with-proxies</id>
-      <properties>
-        <!-- Disabled for now as the thrift code seems to have issues with boost 1.70 -->
-        <!--option.with-proxies>ON</option.with-proxies-->
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>get-thrift</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems combine.children="append">
-                    <!-- Get the pre-packaged thrift library -->
-                    <artifactItem>
-                      <groupId>org.apache.plc4x</groupId>
-                      <artifactId>plc4x-tools-thrift</artifactId>
-                      <version>${project.version}</version>
-                      <type>zip</type>
-                      <classifier>cpp-${os.classifier}</classifier>
-                      <outputDirectory>${project.build.directory}/lib/thrift</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <build>
@@ -204,53 +167,8 @@
                   <classifier>lib-${os.classifier}</classifier>
                   <outputDirectory>${project.build.directory}/lib/boost</outputDirectory>
                 </artifactItem>
-                <!-- Unpack the protocol spec for the proxy driver -->
-                <!--artifactItem>
-                  <groupId>org.apache.plc4x</groupId>
-                  <artifactId>plc4x-protocols-proxy</artifactId>
-                  <version>${project.version}</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
-                </artifactItem-->
-                <!-- Unpack the thrift compiler -->
-                <artifactItem>
-                  <groupId>org.apache.plc4x</groupId>
-                  <artifactId>plc4x-tools-thrift</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>compiler-${os.classifier}</classifier>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/thrift-compiler</outputDirectory>
-                  <destFileName>${thrift.compiler.executable}</destFileName>
-                </artifactItem>
               </artifactItems>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!--
-        Generate the code for the Thrift-based interop server
-      -->
-      <plugin>
-        <groupId>org.apache.thrift.tools</groupId>
-        <artifactId>maven-thrift-plugin</artifactId>
-        <configuration>
-          <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
-          <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
-          <includes>
-            <include>**/interop.thrift</include>
-          </includes>
-          <generator>cpp</generator>
-          <outputDirectory>${project.build.directory}/generated-sources/drivers/proxy</outputDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>thrift-sources</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -322,7 +240,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-boost</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
