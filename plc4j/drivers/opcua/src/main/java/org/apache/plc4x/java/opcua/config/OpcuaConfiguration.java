@@ -200,7 +200,6 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         }
     }
 
-
     @Override
     public String toString() {
         return "Configuration{" +
