@@ -21,5 +21,8 @@ package spi
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
 type PlcBrowser interface {
+	// Non-Blocking request, which will return a full result as soon as the operation is finished
 	Browse(browseRequest model.PlcBrowseRequest) <-chan model.PlcBrowseRequestResult
+	// Blocking request, which calls a callback function on every found resource
+	BlockingBrowseWithCallback(browseRequest model.PlcBrowseRequest, callback func(result model.PlcBrowseEvent)) error
 }

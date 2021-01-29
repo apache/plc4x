@@ -69,8 +69,8 @@ func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(d)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteStreaming() <-chan model.PlcBrowseQueryResult {
-	panic("implement me")
+func (d DefaultPlcBrowseRequest) ExecuteAsync(callback func(result model.PlcBrowseEvent)) error {
+	return d.browser.BlockingBrowseWithCallback(d, callback)
 }
 
 type DefaultPlcBrowseResponse struct {
