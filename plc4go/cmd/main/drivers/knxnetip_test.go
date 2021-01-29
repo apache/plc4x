@@ -138,6 +138,96 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	}
 }
 
+func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
+	Init()
+
+	log.Debug("Initializing PLC4X")
+	driverManager := plc4go.NewPlcDriverManager()
+	log.Debug("Registering KNXnet/IP driver")
+	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	log.Debug("Registering UDP transport")
+	driverManager.RegisterTransport(udp.NewUdpTransport())
+
+	// Create a connection string from the discovery result.
+	connectionString := "knxnet-ip:udp://192.168.42.11:3671"
+	crc := driverManager.GetConnection(connectionString)
+	connectionResult := <-crc
+	if connectionResult.Err != nil {
+		log.Errorf("Got an error getting a connection: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+	log.Info("Got a connection")
+	connection := connectionResult.Connection
+	defer connection.Close()
+
+	// Build a browse request, to scan the KNX network for KNX devices
+	// (Limiting the range to only the actually used range of addresses)
+	browseRequestBuilder := connection.BrowseRequestBuilder()
+	browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
+	browseRequest, err := browseRequestBuilder.Build()
+	if err != nil {
+		log.Errorf("Got an error preparing browse-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+
+	// Execute the browse-request
+	log.Info("Scanning for KNX devices")
+	_ = browseRequest.ExecuteAsync(func(result apiModel.PlcBrowseEvent) {
+		if result.Err != nil {
+			return
+		}
+
+		// Create a read-request to read the manufacturer and hardware ids
+		readRequestBuilder := connection.ReadRequestBuilder()
+		readRequestBuilder.AddItem("manufacturerId", result.Result.Address+"/0/12")
+		readRequestBuilder.AddItem("applicationProgramVersion", result.Result.Address+"/3/13")
+		readRequestBuilder.AddItem("interfaceProgramVersion", result.Result.Address+"/4/13")
+		readRequest, err := readRequestBuilder.Build()
+		if err != nil {
+			log.Errorf("Got an error creating read-request: %s", err.Error())
+			t.Fail()
+			return
+		}
+
+		// Execute the read-requests
+		rrr := readRequest.Execute()
+		readResult := <-rrr
+		if readResult.Err != nil {
+			log.Errorf("got an error executing read-request: %s", readResult.Err.Error())
+			t.Fail()
+			return
+		}
+
+		// Check the response
+		readResponse := readResult.Response
+		if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
+			log.Errorf("Got an error response code %d for field 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
+			t.Fail()
+			return
+		}
+		if readResponse.GetResponseCode("applicationProgramVersion") != apiModel.PlcResponseCode_OK && readResponse.GetResponseCode("interfaceProgramVersion") != apiModel.PlcResponseCode_OK {
+			log.Errorf("Got response code %d for address %s ('programVersion')",
+				readResponse.GetResponseCode("applicationProgramVersion"), result.Result.Address+"/3/13")
+			log.Errorf("Got response code %d for address %s ('programVersion')",
+				readResponse.GetResponseCode("interfaceProgramVersion"), result.Result.Address+"/4/13")
+			t.Fail()
+		}
+
+		manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
+		if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
+			programVersion := readResponse.GetValue("applicationProgramVersion")
+			programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+			log.Infof(" - Manufacturer Id: %d, Application Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
+		} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
+			programVersion := readResponse.GetValue("interfaceProgramVersion")
+			programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+			log.Infof(" - Manufacturer Id: %d, Interface Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
+		}
+	})
+}
+
 func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())

@@ -55,80 +55,118 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 	}
 
 	go func() {
-		results := map[string][]apiModel.PlcBrowseQueryResult{}
-		for _, queryName := range browseRequest.GetQueryNames() {
-			queryString := browseRequest.GetQueryString(queryName)
-			field, err := b.connection.fieldHandler.ParseQuery(queryString)
-			if err != nil {
-				sendResult(nil, err)
+		browseResults := map[string][]apiModel.PlcBrowseQueryResult{}
+		err := b.BlockingBrowseWithCallback(browseRequest, func(result apiModel.PlcBrowseEvent) {
+			if _, ok := browseResults[result.QueryName]; !ok {
+				browseResults[result.QueryName] = []apiModel.PlcBrowseQueryResult{}
 			}
-
-			// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
-			options, err := b.calculateAddresses(field)
-			if err != nil {
-				sendResult(nil, err)
+			if result.Err != nil {
+				// TODO: Find out what to do here ...
+			} else {
+				browseResults[result.QueryName] = append(browseResults[result.QueryName], *result.Result)
 			}
-
-			var queryResults []apiModel.PlcBrowseQueryResult
-			// Parse each of these expanded addresses and handle them accordingly.
-			for _, option := range options {
-				field, err = b.connection.fieldHandler.ParseQuery(option)
-				if err != nil {
-					sendResult(nil, err)
-				}
-
-				// The following browse actions could be required:
-				switch field.(type) {
-				// - A Device Address
-				//   - A Device has to be detected (This is done in every case)
-				//      TODO: Send a Connect to the physical knx address
-				//   - If an object-id is provided, check if this object id exists
-				//   - If a property-id is provided, check if this property exists and try to get more information about it
-				case KnxNetIpDevicePropertyAddressPlcField:
-					targetAddress := FieldToKnxAddress(field.(KnxNetIpDevicePropertyAddressPlcField))
-
-					// Send a connection request to the device
-					deviceConnections := b.connection.ConnectToDevice(*targetAddress)
-					select {
-					case deviceConnection := <-deviceConnections:
-						if deviceConnection != nil {
-							queryResult := apiModel.PlcBrowseQueryResult{
-								Address: fmt.Sprintf("%d.%d.%d",
-									targetAddress.MainGroup,
-									targetAddress.MiddleGroup,
-									targetAddress.SubGroup),
-								PossibleDataTypes: nil,
-							}
-							queryResults = append(queryResults, queryResult)
-
-							deviceDisconnections := b.connection.DisconnectFromDevice(*targetAddress)
-							select {
-							case _ = <-deviceDisconnections:
-							case <-time.After(b.connection.defaultTtl * 10):
-								fmt.Printf("Timedout")
-							}
-						}
-					case <-time.After(b.connection.defaultTtl):
-						// In this case the remote was just not responding.
-					}
-					// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
-					//time.Sleep(time.Millisecond * 20)
-				// - A Group Address
-				//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
-				case KnxNetIpGroupAddress3LevelPlcField:
-				// - A Group Address
-				//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
-				case KnxNetIpGroupAddress2LevelPlcField:
-				// - A Group Address
-				//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
-				case KnxNetIpGroupAddress1LevelPlcField:
-				}
-			}
-			results[queryName] = queryResults
-		}
-		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, results), nil)
+		})
+		sendResult(model.NewDefaultPlcBrowseResponse(browseRequest, browseResults), err)
 	}()
+
 	return result
+}
+
+func (b KnxNetIpBrowser) BlockingBrowseWithCallback(browseRequest apiModel.PlcBrowseRequest, callback func(result apiModel.PlcBrowseEvent)) error {
+	for _, queryName := range browseRequest.GetQueryNames() {
+		queryString := browseRequest.GetQueryString(queryName)
+		field, err := b.connection.fieldHandler.ParseQuery(queryString)
+		if err != nil {
+			callback(apiModel.PlcBrowseEvent{
+				Request:   browseRequest,
+				QueryName: queryName,
+				Result:    nil,
+				Err:       err,
+			})
+			continue
+		}
+
+		// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
+		options, err := b.calculateAddresses(field)
+		if err != nil {
+			callback(apiModel.PlcBrowseEvent{
+				Request:   browseRequest,
+				QueryName: queryName,
+				Result:    nil,
+				Err:       err,
+			})
+			continue
+		}
+
+		// Parse each of these expanded addresses and handle them accordingly.
+		for _, option := range options {
+			field, err = b.connection.fieldHandler.ParseQuery(option)
+			if err != nil {
+				callback(apiModel.PlcBrowseEvent{
+					Request:   browseRequest,
+					QueryName: queryName,
+					Result:    nil,
+					Err:       err,
+				})
+				continue
+			}
+
+			// The following browse actions could be required:
+			switch field.(type) {
+			// - A Device Address
+			//   - A Device has to be detected (This is done in every case)
+			//      TODO: Send a Connect to the physical knx address
+			//   - If an object-id is provided, check if this object id exists
+			//   - If a property-id is provided, check if this property exists and try to get more information about it
+			case KnxNetIpDevicePropertyAddressPlcField:
+				targetAddress := FieldToKnxAddress(field.(KnxNetIpDevicePropertyAddressPlcField))
+
+				// Send a connection request to the device
+				deviceConnections := b.connection.ConnectToDevice(*targetAddress)
+				select {
+				case deviceConnection := <-deviceConnections:
+					if deviceConnection != nil {
+						// Prepare the query result
+						queryResult := apiModel.PlcBrowseQueryResult{
+							Address: fmt.Sprintf("%d.%d.%d",
+								targetAddress.MainGroup,
+								targetAddress.MiddleGroup,
+								targetAddress.SubGroup),
+							PossibleDataTypes: nil,
+						}
+						// Pass it to the callback
+						callback(apiModel.PlcBrowseEvent{
+							Request:   browseRequest,
+							QueryName: queryName,
+							Result:    &queryResult,
+							Err:       nil,
+						})
+						// Disconnect from the device
+						deviceDisconnections := b.connection.DisconnectFromDevice(*targetAddress)
+						select {
+						case _ = <-deviceDisconnections:
+						case <-time.After(b.connection.defaultTtl * 10):
+							fmt.Printf("Timedout")
+						}
+					}
+				case <-time.After(b.connection.defaultTtl):
+					// In this case the remote was just not responding.
+				}
+				// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
+				//time.Sleep(time.Millisecond * 20)
+			// - A Group Address
+			//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
+			case KnxNetIpGroupAddress3LevelPlcField:
+			// - A Group Address
+			//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
+			case KnxNetIpGroupAddress2LevelPlcField:
+			// - A Group Address
+			//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
+			case KnxNetIpGroupAddress1LevelPlcField:
+			}
+		}
+	}
+	return nil
 }
 
 func (b KnxNetIpBrowser) calculateAddresses(field apiModel.PlcField) ([]string, error) {
