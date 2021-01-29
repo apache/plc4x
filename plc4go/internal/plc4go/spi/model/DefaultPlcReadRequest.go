@@ -23,7 +23,6 @@ import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"time"
 )
 
 type DefaultPlcReadRequestBuilder struct {
@@ -102,7 +101,7 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 		for _, subRequest := range readRequests {
 			subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
 			// TODO: Replace this with a real queueing of requests.
-			time.Sleep(time.Millisecond * 20)
+			//time.Sleep(time.Millisecond * 20)
 		}
 
 		// Create a new result-channel, which completes as soon as all sub-result-channels have returned

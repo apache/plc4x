@@ -504,23 +504,17 @@ func TestKnxAutoDiscovery(t *testing.T) {
 							// Send a device connection request to KNX address 1.1.10
 							////////////////////////////////////////////////////////////////////////////////////////////////////
 
-							targetKnxAddress, err := ParseKnxAddressString("1.1.10")
+							targetAddress, err := ParseKnxAddressString("1.1.10")
 							if err != nil {
 								panic("Failed preparing discovery request.")
 							}
-							sourceAddress := &model.KnxAddress{
-								MainGroup:   0,
-								MiddleGroup: 0,
-								SubGroup:    0,
-							}
-							controlType := model.ControlType_CONNECT
 							deviceConnectionRequest := model.NewTunnelingRequest(
-								model.NewTunnelingRequestDataBlock(communicationChannelId, 0),
+								model.NewTunnelingRequestDataBlock(0, 0),
 								model.NewLDataReq(0, nil,
 									model.NewLDataFrameDataExt(false, 6, uint8(0),
-										sourceAddress, targetKnxAddress, uint8(0), true, false,
-										uint8(0), &controlType, nil, nil, nil, nil,
-										false, model.CEMIPriority_SYSTEM, false, false)))
+										model.NewKnxAddress(0, 0, 0), targetAddress,
+										model.NewApduControlContainer(model.NewApduControlConnect(), 0, false, 0),
+										true, true, model.CEMIPriority_SYSTEM, false, false)))
 							writeBuffer = utils.NewWriteBuffer()
 							err = deviceConnectionRequest.Serialize(*writeBuffer)
 							if err != nil {

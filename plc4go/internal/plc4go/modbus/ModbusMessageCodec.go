@@ -32,6 +32,7 @@ type ModbusExpectation struct {
 	expiration     time.Time
 	acceptsMessage spi.AcceptsMessage
 	handleMessage  spi.HandleMessage
+	handleError    spi.HandleError
 }
 
 type ModbusMessageCodec struct {
@@ -79,23 +80,24 @@ func (m *ModbusMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *ModbusMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+func (m *ModbusMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	expectation := ModbusExpectation{
 		expiration:     time.Now().Add(ttl),
 		acceptsMessage: acceptsMessage,
 		handleMessage:  handleMessage,
+		handleError:    handleError,
 	}
 	m.expectations = append(m.expectations, expectation)
 	return nil
 }
 
-func (m *ModbusMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, ttl time.Duration) error {
+func (m *ModbusMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
 		return err
 	}
-	return m.Expect(acceptsMessage, handleMessage, ttl)
+	return m.Expect(acceptsMessage, handleMessage, handleError, ttl)
 }
 
 func (m *ModbusMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
