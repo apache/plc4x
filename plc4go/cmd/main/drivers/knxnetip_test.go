@@ -41,6 +41,8 @@ func Init() {
 func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	Init()
 
+	startTime := time.Now()
+
 	log.Debug("Initializing PLC4X")
 	driverManager := plc4go.NewPlcDriverManager()
 	log.Debug("Registering KNXnet/IP driver")
@@ -136,10 +138,14 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 			}
 		}
 	}
+
+	log.Infof("Operation finished in %s", time.Since(startTime))
 }
 
 func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 	Init()
+
+	startTime := time.Now()
 
 	log.Debug("Initializing PLC4X")
 	driverManager := plc4go.NewPlcDriverManager()
@@ -174,9 +180,10 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 
 	// Execute the browse-request
 	log.Info("Scanning for KNX devices")
-	_ = browseRequest.ExecuteAsync(func(result apiModel.PlcBrowseEvent) {
+
+	brr := browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseEvent) bool {
 		if result.Err != nil {
-			return
+			return false
 		}
 
 		// Create a read-request to read the manufacturer and hardware ids
@@ -188,7 +195,7 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 		if err != nil {
 			log.Errorf("Got an error creating read-request: %s", err.Error())
 			t.Fail()
-			return
+			return false
 		}
 
 		// Execute the read-requests
@@ -197,7 +204,7 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 		if readResult.Err != nil {
 			log.Errorf("got an error executing read-request: %s", readResult.Err.Error())
 			t.Fail()
-			return
+			return false
 		}
 
 		// Check the response
@@ -205,7 +212,7 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 		if readResponse.GetResponseCode("manufacturerId") != apiModel.PlcResponseCode_OK {
 			log.Errorf("Got an error response code %d for field 'manufacturerId'", readResponse.GetResponseCode("manufacturerId"))
 			t.Fail()
-			return
+			return false
 		}
 		if readResponse.GetResponseCode("applicationProgramVersion") != apiModel.PlcResponseCode_OK && readResponse.GetResponseCode("interfaceProgramVersion") != apiModel.PlcResponseCode_OK {
 			log.Errorf("Got response code %d for address %s ('programVersion')",
@@ -225,7 +232,16 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 			programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
 			log.Infof(" - Manufacturer Id: %d, Interface Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 		}
+		return true
 	})
+	browseRequestResults := <-brr
+	if browseRequestResults.Err != nil {
+		log.Errorf("Got an error scanning for KNX devices: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+
+	log.Infof("Operation finished in %s", time.Since(startTime))
 }
 
 func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {

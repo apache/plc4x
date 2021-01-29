@@ -69,8 +69,8 @@ func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(d)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteAsync(callback func(result model.PlcBrowseEvent)) error {
-	return d.browser.BlockingBrowseWithCallback(d, callback)
+func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+	return d.browser.BrowseWithInterceptor(d, interceptor)
 }
 
 type DefaultPlcBrowseResponse struct {
