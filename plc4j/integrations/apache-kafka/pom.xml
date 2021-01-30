@@ -96,19 +96,21 @@
                     <goal>kafka-connect</goal>
                 </goals>
                 <configuration>
-                    <title>Kafka Connect PLC4X</title>
+                    <title>PLC4X PLC4J Connector</title>
+                    <name>kafka-connect-plc4x-plc4j</name>
                     <documentationUrl>https://plc4x.apache.org/users/integrations/apache-kafka.html</documentationUrl>
                     <description>
                         The PLC4X connectors allow reading and writing to devices using industrial protocols.
                     </description>
                     <logo>../../../media/logos/300ppi/PLC4X.png</logo>
+                    <sourceUrl>https://plc4x.apache.org/users/download.html</sourceUrl>
 
                     <supportProviderName>PLC4X</supportProviderName>
                     <supportSummary>The PLC4X Connnectors are supported by the community</supportSummary>
                     <supportUrl>https://plc4x.apache.org/index.html</supportUrl>
                     <supportLogo>../../../media/logos/300ppi/PLC4X.png</supportLogo>
 
-                    <ownerUsername>plc4x</ownerUsername>
+                    <ownerUsername>apache</ownerUsername>
                     <ownerType>organization</ownerType>
                     <ownerName>Apache</ownerName>
                     <ownerUrl>https://plc4x.apache.org/index.html</ownerUrl>
@@ -162,7 +164,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.build.directory}/components/packages/plc4x-${project.artifactId}-${project.version}.zip</file>
+                  <file>${project.build.directory}/components/packages/apache-kafka-connect-plc4x-plc4j-${project.version}.zip</file>
                   <type>zip</type>
                   <classifier>standalone</classifier>
                 </artifact>
