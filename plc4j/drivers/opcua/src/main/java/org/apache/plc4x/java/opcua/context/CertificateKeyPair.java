@@ -20,19 +20,25 @@
 package org.apache.plc4x.java.opcua.context;
 
 import java.security.KeyPair;
+import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 
 public class CertificateKeyPair {
 
     private final KeyPair keyPair;
     private final X509Certificate certificate;
+    private final byte[] thumbprint;
 
-    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) {
+    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws Exception{
         this.keyPair = keyPair;
         this.certificate = certificate;
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+        this.thumbprint = messageDigest.digest(this.certificate.getEncoded());
     }
 
     public KeyPair getKeyPair() { return keyPair; }
 
     public X509Certificate getCertificate() { return certificate; }
+
+    public byte[] getThumbPrint() { return thumbprint; }
 }

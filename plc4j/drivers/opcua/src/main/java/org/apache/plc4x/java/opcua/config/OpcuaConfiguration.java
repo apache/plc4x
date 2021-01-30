@@ -50,6 +50,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    private static final String nameSpaceSecurityPolicyNone = "http://opcfoundation.org/UA/SecurityPolicy#None";
+    private static final String nameSpaceSecurityPolicyUserName = "http://opcfoundation.org/UA/SecurityPolicy#Basic256Sha256";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConfiguration.class);
 
     private String code;
@@ -175,7 +178,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.endpoint = endpoint;
     }
 
-    public void openKeyStore() throws KeyStoreException, PlcConnectionException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException {
+    public void openKeyStore() throws Exception {
         File securityTempDir = new File(certDirectory, "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
             throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);

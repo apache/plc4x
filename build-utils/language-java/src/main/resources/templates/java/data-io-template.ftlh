@@ -91,6 +91,7 @@ public class ${type.name}IO {
         <#assign defaultCaseOutput=false>
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
             <#assign valueDefined=false>
+
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
@@ -114,6 +115,7 @@ public class ${type.name}IO {
                     ${field.name}.add(new ${helper.getPlcValueTypeForTypeReference(field.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(field)}) <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)})<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
+            LOGGER.info("${field.name} - {}", ${field.name});
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
@@ -162,6 +164,7 @@ public class ${type.name}IO {
             if(${field.name} != ${type.name}.${field.name?upper_case}) {
                 throw new ParseException("Expected constant value " + ${type.name}.${field.name?upper_case} + " but got " + ${field.name});
             }
+            LOGGER.info("${field.name} - {}", ${field.name});
                         <#if field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -170,6 +173,7 @@ public class ${type.name}IO {
 
             // Enum field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+            LOGGER.info("${field.name} - {}", ${field.name});
                         <#if field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -178,6 +182,7 @@ public class ${type.name}IO {
 
             // Manual Field (${field.name})
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+            LOGGER.info("${field.name} - {}", ${field.name});
                         <#if field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -197,9 +202,11 @@ public class ${type.name}IO {
                         <#if helper.isEnumField(field)>
             // Enum field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type))});
+            LOGGER.info("${field.name} - {}", ${field.name});
                         <#else>
             // Simple Field (${field.name})
             ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            LOGGER.info("${field.name} - {}", ${field.name});
                         </#if>
                         <#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">
                             <#assign valueDefined=true>
@@ -261,7 +268,8 @@ public class ${type.name}IO {
                 <#assign valueDefined=true>
             </#if>
 
-            <#if valueDefined>
+
+        <#if valueDefined>
                 <#switch case.name>
                     <#case "TIME">
             return new PlcTIME(value);

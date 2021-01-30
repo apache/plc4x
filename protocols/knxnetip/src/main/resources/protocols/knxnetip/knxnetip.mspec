@@ -649,7 +649,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' [string '-1' 'description',                                                    bit 'knxSupport']
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]

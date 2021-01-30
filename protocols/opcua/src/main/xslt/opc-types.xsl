@@ -67,6 +67,8 @@
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='WriteResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseRequest']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='BrowseResponse']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='GetEndpointsRequest']"/>
+        <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='GetEndpointsResponse']"/>
         <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName='ServiceFault']"/>
 
     ['473' CloseSessionRequest
@@ -434,7 +436,7 @@
     [simple PascalString 'gatewayServerUri']
     [simple PascalString 'discoveryProfileUri']
     [simple int 32 'noOfDiscoveryUrls']
-    [optional PascalString 'discoveryUrls' 'noOfDiscoveryUrls > 0']
+    [array PascalString 'discoveryUrls' count 'noOfDiscoveryUrls']
 ]
 
 [type 'EndpointDescription'
