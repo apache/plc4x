@@ -16,7 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package readwrite
 
 import (
     "errors"
@@ -34,10 +34,16 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.HPAIControlEndpointParse(io)
     case "TunnelingResponseDataBlock":
         return model.TunnelingResponseDataBlockParse(io)
+    case "DeviceDescriptorType2":
+        return model.DeviceDescriptorType2Parse(io)
+    case "ChannelInformation":
+        return model.ChannelInformationParse(io)
     case "DeviceConfigurationAckDataBlock":
         return model.DeviceConfigurationAckDataBlockParse(io)
     case "ConnectionRequestInformation":
         return model.ConnectionRequestInformationParse(io)
+    case "Apdu":
+        return model.ApduParse(io)
     case "HPAIDiscoveryEndpoint":
         return model.HPAIDiscoveryEndpointParse(io)
     case "ProjectInstallationIdentifier":
@@ -76,6 +82,14 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.DIBSuppSvcFamiliesParse(io)
     case "LDataFrame":
         return model.LDataFrameParse(io)
+    case "ApduDataExt":
+        length, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduDataExtParse(io, length)
+    case "ApduControl":
+        return model.ApduControlParse(io)
     case "KnxGroupAddress":
         numLevels, err := utils.StrToUint8(arguments[0])
         if err != nil {
@@ -84,6 +98,12 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
         return model.KnxGroupAddressParse(io, numLevels)
     case "MACAddress":
         return model.MACAddressParse(io)
+    case "ApduData":
+        dataLength, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduDataParse(io, dataLength)
     }
     return nil, errors.New("Unsupported type " + typeName)
 }

@@ -32,15 +32,7 @@ type LDataFrameData struct {
     DestinationAddress []int8
     GroupAddress bool
     HopCount uint8
-    DataLength uint8
-    Control bool
-    Numbered bool
-    Counter uint8
-    ControlType *ControlType
-    Apci *APCI
-    ExtendedApci *ExtendedAPCI
-    DataFirstByte *int8
-    Data []int8
+    Apdu *Apdu
     Parent *LDataFrame
     ILDataFrameData
 }
@@ -56,10 +48,6 @@ type ILDataFrameData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFrameData) NotAckFrame() bool {
-    return true
-}
-
 func (m *LDataFrameData) ExtendedFrame() bool {
     return false
 }
@@ -69,29 +57,22 @@ func (m *LDataFrameData) Polling() bool {
 }
 
 
-func (m *LDataFrameData) InitializeParent(parent *LDataFrame, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+func (m *LDataFrameData) InitializeParent(parent *LDataFrame, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
     m.Parent.Repeated = repeated
+    m.Parent.NotAckFrame = notAckFrame
     m.Parent.Priority = priority
     m.Parent.AcknowledgeRequested = acknowledgeRequested
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataFrameData(sourceAddress *KnxAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, dataLength uint8, control bool, numbered bool, counter uint8, controlType *ControlType, apci *APCI, extendedApci *ExtendedAPCI, dataFirstByte *int8, data []int8, repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+func NewLDataFrameData(sourceAddress *KnxAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, apdu *Apdu, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
     child := &LDataFrameData{
         SourceAddress: sourceAddress,
         DestinationAddress: destinationAddress,
         GroupAddress: groupAddress,
         HopCount: hopCount,
-        DataLength: dataLength,
-        Control: control,
-        Numbered: numbered,
-        Counter: counter,
-        ControlType: controlType,
-        Apci: apci,
-        ExtendedApci: extendedApci,
-        DataFirstByte: dataFirstByte,
-        Data: data,
-        Parent: NewLDataFrame(repeated, priority, acknowledgeRequested, errorFlag),
+        Apdu: apdu,
+        Parent: NewLDataFrame(repeated, notAckFrame, priority, acknowledgeRequested, errorFlag),
     }
     child.Parent.Child = child
     return child.Parent
@@ -137,42 +118,8 @@ func (m *LDataFrameData) LengthInBits() uint16 {
     // Simple field (hopCount)
     lengthInBits += 3
 
-    // Simple field (dataLength)
-    lengthInBits += 4
-
-    // Simple field (control)
-    lengthInBits += 1
-
-    // Simple field (numbered)
-    lengthInBits += 1
-
-    // Simple field (counter)
-    lengthInBits += 4
-
-    // Optional Field (controlType)
-    if m.ControlType != nil {
-        lengthInBits += 2
-    }
-
-    // Optional Field (apci)
-    if m.Apci != nil {
-        lengthInBits += 4
-    }
-
-    // Optional Field (extendedApci)
-    if m.ExtendedApci != nil {
-        lengthInBits += 6
-    }
-
-    // Optional Field (dataFirstByte)
-    if m.DataFirstByte != nil {
-        lengthInBits += 6
-    }
-
-    // Array field
-    if len(m.Data) > 0 {
-        lengthInBits += 8 * uint16(len(m.Data))
-    }
+    // Simple field (apdu)
+    lengthInBits += m.Apdu.LengthInBits()
 
     return lengthInBits
 }
@@ -212,79 +159,10 @@ func LDataFrameDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         return nil, errors.New("Error parsing 'hopCount' field " + _hopCountErr.Error())
     }
 
-    // Simple Field (dataLength)
-    dataLength, _dataLengthErr := io.ReadUint8(4)
-    if _dataLengthErr != nil {
-        return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
-    }
-
-    // Simple Field (control)
-    control, _controlErr := io.ReadBit()
-    if _controlErr != nil {
-        return nil, errors.New("Error parsing 'control' field " + _controlErr.Error())
-    }
-
-    // Simple Field (numbered)
-    numbered, _numberedErr := io.ReadBit()
-    if _numberedErr != nil {
-        return nil, errors.New("Error parsing 'numbered' field " + _numberedErr.Error())
-    }
-
-    // Simple Field (counter)
-    counter, _counterErr := io.ReadUint8(4)
-    if _counterErr != nil {
-        return nil, errors.New("Error parsing 'counter' field " + _counterErr.Error())
-    }
-
-    // Optional Field (controlType) (Can be skipped, if a given expression evaluates to false)
-    var controlType *ControlType = nil
-    if control {
-        _val, _err := ControlTypeParse(io)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'controlType' field " + _err.Error())
-        }
-        controlType = &_val
-    }
-
-    // Optional Field (apci) (Can be skipped, if a given expression evaluates to false)
-    var apci *APCI = nil
-    if !(control) {
-        _val, _err := APCIParse(io)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'apci' field " + _err.Error())
-        }
-        apci = &_val
-    }
-
-    // Optional Field (extendedApci) (Can be skipped, if a given expression evaluates to false)
-    var extendedApci *ExtendedAPCI = nil
-    if bool(!(control)) && bool(bool(((*apci)) == (APCI_OTHER_PDU))) {
-        _val, _err := ExtendedAPCIParse(io)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'extendedApci' field " + _err.Error())
-        }
-        extendedApci = &_val
-    }
-
-    // Optional Field (dataFirstByte) (Can be skipped, if a given expression evaluates to false)
-    var dataFirstByte *int8 = nil
-    if bool(!(control)) && bool(bool(((*apci)) != (APCI_OTHER_PDU))) {
-        _val, _err := io.ReadInt8(6)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'dataFirstByte' field " + _err.Error())
-        }
-        dataFirstByte = &_val
-    }
-
-    // Array field (data)
-    // Count array
-    data := make([]int8, utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1)))))
-    for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1))))); curItem++ {
-        _item, _err := io.ReadInt8(8)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'data' field " + _err.Error())
-        }
-        data[curItem] = _item
+    // Simple Field (apdu)
+    apdu, _apduErr := ApduParse(io)
+    if _apduErr != nil {
+        return nil, errors.New("Error parsing 'apdu' field " + _apduErr.Error())
     }
 
     // Create a partially initialized instance
@@ -293,15 +171,7 @@ func LDataFrameDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         DestinationAddress: destinationAddress,
         GroupAddress: groupAddress,
         HopCount: hopCount,
-        DataLength: dataLength,
-        Control: control,
-        Numbered: numbered,
-        Counter: counter,
-        ControlType: controlType,
-        Apci: apci,
-        ExtendedApci: extendedApci,
-        DataFirstByte: dataFirstByte,
-        Data: data,
+        Apdu: apdu,
         Parent: &LDataFrame{},
     }
     _child.Parent.Child = _child
@@ -341,82 +211,10 @@ func (m *LDataFrameData) Serialize(io utils.WriteBuffer) error {
         return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
     }
 
-    // Simple Field (dataLength)
-    dataLength := uint8(m.DataLength)
-    _dataLengthErr := io.WriteUint8(4, (dataLength))
-    if _dataLengthErr != nil {
-        return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
-    }
-
-    // Simple Field (control)
-    control := bool(m.Control)
-    _controlErr := io.WriteBit((control))
-    if _controlErr != nil {
-        return errors.New("Error serializing 'control' field " + _controlErr.Error())
-    }
-
-    // Simple Field (numbered)
-    numbered := bool(m.Numbered)
-    _numberedErr := io.WriteBit((numbered))
-    if _numberedErr != nil {
-        return errors.New("Error serializing 'numbered' field " + _numberedErr.Error())
-    }
-
-    // Simple Field (counter)
-    counter := uint8(m.Counter)
-    _counterErr := io.WriteUint8(4, (counter))
-    if _counterErr != nil {
-        return errors.New("Error serializing 'counter' field " + _counterErr.Error())
-    }
-
-    // Optional Field (controlType) (Can be skipped, if the value is null)
-    var controlType *ControlType = nil
-    if m.ControlType != nil {
-        controlType = m.ControlType
-        _controlTypeErr := controlType.Serialize(io)
-        if _controlTypeErr != nil {
-            return errors.New("Error serializing 'controlType' field " + _controlTypeErr.Error())
-        }
-    }
-
-    // Optional Field (apci) (Can be skipped, if the value is null)
-    var apci *APCI = nil
-    if m.Apci != nil {
-        apci = m.Apci
-        _apciErr := apci.Serialize(io)
-        if _apciErr != nil {
-            return errors.New("Error serializing 'apci' field " + _apciErr.Error())
-        }
-    }
-
-    // Optional Field (extendedApci) (Can be skipped, if the value is null)
-    var extendedApci *ExtendedAPCI = nil
-    if m.ExtendedApci != nil {
-        extendedApci = m.ExtendedApci
-        _extendedApciErr := extendedApci.Serialize(io)
-        if _extendedApciErr != nil {
-            return errors.New("Error serializing 'extendedApci' field " + _extendedApciErr.Error())
-        }
-    }
-
-    // Optional Field (dataFirstByte) (Can be skipped, if the value is null)
-    var dataFirstByte *int8 = nil
-    if m.DataFirstByte != nil {
-        dataFirstByte = m.DataFirstByte
-        _dataFirstByteErr := io.WriteInt8(6, *(dataFirstByte))
-        if _dataFirstByteErr != nil {
-            return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
-        }
-    }
-
-    // Array Field (data)
-    if m.Data != nil {
-        for _, _element := range m.Data {
-            _elementErr := io.WriteInt8(8, _element)
-            if _elementErr != nil {
-                return errors.New("Error serializing 'data' field " + _elementErr.Error())
-            }
-        }
+    // Simple Field (apdu)
+    _apduErr := m.Apdu.Serialize(io)
+    if _apduErr != nil {
+        return errors.New("Error serializing 'apdu' field " + _apduErr.Error())
     }
 
         return nil
@@ -462,65 +260,12 @@ func (m *LDataFrameData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
                     return err
                 }
                 m.HopCount = data
-            case "dataLength":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+            case "apdu":
+                var dt *Apdu
+                if err := d.DecodeElement(&dt, &tok); err != nil {
                     return err
                 }
-                m.DataLength = data
-            case "control":
-                var data bool
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Control = data
-            case "numbered":
-                var data bool
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Numbered = data
-            case "counter":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.Counter = data
-            case "controlType":
-                var data *ControlType
-                if err := d.DecodeElement(data, &tok); err != nil {
-                    return err
-                }
-                m.ControlType = data
-            case "apci":
-                var data *APCI
-                if err := d.DecodeElement(data, &tok); err != nil {
-                    return err
-                }
-                m.Apci = data
-            case "extendedApci":
-                var data *ExtendedAPCI
-                if err := d.DecodeElement(data, &tok); err != nil {
-                    return err
-                }
-                m.ExtendedApci = data
-            case "dataFirstByte":
-                var data *int8
-                if err := d.DecodeElement(data, &tok); err != nil {
-                    return err
-                }
-                m.DataFirstByte = data
-            case "data":
-                var _encoded string
-                if err := d.DecodeElement(&_encoded, &tok); err != nil {
-                    return err
-                }
-                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
-                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
-                if err != nil {
-                    return err
-                }
-                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
+                m.Apdu = dt
             }
         }
         token, err = d.Token()
@@ -548,33 +293,7 @@ func (m *LDataFrameData) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
     if err := e.EncodeElement(m.HopCount, xml.StartElement{Name: xml.Name{Local: "hopCount"}}); err != nil {
         return err
     }
-    if err := e.EncodeElement(m.DataLength, xml.StartElement{Name: xml.Name{Local: "dataLength"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Control, xml.StartElement{Name: xml.Name{Local: "control"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Numbered, xml.StartElement{Name: xml.Name{Local: "numbered"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Counter, xml.StartElement{Name: xml.Name{Local: "counter"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.ControlType, xml.StartElement{Name: xml.Name{Local: "controlType"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.Apci, xml.StartElement{Name: xml.Name{Local: "apci"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.ExtendedApci, xml.StartElement{Name: xml.Name{Local: "extendedApci"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
-        return err
-    }
-    _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
-    if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+    if err := e.EncodeElement(m.Apdu, xml.StartElement{Name: xml.Name{Local: "apdu"}}); err != nil {
         return err
     }
     return nil
