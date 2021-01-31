@@ -294,3 +294,23 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_sizes_get_data_type_size(plc4c_
     }
   }
 }
+
+plc4c_modbus_read_write_modbus_data_type_sizes plc4c_modbus_read_write_modbus_data_type_sizes_get_first_enum_for_field_data_type_size(uint8_t value) {
+    switch(value) {
+        case 1: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_BOOL;
+        }
+        case 2: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
+        }
+        case 4: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_DWORD;
+        }
+        case 8: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_LWORD;
+        }
+        default: {
+            return -1;
+        }
+    }
+}

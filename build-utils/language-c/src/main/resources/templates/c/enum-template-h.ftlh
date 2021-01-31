@@ -82,6 +82,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_in
     <#list type.constantNames as constantName>
 
 ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} ${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(${helper.getCTypeName(type.name)} value);
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value);
     </#list>
 </#if>
 

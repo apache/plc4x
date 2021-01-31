@@ -166,7 +166,7 @@
     [discriminator uint 8 'addressType']
     [typeSwitch 'addressType'
         ['0x10' S7AddressAny
-            [enum     TransportSize 'transportSize']
+            [enum     TransportSize 'transportSize' 'code']
             [simple   uint 16       'numberOfElements']
             [simple   uint 16       'dbNumber']
             [enum     MemoryArea    'area']

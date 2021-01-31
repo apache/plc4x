@@ -220,8 +220,8 @@ plc4c_return_code plc4c_driver_s7_encode_address(
 
     if ((*cur_pos == '(') && (strcmp(data_type, "STRING") == 0)) {
       // Next comes the string_length
-      last_pos = cur_pos;
-      while (isalpha(*cur_pos)) {
+      last_pos = ++cur_pos;
+      while (isdigit(*cur_pos)) {
         cur_pos++;
       }
       len = cur_pos - last_pos;
@@ -307,7 +307,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
 
     // Check the optional transport size code.
     if(transfer_size_code != NULL) {
-      if(plc4c_s7_read_write_transport_size_get_size_code(any_address->s7_address_any_transport_size) != *transfer_size_code) {
+      if(plc4c_s7_read_write_transport_size_get_short_name(any_address->s7_address_any_transport_size) != *transfer_size_code) {
         return INVALID_ADDRESS;
       }
     }

@@ -154,7 +154,7 @@ plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s) {
   return data;
 }
 
-plc4c_data *plc4c_data_create_char_data(char s) {
+plc4c_data *plc4c_data_create_char_data(char* s) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_CONSTANT_STRING;
   data->size = 1;
@@ -188,6 +188,10 @@ plc4c_data *plc4c_data_create_void_pointer_data(void *v) {
 }
 
 void plc4c_data_printf(plc4c_data *data) {
+  if (data == NULL) {
+    printf("NULL");
+    return;
+  }
   switch (data->data_type) {
     case PLC4C_BOOL:
       printf("%s", data->data.boolean_value ? "true" : "false");
@@ -196,25 +200,25 @@ void plc4c_data_printf(plc4c_data *data) {
       printf("%d", data->data.char_value);
       break;
     case PLC4C_UCHAR:
-      printf("%d", data->data.uchar_value);
+      printf("%u", data->data.uchar_value);
       break;
     case PLC4C_SHORT:
       printf("%d", data->data.short_value);
       break;
     case PLC4C_USHORT:
-      printf("%d", data->data.ushort_value);
+      printf("%u", data->data.ushort_value);
       break;
     case PLC4C_INT:
       printf("%d", data->data.int_value);
       break;
     case PLC4C_UINT:
-      printf("%iu", data->data.uint_value);
+      printf("%u", data->data.uint_value);
       break;
     case PLC4C_LINT:
-      printf("%d", data->data.lint_value);
+      printf("%I64d", data->data.lint_value);
       break;
     case PLC4C_ULINT:
-      printf("%d", data->data.ulint_value);
+      printf("%I64u", data->data.ulint_value);
       break;
     case PLC4C_FLOAT:
       printf("%f", data->data.float_value);
@@ -226,14 +230,19 @@ void plc4c_data_printf(plc4c_data *data) {
       printf("%s", data->data.const_string_value);
       break;
     case PLC4C_LIST:
-      printf("{");
+      printf("[");
       plc4c_list_element *cur_element =
           plc4c_utils_list_tail(&data->data.list_value);
       while (cur_element != NULL) {
-        plc4c_response_value_item *value_item = cur_element->value;
-        plc4c_data_printf(value_item->value);
+        plc4c_data *data_item = cur_element->value;
+        plc4c_data_printf(data_item);
+        cur_element = cur_element->next;
+        if (cur_element != NULL) {
+          printf(", ");
+        }
       }
-      printf("}");
+      printf("]");
+      break;
     case PLC4C_VOID_POINTER:
       if (data->custom_printf != NULL) {
         data->custom_printf(data);

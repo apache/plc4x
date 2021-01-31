@@ -101,5 +101,26 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
     }
   }
 }
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value) {
+    <#if helper.isStringTypeReference(type.getConstantType(constantName))>
+        <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+    if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}) == 0) {
+        return ${helper.getCTypeName(type.name)}_${enumValue.name};
+    }
+        </#list>
+    <#else>
+    switch(value) {
+    <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+        case ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}: {
+            return ${helper.getCTypeName(type.name)}_${enumValue.name};
+        }
+    </#list>
+        default: {
+            return -1;
+        }
+    }
+    </#if>
+}
     </#list>
 </#if>

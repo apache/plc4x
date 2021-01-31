@@ -69,8 +69,8 @@ enum plc4c_connection_state_t {
 };
 typedef enum plc4c_connection_state_t plc4c_connection_state;
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
 
 int main() {
   bool loop = true;
@@ -195,81 +195,83 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        printf("Adding an item for '%I0.0:BOOL' ... ");
-        result =
+        /*result =
             plc4c_read_request_add_item(read_request, "BOOL", "%DB4:0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "BYTE", "%DB4:1:BYTE");
+            plc4c_read_request_add_item(read_request, "BYTE", "%DB4.1:BYTE");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "WORD", "%DB4:2:WORD");
+            plc4c_read_request_add_item(read_request, "WORD", "%DB4.2:WORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "DWORD", "%DB4:4:DWORD");
+            plc4c_read_request_add_item(read_request, "DWORD", "%DB4.4:DWORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "SINT", "%DB4:16:SINT");
+            plc4c_read_request_add_item(read_request, "SINT", "%DB4.16:SINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "USINT", "%DB4:17:USINT");
+            plc4c_read_request_add_item(read_request, "USINT", "%DB4.17:USINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "INT", "%DB4:18:INT");
+            plc4c_read_request_add_item(read_request, "INT", "%DB4.18:INT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "UINT", "%DB4:20:UINT");
+            plc4c_read_request_add_item(read_request, "UINT", "%DB4.20:UINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "DINT", "%DB4:22:DINT");
+            plc4c_read_request_add_item(read_request, "DINT", "%DB4.22:DINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "UDINT", "%DB4:26:UDINT");
+            plc4c_read_request_add_item(read_request, "UDINT", "%DB4.26:UDINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "REAL", "%DB4:46:REAL");
+            plc4c_read_request_add_item(read_request, "REAL", "%DB4.46:REAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }
+        }*/
+
+        // Works till here ...
+
         // S7 reports "Not supported"
-        /*result =
+        result =
             plc4c_read_request_add_item(read_request, "TIME", "%DB4:58:TIME");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
+        /*result =
             plc4c_read_request_add_item(read_request, "DATE", "%DB4:70:DATE");
         if (result != OK) {
           printf("FAILED\n");
@@ -281,36 +283,38 @@ int main() {
           printf("FAILED\n");
           return -1;
         }*/
-        result =
+        /*result =
             plc4c_read_request_add_item(read_request, "TOD", "%DB4:76:TOD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }
-        /*result =
+        }*/
+        result =
             plc4c_read_request_add_item(read_request, "CHAR", "%DB4:136:CHAR");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
+        // UTF-16 doesn't work well in a portable way
+        /*result =
             plc4c_read_request_add_item(read_request, "WCHAR", "%DB4:138:WCHAR");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }
+        }*/
         result =
             plc4c_read_request_add_item(read_request, "STRING", "%DB4:140:STRING(10)");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "WSTRING", "%DB4:396:WSTRING(10)");
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }*/
+        // UTF-16 doesn't work well in a portable way
+        /*result =
+               plc4c_read_request_add_item(read_request, "WSTRING", "%DB4:396:WSTRING(10)");
+           if (result != OK) {
+             printf("FAILED\n");
+             return -1;
+           }*/
         printf("SUCCESS\n");
 
         // Execute the read-request.
@@ -354,7 +358,7 @@ int main() {
         while (cur_element != NULL) {
           plc4c_response_value_item *value_item = cur_element->value;
 
-          printf("Value %s (%s):", value_item->item->name,
+          printf("Value %s (%s): ", value_item->item->name,
                  plc4c_response_code_to_message(value_item->response_code));
           plc4c_data_printf(value_item->value);
           printf("\n");
