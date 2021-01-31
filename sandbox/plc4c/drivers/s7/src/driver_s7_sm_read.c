@@ -131,6 +131,11 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
         char* data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
         uint16_t num_elements = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
         int32_t string_length = 0;
+        if(transport_size == plc4c_s7_read_write_transport_size_STRING) {
+          // TODO: This needs to be changed to read arrays of strings.
+          string_length = num_elements;
+          num_elements = 1;
+        }
 
         // Convert the linked list with uint8_t elements into an array of uint8_t.
         plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item = cur_response_item_element->value;

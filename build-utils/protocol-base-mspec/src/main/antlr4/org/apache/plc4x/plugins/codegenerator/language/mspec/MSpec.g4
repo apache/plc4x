@@ -80,7 +80,7 @@ discriminatorField
  ;
 
 enumField
- : 'enum' type=typeReference name=idExpression
+ : 'enum' type=typeReference name=idExpression (fieldName=idExpression)?
  ;
 
 implicitField

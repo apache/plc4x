@@ -67,9 +67,13 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
                     
     // Enum field (transportSize)
     plc4c_s7_read_write_transport_size transportSize = plc4c_s7_read_write_transport_size_null();
-    _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &transportSize);
-    if(_res != OK) {
-      return _res;
+    {
+      uint8_t _constantValue = 0;
+      _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &_constantValue);
+      if(_res != OK) {
+        return _res;
+      }
+      transportSize = plc4c_s7_read_write_transport_size_get_first_enum_for_field_code(_constantValue);
     }
     (*_message)->s7_address_any_transport_size = transportSize;
 
@@ -153,7 +157,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
     case plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any: {
 
       // Enum field (transportSize)
-      _res = plc4c_spi_write_signed_byte(io, 8, _message->s7_address_any_transport_size);
+      _res = plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_transport_size_get_code(_message->s7_address_any_transport_size));
       if(_res != OK) {
         return _res;
       }

@@ -114,3 +114,17 @@ bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_writ
     }
   }
 }
+
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_get_first_enum_for_field_size_in_bits(bool value) {
+    switch(value) {
+        case false: {
+            return plc4c_s7_read_write_data_transport_size_NULL;
+        }
+        case true: {
+            return plc4c_s7_read_write_data_transport_size_BIT;
+        }
+        default: {
+            return -1;
+        }
+    }
+}

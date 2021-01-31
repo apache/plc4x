@@ -141,7 +141,7 @@ plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s);
  * @param s the char value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_char_data(char s);
+plc4c_data *plc4c_data_create_char_data(char* s);
 
 /**
  * Creates a plc4c_data which contains a list of values

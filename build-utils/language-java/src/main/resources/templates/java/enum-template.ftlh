@@ -51,7 +51,9 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum ${type.name} {
@@ -98,6 +100,25 @@ public enum ${type.name} {
     <#list type.constantNames as constantName>
     public ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} get${constantName?cap_first}() {
         return ${constantName};
+    }
+
+    public static ${type.name} firstEnumForField${constantName?cap_first}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} fieldValue) {
+        for (${type.name} _val : ${type.name}.values()) {
+            if(_val.get${constantName?cap_first}() == fieldValue) {
+                return _val;
+            }
+        }
+        return null;
+    }
+
+    public static List<${type.name}> enumsForField${constantName?cap_first}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} fieldValue) {
+        List<${type.name}> _values = new ArrayList();
+        for (${type.name} _val : ${type.name}.values()) {
+            if(_val.get${constantName?cap_first}() == fieldValue) {
+                _values.add(_val);
+            }
+        }
+        return _values;
     }
 
     </#list>
