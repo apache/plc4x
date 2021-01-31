@@ -50,7 +50,7 @@ public class RecordPlc4xWriter implements Plc4xWriter {
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
                 
-        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap())) {
+        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream)) {
             writeResultRef.set(resultSetWriter.write(fullRecordSet));
             if (mimeType == null) {
                 mimeType = resultSetWriter.getMimeType();
@@ -63,7 +63,7 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 
 	@Override
 	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException {
-		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap())) {
+		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream)) {
             mimeType = resultSetWriter.getMimeType();
             resultSetWriter.beginRecordSet();
             resultSetWriter.finishRecordSet();

@@ -145,7 +145,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
             case BIT:
             	return RecordFieldType.BOOLEAN.getDataType();
             case DECIMAL:
-            	return RecordFieldType.DECIMAL.getDataType();
+            	return RecordFieldType.DOUBLE.getDataType();
             case BYTE:
             	return RecordFieldType.BYTE.getDataType();
             case CHAR:

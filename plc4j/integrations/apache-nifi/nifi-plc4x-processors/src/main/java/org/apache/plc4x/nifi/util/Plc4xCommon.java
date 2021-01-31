@@ -80,6 +80,7 @@ public class Plc4xCommon {
 	 * And used directly from the RecordPlc4xWriter.writePlcReadResponse() method.
 	 * However, to make sure output schema does not change, it is built from the processor configuration (variable memory addresses).
 	 */
+	/*
 	public static Schema createSchema(Map<String, ? extends PlcValue> responseDataStructure){
 		//plc and record datatype map
 		final FieldAssembler<Schema> builder = SchemaBuilder.record("PlcReadResponse").namespace("any.data").fields();	
@@ -133,7 +134,7 @@ public class Plc4xCommon {
 		return builder.endRecord();
 
 	}
-	
+	*/
 	
 	public static PLC4X_PROTOCOL getConnectionProtocol(String connectionString) {
 		if (connectionString != null && !connectionString.isEmpty()) {
