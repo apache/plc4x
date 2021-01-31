@@ -23,13 +23,11 @@ import org.apache.commons.lang3.RandomUtils;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -101,6 +99,10 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
 
             GeneralName[] gnArray = new GeneralName[] {new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
 
+            certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(keyPair.getPublic()));
+            certificateBuilder.addExtension(Extension.extendedKeyUsage, false, new ExtendedKeyUsage(new KeyPurposeId[]{KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_serverAuth}));
+            certificateBuilder.addExtension(Extension.keyUsage,false, new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature | KeyUsage.keyAgreement | KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.nonRepudiation));
+            certificateBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
 
             GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence(gnArray));
             certificateBuilder.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);

@@ -65,6 +65,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
 
     private static final int requestTimeout = 10000;
+    private boolean isEncrypted;
 
     @Override
     public String getProtocolCode() {
@@ -86,13 +87,14 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         return "tcp";
     }
 
-    /**
-     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
     protected boolean awaitSetupComplete() {
         return true;
+    }
+
+    @Override
+    protected boolean awaitDiscoverComplete() {
+        return isEncrypted;
     }
 
     @Override
@@ -222,6 +224,14 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             }
         }
 
+        this.isEncrypted = configuration.isEncrypted();
+
+        // Make the "await disconnect complete" overridable via system property.
+        boolean awaitDiscoverComplete = awaitDiscoverComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
+            awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
+        }
+
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
@@ -230,6 +240,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             channelFactory,
             awaitSetupComplete,
             awaitDisconnectComplete,
+            awaitDiscoverComplete,
             getStackConfigurer(),
             getOptimizer());
     }

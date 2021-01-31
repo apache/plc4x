@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.context.CertificateGenerator;
 import org.apache.plc4x.java.opcua.context.CertificateKeyPair;
 import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
+import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
@@ -60,6 +61,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     private String port;
     private String endpoint;
     private String params;
+    private Boolean isEncrypted = false;
+    private PascalByteString thumbprint;
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
@@ -114,9 +117,15 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return keyStorePassword;
     }
 
+    public PascalByteString getThumbprint() {
+        return thumbprint;
+    }
+
     public CertificateKeyPair getCertificateKeyPair() {
         return ckp;
     }
+
+    public boolean isEncrypted() { return isEncrypted; }
 
     public void setDiscovery(boolean discovery) {
         this.discovery = discovery;
@@ -145,6 +154,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     public void setKeyStorePassword(String keyStorePassword) {
         this.keyStorePassword = keyStorePassword;
     }
+
+    public void setThumbprint(PascalByteString thumbprint) { this.thumbprint = thumbprint; }
 
     public String getTransportCode() {
         return code;
@@ -179,6 +190,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     }
 
     public void openKeyStore() throws Exception {
+        this.isEncrypted = true;
         File securityTempDir = new File(certDirectory, "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
             throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);

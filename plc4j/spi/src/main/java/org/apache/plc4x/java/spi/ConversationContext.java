@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
@@ -40,6 +41,8 @@ public interface ConversationContext<T> {
     void fireConnected();
 
     void fireDisconnected();
+
+    void fireDiscovered(Configuration c);
 
     SendRequestContext<T> sendRequest(T packet);
 

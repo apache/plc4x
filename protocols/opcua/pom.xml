@@ -175,6 +175,7 @@
       <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
+
   </dependencies>
 
 </project>

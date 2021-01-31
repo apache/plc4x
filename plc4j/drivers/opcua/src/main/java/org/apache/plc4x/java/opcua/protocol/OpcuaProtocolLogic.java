@@ -56,6 +56,8 @@ import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -128,11 +130,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
     private String certificateThumbprint = null;
+    private OpcuaConfiguration configuration;
 
     private AtomicBoolean securedConnection = new AtomicBoolean(false);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
+        this.configuration = configuration;
         this.endpoint = configuration.getEndpoint();
         this.discovery = configuration.isDiscovery();
         this.username = configuration.getUsername();
@@ -150,7 +154,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 LOGGER.error("Failed to encode the certificate");
             }
             //this.thumbprint = new PascalByteString(this.ckp.getThumbPrint().length, this.ckp.getThumbPrint());
-            this.thumbprint =NULL_BYTE_STRING;
+            this.thumbprint = configuration.getThumbprint();
         } else {
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
@@ -286,15 +290,35 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
-                if (this.isEncrypted & !this.checkedEndpoints) {
-                    onConnectGetEndpointsOpenSecureChannel(context, opcuaAcknowledgeResponse);
-                } else {
-                    onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse);
-                }
+                onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse);
             });
     }
 
-    public void onConnectGetEndpointsOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
+    @Override
+    public void onDiscover(ConversationContext<OpcuaAPU> context) {
+        // Only the TCP transport supports login.
+        LOGGER.info("Opcua Driver running in ACTIVE mode, discovering endpoints");
+
+        OpcuaHelloRequest hello = new OpcuaHelloRequest(CHUNK,
+            VERSION,
+            DEFAULT_RECEIVE_BUFFER_SIZE,
+            DEFAULT_SEND_BUFFER_SIZE,
+            DEFAULT_MAX_MESSAGE_SIZE,
+            DEFAULT_MAX_CHUNK_COUNT,
+            this.endpoint.length(),
+            this.endpoint);
+
+        context.sendRequest(new OpcuaAPU(hello))
+            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
+            .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
+            .handle(opcuaAcknowledgeResponse -> {
+                LOGGER.debug("Got Hello Response Connection Response");
+                onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse);
+            });
+    }
+
+    public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
         int transactionId = getTransactionIdentifier(securedConnection.get());
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
@@ -340,7 +364,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 } else {
                     LOGGER.debug("Got Secure Response Connection Response");
                     try {
-                        onConnectGetEndpointsRequest(context, opcuaOpenResponse);
+                        onDiscoverGetEndpointsRequest(context, opcuaOpenResponse);
                     } catch (PlcConnectionException e) {
                         LOGGER.error("Error occurred while connecting to OPC UA server");
                     }
@@ -348,7 +372,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             });
     }
 
-    public void onConnectGetEndpointsRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
+    public void onDiscoverGetEndpointsRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
         certificateThumbprint = opcuaOpenResponse.getReceiverCertificateThumbprint();
         OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
         tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
@@ -404,7 +428,24 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
                         } else {
                             LOGGER.debug("Got Create Session Response Connection Response");
-                            onConnectGetEndpointsCloseSecureChannel(context, (GetEndpointsResponse) message);
+                            GetEndpointsResponse response = (GetEndpointsResponse) message;
+
+                            EndpointDescription[] endpoints = response.getEndpoints();
+                            for (EndpointDescription endpoint : endpoints) {
+                                if (endpoint.getEndpointUrl().getStringValue().equals(this.endpoint) && endpoint.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
+                                    LOGGER.info("Found OPC UA endpoint {}", this.endpoint);
+                                    this.senderCertificate = endpoint.getServerCertificate().getStringValue();
+                                }
+                            }
+
+                            try {
+                                MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+                                byte[] digest = messageDigest.digest(this.senderCertificate);
+                                this.configuration.setThumbprint(new PascalByteString(digest.length, digest));
+                            } catch (NoSuchAlgorithmException e) {
+                                LOGGER.error("Failed to find hashing algorithm");
+                            }
+                            onDiscoverCloseSecureChannel(context, response);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -416,16 +457,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         }
     }
 
-    private void onConnectGetEndpointsCloseSecureChannel(ConversationContext<OpcuaAPU> context, GetEndpointsResponse message) {
+    private void onDiscoverCloseSecureChannel(ConversationContext<OpcuaAPU> context, GetEndpointsResponse message) {
 
         int transactionId = getTransactionIdentifier(securedConnection.get());
-        EndpointDescription[] endpoints = message.getEndpoints();
-        for (EndpointDescription endpoint : endpoints) {
-            if (endpoint.getEndpointUrl().getStringValue().equals(this.endpoint) && endpoint.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
-                LOGGER.info("Found OPC UA endpoint {}", this.endpoint);
-                this.senderCertificate = endpoint.getServerCertificate().getStringValue();
-            }
-        }
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeIdFourByte(false,           //Namespace Uri Specified
             false,            //Server Index Specified
@@ -458,10 +492,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .handle(opcuaMessageResponse -> {
                 LOGGER.info("Got Close Secure Channel Response" + opcuaMessageResponse.toString());
-                this.checkedEndpoints = true;
-                channelId.set(0);
-                tokenId.set(0);
-                onConnect(context);
+                // Send an event that connection setup is complete.
+                context.fireDiscovered(this.configuration);
             });
     }
 

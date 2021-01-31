@@ -58,6 +58,10 @@ public abstract class Plc4xProtocolBase<T> {
         // Intentionally do nothing here
     }
 
+    public void onDiscover(ConversationContext<T> context) {
+        // Intentionally do nothing here
+    }
+
     /**
      * TODO document me
      * <p>

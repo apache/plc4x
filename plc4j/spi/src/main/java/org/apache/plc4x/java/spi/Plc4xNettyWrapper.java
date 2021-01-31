@@ -24,11 +24,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
-import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
-import org.apache.plc4x.java.spi.events.ConnectEvent;
-import org.apache.plc4x.java.spi.events.ConnectedEvent;
-import org.apache.plc4x.java.spi.events.DisconnectEvent;
-import org.apache.plc4x.java.spi.events.DisconnectedEvent;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
 import org.apache.plc4x.java.spi.internal.DefaultSendRequestContext;
 import org.apache.plc4x.java.spi.internal.HandlerRegistration;
@@ -86,6 +83,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             @Override
             public void fireDisconnected() {
                 pipeline.fireUserEventTriggered(DisconnectedEvent.class);
+            }
+
+            @Override
+            public void fireDiscovered(Configuration c) {
+                pipeline.fireUserEventTriggered(DiscoveredEvent.class);
             }
 
             @Override
@@ -190,6 +192,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof DisconnectEvent) {
             this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx, passive));
+        } else if (evt instanceof DiscoverEvent) {
+            this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof CloseConnectionEvent) {
             this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
         } else {
@@ -232,6 +236,12 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         public void fireDisconnected() {
             logger.trace("Firing Disconnected!");
             channelHandlerContext.pipeline().fireUserEventTriggered(new DisconnectedEvent());
+        }
+
+        @Override
+        public void fireDiscovered(Configuration c) {
+            logger.trace("Firing Discovered!");
+            channelHandlerContext.pipeline().fireUserEventTriggered(new DiscoveredEvent(c));
         }
 
         @Override
