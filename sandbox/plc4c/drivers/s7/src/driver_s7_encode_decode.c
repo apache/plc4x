@@ -292,6 +292,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       any_address->s7_address_any_number_of_elements = 1;
     }
 
+    // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
          plc4c_s7_read_write_transport_size_STRING) {
       if (string_length != NULL) {
@@ -303,6 +304,9 @@ plc4c_return_code plc4c_driver_s7_encode_address(
         any_address->s7_address_any_number_of_elements =
             254 * any_address->s7_address_any_number_of_elements;
       }
+    } else if (any_address->s7_address_any_transport_size ==
+               plc4c_s7_read_write_transport_size_TOD) {
+      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_TIME_OF_DAY;
     }
 
     // Check the optional transport size code.

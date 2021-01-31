@@ -195,7 +195,7 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        /*result =
+        result =
             plc4c_read_request_add_item(read_request, "BOOL", "%DB4:0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
@@ -260,35 +260,31 @@ int main() {
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }*/
-
-        // Works till here ...
-
-        // S7 reports "Not supported"
+        }
         result =
             plc4c_read_request_add_item(read_request, "TIME", "%DB4:58:TIME");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        /*result =
+        result =
             plc4c_read_request_add_item(read_request, "DATE", "%DB4:70:DATE");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
-        result =
-            plc4c_read_request_add_item(read_request, "TIME_OF_DAY", "%DB4:72:TIME_OF_DAY");
+        result = plc4c_read_request_add_item(read_request, "TIME_OF_DAY",
+                                             "%DB4:72:TIME_OF_DAY");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }*/
-        /*result =
+        }
+        result =
             plc4c_read_request_add_item(read_request, "TOD", "%DB4:76:TOD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
-        }*/
+        }
         result =
             plc4c_read_request_add_item(read_request, "CHAR", "%DB4:136:CHAR");
         if (result != OK) {
@@ -297,22 +293,19 @@ int main() {
         }
         // UTF-16 doesn't work well in a portable way
         /*result =
-            plc4c_read_request_add_item(read_request, "WCHAR", "%DB4:138:WCHAR");
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
+            plc4c_read_request_add_item(read_request, "WCHAR",
+        "%DB4:138:WCHAR"); if (result != OK) { printf("FAILED\n"); return -1;
         }*/
-        result =
-            plc4c_read_request_add_item(read_request, "STRING", "%DB4:140:STRING(10)");
+        result = plc4c_read_request_add_item(read_request, "STRING",
+                                             "%DB4:140:STRING(10)");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         // UTF-16 doesn't work well in a portable way
         /*result =
-               plc4c_read_request_add_item(read_request, "WSTRING", "%DB4:396:WSTRING(10)");
-           if (result != OK) {
-             printf("FAILED\n");
+               plc4c_read_request_add_item(read_request, "WSTRING",
+           "%DB4:396:WSTRING(10)"); if (result != OK) { printf("FAILED\n");
              return -1;
            }*/
         printf("SUCCESS\n");
@@ -361,6 +354,15 @@ int main() {
           printf("Value %s (%s): ", value_item->item->name,
                  plc4c_response_code_to_message(value_item->response_code));
           plc4c_data_printf(value_item->value);
+          if (strcmp(value_item->item->name, "TIME") == 0) {
+            printf(" (Duration in ms)");
+          } else if (strcmp(value_item->item->name, "DATE") == 0) {
+            printf(" (Days since 1990-01-01)");
+          } else if (strcmp(value_item->item->name, "TIME_OF_DAY") == 0) {
+            printf(" (Number of ms since midnight)");
+          } else if (strcmp(value_item->item->name, "TOD") == 0) {
+            printf(" (Number of ms since midnight)");
+          }
           printf("\n");
 
           cur_element = cur_element->next;
@@ -382,36 +384,32 @@ int main() {
         state = DISCONNECTING;
 
         // Create a new write-request.
-/*        printf("Preparing a write-request ... ");
-        char value[] = "bar";
-        result =
-            plc4c_connection_create_write_request(connection, &write_request);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
+        /*        printf("Preparing a write-request ... ");
+                char value[] = "bar";
+                result =
+                    plc4c_connection_create_write_request(connection,
+           &write_request); if (result != OK) { printf("FAILED\n"); return -1;
+                }
+                printf("SUCCESS\n");
 
-        printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
-        result = plc4c_write_request_add_item(
-            write_request, "STDOUT/foo:STRING",
-            plc4c_data_create_constant_string_data(strlen(value), value));
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
+                printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
+                result = plc4c_write_request_add_item(
+                    write_request, "STDOUT/foo:STRING",
+                    plc4c_data_create_constant_string_data(strlen(value),
+           value)); if (result != OK) { printf("FAILED\n"); return -1;
+                }
+                printf("SUCCESS\n");
 
-        // Execute the write-request.
-        printf("Executing a write-request ... \n");
-        result = plc4c_write_request_execute(write_request,
-                                             &write_request_execution);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        } else {
-          state = WRITE_REQUEST_SENT;
-        }*/
+                // Execute the write-request.
+                printf("Executing a write-request ... \n");
+                result = plc4c_write_request_execute(write_request,
+                                                     &write_request_execution);
+                if (result != OK) {
+                  printf("FAILED\n");
+                  return -1;
+                } else {
+                  state = WRITE_REQUEST_SENT;
+                }*/
         break;
       }
         // Wait until the write-request execution is finished.
