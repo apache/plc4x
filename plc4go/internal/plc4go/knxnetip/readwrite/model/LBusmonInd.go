@@ -146,7 +146,7 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
     // Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
     var crc *uint8 = nil
-    if CastLDataFrame(dataFrame).NotAckFrame() {
+    if dataFrame.NotAckFrame {
         _val, _err := io.ReadUint8(8)
         if _err != nil {
             return nil, errors.New("Error parsing 'crc' field " + _err.Error())
