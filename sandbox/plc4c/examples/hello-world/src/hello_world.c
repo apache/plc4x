@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include <plc4c/driver_simulated.h>
+//#include <plc4c/driver_simulated.h>
 #include <plc4c/driver_s7.h>
-#include <plc4c/driver_modbus.h>
+//#include <plc4c/driver_modbus.h>
 #include <plc4c/plc4c.h>
-#include <plc4c/transport_dummy.h>
+//#include <plc4c/transport_dummy.h>
 #include <plc4c/transport_tcp.h>
-#include <plc4c/transport_serial.h>
+//#include <plc4c/transport_serial.h>
 #include <plc4c/utils/list.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
@@ -70,8 +69,8 @@ enum plc4c_connection_state_t {
 };
 typedef enum plc4c_connection_state_t plc4c_connection_state;
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
 
 int main() {
   bool loop = true;
@@ -92,13 +91,13 @@ int main() {
   printf("SUCCESS\n");
 
   // Manually register the "simulated" driver with the system.
-  printf("Registering driver for the 'simulated' protocol ... ");
+  /*printf("Registering driver for the 'simulated' protocol ... ");
   plc4c_driver *simulated_driver = plc4c_driver_simulated_create();
   result = plc4c_system_add_driver(system, simulated_driver);
   if (result != OK) {
     printf("FAILED adding simulated driver\n");
     return -1;
-  }
+  }*/
   printf("Registering driver for the 's7' protocol ... ");
   plc4c_driver *s7_driver = plc4c_driver_s7_create();
   result = plc4c_system_add_driver(system, s7_driver);
@@ -106,34 +105,34 @@ int main() {
     printf("FAILED adding s7 driver\n");
     return -1;
   }
-  printf("Registering driver for the 'modbus' protocol ... ");
+  /*printf("Registering driver for the 'modbus' protocol ... ");
   plc4c_driver *modbus_driver = plc4c_driver_modbus_create();
   result = plc4c_system_add_driver(system, modbus_driver);
   if (result != OK) {
     printf("FAILED adding modbus driver\n");
     return -1;
-  }
+  }*/
   printf("SUCCESS\n");
 
-  printf("Registering transport for the 'dummy' transport ... ");
+  /*printf("Registering transport for the 'dummy' transport ... ");
   plc4c_transport *dummy_transport = plc4c_transport_dummy_create();
   result = plc4c_system_add_transport(system, dummy_transport);
   if (result != OK) {
     printf("FAILED adding dummy transport\n");
     return -1;
-  }
+  }*/
   plc4c_transport *tcp_transport = plc4c_transport_tcp_create();
   result = plc4c_system_add_transport(system, tcp_transport);
   if (result != OK) {
     printf("FAILED adding tcp transport\n");
     return -1;
   }
-  plc4c_transport *serial_transport = plc4c_transport_serial_create();
+  /*plc4c_transport *serial_transport = plc4c_transport_serial_create();
   result = plc4c_system_add_transport(system, serial_transport);
   if (result != OK) {
     printf("FAILED adding serial transport\n");
     return -1;
-  }
+  }*/
   printf("SUCCESS\n");
 
   // Initialize the plc4c_system (loading of drivers, setting up other stuff,
@@ -196,13 +195,119 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        printf("Adding an item for '%I0.0:BOOL' ... ");
         result =
-            plc4c_read_request_add_item(read_request, "hurz", "%I0.0:BOOL");
+            plc4c_read_request_add_item(read_request, "BOOL", "%DB4:0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
+        result =
+            plc4c_read_request_add_item(read_request, "BYTE", "%DB4.1:BYTE");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "WORD", "%DB4.2:WORD");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "DWORD", "%DB4.4:DWORD");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "SINT", "%DB4.16:SINT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "USINT", "%DB4.17:USINT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "INT", "%DB4.18:INT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "UINT", "%DB4.20:UINT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "DINT", "%DB4.22:DINT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "UDINT", "%DB4.26:UDINT");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "REAL", "%DB4.46:REAL");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "TIME", "%DB4:58:TIME");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "DATE", "%DB4:70:DATE");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result = plc4c_read_request_add_item(read_request, "TIME_OF_DAY",
+                                             "%DB4:72:TIME_OF_DAY");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "TOD", "%DB4:76:TOD");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        result =
+            plc4c_read_request_add_item(read_request, "CHAR", "%DB4:136:CHAR");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        // UTF-16 doesn't work well in a portable way
+        /*result =
+            plc4c_read_request_add_item(read_request, "WCHAR",
+        "%DB4:138:WCHAR"); if (result != OK) { printf("FAILED\n"); return -1;
+        }*/
+        result = plc4c_read_request_add_item(read_request, "STRING",
+                                             "%DB4:140:STRING(10)");
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        // UTF-16 doesn't work well in a portable way
+        /*result =
+               plc4c_read_request_add_item(read_request, "WSTRING",
+           "%DB4:396:WSTRING(10)"); if (result != OK) { printf("FAILED\n");
+             return -1;
+           }*/
         printf("SUCCESS\n");
 
         // Execute the read-request.
@@ -246,9 +351,18 @@ int main() {
         while (cur_element != NULL) {
           plc4c_response_value_item *value_item = cur_element->value;
 
-          printf("Value %s (%s):", value_item->item->name,
+          printf("Value %s (%s): ", value_item->item->name,
                  plc4c_response_code_to_message(value_item->response_code));
           plc4c_data_printf(value_item->value);
+          if (strcmp(value_item->item->name, "TIME") == 0) {
+            printf(" (Duration in ms)");
+          } else if (strcmp(value_item->item->name, "DATE") == 0) {
+            printf(" (Days since 1990-01-01)");
+          } else if (strcmp(value_item->item->name, "TIME_OF_DAY") == 0) {
+            printf(" (Number of ms since midnight)");
+          } else if (strcmp(value_item->item->name, "TOD") == 0) {
+            printf(" (Number of ms since midnight)");
+          }
           printf("\n");
 
           cur_element = cur_element->next;
@@ -270,36 +384,32 @@ int main() {
         state = DISCONNECTING;
 
         // Create a new write-request.
-/*        printf("Preparing a write-request ... ");
-        char value[] = "bar";
-        result =
-            plc4c_connection_create_write_request(connection, &write_request);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
+        /*        printf("Preparing a write-request ... ");
+                char value[] = "bar";
+                result =
+                    plc4c_connection_create_write_request(connection,
+           &write_request); if (result != OK) { printf("FAILED\n"); return -1;
+                }
+                printf("SUCCESS\n");
 
-        printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
-        result = plc4c_write_request_add_item(
-            write_request, "STDOUT/foo:STRING",
-            plc4c_data_create_constant_string_data(strlen(value), value));
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
+                printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
+                result = plc4c_write_request_add_item(
+                    write_request, "STDOUT/foo:STRING",
+                    plc4c_data_create_constant_string_data(strlen(value),
+           value)); if (result != OK) { printf("FAILED\n"); return -1;
+                }
+                printf("SUCCESS\n");
 
-        // Execute the write-request.
-        printf("Executing a write-request ... \n");
-        result = plc4c_write_request_execute(write_request,
-                                             &write_request_execution);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        } else {
-          state = WRITE_REQUEST_SENT;
-        }*/
+                // Execute the write-request.
+                printf("Executing a write-request ... \n");
+                result = plc4c_write_request_execute(write_request,
+                                                     &write_request_execution);
+                if (result != OK) {
+                  printf("FAILED\n");
+                  return -1;
+                } else {
+                  state = WRITE_REQUEST_SENT;
+                }*/
         break;
       }
         // Wait until the write-request execution is finished.

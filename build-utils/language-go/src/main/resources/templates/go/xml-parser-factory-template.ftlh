@@ -60,7 +60,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/X
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package ${outputFlavor?replace("-","")}
 
 import (
     "encoding/xml"

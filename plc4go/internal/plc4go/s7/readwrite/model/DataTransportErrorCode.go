@@ -37,7 +37,7 @@ const(
     DataTransportErrorCode_NOT_FOUND DataTransportErrorCode = 0x0A
 )
 
-func DataTransportErrorCodeValueOf(value uint8) DataTransportErrorCode {
+func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
     switch value {
         case 0x00:
             return DataTransportErrorCode_RESERVED
@@ -51,6 +51,24 @@ func DataTransportErrorCodeValueOf(value uint8) DataTransportErrorCode {
             return DataTransportErrorCode_NOT_FOUND
         case 0xFF:
             return DataTransportErrorCode_OK
+    }
+    return 0
+}
+
+func DataTransportErrorCodeByName(value string) DataTransportErrorCode {
+    switch value {
+    case "RESERVED":
+        return DataTransportErrorCode_RESERVED
+    case "ACCESS_DENIED":
+        return DataTransportErrorCode_ACCESS_DENIED
+    case "INVALID_ADDRESS":
+        return DataTransportErrorCode_INVALID_ADDRESS
+    case "DATA_TYPE_NOT_SUPPORTED":
+        return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+    case "NOT_FOUND":
+        return DataTransportErrorCode_NOT_FOUND
+    case "OK":
+        return DataTransportErrorCode_OK
     }
     return 0
 }
@@ -78,7 +96,7 @@ func DataTransportErrorCodeParse(io *utils.ReadBuffer) (DataTransportErrorCode, 
     if err != nil {
         return 0, nil
     }
-    return DataTransportErrorCodeValueOf(val), nil
+    return DataTransportErrorCodeByValue(val), nil
 }
 
 func (e DataTransportErrorCode) Serialize(io utils.WriteBuffer) error {

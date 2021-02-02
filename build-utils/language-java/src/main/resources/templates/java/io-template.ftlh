@@ -252,7 +252,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign enumField = field>
 
         // Enum field (${enumField.name})
+        <#if enumField.fieldName?has_content>
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName?cap_first}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        <#else>
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        </#if>
         <#break>
     <#case "implicit">
         <#assign implicitField = field>
@@ -471,7 +475,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
+        <#if enumField.fieldName?has_content>
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())")};
+        <#else>
         ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
+        </#if>
         <#break>
     <#case "implicit">
         <#assign implicitField = field>

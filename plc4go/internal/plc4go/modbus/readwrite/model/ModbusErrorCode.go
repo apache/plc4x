@@ -41,7 +41,7 @@ const(
     ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND ModbusErrorCode = 11
 )
 
-func ModbusErrorCodeValueOf(value uint8) ModbusErrorCode {
+func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
     switch value {
         case 1:
             return ModbusErrorCode_ILLEGAL_FUNCTION
@@ -63,6 +63,32 @@ func ModbusErrorCodeValueOf(value uint8) ModbusErrorCode {
             return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
         case 8:
             return ModbusErrorCode_MEMORY_PARITY_ERROR
+    }
+    return 0
+}
+
+func ModbusErrorCodeByName(value string) ModbusErrorCode {
+    switch value {
+    case "ILLEGAL_FUNCTION":
+        return ModbusErrorCode_ILLEGAL_FUNCTION
+    case "GATEWAY_PATH_UNAVAILABLE":
+        return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+    case "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND":
+        return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+    case "ILLEGAL_DATA_ADDRESS":
+        return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+    case "ILLEGAL_DATA_VALUE":
+        return ModbusErrorCode_ILLEGAL_DATA_VALUE
+    case "SLAVE_DEVICE_FAILURE":
+        return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+    case "ACKNOWLEDGE":
+        return ModbusErrorCode_ACKNOWLEDGE
+    case "SLAVE_DEVICE_BUSY":
+        return ModbusErrorCode_SLAVE_DEVICE_BUSY
+    case "NEGATIVE_ACKNOWLEDGE":
+        return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+    case "MEMORY_PARITY_ERROR":
+        return ModbusErrorCode_MEMORY_PARITY_ERROR
     }
     return 0
 }
@@ -90,7 +116,7 @@ func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
     if err != nil {
         return 0, nil
     }
-    return ModbusErrorCodeValueOf(val), nil
+    return ModbusErrorCodeByValue(val), nil
 }
 
 func (e ModbusErrorCode) Serialize(io utils.WriteBuffer) error {

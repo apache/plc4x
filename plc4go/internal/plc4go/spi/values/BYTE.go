@@ -22,7 +22,7 @@ import "encoding/xml"
 
 type PlcBYTE struct {
 	value uint8
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcBYTE(value uint8) PlcBYTE {

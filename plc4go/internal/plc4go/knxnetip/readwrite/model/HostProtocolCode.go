@@ -33,12 +33,22 @@ const(
     HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
 
-func HostProtocolCodeValueOf(value uint8) HostProtocolCode {
+func HostProtocolCodeByValue(value uint8) HostProtocolCode {
     switch value {
         case 0x01:
             return HostProtocolCode_IPV4_UDP
         case 0x02:
             return HostProtocolCode_IPV4_TCP
+    }
+    return 0
+}
+
+func HostProtocolCodeByName(value string) HostProtocolCode {
+    switch value {
+    case "IPV4_UDP":
+        return HostProtocolCode_IPV4_UDP
+    case "IPV4_TCP":
+        return HostProtocolCode_IPV4_TCP
     }
     return 0
 }
@@ -66,7 +76,7 @@ func HostProtocolCodeParse(io *utils.ReadBuffer) (HostProtocolCode, error) {
     if err != nil {
         return 0, nil
     }
-    return HostProtocolCodeValueOf(val), nil
+    return HostProtocolCodeByValue(val), nil
 }
 
 func (e HostProtocolCode) Serialize(io utils.WriteBuffer) error {

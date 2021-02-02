@@ -56,7 +56,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 }
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string) {
-<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+<#list type.enumValues as enumValue>
     if(strcmp(value_string, "${enumValue.name}") == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
@@ -70,7 +70,7 @@ int ${helper.getCTypeName(type.name)}_num_values() {
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_index(int index) {
     switch(index) {
-    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    <#list type.enumValues as enumValue>
       case ${enumValue?index}: {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
       }
@@ -100,6 +100,27 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
       return 0;
     }
   }
+}
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value) {
+    <#if helper.isStringTypeReference(type.getConstantType(constantName))>
+        <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+    if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}) == 0) {
+        return ${helper.getCTypeName(type.name)}_${enumValue.name};
+    }
+        </#list>
+    <#else>
+    switch(value) {
+    <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
+        case ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}: {
+            return ${helper.getCTypeName(type.name)}_${enumValue.name};
+        }
+    </#list>
+        default: {
+            return -1;
+        }
+    }
+    </#if>
 }
     </#list>
 </#if>

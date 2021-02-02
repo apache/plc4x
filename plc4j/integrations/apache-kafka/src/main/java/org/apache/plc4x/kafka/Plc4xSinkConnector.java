@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigValue;

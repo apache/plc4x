@@ -132,3 +132,33 @@ char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_
     }
   }
 }
+
+plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_get_first_enum_for_field_short_name(char* value) {
+    if (strcmp(value, "C") == 0) {
+        return plc4c_s7_read_write_memory_area_COUNTERS;
+    }
+    if (strcmp(value, "D") == 0) {
+        return plc4c_s7_read_write_memory_area_DIRECT_PERIPHERAL_ACCESS;
+    }
+    if (strcmp(value, "DB") == 0) {
+        return plc4c_s7_read_write_memory_area_DATA_BLOCKS;
+    }
+    if (strcmp(value, "DBI") == 0) {
+        return plc4c_s7_read_write_memory_area_INSTANCE_DATA_BLOCKS;
+    }
+    if (strcmp(value, "I") == 0) {
+        return plc4c_s7_read_write_memory_area_INPUTS;
+    }
+    if (strcmp(value, "LD") == 0) {
+        return plc4c_s7_read_write_memory_area_LOCAL_DATA;
+    }
+    if (strcmp(value, "M") == 0) {
+        return plc4c_s7_read_write_memory_area_FLAGS_MARKERS;
+    }
+    if (strcmp(value, "Q") == 0) {
+        return plc4c_s7_read_write_memory_area_OUTPUTS;
+    }
+    if (strcmp(value, "T") == 0) {
+        return plc4c_s7_read_write_memory_area_TIMERS;
+    }
+}

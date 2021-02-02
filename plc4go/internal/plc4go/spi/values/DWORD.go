@@ -22,7 +22,7 @@ import "encoding/xml"
 
 type PlcDWORD struct {
 	value uint32
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcDWORD(value uint32) PlcDWORD {

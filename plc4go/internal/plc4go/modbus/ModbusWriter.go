@@ -24,10 +24,11 @@ import (
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"math"
 	"sync/atomic"
+	"time"
 )
 
 type ModbusWriter struct {
@@ -88,9 +89,9 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 				data)
 		case MODBUS_FIELD_HOLDING_REGISTER:
 			pdu = modbusModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
-			    modbusField.Address,
-			    numWords,
-			    data)
+				modbusField.Address,
+				numWords,
+				data)
 		case MODBUS_FIELD_EXTENDED_REGISTER:
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
@@ -122,42 +123,40 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		}
 
 		// Send the ADU over the wire
-		err = m.messageCodec.Send(requestAdu)
-		if err != nil {
-			result <- model.PlcWriteRequestResult{
-				Request:  writeRequest,
-				Response: nil,
-				Err:      errors.New("error sending message: " + err.Error()),
-			}
-		}
+		err = m.messageCodec.SendRequest(
+			requestAdu,
+			func(message interface{}) bool {
+				responseAdu := modbusModel.CastModbusTcpADU(message)
+				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
+					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+			},
+			func(message interface{}) error {
+				// Convert the response into an ADU
+				responseAdu := modbusModel.CastModbusTcpADU(message)
+				// Convert the modbus response into a PLC4X response
+				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
 
-		// Register an expected response
-		check := func(response interface{}) (bool, bool) {
-			responseAdu := modbusModel.CastModbusTcpADU(response)
-			return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
-				responseAdu.UnitIdentifier == requestAdu.UnitIdentifier, false
-		}
-		// Register a callback to handle the response
-		responseChan := m.messageCodec.Expect(check)
-		go func() {
-			response := <-responseChan
-			// Convert the response into an ADU
-			responseAdu := modbusModel.CastModbusTcpADU(response)
-			// Convert the modbus response into a PLC4X response
-			readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
-
-			if err != nil {
+				if err != nil {
+					result <- model.PlcWriteRequestResult{
+						Request: writeRequest,
+						Err:     errors.New("Error decoding response: " + err.Error()),
+					}
+				} else {
+					result <- model.PlcWriteRequestResult{
+						Request:  writeRequest,
+						Response: readResponse,
+					}
+				}
+				return nil
+			},
+			func(err error) error {
 				result <- model.PlcWriteRequestResult{
 					Request: writeRequest,
-					Err:     errors.New("Error decoding response: " + err.Error()),
+					Err:     errors.New("got timeout while waiting for response"),
 				}
-			} else {
-				result <- model.PlcWriteRequestResult{
-					Request:  writeRequest,
-					Response: readResponse,
-				}
-			}
-		}()
+				return nil
+			},
+			time.Second*1)
 	} else {
 		result <- model.PlcWriteRequestResult{
 			Request:  writeRequest,

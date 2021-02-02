@@ -22,7 +22,7 @@ import "encoding/xml"
 
 type PlcCHAR struct {
 	value []byte
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcCHAR(value uint8) PlcCHAR {

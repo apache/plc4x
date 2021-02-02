@@ -23,11 +23,12 @@ import (
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"math"
 	"sync/atomic"
+	"time"
 )
 
 type ModbusReader struct {
@@ -60,11 +61,11 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			}
 			return result
 		}
-		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusModel.ModbusDataTypeSizesValueOf(modbusField.Datatype).DataTypeSize())) / float64(2)))
+		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusModel.ModbusDataTypeSizesByName(modbusField.Datatype).DataTypeSize())) / float64(2)))
 		var pdu *modbusModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case MODBUS_FIELD_COIL:
-		    pdu = modbusModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
+			pdu = modbusModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
 		case MODBUS_FIELD_DISCRETE_INPUT:
 			pdu = modbusModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
 		case MODBUS_FIELD_INPUT_REGISTER:
@@ -102,7 +103,40 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 		}
 
 		// Send the ADU over the wire
-		err = m.messageCodec.Send(requestAdu)
+		err = m.messageCodec.SendRequest(
+			requestAdu,
+			func(message interface{}) bool {
+				responseAdu := modbusModel.CastModbusTcpADU(message)
+				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
+					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+			},
+			func(message interface{}) error {
+				// Convert the response into an ADU
+				responseAdu := modbusModel.CastModbusTcpADU(message)
+				// Convert the modbus response into a PLC4X response
+				readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
+
+				if err != nil {
+					result <- model.PlcReadRequestResult{
+						Request: readRequest,
+						Err:     errors.New("Error decoding response: " + err.Error()),
+					}
+				} else {
+					result <- model.PlcReadRequestResult{
+						Request:  readRequest,
+						Response: readResponse,
+					}
+				}
+				return nil
+			},
+			func(err error) error {
+				result <- model.PlcReadRequestResult{
+					Request: readRequest,
+					Err:     errors.New("got timeout while waiting for response"),
+				}
+				return nil
+			},
+			time.Second*1)
 		if err != nil {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
@@ -110,34 +144,6 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 				Err:      errors.New("error sending message: " + err.Error()),
 			}
 		}
-
-		// Register an expected response
-		check := func(response interface{}) (bool, bool) {
-			responseAdu := modbusModel.CastModbusTcpADU(response)
-			return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
-				responseAdu.UnitIdentifier == requestAdu.UnitIdentifier, false
-		}
-		// Register a callback to handle the response
-		responseChan := m.messageCodec.Expect(check)
-		go func() {
-			response := <-responseChan
-			// Convert the response into an ADU
-			responseAdu := modbusModel.CastModbusTcpADU(response)
-			// Convert the modbus response into a PLC4X response
-			readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
-
-			if err != nil {
-				result <- model.PlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.New("Error decoding response: " + err.Error()),
-				}
-			} else {
-				result <- model.PlcReadRequestResult{
-					Request:  readRequest,
-					Response: readResponse,
-				}
-			}
-		}()
 	} else {
 		result <- model.PlcReadRequestResult{
 			Request:  readRequest,

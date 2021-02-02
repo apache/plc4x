@@ -416,6 +416,7 @@
           <additionalInformation/>
           <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
             <repeated>true</repeated>
+            <notAckFrame>true</notAckFrame>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
@@ -428,15 +429,15 @@
               <subGroup>10</subGroup>
             </sourceAddress>
             <destinationAddress>Egw=</destinationAddress>
-            <dataLength>1</dataLength>
-            <control>false</control>
-            <numbered>false</numbered>
-            <counter>0</counter>
-            <controlType/>
-            <apci>GROUP_VALUE_WRITE_PDU</apci>
-            <extendedApci/>
-            <dataFirstByte>1</dataFirstByte>
-            <data></data>
+            <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataContainer">
+              <dataLength>1</dataLength>
+              <numbered>false</numbered>
+              <counter>0</counter>
+              <dataApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataGroupValueWrite">
+                <dataFirstByte>1</dataFirstByte>
+                <data></data>
+              </dataApdu>
+            </apdu>
           </dataFrame>
         </cemi>
       </TunnelingRequest>
@@ -476,6 +477,7 @@
           </additionalInformation>
           <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
             <repeated>true</repeated>
+            <notAckFrame>true</notAckFrame>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
@@ -488,15 +490,12 @@
               <subGroup>30</subGroup>
             </sourceAddress>
             <destinationAddress>DOE=</destinationAddress>
-            <dataLength>0</dataLength>
-            <control>true</control>
-            <numbered>false</numbered>
-            <counter>0</counter>
-            <controlType>DISCONNECT</controlType>
-            <apci/>
-            <extendedApci/>
-            <dataFirstByte/>
-            <data></data>
+            <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlContainer">
+              <dataLength>0</dataLength>
+              <numbered>false</numbered>
+              <counter>0</counter>
+              <controlApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlDisconnect"/>
+            </apdu>
           </dataFrame>
           <crc>13</crc>
         </cemi>

@@ -20,7 +20,7 @@ package utils
 
 import (
 	"strconv"
-    "strings"
+	"strings"
 )
 
 func Int8ArrayToUint8Array(input []int8) []uint8 {
@@ -32,14 +32,14 @@ func Int8ArrayToUint8Array(input []int8) []uint8 {
 }
 
 func Int8ArrayToString(data []int8, separator string) string {
-    var sb strings.Builder
-    for i, element := range data {
-        sb.WriteString(strconv.Itoa(int(uint8(element))))
-        if i < (len(data) - 1) {
-            sb.WriteString(separator)
-        }
-    }
-    return sb.String()
+	var sb strings.Builder
+	for i, element := range data {
+		sb.WriteString(strconv.Itoa(int(uint8(element))))
+		if i < (len(data) - 1) {
+			sb.WriteString(separator)
+		}
+	}
+	return sb.String()
 }
 
 func Uint8ArrayToInt8Array(input []uint8) []int8 {

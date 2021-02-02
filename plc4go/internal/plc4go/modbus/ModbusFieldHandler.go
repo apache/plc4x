@@ -84,25 +84,25 @@ func NewFieldHandler() FieldHandler {
 }
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
-	if match := utils.GetSubgropMatches(m.plc4xCoilPattern, query); match != nil {
+	if match := utils.GetSubgroupMatches(m.plc4xCoilPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_COIL, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.numericCoilPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.numericCoilPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_COIL, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.plc4xDiscreteInputPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.plc4xDiscreteInputPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_DISCRETE_INPUT, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.numericDiscreteInputPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.numericDiscreteInputPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_DISCRETE_INPUT, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.plc4xInputRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.plc4xInputRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_INPUT_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.numericInputRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.numericInputRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_INPUT_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.plc4xHoldingRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.plc4xHoldingRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_HOLDING_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.numericHoldingRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.numericHoldingRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_HOLDING_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.plc4xExtendedRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.plc4xExtendedRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_EXTENDED_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
-	} else if match := utils.GetSubgropMatches(m.numericExtendedRegisterPattern, query); match != nil {
+	} else if match := utils.GetSubgroupMatches(m.numericExtendedRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(MODBUS_FIELD_EXTENDED_REGISTER, match["address"], match["quantity"], "IEC61131_"+match["datatype"])
 	}
 	return nil, errors.New("Invalid address format for address '" + query + "'")

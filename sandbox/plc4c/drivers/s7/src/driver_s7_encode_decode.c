@@ -142,7 +142,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     uint16_t len = cur_pos - last_pos;
     memory_area = malloc(sizeof(char) * (len + 1));
     strncpy(memory_area, last_pos, len);
-    //*(memory_area + len + 1) = '/0';
+    *(memory_area + len) = '\0';
 
     // If it's a DB-block, get the block_number
     if (strcmp(memory_area, "DB") == 0) {
@@ -153,6 +153,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       len = cur_pos - last_pos;
       block_number = malloc(sizeof(char) * (len + 1));
       strncpy(block_number, last_pos, len);
+      *(block_number + len) = '\0';
 
       // Skip the "."
       cur_pos++;
@@ -188,6 +189,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     len = cur_pos - last_pos;
     byte_offset = malloc(sizeof(char) * (len + 1));
     strncpy(byte_offset, last_pos, len);
+    *(byte_offset + len) = '\0';
 
     // Parse the bit_offset
     if (*cur_pos == '.') {
@@ -200,6 +202,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       len = cur_pos - last_pos;
       bit_offset = malloc(sizeof(char) * (len + 1));
       strncpy(bit_offset, last_pos, len);
+      *(bit_offset + len) = '\0';
     }
 
     // Skip the ":" char.
@@ -213,16 +216,18 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     len = cur_pos - last_pos;
     data_type = malloc(sizeof(char) * (len + 1));
     strncpy(data_type, last_pos, len);
+    *(data_type + len) = '\0';
 
     if ((*cur_pos == '(') && (strcmp(data_type, "STRING") == 0)) {
       // Next comes the string_length
-      last_pos = cur_pos;
-      while (isalpha(*cur_pos)) {
+      last_pos = ++cur_pos;
+      while (isdigit(*cur_pos)) {
         cur_pos++;
       }
       len = cur_pos - last_pos;
       string_length = malloc(sizeof(char) * (len + 1));
       strncpy(string_length, last_pos, len);
+      *(string_length + len) = '\0';
 
       // Skip the ")"
       cur_pos++;
@@ -238,6 +243,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       len = cur_pos - last_pos;
       num_elements = malloc(sizeof(char) * (len + 1));
       strncpy(num_elements, last_pos, len);
+      *(num_elements + len) = '\0';
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -250,12 +256,16 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     }
     any_address->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
 
+    any_address->s7_address_any_area = plc4c_s7_read_write_memory_area_null();
     for(int i = 0; i < plc4c_s7_read_write_memory_area_num_values(); i++) {
       plc4c_s7_read_write_memory_area ma = plc4c_s7_read_write_memory_area_value_for_index(i);
       if(strcmp(plc4c_s7_read_write_memory_area_get_short_name(ma), memory_area) == 0) {
         any_address->s7_address_any_area = ma;
         break;
       }
+    }
+    if (any_address->s7_address_any_area == plc4c_s7_read_write_memory_area_null()) {
+      return INVALID_ADDRESS;
     }
 
     if (block_number != NULL) {
@@ -282,6 +292,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       any_address->s7_address_any_number_of_elements = 1;
     }
 
+    // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
          plc4c_s7_read_write_transport_size_STRING) {
       if (string_length != NULL) {
@@ -293,11 +304,14 @@ plc4c_return_code plc4c_driver_s7_encode_address(
         any_address->s7_address_any_number_of_elements =
             254 * any_address->s7_address_any_number_of_elements;
       }
+    } else if (any_address->s7_address_any_transport_size ==
+               plc4c_s7_read_write_transport_size_TOD) {
+      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_TIME_OF_DAY;
     }
 
     // Check the optional transport size code.
     if(transfer_size_code != NULL) {
-      if(plc4c_s7_read_write_transport_size_get_size_code(any_address->s7_address_any_transport_size) != *transfer_size_code) {
+      if(plc4c_s7_read_write_transport_size_get_short_name(any_address->s7_address_any_transport_size) != *transfer_size_code) {
         return INVALID_ADDRESS;
       }
     }

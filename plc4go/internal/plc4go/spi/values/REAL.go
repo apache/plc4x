@@ -19,14 +19,14 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	"fmt"
 	"math"
 )
 
 type PlcREAL struct {
 	value float32
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcREAL(value float32) PlcREAL {

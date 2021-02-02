@@ -29,20 +29,20 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=release/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
 * [ ] Prepare the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash
+   mvn release:prepare -P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox
 ----
 [%interactive]
 * [ ] Perform the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:perform -DreleaseProfiles=apache-release,with-boost,with-proxies,with-logstash
+   mvn release:perform -DreleaseProfiles=apache-release,with-logstash
 ----
 [%interactive]
 * [ ] Close the staging repo on `Nexus`
@@ -66,7 +66,7 @@ As part of the release process, Maven will upload maven release artifacts to a s
 This can be thought of as an ad-hoc Maven repository that contains only the artifacts for one release.
 This helps reviewers to see what's in the convenience maven package and to release that to the public repos with one click.
 
-But in order to be allowed to upload artifacts, your account has to be enabled for this and you have to tell Maven about your credentials.
+In order to be allowed to upload artifacts, your account has to be enabled for this, and you have to tell Maven about your credentials.
 
 In order to do this, you should provide these credentials via `.m2/settings.xml`.
 
@@ -94,16 +94,16 @@ This tells maven to use above credentials as soon as a repository with the id `a
 For a release all you need is the `releases` repo, but it is good to have the other in place as it enables you to also deploy SNAPSHOTs from your system.
 There repos are defined in the `apache` parent pom and is identical for all Apache projects.
 
-Additionally all artifacts are automatically signed by the release build. In order to be able to do this you need to setup GPG.
+Additionally, all artifacts are automatically signed by the release build. In order to be able to do this you need to set up GPG.
 
 The key being used to sign the artifacts will have to be linked to your Apache E-Mail ({apache-id}@apache.org) and verified by at least one fellow Apache committer (Ideally more) that have trusted keys themselves.
 Usually for this you have to get in touch - in real life - with any Apache committer with a trusted key.
-Attending an `ApacheCon` is usually a great way to do this as usually every ApacheCon has a `Key Signing event` in it's schedule.
+Attending an `ApacheCon` is usually a great way to do this as usually every ApacheCon has a `Key Signing event` in its schedule.
 He can then sign your key and hereby enable you to sign Apache release artifacts.
 
 There's a detailed description https://github.com/apache/incubator-pulsar/wiki/Create-GPG-keys-to-sign-release-artifacts[here].
 
-NOTE: However in contrast to that documentation, upload your key to the following servers: `pool.sks-keyservers.net` and `keyserver.ubuntu.com` as these are the ones Nexus is checking.
+NOTE: However, in contrast to that documentation, upload your key to the following servers: `pool.sks-keyservers.net` and `keyserver.ubuntu.com` as these are the ones Nexus is checking.
 
 If you happen to have multiple keys, adding the following profile to your `settings.xml` should help:
 
@@ -117,11 +117,11 @@ If you happen to have multiple keys, adding the following profile to your `setti
       </properties>
     </profile>
 
-Currently there is a Java-Version sweet-spot for being able to release all modules and that is Java 11.
+Currently, there is a Java-Version sweet-spot for being able to release all modules and that is Java 11.
 
 So be sure to set `Java 11` as the java version used to do the release.
 
-Also at least `Maven 3.6` is required for CMake.
+Also, at least `Maven 3.6` is required for CMake.
 
 Ideally use the Maven-Wrapper to ensure the Maven version fits the build.
 
@@ -131,7 +131,7 @@ Usually you will have to update the RELEASE_NOTES document to the new version.
 I would suggest doing this prior to the branch as otherwise you will definitely have to port it back to `develop`.
 So remove the `SNAPSHOT` and `(Unreleased)` markers from the file and add missing parts.
 
-Also if you are doing the first release in a new year, it is advisable to search for the old year and check if any occurrences are ok the way they are.
+Also, if you are doing the first release in a new year, it is advisable to search for the old year and check if any occurrences are ok the way they are.
 Usually the `NOTICE` file has to be adjusted.
 
 === Creating a release branch
@@ -140,7 +140,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `release/{current-short-version}`.
+So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `rel/{current-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -150,16 +150,16 @@ Per default the plugin will ask for the working copy version during the build ex
 This is the version the `develop` branch will be changed to.
 
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
-Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
+Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=release/{minor-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=release/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -169,11 +169,11 @@ The plugin will then aks for the version:
    What is the new working copy version for "PLC4X"? (org.apache.plc4x:plc4x-parent) {current-next-incremental-version}-SNAPSHOT: : {current-next-minor-version}-SNAPSHOT
 ----
 
-Where the suggested default is manually overridden.
+Here the suggested default has to be manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `release/{current-short-version}` branch is created.
+However, in the end the versions of the `develop` branch are updated and a new `rel/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
@@ -208,29 +208,29 @@ WARNING: If you find anything here, you will need to pay attention during the re
 
 Now usually comes a phase in which last tests and checks should be performed.
 
-If any problems are found they have to be fixed in the release branch.
+If any problems are found, they have to be fixed in the release branch.
 
-Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems ans we no longer have the same versions.
+Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems, and we no longer have the same versions.
 
 === Preparing a release
 
 Same as with creating the branch it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
-Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
-For people building with some of the additional profiles from the source release will be impossible.
+Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
+For people building with some additional profiles from the source release will be impossible.
 
 As especially when switching a lot between different branches, it is recommended to do a clean checkout of the repository.
-Otherwise a lot of directories can be left over, which would be included in the source-release zip.
+Otherwise, a lot of directories can be left over, which would be included in the source-release zip.
 In order to prepare a release-candidate, the first step is switching to the corresponding release-branch.
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox
+   mvn release:prepare -P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox
 
-(The `-P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
+(The `-P with-boost,with-c,with-docker,with-dotnet,with-go,with-logstash,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
-2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}` (`release/{current-full-version}` in our case)
+2. The name of the tag the release commit will be tagged with in the SCM (Name it `v{release-version}` (`v{current-full-version}` in our case)
 3. The next development version (The version present in the pom after the release) (`{current-next-bugfix-version}` in our case)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
@@ -240,21 +240,21 @@ What the plugin now does, is automatically execute the following operations:
 1. Check we aren't referencing any `SNAPSHOT` dependencies.
 2. Update all pom versions to the release version.
 3. Run a build with all tests
-4. Commit the changes (commit message: `[maven-release-plugin] prepare release release/{current-full-version}`)
+4. Commit the changes (commit message: `[maven-release-plugin] prepare release v{current-full-version}`)
 5. Push the commit
 6. Tag the commit
 7. Update all poms to the next development version.
 8. Commit the changes (commit message: `[maven-release-plugin] prepare for next development iteration`)
 9. Push the commit
 
-However this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
+However, this just prepared the git repository for the release, we have to perform the release to produce and stage the release artifacts.
 
 Please verify the git repository at: https://gitbox.apache.org/repos/asf?p=plc4x.git
 is in the correct state. Please select the release branch and verify the commit log looks similar to this
 
 image::release-git-history.png[]
 
-It is important that the commit with the message "[maven-release-plugin] prepare release release/{current-full-version}" is tagged with the release tag (in this case release/0.3.0)
+It is important that the commit with the message "[maven-release-plugin] prepare release v{release-version}" is tagged with the release tag (in this case v{current-full-version})
 
 If you check the commit itself, it should mainly consist of version updates like this:
 
@@ -276,22 +276,22 @@ If something goes wrong, you can always execute:
 
    mvn release:rollback
 
-And it will change the versions back and commit and push things.
+It will change the versions back and commit and push things.
 
-However it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
+However, it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
 
 === Performing a release
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform
+   mvn release:perform -DreleaseProfiles=apache-release,with-logstash
 
-This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
+This executes automatically as all information it requires is located in the `release.properties` file the `prepare`-goal prepared.
 
-The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
+The first step is that the `perform`-goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache-release,with-boots,with-proxies,with-logstash
+   mvn clean deploy -P apache-release,with-logstash
 
 As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
@@ -299,7 +299,7 @@ We are intentionally not adding the other profiles, as these either produce bina
 
 As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
 
-The way things are setup in the apache parent pom, is that release artifacts are deployed to a so-called `staging repository`.
+The way things are set up in the apache parent pom, is that release artifacts are deployed to a so-called `staging repository`.
 
 You can think of a `staging repository` as a dedicated repository created on the fly as soon as the first artifact comes in.
 
@@ -355,9 +355,9 @@ It should contain all the information needed.
 Be sure to stage exactly the `README` and `RELEASE_NOTES` files contained in the root of your project.
 Ideally you just copy them there from there.
 
-All of the three `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
+All three `*-source-relese.zip*` artifacts should be located in the directory: `target/checkout/target`
 
-So after committing these files to SVN you are ready to start the vote.
+After committing these files to SVN you are ready to start the vote.
 
 === Starting a vote on the mailing list
 
@@ -379,7 +379,7 @@ Voting will be open for 72hr.
 A minimum of 3 binding +1 votes and more binding +1 than binding -1
 are required to pass.
 
-Release tag: release/{current-full-version}
+Release tag: v{current-full-version}
 Hash for the release tag: {replacethiswiththerealgitcommittag}
 
 Per [3] "Before voting +1 PMC members are required to download
@@ -422,7 +422,7 @@ This is an Apache policy to make it possible for anyone to participate in the vo
 
 The vote passes, if at least 3 `+1` votes are received and more `+1` are received than `-1`.
 
-After the 72 hour minimum wait period is over and we have fulfilled the requirement of at least 3 +1 votes and more +1 than -1, a final reply is sent to the vote thread with a prefix of `[RESULT]` in the title in which the summary of the vote is presented in an aggregated form.
+After the 72-hour minimum wait period is over and we have fulfilled the requirement of at least 3 +1 votes and more +1 than -1, a final reply is sent to the vote thread with a prefix of `[RESULT]` in the title in which the summary of the vote is presented in an aggregated form.
 
 [subs="verbatim,attributes"]
 ----
@@ -435,7 +435,7 @@ So, the vote passes with {number of +1 votes} +1 votes by PMC members {number of
 
 === Releasing after a successful vote
 
-As soon as the votes are finished and the results were in favor of a release, the staged artifacts can be released.
+As soon as the votes are finished, and the results were in favor of a release, the staged artifacts can be released.
 This is done by moving them inside the Apache SVN.
 
 [subs="verbatim,attributes"]
@@ -455,13 +455,13 @@ As a lot of mirrors are serving our releases, it is the Apache policy to clean o
 
 This can be done like this:
 
-    svn delete https://dist.apache.org/repos/dist/release/plc4x/0.3.0/ -m"deleted version 0.3.0"
+    svn delete https://dist.apache.org/repos/dist/release/plc4x/{current-full-version}/ -m"deleted version {current-full-version}"
 
 After this https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
 
 === Releasing the Maven artifacts
 
-The probably simplest part is releasing the Maven artifacts.
+Probably the simplest part is releasing the Maven artifacts.
 
 In order to do this, the release manager logs into Nexus at https://repository.apache.org/, selects the staging repository and clicks on the `Release` button.
 
@@ -479,7 +479,7 @@ This is found at:
 
 Please add the just released version to the top of the versions.
 
-This file is needed for Apache's tooling to automatically keep track of project release activity and we use this internally too to automatically update the documentation to always reference the latest released version automatically.
+This file is needed for Apache's tooling to automatically keep track of project release activity, and we use this internally too to automatically update the documentation to always reference the latest released version automatically.
 
 === Merge back release version to `release` branch
 
@@ -489,14 +489,14 @@ This has to be done with git
 [subs="verbatim,attributes"]
 ----
 git checkout release
-git merge release/{current-full-version}
+git merge v{current-full-version}
 ----
 
-When there are conflicts it could help to use the "theirs" merge strategy, i.e.,
+When there are conflicts it could help to use the `theirs` merge strategy, i.e.,
 
 [subs="verbatim,attributes"]
 ----
-git merge -X theirs release/{current-full-version}
+git merge -X theirs v{current-full-version}
 ----
 
 Possibly a manual conflict resolution has to be done afterwards. After that, changes need to
@@ -509,8 +509,7 @@ be pushed.
 
 === Update the download site
 
-The URL http://plc4x.apache.org/users/download.html has to be changed and the current release
-has to be listed there.
+The URL http://plc4x.apache.org/users/download.html has to be changed, and the current release has to be listed there.
 This is done by changing the `download.adoc` under `src/site/users/` (**in the develop branch, as this is where the site is generated from!**)
 
 1. Copy the last release down to _Previous Releases_
@@ -548,16 +547,26 @@ logic controllers (PLCs) using a variety of protocols but with a shared API.
 
 The current release contains drivers able to communicate with industrial PLCs using one of the following protocols:
 
-  *   Siemens S7 (0x32)
+  *   AB-ETH
   *   Beckhoff ADS
+  *   CanOpen
+  *   EtherNet/IP / EIP
+  *   Firmata
+  *   KNXNet/IP
   *   Modbus
-  *   EtherNet/IP
+  *   OPC UA
+  *   Siemens S7 (0x32)
 
 Beyond that we also provide integration modules for the following Apache projects and frameworks:
 
-  *   Apache Edgent (Incubating)
+  *   Apache Calcite
   *   Apache Camel
+  *   Apache Edgent (Incubating / Retired)
   *   Apache Kafka (Kafka Connect)
+  *   Apache NiFi
+  *   Logstash
+
+It also provides an `OPC UA Server` which can act as a bridge between legacy systems and OPC UA.
 
 Visit the Apache PLC4X website [1] for general information or
 the downloads page [2] for release notes and download information.
@@ -569,11 +578,11 @@ The Apache PLC4X team
 [2] http://plc4x.apache.org/users/download.html
 ----
 
-It is important to note that you have to send this email from your apache email address or it will be rejected.
-This wasn't very simple for me to setup.
+It is important to note that you have to send this email from your apache email address, or it will be rejected.
+This wasn't very simple for me to set up.
 A general description can be found here:
 https://reference.apache.org/committer/email
-Here's what I did in google mail to allow sending of emails:
+Here's what I did in Google Mail to allow sending of emails:
 https://gmail.googleblog.com/2009/07/send-mail-from-another-address-without.html
 Note ... you will be able to select the alternate sending address if you click into the recipients line of a new email (Not very intuitive).
 

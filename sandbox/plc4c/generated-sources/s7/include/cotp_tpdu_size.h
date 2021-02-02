@@ -48,6 +48,7 @@ int plc4c_s7_read_write_cotp_tpdu_size_num_values();
 plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_for_index(int index);
 
 uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value);
+plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_get_first_enum_for_field_size_in_bytes(uint16_t value);
 
 #ifdef __cplusplus
 }

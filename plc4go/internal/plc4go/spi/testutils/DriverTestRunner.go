@@ -19,7 +19,7 @@
 package testutils
 
 import (
-    "encoding/hex"
+	"encoding/hex"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -27,7 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/subchen/go-xmldom"

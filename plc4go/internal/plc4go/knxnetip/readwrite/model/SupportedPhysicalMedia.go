@@ -196,7 +196,7 @@ func (e SupportedPhysicalMedia) Description() string {
         }
     }
 }
-func SupportedPhysicalMediaValueOf(value uint8) SupportedPhysicalMedia {
+func SupportedPhysicalMediaByValue(value uint8) SupportedPhysicalMedia {
     switch value {
         case 0x00:
             return SupportedPhysicalMedia_OTHER
@@ -244,6 +244,54 @@ func SupportedPhysicalMediaValueOf(value uint8) SupportedPhysicalMedia {
     return 0
 }
 
+func SupportedPhysicalMediaByName(value string) SupportedPhysicalMedia {
+    switch value {
+    case "OTHER":
+        return SupportedPhysicalMedia_OTHER
+    case "OIL_METER":
+        return SupportedPhysicalMedia_OIL_METER
+    case "ELECTRICITY_METER":
+        return SupportedPhysicalMedia_ELECTRICITY_METER
+    case "GAS_METER":
+        return SupportedPhysicalMedia_GAS_METER
+    case "HEAT_METER":
+        return SupportedPhysicalMedia_HEAT_METER
+    case "STEAM_METER":
+        return SupportedPhysicalMedia_STEAM_METER
+    case "WARM_WATER_METER":
+        return SupportedPhysicalMedia_WARM_WATER_METER
+    case "WATER_METER":
+        return SupportedPhysicalMedia_WATER_METER
+    case "HEAT_COST_ALLOCATOR":
+        return SupportedPhysicalMedia_HEAT_COST_ALLOCATOR
+    case "COMPRESSED_AIR":
+        return SupportedPhysicalMedia_COMPRESSED_AIR
+    case "COOLING_LOAD_METER_INLET":
+        return SupportedPhysicalMedia_COOLING_LOAD_METER_INLET
+    case "COOLING_LOAD_METER_OUTLET":
+        return SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET
+    case "HEAT_INLET":
+        return SupportedPhysicalMedia_HEAT_INLET
+    case "HEAT_AND_COOL":
+        return SupportedPhysicalMedia_HEAT_AND_COOL
+    case "BUS_OR_SYSTEM":
+        return SupportedPhysicalMedia_BUS_OR_SYSTEM
+    case "UNKNOWN_DEVICE_TYPE":
+        return SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE
+    case "BREAKER":
+        return SupportedPhysicalMedia_BREAKER
+    case "VALVE":
+        return SupportedPhysicalMedia_VALVE
+    case "WASTE_WATER_METER":
+        return SupportedPhysicalMedia_WASTE_WATER_METER
+    case "GARBAGE":
+        return SupportedPhysicalMedia_GARBAGE
+    case "RADIO_CONVERTER":
+        return SupportedPhysicalMedia_RADIO_CONVERTER
+    }
+    return 0
+}
+
 func CastSupportedPhysicalMedia(structType interface{}) SupportedPhysicalMedia {
     castFunc := func(typ interface{}) SupportedPhysicalMedia {
         if sSupportedPhysicalMedia, ok := typ.(SupportedPhysicalMedia); ok {
@@ -267,7 +315,7 @@ func SupportedPhysicalMediaParse(io *utils.ReadBuffer) (SupportedPhysicalMedia, 
     if err != nil {
         return 0, nil
     }
-    return SupportedPhysicalMediaValueOf(val), nil
+    return SupportedPhysicalMediaByValue(val), nil
 }
 
 func (e SupportedPhysicalMedia) Serialize(io utils.WriteBuffer) error {

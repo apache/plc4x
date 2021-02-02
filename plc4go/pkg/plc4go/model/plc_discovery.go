@@ -21,19 +21,19 @@ package model
 import "net/url"
 
 type PlcDiscoveryEvent struct {
-    ProtocolCode  string
-    TransportCode string
-    TransportUrl  url.URL
-    Options       map[string][]string
-    Name          string
+	ProtocolCode  string
+	TransportCode string
+	TransportUrl  url.URL
+	Options       map[string][]string
+	Name          string
 }
 
 func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
-    return PlcDiscoveryEvent{
-        ProtocolCode:  protocolCode,
-        TransportCode: transportCode,
-        TransportUrl:  transportUrl,
-        Options:       options,
-        Name:          name,
-    }
+	return PlcDiscoveryEvent{
+		ProtocolCode:  protocolCode,
+		TransportCode: transportCode,
+		TransportUrl:  transportUrl,
+		Options:       options,
+		Name:          name,
+	}
 }

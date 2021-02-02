@@ -34,7 +34,7 @@ const(
     DeviceGroup_OTHERS DeviceGroup = 0x03
 )
 
-func DeviceGroupValueOf(value int8) DeviceGroup {
+func DeviceGroupByValue(value int8) DeviceGroup {
     switch value {
         case 0x01:
             return DeviceGroup_PG_OR_PC
@@ -42,6 +42,18 @@ func DeviceGroupValueOf(value int8) DeviceGroup {
             return DeviceGroup_OS
         case 0x03:
             return DeviceGroup_OTHERS
+    }
+    return 0
+}
+
+func DeviceGroupByName(value string) DeviceGroup {
+    switch value {
+    case "PG_OR_PC":
+        return DeviceGroup_PG_OR_PC
+    case "OS":
+        return DeviceGroup_OS
+    case "OTHERS":
+        return DeviceGroup_OTHERS
     }
     return 0
 }
@@ -69,7 +81,7 @@ func DeviceGroupParse(io *utils.ReadBuffer) (DeviceGroup, error) {
     if err != nil {
         return 0, nil
     }
-    return DeviceGroupValueOf(val), nil
+    return DeviceGroupByValue(val), nil
 }
 
 func (e DeviceGroup) Serialize(io utils.WriteBuffer) error {

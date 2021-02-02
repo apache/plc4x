@@ -42,7 +42,7 @@ const(
     BACnetNetworkType_SERIAL BACnetNetworkType = 0xA
 )
 
-func BACnetNetworkTypeValueOf(value uint8) BACnetNetworkType {
+func BACnetNetworkTypeByValue(value uint8) BACnetNetworkType {
     switch value {
         case 0x0:
             return BACnetNetworkType_ETHERNET
@@ -70,6 +70,34 @@ func BACnetNetworkTypeValueOf(value uint8) BACnetNetworkType {
     return 0
 }
 
+func BACnetNetworkTypeByName(value string) BACnetNetworkType {
+    switch value {
+    case "ETHERNET":
+        return BACnetNetworkType_ETHERNET
+    case "ARCNET":
+        return BACnetNetworkType_ARCNET
+    case "MSTP":
+        return BACnetNetworkType_MSTP
+    case "PTP":
+        return BACnetNetworkType_PTP
+    case "LONTALK":
+        return BACnetNetworkType_LONTALK
+    case "IPV4":
+        return BACnetNetworkType_IPV4
+    case "ZIGBEE":
+        return BACnetNetworkType_ZIGBEE
+    case "VIRTUAL":
+        return BACnetNetworkType_VIRTUAL
+    case "REMOVED_NON_BACNET":
+        return BACnetNetworkType_REMOVED_NON_BACNET
+    case "IPV6":
+        return BACnetNetworkType_IPV6
+    case "SERIAL":
+        return BACnetNetworkType_SERIAL
+    }
+    return 0
+}
+
 func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
     castFunc := func(typ interface{}) BACnetNetworkType {
         if sBACnetNetworkType, ok := typ.(BACnetNetworkType); ok {
@@ -93,7 +121,7 @@ func BACnetNetworkTypeParse(io *utils.ReadBuffer) (BACnetNetworkType, error) {
     if err != nil {
         return 0, nil
     }
-    return BACnetNetworkTypeValueOf(val), nil
+    return BACnetNetworkTypeByValue(val), nil
 }
 
 func (e BACnetNetworkType) Serialize(io utils.WriteBuffer) error {

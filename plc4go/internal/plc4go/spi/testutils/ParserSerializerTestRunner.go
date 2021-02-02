@@ -19,7 +19,7 @@
 package testutils
 
 import (
-    "encoding/hex"
+	"encoding/hex"
 	"encoding/xml"
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"

@@ -22,7 +22,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )

@@ -35,7 +35,7 @@ const(
     SzlModuleTypeClass_CP SzlModuleTypeClass = 0xC
 )
 
-func SzlModuleTypeClassValueOf(value uint8) SzlModuleTypeClass {
+func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
     switch value {
         case 0x0:
             return SzlModuleTypeClass_CPU
@@ -45,6 +45,20 @@ func SzlModuleTypeClassValueOf(value uint8) SzlModuleTypeClass {
             return SzlModuleTypeClass_FM
         case 0xC:
             return SzlModuleTypeClass_CP
+    }
+    return 0
+}
+
+func SzlModuleTypeClassByName(value string) SzlModuleTypeClass {
+    switch value {
+    case "CPU":
+        return SzlModuleTypeClass_CPU
+    case "IM":
+        return SzlModuleTypeClass_IM
+    case "FM":
+        return SzlModuleTypeClass_FM
+    case "CP":
+        return SzlModuleTypeClass_CP
     }
     return 0
 }
@@ -72,7 +86,7 @@ func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
     if err != nil {
         return 0, nil
     }
-    return SzlModuleTypeClassValueOf(val), nil
+    return SzlModuleTypeClassByValue(val), nil
 }
 
 func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {

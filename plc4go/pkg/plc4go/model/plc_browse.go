@@ -19,34 +19,41 @@
 package model
 
 type PlcBrowseRequestBuilder interface {
-    AddItem(name string, query string)
-    Build() (PlcBrowseRequest, error)
+	AddItem(name string, query string)
+	Build() (PlcBrowseRequest, error)
 }
 
 type PlcBrowseQueryResult struct {
-    address           string
-    possibleDataTypes []string
+	Address           string
+	PossibleDataTypes []string
 }
 
 type PlcBrowseRequest interface {
-    // Will not return until a potential scan is finished and will return all results in one block
-    Execute() <-chan PlcBrowseRequestResult
-    // Will create a stream of results as they come in and fire a "EOF" when it's finished
-    ExecuteStreaming() <-chan PlcBrowseQueryResult
-    GetQueryNames() []string
-    GetQueryString(name string) string
-    PlcRequest
+	// Will not return until a potential scan is finished and will return all results in one block
+	Execute() <-chan PlcBrowseRequestResult
+	// Will call the given callback for every found resource
+	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
+	GetQueryNames() []string
+	GetQueryString(name string) string
+	PlcRequest
 }
 
 type PlcBrowseResponse interface {
-    GetRequest() PlcBrowseRequest
-    GetQueryNames() []string
-    GetQueryResults(name string) []PlcBrowseQueryResult
-    PlcResponse
+	GetRequest() PlcBrowseRequest
+	GetQueryNames() []string
+	GetQueryResults(name string) []PlcBrowseQueryResult
+	PlcResponse
 }
 
 type PlcBrowseRequestResult struct {
-    Request  PlcBrowseRequest
-    Response PlcBrowseResponse
-    Err      error
+	Request  PlcBrowseRequest
+	Response PlcBrowseResponse
+	Err      error
+}
+
+type PlcBrowseEvent struct {
+	Request   PlcBrowseRequest
+	QueryName string
+	Result    *PlcBrowseQueryResult
+	Err       error
 }

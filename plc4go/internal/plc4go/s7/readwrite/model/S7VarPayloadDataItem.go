@@ -22,9 +22,9 @@ import (
     "encoding/base64"
     "encoding/xml"
     "errors"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "io"
     "math"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 // The data-structure of this message

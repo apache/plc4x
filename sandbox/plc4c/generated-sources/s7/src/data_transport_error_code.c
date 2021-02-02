@@ -32,6 +32,9 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
     if(strcmp(value_string, "RESERVED") == 0) {
         return plc4c_s7_read_write_data_transport_error_code_RESERVED;
     }
+    if(strcmp(value_string, "OK") == 0) {
+        return plc4c_s7_read_write_data_transport_error_code_OK;
+    }
     if(strcmp(value_string, "ACCESS_DENIED") == 0) {
         return plc4c_s7_read_write_data_transport_error_code_ACCESS_DENIED;
     }
@@ -43,9 +46,6 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
     }
     if(strcmp(value_string, "NOT_FOUND") == 0) {
         return plc4c_s7_read_write_data_transport_error_code_NOT_FOUND;
-    }
-    if(strcmp(value_string, "OK") == 0) {
-        return plc4c_s7_read_write_data_transport_error_code_OK;
     }
     return -1;
 }
@@ -60,19 +60,19 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
         return plc4c_s7_read_write_data_transport_error_code_RESERVED;
       }
       case 1: {
-        return plc4c_s7_read_write_data_transport_error_code_ACCESS_DENIED;
+        return plc4c_s7_read_write_data_transport_error_code_OK;
       }
       case 2: {
-        return plc4c_s7_read_write_data_transport_error_code_INVALID_ADDRESS;
+        return plc4c_s7_read_write_data_transport_error_code_ACCESS_DENIED;
       }
       case 3: {
-        return plc4c_s7_read_write_data_transport_error_code_DATA_TYPE_NOT_SUPPORTED;
+        return plc4c_s7_read_write_data_transport_error_code_INVALID_ADDRESS;
       }
       case 4: {
-        return plc4c_s7_read_write_data_transport_error_code_NOT_FOUND;
+        return plc4c_s7_read_write_data_transport_error_code_DATA_TYPE_NOT_SUPPORTED;
       }
       case 5: {
-        return plc4c_s7_read_write_data_transport_error_code_OK;
+        return plc4c_s7_read_write_data_transport_error_code_NOT_FOUND;
       }
       default: {
         return -1;

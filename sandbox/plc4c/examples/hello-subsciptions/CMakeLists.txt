@@ -23,8 +23,15 @@ file(GLOB sources "src/*.c")
 
 add_executable(plc4c-examples-hello-subscriptions ${sources} src/hello_subscriptions.c)
 
-target_link_libraries(plc4c-examples-hello-subscriptions
-        plc4c-spi plc4c-driver-simulated
-        plc4c-transport-dummy
-        m
-)
+IF (NOT WIN32)
+    target_link_libraries(plc4c-examples-hello-subscriptions
+            plc4c-spi plc4c-driver-simulated
+            plc4c-transport-dummy
+            m
+            )
+ELSE()
+    target_link_libraries(plc4c-examples-hello-subscriptions
+            plc4c-spi plc4c-driver-simulated
+            plc4c-transport-dummy
+            )
+ENDIF()

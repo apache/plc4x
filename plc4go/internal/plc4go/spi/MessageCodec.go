@@ -18,13 +18,28 @@
 //
 package spi
 
+import "time"
+
+// If this function returns true, the message is forwarded to the message handler
+type AcceptsMessage func(message interface{}) bool
+
+// Function for handling the message, returns an error if anything goes wrong
+type HandleMessage func(message interface{}) error
+
+// Function for handling the message, returns an error if anything goes wrong
+type HandleError func(err error) error
+
 type MessageCodec interface {
+	Connect() error
+	Disconnect() error
 
-    Connect() error
-    Disconnect() error
+	// Sends a given message
+	Send(message interface{}) error
+	// Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
+	// and is then forwarded to the 'handleMessage' function
+	Expect(acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
+	// A combination that sends a message first and then waits for a response
+	SendRequest(message interface{}, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
 
-    Send(message interface{}) error
-    Receive() (interface{},error)
-    Expect(check func(interface{}) (bool, bool)) chan interface{}
-
+	GetDefaultIncomingMessageChannel() chan interface{}
 }

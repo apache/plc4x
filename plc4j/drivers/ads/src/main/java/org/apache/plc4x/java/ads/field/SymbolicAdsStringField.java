@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStringField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_STRING_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>'STRING'|'WSTRING')\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_STRING_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>'STRING'|'WSTRING')\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?");
 
     private final int stringLength;
 

@@ -76,7 +76,7 @@ func (e MemoryArea) ShortName() string {
         }
     }
 }
-func MemoryAreaValueOf(value uint8) MemoryArea {
+func MemoryAreaByValue(value uint8) MemoryArea {
     switch value {
         case 0x1C:
             return MemoryArea_COUNTERS
@@ -96,6 +96,30 @@ func MemoryAreaValueOf(value uint8) MemoryArea {
             return MemoryArea_INSTANCE_DATA_BLOCKS
         case 0x86:
             return MemoryArea_LOCAL_DATA
+    }
+    return 0
+}
+
+func MemoryAreaByName(value string) MemoryArea {
+    switch value {
+    case "COUNTERS":
+        return MemoryArea_COUNTERS
+    case "TIMERS":
+        return MemoryArea_TIMERS
+    case "DIRECT_PERIPHERAL_ACCESS":
+        return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+    case "INPUTS":
+        return MemoryArea_INPUTS
+    case "OUTPUTS":
+        return MemoryArea_OUTPUTS
+    case "FLAGS_MARKERS":
+        return MemoryArea_FLAGS_MARKERS
+    case "DATA_BLOCKS":
+        return MemoryArea_DATA_BLOCKS
+    case "INSTANCE_DATA_BLOCKS":
+        return MemoryArea_INSTANCE_DATA_BLOCKS
+    case "LOCAL_DATA":
+        return MemoryArea_LOCAL_DATA
     }
     return 0
 }
@@ -123,7 +147,7 @@ func MemoryAreaParse(io *utils.ReadBuffer) (MemoryArea, error) {
     if err != nil {
         return 0, nil
     }
-    return MemoryAreaValueOf(val), nil
+    return MemoryAreaByValue(val), nil
 }
 
 func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
