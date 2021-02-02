@@ -44,11 +44,11 @@
       <artifactId>commons-lang3</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <version>2.11.1</version>
-      <scope>test</scope>
+ 
+     <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
