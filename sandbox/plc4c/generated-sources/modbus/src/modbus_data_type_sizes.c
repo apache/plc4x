@@ -35,77 +35,77 @@ plc4c_modbus_read_write_modbus_data_type_sizes plc4c_modbus_read_write_modbus_da
     if(strcmp(value_string, "BYTE") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_BYTE;
     }
-    if(strcmp(value_string, "CHAR") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_CHAR;
-    }
-    if(strcmp(value_string, "DATE") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE;
-    }
-    if(strcmp(value_string, "DATE_AND_TIME") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE_AND_TIME;
-    }
-    if(strcmp(value_string, "DINT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DINT;
+    if(strcmp(value_string, "WORD") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
     }
     if(strcmp(value_string, "DWORD") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_DWORD;
     }
-    if(strcmp(value_string, "INT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_INT;
-    }
-    if(strcmp(value_string, "LDATE") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE;
-    }
-    if(strcmp(value_string, "LDATE_AND_TIME") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE_AND_TIME;
-    }
-    if(strcmp(value_string, "LINT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LINT;
-    }
-    if(strcmp(value_string, "LREAL") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LREAL;
-    }
-    if(strcmp(value_string, "LTIME") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME;
-    }
-    if(strcmp(value_string, "LTIME_OF_DAY") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME_OF_DAY;
-    }
     if(strcmp(value_string, "LWORD") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_LWORD;
-    }
-    if(strcmp(value_string, "REAL") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_REAL;
     }
     if(strcmp(value_string, "SINT") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_SINT;
     }
-    if(strcmp(value_string, "STRING") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_STRING;
+    if(strcmp(value_string, "INT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_INT;
     }
-    if(strcmp(value_string, "TIME") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME;
+    if(strcmp(value_string, "DINT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DINT;
     }
-    if(strcmp(value_string, "TIME_OF_DAY") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME_OF_DAY;
-    }
-    if(strcmp(value_string, "UDINT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_UDINT;
-    }
-    if(strcmp(value_string, "UINT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_UINT;
-    }
-    if(strcmp(value_string, "ULINT") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_ULINT;
+    if(strcmp(value_string, "LINT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LINT;
     }
     if(strcmp(value_string, "USINT") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_USINT;
     }
+    if(strcmp(value_string, "UINT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_UINT;
+    }
+    if(strcmp(value_string, "UDINT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_UDINT;
+    }
+    if(strcmp(value_string, "ULINT") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_ULINT;
+    }
+    if(strcmp(value_string, "REAL") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_REAL;
+    }
+    if(strcmp(value_string, "LREAL") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LREAL;
+    }
+    if(strcmp(value_string, "TIME") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME;
+    }
+    if(strcmp(value_string, "LTIME") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME;
+    }
+    if(strcmp(value_string, "DATE") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE;
+    }
+    if(strcmp(value_string, "LDATE") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE;
+    }
+    if(strcmp(value_string, "TIME_OF_DAY") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME_OF_DAY;
+    }
+    if(strcmp(value_string, "LTIME_OF_DAY") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME_OF_DAY;
+    }
+    if(strcmp(value_string, "DATE_AND_TIME") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE_AND_TIME;
+    }
+    if(strcmp(value_string, "LDATE_AND_TIME") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE_AND_TIME;
+    }
+    if(strcmp(value_string, "CHAR") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_CHAR;
+    }
     if(strcmp(value_string, "WCHAR") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_WCHAR;
     }
-    if(strcmp(value_string, "WORD") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
+    if(strcmp(value_string, "STRING") == 0) {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_STRING;
     }
     if(strcmp(value_string, "WSTRING") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_sizes_WSTRING;
@@ -126,76 +126,76 @@ plc4c_modbus_read_write_modbus_data_type_sizes plc4c_modbus_read_write_modbus_da
         return plc4c_modbus_read_write_modbus_data_type_sizes_BYTE;
       }
       case 2: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_CHAR;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
       }
       case 3: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE;
-      }
-      case 4: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE_AND_TIME;
-      }
-      case 5: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_DINT;
-      }
-      case 6: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_DWORD;
       }
-      case 7: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_INT;
-      }
-      case 8: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE;
-      }
-      case 9: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE_AND_TIME;
-      }
-      case 10: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LINT;
-      }
-      case 11: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LREAL;
-      }
-      case 12: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME;
-      }
-      case 13: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME_OF_DAY;
-      }
-      case 14: {
+      case 4: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_LWORD;
       }
-      case 15: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_REAL;
-      }
-      case 16: {
+      case 5: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_SINT;
       }
+      case 6: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_INT;
+      }
+      case 7: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DINT;
+      }
+      case 8: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LINT;
+      }
+      case 9: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_USINT;
+      }
+      case 10: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_UINT;
+      }
+      case 11: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_UDINT;
+      }
+      case 12: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_ULINT;
+      }
+      case 13: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_REAL;
+      }
+      case 14: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LREAL;
+      }
+      case 15: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME;
+      }
+      case 16: {
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME;
+      }
       case 17: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_STRING;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE;
       }
       case 18: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_TIME;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE;
       }
       case 19: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_TIME_OF_DAY;
       }
       case 20: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_UDINT;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LTIME_OF_DAY;
       }
       case 21: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_UINT;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_DATE_AND_TIME;
       }
       case 22: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_ULINT;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_LDATE_AND_TIME;
       }
       case 23: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_USINT;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_CHAR;
       }
       case 24: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_WCHAR;
       }
       case 25: {
-        return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
+        return plc4c_modbus_read_write_modbus_data_type_sizes_STRING;
       }
       case 26: {
         return plc4c_modbus_read_write_modbus_data_type_sizes_WSTRING;
@@ -293,4 +293,24 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_sizes_get_data_type_size(plc4c_
       return 0;
     }
   }
+}
+
+plc4c_modbus_read_write_modbus_data_type_sizes plc4c_modbus_read_write_modbus_data_type_sizes_get_first_enum_for_field_data_type_size(uint8_t value) {
+    switch(value) {
+        case 1: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_BOOL;
+        }
+        case 2: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_WORD;
+        }
+        case 4: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_DWORD;
+        }
+        case 8: {
+            return plc4c_modbus_read_write_modbus_data_type_sizes_LWORD;
+        }
+        default: {
+            return -1;
+        }
+    }
 }

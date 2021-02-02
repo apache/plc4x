@@ -114,3 +114,32 @@ uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_writ
     }
   }
 }
+
+plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_get_first_enum_for_field_size_in_bytes(uint16_t value) {
+    switch(value) {
+        case 1024: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_1024;
+        }
+        case 128: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_128;
+        }
+        case 2048: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_2048;
+        }
+        case 256: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_256;
+        }
+        case 4096: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_4096;
+        }
+        case 512: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_512;
+        }
+        case 8192: {
+            return plc4c_s7_read_write_cotp_tpdu_size_SIZE_8192;
+        }
+        default: {
+            return -1;
+        }
+    }
+}

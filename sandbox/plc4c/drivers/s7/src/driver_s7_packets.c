@@ -435,11 +435,66 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     // Get the item address from the API request.
     plc4c_s7_read_write_s7_var_request_parameter_item* parsed_item_address = item->address;
 
+    // Create a copy of the request item...
+    plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address =
+        malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+    if (updated_item_address == NULL) {
+      return NO_MEMORY;
+    }
+    updated_item_address->_type = parsed_item_address->_type;
+    updated_item_address->s7_var_request_parameter_item_address_address = malloc(sizeof(plc4c_s7_read_write_s7_address));
+    if (updated_item_address->s7_var_request_parameter_item_address_address == NULL) {
+      return NO_MEMORY;
+    }
+    updated_item_address->s7_var_request_parameter_item_address_address->_type =
+        parsed_item_address->s7_var_request_parameter_item_address_address->_type;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_area =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_area;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_db_number =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_db_number;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_byte_address =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_byte_address;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_bit_address =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_bit_address;
+    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
+        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
+
+    // Update the data-types and sizes...
+    /*if (updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+        plc4c_s7_read_write_transport_size_STRING) {
+      if (string_length != NULL) {
+        updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
+            strtol(string_length, 0, 10) *
+                updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
+      } else if (updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+                 plc4c_s7_read_write_transport_size_STRING) {
+        updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
+            254 * updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
+      }
+    }*/
+      // In case of TIME values, we read 4 bytes for each value instead.
+    if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+            plc4c_s7_read_write_transport_size_TIME) {
+      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
+          plc4c_s7_read_write_transport_size_DINT;
+    } else if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+              plc4c_s7_read_write_transport_size_DATE) {
+      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
+          plc4c_s7_read_write_transport_size_UINT;
+    } else if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+                   plc4c_s7_read_write_transport_size_TIME_OF_DAY ||
+               updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
+                   plc4c_s7_read_write_transport_size_TOD) {
+      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
+          plc4c_s7_read_write_transport_size_UDINT;
+    }
     // Add the new item to the request.
     plc4c_utils_list_insert_head_value(
         (*s7_read_request_packet)
             ->payload->payload->parameter->s7_parameter_read_var_request_items,
-        parsed_item_address);
+        updated_item_address);
 
     cur_item = cur_item->next;
   }

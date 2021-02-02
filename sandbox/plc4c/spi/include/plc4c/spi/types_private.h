@@ -236,6 +236,7 @@ struct plc4c_data_t {
     char *pstring_value;
     char *const_string_value;
     void *pvoid_value;
+    plc4c_list list_value;
   } data;
 
   plc4c_data_custom_destroy custom_destroy;

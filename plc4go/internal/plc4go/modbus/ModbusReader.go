@@ -129,6 +129,13 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 				}
 				return nil
 			},
+			func(err error) error {
+				result <- model.PlcReadRequestResult{
+					Request: readRequest,
+					Err:     errors.New("got timeout while waiting for response"),
+				}
+				return nil
+			},
 			time.Second*1)
 		if err != nil {
 			result <- model.PlcReadRequestResult{

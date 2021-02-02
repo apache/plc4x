@@ -25,6 +25,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "plc4c/utils/list.h"
 #include "plc4c/types.h"
 
 typedef void (*plc4c_data_custom_destroy)(plc4c_data *data);
@@ -134,6 +135,20 @@ plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s);
  * @return pointer to plc4c_data
  */
 plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s);
+
+/**
+ * Creates a plc4c_data with a constant char
+ * @param s the char value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_char_data(char* s);
+
+/**
+ * Creates a plc4c_data which contains a list of values
+ * @param list the list value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_list_data(plc4c_list list);
 
 /**
  * Set a custom function to call when destroying this data.  Typically when the

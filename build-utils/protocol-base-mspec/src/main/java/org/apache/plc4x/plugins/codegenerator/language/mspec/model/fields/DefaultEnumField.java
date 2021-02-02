@@ -27,12 +27,14 @@ public class DefaultEnumField extends DefaultTaggedField implements EnumField {
 
     private final TypeReference type;
     private final String name;
+    private final String fieldName;
     private final Term[] params;
 
-    public DefaultEnumField(String[] tags, TypeReference type, String name, Term[] params) {
+    public DefaultEnumField(String[] tags, TypeReference type, String name, String fieldName, Term[] params) {
         super(tags);
         this.type = type;
         this.name = name;
+        this.fieldName = fieldName;
         this.params = params;
     }
 
@@ -42,6 +44,10 @@ public class DefaultEnumField extends DefaultTaggedField implements EnumField {
 
     public String getName() {
         return name;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public Term[] getParams() {

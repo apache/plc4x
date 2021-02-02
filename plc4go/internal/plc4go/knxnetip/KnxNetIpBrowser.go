@@ -19,13 +19,14 @@
 package knxnetip
 
 import (
-    "fmt"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-    apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "strconv"
-    "strings"
-    "time"
+	"fmt"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type KnxNetIpBrowser struct {
@@ -44,6 +45,12 @@ func NewKnxNetIpBrowser(connection *KnxNetIpConnection, messageCodec spi.Message
 }
 
 func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
+	return b.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
+		return true
+	})
+}
+
+func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
 		result <- apiModel.PlcBrowseRequestResult{
@@ -84,25 +91,46 @@ func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan 
 				//   - If an object-id is provided, check if this object id exists
 				//   - If a property-id is provided, check if this property exists and try to get more information about it
 				case KnxNetIpDevicePropertyAddressPlcField:
-                    targetAddress := FieldToKnxAddress(field.(KnxNetIpDevicePropertyAddressPlcField))
+					targetAddress := FieldToKnxAddress(field.(KnxNetIpDevicePropertyAddressPlcField))
 
 					// Send a connection request to the device
 					deviceConnections := b.connection.ConnectToDevice(*targetAddress)
-                    select {
-                    case deviceConnection := <-deviceConnections:
-                        if deviceConnection != nil {
-                            queryResult := apiModel.PlcBrowseQueryResult{
-                                Address: fmt.Sprintf("%d.%d.%d",
-                                    targetAddress.MainGroup,
-                                    targetAddress.MiddleGroup,
-                                    targetAddress.SubGroup),
-                                PossibleDataTypes: nil,
-                            }
-                            queryResults = append(queryResults, queryResult)
-                        }
-                    }
+					select {
+					case deviceConnection := <-deviceConnections:
+						if deviceConnection != nil {
+							queryResult := apiModel.PlcBrowseQueryResult{
+								Address: fmt.Sprintf("%d.%d.%d",
+									targetAddress.MainGroup,
+									targetAddress.MiddleGroup,
+									targetAddress.SubGroup),
+								PossibleDataTypes: nil,
+							}
+
+							// Pass it to the callback
+							add := interceptor(apiModel.PlcBrowseEvent{
+								Request:   browseRequest,
+								QueryName: queryName,
+								Result:    &queryResult,
+								Err:       nil,
+							})
+
+							// If the interceptor opted for adding it to the result, do so
+							if add {
+								queryResults = append(queryResults, queryResult)
+							}
+
+							deviceDisconnections := b.connection.DisconnectFromDevice(*targetAddress)
+							select {
+							case _ = <-deviceDisconnections:
+							case <-time.After(b.connection.defaultTtl * 10):
+								fmt.Printf("Timedout")
+							}
+						}
+					case <-time.After(b.connection.defaultTtl):
+						// In this case the remote was just not responding.
+					}
 					// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
-					time.Sleep(time.Millisecond * 20)
+					//time.Sleep(time.Millisecond * 20)
 				// - A Group Address
 				//   - Check the cache of known group addresses. If there is data available from that group-id, it's returned
 				case KnxNetIpGroupAddress3LevelPlcField:
@@ -141,8 +169,18 @@ func (b KnxNetIpBrowser) calculateAddresses(field apiModel.PlcField) ([]string, 
 		for _, mainOption := range mainGroupOptions {
 			for _, middleOption := range middleGroupOptions {
 				for _, subOption := range subGroupOptions {
-					address := fmt.Sprintf("%d.%d.%d", mainOption, middleOption, subOption)
-					addresses = append(addresses, address)
+					// Don't try connecting to ourselves.
+					if b.connection.ClientKnxAddress != nil {
+						currentAddress := driverModel.KnxAddress{
+							MainGroup:   mainOption,
+							MiddleGroup: middleOption,
+							SubGroup:    subOption,
+						}
+						if currentAddress != *b.connection.ClientKnxAddress {
+							address := fmt.Sprintf("%d.%d.%d", mainOption, middleOption, subOption)
+							addresses = append(addresses, address)
+						}
+					}
 				}
 			}
 		}
@@ -154,8 +192,8 @@ func (b KnxNetIpBrowser) calculateAddresses(field apiModel.PlcField) ([]string, 
 	return addresses, nil
 }
 
-func (b KnxNetIpBrowser) explodeSegment(segment string, min uint16, max uint16) ([]uint16, error) {
-	var options []uint16
+func (b KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
+	var options []uint8
 	if strings.Contains(segment, "*") {
 		for i := min; i <= max; i++ {
 			options = append(options, i)
@@ -175,14 +213,14 @@ func (b KnxNetIpBrowser) explodeSegment(segment string, min uint16, max uint16) 
 					return nil, err
 				}
 				for i := localMin; i <= localMax; i++ {
-					options = append(options, uint16(i))
+					options = append(options, uint8(i))
 				}
 			} else {
 				option, err := strconv.Atoi(segment)
 				if err != nil {
 					return nil, err
 				}
-				options = append(options, uint16(option))
+				options = append(options, uint8(option))
 			}
 		}
 	}

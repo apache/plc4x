@@ -69,8 +69,8 @@ func (d DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
 	return d.browser.Browse(d)
 }
 
-func (d DefaultPlcBrowseRequest) ExecuteStreaming() <-chan model.PlcBrowseQueryResult {
-	panic("implement me")
+func (d DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+	return d.browser.BrowseWithInterceptor(d, interceptor)
 }
 
 type DefaultPlcBrowseResponse struct {

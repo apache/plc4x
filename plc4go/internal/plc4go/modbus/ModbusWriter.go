@@ -149,6 +149,13 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 				}
 				return nil
 			},
+			func(err error) error {
+				result <- model.PlcWriteRequestResult{
+					Request: writeRequest,
+					Err:     errors.New("got timeout while waiting for response"),
+				}
+				return nil
+			},
 			time.Second*1)
 	} else {
 		result <- model.PlcWriteRequestResult{

@@ -287,7 +287,7 @@
         </plugins>
         <!--
           Developers working in plc4c will probably use an IDE like CLion to edit just this
-          Part of the project. These IDEs generate some work-directries we need to exclude.
+          Part of the project. These IDEs generate some work-directories we need to exclude.
         -->
         <pluginManagement>
           <plugins>

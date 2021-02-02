@@ -41,10 +41,18 @@ if (BUILD_PHASE STREQUAL test-compile)
             test/s7_address_parser_test.c
             test/s7_test.c
             )
-    target_link_libraries(plc4c-driver-s7-test
-            plc4c-driver-s7
-            unity
-            m
-            )
+
+    IF (NOT WIN32)
+        target_link_libraries(plc4c-driver-s7-test
+                plc4c-driver-s7
+                unity
+                m
+                )
+    ELSE()
+        target_link_libraries(plc4c-driver-s7-test
+                plc4c-driver-s7
+                unity
+                )
+    ENDIF()
     add_test(NAME plc4c-driver-s7-test COMMAND plc4c-driver-s7-test)
 endif ()

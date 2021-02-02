@@ -265,10 +265,21 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Enum field (${enumField.name})
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getNullValueForTypeReference(enumField.type)};
+            <#if enumField.fieldName?has_content>
+<#if indentContent>  </#if>  {
+<#if indentContent>  </#if>    ${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))} _constantValue = ${helper.getNullValueForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "&_constantValue")};
+<#if indentContent>  </#if>    if(_res != OK) {
+<#if indentContent>  </#if>      return _res;
+<#if indentContent>  </#if>    }
+<#if indentContent>  </#if>    ${enumField.name} = ${helper.getLanguageTypeNameForTypeReference(enumField.type)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(enumField.fieldName)}(_constantValue);
+<#if indentContent>  </#if>  }
+            <#else>
 <#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), "&" + enumField.name)};
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
+            </#if>
 <#if indentContent>  </#if>  (*_message)-><@fieldName baseType=baseType field=enumField/> = ${enumField.name};
             <#break>
         <#case "implicit">
@@ -461,10 +472,17 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign enumField = field>
 
 <#if indentContent>    </#if>  // Enum field (${enumField.name})
+                <#if enumField.fieldName?has_content>
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), helper.getLanguageTypeNameForTypeReference(enumField.type) + "_get_" + helper.camelCaseToSnakeCase(enumField.fieldName) + "(_message->" + helper.getFieldName(baseType, enumField) + ")")};
+<#if indentContent>    </#if>  if(_res != OK) {
+<#if indentContent>    </#if>    return _res;
+<#if indentContent>    </#if>  }
+                <#else>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "_message->" + helper.getFieldName(baseType, enumField))};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }
+                </#if>
             <#break>
         <#case "implicit">
             <#assign implicitField = field>

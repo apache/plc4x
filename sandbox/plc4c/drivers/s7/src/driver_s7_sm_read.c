@@ -42,7 +42,7 @@ plc4c_return_code plc4c_driver_s7_read_list_to_byte_array(plc4c_list* list, uint
   uint8_t* cur_byte = byte_array;
   plc4c_list_element* cur_element = list->tail;
   for(int i = 0; i < array_size; i++) {
-    *cur_byte = (uint8_t) (cur_element->value);
+    *cur_byte = *((uint8_t*) (cur_element->value));
     cur_byte++;
     cur_element = cur_element->next;
   }
@@ -128,9 +128,14 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
         // request item. Also get the number of elements, if it's an array.
         plc4c_s7_read_write_s7_var_request_parameter_item* s7_address = cur_request_item->address;
         plc4c_s7_read_write_transport_size transport_size = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
-        uint8_t data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
+        char* data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
         uint16_t num_elements = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
         int32_t string_length = 0;
+        if(transport_size == plc4c_s7_read_write_transport_size_STRING) {
+          // TODO: This needs to be changed to read arrays of strings.
+          string_length = num_elements;
+          num_elements = 1;
+        }
 
         // Convert the linked list with uint8_t elements into an array of uint8_t.
         plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item = cur_response_item_element->value;

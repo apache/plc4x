@@ -86,7 +86,9 @@ typedef enum plc4c_data_type {
   PLC4C_DOUBLE,
   PLC4C_STRING_POINTER,
   PLC4C_CONSTANT_STRING,
-  PLC4C_VOID_POINTER
+  PLC4C_VOID_POINTER,
+  PLC4C_LIST,
+  PLC4C_STRUCT
 } plc4c_data_type;
 
 /**

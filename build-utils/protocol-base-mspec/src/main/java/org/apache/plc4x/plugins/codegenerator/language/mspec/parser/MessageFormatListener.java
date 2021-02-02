@@ -197,8 +197,12 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterEnumField(MSpecParser.EnumFieldContext ctx) {
         ComplexTypeReference type = new DefaultComplexTypeReference(ctx.type.complexTypeReference.getText());
         String name = getIdString(ctx.name);
+        String fieldName = null;
+        if (ctx.fieldName != null) {
+            fieldName = getIdString(ctx.fieldName);
+        }
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultEnumField(null, type, name, params);
+        Field field = new DefaultEnumField(null, type, name, fieldName, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -341,7 +345,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
         // For DataIO types, add all the arguments from the parent type.
-        if(!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)) {
+        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)) {
             if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
                 parserArguments.addAll(Arrays.asList(getParserArguments(
                     ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
@@ -401,7 +405,7 @@ public class MessageFormatListener extends MSpecBaseListener {
                 MSpecParser.ExpressionContext expression = ctx.constantValueExpressions.expression(i);
                 String constant = unquoteString(expression.getText());
                 // String expressions are double escaped
-                if(constant.startsWith("\"")) {
+                if (constant.startsWith("\"")) {
                     constant = unquoteString(constant);
                 }
                 constants.put(constantName, constant);
@@ -423,7 +427,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private TypeReference getTypeReference(MSpecParser.TypeReferenceContext ctx) {
         if (ctx.simpleTypeReference != null) {
-            return getSimpleTypeReference (ctx.simpleTypeReference);
+            return getSimpleTypeReference(ctx.simpleTypeReference);
         } else {
             return new DefaultComplexTypeReference(ctx.complexTypeReference.getText());
         }
@@ -433,7 +437,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional "encoding" field and an optional size.
-        if(simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
+        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
             int size = (ctx.size != null) ? Integer.parseInt(ctx.size.getText()) : -1;
             String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
             return new DefaultStringTypeReference(simpleBaseType, size, encoding);
@@ -444,17 +448,15 @@ public class MessageFormatListener extends MSpecBaseListener {
             return new DefaultIntegerTypeReference(simpleBaseType, size);
         }
         // If exponent and mantissa are present, it's a floating point representation.
-        else if((ctx.exponent != null) && (ctx.mantissa != null)) {
+        else if ((ctx.exponent != null) && (ctx.mantissa != null)) {
             int exponent = Integer.parseInt(ctx.exponent.getText());
             int mantissa = Integer.parseInt(ctx.mantissa.getText());
             return new DefaultFloatTypeReference(simpleBaseType, exponent, mantissa);
-        }
-        else if((simpleBaseType == SimpleTypeReference.SimpleBaseType.TIME) ||
+        } else if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.TIME) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATE) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
             return new DefaultTemporalTypeReference(simpleBaseType);
-        }
-        else if(simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
+        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
             return new DefaultBooleanTypeReference();
         }
         // In all other cases (bit) it's just assume it's length it 1.
