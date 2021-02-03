@@ -22,6 +22,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -325,7 +326,7 @@ func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 }
 
 func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
-    Init()
+	Init()
 
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
@@ -384,54 +385,94 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	defer connection.Close()
 
 	// First of all, request the starting address of the group address table
-    readRequestBuilder := connection.ReadRequestBuilder()
-    readRequestBuilder.AddItem("groupAddressTableAddress", "1.1.10/1/7")
-    readRequest, err := readRequestBuilder.Build()
-    if err != nil {
-        t.Errorf("error creating read request: %s", err.Error())
-        t.Fail()
-        return
-    }
-    rrr := readRequest.Execute()
-    readResult := <-rrr
-    groupAddressTableStartAddress := readResult.Response.GetValue("groupAddressTableAddress").GetUint16()
+	readRequestBuilder := connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("groupAddressTableAddress", "1.1.10/1/7")
+	readRequest, err := readRequestBuilder.Build()
+	if err != nil {
+		t.Errorf("error creating read request: %s", err.Error())
+		t.Fail()
+		return
+	}
+	rrr := readRequest.Execute()
+	readResult := <-rrr
+	groupAddressTableStartAddress := readResult.Response.GetValue("groupAddressTableAddress").GetUint16()
 
-    // Then read one byte at the given location.
-    // This will return the number of entries in the group address table (each 2 bytes)
-    readRequestBuilder = connection.ReadRequestBuilder()
-    readRequestBuilder.AddItem("numberOfAddressTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
-        groupAddressTableStartAddress))
-    readRequest, _ = readRequestBuilder.Build()
-    rrr = readRequest.Execute()
-    readResult = <-rrr
-    numGroupAddresses := readResult.Response.GetValue("numberOfAddressTableEntries").GetUint8()
+	// Then read one byte at the given location.
+	// This will return the number of entries in the group address table (each 2 bytes)
+	readRequestBuilder = connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("numberOfAddressTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
+		groupAddressTableStartAddress))
+	readRequest, _ = readRequestBuilder.Build()
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	numGroupAddresses := readResult.Response.GetValue("numberOfAddressTableEntries").GetUint8()
 
-    // Read the data in the group address table
-    readRequestBuilder = connection.ReadRequestBuilder()
-    // TODO: This request needs to be automatically split up into multiple requests.
-    // Reasons for splitting up:
-    // - Max APDU Size exceeded
-    // - Max 63 bytes readable in one request, due to max of count field
-    readRequestBuilder.AddItem("groupAddressTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
-        groupAddressTableStartAddress + 1, numGroupAddresses))
-    readRequest, _ = readRequestBuilder.Build()
-    rrr = readRequest.Execute()
-    readResult = <-rrr
-    var listResults []byte
-    if readResult.Response.GetResponseCode("programVersion") == apiModel.PlcResponseCode_OK {
-        for _, value := range readResult.Response.GetValue("groupAddressTable").GetList() {
-            listResults = append(listResults, value.GetUint8())
-        }
-    }
+	// Read the data in the group address table
+	readRequestBuilder = connection.ReadRequestBuilder()
+	// TODO: This request needs to be automatically split up into multiple requests.
+	// Reasons for splitting up:
+	// - Max APDU Size exceeded
+	// - Max 63 bytes readable in one request, due to max of count field
+	readRequestBuilder.AddItem("groupAddressTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
+		groupAddressTableStartAddress+3, numGroupAddresses-1))
+	readRequest, _ = readRequestBuilder.Build()
+	rrr = readRequest.Execute()
+	readResult = <-rrr
 
-    // Output the group addresses
-    fmt.Printf("Found Group Addresses:\n")
+	// Output the group addresses
+	var knxGroupAddresses []*driverModel.KnxGroupAddress
 	for _, groupAddress := range readResult.Response.GetValue("groupAddressTable").GetList() {
 		groupAddress := knxnetip.Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
-		fmt.Printf(" - %s\n", knxnetip.GroupAddressToString(groupAddress))
+		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
 
-	
+	// Now we read the group address association table address
+	readRequestBuilder = connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("groupAddressAssociationTableAddress", "1.1.10/2/7")
+	readRequest, err = readRequestBuilder.Build()
+	if err != nil {
+		t.Errorf("error creating read request: %s", err.Error())
+		t.Fail()
+		return
+	}
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	groupAddressAssociationTableAddress := readResult.Response.GetValue("groupAddressAssociationTableAddress").GetUint16()
+
+	// Then read one uint16 at the given location.
+	// This will return the number of entries in the group address table (each 2 bytes)
+	readRequestBuilder = connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("numberOfGroupAddressAssociationTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
+		groupAddressAssociationTableAddress))
+	readRequest, _ = readRequestBuilder.Build()
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	numberOfGroupAddressAssociationTableEntries := readResult.Response.GetValue("numberOfGroupAddressAssociationTableEntries").GetUint8()
+
+	// Read the data in the group address table
+	readRequestBuilder = connection.ReadRequestBuilder()
+	// TODO: This request needs to be automatically split up into multiple requests.
+	// Reasons for splitting up:
+	// - Max APDU Size exceeded
+	// - Max 63 bytes readable in one request, due to max of count field
+	readRequestBuilder.AddItem("groupAddressAssociationTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
+		groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries))
+	readRequest, _ = readRequestBuilder.Build()
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+
+	// Output the group addresses
+	for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
+		addressIndex := uint8(groupAddressAssociation.GetUint16() >> 8)
+		comObjectNumber := uint8(groupAddressAssociation.GetUint16() & 0xFF)
+		if (addressIndex > 0) && (addressIndex < uint8(len(knxGroupAddresses))) {
+			groupAddress := knxGroupAddresses[addressIndex-1]
+			fmt.Printf("Com Object %d bound to group address %s\n",
+				comObjectNumber, knxnetip.GroupAddressToString(groupAddress))
+		}
+	}
+
+	fmt.Printf("%d", numberOfGroupAddressAssociationTableEntries)
 }
 
 func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
