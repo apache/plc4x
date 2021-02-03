@@ -443,8 +443,13 @@
         ['0x7' ApduDataAdcResponse
         ]
         ['0x8' ApduDataMemoryRead
+            [simple uint 6  'numBytes']
+            [simple uint 16 'address']
         ]
         ['0x9' ApduDataMemoryResponse
+            [implicit uint 6  'numBytes' 'COUNT(data)']
+            [simple   uint 16 'address']
+            [array    uint 8  'data'     count 'numBytes']
         ]
         ['0xA' ApduDataMemoryWrite
         ]
