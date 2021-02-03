@@ -36,6 +36,7 @@
   <modules>
     <module>capture-replay</module>
     <module>connection-pool</module>
+    <module>connection-cache</module>
     <module>opm</module>
     <module>scraper</module>
   </modules>
