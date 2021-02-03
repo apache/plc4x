@@ -105,6 +105,7 @@
     <antlr.version>4.9</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <assertj.version>3.18.1</assertj.version>
+    <awaitility.version>3.0.0</awaitility.version>
     <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.67</bouncycastle.version>
@@ -298,6 +299,17 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${awaitility.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility-proxy</artifactId>
+        <version>${awaitility.version}</version>
       </dependency>
 
       <dependency>
