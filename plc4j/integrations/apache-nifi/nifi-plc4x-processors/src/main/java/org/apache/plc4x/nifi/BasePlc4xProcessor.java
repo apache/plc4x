@@ -46,11 +46,11 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xAddressStringValidator())
         .build();
 
-    public final Relationship REL_SUCCESS = new Relationship.Builder()
+    public static final Relationship REL_SUCCESS = new Relationship.Builder()
         .name("success")
         .description("Successfully processed")
         .build();
-    public final Relationship REL_FAILURE = new Relationship.Builder()
+    public static final Relationship REL_FAILURE = new Relationship.Builder()
         .name("failure")
         .description("An error occurred processing")
         .build();

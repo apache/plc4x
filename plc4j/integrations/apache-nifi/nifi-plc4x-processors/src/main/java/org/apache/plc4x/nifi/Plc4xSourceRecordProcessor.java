@@ -33,6 +33,7 @@ import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
+import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
@@ -68,13 +69,13 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	public static final String INPUT_FLOWFILE_UUID = "input.flowfile.uuid";
 	public static final String RESULT_ERROR_MESSAGE = "plc4x.read.error.message";
 
-	private static final PropertyDescriptor RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
+	public static final PropertyDescriptor RECORD_WRITER_FACTORY = new PropertyDescriptor.Builder()
 			.name("plc4x-record-writer").displayName("Record Writer")
 			.description("Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. "
 							+ "an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.")
 			.identifiesControllerService(RecordSetWriterFactory.class).required(true).build();
 	
-	private static final PropertyDescriptor FORCE_RECONNECT = new PropertyDescriptor.Builder()
+	public static final PropertyDescriptor FORCE_RECONNECT = new PropertyDescriptor.Builder()
 			.name("plc4x-reconnect-force").displayName("Force Reconnect every request")
 			.description("Specifies if the connection to plc will be recreated on trigger event")
 			.required(true).addValidator(StandardValidators.BOOLEAN_VALIDATOR).defaultValue("true").build();
@@ -83,17 +84,20 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 	}
 
-	
 	private PlcConnection connection = null;
 	
 	private static PLC4X_PROTOCOL PROTOCOL = null;
 	
 	@Override
+	@OnScheduled
     public void onScheduled(final ProcessContext context) {
         super.onScheduled(context);
         //TODO: Change this to use NiFi service instead of direct connection and add @OnStopped Phase to close connection
         try {
-			this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+        	Boolean force =  context.getProperty(FORCE_RECONNECT).asBoolean();
+        	if(!force) {
+        		this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+        	}
 			//TODO how to infer protocol within the writer?
 			PROTOCOL = Plc4xCommon.getConnectionProtocol(getConnectionString());
 		} catch (PlcConnectionException e) {
@@ -139,35 +143,40 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 		final List<FlowFile> resultSetFlowFiles = new ArrayList<>();
 
-		final ComponentLog logger = getLogger();
 		Plc4xWriter plc4xWriter = new RecordPlc4xWriter(context.getProperty(RECORD_WRITER_FACTORY).asControllerService(RecordSetWriterFactory.class), fileToProcess == null ? Collections.emptyMap() : fileToProcess.getAttributes());
 		Boolean force =  context.getProperty(FORCE_RECONNECT).asBoolean();
+		final ComponentLog logger = getLogger();
+		logger.info("Te connection {} will be recreated? (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
 		// Get an instance of a component able to read from a PLC.
 		// TODO: Change this to use NiFi service instead of direct connection
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 		try {
 			if(force) {
-				logger.debug("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
+				logger.warn("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
 				this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
 			}
 			if(this.connection != null) {
 				// Prepare the request.
+				logger.warn("00000000000000");
 				if (!connection.getMetadata().canRead()) {
 					throw new ProcessException("Reading not supported by connection");
 				}
 				String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
 				Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
 				FlowFile resultSetFF;
+				logger.warn("11111111111111");
 				if (fileToProcess == null) {
 					resultSetFF = session.create();
 				} else {
 					resultSetFF = session.create(fileToProcess);
 				}
+				logger.warn("22222222222222");
 				if (inputFileAttrMap != null) {
 					resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
 				}
 				try {
+					logger.warn("3333333333333333");
 					PlcReadRequest.Builder builder = connection.readRequestBuilder();
 					getFields().forEach(field -> {
 						String address = getAddress(field);
@@ -177,7 +186,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					});
 					PlcReadRequest readRequest = builder.build();
 					PlcReadResponse readResponse = readRequest.execute().get();
-	
+					logger.warn("44444444444444444");
 					resultSetFF = session.write(resultSetFF, out -> {
 						try {
 							nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, this.getPlcAddress(), out, logger, null, PROTOCOL));
@@ -185,7 +194,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 							throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 						}
 					});
-	
+					logger.warn("55555555555555555");
 					long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 					final Map<String, String> attributesToAdd = new HashMap<>();
 					attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
@@ -196,7 +205,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
 					resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
 					plc4xWriter.updateCounters(session);
-	
+					logger.warn("66666666666666666");
 					logger.info("{} contains {} records; transferring to 'success'",
 							new Object[] { resultSetFF, nrOfRows.get() });
 					// Report a FETCH event if there was an incoming flow file, or a RECEIVE event otherwise
@@ -216,7 +225,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 						session.commit();
 						resultSetFlowFiles.clear();
 					}
-	
+					logger.warn("777777777777777");
 				} catch (Exception e) {
 					if (e instanceof InterruptedException)
 						Thread.currentThread().interrupt();
@@ -248,12 +257,13 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				session.transfer(fileToProcess, REL_FAILURE);
 			}
 		} finally {
+			logger.warn("Force the close");
 			if(force && this.connection != null)
 				try {
 					this.connection.close();
 				} catch (Exception e) {
-					logger.error("Unable to close connection {} due to {}",	new Object[] { getConnectionString(), e });
-					throw new ProcessException("Connection closed problems");
+					logger.warn("Unable to close connection {} due to {}",	new Object[] { getConnectionString(), e });
+					//throw new ProcessException("Connection closed problems");
 				}
 		}
 	}
