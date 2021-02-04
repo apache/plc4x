@@ -85,9 +85,9 @@
           <octet5>1</octet5>
           <octet6>1</octet6>
         </sender>
-        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text>31302E31302E31302E3130</text>
-        </address>
+        </routeName>
         <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
           <octet1>10</octet1>
           <octet2>10</octet2>
@@ -102,9 +102,9 @@
         <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text>70617373776F7264</text>
         </password>
-        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text>31302E31302E31302E3130</text>
-        </routeName>
+        </address>
       </RouteRequest>
     </xml>
   </testcase>
@@ -233,9 +233,9 @@
           <octet5>1</octet5>
           <octet6>1</octet6>
         </sender>
-        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text>4445534B544F502D33504A31413544</text>
-        </address>
+        </routeName>
         <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
           <octet1>192</octet1>
           <octet2>168</octet2>
@@ -250,9 +250,9 @@
         <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text></text>
         </password>
-        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
           <text>4445534B544F502D33504A31413544</text>
-        </routeName>
+        </address>
       </RouteRequest>
     </xml>
   </testcase>
