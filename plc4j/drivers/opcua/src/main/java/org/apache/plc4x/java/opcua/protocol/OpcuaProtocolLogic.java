@@ -48,16 +48,30 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.bouncycastle.asn1.pkcs.RSAPublicKey;
+import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.BufferedAsymmetricBlockCipher;
+import org.bouncycastle.crypto.engines.RSAEngine;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
+import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -155,6 +169,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             }
             //this.thumbprint = new PascalByteString(this.ckp.getThumbPrint().length, this.ckp.getThumbPrint());
             this.thumbprint = configuration.getThumbprint();
+            this.senderCertificate = configuration.getSenderCertificate();
         } else {
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
@@ -344,37 +359,48 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NULL_BYTE_STRING,
             DEFAULT_CONNECTION_LIFETIME);
 
-        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
-            0,
-            new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None".length(), "http://opcfoundation.org/UA/SecurityPolicy#None"),
-            NULL_BYTE_STRING,
-            NULL_BYTE_STRING,
-            transactionId,
-            transactionId,
-            openSecureChannelRequest);
+        try {
+            WriteBuffer buffer = new WriteBuffer(openSecureChannelRequest.getLengthInBytes(), true);
+            OpcuaMessageIO.staticSerialize(buffer, openSecureChannelRequest);
 
-        context.sendRequest(new OpcuaAPU(openRequest))
-            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-            .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-            .handle(opcuaOpenResponse -> {
-                if (opcuaOpenResponse.getMessage() instanceof ServiceFault) {
-                    ServiceFault fault = (ServiceFault) opcuaOpenResponse.getMessage();
-                    LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
-                } else {
-                    LOGGER.debug("Got Secure Response Connection Response");
+            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
+                0,
+                new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None".length(), "http://opcfoundation.org/UA/SecurityPolicy#None"),
+                NULL_BYTE_STRING,
+                NULL_BYTE_STRING,
+                transactionId,
+                transactionId,
+                buffer.getData());
+
+            context.sendRequest(new OpcuaAPU(openRequest))
+                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
+                .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+                .handle(opcuaOpenResponse -> {
                     try {
-                        onDiscoverGetEndpointsRequest(context, opcuaOpenResponse);
-                    } catch (PlcConnectionException e) {
-                        LOGGER.error("Error occurred while connecting to OPC UA server");
+                        OpcuaMessage message = OpcuaMessageIO.staticParse(new ReadBuffer(opcuaOpenResponse.getMessage(), true));
+                        if (message instanceof ServiceFault) {
+                            ServiceFault fault = (ServiceFault) message;
+                            LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
+                        } else {
+                            LOGGER.debug("Got Secure Response Connection Response");
+                            try {
+                                onDiscoverGetEndpointsRequest(context, opcuaOpenResponse, (OpenSecureChannelResponse) message);
+                            } catch (PlcConnectionException e) {
+                                LOGGER.error("Error occurred while connecting to OPC UA server");
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                }
-            });
+                });
+        } catch (ParseException e) {
+            LOGGER.error("Unable to to Parse Create Session Request");
+        }
     }
 
-    public void onDiscoverGetEndpointsRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
+    public void onDiscoverGetEndpointsRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse, OpenSecureChannelResponse openSecureChannelResponse) throws PlcConnectionException {
         certificateThumbprint = opcuaOpenResponse.getReceiverCertificateThumbprint();
-        OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
         tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
         channelId.set((int) openSecureChannelResponse.getSecurityToken().getChannelId());
 
@@ -434,13 +460,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             for (EndpointDescription endpoint : endpoints) {
                                 if (endpoint.getEndpointUrl().getStringValue().equals(this.endpoint) && endpoint.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy)) {
                                     LOGGER.info("Found OPC UA endpoint {}", this.endpoint);
-                                    this.senderCertificate = endpoint.getServerCertificate().getStringValue();
+                                    this.configuration.setSenderCertificate(endpoint.getServerCertificate().getStringValue());
                                 }
                             }
 
                             try {
                                 MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-                                byte[] digest = messageDigest.digest(this.senderCertificate);
+                                byte[] digest = messageDigest.digest(this.configuration.getSenderCertificate());
                                 this.configuration.setThumbprint(new PascalByteString(digest.length, digest));
                             } catch (NoSuchAlgorithmException e) {
                                 LOGGER.error("Failed to find hashing algorithm");
@@ -450,7 +476,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
                 });
         } catch (ParseException e) {
             LOGGER.error("Unable to to Parse Create Session Request");
@@ -515,48 +540,118 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        OpenSecureChannelRequest openSecureChannelRequest = new OpenSecureChannelRequest((byte) 1,
-            (byte) 0,
-            requestHeader,
-            VERSION,
-            SecurityTokenRequestType.securityTokenRequestTypeIssue,
-            MessageSecurityMode.messageSecurityModeNone,
-            NULL_BYTE_STRING,
-            DEFAULT_CONNECTION_LIFETIME);
+        OpenSecureChannelRequest openSecureChannelRequest = null;
+        if (this.isEncrypted) {
+            openSecureChannelRequest = new OpenSecureChannelRequest((byte) 1,
+                (byte) 0,
+                requestHeader,
+                VERSION,
+                SecurityTokenRequestType.securityTokenRequestTypeIssue,
+                MessageSecurityMode.messageSecurityModeSignAndEncrypt,
+                new PascalByteString(clientNonce.length, clientNonce),
+                DEFAULT_CONNECTION_LIFETIME);
+        } else {
+            openSecureChannelRequest = new OpenSecureChannelRequest((byte) 1,
+                (byte) 0,
+                requestHeader,
+                VERSION,
+                SecurityTokenRequestType.securityTokenRequestTypeIssue,
+                MessageSecurityMode.messageSecurityModeNone,
+                NULL_BYTE_STRING,
+                DEFAULT_CONNECTION_LIFETIME);
+        }
 
-        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
-            0,
-            new PascalString(this.securityPolicy.length(), this.securityPolicy),
-            this.publicCertificate,
-            this.thumbprint,
-            transactionId,
-            transactionId,
-            openSecureChannelRequest);
+        try {
+            WriteBuffer buffer = new WriteBuffer(openSecureChannelRequest.getLengthInBytes(), true);
+            OpcuaMessageIO.staticSerialize(buffer, openSecureChannelRequest);
 
-        context.sendRequest(new OpcuaAPU(openRequest))
-            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-            .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-            .handle(opcuaOpenResponse -> {
-                if (opcuaOpenResponse.getMessage() instanceof ServiceFault) {
-                    ServiceFault fault = (ServiceFault) opcuaOpenResponse.getMessage();
-                    LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
-                } else {
-                    LOGGER.debug("Got Secure Response Connection Response");
-                    try {
-                        onConnectCreateSessionRequest(context, opcuaOpenResponse);
-                    } catch (PlcConnectionException e) {
-                        LOGGER.error("Error occurred while connecting to OPC UA server");
-                    }
+            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(CHUNK,
+                0,
+                new PascalString(this.securityPolicy.length(), this.securityPolicy),
+                this.publicCertificate,
+                this.thumbprint,
+                transactionId,
+                transactionId,
+                buffer.getData());
+
+            OpcuaAPU apu = new OpcuaAPU(openRequest);
+
+            if (this.isEncrypted) {
+                LOGGER.info("Encrypting data, Calculating number of blocks");
+                int PREENCRYPTED_BLOCK_LENGTH = 190;
+                int unencryptedLength = apu.getLengthInBytes();
+                LOGGER.info("Unencrypted Length {}", unencryptedLength);
+                int openRequestLength = buffer.getData().length;
+                LOGGER.info("Open Request Length {}", openRequestLength);
+                //The transaction Ids also get encrypted
+                int positionFirstBlock = unencryptedLength - openRequestLength - 8;
+                LOGGER.info("Position of First Block {}", positionFirstBlock);
+                int paddingSize = PREENCRYPTED_BLOCK_LENGTH - ((openRequestLength + 256 + 1 + 8) % PREENCRYPTED_BLOCK_LENGTH);
+                LOGGER.info("Padding Length {}", paddingSize);
+                int preEncryptedLength = openRequestLength + 256 + 1 + 8 + paddingSize;
+                LOGGER.info("Pre-Encrypted Length {}", preEncryptedLength);
+                if (preEncryptedLength % PREENCRYPTED_BLOCK_LENGTH != 0) {
+                    throw new PlcRuntimeException("Pre encrypted block length " + preEncryptedLength + " isn't a multiple of the block size");
                 }
-            });
+                int numberOfBlocks = preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH;
+                LOGGER.info("Number of blocks {}", numberOfBlocks);
+                int encryptedLength = numberOfBlocks * 256 + positionFirstBlock;
+                LOGGER.info("Encrypted Length {}", encryptedLength);
+                WriteBuffer buf = new WriteBuffer(encryptedLength, true);
+                OpcuaAPUIO.staticSerialize(buf, apu);
+                byte paddingByte = (byte) paddingSize;
+                LOGGER.info("Writing Padding at position {}", buf.getPos());
+                buf.writeByte(8, paddingByte);
+                for (int i = 0; i < paddingSize; i++) {
+                    buf.writeByte(8, paddingByte);
+                }
+                //Writing Message Length
+                int tempPos = buf.getPos();
+                buf.setPos(4);
+                buf.writeInt(32, encryptedLength);
+                buf.setPos(tempPos);
+                byte[] signature = sign(buf.getBytes(0, unencryptedLength + paddingSize + 1));
+                //Write the signature to the end of the buffer
+                //buf.setPos(encryptedLength - 256);
+                for (int i = 0; i < signature.length; i++) {
+                    buf.writeByte(8, signature[i]);
+                }
+                buf.setPos(positionFirstBlock);
+                encryptBlock(buf, buf.getBytes(positionFirstBlock, positionFirstBlock + preEncryptedLength));
+                apu = OpcuaAPUIO.staticParse(new ReadBuffer(buf.getData(), true), false);
+            }
+
+            context.sendRequest(apu)
+                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
+                .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+                .handle(opcuaOpenResponse -> {
+                    try {
+                        OpcuaMessage message = OpcuaMessageIO.staticParse(new ReadBuffer(opcuaOpenResponse.getMessage(), true));
+                        if (message instanceof ServiceFault) {
+                            ServiceFault fault = (ServiceFault) message;
+                            LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
+                        } else {
+                            LOGGER.debug("Got Secure Response Connection Response");
+                            try {
+                                onConnectCreateSessionRequest(context, opcuaOpenResponse, (OpenSecureChannelResponse) message);
+                            } catch (PlcConnectionException e) {
+                                LOGGER.error("Error occurred while connecting to OPC UA server");
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+        } catch (ParseException e) {
+            LOGGER.error("Unable to to Parse Open Secure Request");
+        }
 
     }
 
-    public void onConnectCreateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse) throws PlcConnectionException {
+    public void onConnectCreateSessionRequest(ConversationContext<OpcuaAPU> context, OpcuaOpenResponse opcuaOpenResponse, OpenSecureChannelResponse openSecureChannelResponse) throws PlcConnectionException {
 
         certificateThumbprint = opcuaOpenResponse.getReceiverCertificateThumbprint();
-        OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) opcuaOpenResponse.getMessage();
         tokenId.set((int) openSecureChannelResponse.getSecurityToken().getTokenId());
         channelId.set((int) openSecureChannelResponse.getSecurityToken().getChannelId());
 
@@ -1475,7 +1570,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 encodeableBuffer.position(0);
                 encodeableBuffer.get(encodeablePassword);
 
-                byte[] encryptedPassword = encrypt(encodeablePassword, senderCertificate);
+                byte[] encryptedPassword = encryptPassword(encodeablePassword);
                 UserNameIdentityToken userNameIdentityToken =  new UserNameIdentityToken(
                     new PascalString("username".length(), "username"),
                     new PascalString(this.username.length(), this.username),
@@ -1498,20 +1593,41 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return null;
     }
 
-    public byte[] encrypt(byte[] data, byte[] publicKey) {
+
+    public byte[] encryptPassword(byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getCertificateX509().getPublicKey());
             return cipher.doFinal(data);
         } catch (Exception e) {
             LOGGER.error("Unable to encrypt Data");
+            e.printStackTrace();
             return null;
+        }
+    }
+
+    public void encryptBlock(WriteBuffer buf, byte[] data) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            //Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, getCertificateX509().getPublicKey());
+            for (int i = 0; i < data.length; i += 190) {
+                LOGGER.info("Iterate:- {}, Data Length:- {}", i, data.length);
+                byte[] encrypted = cipher.doFinal(data, i, 190);
+                for (int j = 0; j < 256; j++) {
+                    buf.writeByte(8, encrypted[j]);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Unable to encrypt Data");
+            e.printStackTrace();
         }
     }
 
     public X509Certificate getCertificateX509() {
         try {
             CertificateFactory factory =  CertificateFactory.getInstance("X.509");
+            LOGGER.info("Public Key Length {}", this.senderCertificate.length);
             return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(this.senderCertificate));
         } catch (Exception e) {
             LOGGER.error("Unable to get certificate from String {}", this.senderCertificate);
@@ -1526,4 +1642,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return new GuidValue(0L,0,0,data4, data5);
 
     }
+
+    public byte[] sign(byte[] data) {
+        try {
+            Signature signature = Signature.getInstance("SHA256withRSA", "BC");
+            signature.initSign(this.ckp.getKeyPair().getPrivate());
+            signature.update(data);
+            return signature.sign();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Unable to sign Data");
+            return null;
+        }
+    }
+
 }

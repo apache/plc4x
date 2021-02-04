@@ -63,11 +63,11 @@
             [simple          PascalByteString   'receiverCertificateThumbprint']
             [simple          int 32             'sequenceNumber']
             [simple          int 32             'requestId']
-            [simple          OpcuaMessage       'message']
+            [array           int 8              'message' count 'messageSize - endpoint.stringLength - senderCertificate.stringLength - receiverCertificateThumbprint.stringLength - 32']
        ]
        ['OPN','true'     OpcuaOpenResponse
            [simple          string '8'         'chunk']
-           [implicit          int 32             'messageSize' 'lengthInBytes']
+           [implicit          int 32            'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
            [simple          int 32             'securityPolicyUriSize']
            [simple          string 'securityPolicyUriSize == -1 ? 0 : securityPolicyUriSize * 8'          'endpoint']
@@ -77,7 +77,7 @@
            [simple          string 'receiverCertificateThumbprintSize == -1 ? 0 : receiverCertificateThumbprintSize * 8'             'receiverCertificateThumbprint']
            [simple          int 32             'sequenceNumber']
            [simple          int 32             'requestId']
-           [simple          OpcuaMessage       'message']
+           [array           int 8              'message' count 'messageSize - (receiverCertificateThumbprintSize == -1 ? 0 : receiverCertificateThumbprintSize) - (senderCertificateSize == -1 ? 0 : senderCertificateSize) - (securityPolicyUriSize == -1 ? 0 : securityPolicyUriSize) - 32)']
        ]
        ['CLO','false'     OpcuaCloseRequest
            [simple          string '8'         'chunk']

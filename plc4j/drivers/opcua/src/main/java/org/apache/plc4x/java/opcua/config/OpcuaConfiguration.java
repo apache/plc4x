@@ -63,6 +63,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     private String params;
     private Boolean isEncrypted = false;
     private PascalByteString thumbprint;
+    private byte[] senderCertificate;
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
@@ -173,6 +174,10 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return endpoint;
     }
 
+    public byte[] getSenderCertificate() {
+        return this.senderCertificate;
+    }
+
     public void setTransportCode(String code) {
         this.code = code;
     }
@@ -220,6 +225,8 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return "Configuration{" +
             '}';
     }
+
+    public void setSenderCertificate(byte[] certificate) { this.senderCertificate = certificate; }
 
 }
 

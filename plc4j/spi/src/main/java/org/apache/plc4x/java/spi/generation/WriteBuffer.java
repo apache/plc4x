@@ -60,6 +60,10 @@ public class WriteBuffer {
         return (int) bo.getPos();
     }
 
+    public void setPos(int position) {
+        bb.position(position);
+    }
+
     public byte[] getBytes(int startPos, int endPos) {
         int numBytes = endPos - startPos;
         byte[] data = new byte[numBytes];
