@@ -16,7 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package write
+package main
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 )
 
-func main() int {
+func main() {
 	// Get a connection to a remote PLC
 	crc := plc4go.NewPlcDriverManager().GetConnection("s7://192.168.23.30")
 
@@ -32,7 +32,7 @@ func main() int {
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
         fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
-		return 1
+		return
 	}
 	connection := connectionResult.Connection
 
@@ -46,7 +46,7 @@ func main() int {
 	writeRequest, err := wrb.Build()
 	if err != nil {
         fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
-		return 2
+		return
 	}
 
 	// Execute a read-request
@@ -56,16 +56,14 @@ func main() int {
 	wrr := <-wrc
 	if wrr.Err != nil {
         fmt.Printf("error executing write-request: %s", wrr.Err.Error())
-		return 3
+		return
 	}
 
 	// Do something with the response
 	writeResponseJson, err := json.Marshal(wrr.Response)
 	if err != nil {
         fmt.Printf("error serializing write-response: %s", err.Error())
-		return 4
+		return
 	}
 	fmt.Printf("Result: %s\n", string(writeResponseJson))
-
-	return 0
 }

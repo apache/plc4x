@@ -414,9 +414,9 @@
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.LDataInd">
           <additionalInformationLength>0</additionalInformationLength>
           <additionalInformation/>
-          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
-            <repeated>true</repeated>
-            <notAckFrame>true</notAckFrame>
+          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataExtended">
+            <frameType>true</frameType>
+            <notRepeated>true</notRepeated>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
@@ -430,7 +430,6 @@
             </sourceAddress>
             <destinationAddress>120C</destinationAddress>
             <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataContainer">
-              <dataLength>1</dataLength>
               <numbered>false</numbered>
               <counter>0</counter>
               <dataApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduDataGroupValueWrite">
@@ -475,9 +474,9 @@
               </relativeTimestamp>
             </additionalInformation>
           </additionalInformation>
-          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataFrameDataExt">
-            <repeated>true</repeated>
-            <notAckFrame>true</notAckFrame>
+          <dataFrame className="org.apache.plc4x.java.knxnetip.readwrite.LDataExtended">
+            <frameType>true</frameType>
+            <notRepeated>true</notRepeated>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
             <errorFlag>false</errorFlag>
@@ -491,7 +490,6 @@
             </sourceAddress>
             <destinationAddress>0CE1</destinationAddress>
             <apdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlContainer">
-              <dataLength>0</dataLength>
               <numbered>false</numbered>
               <counter>0</counter>
               <controlApdu className="org.apache.plc4x.java.knxnetip.readwrite.ApduControlDisconnect"/>

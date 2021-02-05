@@ -384,6 +384,10 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	connection := connectionResult.Connection
 	defer connection.Close()
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Group Address Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// First of all, request the starting address of the group address table
 	readRequestBuilder := connection.ReadRequestBuilder()
 	readRequestBuilder.AddItem("groupAddressTableAddress", "1.1.10/1/7")
@@ -425,6 +429,10 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 		groupAddress := knxnetip.Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Group Address Association Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Now we read the group address association table address
 	readRequestBuilder = connection.ReadRequestBuilder()
@@ -472,7 +480,24 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 		}
 	}
 
-	fmt.Printf("%d", numberOfGroupAddressAssociationTableEntries)
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Com Object Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// Now we read the group address association table address
+	readRequestBuilder = connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("comObjectTableAddress", "1.1.10/3/7")
+	readRequest, err = readRequestBuilder.Build()
+	if err != nil {
+		t.Errorf("error creating read request: %s", err.Error())
+		t.Fail()
+		return
+	}
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
+
+	fmt.Printf("%d", comObjectTableAddress)
 }
 
 func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
