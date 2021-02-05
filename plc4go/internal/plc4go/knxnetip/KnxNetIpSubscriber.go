@@ -81,12 +81,8 @@ func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFram
 	var destinationAddress []int8
     var apdu *driverModel.Apdu
 	switch lDataFrame.Child.(type) {
-	case *driverModel.LDataFrameData:
-		dataFrame := driverModel.CastLDataFrameData(lDataFrame)
-		destinationAddress = dataFrame.DestinationAddress
-        apdu = dataFrame.Apdu
-	case *driverModel.LDataFrameDataExt:
-		dataFrame := driverModel.CastLDataFrameDataExt(lDataFrame)
+	case *driverModel.LDataExtended:
+		dataFrame := driverModel.CastLDataExtended(lDataFrame)
 		destinationAddress = dataFrame.DestinationAddress
         apdu = dataFrame.Apdu
 	}
@@ -124,39 +120,46 @@ func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFram
 				if err != nil {
 					continue
 				}
-				subscriptionType := subscriptionRequest.GetType(fieldName)
-				// If it matches, take the datatype of each matching field and try to decode the payload
-				if field.matches(groupAddress) {
-                    // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
-					if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
-                        var payload []int8
-                        payload = append(payload, groupValueWrite.DataFirstByte)
-                        payload = append(payload, groupValueWrite.Data...)
-                        rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
-                        if field.GetFieldType() == nil {
-                            responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
-                            plcValues[fieldName] = nil
-                            continue
+                switch field.(type) {
+                case KnxNetIpGroupAddressField:
+                    subscriptionType := subscriptionRequest.GetType(fieldName)
+                    groupAddressField := field.(KnxNetIpGroupAddressField)
+                    // If it matches, take the datatype of each matching field and try to decode the payload
+                    if groupAddressField.matches(groupAddress) {
+                        // If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
+                        if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
+                            var payload []int8
+                            payload = append(payload, groupValueWrite.DataFirstByte)
+                            payload = append(payload, groupValueWrite.Data...)
+                            rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
+                            if groupAddressField.GetFieldType() == nil {
+                                responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE
+                                plcValues[fieldName] = nil
+                                continue
+                            }
+                            // If the size of the field is greater than 6, we have to skip the first byte
+                            if groupAddressField.GetFieldType().LengthInBits() > 6 {
+                                _, _ = rb.ReadUint8(8)
+                            }
+                            plcValue, err2 := driverModel.KnxDatapointParse(rb, *groupAddressField.GetFieldType())
+                            fields[fieldName] = field
+                            types[fieldName] = subscriptionRequest.GetType(fieldName)
+                            intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
+                            addresses[fieldName] = destinationAddress
+                            if err2 == nil {
+                                responseCodes[fieldName] = apiModel.PlcResponseCode_OK
+                                plcValues[fieldName] = plcValue
+                            } else {
+                                // TODO: Do a little more here ...
+                                responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
+                                plcValues[fieldName] = nil
+                            }
                         }
-                        // If the size of the field is greater than 6, we have to skip the first byte
-                        if field.GetFieldType().LengthInBits() > 6 {
-                            _, _ = rb.ReadUint8(8)
-                        }
-                        plcValue, err2 := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
-                        fields[fieldName] = field
-                        types[fieldName] = subscriptionRequest.GetType(fieldName)
-                        intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
-                        addresses[fieldName] = destinationAddress
-                        if err2 == nil {
-                            responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-                            plcValues[fieldName] = plcValue
-                        } else {
-                            // TODO: Do a little more here ...
-                            responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-                            plcValues[fieldName] = nil
-                        }
-					}
-				}
+                    }
+                default:
+                    responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+                    plcValues[fieldName] = nil
+                }
 			}
 
 			// Assemble a PlcSubscription event

@@ -41,36 +41,6 @@ func GroupAddressToString(groupAddress *driverModel.KnxGroupAddress) string {
 	return ""
 }
 
-func FieldToKnxAddress(field KnxNetIpField) *driverModel.KnxAddress {
-	if field.IsPatternField() {
-		return nil
-	}
-	var mainAddress int
-	var middleAddress int
-	var subAddress int
-	switch field.(type) {
-	case KnxNetIpDevicePropertyAddressPlcField:
-		plcField := field.(KnxNetIpDevicePropertyAddressPlcField)
-		mainAddress, _ = strconv.Atoi(plcField.MainGroup)
-		middleAddress, _ = strconv.Atoi(plcField.MiddleGroup)
-		subAddress, _ = strconv.Atoi(plcField.SubGroup)
-    case KnxNetIpDeviceMemoryAddressPlcField:
-        plcField := field.(KnxNetIpDeviceMemoryAddressPlcField)
-        mainAddress = int(plcField.MainGroup)
-        middleAddress = int(plcField.MiddleGroup)
-        subAddress = int(plcField.SubGroup)
-	case KnxNetIpGroupAddress3LevelPlcField:
-		plcField := field.(KnxNetIpGroupAddress3LevelPlcField)
-		mainAddress, _ = strconv.Atoi(plcField.MainGroup)
-		middleAddress, _ = strconv.Atoi(plcField.MiddleGroup)
-		subAddress, _ = strconv.Atoi(plcField.SubGroup)
-	default:
-		return nil
-	}
-
-	return driverModel.NewKnxAddress(uint8(mainAddress), uint8(middleAddress), uint8(subAddress))
-}
-
 func Int8ArrayToKnxAddress(data []int8) *driverModel.KnxAddress {
 	readBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(data))
 	knxAddress, err := driverModel.KnxAddressParse(readBuffer)

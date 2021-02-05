@@ -27,7 +27,7 @@ import (
 )
 
 // The data-structure of this message
-type LDataFrameDataExt struct {
+type LDataExtended struct {
     GroupAddress bool
     HopCount uint8
     ExtendedFrameFormat uint8
@@ -35,11 +35,11 @@ type LDataFrameDataExt struct {
     DestinationAddress []int8
     Apdu *Apdu
     Parent *LDataFrame
-    ILDataFrameDataExt
+    ILDataExtended
 }
 
 // The corresponding interface
-type ILDataFrameDataExt interface {
+type ILDataExtended interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -49,61 +49,61 @@ type ILDataFrameDataExt interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFrameDataExt) ExtendedFrame() bool {
+func (m *LDataExtended) NotAckFrame() bool {
     return true
 }
 
-func (m *LDataFrameDataExt) Polling() bool {
+func (m *LDataExtended) Polling() bool {
     return false
 }
 
 
-func (m *LDataFrameDataExt) InitializeParent(parent *LDataFrame, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-    m.Parent.Repeated = repeated
-    m.Parent.NotAckFrame = notAckFrame
+func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+    m.Parent.FrameType = frameType
+    m.Parent.NotRepeated = notRepeated
     m.Parent.Priority = priority
     m.Parent.AcknowledgeRequested = acknowledgeRequested
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, apdu *Apdu, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-    child := &LDataFrameDataExt{
+func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+    child := &LDataExtended{
         GroupAddress: groupAddress,
         HopCount: hopCount,
         ExtendedFrameFormat: extendedFrameFormat,
         SourceAddress: sourceAddress,
         DestinationAddress: destinationAddress,
         Apdu: apdu,
-        Parent: NewLDataFrame(repeated, notAckFrame, priority, acknowledgeRequested, errorFlag),
+        Parent: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastLDataFrameDataExt(structType interface{}) *LDataFrameDataExt {
-    castFunc := func(typ interface{}) *LDataFrameDataExt {
-        if casted, ok := typ.(LDataFrameDataExt); ok {
+func CastLDataExtended(structType interface{}) *LDataExtended {
+    castFunc := func(typ interface{}) *LDataExtended {
+        if casted, ok := typ.(LDataExtended); ok {
             return &casted
         }
-        if casted, ok := typ.(*LDataFrameDataExt); ok {
+        if casted, ok := typ.(*LDataExtended); ok {
             return casted
         }
         if casted, ok := typ.(LDataFrame); ok {
-            return CastLDataFrameDataExt(casted.Child)
+            return CastLDataExtended(casted.Child)
         }
         if casted, ok := typ.(*LDataFrame); ok {
-            return CastLDataFrameDataExt(casted.Child)
+            return CastLDataExtended(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *LDataFrameDataExt) GetTypeName() string {
-    return "LDataFrameDataExt"
+func (m *LDataExtended) GetTypeName() string {
+    return "LDataExtended"
 }
 
-func (m *LDataFrameDataExt) LengthInBits() uint16 {
+func (m *LDataExtended) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (groupAddress)
@@ -123,17 +123,20 @@ func (m *LDataFrameDataExt) LengthInBits() uint16 {
         lengthInBits += 8 * uint16(len(m.DestinationAddress))
     }
 
+    // Implicit Field (dataLength)
+    lengthInBits += 8
+
     // Simple field (apdu)
     lengthInBits += m.Apdu.LengthInBits()
 
     return lengthInBits
 }
 
-func (m *LDataFrameDataExt) LengthInBytes() uint16 {
+func (m *LDataExtended) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataExtendedParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
     // Simple Field (groupAddress)
     groupAddress, _groupAddressErr := io.ReadBit()
@@ -170,14 +173,20 @@ func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
         destinationAddress[curItem] = _item
     }
 
+    // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    dataLength, _dataLengthErr := io.ReadUint8(8)
+    if _dataLengthErr != nil {
+        return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
+    }
+
     // Simple Field (apdu)
-    apdu, _apduErr := ApduParse(io)
+    apdu, _apduErr := ApduParse(io, dataLength)
     if _apduErr != nil {
         return nil, errors.New("Error parsing 'apdu' field " + _apduErr.Error())
     }
 
     // Create a partially initialized instance
-    _child := &LDataFrameDataExt{
+    _child := &LDataExtended{
         GroupAddress: groupAddress,
         HopCount: hopCount,
         ExtendedFrameFormat: extendedFrameFormat,
@@ -190,7 +199,7 @@ func LDataFrameDataExtParse(io *utils.ReadBuffer) (*LDataFrame, error) {
     return _child.Parent, nil
 }
 
-func (m *LDataFrameDataExt) Serialize(io utils.WriteBuffer) error {
+func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (groupAddress)
@@ -230,6 +239,13 @@ func (m *LDataFrameDataExt) Serialize(io utils.WriteBuffer) error {
         }
     }
 
+    // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
+    _dataLengthErr := io.WriteUint8(8, (dataLength))
+    if _dataLengthErr != nil {
+        return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+    }
+
     // Simple Field (apdu)
     _apduErr := m.Apdu.Serialize(io)
     if _apduErr != nil {
@@ -241,7 +257,7 @@ func (m *LDataFrameDataExt) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *LDataFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -303,7 +319,7 @@ func (m *LDataFrameDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
     }
 }
 
-func (m *LDataFrameDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LDataExtended) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.GroupAddress, xml.StartElement{Name: xml.Name{Local: "groupAddress"}}); err != nil {
         return err
     }

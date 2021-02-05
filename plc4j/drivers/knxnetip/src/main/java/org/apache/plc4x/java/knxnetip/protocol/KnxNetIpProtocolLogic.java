@@ -344,10 +344,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 new TunnelingRequestDataBlock(communicationChannelId,
                     (short) sequenceCounter.getAndIncrement()),
                 new LDataReq((short) 0, new CEMIAdditionalInformation[0],
-                    new LDataFrameData(false, false, CEMIPriority.LOW, false, false,
-                        knxNetIpDriverContext.getClientKnxAddress(), destinationAddress, true,
-                        (byte) 6, new ApduDataContainer((short) ((data != null) ? data.length + 1 : 1), false, (byte) 0,
-                        new ApduDataGroupValueWrite(dataFirstByte, data)))
+                    new LDataExtended(false, false, CEMIPriority.LOW, false, false,
+                        true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
+                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data)))
                 ));
 
             // Start a new request-transaction (Is ended in the response-handler)
@@ -400,20 +399,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 if (tunnelingRequest.getCemi() instanceof LDataInd) {
                     LDataInd dataInd = (LDataInd) tunnelingRequest.getCemi();
                     final LDataFrame lDataFrame = dataInd.getDataFrame();
-                    if (lDataFrame instanceof LDataFrameData) {
-                        LDataFrameData lDataFrameData = (LDataFrameData) lDataFrame;
-                        Apdu apdu = lDataFrameData.getApdu();
-                        if(apdu instanceof ApduDataContainer) {
-                            ApduDataContainer apduDataContainer = (ApduDataContainer) apdu;
-                            ApduData dataApdu = apduDataContainer.getDataApdu();
-                            if(dataApdu instanceof ApduDataGroupValueWrite) {
-                                ApduDataGroupValueWrite groupWrite = (ApduDataGroupValueWrite) dataApdu;
-                                processCemiData(lDataFrameData.getSourceAddress(), lDataFrameData.getDestinationAddress(),
-                                    groupWrite.getDataFirstByte(),groupWrite.getData());
-                            }
-                        }
-                    } else if (lDataFrame instanceof LDataFrameDataExt) {
-                        LDataFrameDataExt lDataFrameDataExt = (LDataFrameDataExt) lDataFrame;
+                    if (lDataFrame instanceof LDataExtended) {
+                        LDataExtended lDataFrameDataExt = (LDataExtended) lDataFrame;
                         Apdu apdu = lDataFrameDataExt.getApdu();
                         if(apdu instanceof ApduDataContainer) {
                             ApduDataContainer apduDataContainer = (ApduDataContainer) apdu;

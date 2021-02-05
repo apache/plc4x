@@ -26,7 +26,6 @@ import (
     internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
     apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
     apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "strconv"
     "time"
 )
 
@@ -49,8 +48,8 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 
         // Sort the fields in direct properties and memory addresses, which will have to be actively
         // read from the devices and group-addresses which will be locally processed from the local cache.
-        deviceAddresses := map[driverModel.KnxAddress]map[string]KnxNetIpField{}
-        groupAddresses := map[string]KnxNetIpField{}
+        deviceAddresses := map[driverModel.KnxAddress]map[string]KnxNetIpDeviceField{}
+        groupAddresses := map[string]KnxNetIpGroupAddressField{}
         for _, fieldName := range readRequest.GetFieldNames() {
             // Get the knx field
             field, err := CastToKnxNetIpFieldFromPlcField(readRequest.GetField(fieldName))
@@ -63,26 +62,34 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
             switch field.(type) {
             case KnxNetIpDevicePropertyAddressPlcField:
                 propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
-                knxAddress := FieldToKnxAddress(propertyField)
+                knxAddress := propertyField.toKnxAddress()
                 if knxAddress == nil {
                     continue
                 }
                 if _, ok := deviceAddresses[*knxAddress]; !ok {
-                    deviceAddresses[*knxAddress] = map[string]KnxNetIpField{}
+                    deviceAddresses[*knxAddress] = map[string]KnxNetIpDeviceField{}
                 }
                 deviceAddresses[*knxAddress][fieldName] = propertyField
             case KnxNetIpDeviceMemoryAddressPlcField:
                 memoryField := field.(KnxNetIpDeviceMemoryAddressPlcField)
-                knxAddress := FieldToKnxAddress(memoryField)
+                knxAddress := memoryField.toKnxAddress()
                 if knxAddress == nil {
                     continue
                 }
                 if _, ok := deviceAddresses[*knxAddress]; !ok {
-                    deviceAddresses[*knxAddress] = map[string]KnxNetIpField{}
+                    deviceAddresses[*knxAddress] = map[string]KnxNetIpDeviceField{}
                 }
                 deviceAddresses[*knxAddress][fieldName] = memoryField
+            case KnxNetIpCommunicationObjectQueryField:
+                responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+                plcValues[fieldName] = nil
+                continue
+            case KnxNetIpGroupAddressField:
+                groupAddressField := field.(KnxNetIpGroupAddressField)
+                groupAddresses[fieldName] = groupAddressField
             default:
-                groupAddresses[fieldName] = field
+                responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+                plcValues[fieldName] = nil
             }
         }
 
@@ -91,20 +98,11 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
         for deviceAddress, fields := range deviceAddresses {
             // Collect all the properties on this device
             for fieldName, field := range fields {
-                // TODO: We'll add this as time progresses, for now we only support fully qualified addresses
-                if field.IsPatternField() {
-                    responseCodes[fieldName] = apiModel.PlcResponseCode_UNSUPPORTED
-                    plcValues[fieldName] = nil
-                    continue
-                }
-
                 switch field.(type) {
                 case KnxNetIpDevicePropertyAddressPlcField:
                     propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
-                    objectId, _ := strconv.Atoi(propertyField.ObjectId)
-                    propertyId, _ := strconv.Atoi(propertyField.PropertyId)
 
-                    results := m.connection.ReadDeviceProperty(deviceAddress, uint8(objectId), uint8(propertyId))
+                    results := m.connection.ReadDeviceProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId)
                     select {
                     case result := <-results:
                         responseCodes[fieldName] = result.returnCode
@@ -154,7 +152,7 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
     return resultChan
 }
 
-func (m KnxNetIpReader) readGroupAddress(field KnxNetIpField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
+func (m KnxNetIpReader) readGroupAddress(field KnxNetIpGroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
     // Pattern fields can match more than one value, therefore we have to handle things differently
     if field.IsPatternField() {
         // Depending on the type of field, get the uint16 ids of all values that match the current field

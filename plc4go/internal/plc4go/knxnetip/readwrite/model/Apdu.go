@@ -29,7 +29,6 @@ import (
 
 // The data-structure of this message
 type Apdu struct {
-    DataLength uint8
     Numbered bool
     Counter uint8
     Child IApduChild
@@ -53,13 +52,13 @@ type IApduParent interface {
 
 type IApduChild interface {
     Serialize(io utils.WriteBuffer) error
-    InitializeParent(parent *Apdu, dataLength uint8, numbered bool, counter uint8)
+    InitializeParent(parent *Apdu, numbered bool, counter uint8)
     GetTypeName() string
     IApdu
 }
 
-func NewApdu(dataLength uint8, numbered bool, counter uint8) *Apdu {
-    return &Apdu{DataLength: dataLength, Numbered: numbered, Counter: counter}
+func NewApdu(numbered bool, counter uint8) *Apdu {
+    return &Apdu{Numbered: numbered, Counter: counter}
 }
 
 func CastApdu(structType interface{}) *Apdu {
@@ -82,9 +81,6 @@ func (m *Apdu) GetTypeName() string {
 func (m *Apdu) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
-    // Simple field (dataLength)
-    lengthInBits += 8
-
     // Discriminator Field (control)
     lengthInBits += 1
 
@@ -104,13 +100,7 @@ func (m *Apdu) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ApduParse(io *utils.ReadBuffer) (*Apdu, error) {
-
-    // Simple Field (dataLength)
-    dataLength, _dataLengthErr := io.ReadUint8(8)
-    if _dataLengthErr != nil {
-        return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
-    }
+func ApduParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 
     // Discriminator Field (control) (Used as input to a switch field)
     control, _controlErr := io.ReadUint8(1)
@@ -144,7 +134,7 @@ func ApduParse(io *utils.ReadBuffer) (*Apdu, error) {
     }
 
     // Finish initializing
-    _parent.Child.InitializeParent(_parent, dataLength, numbered, counter)
+    _parent.Child.InitializeParent(_parent, numbered, counter)
     return _parent, nil
 }
 
@@ -153,13 +143,6 @@ func (m *Apdu) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChildFunction func() error) error {
-
-    // Simple Field (dataLength)
-    dataLength := uint8(m.DataLength)
-    _dataLengthErr := io.WriteUint8(8, (dataLength))
-    if _dataLengthErr != nil {
-        return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
-    }
 
     // Discriminator Field (control) (Used as input to a switch field)
     control := uint8(child.Control())
@@ -206,12 +189,6 @@ func (m *Apdu) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
-            case "dataLength":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.DataLength = data
             case "numbered":
                 var data bool
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -262,9 +239,6 @@ func (m *Apdu) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
             {Name: xml.Name{Local: "className"}, Value: className},
         }}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.DataLength, xml.StartElement{Name: xml.Name{Local: "dataLength"}}); err != nil {
         return err
     }
     if err := e.EncodeElement(m.Numbered, xml.StartElement{Name: xml.Name{Local: "numbered"}}); err != nil {

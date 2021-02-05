@@ -25,7 +25,7 @@ import (
             api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
-func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, dataLength uint8) (api.PlcValue, error) {
+func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, dataLengthInBytes uint8) (api.PlcValue, error) {
     switch {
         case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
@@ -64,6 +64,14 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcINT(value), nil
+        case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+
+            // Simple Field (value)
+            value, _valueErr := io.ReadUint32(32)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcUDINT(value), nil
         case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 
             // Simple Field (value)
@@ -799,7 +807,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 
             // Array Field (value)
             var value []api.PlcValue
-            for i := 0; i < int(dataLength); i++ {
+            for i := 0; i < int(dataLengthInBytes); i++ {
                 _item, _itemErr := io.ReadUint8(8)
                 if _itemErr != nil {
                     return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
@@ -811,7 +819,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
     return nil, errors.New("unsupported type")
 }
 
-func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLength uint8) error {
+func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
     switch {
         case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
@@ -840,6 +848,12 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 
             // Simple Field (value)
             if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+                return errors.New("Error serializing 'value' field " + _err.Error())
+            }
+        case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+
+            // Simple Field (value)
+            if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
                 return errors.New("Error serializing 'value' field " + _err.Error())
             }
         case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
@@ -1395,7 +1409,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
         default: // List
 
             // Array Field (value)
-            for i := uint32(0); i < uint32(dataLength); i++ {
+            for i := uint32(0); i < uint32(dataLengthInBytes); i++ {
                 _itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
                 if _itemErr != nil {
                     return errors.New("Error serializing 'value' field " + _itemErr.Error())
