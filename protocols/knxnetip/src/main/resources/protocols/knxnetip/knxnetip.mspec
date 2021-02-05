@@ -218,6 +218,9 @@
         ['0x04' KnxNetIpTunneling
             [simple uint 8 'version']
         ]
+        ['0x05' KnxNetIpRouting
+            [simple uint 8 'version']
+        ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x06' KnxNetRemoteLogging
             [simple uint 8 'version']
