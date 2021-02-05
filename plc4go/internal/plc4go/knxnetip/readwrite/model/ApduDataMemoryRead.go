@@ -20,12 +20,15 @@ package model
 
 import (
     "encoding/xml"
+    "errors"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "io"
 )
 
 // The data-structure of this message
 type ApduDataMemoryRead struct {
+    NumBytes uint8
+    Address uint16
     Parent *ApduData
     IApduDataMemoryRead
 }
@@ -49,8 +52,10 @@ func (m *ApduDataMemoryRead) ApciType() uint8 {
 func (m *ApduDataMemoryRead) InitializeParent(parent *ApduData) {
 }
 
-func NewApduDataMemoryRead() *ApduData {
+func NewApduDataMemoryRead(numBytes uint8, address uint16, ) *ApduData {
     child := &ApduDataMemoryRead{
+        NumBytes: numBytes,
+        Address: address,
         Parent: NewApduData(),
     }
     child.Parent.Child = child
@@ -83,6 +88,12 @@ func (m *ApduDataMemoryRead) GetTypeName() string {
 func (m *ApduDataMemoryRead) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
+    // Simple field (numBytes)
+    lengthInBits += 6
+
+    // Simple field (address)
+    lengthInBits += 16
+
     return lengthInBits
 }
 
@@ -92,8 +103,22 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 
 func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 
+    // Simple Field (numBytes)
+    numBytes, _numBytesErr := io.ReadUint8(6)
+    if _numBytesErr != nil {
+        return nil, errors.New("Error parsing 'numBytes' field " + _numBytesErr.Error())
+    }
+
+    // Simple Field (address)
+    address, _addressErr := io.ReadUint16(16)
+    if _addressErr != nil {
+        return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+    }
+
     // Create a partially initialized instance
     _child := &ApduDataMemoryRead{
+        NumBytes: numBytes,
+        Address: address,
         Parent: &ApduData{},
     }
     _child.Parent.Child = _child
@@ -102,6 +127,20 @@ func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
+
+    // Simple Field (numBytes)
+    numBytes := uint8(m.NumBytes)
+    _numBytesErr := io.WriteUint8(6, (numBytes))
+    if _numBytesErr != nil {
+        return errors.New("Error serializing 'numBytes' field " + _numBytesErr.Error())
+    }
+
+    // Simple Field (address)
+    address := uint16(m.Address)
+    _addressErr := io.WriteUint16(16, (address))
+    if _addressErr != nil {
+        return errors.New("Error serializing 'address' field " + _addressErr.Error())
+    }
 
         return nil
     }
@@ -117,6 +156,18 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
         case xml.StartElement:
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
+            case "numBytes":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.NumBytes = data
+            case "address":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Address = data
             }
         }
         token, err = d.Token()
@@ -130,6 +181,12 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 }
 
 func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeElement(m.NumBytes, xml.StartElement{Name: xml.Name{Local: "numBytes"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
+        return err
+    }
     return nil
 }
 

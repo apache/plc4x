@@ -55,7 +55,7 @@
             [reserved   uint 16  '0x1027']
             [reserved   uint 16  '0x0500']
             [reserved   uint 24  '0x000C']
-            [simple AmsMagicString 'address' ]
+            [simple AmsMagicString 'routeName' ]
             [reserved   uint 16 '0x0700']
             [implicit   uint 8 'amsSize' 'target.lengthInBytes']
             [const uint 8 'targetPrefix' '0x00']
@@ -65,7 +65,7 @@
             [const uint 8 'passwordPrefix' '0x02']
             [simple AmsMagicString 'password']
             [const uint 8 'routePrefix' '0x05']
-            [simple AmsMagicString 'routeName']
+            [simple AmsMagicString 'address']
 
         ]
         ['Operation.ROUTE', 'Direction.RESPONSE' RouteResponse

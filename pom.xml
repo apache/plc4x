@@ -102,9 +102,10 @@
 
     <plc4x-code-generation.version>1.4.0</plc4x-code-generation.version>
 
-    <antlr.version>4.9</antlr.version>
+    <antlr.version>4.9.1</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <assertj.version>3.18.1</assertj.version>
+    <awaitility.version>3.0.0</awaitility.version>
     <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.67</bouncycastle.version>
@@ -298,6 +299,17 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${awaitility.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility-proxy</artifactId>
+        <version>${awaitility.version}</version>
       </dependency>
 
       <dependency>
@@ -616,6 +628,11 @@
         <artifactId>dictionary-manager</artifactId>
         <version>${milo.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>3.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -784,8 +801,6 @@
               <goal>process</goal>
             </goals>
             <configuration>
-              <!-- TODO: For some reason the build seems to fail in conjunction with the dependency-plugin unpack goal, if enabled -->
-              <skip>true</skip>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
@@ -795,6 +810,58 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version> <!--$NO-MVN-MAN-VER$-->
+        <executions>
+          <!-- Ensure we're not mixing dependency versions -->
+          <execution>
+            <id>enforce-version-convergence</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <dependencyConvergence />
+              </rules>
+            </configuration>
+          </execution>
+          <!--
+              Fails the build if classes are included from multiple
+              artifacts and these are not identical.
+          -->
+          <execution>
+            <id>enforce-ban-duplicate-classes</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicateClasses>
+                  <scopes>
+                    <scope>compile</scope>
+                    <scope>provided</scope>
+                  </scopes>
+                  <findAllDuplicates>true</findAllDuplicates>
+                  <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                </banDuplicateClasses>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>extra-enforcer-rules</artifactId>
+            <version>1.2</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!--
@@ -1447,85 +1514,6 @@
     -->
     <profile>
       <id>jenkins-build</id>
-    </profile>
-
-    <!--
-      This profile adds some additional checks and settings that should apply during development,
-      but could cause problems after that. As an example it would be impossible to build a released
-      version, if after the release CVEs were reported for one of its dependencies.
-    -->
-    <profile>
-      <id>development</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.0.0-M3</version> <!--$NO-MVN-MAN-VER$-->
-            <executions>
-              <!-- Ensure we're not mixing dependency versions -->
-              <execution>
-                <id>enforce-version-convergence</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <dependencyConvergence />
-                  </rules>
-                </configuration>
-              </execution>
-              <!--
-                  Fails the build if classes are included from multiple
-                  artifacts and these are not identical.
-              -->
-              <execution>
-                <id>enforce-ban-duplicate-classes</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <banDuplicateClasses>
-                      <scopes>
-                        <scope>compile</scope>
-                        <scope>provided</scope>
-                      </scopes>
-                      <findAllDuplicates>true</findAllDuplicates>
-                      <ignoreWhenIdentical>true</ignoreWhenIdentical>
-                    </banDuplicateClasses>
-                  </rules>
-                  <fail>true</fail>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>extra-enforcer-rules</artifactId>
-                <version>1.2</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <!--plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <failBuildOnCVSS>8</failBuildOnCVSS>
-            </configuration>
-          </plugin-->
-        </plugins>
-      </build>
     </profile>
 
     <!--

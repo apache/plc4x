@@ -138,6 +138,10 @@ func (m *KnxNetIpSubscriber) handleValueChange(lDataFrame *driverModel.LDataFram
                             plcValues[fieldName] = nil
                             continue
                         }
+                        // If the size of the field is greater than 6, we have to skip the first byte
+                        if field.GetFieldType().LengthInBits() > 6 {
+                            _, _ = rb.ReadUint8(8)
+                        }
                         plcValue, err2 := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
                         fields[fieldName] = field
                         types[fieldName] = subscriptionRequest.GetType(fieldName)

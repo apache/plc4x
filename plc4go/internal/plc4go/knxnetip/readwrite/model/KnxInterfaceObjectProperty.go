@@ -651,7 +651,7 @@ func (e KnxInterfaceObjectProperty) PropertyDataType() KnxPropertyDataType {
             return KnxPropertyDataType_PDT_UNKNOWN
         }
         case 23: { /* '23' */
-            return KnxPropertyDataType_PDT_UNKNOWN
+            return KnxPropertyDataType_PDT_UNSIGNED_INT
         }
         case 24: { /* '24' */
             return KnxPropertyDataType_PDT_FUNCTION
@@ -804,7 +804,7 @@ func (e KnxInterfaceObjectProperty) PropertyDataType() KnxPropertyDataType {
             return KnxPropertyDataType_PDT_GENERIC_01
         }
         case 7: { /* '7' */
-            return KnxPropertyDataType_PDT_UNKNOWN
+            return KnxPropertyDataType_PDT_UNSIGNED_INT
         }
         case 70: { /* '70' */
             return KnxPropertyDataType_PDT_GENERIC_01
