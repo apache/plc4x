@@ -122,7 +122,7 @@
             <subindex>0</subindex>
           </address>
           <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-            <data>AAAAAA==</data>
+            <data>00000000</data>
           </payload>
         </response>
       </CANOpenSDOResponse>
@@ -142,7 +142,7 @@
         <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentDownloadRequest">
           <toggle>false</toggle>
           <last>false</last>
-          <data>FxAAoA8AAA==</data>
+          <data>171000A00F0000</data>
         </request>
       </CANOpenSDORequest>
     </xml>
@@ -166,7 +166,7 @@
             <subindex>0</subindex>
           </address>
           <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-            <data>0A8=</data>
+            <data>D00F</data>
           </payload>
         </request>
       </CANOpenSDORequest>
@@ -186,7 +186,7 @@
         <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
           <toggle>false</toggle>
           <last>false</last>
-          <data>FxAAoA8AAA==</data>
+          <data>171000A00F0000</data>
         </response>
       </CANOpenSDOResponse>
     </xml>
@@ -223,7 +223,7 @@
     <xml>
       <CANOpenPDOPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDOPayload">
         <pdo className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDO">
-          <data>eFY0EgAAAAA=</data>
+          <data>7856341200000000</data>
         </pdo>
       </CANOpenPDOPayload>
     </xml>
@@ -240,7 +240,7 @@
     <xml>
       <CANOpenPDOPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDOPayload">
         <pdo className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDO">
-          <data>+QE+AUwBXAE=</data>
+          <data>F9013E014C015C01</data>
         </pdo>
       </CANOpenPDOPayload>
     </xml>
