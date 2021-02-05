@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
@@ -37,6 +38,21 @@ func Init() {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
+}
+
+func TestParser(t *testing.T) {
+	request, err := hex.DecodeString("06100202004a0801c0a8031b0e573601020000000000000000000000e000170c000000000000656962640000000000000000000000000000000000000000000000000000060202010401")
+	if err != nil {
+		// Output an error ...
+	}
+	rb := utils.NewReadBuffer(request)
+	knxMessage, err := driverModel.KnxNetIpMessageParse(rb)
+	if err != nil {
+		fmt.Printf("Got error parsing message: %s\n", err.Error())
+		// TODO: Possibly clean up ...
+		return
+	}
+	print(knxMessage)
 }
 
 func TestKnxNetIpPlc4goBrowse(t *testing.T) {
