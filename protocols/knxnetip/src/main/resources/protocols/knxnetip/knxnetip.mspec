@@ -119,7 +119,7 @@
 [type 'DIBSuppSvcFamilies'
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
-    [array    ServiceId    'serviceIds' count '3']
+    [array    ServiceId    'serviceIds' length 'structureLength - 2']
 ]
 
 [type 'HPAIDataEndpoint'
