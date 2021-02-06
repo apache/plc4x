@@ -627,7 +627,43 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
                 .handle(opcuaOpenResponse -> {
                     try {
-                        OpcuaMessage message = OpcuaMessageIO.staticParse(new ReadBuffer(opcuaOpenResponse.getMessage(), true));
+                        //Decrypt If needed
+                        ReadBuffer readBuffer = null;
+                        if (isEncrypted) {
+                            int encryptedLength = opcuaOpenResponse.getLengthInBytes();
+                            LOGGER.info("Encrypted Length {}", encryptedLength);
+                            int encryptedMessageLength = opcuaOpenResponse.getMessage().length + 8;
+                            LOGGER.info("Encrypted Message Length {}", encryptedMessageLength);
+                            int headerLength = encryptedLength - encryptedMessageLength;
+                            LOGGER.info("Header Length {}", headerLength);
+                            int numberOfBlocks = encryptedMessageLength / 256;
+                            LOGGER.info("Number of Blocks Length {}", numberOfBlocks);
+                            WriteBuffer buf = new WriteBuffer(headerLength + numberOfBlocks * 256,true);
+                            OpcuaAPUIO.staticSerialize(buf, new OpcuaAPU(opcuaOpenResponse));
+                            byte[] data = buf.getBytes(headerLength, encryptedLength);
+                            buf.setPos(headerLength);
+                            decryptBlock(buf, data);
+                            int tempPos = buf.getPos();
+                            LOGGER.info("Position at end of Decryption:- {}", tempPos);
+                            LOGGER.info("Position at end of Decryption within Messgae:- {}", tempPos - headerLength);
+                            buf.setPos(4);
+                            buf.writeInt(32, tempPos - 256);
+                            //Check Signature, etc..
+                            buf.setPos(0);
+                            byte[] unencrypted = buf.getBytes(0, tempPos - 208);
+                            byte[] signature = buf.getBytes(tempPos - 208, tempPos + 48);
+                            LOGGER.info("Signature Length:- {}" + signature.length);
+                            LOGGER.info("Signature;- {}", signature);
+                            if (!checkSignature(unencrypted, signature)) {
+                                LOGGER.info("Signature verification failed: - {}", unencrypted);
+                            }
+                            readBuffer = new ReadBuffer(unencrypted, true);
+                            opcuaOpenResponse = (OpcuaOpenResponse) OpcuaAPUIO.staticParse(readBuffer, true).getMessage();
+                            readBuffer = new ReadBuffer(opcuaOpenResponse.getMessage(), true);
+                        } else {
+                            readBuffer = new ReadBuffer(opcuaOpenResponse.getMessage(), true);
+                        }
+                        OpcuaMessage message = OpcuaMessageIO.staticParse(readBuffer);
                         if (message instanceof ServiceFault) {
                             ServiceFault fault = (ServiceFault) message;
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", fault.getResponseHeader().getServiceResult().getStatusCode(), OpcuaStatusCodes.enumForValue(fault.getResponseHeader().getServiceResult().getStatusCode()));
@@ -1609,7 +1645,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     public void encryptBlock(WriteBuffer buf, byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
-            //Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getCertificateX509().getPublicKey());
             for (int i = 0; i < data.length; i += 190) {
                 LOGGER.info("Iterate:- {}, Data Length:- {}", i, data.length);
@@ -1620,6 +1655,23 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             }
         } catch (Exception e) {
             LOGGER.error("Unable to encrypt Data");
+            e.printStackTrace();
+        }
+    }
+
+    public void decryptBlock(WriteBuffer buf, byte[] data) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, this.ckp.getKeyPair().getPrivate());
+            for (int i = 0; i < data.length; i += 256) {
+                LOGGER.info("Decrypt Iterate:- {}, Data Length:- {}", i, data.length);
+                byte[] decrypted = cipher.doFinal(data, i, 256);
+                for (int j = 0; j < 190; j++) {
+                    buf.writeByte(8, decrypted[j]);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Unable to decrypt Data");
             e.printStackTrace();
         }
     }
@@ -1653,6 +1705,19 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             e.printStackTrace();
             LOGGER.error("Unable to sign Data");
             return null;
+        }
+    }
+
+    public boolean checkSignature(byte[] data, byte[] senderSignature) {
+        try {
+            Signature signature = Signature.getInstance("HmacSha256", "BC");
+            signature.initVerify(getCertificateX509().getPublicKey());
+            signature.update(data);
+            return signature.verify(senderSignature);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Unable to sign Data");
+            return false;
         }
     }
 
