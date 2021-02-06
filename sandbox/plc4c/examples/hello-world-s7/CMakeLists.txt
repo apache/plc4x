@@ -21,23 +21,19 @@ include_directories("../../api/include"
         "../../drivers/s7/include"
         "../../transports/tcp/include" )
 
-add_executable(plc4c-examples-hello-world
-        src/hello_world.c
+add_executable(plc4c-examples-hello-world-s7
+        src/hello_world_s7.c
         )
 
 IF (NOT WIN32)
-    target_link_libraries(plc4c-examples-hello-world
+    target_link_libraries(plc4c-examples-hello-world-s7
             plc4c-spi
-            plc4c-driver-simulated
             plc4c-driver-s7
-            plc4c-driver-modbus
-            plc4c-transport-dummy
             plc4c-transport-tcp
-            plc4c-transport-serial
             m
     )
 ELSE()
-    target_link_libraries(plc4c-examples-hello-world
+    target_link_libraries(plc4c-examples-hello-world-s7
             plc4c-spi
             plc4c-driver-s7
             plc4c-transport-tcp
