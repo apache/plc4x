@@ -18,93 +18,141 @@
 */
 
 #include <ctype.h>
+#include <plc4c/driver_modbus.h>
 #include <string.h>
 
 #include "plc4c/driver_s7_encode_decode.h"
 
-plc4c_return_code plc4c_driver_modbus_encode_address(
-    char* address, plc4c_modbus_read_write_modbus_pdu** item) {
+plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
+                                                     void** item) {
+  plc4c_driver_modbus_item* modbus_item =
+      malloc(sizeof(plc4c_driver_modbus_item));
+  if (modbus_item == NULL) {
+    return NO_MEMORY;
+  }
+  // The overall default is 1
+  modbus_item->num_elements = 1;
 
   // Parser logic
   char* cur_pos = address;
   char* last_pos = address;
 
   // If the first character is numeric, then we can only have a numeric address.
-  if(isdigit(*cur_pos)) {
+  if (isdigit(*cur_pos)) {
     int first_digit = *cur_pos - 48;
     cur_pos++;
     // If the first digit is followed by an 'x' or 'X', just skip that char.
-    if((*cur_pos == 'x') || (*cur_pos == 'X')) {
+    if ((*cur_pos == 'x') || (*cur_pos == 'X')) {
       cur_pos++;
     }
     last_pos = cur_pos;
-    while(isdigit(*cur_pos)) {
-      cur_pos++;
-    }
-    long num_address = 0;
-    long num_items = 1;
-    // If after the numbers comes a "[" then this is the number of items.
-    if(*cur_pos == '[') {
-      *cur_pos = '/0';
-      // Interpret the rest of the address as a long.
-      num_address = atol(last_pos);
-      cur_pos++;
-      last_pos = cur_pos;
-      while(isdigit(*cur_pos)) {
-        cur_pos++;
-      }
-      if(*cur_pos != ']') {
-        return INVALID_ADDRESS;
-      }
-      *cur_pos = '\0';
-      num_items = atol(last_pos);
-    } else if(*cur_pos == '/0') {
-      num_address = atol(last_pos);
-    } else {
-      return INVALID_ADDRESS;
-    }
-
+    // In case of a numeric address, the first digit defines the type of address
     switch (first_digit) {
       // coil
       case 0: {
-        // TODO: Implement ...
+        modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL;
+        modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_BOOL;
         break;
       }
       // discrete-input
       case 1: {
-        // TODO: Implement ...
+        modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_DISCRETE_INPUT;
+        modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
         break;
       }
       // input-register
       case 3: {
-        // TODO: Implement ...
+        modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_INPUT_REGISTER;
+        modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
         break;
       }
       // holding-register
       case 4: {
-        // TODO: Implement ...
+        modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_HOLDING_REGISTER;
+        modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
         break;
       }
       // extended-register
       case 6: {
-        // TODO: Implement ...
+        modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_EXTENDED_REGISTER;
+        modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
         break;
+      }
+      default: {
+        return INVALID_ADDRESS;
       }
     }
   }
+  // If the first character isn't a digit, it must be a name of the field-type.
   else {
-    if(strstr("coil:", address) == 0) {
-      // TODO: Implement ...
-    } else if(strstr("discrete-input:", address) == 0) {
-      // TODO: Implement ...
-    } else if(strstr("input-register:", address) == 0) {
-      // TODO: Implement ...
-    } else if(strstr("holding-register:", address) == 0) {
-      // TODO: Implement ...
-    } else if(strstr("extended-register:", address) == 0) {
-      // TODO: Implement ...
+    if (((char*)strstr(address, "coil:")) != NULL) {
+      modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL;
+      modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_BOOL;
+      cur_pos += 5;
+    } else if (((char*)strstr(address, "discrete-register:")) != NULL) {
+      modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_DISCRETE_INPUT;
+      modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
+      cur_pos += 18;
+    } else if (((char*)strstr(address, "input-register:")) != NULL) {
+      modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_INPUT_REGISTER;
+      modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
+      cur_pos += 15;
+    } else if (((char*)strstr(address, "holding-register:")) != NULL) {
+      modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_HOLDING_REGISTER;
+      modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
+      cur_pos += 17;
+    } else if (((char*)strstr(address, "extended-register:")) != NULL) {
+      modbus_item->type = PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_EXTENDED_REGISTER;
+      modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
+      cur_pos += 18;
     } else {
       return INVALID_ADDRESS;
     }
   }
+
+  // Now consume all of the digits.
+  last_pos = cur_pos;
+  while (isdigit(*cur_pos)) {
+    cur_pos++;
+  }
+  if (last_pos == cur_pos) {
+    return INVALID_ADDRESS;
+  }
+  // Parse the current segment as number
+  char prev_value = *cur_pos;
+  *cur_pos = '\0';
+  modbus_item->address = (uint16_t)atol(last_pos);
+
+  // If a datatype is provided, parse that now
+  if (prev_value == ':') {
+    cur_pos++;
+
+    // Inspect the substring, if this matches and of the supported datatypes
+    last_pos = cur_pos;
+    while ((*cur_pos != '\0') && (*cur_pos != '[')) {
+      cur_pos++;
+    }
+    prev_value = *cur_pos;
+    *cur_pos = '\0';
+    modbus_item->datatype =
+        plc4c_modbus_read_write_modbus_data_type_value_of(last_pos);
+
+    // If a number of elements is provided, parse that now.
+    if (prev_value == '[') {
+      cur_pos++;
+      last_pos = cur_pos;
+      while (isdigit(*cur_pos)) {
+        cur_pos++;
+      }
+      if (*cur_pos != ']') {
+        return INVALID_ADDRESS;
+      }
+      *cur_pos = '\0';
+      modbus_item->num_elements = atol(last_pos);
+    }
+  }
+
+  // Pass back the result
+  *item = &modbus_item;
+  return PLC4C_RESPONSE_CODE_OK;
 }
