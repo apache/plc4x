@@ -451,7 +451,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "0";
                 case FLOAT:
                 case UFLOAT:
-                    return "0.0";
+                    return "0.0f";
                 case STRING:
                     return "\"\"";
                 case TIME:
@@ -988,6 +988,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         } else {
             throw new FreemarkerException("lengthInBits functions only exist for TypedFields");
         }
+    }
+
+    public String getEnumExpression(String expression) {
+        String enumName = expression.substring(0, expression.indexOf('.'));
+        String enumConstant = expression.substring(expression.indexOf('.') + 1);
+        return getCTypeName(enumName) + "_" + enumConstant;
     }
 
 }

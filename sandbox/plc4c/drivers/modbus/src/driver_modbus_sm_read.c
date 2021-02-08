@@ -19,12 +19,14 @@
 
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
-#include <string.h>
 #include "plc4c/driver_modbus_packets.h"
 #include "modbus_tcp_adu.h"
+#include "data_item.h"
 
 enum plc4c_driver_modbus_read_states {
   PLC4C_DRIVER_MODBUS_READ_INIT,
+  PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST,
+  PLC4C_DRIVER_MODBUS_READ_HANDLE_ITEM_RESPONSE,
   PLC4C_DRIVER_MODBUS_READ_FINISHED
 };
 
@@ -38,17 +40,27 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
   if (read_request == NULL) {
     return INTERNAL_ERROR;
   }
-  plc4c_connection* connection = task->context;
+  plc4c_connection* connection = read_request->connection;
   if (connection == NULL) {
     return INTERNAL_ERROR;
   }
+  plc4c_driver_modbus_config* modbus_config = connection->configuration;
 
   switch (task->state_id) {
+    // First set the current item to the first item in the list (tail)
     case PLC4C_DRIVER_MODBUS_READ_INIT: {
+      read_request_execution->cur_item = plc4c_utils_list_tail(read_request->items);
+      task->state_id = PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST;
+      break;
+    }
+
+    case PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST: {
       plc4c_modbus_read_write_modbus_tcp_adu* modbus_read_request_packet;
       plc4c_return_code return_code =
           plc4c_driver_modbus_create_modbus_read_request(
-              read_request, &modbus_read_request_packet);
+              modbus_config,
+              read_request_execution->cur_item->value,
+              &modbus_read_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -60,15 +72,14 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
         return return_code;
       }
 
-      task->state_id = PLC4C_DRIVER_MODBUS_READ_FINISHED;
+      task->state_id = PLC4C_DRIVER_MODBUS_READ_HANDLE_ITEM_RESPONSE;
       break;
     }
-    case PLC4C_DRIVER_MODBUS_READ_FINISHED: {
+    case PLC4C_DRIVER_MODBUS_READ_HANDLE_ITEM_RESPONSE: {
       // Read a response packet.
       plc4c_modbus_read_write_modbus_tcp_adu* modbus_read_response_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_modbus_receive_packet(
-              connection, &modbus_read_response_packet);
+      plc4c_return_code return_code = plc4c_driver_modbus_receive_packet(
+          connection, &modbus_read_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -77,10 +88,82 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
         return return_code;
       }
 
-      // TODO: Check the response ...
-      // TODO: Decode the items in the response ...
-      // TODO: Return the results to the API ...
+      // Check if the response has the correct type.
+      plc4c_item* read_request_item = read_request_execution->cur_item->value;
+      plc4c_driver_modbus_item* modbus_item = read_request_item->address;
+      plc4c_list* response_value;
+      switch (modbus_item->type) {
+        case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL: {
+          if(modbus_read_response_packet->pdu->_type !=
+              plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_coils_response) {
+            return INTERNAL_ERROR;
+          }
+          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_coils_response_value;
+          break;
+        }
+        case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_DISCRETE_INPUT: {
+          if(modbus_read_response_packet->pdu->_type !=
+              plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response) {
+            return INTERNAL_ERROR;
+          }
+          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_discrete_inputs_response_value;
+          break;
+        }
+        case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_INPUT_REGISTER: {
+          if(modbus_read_response_packet->pdu->_type !=
+              plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_input_registers_response) {
+            return INTERNAL_ERROR;
+          }
+          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_input_registers_response_value;
+          break;
+        }
+        case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_HOLDING_REGISTER: {
+          if(modbus_read_response_packet->pdu->_type !=
+              plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response) {
+            return INTERNAL_ERROR;
+          }
+          response_value = modbus_read_response_packet->pdu->modbus_pdu_read_holding_registers_response_value;
+          break;
+        }
+        case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_EXTENDED_REGISTER: {
+          // TODO: Currently not supported.
+          return INTERNAL_ERROR;
+        }
+        default: {
+          return INVALID_ADDRESS;
+        }
+      }
 
+      // Convert the list into an array.
+      uint8_t* byte_array = plc4c_list_to_byte_array(response_value);
+      if(byte_array == NULL) {
+        return INTERNAL_ERROR;
+      }
+
+      // Create a new read-buffer for reading data from the uint8_t array.
+      plc4c_spi_read_buffer* read_buffer;
+      plc4c_return_code result = plc4c_spi_read_buffer_create(byte_array, plc4c_utils_list_size(response_value), &read_buffer);
+      if(result != OK) {
+        return result;
+      }
+
+      // Decode the items in the response ...
+      plc4c_data* data_item;
+      plc4c_modbus_read_write_data_item_parse(read_buffer, modbus_item->datatype, modbus_item->num_elements, &data_item);
+
+      // If there are more items to read, continue reading the next one.
+      // Otherwise finish.
+      if (read_request_execution->cur_item->next != NULL) {
+        read_request_execution->cur_item = read_request_execution->cur_item->next;
+        task->state_id = PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST;
+      } else {
+        task->state_id = PLC4C_DRIVER_MODBUS_READ_FINISHED;
+      }
+      break;
+    }
+
+    case PLC4C_DRIVER_MODBUS_READ_FINISHED: {
+      // TODO: Return the results to the API ...
       task->completed = true;
       break;
     }
@@ -99,7 +182,7 @@ plc4c_return_code plc4c_driver_modbus_read_function(
   new_task->state_machine_function = &plc4c_driver_modbus_read_machine_function;
   new_task->completed = false;
   new_task->context = read_request_execution;
-  new_task->connection = read_request_execution->system_task->connection;
+  new_task->connection = read_request_execution->read_request->connection;
   *task = new_task;
   return OK;
 }

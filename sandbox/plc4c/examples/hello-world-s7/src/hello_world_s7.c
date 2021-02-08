@@ -19,7 +19,6 @@
 #include <plc4c/driver_s7.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/transport_tcp.h>
-#include <plc4c/utils/list.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -64,9 +63,7 @@ int main() {
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
   plc4c_read_request *read_request = NULL;
-  plc4c_write_request *write_request = NULL;
   plc4c_read_request_execution *read_request_execution = NULL;
-  plc4c_write_request_execution *write_request_execution = NULL;
 
   // Create a new uninitialized plc4c_system
   printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
@@ -309,9 +306,8 @@ int main() {
             printf(" (Duration in ms)");
           } else if (strcmp(value_item->item->name, "DATE") == 0) {
             printf(" (Days since 1990-01-01)");
-          } else if (strcmp(value_item->item->name, "TIME_OF_DAY") == 0) {
-            printf(" (Number of ms since midnight)");
-          } else if (strcmp(value_item->item->name, "TOD") == 0) {
+          } else if ((strcmp(value_item->item->name, "TIME_OF_DAY") == 0) ||
+                (strcmp(value_item->item->name, "TOD") == 0)) {
             printf(" (Number of ms since midnight)");
           }
           printf("\n");
@@ -355,7 +351,10 @@ int main() {
         loop = false;
         break;
       }
+      default: {
+      }
     }
+
   }
 
   // Make sure everything is cleaned up correctly.
@@ -367,4 +366,4 @@ int main() {
   return 0;
 }
 
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop

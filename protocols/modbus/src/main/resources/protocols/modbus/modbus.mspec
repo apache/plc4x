@@ -270,142 +270,142 @@
     [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [string 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
-        ['IEC61131_BOOL','1' BOOL
+        ['ModbusDataType.BOOL','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['IEC61131_BOOL' List
+        ['ModbusDataType.BOOL' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['IEC61131_BYTE','1' BitString
+        ['ModbusDataType.BYTE','1' BitString
             [simple uint 8 'value']
         ]
-        ['IEC61131_BYTE' List
+        ['ModbusDataType.BYTE' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['IEC61131_WORD','1' BitString
+        ['ModbusDataType.WORD','1' BitString
             [simple uint 16 'value']
         ]
-        ['IEC61131_WORD' List
+        ['ModbusDataType.WORD' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['IEC61131_DWORD','1' BitString
+        ['ModbusDataType.DWORD','1' BitString
             [simple uint 32 'value']
         ]
-        ['IEC61131_DWORD' List
+        ['ModbusDataType.DWORD' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['IEC61131_LWORD','1' BitString
+        ['ModbusDataType.LWORD','1' BitString
             [simple uint 64 'value']
         ]
-        ['IEC61131_LWORD' List
+        ['ModbusDataType.LWORD' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['IEC61131_SINT','1' SINT
+        ['ModbusDataType.SINT','1' SINT
             [simple int 8 'value']
         ]
-        ['IEC61131_SINT' List
+        ['ModbusDataType.SINT' List
             [array int 8 'value' count 'numberOfValues']
         ]
-        ['IEC61131_INT','1' INT
+        ['ModbusDataType.INT','1' INT
             [simple int 16 'value']
         ]
-        ['IEC61131_INT' List
+        ['ModbusDataType.INT' List
             [array int 16 'value' count 'numberOfValues']
         ]
-        ['IEC61131_DINT','1' DINT
+        ['ModbusDataType.DINT','1' DINT
             [simple int 32 'value']
         ]
-        ['IEC61131_DINT' List
+        ['ModbusDataType.DINT' List
             [array int 32 'value' count 'numberOfValues']
         ]
-        ['IEC61131_LINT','1' LINT
+        ['ModbusDataType.LINT','1' LINT
             [simple int 64 'value']
         ]
-        ['IEC61131_LINT' List
+        ['ModbusDataType.LINT' List
             [array int 64 'value' count 'numberOfValues']
         ]
-        ['IEC61131_USINT','1' USINT
+        ['ModbusDataType.USINT','1' USINT
             [simple uint 8 'value']
         ]
-        ['IEC61131_USINT' List
+        ['ModbusDataType.USINT' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['IEC61131_UINT','1' UINT
+        ['ModbusDataType.UINT','1' UINT
             [simple uint 16 'value']
         ]
-        ['IEC61131_UINT' List
+        ['ModbusDataType.UINT' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['IEC61131_UDINT','1' UDINT
+        ['ModbusDataType.UDINT','1' UDINT
             [simple uint 32 'value']
         ]
-        ['IEC61131_UDINT' List
+        ['ModbusDataType.UDINT' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['IEC61131_ULINT','1' ULINT
+        ['ModbusDataType.ULINT','1' ULINT
             [simple uint 64 'value']
         ]
-        ['IEC61131_ULINT' List
+        ['ModbusDataType.ULINT' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['IEC61131_REAL','1' REAL
+        ['ModbusDataType.REAL','1' REAL
             [simple float 8.23  'value']
         ]
-        ['IEC61131_REAL' List
+        ['ModbusDataType.REAL' List
             [array float 8.23 'value' count 'numberOfValues']
         ]
-        ['IEC61131_LREAL','1' LREAL
+        ['ModbusDataType.LREAL','1' LREAL
             [simple float 11.52  'value']
         ]
-        ['IEC61131_LREAL' List
+        ['ModbusDataType.LREAL' List
             [array float 11.52 'value' count 'numberOfValues']
         ]
-        ['IEC61131_CHAR','1' CHAR
+        ['ModbusDataType.CHAR','1' CHAR
             [simple uint 8 'value']
         ]
-        ['IEC61131_CHAR' List
+        ['ModbusDataType.CHAR' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['IEC61131_WCHAR','1' WCHAR
+        ['ModbusDataType.WCHAR','1' WCHAR
             [simple uint 16 'value']
         ]
-        ['IEC61131_WCHAR' List
+        ['ModbusDataType.WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
     ]
 ]
 
-[enum string 'ModbusDataTypeSizes' [uint 8 'dataTypeSize']
-    ['IEC61131_BOOL' BOOL ['1']]
-    ['IEC61131_BYTE' BYTE ['1']]
-    ['IEC61131_WORD' WORD ['2']]
-    ['IEC61131_DWORD' DWORD ['4']]
-    ['IEC61131_LWORD' LWORD ['8']]
-    ['IEC61131_SINT' SINT ['1']]
-    ['IEC61131_INT' INT ['2']]
-    ['IEC61131_DINT' DINT ['4']]
-    ['IEC61131_LINT' LINT ['8']]
-    ['IEC61131_USINT' USINT ['1']]
-    ['IEC61131_UINT' UINT ['2']]
-    ['IEC61131_UDINT' UDINT ['4']]
-    ['IEC61131_ULINT' ULINT ['8']]
-    ['IEC61131_REAL' REAL ['4']]
-    ['IEC61131_LREAL' LREAL ['8']]
-    ['IEC61131_TIME' TIME ['8']]
-    ['IEC61131_LTIME' LTIME ['8']]
-    ['IEC61131_DATE' DATE ['8']]
-    ['IEC61131_LDATE' LDATE ['8']]
-    ['IEC61131_TIME_OF_DAY' TIME_OF_DAY ['8']]
-    ['IEC61131_LTIME_OF_DAY' LTIME_OF_DAY ['8']]
-    ['IEC61131_DATE_AND_TIME' DATE_AND_TIME ['8']]
-    ['IEC61131_LDATE_AND_TIME' LDATE_AND_TIME ['8']]
-    ['IEC61131_CHAR' CHAR ['1']]
-    ['IEC61131_WCHAR' WCHAR ['2']]
-    ['IEC61131_STRING' STRING ['1']]
-    ['IEC61131_WSTRING' WSTRING ['2']]
+[enum uint 8 'ModbusDataType' [uint 8 'dataTypeSize']
+    ['1' BOOL ['1']]
+    ['2' BYTE ['1']]
+    ['3' WORD ['2']]
+    ['4' DWORD ['4']]
+    ['5' LWORD ['8']]
+    ['6' SINT ['1']]
+    ['7' INT ['2']]
+    ['8' DINT ['4']]
+    ['9' LINT ['8']]
+    ['10' USINT ['1']]
+    ['11' UINT ['2']]
+    ['12' UDINT ['4']]
+    ['13' ULINT ['8']]
+    ['14' REAL ['4']]
+    ['15' LREAL ['8']]
+    ['16' TIME ['8']]
+    ['17' LTIME ['8']]
+    ['18' DATE ['8']]
+    ['19' LDATE ['8']]
+    ['20' TIME_OF_DAY ['8']]
+    ['21' LTIME_OF_DAY ['8']]
+    ['22' DATE_AND_TIME ['8']]
+    ['23' LDATE_AND_TIME ['8']]
+    ['24' CHAR ['1']]
+    ['25' WCHAR ['2']]
+    ['26' STRING ['1']]
+    ['27' WSTRING ['2']]
 ]
 
 [enum uint 8 'ModbusErrorCode'

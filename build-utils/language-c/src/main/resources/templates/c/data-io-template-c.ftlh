@@ -71,13 +71,13 @@
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
 
 // Parse function.
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* io, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_data** data_item) {
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* io, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_data** data_item) {
     uint16_t startPos = plc4c_spi_read_get_pos(io);
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
     <#list type.switchField.cases as case>
-    <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}</#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+    <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if></#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
 <#--        (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};-->
         <#assign skipReturn=false>
         <#list case.fields as field>
@@ -92,19 +92,16 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if helper.isCountArrayField(field)>
         // Count array
-        if(${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)} > INT_MAX) {
-            return INTERNAL_ERROR;
-        }
         plc4c_list* ${field.name};
         plc4c_utils_list_create(&${field.name});
         int itemCount = (int) ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
         for(int curItem = 0; curItem < itemCount; curItem++) {
-            ${helper.getLanguageTypeNameForField(field)}* _val = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}) * 1);
+            ${helper.getLanguageTypeNameForTypeReference(field.type)}* _val = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(field.type)}) * 1);
             _res = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "_val")}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_data(_val);
+            plc4c_data* _item = plc4c_data_create_${helper.getLanguageTypeNameForTypeReference(field.type)}_data(*_val);
             plc4c_utils_list_insert_head_value(${field.name}, _item);
         }
                     <#-- In all other cases do we have to work with a list, that is later converted to an array -->

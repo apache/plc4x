@@ -858,6 +858,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return false;
     }
 
+    public boolean isEnumExpression(String expression) {
+        if (!expression.contains(".")) {
+            return false;
+        }
+        String enumName = expression.substring(0, expression.indexOf('.'));
+        TypeDefinition typeDefinition = this.getTypeDefinitions().get(enumName);
+        return (typeDefinition instanceof EnumTypeDefinition);
+    }
+
     public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
         Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
         for (EnumValue enumValue : enumValues) {

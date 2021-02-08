@@ -44,7 +44,7 @@ plc4c_return_code plc4c_transport_tcp_configure_function(
   }
   // TODO: Implement this ...
   tcp_configuration->address = "192.168.23.30";
-  tcp_configuration->port = 102;
+  tcp_configuration->port = 502;
 
   *configuration = tcp_configuration;
   return OK;

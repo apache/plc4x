@@ -30,6 +30,7 @@ extern "C" {
 struct plc4c_driver_modbus_config {
   uint16_t request_timeout;
   uint8_t unit_identifier;
+  uint8_t communication_id_counter;
 };
 typedef struct plc4c_driver_modbus_config plc4c_driver_modbus_config;
 
