@@ -133,6 +133,7 @@ type KnxNetIpConnection struct {
 type KnxReadResult struct {
 	returnCode apiModel.PlcResponseCode
 	value      *values.PlcValue
+	numItems   uint8
 }
 
 type InternalResult struct {
@@ -500,6 +501,7 @@ func (m *KnxNetIpConnection) ReadDeviceProperty(targetAddress driverModel.KnxAdd
 					result <- KnxReadResult{
 						returnCode: apiModel.PlcResponseCode_INVALID_ADDRESS,
 						value:      nil,
+						numItems:   0,
 					}
 				}
 			case <-time.After(m.defaultTtl * 2):
@@ -545,6 +547,7 @@ func (m *KnxNetIpConnection) ReadDeviceMemory(targetAddress driverModel.KnxAddre
 					result <- KnxReadResult{
 						returnCode: apiModel.PlcResponseCode_INVALID_ADDRESS,
 						value:      nil,
+						numItems:   0,
 					}
 				}
 			case <-time.After(m.defaultTtl * 2):
@@ -557,37 +560,26 @@ func (m *KnxNetIpConnection) ReadDeviceMemory(targetAddress driverModel.KnxAddre
 			// Depending on the gateway Max APDU and the device Max APDU, split this up into multiple requests.
 			// An APDU starts with the last 6 bits of the first data byte containing the count
 			// followed by the 16-bit address, so these are already used.
-			maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
 			elementSize := datapointType.DatapointMainType().SizeInBits() / 8
-			maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
-			maxNumBytesPerRequest := maxNumElementsPerRequest * elementSize
 			remainingRequestElements := numElements
 			curStartingAddress := address
-			var fragments []KnxMemoryReadFragment
-			for remainingRequestElements > maxNumElementsPerRequest {
-				fragment := KnxMemoryReadFragment{
-					numElements:     maxNumElementsPerRequest,
-					startingAddress: curStartingAddress,
-				}
-				fragments = append(fragments, fragment)
-				remainingRequestElements = remainingRequestElements - maxNumElementsPerRequest
-				curStartingAddress = curStartingAddress + uint16(maxNumBytesPerRequest)
-			}
-			fragment := KnxMemoryReadFragment{
-				numElements:     remainingRequestElements,
-				startingAddress: curStartingAddress,
-			}
-			fragments = append(fragments, fragment)
-
 			var results []KnxReadResult
-			for _, fragment := range fragments {
-				propertyValueResponses := m.sendDeviceMemoryReadRequest(targetAddress, fragment.startingAddress, fragment.numElements, *datapointType)
+			for remainingRequestElements > 0 {
+				// As the maxApdu can change, we have to do this in the loop.
+				maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
+				maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
+				numElements := uint8(math.Min(float64(remainingRequestElements), float64(maxNumElementsPerRequest)))
+				propertyValueResponses := m.sendDeviceMemoryReadRequest(targetAddress, curStartingAddress, numElements, *datapointType)
 				select {
 				case propertyValueResponse := <-propertyValueResponses:
 					results = append(results, propertyValueResponse)
+					// Update the reading position.
+					remainingRequestElements = remainingRequestElements - propertyValueResponse.numItems
+					curStartingAddress = curStartingAddress + uint16(propertyValueResponse.numItems*elementSize)
 				case <-time.After(m.defaultTtl * 4):
 					log.Debugf("Timeout reading device memory from device: %s: address %d, number of elements %d of type %s",
 						KnxAddressToString(&targetAddress), address, numElements, datapointType.Name())
+					// TODO: Return an error
 				}
 			}
 			if len(results) > 1 {
@@ -605,6 +597,7 @@ func (m *KnxNetIpConnection) ReadDeviceMemory(targetAddress driverModel.KnxAddre
 				result <- KnxReadResult{
 					returnCode: returnCode,
 					value:      &plcList,
+					numItems:   numElements,
 				}
 			} else if len(results) == 1 {
 				result <- results[0]
@@ -1106,6 +1099,8 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 		//		close(result)
 		result <- KnxReadResult{
 			returnCode: apiModel.PlcResponseCode_INTERNAL_ERROR,
+			value:      nil,
+			numItems:   0,
 		}
 		return result
 	}
@@ -1188,6 +1183,8 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 				if propertyValueResponse.Count == 0 {
 					result <- KnxReadResult{
 						returnCode: apiModel.PlcResponseCode_NOT_FOUND,
+						value:      nil,
+						numItems:   0,
 					}
 				} else {
 					// Find out the type of the property
@@ -1220,11 +1217,13 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 						result <- KnxReadResult{
 							returnCode: apiModel.PlcResponseCode_INTERNAL_ERROR,
 							value:      nil,
+							numItems:   0,
 						}
 					} else {
 						result <- KnxReadResult{
 							returnCode: apiModel.PlcResponseCode_OK,
 							value:      &plcValue,
+							numItems:   1,
 						}
 					}
 				}
@@ -1235,6 +1234,8 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 		func(err error) error {
 			result <- KnxReadResult{
 				returnCode: apiModel.PlcResponseCode_RESPONSE_PENDING,
+				value:      nil,
+				numItems:   0,
 			}
 			return nil
 		},
@@ -1254,6 +1255,8 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 		//		close(result)
 		result <- KnxReadResult{
 			returnCode: apiModel.PlcResponseCode_INTERNAL_ERROR,
+			value:      nil,
+			numItems:   0,
 		}
 		return result
 	}
@@ -1328,16 +1331,25 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 					log.Debugf("Timeout sending device ack to %s.", KnxAddressToString(&targetAddress))
 				}
 
+				// If the number of bytes read is less than expected,
+				// Update the connection.maxApdu value. This is required
+				// as some devices seem to be sending back less than the
+				// number of bytes specified than the maxApdu.
+				if uint8(len(dataApduMemoryResponse.Data)) < numBytes {
+					connection.maxApdu = uint16(len(dataApduMemoryResponse.Data) + 3)
+				}
+
 				// Parse the data according to the property type information
 				rb := utils.NewReadBuffer(dataApduMemoryResponse.Data)
 				var plcValues []values.PlcValue
-				for i := uint8(0); i < numElements; i++ {
+				for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
 					plcValue, err := driverModel.KnxDatapointParse(rb, datapointType)
 					// Return the result
 					if err != nil {
 						result <- KnxReadResult{
 							returnCode: apiModel.PlcResponseCode_INTERNAL_ERROR,
 							value:      nil,
+							numItems:   0,
 						}
 						return
 					} else {
@@ -1351,14 +1363,15 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 					result <- KnxReadResult{
 						returnCode: apiModel.PlcResponseCode_OK,
 						value:      &plcValues[0],
+						numItems:   1,
 					}
 				} else {
 					var plcList values.PlcValue
 					plcList = values2.NewPlcList(plcValues)
 					result <- KnxReadResult{
 						returnCode: apiModel.PlcResponseCode_OK,
-						// TODO: Check if this is correct ...
-						value: &plcList,
+						value:      &plcList,
+						numItems:   uint8(len(plcValues)),
 					}
 				}
 			}()
@@ -1367,6 +1380,8 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 		func(err error) error {
 			result <- KnxReadResult{
 				returnCode: apiModel.PlcResponseCode_RESPONSE_PENDING,
+				value:      nil,
+				numItems:   0,
 			}
 			return nil
 		},

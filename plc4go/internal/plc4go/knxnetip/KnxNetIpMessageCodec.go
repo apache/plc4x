@@ -224,7 +224,7 @@ func work(m *KnxNetIpMessageCodec) {
 			}
 		} else {
 			// Sleep for 10ms
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(time.Millisecond * 10)
 		}
 	}
 }
