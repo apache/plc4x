@@ -153,6 +153,6 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
   }
 
   // Pass back the result
-  *item = &modbus_item;
-  return PLC4C_RESPONSE_CODE_OK;
+  *item = modbus_item;
+  return OK;
 }

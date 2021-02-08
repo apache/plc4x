@@ -39,7 +39,11 @@ plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
     return NO_MEMORY;
   }
   item->name = field_name;
-  read_request->connection->driver->parse_address_function(address, &(item->address));
+  plc4c_return_code result =
+      read_request->connection->driver->parse_address_function(address, &(item->address));
+  if(result != OK) {
+    return result;
+  }
   plc4c_utils_list_insert_head_value(read_request->items, item);
   return OK;
 }

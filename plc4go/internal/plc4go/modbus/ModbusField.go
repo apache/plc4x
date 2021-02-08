@@ -21,6 +21,7 @@ package modbus
 import (
 	"encoding/xml"
 	"errors"
+	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"strconv"
 )
@@ -33,10 +34,10 @@ type ModbusPlcField struct {
 	FieldType ModbusFieldType
 	Address   uint16
 	Quantity  uint16
-	Datatype  string
+	Datatype  model2.ModbusDataType
 }
 
-func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint16, datatype string) ModbusPlcField {
+func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) ModbusPlcField {
 	return ModbusPlcField{
 		FieldType: fieldType,
 		Address:   address - MODBUS_PROTOCOL_ADDRESS_OFFSET,
@@ -45,7 +46,7 @@ func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint1
 	}
 }
 
-func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString string, quantityString string, datatype string) (model.PlcField, error) {
+func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
 	address, err := strconv.Atoi(addressString)
 	if err != nil {
 		return nil, errors.New("Couldn't parse address string '" + addressString + "' into an int")
@@ -58,6 +59,10 @@ func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString strin
 }
 
 func (m ModbusPlcField) GetTypeName() string {
+	return m.Datatype.String()
+}
+
+func (m ModbusPlcField) GetDataType() model2.ModbusDataType {
 	return m.Datatype
 }
 
@@ -83,7 +88,7 @@ func (m ModbusPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype, xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
 		return err
 	}
 

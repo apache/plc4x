@@ -59,9 +59,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
         // Array field (value)
         // Count array
-        if(8 > INT_MAX) {
-            return INTERNAL_ERROR;
-        }
         plc4c_list* value;
         plc4c_utils_list_create(&value);
         int itemCount = (int) 8;
@@ -71,7 +68,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_bool_data(_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -80,9 +77,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
         // Array field (value)
         // Count array
-        if(16 > INT_MAX) {
-            return INTERNAL_ERROR;
-        }
         plc4c_list* value;
         plc4c_utils_list_create(&value);
         int itemCount = (int) 16;
@@ -92,7 +86,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_bool_data(_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -101,9 +95,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
         // Array field (value)
         // Count array
-        if(32 > INT_MAX) {
-            return INTERNAL_ERROR;
-        }
         plc4c_list* value;
         plc4c_utils_list_create(&value);
         int itemCount = (int) 32;
@@ -113,7 +104,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_bool_data(_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -122,9 +113,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
         // Array field (value)
         // Count array
-        if(64 > INT_MAX) {
-            return INTERNAL_ERROR;
-        }
         plc4c_list* value;
         plc4c_utils_list_create(&value);
         int itemCount = (int) 64;
@@ -134,7 +122,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
             if(_res != OK) {
                 return _res;
             }
-            plc4c_data* _item = plc4c_data_create_bool_data(_val);
+            plc4c_data* _item = plc4c_data_create_bool_data(*_val);
             plc4c_utils_list_insert_head_value(value, _item);
         }
         *data_item = plc4c_data_create_list_data(*value);
@@ -230,7 +218,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
     } else     if(strcmp(dataProtocolId, "IEC61131_REAL") == 0) { /* REAL */
 
                 // Simple Field (value)
-                float value = 0.0;
+                float value = 0.0f;
                 _res = plc4c_spi_read_float(io, 32, (float*) &value);
                 if(_res != OK) {
                     return _res;
@@ -241,7 +229,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
     } else     if(strcmp(dataProtocolId, "IEC61131_LREAL") == 0) { /* LREAL */
 
                 // Simple Field (value)
-                double value = 0.0;
+                double value = 0.0f;
                 _res = plc4c_spi_read_double(io, 64, (double*) &value);
                 if(_res != OK) {
                     return _res;

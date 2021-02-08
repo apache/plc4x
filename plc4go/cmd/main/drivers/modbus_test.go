@@ -77,15 +77,15 @@ func test(t *testing.T, rawMessage string, response bool) {
 //
 // Test that actually sends a read-request to a remote Modbus Slave
 //
-func Connection(t *testing.T) {
+func TestConnection(t *testing.T) {
 
 	pdu := model.NewModbusPDUReadInputRegistersRequest(1, 1)
-    adu := model.NewModbusTcpADU( 0,255, pdu)
+	adu := model.NewModbusTcpADU(0, 255, pdu)
 
 	wb := utils.NewWriteBuffer()
 	adu.Serialize(*wb)
 
-	servAddr := "192.168.23.30:502?unit-identifier=1"
+	servAddr := "192.168.23.30:502"
 	tcpAddr, err := net.ResolveTCPAddr("tcp", servAddr)
 	if err != nil {
 		println("ResolveTCPAddr failed:", err.Error())
@@ -142,9 +142,9 @@ func TestPlc4goDriver(t *testing.T) {
 	connection := connectionResult.Connection
 
 	if !connection.GetMetadata().CanRead() {
-	    fmt.Printf("This connection doesn't support read operations")
-        return
-    }
+		fmt.Printf("This connection doesn't support read operations")
+		return
+	}
 
 	// Try to ping the remote device
 	pingResultChannel := connection.Ping()
@@ -160,8 +160,8 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field1", "holding-register:1:REAL")
-	rrb.AddItem("field2", "holding-register:3:REAL")
+	rrb.AddItem("field1", "holding-register:3:WORD")
+	rrb.AddItem("field2", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())

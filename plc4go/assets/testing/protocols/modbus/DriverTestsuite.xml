@@ -72,7 +72,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
@@ -133,7 +133,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
@@ -226,14 +226,14 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz1>
               <hurz2>
                 <ModbusFieldHoldingRegister>
                   <address>2</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz2>
             </fields>
@@ -300,7 +300,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value>3.1415927</value>
               </hurz>
@@ -364,7 +364,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value>3.1415927</value>
                 <value>3.1415927</value>

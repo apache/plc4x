@@ -1065,15 +1065,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return null;
     }
 
-    public boolean isEnumExpression(String expression) {
-        if (!expression.contains(".")) {
-            return false;
-        }
-        String enumName = expression.substring(0, expression.indexOf('.'));
-        TypeDefinition typeDefinition = this.getTypeDefinitions().get(enumName);
-        return (typeDefinition instanceof EnumTypeDefinition);
-    }
-
     public String getEnumExpression(String expression) {
         String enumName = expression.substring(0, expression.indexOf('.'));
         String enumConstant = expression.substring(expression.indexOf('.') + 1);

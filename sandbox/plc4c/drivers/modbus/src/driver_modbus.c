@@ -31,6 +31,7 @@ plc4c_return_code plc4c_driver_modbus_configure_function(plc4c_list* parameters,
   // Initialize the parts that the user can influence.
   modbus_config->request_timeout = 5000;
   modbus_config->unit_identifier = 1;
+  modbus_config->communication_id_counter = 1;
 
   // TODO: Apply the values from the parameters.
 
