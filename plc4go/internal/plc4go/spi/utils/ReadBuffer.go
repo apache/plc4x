@@ -59,11 +59,11 @@ func (rb *ReadBuffer) GetTotalBytes() uint64 {
 }
 
 func (rb *ReadBuffer) HasMore(bitLength uint8) bool {
-	return false
+	return (rb.pos + uint64(bitLength)) <= (uint64(len(rb.data)) * 8)
 }
 
 func (rb *ReadBuffer) PeekByte(offset uint8) uint8 {
-	return 0
+	panic("Not implemented")
 }
 
 func (rb *ReadBuffer) ReadBit() (bool, error) {

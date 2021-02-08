@@ -1356,6 +1356,7 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 						plcValues = append(plcValues, plcValue)
 					}
 				}
+				// If there are still remaining bytes, keep them for the next time.
 
 				// If this is a single value, just return that directly.
 				// If it's not, wrap it in a PlcList structure.
