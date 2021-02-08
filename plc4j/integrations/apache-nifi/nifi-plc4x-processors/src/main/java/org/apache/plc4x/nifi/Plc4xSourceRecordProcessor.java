@@ -85,6 +85,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	}
 
 	private PlcConnection connection = null;
+	private PooledPlcDriverManager pool;
 	
 	private static PLC4X_PROTOCOL PROTOCOL = null;
 	
@@ -95,8 +96,9 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
         //TODO: Change this to use NiFi service instead of direct connection and add @OnStopped Phase to close connection
         try {
         	Boolean force =  context.getProperty(FORCE_RECONNECT).asBoolean();
+        	pool = new PooledPlcDriverManager();
         	if(!force) {
-        		this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+        		this.connection = pool.getConnection(getConnectionString());
         	}
 			//TODO how to infer protocol within the writer?
 			PROTOCOL = Plc4xCommon.getConnectionProtocol(getConnectionString());
@@ -154,29 +156,25 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		try {
 			if(force) {
 				logger.warn("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
-				this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+				this.connection = pool.getConnection(getConnectionString());
 			}
 			if(this.connection != null) {
 				// Prepare the request.
-				logger.warn("00000000000000");
 				if (!connection.getMetadata().canRead()) {
 					throw new ProcessException("Reading not supported by connection");
 				}
 				String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
 				Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
 				FlowFile resultSetFF;
-				logger.warn("11111111111111");
 				if (fileToProcess == null) {
 					resultSetFF = session.create();
 				} else {
 					resultSetFF = session.create(fileToProcess);
 				}
-				logger.warn("22222222222222");
 				if (inputFileAttrMap != null) {
 					resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
 				}
 				try {
-					logger.warn("3333333333333333");
 					PlcReadRequest.Builder builder = connection.readRequestBuilder();
 					getFields().forEach(field -> {
 						String address = getAddress(field);
@@ -186,7 +184,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					});
 					PlcReadRequest readRequest = builder.build();
 					PlcReadResponse readResponse = readRequest.execute().get();
-					logger.warn("44444444444444444");
 					resultSetFF = session.write(resultSetFF, out -> {
 						try {
 							nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, this.getPlcAddress(), out, logger, null, PROTOCOL));
@@ -194,7 +191,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 							throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 						}
 					});
-					logger.warn("55555555555555555");
 					long executionTimeElapsed = executeTime.getElapsed(TimeUnit.MILLISECONDS);
 					final Map<String, String> attributesToAdd = new HashMap<>();
 					attributesToAdd.put(RESULT_ROW_COUNT, String.valueOf(nrOfRows.get()));
@@ -205,7 +201,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					attributesToAdd.putAll(plc4xWriter.getAttributesToAdd());
 					resultSetFF = session.putAllAttributes(resultSetFF, attributesToAdd);
 					plc4xWriter.updateCounters(session);
-					logger.warn("66666666666666666");
 					logger.info("{} contains {} records; transferring to 'success'",
 							new Object[] { resultSetFF, nrOfRows.get() });
 					// Report a FETCH event if there was an incoming flow file, or a RECEIVE event otherwise
@@ -225,7 +220,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 						session.commit();
 						resultSetFlowFiles.clear();
 					}
-					logger.warn("777777777777777");
 				} catch (Exception e) {
 					if (e instanceof InterruptedException)
 						Thread.currentThread().interrupt();

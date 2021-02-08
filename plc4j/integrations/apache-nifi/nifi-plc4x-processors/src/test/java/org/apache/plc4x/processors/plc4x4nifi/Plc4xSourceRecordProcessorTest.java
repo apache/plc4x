@@ -21,9 +21,6 @@ import org.apache.nifi.reporting.InitializationException;
 import org.apache.nifi.serialization.record.MockRecordWriter;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.nifi.Plc4xSourceRecordProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +29,7 @@ import org.junit.jupiter.api.Test;
 public class Plc4xSourceRecordProcessorTest {
 	
     private TestRunner testRunner;
-    private static int NUMBER_OF_CALLS = 1;
+    private static int NUMBER_OF_CALLS = 500;
     
         @BeforeEach
     public void init() throws InitializationException {
@@ -43,21 +40,12 @@ public class Plc4xSourceRecordProcessorTest {
     	//fijo las propiedades
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "s7://10.105.143.1:102?remote-rack=0&remote-slot=0&controller-type=S7_300");
     	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_ADDRESS_STRING, "miboolean=%DB20:DBX6.0:BOOL;miint=%DB20:DBW06:INT");
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.FORCE_RECONNECT, "true");
+    	testRunner.setProperty(Plc4xSourceRecordProcessor.FORCE_RECONNECT, "false");
     	//filo los servicios
     	final MockRecordWriter writerService = new MockRecordWriter("header", false);
     	testRunner.addControllerService("writer", writerService);
     	testRunner.enableControllerService(writerService);
     	testRunner.setProperty(Plc4xSourceRecordProcessor.RECORD_WRITER_FACTORY.getName(), "writer");
-    	
-    	
-//    	final JsonRecordSetWriter jsonWriter = new JsonRecordSetWriter();
-//    	testRunner.addControllerService(Plc4xSourceRecordProcessor.RECORD_WRITER_FACTORY.getName(), jsonWriter);
-//    	testRunner.setProperty(jsonWriter, SchemaAccessUtils.SCHEMA_ACCESS_STRATEGY, SchemaAccessUtils.INHERIT_RECORD_SCHEMA);
-//    	testRunner.setProperty(jsonWriter, "Pretty Print JSON", "true");
-//    	testRunner.setProperty(jsonWriter, "Schema Write Strategy", "full-schema-attribute");
-//    	testRunner.enableControllerService(jsonWriter);
-    	
     	
     	//fijo las relaciones
     	testRunner.addConnection(Plc4xSourceRecordProcessor.REL_SUCCESS);
@@ -66,8 +54,6 @@ public class Plc4xSourceRecordProcessorTest {
 
     @Test
     public void testProcessor() {
-
-    	
     	
     	testRunner.run(NUMBER_OF_CALLS,true, true);
     	//validaciones
