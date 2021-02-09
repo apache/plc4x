@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strconv"
 	"strings"
 	"time"
@@ -242,8 +243,13 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			readResult.Response.GetResponseCode("groupAddressTable").GetName())
 	}
 	var knxGroupAddresses []*driverModel.KnxGroupAddress
-	for _, groupAddress := range readResult.Response.GetValue("groupAddressTable").GetList() {
-		groupAddress := Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
+	if readResult.Response.GetValue("groupAddressTable").IsList() {
+		for _, groupAddress := range readResult.Response.GetValue("groupAddressTable").GetList() {
+			groupAddress := Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
+			knxGroupAddresses = append(knxGroupAddresses, groupAddress)
+		}
+	} else {
+		groupAddress := Uint16ToKnxGroupAddress(readResult.Response.GetValue("groupAddressTable").GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
 
@@ -325,24 +331,19 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			readResult.Response.GetResponseCode("groupAddressAssociationTable").GetName())
 	}
 	// Output the group addresses
-	for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
-		var addressIndex uint16
-		var comObjectNumber uint16
-		if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
-			addressIndex = uint16((groupAddressAssociation.GetUint32()>>16)&0xFFFF) - 1
-			comObjectNumber = uint16(groupAddressAssociation.GetUint32() & 0xFFFF)
-		} else {
-			addressIndex = ((groupAddressAssociation.GetUint16() >> 8) & 0xFF) - 1
-			comObjectNumber = groupAddressAssociation.GetUint16() & 0xFF
-		}
-		if addressIndex < uint16(len(knxGroupAddresses)) {
-			groupAddress := knxGroupAddresses[addressIndex]
-			result := apiModel.PlcBrowseQueryResult{
-				Address: fmt.Sprintf(
-					"%s#%s %d", knxAddressString, GroupAddressToString(groupAddress), comObjectNumber),
-				PossibleDataTypes: nil,
+	if readResult.Response.GetValue("groupAddressAssociationTable").IsList() {
+		for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
+			result := b.parseAssociationTable(knxAddressString, b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+				knxGroupAddresses, groupAddressAssociation)
+			if result != nil {
+				results = append(results, *result)
 			}
-			results = append(results, result)
+		}
+	} else {
+		result := b.parseAssociationTable(knxAddressString, b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+			knxGroupAddresses, readResult.Response.GetValue("groupAddressAssociationTable"))
+		if result != nil {
+			results = append(results, *result)
 		}
 	}
 
@@ -431,6 +432,35 @@ func (b KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([
 				options = append(options, uint8(option))
 			}
 		}
+	} else {
+		value, err := strconv.Atoi(segment)
+		if err != nil {
+			return nil, err
+		}
+		if uint8(value) >= min && uint8(value) <= max {
+			options = append(options, uint8(value))
+		}
 	}
 	return options, nil
+}
+
+func (m KnxNetIpBrowser) parseAssociationTable(knxAddressString string, deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) *apiModel.PlcBrowseQueryResult {
+	var addressIndex uint16
+	var comObjectNumber uint16
+	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+		addressIndex = uint16((value.GetUint32()>>16)&0xFFFF) - 1
+		comObjectNumber = uint16(value.GetUint32() & 0xFFFF)
+	} else {
+		addressIndex = ((value.GetUint16() >> 8) & 0xFF) - 1
+		comObjectNumber = value.GetUint16() & 0xFF
+	}
+	if addressIndex < uint16(len(knxGroupAddresses)) {
+		groupAddress := knxGroupAddresses[addressIndex]
+		return &apiModel.PlcBrowseQueryResult{
+			Address: fmt.Sprintf(
+				"%s#%s %d", knxAddressString, GroupAddressToString(groupAddress), comObjectNumber),
+			PossibleDataTypes: nil,
+		}
+	}
+	return nil
 }
