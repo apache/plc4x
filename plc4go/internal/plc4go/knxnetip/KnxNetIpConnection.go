@@ -154,7 +154,7 @@ func NewKnxNetIpConnection(transportInstance transports.TransportInstance, optio
 		valueCache:         map[uint16][]int8{},
 		valueCacheMutex:    sync.RWMutex{},
 		metadata:           &ConnectionMetadata{},
-		defaultTtl:         time.Second * 60,
+		defaultTtl:         time.Second * 10,
 		DeviceConnections:  map[driverModel.KnxAddress]*KnxDeviceConnection{},
 	}
 	connection.messageCodec = NewKnxNetIpMessageCodec(transportInstance, connection.interceptIncomingMessage)
@@ -1513,59 +1513,77 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
 		if lDataInd != nil {
 			var destinationAddress []int8
-			var apdu *driverModel.Apdu
 			switch lDataInd.DataFrame.Child.(type) {
 			case *driverModel.LDataExtended:
 				dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
 				destinationAddress = dataFrame.DestinationAddress
-				apdu = dataFrame.Apdu
-			}
-			container := driverModel.CastApduDataContainer(apdu)
-			if container == nil {
-				return
-			}
-			groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
-			if groupValueWrite == nil {
-				return
-			}
-			if destinationAddress != nil {
-				addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
-				m.valueCacheMutex.RLock()
-				val, ok := m.valueCache[addressData]
-				m.valueCacheMutex.RUnlock()
-				changed := false
+				switch dataFrame.Apdu.Child.(type) {
+				case *driverModel.ApduDataContainer:
+					container := driverModel.CastApduDataContainer(dataFrame.Apdu)
+					switch container.DataApdu.Child.(type) {
+					case *driverModel.ApduDataGroupValueWrite:
+						groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
+						if destinationAddress != nil {
+							addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
+							m.valueCacheMutex.RLock()
+							val, ok := m.valueCache[addressData]
+							m.valueCacheMutex.RUnlock()
+							changed := false
 
-				var payload []int8
-				payload = append(payload, groupValueWrite.DataFirstByte)
-				payload = append(payload, groupValueWrite.Data...)
-				if !ok || !m.sliceEqual(val, payload) {
-					m.valueCacheMutex.Lock()
-					m.valueCache[addressData] = payload
-					m.valueCacheMutex.Unlock()
-					// If this is a new value, we have to also provide the 3 different types of addresses.
-					if !ok {
-						arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
-						if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
-							m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
-						} else {
-							fmt.Printf("Error parsing Group Address %s", err2.Error())
+							var payload []int8
+							payload = append(payload, groupValueWrite.DataFirstByte)
+							payload = append(payload, groupValueWrite.Data...)
+							if !ok || !m.sliceEqual(val, payload) {
+								m.valueCacheMutex.Lock()
+								m.valueCache[addressData] = payload
+								m.valueCacheMutex.Unlock()
+								// If this is a new value, we have to also provide the 3 different types of addresses.
+								if !ok {
+									arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
+									if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
+										m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
+									} else {
+										fmt.Printf("Error parsing Group Address %s", err2.Error())
+									}
+									arb.Reset()
+									if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
+										m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
+									}
+									arb.Reset()
+									if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
+										m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
+									}
+								}
+								changed = true
+							}
+							if m.subscribers != nil {
+								for _, subscriber := range m.subscribers {
+									subscriber.handleValueChange(lDataInd.DataFrame, changed)
+								}
+							}
 						}
-						arb.Reset()
-						if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
-							m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
-						}
-						arb.Reset()
-						if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
-							m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
+					default:
+						// If this is an individual address and it is targeted at us, we need to ack that.
+						if !dataFrame.GroupAddress {
+							targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+							if *targetAddress == *m.ClientKnxAddress {
+								log.Debugf("Acknowleding an unhandled message.")
+								m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter)
+							}
 						}
 					}
-					changed = true
-				}
-				if m.subscribers != nil {
-					for _, subscriber := range m.subscribers {
-						subscriber.handleValueChange(lDataInd.DataFrame, changed)
+				case *driverModel.ApduControlContainer:
+					// If this is an individual address and it is targeted at us, we need to ack that.
+					if !dataFrame.GroupAddress {
+						targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+						if *targetAddress == *m.ClientKnxAddress {
+							log.Debugf("Acknowleding an unhandled message.")
+							m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter)
+						}
 					}
 				}
+			default:
+				log.Debugf("Unknown unhandled message.")
 			}
 		}
 	}()
