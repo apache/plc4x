@@ -177,7 +177,7 @@ func work(m *KnxNetIpMessageCodec) {
 				)
 				err = m.Send(response)
 				if err != nil {
-					fmt.Printf("got an error reading sending ACK from transport %s\n", err.Error())
+					fmt.Printf("got an error sending ACK from transport %s\n", err.Error())
 				}
 			}
 
