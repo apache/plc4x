@@ -237,12 +237,14 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 						m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
 
 						// Start a timer that sends connection-state requests every 60 seconds
+						log.Infof("Starting Keep-Alive Timer")
 						m.connectionStateTimer = time.NewTicker(60 * time.Second)
 						m.quitConnectionStateTimer = make(chan struct{})
 						go func() {
 							for {
 								select {
 								case <-m.connectionStateTimer.C:
+									log.Infof("Executing Keep-Alive action")
 									// We're using the connection-state-request as ping operation ...
 									ping := m.Ping()
 									select {
