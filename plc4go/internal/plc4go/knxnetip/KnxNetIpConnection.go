@@ -237,35 +237,37 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 						m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
 
 						// Start a timer that sends connection-state requests every 60 seconds
-						log.Infof("Starting Keep-Alive Timer")
-						m.connectionStateTimer = time.NewTicker(60 * time.Second)
-						m.quitConnectionStateTimer = make(chan struct{})
-						go func() {
-							for {
-								select {
-								case <-m.connectionStateTimer.C:
-									log.Infof("Executing Keep-Alive action")
-									// We're using the connection-state-request as ping operation ...
-									ping := m.Ping()
-									select {
-									case pingResult := <-ping:
-										if pingResult.Err != nil {
-											// TODO: Do some error handling here ...
-											m.connectionStateTimer.Stop()
-										}
-									case <-time.After(m.defaultTtl * 2):
-										// Close the connection
-										m.Close()
-									}
+						/*log.Infof("Starting Keep-Alive Timer")
+												m.connectionStateTimer = time.NewTicker(60 * time.Second)
+						                        m.quitConnectionStateTimer = make(chan struct{})
+												go func() {
+													for {
+														select {
+														case <-m.connectionStateTimer.C:
+															log.Infof("Executing Keep-Alive action")
+															// We're using the connection-state-request as ping operation ...
+															ping := m.Ping()
+															select {
+															case pingResult := <-ping:
+																if pingResult.Err != nil {
+																	// TODO: Do some error handling here ...
+																	m.connectionStateTimer.Stop()
+																}
+															case <-time.After(m.defaultTtl * 2):
+																// Close the connection
+																m.Close()
+															}
 
-								// If externally a request to stop the timer was issued, stop the timer.
-								case <-m.quitConnectionStateTimer:
-									// TODO: Do some error handling here ...
-									m.connectionStateTimer.Stop()
-									return
-								}
-							}
-						}()
+														// If externally a request to stop the timer was issued, stop the timer.
+														case <-m.quitConnectionStateTimer:
+															// TODO: Do some error handling here ...
+															if m.connectionStateTimer != nil {
+						                                        m.connectionStateTimer.Stop()
+						                                    }
+															return
+														}
+													}
+												}()*/
 
 						// Create a go routine to handle incoming tunneling-requests which haven't been
 						// handled by any other handler. This is where usually the GroupValueWrite messages
@@ -340,7 +342,9 @@ func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 	go func() {
 		// Stop the connection-state checker.
-		m.connectionStateTimer.Stop()
+		if m.connectionStateTimer != nil {
+			m.connectionStateTimer.Stop()
+		}
 
 		// Disconnect from all knx devices we are still connected to.
 		for targetAddress := range m.DeviceConnections {
