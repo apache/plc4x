@@ -1567,7 +1567,7 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 						if !dataFrame.GroupAddress {
 							targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
 							if *targetAddress == *m.ClientKnxAddress {
-								log.Debugf("Acknowleding an unhandled message.")
+								log.Infof("Acknowleding an unhandled data message.")
 								m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter)
 							}
 						}
@@ -1577,13 +1577,13 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 					if !dataFrame.GroupAddress {
 						targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
 						if *targetAddress == *m.ClientKnxAddress {
-							log.Debugf("Acknowleding an unhandled message.")
+							log.Infof("Acknowleding an unhandled contol message.")
 							m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter)
 						}
 					}
 				}
 			default:
-				log.Debugf("Unknown unhandled message.")
+				log.Infof("Unknown unhandled message.")
 			}
 		}
 	}()
