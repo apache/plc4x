@@ -40,4 +40,8 @@ type PlcWriteRequest interface {
 }
 
 type PlcWriteResponse interface {
+	GetRequest() PlcWriteRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	PlcResponse
 }

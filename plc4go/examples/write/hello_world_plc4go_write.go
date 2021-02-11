@@ -19,19 +19,25 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 func main() {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterTransport(tcp.NewTcpTransport())
+
 	// Get a connection to a remote PLC
-	crc := plc4go.NewPlcDriverManager().GetConnection("s7://192.168.23.30")
+	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
-        fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
+		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
 		return
 	}
 	connection := connectionResult.Connection
@@ -41,11 +47,10 @@ func main() {
 
 	// Prepare a write-request
 	wrb := connection.WriteRequestBuilder()
-	wrb.AddItem("output-field", "%Q0.0:BOOL", true)
-	wrb.AddItem("input-field", "%I0.0:USINT", 42)
+	wrb.AddItem("field", "holding-register:26:REAL", 2.7182818284)
 	writeRequest, err := wrb.Build()
 	if err != nil {
-        fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return
 	}
 
@@ -55,15 +60,13 @@ func main() {
 	// Wait for the response to finish
 	wrr := <-wrc
 	if wrr.Err != nil {
-        fmt.Printf("error executing write-request: %s", wrr.Err.Error())
+		fmt.Printf("error executing write-request: %s", wrr.Err.Error())
 		return
 	}
 
-	// Do something with the response
-	writeResponseJson, err := json.Marshal(wrr.Response)
-	if err != nil {
-        fmt.Printf("error serializing write-response: %s", err.Error())
+	if wrr.Response.GetResponseCode("field") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", wrr.Response.GetResponseCode("field").GetName())
 		return
 	}
-	fmt.Printf("Result: %s\n", string(writeResponseJson))
+	fmt.Print("Result: SUCCESS\n")
 }
