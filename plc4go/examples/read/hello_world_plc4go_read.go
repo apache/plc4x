@@ -19,14 +19,20 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 func main() {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterTransport(tcp.NewTcpTransport())
+
 	// Get a connection to a remote PLC
-	crc := plc4go.NewPlcDriverManager().GetConnection("modbus:tcp://192.168.23.30")
+	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -41,10 +47,10 @@ func main() {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:1:REAL[2]")
+	rrb.AddItem("field", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
-        fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return
 	}
 
@@ -54,15 +60,16 @@ func main() {
 	// Wait for the response to finish
 	rrr := <-rrc
 	if rrr.Err != nil {
-        fmt.Printf("error executing read-request: %s", rrr.Err.Error())
+		fmt.Printf("error executing read-request: %s", rrr.Err.Error())
 		return
 	}
 
 	// Do something with the response
-	readResponseJson, err := json.Marshal(rrr.Response)
-	if err != nil {
-        fmt.Printf("error serializing read-response: %s", err.Error())
+	if rrr.Response.GetResponseCode("field") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", rrr.Response.GetResponseCode("field").GetName())
 		return
 	}
-	fmt.Printf("Result: %s\n", string(readResponseJson))
+
+	value := rrr.Response.GetValue("field")
+	fmt.Printf("Got result %f", value.GetFloat32())
 }
