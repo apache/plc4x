@@ -333,7 +333,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                   (short) 6, group1FileNumber, group1Address, fromPlcValue(field, plcValue));
               itemArray = new ModbusPDUWriteFileRecordRequestItem[] {group1};
             } else {
-              //If it doesn span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
+              //If it doesn't span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
               group1Quantity = FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH - group1Address;
               group2Quantity = extendedRegister.getLengthWords() - group1Quantity;
               group2FileNumber = (short) (group1FileNumber + 1);
@@ -352,8 +352,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         throw new PlcRuntimeException("Unsupported write field type " + field.getClass().getName());
     }
 
-    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, String dataType) throws ParseException {
-        Short fieldDataTypeSize = ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
+    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType) throws ParseException {
+        Short fieldDataTypeSize = dataType.getDataTypeSize();
 
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
             if (!(response instanceof ModbusPDUReadDiscreteInputsResponse)) {
@@ -426,14 +426,14 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     }
 
     private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
-        String fieldDataType = ((ModbusField) field).getDataType();
+        ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
         try {
             WriteBuffer buffer;
             if(plcValue instanceof PlcList) {
                 buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
                 byte[] data = buffer.getData();
                 switch (((ModbusField) field).getDataType()) {
-                    case "BOOL":
+                    case BOOL:
                         //Reverse Bits in each byte as
                         //they should ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
                         byte[] bytes = new byte[data.length];
@@ -471,7 +471,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
         ReadBuffer io = new ReadBuffer(data);
         if(count == 1) {
-            return DataItemIO.staticParse(io, "IEC61131_BOOL", 1);
+            return DataItemIO.staticParse(io, ModbusDataType.BOOL, 1);
         }
         // Make sure we read in all the bytes. Unfortunately when requesting 9 bytes
         // they are ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9

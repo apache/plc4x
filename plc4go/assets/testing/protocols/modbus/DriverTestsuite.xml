@@ -72,7 +72,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
@@ -133,7 +133,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
@@ -226,14 +226,14 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz1>
               <hurz2>
                 <ModbusFieldHoldingRegister>
                   <address>2</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz2>
             </fields>
@@ -275,7 +275,7 @@
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
             <startingAddress>0</startingAddress>
             <quantity>2</quantity>
-            <value>QEkP2w==</value>
+            <value>40490FDB</value>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -300,7 +300,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value>3.1415927</value>
               </hurz>
@@ -339,7 +339,7 @@
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
             <startingAddress>0</startingAddress>
             <quantity>4</quantity>
-            <value>QEkP20BJD9s=</value>
+            <value>40490FDB40490FDB</value>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -364,7 +364,7 @@
                 <ModbusFieldHoldingRegister>
                   <address>0</address>
                   <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <dataType>REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value>3.1415927</value>
                 <value>3.1415927</value>

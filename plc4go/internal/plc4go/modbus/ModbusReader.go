@@ -61,7 +61,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			}
 			return result
 		}
-		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusModel.ModbusDataTypeSizesByName(modbusField.Datatype).DataTypeSize())) / float64(2)))
+		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
 		var pdu *modbusModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case MODBUS_FIELD_COIL:

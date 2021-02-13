@@ -16,14 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-//#include <plc4c/driver_simulated.h>
 #include <plc4c/driver_s7.h>
-//#include <plc4c/driver_modbus.h>
 #include <plc4c/plc4c.h>
-//#include <plc4c/transport_dummy.h>
 #include <plc4c/transport_tcp.h>
-//#include <plc4c/transport_serial.h>
-#include <plc4c/utils/list.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -50,20 +45,11 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
   numOpenConnections--;
 }
 
-void delete_read_response_item(plc4c_list_element *response_read_item_element) {
-
-}
-
-void delete_write_response_item(
-    plc4c_list_element *response_write_item_element) {}
-
 enum plc4c_connection_state_t {
   CONNECTING,
   CONNECTED,
   READ_REQUEST_SENT,
   READ_RESPONSE_RECEIVED,
-  WRITE_REQUEST_SENT,
-  WRITE_RESPONSE_RECEIVED,
   DISCONNECTING,
   DISCONNECTED
 };
@@ -77,9 +63,7 @@ int main() {
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
   plc4c_read_request *read_request = NULL;
-  plc4c_write_request *write_request = NULL;
   plc4c_read_request_execution *read_request_execution = NULL;
-  plc4c_write_request_execution *write_request_execution = NULL;
 
   // Create a new uninitialized plc4c_system
   printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
@@ -91,13 +75,6 @@ int main() {
   printf("SUCCESS\n");
 
   // Manually register the "simulated" driver with the system.
-  /*printf("Registering driver for the 'simulated' protocol ... ");
-  plc4c_driver *simulated_driver = plc4c_driver_simulated_create();
-  result = plc4c_system_add_driver(system, simulated_driver);
-  if (result != OK) {
-    printf("FAILED adding simulated driver\n");
-    return -1;
-  }*/
   printf("Registering driver for the 's7' protocol ... ");
   plc4c_driver *s7_driver = plc4c_driver_s7_create();
   result = plc4c_system_add_driver(system, s7_driver);
@@ -105,38 +82,18 @@ int main() {
     printf("FAILED adding s7 driver\n");
     return -1;
   }
-  /*printf("Registering driver for the 'modbus' protocol ... ");
-  plc4c_driver *modbus_driver = plc4c_driver_modbus_create();
-  result = plc4c_system_add_driver(system, modbus_driver);
-  if (result != OK) {
-    printf("FAILED adding modbus driver\n");
-    return -1;
-  }*/
   printf("SUCCESS\n");
 
-  /*printf("Registering transport for the 'dummy' transport ... ");
-  plc4c_transport *dummy_transport = plc4c_transport_dummy_create();
-  result = plc4c_system_add_transport(system, dummy_transport);
-  if (result != OK) {
-    printf("FAILED adding dummy transport\n");
-    return -1;
-  }*/
   plc4c_transport *tcp_transport = plc4c_transport_tcp_create();
   result = plc4c_system_add_transport(system, tcp_transport);
   if (result != OK) {
     printf("FAILED adding tcp transport\n");
     return -1;
   }
-  /*plc4c_transport *serial_transport = plc4c_transport_serial_create();
-  result = plc4c_system_add_transport(system, serial_transport);
-  if (result != OK) {
-    printf("FAILED adding serial transport\n");
-    return -1;
-  }*/
   printf("SUCCESS\n");
 
-  // Initialize the plc4c_system (loading of drivers, setting up other stuff,
-  // ...)
+  // Initialize the plc4c_system
+  // (loading of drivers, setting up other stuff ...)
   printf(
       "Initializing the PLC4C system (Loading of drivers and transports) ... ");
   result = plc4c_system_init(system);
@@ -292,10 +249,6 @@ int main() {
           return -1;
         }
         // UTF-16 doesn't work well in a portable way
-        /*result =
-            plc4c_read_request_add_item(read_request, "WCHAR",
-        "%DB4:138:WCHAR"); if (result != OK) { printf("FAILED\n"); return -1;
-        }*/
         result = plc4c_read_request_add_item(read_request, "STRING",
                                              "%DB4:140:STRING(10)");
         if (result != OK) {
@@ -303,11 +256,6 @@ int main() {
           return -1;
         }
         // UTF-16 doesn't work well in a portable way
-        /*result =
-               plc4c_read_request_add_item(read_request, "WSTRING",
-           "%DB4:396:WSTRING(10)"); if (result != OK) { printf("FAILED\n");
-             return -1;
-           }*/
         printf("SUCCESS\n");
 
         // Execute the read-request.
@@ -323,7 +271,7 @@ int main() {
         }
         break;
       }
-        // Wait until the read-request execution is finished.
+      // Wait until the read-request execution is finished.
       case READ_REQUEST_SENT: {
         if (plc4c_read_request_execution_check_finished_successfully(
                 read_request_execution)) {
@@ -358,9 +306,8 @@ int main() {
             printf(" (Duration in ms)");
           } else if (strcmp(value_item->item->name, "DATE") == 0) {
             printf(" (Days since 1990-01-01)");
-          } else if (strcmp(value_item->item->name, "TIME_OF_DAY") == 0) {
-            printf(" (Number of ms since midnight)");
-          } else if (strcmp(value_item->item->name, "TOD") == 0) {
+          } else if ((strcmp(value_item->item->name, "TIME_OF_DAY") == 0) ||
+                (strcmp(value_item->item->name, "TOD") == 0)) {
             printf(" (Number of ms since midnight)");
           }
           printf("\n");
@@ -373,7 +320,6 @@ int main() {
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
-        // TODO: Comment out after implementing the write functionality.
         // Disconnect.
         printf("Disconnecting ... ");
         result = plc4c_connection_disconnect(connection);
@@ -383,77 +329,9 @@ int main() {
         }
         state = DISCONNECTING;
 
-        // Create a new write-request.
-        /*        printf("Preparing a write-request ... ");
-                char value[] = "bar";
-                result =
-                    plc4c_connection_create_write_request(connection,
-           &write_request); if (result != OK) { printf("FAILED\n"); return -1;
-                }
-                printf("SUCCESS\n");
-
-                printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
-                result = plc4c_write_request_add_item(
-                    write_request, "STDOUT/foo:STRING",
-                    plc4c_data_create_constant_string_data(strlen(value),
-           value)); if (result != OK) { printf("FAILED\n"); return -1;
-                }
-                printf("SUCCESS\n");
-
-                // Execute the write-request.
-                printf("Executing a write-request ... \n");
-                result = plc4c_write_request_execute(write_request,
-                                                     &write_request_execution);
-                if (result != OK) {
-                  printf("FAILED\n");
-                  return -1;
-                } else {
-                  state = WRITE_REQUEST_SENT;
-                }*/
         break;
       }
-        // Wait until the write-request execution is finished.
-      case WRITE_REQUEST_SENT: {
-        if (plc4c_write_request_check_finished_successfully(
-                write_request_execution)) {
-          printf("SUCCESS\n");
-          state = WRITE_RESPONSE_RECEIVED;
-        } else if (plc4c_write_request_execution_check_completed_with_error(
-                       write_request_execution)) {
-          printf("FAILED\n");
-          return -1;
-        }
-        break;
-      }
-      case WRITE_RESPONSE_RECEIVED: {
-        plc4c_write_response *write_response =
-            plc4c_write_request_execution_get_response(write_request_execution);
-
-        // Iterate over the responses ...
-        plc4c_list_element *cur_element =
-            plc4c_utils_list_head(write_response->response_items);
-        while (cur_element != NULL) {
-          plc4c_response_item *response_item = cur_element->value;
-          printf(" - Write Value %s (%s)\n", response_item->item->name,
-                 plc4c_response_code_to_message(response_item->response_code));
-          cur_element = cur_element->next;
-        }
-
-        // Clean up.
-        plc4c_write_destroy_write_response(write_response);
-        plc4c_write_request_execution_destroy(write_request_execution);
-
-        // Disconnect.
-        printf("Disconnecting ... ");
-        result = plc4c_connection_disconnect(connection);
-        if (result != OK) {
-          printf("FAILED");
-          return -1;
-        }
-        state = DISCONNECTING;
-        break;
-      }
-        // Wait until the connection is disconnected
+      // Wait until the connection is disconnected
       case DISCONNECTING: {
         if (!plc4c_connection_get_connected(connection)) {
           printf("SUCCESS\n");
@@ -473,7 +351,10 @@ int main() {
         loop = false;
         break;
       }
+      default: {
+      }
     }
+
   }
 
   // Make sure everything is cleaned up correctly.
@@ -485,4 +366,4 @@ int main() {
   return 0;
 }
 
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop

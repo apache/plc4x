@@ -28,16 +28,16 @@ import (
 )
 
 // The data-structure of this message
-type LDataFramePollingData struct {
+type LPollData struct {
     SourceAddress *KnxAddress
     TargetAddress []int8
     NumberExpectedPollData uint8
     Parent *LDataFrame
-    ILDataFramePollingData
+    ILPollData
 }
 
 // The corresponding interface
-type ILDataFramePollingData interface {
+type ILPollData interface {
     LengthInBytes() uint16
     LengthInBits() uint16
     Serialize(io utils.WriteBuffer) error
@@ -47,58 +47,58 @@ type ILDataFramePollingData interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *LDataFramePollingData) ExtendedFrame() bool {
-    return false
+func (m *LPollData) NotAckFrame() bool {
+    return true
 }
 
-func (m *LDataFramePollingData) Polling() bool {
+func (m *LPollData) Polling() bool {
     return true
 }
 
 
-func (m *LDataFramePollingData) InitializeParent(parent *LDataFrame, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
-    m.Parent.Repeated = repeated
-    m.Parent.NotAckFrame = notAckFrame
+func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {
+    m.Parent.FrameType = frameType
+    m.Parent.NotRepeated = notRepeated
     m.Parent.Priority = priority
     m.Parent.AcknowledgeRequested = acknowledgeRequested
     m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataFramePollingData(sourceAddress *KnxAddress, targetAddress []int8, numberExpectedPollData uint8, repeated bool, notAckFrame bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
-    child := &LDataFramePollingData{
+func NewLPollData(sourceAddress *KnxAddress, targetAddress []int8, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+    child := &LPollData{
         SourceAddress: sourceAddress,
         TargetAddress: targetAddress,
         NumberExpectedPollData: numberExpectedPollData,
-        Parent: NewLDataFrame(repeated, notAckFrame, priority, acknowledgeRequested, errorFlag),
+        Parent: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
     }
     child.Parent.Child = child
     return child.Parent
 }
 
-func CastLDataFramePollingData(structType interface{}) *LDataFramePollingData {
-    castFunc := func(typ interface{}) *LDataFramePollingData {
-        if casted, ok := typ.(LDataFramePollingData); ok {
+func CastLPollData(structType interface{}) *LPollData {
+    castFunc := func(typ interface{}) *LPollData {
+        if casted, ok := typ.(LPollData); ok {
             return &casted
         }
-        if casted, ok := typ.(*LDataFramePollingData); ok {
+        if casted, ok := typ.(*LPollData); ok {
             return casted
         }
         if casted, ok := typ.(LDataFrame); ok {
-            return CastLDataFramePollingData(casted.Child)
+            return CastLPollData(casted.Child)
         }
         if casted, ok := typ.(*LDataFrame); ok {
-            return CastLDataFramePollingData(casted.Child)
+            return CastLPollData(casted.Child)
         }
         return nil
     }
     return castFunc(structType)
 }
 
-func (m *LDataFramePollingData) GetTypeName() string {
-    return "LDataFramePollingData"
+func (m *LPollData) GetTypeName() string {
+    return "LPollData"
 }
 
-func (m *LDataFramePollingData) LengthInBits() uint16 {
+func (m *LPollData) LengthInBits() uint16 {
     lengthInBits := uint16(0)
 
     // Simple field (sourceAddress)
@@ -118,11 +118,11 @@ func (m *LDataFramePollingData) LengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m *LDataFramePollingData) LengthInBytes() uint16 {
+func (m *LPollData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func LDataFramePollingDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
     // Simple Field (sourceAddress)
     sourceAddress, _sourceAddressErr := KnxAddressParse(io)
@@ -162,7 +162,7 @@ func LDataFramePollingDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
     }
 
     // Create a partially initialized instance
-    _child := &LDataFramePollingData{
+    _child := &LPollData{
         SourceAddress: sourceAddress,
         TargetAddress: targetAddress,
         NumberExpectedPollData: numberExpectedPollData,
@@ -172,7 +172,7 @@ func LDataFramePollingDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
     return _child.Parent, nil
 }
 
-func (m *LDataFramePollingData) Serialize(io utils.WriteBuffer) error {
+func (m *LPollData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (sourceAddress)
@@ -211,7 +211,7 @@ func (m *LDataFramePollingData) Serialize(io utils.WriteBuffer) error {
     return m.Parent.SerializeParent(io, m, ser)
 }
 
-func (m *LDataFramePollingData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
     var token xml.Token
     var err error
     token = start
@@ -255,7 +255,7 @@ func (m *LDataFramePollingData) UnmarshalXML(d *xml.Decoder, start xml.StartElem
     }
 }
 
-func (m *LDataFramePollingData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m *LPollData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
     if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
         return err
     }

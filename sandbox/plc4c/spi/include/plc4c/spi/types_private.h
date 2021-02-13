@@ -295,6 +295,7 @@ struct plc4c_unsubscription_request_t {
 struct plc4c_read_request_execution_t {
   plc4c_read_request *read_request;
   plc4c_read_response *read_response;
+  plc4c_list_element* cur_item;
   plc4c_system_task *system_task;
 };
 

@@ -511,9 +511,9 @@ func TestKnxAutoDiscovery(t *testing.T) {
 							deviceConnectionRequest := model.NewTunnelingRequest(
 								model.NewTunnelingRequestDataBlock(0, 0),
 								model.NewLDataReq(0, nil,
-									model.NewLDataFrameDataExt(false, 6, uint8(0),
+									model.NewLDataExtended(false, 6, uint8(0),
 										model.NewKnxAddress(0, 0, 0), targetAddress,
-										model.NewApduControlContainer(model.NewApduControlConnect(), 0, false, 0),
+										model.NewApduControlContainer(model.NewApduControlConnect(), false, 0),
 										true, true, model.CEMIPriority_SYSTEM, false, false)))
 							writeBuffer = utils.NewWriteBuffer()
 							err = deviceConnectionRequest.Serialize(*writeBuffer)

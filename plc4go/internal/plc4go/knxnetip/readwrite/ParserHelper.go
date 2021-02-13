@@ -43,7 +43,11 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
     case "ConnectionRequestInformation":
         return model.ConnectionRequestInformationParse(io)
     case "Apdu":
-        return model.ApduParse(io)
+        dataLength, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduParse(io, dataLength)
     case "HPAIDiscoveryEndpoint":
         return model.HPAIDiscoveryEndpointParse(io)
     case "ProjectInstallationIdentifier":

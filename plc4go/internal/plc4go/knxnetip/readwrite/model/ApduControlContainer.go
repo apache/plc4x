@@ -48,16 +48,15 @@ func (m *ApduControlContainer) Control() uint8 {
 }
 
 
-func (m *ApduControlContainer) InitializeParent(parent *Apdu, dataLength uint8, numbered bool, counter uint8) {
-    m.Parent.DataLength = dataLength
+func (m *ApduControlContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
     m.Parent.Numbered = numbered
     m.Parent.Counter = counter
 }
 
-func NewApduControlContainer(controlApdu *ApduControl, dataLength uint8, numbered bool, counter uint8) *Apdu {
+func NewApduControlContainer(controlApdu *ApduControl, numbered bool, counter uint8) *Apdu {
     child := &ApduControlContainer{
         ControlApdu: controlApdu,
-        Parent: NewApdu(dataLength, numbered, counter),
+        Parent: NewApdu(numbered, counter),
     }
     child.Parent.Child = child
     return child.Parent

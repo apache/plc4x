@@ -16,23 +16,29 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package read
+package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
-func main() int {
+func main() {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterTransport(tcp.NewTcpTransport())
+
 	// Get a connection to a remote PLC
-	crc := plc4go.NewPlcDriverManager().GetConnection("modbus:tcp://192.168.23.30")
+	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
 	if connectionResult.Err != nil {
 		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
-		return 1
+		return
 	}
 	connection := connectionResult.Connection
 
@@ -41,11 +47,11 @@ func main() int {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:1:REAL[2]")
+	rrb.AddItem("field", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
-        fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
-		return 2
+		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		return
 	}
 
 	// Execute a read-request
@@ -54,17 +60,16 @@ func main() int {
 	// Wait for the response to finish
 	rrr := <-rrc
 	if rrr.Err != nil {
-        fmt.Printf("error executing read-request: %s", rrr.Err.Error())
-		return 3
+		fmt.Printf("error executing read-request: %s", rrr.Err.Error())
+		return
 	}
 
 	// Do something with the response
-	readResponseJson, err := json.Marshal(rrr.Response)
-	if err != nil {
-        fmt.Printf("error serializing read-response: %s", err.Error())
-		return 4
+	if rrr.Response.GetResponseCode("field") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", rrr.Response.GetResponseCode("field").GetName())
+		return
 	}
-	fmt.Printf("Result: %s\n", string(readResponseJson))
 
-	return 0
+	value := rrr.Response.GetValue("field")
+	fmt.Printf("Got result %f", value.GetFloat32())
 }

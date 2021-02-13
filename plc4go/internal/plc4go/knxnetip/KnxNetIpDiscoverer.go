@@ -142,7 +142,7 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 					return nil
 				},
 				func(err error) error {
-					log.Error(fmt.Sprintf("got timeout waiting for search-response"))
+					log.Debugf(fmt.Sprintf("got timeout waiting for search-response"))
 					return nil
 				},
 				time.Second*1)

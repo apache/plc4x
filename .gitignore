@@ -180,3 +180,4 @@ build-iPhoneSimulator/
 # Temp stuff ...
 /sandbox/plc4go/temp/
 /plc4go/.idea/
+plc4j/examples/hello-storage-elasticsearch/.factorypath

@@ -119,7 +119,7 @@
 [type 'DIBSuppSvcFamilies'
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
-    [array    ServiceId    'serviceIds' count '3']
+    [array    ServiceId    'serviceIds' length 'structureLength - 2']
 ]
 
 [type 'HPAIDataEndpoint'
@@ -216,6 +216,9 @@
             [simple uint 8 'version']
         ]
         ['0x04' KnxNetIpTunneling
+            [simple uint 8 'version']
+        ]
+        ['0x05' KnxNetIpRouting
             [simple uint 8 'version']
         ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
@@ -347,50 +350,51 @@
 // The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
 // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
 [discriminatedType 'LDataFrame'
-    [discriminator bit          'extendedFrame']
+    [simple        bit          'frameType']
     [discriminator bit          'polling']
-    [simple        bit          'repeated']
-    [simple        bit          'notAckFrame']
+    [simple        bit          'notRepeated']
+    [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
     [simple        bit          'errorFlag']
-    [typeSwitch 'extendedFrame','polling'
-       // Page 28ff
-        ['false','false' LDataFrameData
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'destinationAddress' count '2']
-            [simple   bit          'groupAddress']
-            [simple   uint 3       'hopCount']
-            [simple   Apdu         'apdu']
-        ]
+    // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
+    [typeSwitch 'notAckFrame','polling'
         // Page 29ff
-        ['true','false' LDataFrameDataExt
+        // TODO: For some reason it doesn't seem to matter what the frame format is set to, it always seems to be an extended frame
+        // ['true','false','false' LDataExtended
+        ['true','false' LDataExtended
             [simple   bit          'groupAddress']
             [simple   uint 3       'hopCount']
             [simple   uint 4       'extendedFrameFormat']
             [simple   KnxAddress   'sourceAddress']
             [array    int 8        'destinationAddress' count '2']
-            [simple   Apdu         'apdu']
+            [implicit uint 8       'dataLength' 'apdu.lengthInBytes - 1']
+            [simple   Apdu         'apdu' ['dataLength']]
         ]
+        // Page 28ff
+        //['true','false','true' LDataStandard
+        //    [simple   KnxAddress   'sourceAddress']
+        //    [array    int 8        'destinationAddress' count '2']
+        //    [simple   bit          'groupAddress']
+        //    [simple   uint 3       'hopCount']
+        //    [simple   uint 4       'dataLength']
+        //    [simple   Apdu         'apdu' ['dataLength']]
+        //]
         // Page 31ff
-        ['true','true' LDataFramePollingData
+        //['true','true','true' LPollData
+        ['true','true' LPollData
             [simple   KnxAddress   'sourceAddress']
             [array    int 8        'targetAddress' count '2']
             [reserved uint 4       '0x00']
             [simple   uint 6       'numberExpectedPollData']
         ]
-        // Page 31ff
-        ['false','true' LDataFramePollingData
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'targetAddress' count '2']
-            [reserved uint 4       '0x00']
-            [simple   uint 6       'numberExpectedPollData']
+        ['false' LDataFrameACK
+            // TODO: Implement this
         ]
     ]
 ]
 
-[discriminatedType 'Apdu'
-    [simple   uint 8      'dataLength']
+[discriminatedType 'Apdu' [uint 8 'dataLength']
     // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
     [discriminator uint 1 'control']
     [simple        bit    'numbered']
@@ -771,8 +775,8 @@
 // - 03_05_01 Resources v01.09.03 AS.pdf
 // - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
-[dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLength']
-    [typeSwitch 'propertyType'
+[dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
+    [typeSwitch 'propertyType','dataLengthInBytes'
         ['KnxPropertyDataType.PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           'value']
@@ -785,6 +789,10 @@
         ]
         ['KnxPropertyDataType.PDT_INT' INT
             [simple   int 16        'value']
+        ]
+        // On some systems this property is bigger
+        ['KnxPropertyDataType.PDT_UNSIGNED_INT','4' UDINT
+            [simple   uint 32       'value']
         ]
         ['KnxPropertyDataType.PDT_UNSIGNED_INT' UINT
             [simple   uint 16       'value']
@@ -966,8 +974,8 @@
         //['KnxPropertyDataType.PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
-        [ List [uint 8 'dataLength']
-            [array uint 8 'value' count 'dataLength']
+        [ List [uint 8 'dataLengthInBytes']
+            [array uint 8 'value' count 'dataLengthInBytes']
         ]
     ]
 ]

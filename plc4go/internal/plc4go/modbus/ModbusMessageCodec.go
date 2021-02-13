@@ -173,10 +173,12 @@ func work(m *ModbusMessageCodec) {
 						fmt.Printf("No handler registered for handling message %s", message)
 					}
 				}
+			} else {
+				time.Sleep(time.Millisecond * 10)
 			}
 		} else {
 			// Sleep for 10ms
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(time.Millisecond * 10)
 		}
 	}
 }

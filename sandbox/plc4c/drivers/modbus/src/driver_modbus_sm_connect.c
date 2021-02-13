@@ -17,9 +17,15 @@
   under the License.
 */
 
+#include <plc4c/driver_modbus.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
-#include <string.h>
+
+enum plc4c_driver_modbus_connect_states {
+  PLC4C_DRIVER_MODBUS_CONNECT_INIT,
+  PLC4C_DRIVER_MODBUS_CONNECT_TRANSPORT_CONNECT,
+  PLC4C_DRIVER_MODBUS_CONNECT_FINISHED
+};
 
 plc4c_return_code plc4c_driver_modbus_connect_machine_function(
     plc4c_system_task *task) {
@@ -30,8 +36,31 @@ plc4c_return_code plc4c_driver_modbus_connect_machine_function(
   if (plc4c_connection_get_connected(connection)) {
     return ALREADY_CONNECTED;
   }
-  plc4c_connection_set_connected(connection, true);
-  task->completed = true;
+
+  plc4c_driver_modbus_config* configuration = connection->configuration;
+
+  switch (task->state_id) {
+    case PLC4C_DRIVER_MODBUS_CONNECT_INIT: {
+      configuration->communication_id_counter = 1;
+
+      task->state_id = PLC4C_DRIVER_MODBUS_CONNECT_TRANSPORT_CONNECT;
+      break;
+    }
+    case PLC4C_DRIVER_MODBUS_CONNECT_TRANSPORT_CONNECT: {
+      plc4c_return_code return_code = connection->transport->open(connection->transport_configuration);
+      if(return_code != OK) {
+        return return_code;
+      }
+
+      task->state_id = PLC4C_DRIVER_MODBUS_CONNECT_FINISHED;
+      break;
+    }
+    case PLC4C_DRIVER_MODBUS_CONNECT_FINISHED: {
+      plc4c_connection_set_connected(connection, true);
+      task->completed = true;
+      break;
+    }
+  }
   return OK;
 }
 
@@ -40,7 +69,7 @@ plc4c_return_code plc4c_driver_modbus_connect_function(
 
   plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
   // There's nothing to do here, so no need for a state-machine.
-  new_task->state_id = -1;
+  new_task->state_id = PLC4C_DRIVER_MODBUS_CONNECT_INIT;
   new_task->state_machine_function =
       &plc4c_driver_modbus_connect_machine_function;
   new_task->completed = false;

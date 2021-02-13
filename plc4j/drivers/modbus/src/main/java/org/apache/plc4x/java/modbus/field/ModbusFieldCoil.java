@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.modbus.readwrite.types.ModbusDataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,8 +32,8 @@ public class ModbusFieldCoil extends ModbusField {
 
     protected static final int REGISTER_MAXADDRESS = 65535;
 
-    public ModbusFieldCoil(int address, Integer quantity, String datatype) {
-        super(address, quantity, datatype.toUpperCase());
+    public ModbusFieldCoil(int address, Integer quantity, ModbusDataType dataType) {
+        super(address, quantity, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -71,9 +72,9 @@ public class ModbusFieldCoil extends ModbusField {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
 
-        String datatype = "IEC61131_" + ((matcher.group("datatype") != null) ? matcher.group("datatype") : "BOOL");
+        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
 
-        return new ModbusFieldCoil(address, quantity, datatype.toUpperCase());
+        return new ModbusFieldCoil(address, quantity, dataType);
     }
 
 }

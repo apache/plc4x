@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
@@ -37,6 +38,21 @@ func Init() {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
+}
+
+func TestParser(t *testing.T) {
+	request, err := hex.DecodeString("06100202004e080100000000000036010200ff00000000c501010e37e000170c00246d00ec7830302d32342d36442d30302d45432d3738000000000000000000000000000a020201030104010501")
+	if err != nil {
+		// Output an error ...
+	}
+	rb := utils.NewReadBuffer(request)
+	knxMessage, err := driverModel.KnxNetIpMessageParse(rb)
+	if err != nil {
+		fmt.Printf("Got error parsing message: %s\n", err.Error())
+		// TODO: Possibly clean up ...
+		return
+	}
+	print(knxMessage)
 }
 
 func TestKnxNetIpPlc4goBrowse(t *testing.T) {
@@ -384,6 +400,10 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	connection := connectionResult.Connection
 	defer connection.Close()
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Group Address Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// First of all, request the starting address of the group address table
 	readRequestBuilder := connection.ReadRequestBuilder()
 	readRequestBuilder.AddItem("groupAddressTableAddress", "1.1.10/1/7")
@@ -425,6 +445,10 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 		groupAddress := knxnetip.Uint16ToKnxGroupAddress(groupAddress.GetUint16(), 3)
 		knxGroupAddresses = append(knxGroupAddresses, groupAddress)
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Group Address Association Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Now we read the group address association table address
 	readRequestBuilder = connection.ReadRequestBuilder()
@@ -472,7 +496,24 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 		}
 	}
 
-	fmt.Printf("%d", numberOfGroupAddressAssociationTableEntries)
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Com Object Table reading
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// Now we read the group address association table address
+	readRequestBuilder = connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("comObjectTableAddress", "1.1.10/3/7")
+	readRequest, err = readRequestBuilder.Build()
+	if err != nil {
+		t.Errorf("error creating read request: %s", err.Error())
+		t.Fail()
+		return
+	}
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
+
+	fmt.Printf("%d", comObjectTableAddress)
 }
 
 func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {

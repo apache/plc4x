@@ -17,6 +17,25 @@
   under the License.
 ]]
 
-add_subdirectory(hello-subscriptions)
-add_subdirectory(hello-world-modbus)
-add_subdirectory(hello-world-s7)
+include_directories("../../api/include"
+        "../../drivers/modbus/include"
+        "../../transports/tcp/include" )
+
+add_executable(plc4c-examples-hello-world-modbus
+        src/hello_world_modbus.c
+        )
+
+IF (NOT WIN32)
+    target_link_libraries(plc4c-examples-hello-world-modbus
+            plc4c-spi
+            plc4c-driver-modbus
+            plc4c-transport-tcp
+            m
+    )
+ELSE()
+    target_link_libraries(plc4c-examples-hello-world-modbus
+            plc4c-spi
+            plc4c-driver-modbus
+            plc4c-transport-tcp
+    )
+ENDIF()
