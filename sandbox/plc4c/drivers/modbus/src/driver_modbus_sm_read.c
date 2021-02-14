@@ -50,6 +50,17 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
     // First set the current item to the first item in the list (tail)
     case PLC4C_DRIVER_MODBUS_READ_INIT: {
       read_request_execution->cur_item = plc4c_utils_list_tail(read_request->items);
+
+      // Create an empty read-response and attach that to the execution.
+      plc4c_read_response* read_response = malloc(sizeof(plc4c_read_response));
+      if(read_response == NULL) {
+        return NO_MEMORY;
+      }
+      read_response->read_request = read_request;
+      read_request_execution->read_response = read_response;
+      plc4c_utils_list_create(&(read_response->items));
+      read_request_execution->read_response = read_response;
+
       task->state_id = PLC4C_DRIVER_MODBUS_READ_SEND_ITEM_REQUEST;
       break;
     }
@@ -147,9 +158,32 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
         return result;
       }
 
+      // In case of a register request and a single bit datatype, consume the first byte.
+      if((modbus_item->type != PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL) &&
+          (plc4c_modbus_read_write_modbus_data_type_get_data_type_size(modbus_item->datatype) == 1)) {
+        uint8_t _ignored = 0;
+        result = plc4c_spi_read_unsigned_byte(read_buffer, 8, &_ignored);
+        if(result != OK) {
+          return result;
+        }
+      }
+
       // Decode the items in the response ...
       plc4c_data* data_item;
       plc4c_modbus_read_write_data_item_parse(read_buffer, modbus_item->datatype, modbus_item->num_elements, &data_item);
+
+      // Create a new response value-item
+      plc4c_response_value_item* response_value_item = malloc(sizeof(plc4c_response_value_item));
+      if(response_value_item == NULL) {
+        return NO_MEMORY;
+      }
+      response_value_item->item = read_request_execution->cur_item->value;
+      response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
+      response_value_item->value = data_item;
+
+      // Add the value-item to the list.
+      plc4c_utils_list_insert_head_value(
+          read_request_execution->read_response->items, response_value_item);
 
       // If there are more items to read, continue reading the next one.
       // Otherwise finish.
@@ -163,6 +197,7 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
     }
 
     case PLC4C_DRIVER_MODBUS_READ_FINISHED: {
+
       // TODO: Return the results to the API ...
       task->completed = true;
       break;

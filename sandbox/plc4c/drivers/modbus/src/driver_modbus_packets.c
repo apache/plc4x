@@ -24,6 +24,9 @@
 #include "modbus_tcp_adu.h"
 #include "plc4c/driver_modbus.h"
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 /**
  * Function used by the driver to tell the transport if there is a full
  * packet the driver can operate on available.
@@ -114,39 +117,32 @@ plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
   }
 
   plc4c_driver_modbus_item* modbus_item = read_request_item->address;
-
+  uint16_t address = modbus_item->address - 1;
+  uint16_t num_modbus_bytes = modbus_item->num_elements * plc4c_modbus_read_write_modbus_data_type_get_data_type_size(modbus_item->datatype);
   switch (modbus_item->type) {
     case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_COIL: {
       pdu->_type =
           plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_coils_request;
-      pdu->modbus_pdu_read_coils_request_starting_address =
-          modbus_item->address;
-      pdu->modbus_pdu_read_coils_request_quantity =
-          modbus_item->num_elements;
+      pdu->modbus_pdu_read_coils_request_starting_address = address;
+      pdu->modbus_pdu_read_coils_request_quantity = num_modbus_bytes;
       break;
     }
     case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_DISCRETE_INPUT: {
       pdu->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request;
-      pdu->modbus_pdu_read_discrete_inputs_request_starting_address =
-          modbus_item->address;
-      pdu->modbus_pdu_read_discrete_inputs_request_quantity =
-          modbus_item->num_elements;
+      pdu->modbus_pdu_read_discrete_inputs_request_starting_address = address;
+      pdu->modbus_pdu_read_discrete_inputs_request_quantity = MAX(2, num_modbus_bytes) / 2;
       break;
     }
     case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_INPUT_REGISTER: {
       pdu->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_input_registers_request;
-      pdu-> modbus_pdu_read_input_registers_request_starting_address =
-          modbus_item->address;
-      pdu-> modbus_pdu_read_input_registers_request_quantity =
-          modbus_item->num_elements;
+      pdu-> modbus_pdu_read_input_registers_request_starting_address = address;
+      pdu-> modbus_pdu_read_input_registers_request_quantity = MAX(2, num_modbus_bytes) / 2;
       break;
     }
     case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_HOLDING_REGISTER: {
       pdu->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_holding_registers_request;
-      pdu-> modbus_pdu_read_holding_registers_request_starting_address =
-          modbus_item->address;
-      pdu-> modbus_pdu_read_holding_registers_request_quantity =
-          modbus_item->num_elements;
+      pdu-> modbus_pdu_read_holding_registers_request_starting_address = address;
+      pdu-> modbus_pdu_read_holding_registers_request_quantity = MAX(2, num_modbus_bytes) / 2;
       break;
     }
     case PLC4C_DRIVER_MODBUS_ADDRESS_TYPE_EXTENDED_REGISTER: {
