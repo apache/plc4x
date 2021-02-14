@@ -110,7 +110,7 @@ int main() {
   // Establish connections to remote devices
   // you may or may not care about the connection handle
   printf("Connecting to 'modbus:tcp://192.168.23.30' ... ");
-  result = plc4c_system_connect(system, "modbus:tcp://192.168.23.30", &connection);
+  result = plc4c_system_connect(system, "modbus:tcp://192.168.23.30:502", &connection);
   if (result != OK) {
     printf("FAILED\n");
     return -1;
@@ -237,7 +237,7 @@ int main() {
           return -1;
         }
         result =
-            plc4c_read_request_add_item(read_request, "REAL", "holding-register:26:LREAL");
+            plc4c_read_request_add_item(read_request, "REAL", "holding-register:28:LREAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;

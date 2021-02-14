@@ -219,7 +219,12 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                     return _res;
                 }
 
+                <#if case.name == "BitString">
+                *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_bit_string_data(${field.name});
+                <#else>
+                    // Hurz
                 *data_item = plc4c_data_create_${helper.getLanguageTypeNameForField(field)}_data(${field.name});
+                </#if>
 
                     <#break>
             </#switch>

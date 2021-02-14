@@ -177,6 +177,54 @@ plc4c_data *plc4c_data_create_list_data(plc4c_list list) {
   return data;
 }
 
+plc4c_data *plc4c_data_create_uint8_t_bit_string_data(uint8_t uc) {
+  uint8_t cur_bit = ((uint8_t) 1) << 7;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 8; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((uc & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint16_t_bit_string_data(uint16_t us) {
+  uint16_t cur_bit = ((uint16_t) 1) << 15;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 16; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((us & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint32_t_bit_string_data(uint32_t ui) {
+  uint32_t cur_bit = ((uint32_t) 1) << 31;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 32; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint64_t_bit_string_data(uint64_t ui) {
+  uint64_t cur_bit = ((uint64_t) 1) << 63;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 64; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
 plc4c_data *plc4c_data_create_void_pointer_data(void *v) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_VOID_POINTER;
@@ -223,6 +271,9 @@ void plc4c_data_printf(plc4c_data *data) {
     case PLC4C_FLOAT:
       printf("%f", data->data.float_value);
       break;
+    case PLC4C_DOUBLE:
+      printf("%.20f", data->data.double_value);
+      break;
     case PLC4C_STRING_POINTER:
       printf("%s", data->data.pstring_value);
       break;
@@ -251,6 +302,8 @@ void plc4c_data_printf(plc4c_data *data) {
       }
       break;
     default:
+      printf("unknown");
+
       break;
   }
 }

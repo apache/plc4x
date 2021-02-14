@@ -150,6 +150,10 @@ plc4c_data *plc4c_data_create_char_data(char* s);
  */
 plc4c_data *plc4c_data_create_list_data(plc4c_list list);
 
+plc4c_data *plc4c_data_create_uint8_t_bit_string_data(uint8_t uc);
+plc4c_data *plc4c_data_create_uint16_t_bit_string_data(uint16_t us);
+plc4c_data *plc4c_data_create_uint32_t_bit_string_data(uint32_t ui);
+plc4c_data *plc4c_data_create_uint64_t_bit_string_data(uint64_t ui);
 /**
  * Set a custom function to call when destroying this data.  Typically when the
  * type is a PLC4C_VOID_POINTER
