@@ -49,7 +49,7 @@ func main() {
 			return
 		}
 		connection := connectionResult.Connection
-		defer connection.Close()
+		defer connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
 		browseRequestBuilder := connection.BrowseRequestBuilder()
