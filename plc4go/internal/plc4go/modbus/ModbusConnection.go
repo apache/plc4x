@@ -85,7 +85,7 @@ func (m ModbusConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (m *ModbusConnection) BlockingClose() {
+func (m ModbusConnection) BlockingClose() {
 	closeResults := m.Close()
 	select {
 	case <-closeResults:
