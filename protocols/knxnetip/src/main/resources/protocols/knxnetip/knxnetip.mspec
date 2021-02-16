@@ -428,8 +428,11 @@
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
     [typeSwitch 'apciType'
         ['0x0' ApduDataGroupValueRead
+            [reserved uint 6 '0x00']
         ]
-        ['0x1' ApduDataGroupValueResponse
+        ['0x1' ApduDataGroupValueResponse [uint 8 'dataLength']
+            [simple int 6 'dataFirstByte']
+            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0x2' ApduDataGroupValueWrite [uint 8 'dataLength']
             [simple int 6 'dataFirstByte']

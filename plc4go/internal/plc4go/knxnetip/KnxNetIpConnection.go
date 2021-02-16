@@ -36,6 +36,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"math"
 	"net"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync"
@@ -110,9 +111,6 @@ type KnxNetIpConnection struct {
 	connectionStateTimer     *time.Ticker
 	quitConnectionStateTimer chan struct{}
 	subscribers              []*KnxNetIpSubscriber
-	leve3AddressCache        map[uint16]*driverModel.KnxGroupAddress3Level
-	leve2AddressCache        map[uint16]*driverModel.KnxGroupAddress2Level
-	leve1AddressCache        map[uint16]*driverModel.KnxGroupAddressFreeLevel
 
 	valueCache      map[uint16][]int8
 	valueCacheMutex sync.RWMutex
@@ -148,9 +146,6 @@ func NewKnxNetIpConnection(transportInstance transports.TransportInstance, optio
 		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
 		subscribers:        []*KnxNetIpSubscriber{},
-		leve3AddressCache:  map[uint16]*driverModel.KnxGroupAddress3Level{},
-		leve2AddressCache:  map[uint16]*driverModel.KnxGroupAddress2Level{},
-		leve1AddressCache:  map[uint16]*driverModel.KnxGroupAddressFreeLevel{},
 		valueCache:         map[uint16][]int8{},
 		valueCacheMutex:    sync.RWMutex{},
 		metadata:           &ConnectionMetadata{},
@@ -411,6 +406,10 @@ func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	}()
 
 	return result
+}
+
+func (m *KnxNetIpConnection) ReadGroupAddress(groupAddress []int8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
+	return m.sendGroupAddressReadRequest(groupAddress, datapointType)
 }
 
 func (m *KnxNetIpConnection) ConnectToDevice(targetAddress driverModel.KnxAddress) <-chan *KnxDeviceConnection {
@@ -829,6 +828,99 @@ func (m *KnxNetIpConnection) sendConnectionStateRequest() chan InternalResult {
 		result <- InternalResult{
 			err: errors.New(fmt.Sprintf("got error sending request: %s", err)),
 		}
+	}
+	return result
+}
+
+func (m *KnxNetIpConnection) sendGroupAddressReadRequest(groupAddress []int8, datapointType *driverModel.KnxDatapointType) chan KnxReadResult {
+	result := make(chan KnxReadResult)
+
+	// Send the property read request and wait for a confirmation that this property is readable.
+	groupAddressReadRequest := driverModel.NewTunnelingRequest(
+		driverModel.NewTunnelingRequestDataBlock(0, 0),
+		driverModel.NewLDataReq(0, nil,
+			driverModel.NewLDataExtended(true, 6, 0,
+				m.ClientKnxAddress, groupAddress,
+				driverModel.NewApduDataContainer(
+					driverModel.NewApduDataGroupValueRead(), false, 0),
+				true, true, driverModel.CEMIPriority_LOW, false, false)))
+	err := m.sendRequest(
+		groupAddressReadRequest,
+		func(message interface{}) bool {
+			tunnelingRequest := driverModel.CastTunnelingRequest(message)
+			if tunnelingRequest == nil ||
+				tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+				return false
+			}
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			if lDataInd == nil {
+				return false
+			}
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			if dataFrameExt == nil {
+				return false
+			}
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			if dataContainer == nil {
+				return false
+			}
+			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.DataApdu)
+			if groupReadResponse == nil {
+				return false
+			}
+			// Check if it's a value response for the given group address
+			return dataFrameExt.GroupAddress && reflect.DeepEqual(dataFrameExt.DestinationAddress, groupAddress)
+		},
+		func(message interface{}) error {
+			tunnelingRequest := driverModel.CastTunnelingRequest(message)
+			lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+			dataFrameExt := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			dataContainer := driverModel.CastApduDataContainer(dataFrameExt.Apdu)
+			groupReadResponse := driverModel.CastApduDataGroupValueResponse(dataContainer.DataApdu)
+
+			var payload []int8
+			payload = append(payload, groupReadResponse.DataFirstByte)
+			payload = append(payload, groupReadResponse.Data...)
+
+			// Make sure any subscribers are updated.
+			// TODO: Disabled as this could pollute the cache with stale data.
+			//destinationAddress := dataFrameExt.DestinationAddress
+			//m.handleValueCacheUpdate(destinationAddress, payload)
+
+			// Parse the response data.
+			rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
+			// If the size of the field is greater than 6, we have to skip the first byte
+			if datapointType.LengthInBits() > 6 {
+				_, _ = rb.ReadUint8(8)
+			}
+			if *datapointType == driverModel.KnxDatapointType_DPT_UNKNOWN {
+				// TODO: Set a sensible default here
+			}
+			plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
+			if err != nil {
+				return err
+			}
+
+			// Return the value
+			result <- KnxReadResult{
+				returnCode: apiModel.PlcResponseCode_OK,
+				value:      &plcValue,
+				numItems:   1,
+			}
+			return nil
+		},
+		func(err error) error {
+			result <- KnxReadResult{
+				returnCode: apiModel.PlcResponseCode_RESPONSE_PENDING,
+				value:      nil,
+				numItems:   0,
+			}
+			return nil
+		},
+		m.defaultTtl)
+
+	if err != nil {
+		//		close(result)
 	}
 	return result
 }
@@ -1530,43 +1622,12 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 					case *driverModel.ApduDataGroupValueWrite:
 						groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
 						if destinationAddress != nil {
-							addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
-							m.valueCacheMutex.RLock()
-							val, ok := m.valueCache[addressData]
-							m.valueCacheMutex.RUnlock()
-							changed := false
-
 							var payload []int8
 							payload = append(payload, groupValueWrite.DataFirstByte)
 							payload = append(payload, groupValueWrite.Data...)
-							if !ok || !m.sliceEqual(val, payload) {
-								m.valueCacheMutex.Lock()
-								m.valueCache[addressData] = payload
-								m.valueCacheMutex.Unlock()
-								// If this is a new value, we have to also provide the 3 different types of addresses.
-								if !ok {
-									arb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
-									if address, err2 := driverModel.KnxGroupAddressParse(arb, 3); err2 == nil {
-										m.leve3AddressCache[addressData] = driverModel.CastKnxGroupAddress3Level(address)
-									} else {
-										fmt.Printf("Error parsing Group Address %s", err2.Error())
-									}
-									arb.Reset()
-									if address, err2 := driverModel.KnxGroupAddressParse(arb, 2); err2 == nil {
-										m.leve2AddressCache[addressData] = driverModel.CastKnxGroupAddress2Level(address)
-									}
-									arb.Reset()
-									if address, err2 := driverModel.KnxGroupAddressParse(arb, 1); err2 == nil {
-										m.leve1AddressCache[addressData] = driverModel.CastKnxGroupAddressFreeLevel(address)
-									}
-								}
-								changed = true
-							}
-							if m.subscribers != nil {
-								for _, subscriber := range m.subscribers {
-									subscriber.handleValueChange(lDataInd.DataFrame, changed)
-								}
-							}
+
+							m.handleValueCacheUpdate(destinationAddress, payload)
+							// TODO: Continue
 						}
 					default:
 						// If this is an individual address and it is targeted at us, we need to ack that.
@@ -1593,6 +1654,26 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 			}
 		}
 	}()
+}
+
+func (m *KnxNetIpConnection) handleValueCacheUpdate(destinationAddress []int8, payload []int8) {
+	addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
+
+	m.valueCacheMutex.RLock()
+	val, ok := m.valueCache[addressData]
+	m.valueCacheMutex.RUnlock()
+	changed := false
+	if !ok || !m.sliceEqual(val, payload) {
+		m.valueCacheMutex.Lock()
+		m.valueCache[addressData] = payload
+		m.valueCacheMutex.Unlock()
+		changed = true
+	}
+	if m.subscribers != nil {
+		for _, subscriber := range m.subscribers {
+			subscriber.handleValueChange(destinationAddress, payload, changed)
+		}
+	}
 }
 
 func (m *KnxNetIpConnection) getGroupAddressNumLevels() uint8 {

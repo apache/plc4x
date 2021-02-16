@@ -207,7 +207,7 @@
             [simple uint 32 'nanos']
         ]
 
-        <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">
+    <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">
         <xsl:call-template name="generateDataIoEntry">
             <xsl:with-param name="datapointSubtype" select="."/>
         </xsl:call-template>
@@ -445,14 +445,10 @@
                         <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
-            [reserved uint 8   '0x0']
             [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> '<xsl:value-of select="$encoding"/>' 'value']
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &gt; 6">
-            [reserved uint 8 '0x00']
-                    </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width) &lt; 6">
             [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:UnsignedInteger/@Width)"/> '0x00']
                     </xsl:when>
@@ -461,9 +457,6 @@
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:SignedInteger">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &gt; 6">
-            [reserved uint 8 '0x00']
-                    </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width) &lt; 6">
             [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:SignedInteger/@Width)"/> '0x00']
                     </xsl:when>
@@ -471,7 +464,6 @@
             [simple   int <xsl:value-of select="$datapointSubtype/knx:Format/knx:SignedInteger/@Width"/> 'value']
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Float">
-            [reserved uint 8 '0x00']
                 <xsl:choose>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 16">
             [simple   float 4.11 'value']
@@ -486,9 +478,6 @@
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:Enumeration">
                 <xsl:choose>
-                    <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &gt; 6">
-            [reserved uint 8 '0x00']
-                    </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width) &lt; 6">
             [reserved uint <xsl:value-of select="8 - fn:number($datapointSubtype/knx:Format/knx:Enumeration/@Width)"/> '0x00']
                     </xsl:when>
