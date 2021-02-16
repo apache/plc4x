@@ -43,7 +43,7 @@ func main() {
 	connection := connectionResult.Connection
 
 	// Make sure the connection is closed at the end
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()

@@ -332,6 +332,16 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 	return result
 }
 
+func (m *KnxNetIpConnection) BlockingClose() {
+	closeResults := m.Close()
+	select {
+	case <-closeResults:
+		return
+	case <-time.After(m.defaultTtl):
+		return
+	}
+}
+
 func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	result := make(chan plc4go.PlcConnectionCloseResult)
 

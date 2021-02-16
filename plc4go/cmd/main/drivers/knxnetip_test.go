@@ -78,7 +78,7 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 	}
 	log.Info("Got a connection")
 	connection := connectionResult.Connection
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	// Build a browse request, to scan the KNX network for KNX devices
 	// (Limiting the range to only the actually used range of addresses)
@@ -182,7 +182,7 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 	}
 	log.Info("Got a connection")
 	connection := connectionResult.Connection
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	// Build a browse request, to scan the KNX network for KNX devices
 	// (Limiting the range to only the actually used range of addresses)
@@ -277,7 +277,7 @@ func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 		return
 	}
 	connection := connectionResult.Connection
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	attributes := connection.GetMetadata().GetConnectionAttributes()
 	fmt.Printf("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%s' got assigned client KNX address '%s'\n",
@@ -359,7 +359,7 @@ func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
 		return
 	}
 	connection := connectionResult.Connection
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	readRequestBuilder := connection.ReadRequestBuilder()
 	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
@@ -398,7 +398,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 		return
 	}
 	connection := connectionResult.Connection
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Group Address Table reading

@@ -57,6 +57,8 @@ func NewPlcConnectionPingResult(err error) PlcConnectionPingResult {
 type PlcConnection interface {
 	// Initiate the connection to the PLC
 	Connect() <-chan PlcConnectionConnectResult
+	// Blocking variant of Close (for usage in "defer" statements)
+	BlockingClose()
 	// Close the connection to the PLC (gracefully)
 	Close() <-chan PlcConnectionCloseResult
 	// Checks if the connection is currently still connected
