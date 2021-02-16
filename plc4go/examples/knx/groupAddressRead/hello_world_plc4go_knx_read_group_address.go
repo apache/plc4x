@@ -68,14 +68,14 @@ func main() {
 	// Do something with the response
 	for _, fieldName := range rrr.Response.GetFieldNames() {
 		if rrr.Response.GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-			fmt.Printf("error an non-ok return code for field %s: %s °C\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
+			fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
 			continue
 		}
 
 		value := rrr.Response.GetValue(fieldName)
 		if value.GetStruct() != nil {
 			for address, structValue := range value.GetStruct() {
-				fmt.Printf("Got result for field %s with address: %s: %s\n", fieldName, address, structValue.GetString())
+				fmt.Printf("Got result for field %s with address: %s: %s °C\n", fieldName, address, structValue.GetString())
 			}
 		} else {
 			fmt.Printf("Got result for field %s: %s °C\n", fieldName, value.GetString())
