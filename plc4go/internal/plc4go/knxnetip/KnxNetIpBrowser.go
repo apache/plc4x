@@ -145,7 +145,7 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 				select {
 				case _ = <-deviceDisconnections:
 				case <-time.After(b.connection.defaultTtl * 10):
-					fmt.Printf("Timedout")
+					// Just ignore this case ...
 				}
 			}
 		case <-time.After(b.connection.defaultTtl):
