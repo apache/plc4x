@@ -19,7 +19,7 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[dataIo 'DataItem' [string 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [string '-1' 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['IEC61131_BOOL','1' BOOL
             [simple   bit    'value']
@@ -124,15 +124,15 @@
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['IEC61131_STRING' STRING
-            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '_value.length + 2']
+            [manual string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '_value.length + 2']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '(_value.length * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '(_value.length * 2) + 2']
         ]
     ]
 ]
 
-[enum string 'SimulatedDataTypeSizes' [uint 8 'dataTypeSize']
+[enum string '-1' 'SimulatedDataTypeSizes' [uint 8 'dataTypeSize']
     ['IEC61131_BOOL' BOOL ['1']]
     ['IEC61131_BYTE' BYTE ['1']]
     ['IEC61131_WORD' WORD ['2']]
