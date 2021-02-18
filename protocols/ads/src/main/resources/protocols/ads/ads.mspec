@@ -386,7 +386,7 @@
     [array int 8 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' [string 'dataFormatName', int 32 'stringLength']
+[dataIo 'DataItem' [string '-1' 'dataFormatName', int 32 'stringLength']
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -458,16 +458,16 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' STRING
-//            [simple string 8 'UTF-8' 'value']
+//            [simple string '8' 'UTF-8' 'value']
         ]
         ['IEC61131_WCHAR' STRING
-//            [simple string 16 'UTF-16' 'value']
+//            [simple string '16' 'UTF-16' 'value']
         ]
         ['IEC61131_STRING' STRING
-            [manual   string  'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [manual   string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -496,7 +496,7 @@
     ]
 ]
 
-[enum 'AdsDataType' [uint 8 'numBytes', string 'dataFormatName']
+[enum 'AdsDataType' [uint 8 'numBytes', string '-1' 'dataFormatName']
     [BOOL       ['1', 'IEC61131_BOOL']]
     [BIT        ['1', 'IEC61131_BOOL']]
     [BIT8       ['1', 'IEC61131_BOOL']]

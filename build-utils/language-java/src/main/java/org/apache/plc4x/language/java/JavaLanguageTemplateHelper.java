@@ -353,7 +353,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.readString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.readString(" + stringTypeReference.getLength() + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
             }
         }
@@ -412,7 +412,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.writeString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.writeString(" + stringTypeReference.getLength() + ", \"" +
                     stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
             }
         }

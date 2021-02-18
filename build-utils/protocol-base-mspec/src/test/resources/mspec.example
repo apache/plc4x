@@ -356,3 +356,10 @@
     // n Bytes	Data
     [array int 8 'data' count 'sampleSize']
 ]
+
+//Specific Case for variable string length
+[type 'VariableStringType'
+    //Confirm implicit can be used in string length
+    [implicit uint 32 'stringLength' 'stringValue.lengthInBytes']
+    [simple string 'stringLength' 'stringValue']
+]
