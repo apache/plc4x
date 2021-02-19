@@ -19,12 +19,14 @@
 package main
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
+	"encoding/hex"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -34,8 +36,8 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
-	driverManager.RegisterTransport(udp.NewUdpTransport())
+	transports.RegisterUdpTransport(driverManager)
+	drivers.RegisterKnxDriver(driverManager)
 
 	// Try to auto-find KNX gateways via broadcast-message discovery
 	driverManager.Discover(func(event model.PlcDiscoveryEvent) {
@@ -53,8 +55,8 @@ func main() {
 
 		// Try to find all KNX devices on the current network
 		browseRequestBuilder := connection.BrowseRequestBuilder()
-		browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
-		//browseRequestBuilder.AddItem("allDevices", "[1-3].[1-6].[0-60]")
+		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
+		browseRequestBuilder.AddItem("allDevices", "[1-3].[1-6].[0-60]")
 		browseRequest, err := browseRequestBuilder.Build()
 		if err != nil {
 			log.Errorf("error creating browse request: %s", err.Error())
@@ -81,6 +83,37 @@ func main() {
 			for _, result := range browseResult.Response.GetQueryResults("comObjects") {
 				log.Infof(" - %s", result.Address)
 			}
+
+			readRequestBuilder := connection.ReadRequestBuilder()
+			readRequestBuilder.AddItem("manufacturerId", knxAddress+"#0/12")
+			readRequestBuilder.AddItem("programVersion", knxAddress+"#3/13")
+			readRequest, err := readRequestBuilder.Build()
+			if err != nil {
+				log.Error("Error creating read request for scanning " + knxAddress)
+				return false
+			}
+
+			rrr := readRequest.Execute()
+			readRequestResult := <-rrr
+
+			if readRequestResult.Err != nil {
+				log.Error("Error executing read request for reading device identification information " + knxAddress)
+				return false
+			}
+			readResponse := readRequestResult.Response
+			manufacturerID := "0"
+			if readResponse.GetResponseCode("manufacturerId") == model.PlcResponseCode_OK {
+				manufacturerID = strconv.FormatUint(uint64(readResponse.GetValue("manufacturerId").GetUint32()), 10)
+			}
+			var programVersion []byte
+			if readResponse.GetResponseCode("programVersion") == model.PlcResponseCode_OK {
+				for _, value := range readResponse.GetValue("programVersion").GetList() {
+					programVersion = append(programVersion, value.GetUint8())
+				}
+			}
+
+			log.Infof("     manufacturer id: %s", manufacturerID)
+			log.Infof("     application progra version: %s", hex.EncodeToString(programVersion))
 
 			return true
 		})

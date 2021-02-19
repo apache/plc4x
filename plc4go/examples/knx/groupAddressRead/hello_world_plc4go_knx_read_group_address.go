@@ -20,16 +20,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
-	driverManager.RegisterTransport(udp.NewUdpTransport())
+	transports.RegisterUdpTransport(driverManager)
+	drivers.RegisterKnxDriver(driverManager)
 
 	// Get a connection to a remote PLC
 	crc := driverManager.GetConnection("knxnet-ip:udp://192.168.42.11")

@@ -20,16 +20,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(modbus.NewModbusDriver())
-	driverManager.RegisterTransport(tcp.NewTcpTransport())
+	transports.RegisterTcpTransport(driverManager)
+	drivers.RegisterModbusDriver(driverManager)
 
 	// Get a connection to a remote PLC
 	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
