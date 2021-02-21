@@ -36,11 +36,12 @@
   <modules>
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
+    <module>protocol-test</module>
 
     <module>language-c</module>
     <module>language-go</module>
     <module>language-java</module>
-    <module>protocol-test</module>
+
   </modules>
 
   <dependencies>
