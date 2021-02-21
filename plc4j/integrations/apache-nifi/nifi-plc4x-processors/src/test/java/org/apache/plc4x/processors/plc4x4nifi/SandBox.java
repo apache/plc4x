@@ -2,6 +2,7 @@ package org.apache.plc4x.processors.plc4x4nifi;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -10,7 +11,8 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 public class SandBox {
 	
-	static final PooledPlcDriverManager pool = new PooledPlcDriverManager();
+	static PooledPlcDriverManager pool = new PooledPlcDriverManager();
+	static Boolean recreateOnError = true;
 	
 	public static void main(String[] args) throws Exception {
 		for (int i = 0; i<12; i++) {
@@ -23,17 +25,21 @@ public class SandBox {
 	                builder.addItem("miint", "%DB20:DBW06:INT");
 	                
 	                PlcReadRequest readRequest = builder.build();
-	                PlcReadResponse response = readRequest.execute().get();
+	                PlcReadResponse response = readRequest.execute().get(10, TimeUnit.SECONDS);
 	                Map<String, String> attributes = new HashMap<>();
 	                for (String fieldName : response.getFieldNames()) {
 	                	System.out.println("fieldName: "+fieldName);
 	                    for (int k = 0; k < response.getNumberOfValues(fieldName); k++) {
 	                    	System.out.println("fieldName number of values: "+response.getNumberOfValues(fieldName));
-	                        Object value = response.getObject(fieldName, i);
+	                        Object value = response.getObject(fieldName, k);
 	                        attributes.put(fieldName, String.valueOf(value));
 	                        System.out.println("fieldName value: "+value);
 	                    }
 	                }
+			} catch (Exception e) {
+				if(recreateOnError)
+					pool = new PooledPlcDriverManager();
+				e.printStackTrace();
 			}
 		}
     	

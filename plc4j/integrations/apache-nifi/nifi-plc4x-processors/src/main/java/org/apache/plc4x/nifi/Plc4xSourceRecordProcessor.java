@@ -155,7 +155,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final StopWatch executeTime = new StopWatch(true);
 		try {
 			if(force) {
-				logger.warn("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
+				logger.debug("Recreating the connection {} because the parameter (Force Reconnect every request) is {}",	new Object[] { getConnectionString(), force});
 				this.connection = pool.getConnection(getConnectionString());
 			}
 			if(this.connection != null) {
@@ -183,7 +183,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 						}
 					});
 					PlcReadRequest readRequest = builder.build();
-					PlcReadResponse readResponse = readRequest.execute().get();
+					PlcReadResponse readResponse = readRequest.execute().get(10, TimeUnit.SECONDS);
 					resultSetFF = session.write(resultSetFF, out -> {
 						try {
 							nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, this.getPlcAddress(), out, logger, null, PROTOCOL));
@@ -221,6 +221,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 						resultSetFlowFiles.clear();
 					}
 				} catch (Exception e) {
+					//si hay algun error recreamos el pool porque puede que no se recree bien is ha fallado en el execute.get()
+					pool = new PooledPlcDriverManager();
 					if (e instanceof InterruptedException)
 						Thread.currentThread().interrupt();
 					session.remove(resultSetFF);
@@ -234,6 +236,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				throw new ProcessException("Connection is null");
 			}
 		} catch (Exception e) {
+			//si hay algun error recreamos el pool porque puede que no se recree bien is ha fallado en el execute.get()
+			pool = new PooledPlcDriverManager();
 			if (fileToProcess == null) {
 				// This can happen if any exceptions occur while setting up the connection,
 				// statement, etc.
