@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -17,30 +17,30 @@
  under the License.
  */
 
-package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
+package org.apache.plc4x.protocol.mspectest;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
+import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
-import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+public class MspecTest implements Protocol {
 
-class MessageFormatParserTest {
-
-    MessageFormatParser SUT = new MessageFormatParser();
-
-    @Test
-    void parseNull() {
-        assertThrows(NullPointerException.class, () -> SUT.parse(null));
+    @Override
+    public String getName() {
+        return "mspectest";
     }
 
-    @Test
-    void parseSomething() {
-        Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
-        System.out.println(parse);
-
+    @Override
+    public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+        InputStream schemaInputStream = MspecTest.class.getResourceAsStream("/protocols/mspectest/mspectest.mspec");
+        if(schemaInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        return new MessageFormatParser().parse(schemaInputStream);
     }
+
 }

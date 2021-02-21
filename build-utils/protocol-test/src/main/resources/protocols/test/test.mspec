@@ -23,20 +23,6 @@
 
 [type 'SimpleType'
     [array         uint 8 'arrCount'      count      '5']
-    [array         uint 8 'arrLen'        length     '6']
-    [array         uint 8 'arrTerm'       terminated                'terminationExpression']
-    [checksum      uint 8 'crc'           'checksumExpression']
-    [const         uint 8 'con'           '0x03']
-    [implicit      uint 8 'impl'          'serializeExpression']
-    [manualArray   uint 8 'manArrayCount' count                     'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']
-    [manualArray   uint 8 'manArrayLen'   length                    'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']
-    [manualArray   uint 8 'manArrayTerm'  terminated                'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']
-    [manual        uint 8 'man'           'serializationExpression' 'deserializationExpression' 'lengthExpression']
-    [optional      uint 8 'opt'           'optionalExpression']
-    [padding       uint 8 'pad'           '0'                       'paddingExpression']
-    [reserved      uint 8 '0x00']
-    [simple        uint 8 'simp']
-    [virtual       uint 8 'virt'          'valueExpression']
 ]
 
 ////////////////////////////////////////////////////////////////
