@@ -20,8 +20,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 
-<artifactId>plc4j-java-mspec-test</artifactId>
-<name>PLC4J: Driver: Java Mpsec Test</name>
+<artifactId>plc4j-c-mspec-test</artifactId>
+<name>PLC4J: Driver: C Mpsec Test</name>
 <groupId>org.apache.plc4x</groupId>
 <version>0.9.0-SNAPSHOT</version>
 <description></description>
@@ -36,18 +36,115 @@
   <!--
     At least 3.3.3 required for camel-package-maven-plugin
   -->
+  <cmake-version>3.18.4</cmake-version>
   <maven.version>3.3.3</maven.version>
   <java.version>1.8</java.version>
   <maven.compiler.source>1.8</maven.compiler.source>
   <maven.compiler.target>1.8</maven.compiler.target>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+  <unity.version>2.5.0</unity.version>
+  <!-- Tell Sonar where to find the c++ sources -->
+  <sonar.sources />
+  <option.with-proxies>OFF</option.with-proxies>
 
 </properties>
 
 
+<!--
+  Notes:
+  - It turns out that the default version of CMake the cmake-maven-plugin uses is too
+  old to detect the recent boost version. So we need to manually download a newer version
+  and tell the plugin to use that instead.
+  - As downloading and building boost takes quite some time, we only do this, if no
+  target/lib/boost is found.
+-->
+
+<profiles>
+  <!-- Profile for linux -->
+  <profile>
+    <id>os-unix</id>
+    <activation>
+      <os>
+        <family>unix</family>
+      </os>
+    </activation>
+  </profile>
+  <!-- Profile for mac -->
+  <profile>
+    <id>os-mac</id>
+    <activation>
+      <os>
+        <family>mac</family>
+      </os>
+    </activation>
+    <!-- Make the cmake executable executable -->
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>make-cmake-executable</id>
+              <phase>process-sources</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <basedir>${cmake.root}</basedir>
+                <executable>chmod</executable>
+                <arguments>
+                  <argument>+x</argument>
+                  <argument>cmake</argument>
+                </arguments>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+</profiles>
+
+
 <build>
   <plugins>
+    <plugin>
+      <groupId>com.googlecode.maven-download-plugin</groupId>
+      <artifactId>download-maven-plugin</artifactId>
+      <executions>
+        <!-- First download the cmake binaries -->
+        <execution>
+          <id>get-cmake</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>wget</goal>
+          </goals>
+          <configuration>
+            <url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</url>
+            <unpack>true</unpack>
+            <outputDirectory>${project.build.directory}</outputDirectory>
+          </configuration>
+        </execution>
+        <!--
+          Get additional stuff we need for the build.
+        -->
+        <execution>
+          <id>get-unity</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>wget</goal>
+          </goals>
+          <configuration>
+            <url>https://github.com/ThrowTheSwitch/Unity/archive/v${unity.version}.zip</url>
+            <unpack>true</unpack>
+            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
     <plugin>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-maven-plugin</artifactId>
@@ -61,8 +158,9 @@
           </goals>
           <configuration>
             <protocolName>test</protocolName>
-            <languageName>java</languageName>
+            <languageName>c</languageName>
             <outputFlavor>read-write</outputFlavor>
+            <outputDir>${project.basedir}/generated-sources</outputDir>
           </configuration>
         </execution>
       </executions>
@@ -120,9 +218,81 @@
       <artifactId>maven-dependency-plugin</artifactId>
       <configuration>
         <usedDependencies combine.children="append">
-          <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+          <usedDependency>org.apache.plc4x:plc4x-build-utils-language-c</usedDependency>
           <usedDependency>org.apache.plc4x:plc4x-build-utils-protocol-test</usedDependency>
         </usedDependencies>
+      </configuration>
+    </plugin>
+
+    <!--
+            Do the actual build.
+          -->
+    <plugin>
+      <groupId>com.googlecode.cmake-maven-project</groupId>
+      <artifactId>cmake-maven-plugin</artifactId>
+      <executions>
+        <!-- Generate the configuration for the main compilation -->
+        <execution>
+          <id>cmake-generate-compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+        </execution>
+        <!-- Compile the main code -->
+        <execution>
+          <id>cmake-execute-compile</id>
+          <phase>compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+        </execution>
+        <!-- Generate the configuration for the test compilation -->
+        <execution>
+          <id>cmake-generate-test-compile</id>
+          <phase>test-compile</phase>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+          <configuration>
+            <options>
+              <option>-DUNITY_VERSION:STRING=${unity.version}</option>
+              <option>-DBUILD_PHASE=test-compile</option>
+            </options>
+          </configuration>
+        </execution>
+        <!-- Compile the test code -->
+        <execution>
+          <id>cmake-execute-test-compile</id>
+          <phase>test-compile</phase>
+          <goals>
+            <goal>compile</goal>
+          </goals>
+        </execution>
+      </executions>
+      <configuration>
+        <!--
+          We need to use a newer version of cmake, so disable downloading
+          and tell the plugin where to find that version.
+        -->
+        <downloadBinaries>false</downloadBinaries>
+        <cmakeDir>${cmake.root}</cmakeDir>
+        <!--
+          Actually the path to the CMakeList.txt file which then again
+          tells to tool where to find the sources.
+        -->
+        <sourcePath>${project.basedir}</sourcePath>
+        <!--
+          Path to where the build configuration is generated
+          (This directory is then used in the compile step to actually perform the build)
+        -->
+        <targetPath>${project.build.directory}/build</targetPath>
+        <!--
+          Name of the generator the compile step will be executing.
+        -->
+        <generator>${cmake.generator}</generator>
+        <!-- The directory where the "generate" step generated the build configuration -->
+        <projectDirectory>${project.build.directory}/build</projectDirectory>
       </configuration>
     </plugin>
 
@@ -195,7 +365,7 @@
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-build-utils-language-java</artifactId>
+    <artifactId>plc4x-build-utils-language-c</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>

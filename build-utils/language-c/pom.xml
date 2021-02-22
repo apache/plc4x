@@ -32,6 +32,40 @@
   <name>PLC4X: Build Utils: Language: C</name>
   <description>Code generation template for generating C code</description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <debug>true</debug>
+          <projectsDirectory>src/test/resources</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
+          <!-- Removed so that a local version of the build-tools could be used. Need to add it back in -->
+          <!-- localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath -->
+          <settingsFile>src/test/resources/settings.xml</settingsFile>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <goals>
+            <goal>test</goal>
+          </goals>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- We are using the Freemarker module to generate Java code -->
     <dependency>
@@ -54,5 +88,6 @@
       <artifactId>commons-text</artifactId>
     </dependency>
   </dependencies>
+
 
 </project>
