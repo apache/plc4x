@@ -20,14 +20,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 
-<parent>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-parent</artifactId>
-  <version>0.9.0-SNAPSHOT</version>
-</parent>
-
-<artifactId>plc4j-java-mspec-test</artifactId>
-<name>PLC4J: Driver: Java Mpsec Test</name>
+<artifactId>plc4j-go-mspec-test</artifactId>
+<name>PLC4J: Driver: Go Mpsec Test</name>
+<groupId>org.apache.plc4x</groupId>
+<version>0.9.0-SNAPSHOT</version>
 <description></description>
 
 <properties>
@@ -36,6 +32,17 @@
   <commons-lang3.version>3.11</commons-lang3.version>
   <jackson.version>2.11.3</jackson.version>
   <netty.version>4.1.54.Final</netty.version>
+
+  <!--
+    At least 3.3.3 required for camel-package-maven-plugin
+  -->
+  <maven.version>3.3.3</maven.version>
+  <java.version>1.8</java.version>
+  <maven.compiler.source>1.8</maven.compiler.source>
+  <maven.compiler.target>1.8</maven.compiler.target>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+
 </properties>
 
 
@@ -45,6 +52,7 @@
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-maven-plugin</artifactId>
       <version>${plc4x-code-generation.version}</version>
+
       <executions>
         <execution>
           <id>generate-driver</id>
@@ -54,8 +62,9 @@
           </goals>
           <configuration>
             <protocolName>test</protocolName>
-            <languageName>java</languageName>
+            <languageName>go</languageName>
             <outputFlavor>read-write</outputFlavor>
+            <outputDir>${project.basedir}/internal</outputDir>
           </configuration>
         </execution>
       </executions>
@@ -113,9 +122,31 @@
       <artifactId>maven-dependency-plugin</artifactId>
       <configuration>
         <usedDependencies combine.children="append">
-          <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+          <usedDependency>org.apache.plc4x:plc4x-build-utils-language-go</usedDependency>
           <usedDependency>org.apache.plc4x:plc4x-build-utils-protocol-test</usedDependency>
         </usedDependencies>
+      </configuration>
+    </plugin>
+
+    <!--
+        Make the failsafe execute all integration-tests
+      -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-failsafe-plugin</artifactId>
+      <executions>
+        <execution>
+          <goals>
+            <goal>integration-test</goal>
+            <goal>verify</goal>
+          </goals>
+        </execution>
+      </executions>
+      <configuration>
+        <!--
+              Notice the @ instead of the $ as prefix? That's late evaluation.
+        -->
+        <!--argLine>@{failsafeArgLine}</argLine-->
       </configuration>
     </plugin>
   </plugins>
@@ -166,7 +197,7 @@
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4x-build-utils-language-java</artifactId>
+    <artifactId>plc4x-build-utils-language-go</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>

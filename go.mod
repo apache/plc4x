@@ -19,3 +19,5 @@
 module github.com/apache/plc4x
 
 go 1.15
+
+require github.com/apache/plc4x/plc4go v0.0.0-20210219073003-e296ad46cf80 // indirect

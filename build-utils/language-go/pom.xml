@@ -55,4 +55,77 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <debug>true</debug>
+          <projectsDirectory>src/test/resources</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
+          <!-- Removed so that a local version of the build-tools could be used. Need to add it back in -->
+          <!-- localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath -->
+          <settingsFile>src/test/resources/settings.xml</settingsFile>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <goals>
+            <goal>test</goal>
+          </goals>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>mvn-golang-wrapper</artifactId>
+        <version>2.3.6</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>default-fix</id>
+            <!-- Move the execution of this after the code generation -->
+            <phase>process-sources</phase>
+            <goals>
+              <goal>fix</goal>
+            </goals>
+          </execution>
+          <!-- Move the execution of this after the code generation -->
+          <execution>
+            <id>default-get</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>get</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>run-go-vet</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>vet</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <packages>
+            <package>github.com/apache/plc4x/plc4go/cmd/main</package>
+          </packages>
+          <sources>${project.basedir}</sources>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
 </project>
