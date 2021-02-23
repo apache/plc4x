@@ -103,7 +103,7 @@
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
-[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 'name']
+[enum uint 6 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 'name']
     ['0' PDT_UNKNOWN    ['0', '0',  '"Unknown Property Data Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
 ]

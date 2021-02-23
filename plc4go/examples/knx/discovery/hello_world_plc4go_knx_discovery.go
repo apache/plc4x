@@ -19,14 +19,13 @@
 package main
 
 import (
-	"encoding/hex"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	log "github.com/sirupsen/logrus"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -41,7 +40,7 @@ func main() {
 
 	// Try to auto-find KNX gateways via broadcast-message discovery
 	driverManager.Discover(func(event model.PlcDiscoveryEvent) {
-		connStr := event.ProtocolCode + /*":" + event.TransportCode +*/ "://" + event.TransportUrl.Host
+		connStr := event.ProtocolCode + /*":" + event.TransportCode +*/ "://" + event.TransportUrl.Host + "?buildingKey=11AA00FF"
 		crc := driverManager.GetConnection(connStr)
 
 		// Wait for the driver to connect (or not)
@@ -85,8 +84,9 @@ func main() {
 			}
 
 			readRequestBuilder := connection.ReadRequestBuilder()
-			readRequestBuilder.AddItem("manufacturerId", knxAddress+"#0/12")
-			readRequestBuilder.AddItem("programVersion", knxAddress+"#3/13")
+			//readRequestBuilder.AddItem("manufacturerId", knxAddress+"#0/12")
+			readRequestBuilder.AddItem("applicationProgramVersion", knxAddress+"#3/13")
+			readRequestBuilder.AddItem("interfaceProgramVersion", knxAddress+"#4/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
 				log.Error("Error creating read request for scanning " + knxAddress)
@@ -101,19 +101,42 @@ func main() {
 				return false
 			}
 			readResponse := readRequestResult.Response
-			manufacturerID := "0"
-			if readResponse.GetResponseCode("manufacturerId") == model.PlcResponseCode_OK {
-				manufacturerID = strconv.FormatUint(uint64(readResponse.GetValue("manufacturerId").GetUint32()), 10)
-			}
 			var programVersion []byte
-			if readResponse.GetResponseCode("programVersion") == model.PlcResponseCode_OK {
-				for _, value := range readResponse.GetValue("programVersion").GetList() {
-					programVersion = append(programVersion, value.GetUint8())
+			if readResponse.GetResponseCode("applicationProgramVersion") == model.PlcResponseCode_OK {
+				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("applicationProgramVersion"))
+			} else if readResponse.GetResponseCode("interfaceProgramVersion") == model.PlcResponseCode_OK {
+				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("interfaceProgramVersion"))
+			}
+			rb := utils.NewReadBuffer(utils.ByteArrayToUint8Array(programVersion))
+			manufacturerId := uint16(0)
+			applicationId := uint16(0)
+			applicationVersionMajor := uint8(0)
+			applicationVersionMinor := uint8(0)
+			if rb.GetTotalBytes() == 5 {
+				manufacturerId, err = rb.ReadUint16(16)
+				if err != nil {
+					log.Error("Error reading manufacturer id from " + knxAddress)
+					return false
+				}
+				applicationId, err = rb.ReadUint16(16)
+				if err != nil {
+					log.Error("Error reading application id from " + knxAddress)
+					return false
+				}
+				applicationVersionMajor, err = rb.ReadUint8(4)
+				if err != nil {
+					log.Error("Error reading application version major from " + knxAddress)
+					return false
+				}
+				applicationVersionMinor, err = rb.ReadUint8(4)
+				if err != nil {
+					log.Error("Error reading application version minor from " + knxAddress)
+					return false
 				}
 			}
 
-			log.Infof("     manufacturer id: %s", manufacturerID)
-			log.Infof("     application progra version: %s", hex.EncodeToString(programVersion))
+			log.Infof("     manufacturer id: %d", manufacturerId)
+			log.Infof("     program id: %d version %d.%d", applicationId, applicationVersionMajor, applicationVersionMinor)
 
 			return true
 		})

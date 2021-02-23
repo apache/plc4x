@@ -507,8 +507,11 @@
         ]
 
         ['0x11' ApduDataExtAuthorizeRequest
+            [simple uint 8 'level']
+            [array  uint 8 'data' count '4']
         ]
         ['0x12' ApduDataExtAuthorizeResponse
+            [simple uint 8 'level']
         ]
         ['0x13' ApduDataExtKeyWrite
         ]
@@ -526,13 +529,31 @@
             [simple uint 8  'propertyId']
             [simple uint 4  'count']
             [simple uint 12 'index']
-            [array  uint 8 'data' count 'length - 5']
+            [array  uint 8  'data' count 'length - 5']
         ]
-        ['0x17' ApduDataExtPropertyValueWrite
+        ['0x17' ApduDataExtPropertyValueWrite [uint 8 'length']
+            [simple uint 8  'objectIndex']
+            [simple uint 8  'propertyId']
+            [simple uint 4  'count']
+            [simple uint 12 'index']
+            [array  uint 8  'data' count 'length - 5']
         ]
         ['0x18' ApduDataExtPropertyDescriptionRead
+            [simple uint 8 'objectIndex']
+            [simple uint 8 'propertyId']
+            [simple uint 8 'index']
         ]
         ['0x19' ApduDataExtPropertyDescriptionResponse
+            [simple   uint 8              'objectIndex']
+            [simple   uint 8              'propertyId']
+            [simple   uint 8              'index']
+            [simple   bit                 'writeEnabled']
+            [reserved uint 1              '0x0']
+            [simple   KnxPropertyDataType 'propertyDataType']
+            [reserved uint 4              '0x0']
+            [simple   uint 12             'maxNrOfElements']
+            [simple   AccessLevel         'readLevel']
+            [simple   AccessLevel         'writeLevel']
         ]
 
         ['0x1A' ApduDataExtNetworkParameterRead
@@ -697,37 +718,42 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 4 'FirmwareType' [uint 8 'code']
-    ['0x1' NONE                      ['0xAF']]
-    ['0x2' BCU_1                     ['0x00']]
-    ['0x3' BCU_1_SYSTEM_1            ['0x01']]
-    ['0x4' BCU_2_SYSTEM_2            ['0x02']]
-    ['0x5' BIM_M112                  ['0x70']]
-    ['0x6' SYSTEM_B                  ['0x7B']]
-    ['0x7' IR_DECODER                ['0x81']]
-    ['0x8' MEDIA_COUPLER_PL_TP       ['0x90']]
-    ['0x9' COUPLER                   ['0x91']]
-    ['0xA' RF_BI_DIRECTIONAL_DEVICES ['0x01']]
-    ['0xB' RF_UNI_DIRECTIONAL_DEVICES['0x11']]
-    ['0xC' SYSTEM_300                ['0x30']]
-    ['0xD' SYSTEM_7                  ['0x70']]
+// REMARK: The last digit is intentionally set to 0 so this enum code can only be used as a mask.
+[enum uint 16 'FirmwareType'
+    ['0x0010' SYSTEM_1                  ]
+    ['0x0020' SYSTEM_2                  ]
+    ['0x0300' SYSTEM_300                ]
+    ['0x0700' SYSTEM_7                  ]
+    ['0x07B0' SYSTEM_B                  ]
+    ['0x0810' IR_DECODER                ]
+    ['0x0910' COUPLER                   ]
+    ['0x0AF0' NONE                      ]
+    ['0x10B0' SYSTEM_1_PL110            ]
+    ['0x17B0' SYSTEM_B_PL110            ]
+    ['0x1900' MEDIA_COUPLER_PL_TP       ]
+    ['0x2000' RF_BI_DIRECTIONAL_DEVICES ]
+    ['0x2100' RF_UNI_DIRECTIONAL_DEVICES]
+    ['0x3000' SYSTEM_1_TP0              ]
+    ['0x4000' SYSTEM_1_PL132            ]
+    ['0x5700' SYSTEM_7_KNX_NET_IP       ]
+
 ]
 
 // Helper enum that binds the combinations of medium type and firmware
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 16 'DeviceDescriptorType0'   [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
-    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
-    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
-    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
+[enum uint 16 'DeviceDescriptor'        [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
+    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
+    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
+    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
+    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
+    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
+    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
+    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
     ['0x0300' TP1_SYSTEM_300            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_300'                ]]
-    ['0x0700' TP1_BIM_M112_0            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
-    ['0x0701' TP1_BIM_M112_1            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
-    ['0x0705' TP1_BIM_M112_5            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
+    ['0x0700' TP1_BIM_M112_0            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
+    ['0x0701' TP1_BIM_M112_1            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
+    ['0x0705' TP1_BIM_M112_5            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
     ['0x07B0' TP1_SYSTEM_B              ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_B'                  ]]
     ['0x0810' TP1_IR_DECODER_0          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
     ['0x0811' TP1_IR_DECODER_1          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
@@ -737,15 +763,23 @@
     ['0x091A' TP1_KNXNETIP_ROUTER       ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
     ['0x0AFD' TP1_NONE_D                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
     ['0x0AFE' TP1_NONE_E                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
-    ['0x1012' PL110_BCU_1_2             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x1013' PL110_BCU_1_3             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
+    ['0x1012' PL110_BCU_1_2             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_1'                  ]]
+    ['0x1013' PL110_BCU_1_3             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_1'                  ]]
     ['0x17B0' PL110_SYSTEM_B            ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_B'                  ]]
     ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['DeviceDescriptorMediumType.PL110',        'FirmwareType.MEDIA_COUPLER_PL_TP'       ]]
     ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_BI_DIRECTIONAL_DEVICES' ]]
     ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_UNI_DIRECTIONAL_DEVICES']]
-    ['0x3012' TP0_BCU_1                 ['DeviceDescriptorMediumType.TP0',          'FirmwareType.BCU_1'                     ]]
-    ['0x4012' PL132_BCU_1               ['DeviceDescriptorMediumType.PL132',        'FirmwareType.BCU_1'                     ]]
+    ['0x3012' TP0_BCU_1                 ['DeviceDescriptorMediumType.TP0',          'FirmwareType.SYSTEM_1'                  ]]
+    ['0x4012' PL132_BCU_1               ['DeviceDescriptorMediumType.PL132',        'FirmwareType.SYSTEM_1'                  ]]
     ['0x5705' KNX_IP_SYSTEM7            ['DeviceDescriptorMediumType.KNX_IP',       'FirmwareType.SYSTEM_7'                  ]]
+]
+
+[enum uint 4 'AccessLevel' [string 'purpose',         bit 'needsAuthentication']
+    ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
+    ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
+    ['0x2' Level2          ['"configuration"',        'true'                   ]]
+    ['0x3' Level3          ['"end-user"',             'false'                  ]]
+    ['0xF' Level15         ['"read access"',          'false'                  ]]
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 23ff
@@ -982,3 +1016,103 @@
         ]
     ]
 ]
+
+// 03_05_01 Resources v01.09.03 AS page 171
+[enum uint 8 'ComObjectValueType' [uint 8 'sizeInBytes']
+    ['0x00' BIT1                  ['1']]
+    ['0x01' BIT2                  ['1']]
+    ['0x02' BIT3                  ['1']]
+    ['0x03' BIT4                  ['1']]
+    ['0x04' BIT5                  ['1']]
+    ['0x05' BIT6                  ['1']]
+    ['0x06' BIT7                  ['1']]
+    ['0x07' BYTE1                 ['1']]
+    ['0x08' BYTE2                 ['2']]
+    ['0x09' BYTE3                 ['3']]
+    ['0x0A' BYTE4                 ['4']]
+    ['0x0B' BYTE6                 ['6']]
+    ['0x0C' BYTE8                 ['8']]
+    ['0x0D' BYTE10                ['10']]
+    ['0x0E' BYTE14                ['14']]
+]
+
+[discriminatedType 'ComObjectTable' [FirmwareType 'firmwareType']
+    [typeSwitch 'firmwareType'
+        // The location of the Group Object Table - Realization Type 1 is calculated by
+        // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
+        // is a single byte located at memory address 0x112
+        ['FirmwareType.SYSTEM_1' ComObjectTableRealisationType1
+            [simple uint 8 'numEntries']
+            [simple uint 8 'ramFlagsTablePointer']
+            [array GroupObjectDescriptorRealisationType1 'comObjectDescriptors' count 'numEntries']
+        ]
+        // The location of the Group Object Table - Realization Type 2 is calculated by
+        // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
+        // is a single byte located at memory address 0x112
+        ['FirmwareType.SYSTEM_2' ComObjectTableRealisationType2
+            [simple uint 8 'numEntries']
+            [simple uint 8 'ramFlagsTablePointer']
+            [array GroupObjectDescriptorRealisationType2 'comObjectDescriptors' count 'numEntries']
+        ]
+        // The Group Object Table in Realization Type 6 is accessed via Properties instead of
+        // reading memory.
+        ['FirmwareType.SYSTEM_300' ComObjectTableRealisationType6
+            // TODO: This probably needs to be changed to an array as soon as I know how to actually work with these types
+            [simple GroupObjectDescriptorRealisationType6 'comObjectDescriptors']
+        ]
+        //['FirmwareType.SYSTEM_7' ComObjectTableRealisationType7
+
+        //]
+    ]
+]
+
+// 03_05_01 Resources v01.09.03 AS page 168ff
+[type 'GroupObjectDescriptorRealisationType1'
+    // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
+    // if set to 'true' 0x100 has to be added to this value
+    [simple uint 8              'dataPointer']
+    [reserved uint 1            '0x1']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+
+// 03_05_01 Resources v01.09.03 AS page 172ff
+// It's generally identical to the type 1, but uses the reserved bit from type 1 as "updateEnable"
+[type 'GroupObjectDescriptorRealisationType2'
+    // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
+    // if set to 'true' 0x100 has to be added to this value
+    [simple uint 8              'dataPointer']
+    [simple bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+
+// 03_05_01 Resources v01.09.03 AS page 173ff
+[type 'GroupObjectDescriptorRealisationType6'
+    // TODO: Implement
+]
+

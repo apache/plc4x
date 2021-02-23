@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 	"time"
@@ -162,6 +163,12 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 	knxAddress := field.toKnxAddress()
 	knxAddressString := KnxAddressToString(knxAddress)
+
+	// If we have a building Key, try that to login in order to access protected
+	if b.connection.buildingKey != nil {
+		arr := b.connection.AuthenticateDevice(*knxAddress, b.connection.buildingKey)
+		<-arr
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Group Address Table reading
@@ -353,18 +360,18 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Now we read the group address association table address
-	/*readRequestBuilder = b.connection.ReadRequestBuilder()
-	  readRequestBuilder.AddItem("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
-	  readRequest, err = readRequestBuilder.Build()
-	  if err != nil {
-	      return nil, errors.New("error creating read request: " + err.Error())
-	  }
-	  rrr = readRequest.Execute()
-	  readResult = <-rrr
-	  if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
-	      comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
-	      log.Info("Com Object Table Address: %d", comObjectTableAddress)
-	  }*/
+	readRequestBuilder = b.connection.ReadRequestBuilder()
+	readRequestBuilder.AddItem("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
+	readRequest, err = readRequestBuilder.Build()
+	if err != nil {
+		return nil, errors.New("error creating read request: " + err.Error())
+	}
+	rrr = readRequest.Execute()
+	readResult = <-rrr
+	if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
+		comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
+		log.Infof("Com Object Table Address: %x", comObjectTableAddress)
+	}
 
 	return results, nil
 }
