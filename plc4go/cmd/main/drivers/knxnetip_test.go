@@ -27,7 +27,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"testing"
@@ -146,11 +145,11 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 			manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
 			if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
 				programVersion := readResponse.GetValue("applicationProgramVersion")
-				programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+				programVersionBytes := utils.PlcValueUint8ListToByteArray(programVersion)
 				log.Infof(" - Manufacturer Id: %d, Application Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 			} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
 				programVersion := readResponse.GetValue("interfaceProgramVersion")
-				programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+				programVersionBytes := utils.PlcValueUint8ListToByteArray(programVersion)
 				log.Infof(" - Manufacturer Id: %d, Interface Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 			}
 		}
@@ -242,11 +241,11 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 		manufacturerId := readResponse.GetValue("manufacturerId").GetUint16()
 		if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
 			programVersion := readResponse.GetValue("applicationProgramVersion")
-			programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+			programVersionBytes := utils.PlcValueUint8ListToByteArray(programVersion)
 			log.Infof(" - Manufacturer Id: %d, Application Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 		} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
 			programVersion := readResponse.GetValue("interfaceProgramVersion")
-			programVersionBytes := PlcValueUint8ListToByteArray(programVersion)
+			programVersionBytes := utils.PlcValueUint8ListToByteArray(programVersion)
 			log.Infof(" - Manufacturer Id: %d, Interface Program Version: %s\n", manufacturerId, hex.EncodeToString(programVersionBytes))
 		}
 		return true
@@ -514,12 +513,4 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
 
 	fmt.Printf("%d", comObjectTableAddress)
-}
-
-func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
-	var result []byte
-	for _, valueItem := range value.GetList() {
-		result = append(result, valueItem.GetUint8())
-	}
-	return result
 }
