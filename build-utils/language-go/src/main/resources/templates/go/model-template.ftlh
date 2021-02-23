@@ -126,7 +126,7 @@ type I${type.name} interface {
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
 func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
-    return <#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
+    return <#if discriminatorValue??><#if helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
 }
 
         </#if>
@@ -162,7 +162,7 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}<#if type
 }
 </#if>
 
-func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list><#if type.parentType?has_content><#if type.getPropertyFields()?has_content>, </#if><#list type.parentPropertyFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list></#if>) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list><#if type.parentType?has_content><#if type.getPropertyFields()?has_content && type.parentPropertyFields?has_content>, </#if><#list type.parentPropertyFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list></#if>) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
 <#if type.parentType?has_content>
     child := &${type.name}{
     <#list type.getPropertyFields() as field>
@@ -617,7 +617,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
     var typeSwitchError error
     switch {
                 <#list switchField.cases as case>
-    <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#sep> && </#sep></#list></#if>:
+    <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isEnumExpression(discriminatorValue)>*</#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>:
         _parent, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
                 </#list>
     }

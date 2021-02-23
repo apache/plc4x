@@ -19,150 +19,148 @@
 package model
 
 import (
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type S7ParameterReadVarResponse struct {
-    NumItems uint8
-    Parent *S7Parameter
-    IS7ParameterReadVarResponse
+	NumItems uint8
+	Parent   *S7Parameter
+	IS7ParameterReadVarResponse
 }
 
 // The corresponding interface
 type IS7ParameterReadVarResponse interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *S7ParameterReadVarResponse) ParameterType() uint8 {
-    return 0x04
+	return 0x04
 }
 
 func (m *S7ParameterReadVarResponse) MessageType() uint8 {
-    return 0x03
+	return 0x03
 }
-
 
 func (m *S7ParameterReadVarResponse) InitializeParent(parent *S7Parameter) {
 }
 
-func NewS7ParameterReadVarResponse(numItems uint8, ) *S7Parameter {
-    child := &S7ParameterReadVarResponse{
-        NumItems: numItems,
-        Parent: NewS7Parameter(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+func NewS7ParameterReadVarResponse(numItems uint8) *S7Parameter {
+	child := &S7ParameterReadVarResponse{
+		NumItems: numItems,
+		Parent:   NewS7Parameter(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastS7ParameterReadVarResponse(structType interface{}) *S7ParameterReadVarResponse {
-    castFunc := func(typ interface{}) *S7ParameterReadVarResponse {
-        if casted, ok := typ.(S7ParameterReadVarResponse); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*S7ParameterReadVarResponse); ok {
-            return casted
-        }
-        if casted, ok := typ.(S7Parameter); ok {
-            return CastS7ParameterReadVarResponse(casted.Child)
-        }
-        if casted, ok := typ.(*S7Parameter); ok {
-            return CastS7ParameterReadVarResponse(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *S7ParameterReadVarResponse {
+		if casted, ok := typ.(S7ParameterReadVarResponse); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*S7ParameterReadVarResponse); ok {
+			return casted
+		}
+		if casted, ok := typ.(S7Parameter); ok {
+			return CastS7ParameterReadVarResponse(casted.Child)
+		}
+		if casted, ok := typ.(*S7Parameter); ok {
+			return CastS7ParameterReadVarResponse(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *S7ParameterReadVarResponse) GetTypeName() string {
-    return "S7ParameterReadVarResponse"
+	return "S7ParameterReadVarResponse"
 }
 
 func (m *S7ParameterReadVarResponse) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Simple field (numItems)
-    lengthInBits += 8
+	// Simple field (numItems)
+	lengthInBits += 8
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func S7ParameterReadVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error) {
 
-    // Simple Field (numItems)
-    numItems, _numItemsErr := io.ReadUint8(8)
-    if _numItemsErr != nil {
-        return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
-    }
+	// Simple Field (numItems)
+	numItems, _numItemsErr := io.ReadUint8(8)
+	if _numItemsErr != nil {
+		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+	}
 
-    // Create a partially initialized instance
-    _child := &S7ParameterReadVarResponse{
-        NumItems: numItems,
-        Parent: &S7Parameter{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &S7ParameterReadVarResponse{
+		NumItems: numItems,
+		Parent:   &S7Parameter{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *S7ParameterReadVarResponse) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-    // Simple Field (numItems)
-    numItems := uint8(m.NumItems)
-    _numItemsErr := io.WriteUint8(8, (numItems))
-    if _numItemsErr != nil {
-        return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
-    }
+		// Simple Field (numItems)
+		numItems := uint8(m.NumItems)
+		_numItemsErr := io.WriteUint8(8, (numItems))
+		if _numItemsErr != nil {
+			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+		}
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *S7ParameterReadVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "numItems":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.NumItems = data
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "numItems":
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.NumItems = data
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *S7ParameterReadVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeElement(m.NumItems, xml.StartElement{Name: xml.Name{Local: "numItems"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeElement(m.NumItems, xml.StartElement{Name: xml.Name{Local: "numItems"}}); err != nil {
+		return err
+	}
+	return nil
 }
-
