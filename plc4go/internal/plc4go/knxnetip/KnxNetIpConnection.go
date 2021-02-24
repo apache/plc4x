@@ -128,6 +128,7 @@ type KnxNetIpConnection struct {
 
 	requestInterceptor internalModel.RequestInterceptor
 	plc4go.PlcConnection
+	sync.Mutex
 }
 
 type KnxReadResult struct {
@@ -456,7 +457,7 @@ func (m *KnxNetIpConnection) ConnectToDevice(targetAddress driverModel.KnxAddres
 				select {
 				case _ = <-deviceDescriptorResponses:
 					// Last, not least, read the max APDU size
-					propertyValueResponses := m.sendDevicePropertyReadRequest(targetAddress, 0, 56)
+					propertyValueResponses := m.sendDevicePropertyReadRequest(targetAddress, 0, 56, 1, 1)
 					go func() {
 						select {
 						case propertyValueResponse := <-propertyValueResponses:
@@ -545,7 +546,7 @@ func (m *KnxNetIpConnection) AuthenticateDevice(targetAddress driverModel.KnxAdd
 	return result
 }
 
-func (m *KnxNetIpConnection) ReadDeviceProperty(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) <-chan KnxReadResult {
+func (m *KnxNetIpConnection) ReadDeviceProperty(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	go func() {
@@ -571,7 +572,7 @@ func (m *KnxNetIpConnection) ReadDeviceProperty(targetAddress driverModel.KnxAdd
 
 		// If we successfully got a connection, read the property
 		if connection != nil {
-			propertyValueResponses := m.sendDevicePropertyReadRequest(targetAddress, objectId, propertyId)
+			propertyValueResponses := m.sendDevicePropertyReadRequest(targetAddress, objectId, propertyId, propertyIndex, numElements)
 			select {
 			case propertyValueResponse := <-propertyValueResponses:
 				result <- propertyValueResponse
@@ -1268,8 +1269,7 @@ func (m *KnxNetIpConnection) sendDeviceDeviceDescriptorReadRequest(targetAddress
 	}
 
 	// Next, read the device descriptor so we know how we have to communicate with the device.
-	counter := connection.counter
-	connection.counter++
+	counter := m.getNextCounter(targetAddress)
 	deviceDescriptorReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(
 			// This is actually set in the KnxNetIpConnection.SendMessage method
@@ -1362,10 +1362,10 @@ func (m *KnxNetIpConnection) sendDeviceDeviceDescriptorReadRequest(targetAddress
 	return result
 }
 
-func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) chan KnxReadResult {
+func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
-	connection, ok := m.DeviceConnections[targetAddress]
+	_, ok := m.DeviceConnections[targetAddress]
 	if !ok {
 		//		close(result)
 		result <- KnxReadResult{
@@ -1377,10 +1377,8 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 	}
 
 	// Next, read the device descriptor so we know how we have to communicate with the device.
-	counter := connection.counter
-	connection.counter++
-
 	// Send the property read request and wait for a confirmation that this property is readable.
+	counter := m.getNextCounter(targetAddress)
 	propertyReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(0, 0),
 		driverModel.NewLDataReq(0, nil,
@@ -1389,7 +1387,7 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 				KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, 1, 1)),
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex)),
 					true, counter),
 				true, true, driverModel.CEMIPriority_LOW, false, false)))
 	err := m.sendRequest(
@@ -1521,7 +1519,7 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 func (m *KnxNetIpConnection) sendDevicePropertyDescriptionReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
-	connection, ok := m.DeviceConnections[targetAddress]
+	_, ok := m.DeviceConnections[targetAddress]
 	if !ok {
 		//		close(result)
 		result <- KnxReadResult{
@@ -1533,10 +1531,8 @@ func (m *KnxNetIpConnection) sendDevicePropertyDescriptionReadRequest(targetAddr
 	}
 
 	// Next, read the device descriptor so we know how we have to communicate with the device.
-	counter := connection.counter
-	connection.counter++
-
 	// Send the property read request and wait for a confirmation that this property is readable.
+	counter := m.getNextCounter(targetAddress)
 	propertyReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(0, 0),
 		driverModel.NewLDataReq(0, nil,
@@ -1653,8 +1649,7 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 	}
 
 	// Next, read the device descriptor so we know how we have to communicate with the device.
-	counter := connection.counter
-	connection.counter++
+	counter := m.getNextCounter(targetAddress)
 	numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
 
 	// Send the property read request and wait for a confirmation that this property is readable.
@@ -2006,6 +2001,22 @@ func (m *KnxNetIpConnection) sliceEqual(a, b []int8) bool {
 		}
 	}
 	return true
+}
+
+func (m *KnxNetIpConnection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 {
+	m.Lock()
+	defer m.Unlock()
+
+	connection, ok := m.DeviceConnections[targetAddress]
+	if !ok {
+		return 0
+	}
+	counter := connection.counter
+	connection.counter++
+	if connection.counter == 16 {
+		connection.counter = 0
+	}
+	return counter
 }
 
 func KnxAddressToString(knxAddress *driverModel.KnxAddress) string {

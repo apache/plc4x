@@ -105,7 +105,7 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 				case KnxNetIpDevicePropertyAddressPlcField:
 					propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
 
-					results := m.connection.ReadDeviceProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId)
+					results := m.connection.ReadDeviceProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
 					case result := <-results:
 						responseCodes[fieldName] = result.returnCode

@@ -73,8 +73,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
-		var firmwareType IFirmwareType
-		return model.ComObjectTableParse(io, firmwareType)
+		var firmwareType model.FirmwareType
+		return model.ComObjectTableParse(io, &firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)
 	case "ConnectionResponseDataBlock":
@@ -105,6 +105,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
 		return model.KnxGroupAddressParse(io, numLevels)
 	case "GroupObjectDescriptorRealisationType6":
 		return model.GroupObjectDescriptorRealisationType6Parse(io)
+	case "GroupObjectDescriptorRealisationType7":
+		return model.GroupObjectDescriptorRealisationType7Parse(io)
 	case "MACAddress":
 		return model.MACAddressParse(io)
 	case "GroupObjectDescriptorRealisationType2":
