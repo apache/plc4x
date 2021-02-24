@@ -24,6 +24,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	log "github.com/sirupsen/logrus"
@@ -338,19 +339,20 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			readResult.Response.GetResponseCode("groupAddressAssociationTable").GetName())
 	}
 	// Output the group addresses
+	groupAddressComObjectNumberMapping := map[*driverModel.KnxGroupAddress]uint16{}
 	if readResult.Response.GetValue("groupAddressAssociationTable").IsList() {
 		for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
-			result := b.parseAssociationTable(knxAddressString, b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+			groupAddress, comObjectNumber := b.parseAssociationTable(b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
 				knxGroupAddresses, groupAddressAssociation)
-			if result != nil {
-				results = append(results, *result)
+			if groupAddress != nil {
+				groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 			}
 		}
 	} else {
-		result := b.parseAssociationTable(knxAddressString, b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+		groupAddress, comObjectNumber := b.parseAssociationTable(b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
 			knxGroupAddresses, readResult.Response.GetValue("groupAddressAssociationTable"))
-		if result != nil {
-			results = append(results, *result)
+		if groupAddress != nil {
+			groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 		}
 	}
 
@@ -359,18 +361,52 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	// (This part is optional and experimental ...)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// Now we read the group address association table address
-	readRequestBuilder = b.connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
-	readRequest, err = readRequestBuilder.Build()
-	if err != nil {
-		return nil, errors.New("error creating read request: " + err.Error())
-	}
-	rrr = readRequest.Execute()
-	readResult = <-rrr
-	if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
-		comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
-		log.Infof("Com Object Table Address: %x", comObjectTableAddress)
+	// In case of System B devices, the com object table is read as a property array
+	// In this case we can even read only the com objects we're interested in.
+	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+		readRequestBuilder = b.connection.ReadRequestBuilder()
+		// Read data for all com objects that are assigned a group address
+		for _, comObjectNumber := range groupAddressComObjectNumberMapping {
+			readRequestBuilder.AddItem(strconv.Itoa(int(comObjectNumber)),
+				fmt.Sprintf("%s#3/23/%d", knxAddressString, comObjectNumber+1))
+		}
+		readRequest, err = readRequestBuilder.Build()
+		if err != nil {
+			return nil, errors.New("error creating read request: " + err.Error())
+		}
+		rrr = readRequest.Execute()
+		readResult = <-rrr
+		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
+			if readResult.Response.GetResponseCode(strconv.Itoa(int(comObjectNumber))) == apiModel.PlcResponseCode_OK {
+				comObjectSettings := readResult.Response.GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
+				data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
+				rb := utils.NewReadBuffer(data)
+				descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(rb)
+				if err != nil {
+					log.Infof("error parsing com object descriptor: %s", err.Error())
+					continue
+				}
+				log.Infof("     %s, Readable %t, Writable %t, Subscribable %t, Datatype %s",
+					GroupAddressToString(groupAddress),
+					descriptor.CommunicationEnable && descriptor.ReadEnable,
+					descriptor.CommunicationEnable && descriptor.WriteEnable,
+					descriptor.CommunicationEnable && descriptor.TransmitEnable,
+					descriptor.ValueType.String())
+			}
+		}
+	} else {
+		readRequestBuilder = b.connection.ReadRequestBuilder()
+		readRequestBuilder.AddItem("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
+		readRequest, err = readRequestBuilder.Build()
+		if err != nil {
+			return nil, errors.New("error creating read request: " + err.Error())
+		}
+		rrr = readRequest.Execute()
+		readResult = <-rrr
+		if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
+			comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
+			log.Infof("Com Object Table Address: %x", comObjectTableAddress)
+		}
 	}
 
 	return results, nil
@@ -451,7 +487,7 @@ func (b KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([
 	return options, nil
 }
 
-func (m KnxNetIpBrowser) parseAssociationTable(knxAddressString string, deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) *apiModel.PlcBrowseQueryResult {
+func (m KnxNetIpBrowser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) (*driverModel.KnxGroupAddress, uint16) {
 	var addressIndex uint16
 	var comObjectNumber uint16
 	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
@@ -463,11 +499,7 @@ func (m KnxNetIpBrowser) parseAssociationTable(knxAddressString string, deviceDe
 	}
 	if addressIndex < uint16(len(knxGroupAddresses)) {
 		groupAddress := knxGroupAddresses[addressIndex]
-		return &apiModel.PlcBrowseQueryResult{
-			Address: fmt.Sprintf(
-				"%s#%s %d", knxAddressString, GroupAddressToString(groupAddress), comObjectNumber),
-			PossibleDataTypes: nil,
-		}
+		return groupAddress, comObjectNumber
 	}
-	return nil
+	return nil, 0
 }

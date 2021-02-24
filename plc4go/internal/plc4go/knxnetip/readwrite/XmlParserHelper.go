@@ -233,6 +233,13 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
 			return nil, errors.New("error unmarshalling xml: " + err.Error())
 		}
 		return obj, nil
+	case "GroupObjectDescriptorRealisationType7":
+		var obj *model.GroupObjectDescriptorRealisationType7
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
 	case "MACAddress":
 		var obj *model.MACAddress
 		err := xml.Unmarshal([]byte(xmlString), &obj)

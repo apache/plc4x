@@ -1116,3 +1116,27 @@
     // TODO: Implement
 ]
 
+// 03_05_01 Resources v01.09.03 AS page 194ff
+// AKA: System B
+// This format isn't explicitly described in the spec,
+// however when having a look at the payload in WireShark
+// if looks as if it's simply the realization type 1 or 2
+// without the leading 'dataPointer' field.
+[type 'GroupObjectDescriptorRealisationType7'
+    [simple bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+
