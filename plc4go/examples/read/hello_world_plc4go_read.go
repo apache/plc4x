@@ -47,7 +47,7 @@ func main() {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:26:REAL")
+	rrb.AddQuery("field", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())

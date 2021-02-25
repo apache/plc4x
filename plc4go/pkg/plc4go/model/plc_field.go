@@ -19,6 +19,7 @@
 package model
 
 type PlcField interface {
+	GetAddressString() string
 	GetTypeName() string
 	GetQuantity() uint16
 }

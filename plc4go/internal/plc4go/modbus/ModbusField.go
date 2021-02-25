@@ -21,6 +21,7 @@ package modbus
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"strconv"
@@ -56,6 +57,22 @@ func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString strin
 		quantity = 1
 	}
 	return NewModbusPlcField(fieldType, uint16(address), uint16(quantity), datatype), nil
+}
+
+func (m ModbusPlcField) GetAddressString() string {
+	switch m.FieldType {
+	case MODBUS_FIELD_COIL:
+		return fmt.Sprintf("0x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
+	case MODBUS_FIELD_DISCRETE_INPUT:
+		return fmt.Sprintf("1x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
+	case MODBUS_FIELD_INPUT_REGISTER:
+		return fmt.Sprintf("3x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
+	case MODBUS_FIELD_HOLDING_REGISTER:
+		return fmt.Sprintf("4x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
+	case MODBUS_FIELD_EXTENDED_REGISTER:
+		return fmt.Sprintf("6x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
+	}
+	return ""
 }
 
 func (m ModbusPlcField) GetTypeName() string {

@@ -98,6 +98,24 @@
       <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
+
+    <!-- Generally used for the metadata generator to not pollute the classpath -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20201115</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

@@ -73,8 +73,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
-		var firmwareType model.FirmwareType
-		return model.ComObjectTableParse(io, &firmwareType)
+		var firmwareType IFirmwareType
+		return model.ComObjectTableParse(io, firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)
 	case "ConnectionResponseDataBlock":
