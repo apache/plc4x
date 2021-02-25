@@ -183,28 +183,38 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
                     return "bool";
-                case UINT:
+
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "uint8_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "uint16_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "uint32_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "uint64_t";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
                 case INT: {
-                    StringBuilder sb = new StringBuilder();
-                    if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
-                        sb.append("u");
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "int8_t";
                     }
-                    if (simpleTypeReference.getSizeInBits() % 64 == 0) {
-                        sb.append("int64_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 32 == 0) {
-                        sb.append("int32_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 16 == 0) {
-                        sb.append("int16_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 8 == 0) {
-                        sb.append("int8_t");
-                    } else {
-                        if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
-                            // We already have the "u" in there ...
-                            sb.append("nsigned ");
-                        }
-                        sb.append("int");
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "int16_t";
                     }
-                    return sb.toString();
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "int32_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "int64_t";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
                 }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -288,7 +298,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     public String escapeValue(TypeReference typeReference, String valueString) {
         if (valueString == null) {
-            return null;
+            return "NULL";
         }
         if ("null".equals(valueString)) {
             // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
@@ -380,7 +390,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_read_string(io, " + stringTypeReference.getSizeInBits() + ", \"" +
+                return "plc4c_spi_read_string(io, " + stringTypeReference.getLength() + " * 8, \"" +
                     stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -413,7 +423,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "plc4c_spi_write_signed_byte(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_signed_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_short(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
                     return "plc4c_spi_write_signed_int(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";

@@ -221,7 +221,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>  </#if>    byte[] checksumRawData = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>  </#if>    //unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getNullValueForTypeReference(checksumField.type)};
 <#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(checksumField.type, "&_checksumRef")};
 <#if indentContent>  </#if>    if(_res != OK) {
@@ -438,14 +438,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>    }
 <#if indentContent>    </#if>  }
             <#break>
-        <#--case "checksum">
+        <#case "checksum">
             <#assign checksumField = field>
             <#assign simpleTypeReference = checksumField.type>
 
 <#if indentContent>    </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>    </#if>  {
 <#if indentContent>    </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>    </#if>    byte[] checksumRawData = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>    </#if>    //unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
 <#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getReadBufferReadMethodCall(checksumField.type)};
 <#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, checksumField, checksumField.checksumExpression, baseType.parserArguments)});
 <#if indentContent>    </#if>    if(_checksum != _checksumRef) {
@@ -453,7 +453,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>      // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_checksumRef & 0xFFFF, _checksum & 0xFFFF));
 <#if indentContent>    </#if>    }
 <#if indentContent>    </#if>  }
-            <#break-->
+            <#break>
         <#case "const">
             <#assign constField = field>
             <#assign simpleTypeReference = constField.type>
