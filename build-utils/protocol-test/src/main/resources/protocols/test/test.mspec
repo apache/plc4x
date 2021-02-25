@@ -25,7 +25,8 @@
     [simple         uint 8 'simpleField']
     [abstract       unit 8  'abstractField']
     [array          uint 8  'arrayField'        count      '5']
-    [checksum       uint 8  'checksumField'     '100']
+    //Checksums fields are not supported in C
+    //[checksum       uint 8  'checksumField'     '100']
     [const          uint 8  'constField'        '5']
 
     //Discriminated Field can't be used in simple type
@@ -89,17 +90,18 @@
     [array string '8' 'UTF-8' 'stringField' count      '5']
 ]
 
-[type 'CheckSumTypeTest'
+//Checksums fields are not supported in C
+//[type 'CheckSumTypeTest'
     //Bit field cannot be used for a checksum
     //[checksum bit 'bitField' true]
-    [checksum int 8 'intField' '100']
-    [checksum uint 8 'uintField' '100']
+    //[checksum int 8 'intField' '100']
+    //[checksum uint 8 'uintField' '100']
     //Float fields cannot be used as checksums
     //[checksum float 8.23 'floatField' '100.0f']
     //[checksum float 11.52 'doubleField' '100.0']
     //String field cannot be used as a checksum
     //[checksum string '11 * 8' 'UTF-8' 'stringField' '"HELLO TODDY"']
-]
+//]
 
 [type 'ConstTypeTest'
     [const bit 'bitField' true]
@@ -142,6 +144,24 @@
     [reserved       uint 8  '0x00']
 ]
 
+[type 'IntTypeTest'
+    [simple int 3 'ThreeField']
+    [simple int 8 'ByteField']
+    [simple int 16 'WordField']
+    [simple int 24 'WordPlusByteField']
+    [simple int 32 'DoubleIntField']
+    [simple int 64 'QuadIntField']
+]
+
+[type 'UIntTypeTest'
+    [simple uint 3 'ThreeField']
+    [simple uint 8 'ByteField']
+    [simple uint 16 'WordField']
+    [simple uint 24 'WordPlusByteField']
+    [simple uint 32 'DoubleIntField']
+    [simple uint 64 'QuadIntField']
+]
+
 ////////////////////////////////////////////////////////////////
 // Discriminated Type
 ////////////////////////////////////////////////////////////////
@@ -152,10 +172,10 @@
         ['0x01' DiscriminatedTypeA
             [simple        uint 8 'simpA']
         ]
-        ['0x02' DiscriminatedTypeA
+        ['0x02' DiscriminatedTypeB
             [simple        uint 8 'simpB']
         ]
-        ['0x03' DiscriminatedTypeA
+        ['0x03' DiscriminatedTypeC
             [simple        uint 8 'simpC']
         ]
     ]
