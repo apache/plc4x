@@ -20,6 +20,7 @@ package knxnetip
 
 import (
 	"errors"
+	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"strconv"
@@ -57,6 +58,10 @@ func NewKnxNetIpGroupAddress3LevelPlcField(mainGroup string, middleGroup string,
 		SubGroup:    subGroup,
 		FieldType:   fieldType,
 	}
+}
+
+func (k KnxNetIpGroupAddress3LevelPlcField) GetAddressString() string {
+	return fmt.Sprintf("%s/%s/%s:%s", k.MainGroup, k.MiddleGroup, k.SubGroup, k.FieldType.String())
 }
 
 func (k KnxNetIpGroupAddress3LevelPlcField) GetTypeName() string {
@@ -134,6 +139,10 @@ func NewKnxNetIpGroupAddress2LevelPlcField(mainGroup string, subGroup string, fi
 	}
 }
 
+func (k KnxNetIpGroupAddress2LevelPlcField) GetAddressString() string {
+	return fmt.Sprintf("%s/%s:%s", k.MainGroup, k.SubGroup, k.FieldType.String())
+}
+
 func (k KnxNetIpGroupAddress2LevelPlcField) GetTypeName() string {
 	return k.FieldType.Name()
 }
@@ -198,6 +207,10 @@ func NewKnxNetIpGroupAddress1LevelPlcField(mainGroup string, fieldType *driverMo
 	}
 }
 
+func (k KnxNetIpGroupAddress1LevelPlcField) GetAddressString() string {
+	return fmt.Sprintf("%s:%s", k.MainGroup, k.FieldType.String())
+}
+
 func (k KnxNetIpGroupAddress1LevelPlcField) GetTypeName() string {
 	return k.FieldType.Name()
 }
@@ -255,6 +268,10 @@ func NewKnxNetIpDeviceQueryField(mainGroup string, middleGroup string, subGroup 
 	}
 }
 
+func (k KnxNetIpDeviceQueryField) GetAddressString() string {
+	return fmt.Sprintf("%s.%s.%s", k.MainGroup, k.MiddleGroup, k.SubGroup)
+}
+
 func (k KnxNetIpDeviceQueryField) GetTypeName() string {
 	return ""
 }
@@ -290,6 +307,11 @@ func NewKnxNetIpDevicePropertyAddressPlcField(mainGroup uint8, middleGroup uint8
 	}
 }
 
+func (k KnxNetIpDevicePropertyAddressPlcField) GetAddressString() string {
+	return fmt.Sprintf("%d/%d/%d#%d/%d/%d[%d]",
+		k.MainGroup, k.MiddleGroup, k.SubGroup, k.ObjectId, k.PropertyId, k.PropertyIndex, k.NumElements)
+}
+
 func (k KnxNetIpDevicePropertyAddressPlcField) GetTypeName() string {
 	return ""
 }
@@ -308,24 +330,29 @@ func (k KnxNetIpDevicePropertyAddressPlcField) toKnxAddress() *driverModel.KnxAd
 }
 
 type KnxNetIpDeviceMemoryAddressPlcField struct {
-	MainGroup        uint8 // 5 Bits: Values 0-31
-	MiddleGroup      uint8 // 3 Bits: values 0-7
-	SubGroup         uint8 // 8 Bits
-	Address          uint16
-	NumberOfElements uint8
-	FieldType        *driverModel.KnxDatapointType
+	MainGroup   uint8 // 5 Bits: Values 0-31
+	MiddleGroup uint8 // 3 Bits: values 0-7
+	SubGroup    uint8 // 8 Bits
+	Address     uint16
+	NumElements uint8
+	FieldType   *driverModel.KnxDatapointType
 	KnxNetIpDeviceField
 }
 
-func NewKnxNetIpDeviceMemoryAddressPlcField(mainGroup uint8, middleGroup uint8, subGroup uint8, address uint16, numberOfElements uint8, fieldType *driverModel.KnxDatapointType) KnxNetIpDeviceMemoryAddressPlcField {
+func NewKnxNetIpDeviceMemoryAddressPlcField(mainGroup uint8, middleGroup uint8, subGroup uint8, address uint16, numElements uint8, fieldType *driverModel.KnxDatapointType) KnxNetIpDeviceMemoryAddressPlcField {
 	return KnxNetIpDeviceMemoryAddressPlcField{
-		MainGroup:        mainGroup,
-		MiddleGroup:      middleGroup,
-		SubGroup:         subGroup,
-		Address:          address,
-		NumberOfElements: numberOfElements,
-		FieldType:        fieldType,
+		MainGroup:   mainGroup,
+		MiddleGroup: middleGroup,
+		SubGroup:    subGroup,
+		Address:     address,
+		NumElements: numElements,
+		FieldType:   fieldType,
 	}
+}
+
+func (k KnxNetIpDeviceMemoryAddressPlcField) GetAddressString() string {
+	return fmt.Sprintf("%d/%d/%d#%d:%s[%d]",
+		k.MainGroup, k.MiddleGroup, k.SubGroup, k.Address, k.FieldType.String(), k.NumElements)
 }
 
 func (k KnxNetIpDeviceMemoryAddressPlcField) GetTypeName() string {
@@ -340,7 +367,7 @@ func (k KnxNetIpDeviceMemoryAddressPlcField) GetFieldType() *driverModel.KnxData
 }
 
 func (k KnxNetIpDeviceMemoryAddressPlcField) GetQuantity() uint16 {
-	return uint16(k.NumberOfElements)
+	return uint16(k.NumElements)
 }
 
 func (k KnxNetIpDeviceMemoryAddressPlcField) toKnxAddress() *driverModel.KnxAddress {
@@ -365,6 +392,11 @@ func NewKnxNetIpCommunicationObjectQueryField(mainGroup uint8, middleGroup uint8
 		MiddleGroup: middleGroup,
 		SubGroup:    subGroup,
 	}
+}
+
+func (k KnxNetIpCommunicationObjectQueryField) GetAddressString() string {
+	return fmt.Sprintf("%d.%d.%d#com-obj",
+		k.MainGroup, k.MiddleGroup, k.SubGroup)
 }
 
 func (k KnxNetIpCommunicationObjectQueryField) GetTypeName() string {

@@ -47,8 +47,8 @@ func main() {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
-	rrb.AddItem("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
+	rrb.AddQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
+	rrb.AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())

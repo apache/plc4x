@@ -47,7 +47,7 @@ func main() {
 
 	// Prepare a write-request
 	wrb := connection.WriteRequestBuilder()
-	wrb.AddItem("field", "holding-register:26:REAL", 2.7182818284)
+	wrb.AddQuery("field", "holding-register:26:REAL", 2.7182818284)
 	writeRequest, err := wrb.Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())

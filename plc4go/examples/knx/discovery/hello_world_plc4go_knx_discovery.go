@@ -56,14 +56,15 @@ func main() {
 		browseRequestBuilder := connection.BrowseRequestBuilder()
 		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
 		browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
-		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.50")
+		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.5")
 		browseRequest, err := browseRequestBuilder.Build()
 		if err != nil {
 			log.Errorf("error creating browse request: %s", err.Error())
 			return
 		}
 		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-			knxAddress := result.Result.Address
+			knxField := result.Result.Field
+			knxAddress := knxField.GetAddressString()
 			log.Info("Inspecting detected Device at KNX Address: " + knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
@@ -81,13 +82,28 @@ func main() {
 				return false
 			}
 			for _, result := range browseResult.Response.GetQueryResults("comObjects") {
-				log.Infof(" - %s", result.Address)
+				permissions := ""
+				if result.Readable {
+					permissions += "R"
+				} else {
+					permissions += " "
+				}
+				if result.Writable {
+					permissions += "W"
+				} else {
+					permissions += " "
+				}
+				if result.Subscribable {
+					permissions += "S"
+				} else {
+					permissions += " "
+				}
+				log.Infof(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
 			}
 
 			readRequestBuilder := connection.ReadRequestBuilder()
-			//readRequestBuilder.AddItem("manufacturerId", knxAddress+"#0/12")
-			readRequestBuilder.AddItem("applicationProgramVersion", knxAddress+"#3/13")
-			readRequestBuilder.AddItem("interfaceProgramVersion", knxAddress+"#4/13")
+			readRequestBuilder.AddQuery("applicationProgramVersion", knxAddress+"#3/13")
+			readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddress+"#4/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
 				log.Error("Error creating read request for scanning " + knxAddress)

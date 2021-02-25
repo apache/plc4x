@@ -1116,13 +1116,42 @@
     // TODO: Implement
 ]
 
+// AKA: System 7
+// It seems that these devices generally define their own format.
+// From having a look at the memory, it looks as if in this case
+// at the address of the ComObjectTable, there's one byte indicating
+// the total number of entries. This seems to be followed by a 2-byte
+// Address and then by the entries themselves. Each entry seems to
+// be 4 bytes long.
+[type 'GroupObjectDescriptorRealisationType7'
+    // No idea, what this is, it's sort of just always 0x07
+    [reserved uint 8              '0x07']
+    // Offset of the value memory start address
+    [simple   uint 8              'dataOffset']
+    [simple   bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple   bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple   bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple   bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple   bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple   bit                 'communicationEnable']
+    // Transmission priority
+    [simple   CEMIPriority        'priority']
+    [simple   ComObjectValueType  'valueType']
+]
+
 // 03_05_01 Resources v01.09.03 AS page 194ff
 // AKA: System B
 // This format isn't explicitly described in the spec,
 // however when having a look at the payload in WireShark
 // if looks as if it's simply the realization type 1 or 2
 // without the leading 'dataPointer' field.
-[type 'GroupObjectDescriptorRealisationType7'
+[type 'GroupObjectDescriptorRealisationTypeB'
     [simple bit                 'updateEnable']
     // The com object emits GroupValueWrites if the internal value changes
     [simple bit                 'transmitEnable']
