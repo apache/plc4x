@@ -1124,10 +1124,8 @@
 // Address and then by the entries themselves. Each entry seems to
 // be 4 bytes long.
 [type 'GroupObjectDescriptorRealisationType7'
-    // No idea, what this is, it's sort of just always 0x07
-    [reserved uint 8              '0x07']
     // Offset of the value memory start address
-    [simple   uint 8              'dataOffset']
+    [simple   uint 16             'dataAddress']
     [simple   bit                 'updateEnable']
     // The com object emits GroupValueWrites if the internal value changes
     [simple   bit                 'transmitEnable']

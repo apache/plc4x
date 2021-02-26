@@ -1,3 +1,22 @@
+/*
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+
 package org.apache.plc4x.protocol.knxnetip;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -12,7 +31,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.plc4x.protocol.knxnetip.handlers.ManufacturerIdsHandler;
-import org.apache.plc4x.protocol.knxnetip.handlers.ProductDescriptionHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
@@ -26,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class KnxNetIpMetadataGenerator {
+public class KnxSpecificationStoreUpdater {
 
     /**
      * Description of the KNX Foundation Webservice: http://onlinecatalog.knx.org/Download/help
@@ -150,20 +168,9 @@ public class KnxNetIpMetadataGenerator {
                                     if (fileName.startsWith(expectedPrefix)) {
                                         File productFile = new File(manufacturerDirectory, fileName.substring(fileName.indexOf('/') + 1));
                                         FileUtils.copyInputStreamToFile(zis, productFile);
-
-                                        SAXParserFactory factory = SAXParserFactory.newInstance();
-                                        SAXParser saxParser = factory.newSAXParser();
-                                        ProductDescriptionHandler handler = new ProductDescriptionHandler();
-                                        saxParser.parse(productFile, handler);
-                                        if (handler.getComObjectTableAddress() != null) {
-                                            comObjectTableStartAddresses.put(productCode, handler.getComObjectTableAddress());
-                                            System.out.printf("%s: %04X\n", productCode, handler.getComObjectTableAddress());
-                                        }
                                         break;
                                     }
                                 }
-                            } catch (SAXException | ParserConfigurationException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -172,8 +179,6 @@ public class KnxNetIpMetadataGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }

@@ -142,6 +142,13 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.M
 			return nil, errors.New("error unmarshalling xml: " + err.Error())
 		}
 		return obj, nil
+	case "GroupObjectDescriptorRealisationTypeB":
+		var obj *model.GroupObjectDescriptorRealisationTypeB
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
 	case "CEMIAdditionalInformation":
 		var obj *model.CEMIAdditionalInformation
 		err := xml.Unmarshal([]byte(xmlString), &obj)
