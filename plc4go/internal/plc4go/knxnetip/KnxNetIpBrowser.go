@@ -19,6 +19,7 @@
 package knxnetip
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
@@ -382,7 +383,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				comObjectSettings := readResult.Response.GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
 				data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
 				rb := utils.NewReadBuffer(data)
-				descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(rb)
+				descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(rb)
 				if err != nil {
 					log.Infof("error parsing com object descriptor: %s", err.Error())
 					continue
@@ -425,9 +426,106 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	} else if (b.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
 		// Com Object Table is programmatically, so we have to lookup the address which is extracted from the XML data
-		// Provided by the manufacturer.
+		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
+		// version from the device first.
 
-		return nil, nil
+		readRequestBuilder := b.connection.ReadRequestBuilder()
+		readRequestBuilder.AddQuery("applicationProgramVersion", knxAddressString+"#3/13")
+		readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddressString+"#4/13")
+		readRequest, err := readRequestBuilder.Build()
+		if err != nil {
+			return nil, errors.New("error creating read request: " + err.Error())
+		}
+
+		rrr := readRequest.Execute()
+		readRequestResult := <-rrr
+		readResponse := readRequestResult.Response
+		var programVersionData []byte
+		if readResponse.GetResponseCode("applicationProgramVersion") == apiModel.PlcResponseCode_OK {
+			programVersionData = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("applicationProgramVersion"))
+		} else if readResponse.GetResponseCode("interfaceProgramVersion") == apiModel.PlcResponseCode_OK {
+			programVersionData = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("interfaceProgramVersion"))
+		}
+		applicationId := hex.EncodeToString(programVersionData)
+
+		// Lookup the com object table address
+		comObjectTableAddresses := driverModel.ComObjectTableAddressesByName("DEV" + strings.ToUpper(applicationId))
+		if comObjectTableAddresses == 0 {
+			return nil, errors.New("error getting com address table address. No table entry for application id: " + applicationId)
+		}
+
+		readRequestBuilder = b.connection.ReadRequestBuilder()
+		// Read data for all com objects that are assigned a group address
+		groupAddressMap := map[uint16]*driverModel.KnxGroupAddress{}
+		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
+			groupAddressMap[comObjectNumber] = groupAddress
+			entryAddress := comObjectTableAddresses.ComObjectTableAddress() + 3 + (comObjectNumber * 4)
+			readRequestBuilder.AddQuery(strconv.Itoa(int(comObjectNumber)),
+				fmt.Sprintf("%s#%X:USINT[4]", knxAddressString, entryAddress))
+		}
+		//readRequestBuilder.AddQuery("cot", fmt.Sprintf("%s#43FF:USINT[100]", knxAddressString))
+		readRequest, err = readRequestBuilder.Build()
+		if err != nil {
+			return nil, errors.New("error creating read request: " + err.Error())
+		}
+		rrr = readRequest.Execute()
+		readResult = <-rrr
+
+		for _, fieldName := range readResult.Response.GetFieldNames() {
+			array := utils.PlcValueUint8ListToByteArray(readResult.Response.GetValue(fieldName))
+			rb := utils.NewReadBuffer(array)
+			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(rb)
+			if err != nil {
+				return nil, errors.New("error creating read request: " + err.Error())
+			}
+
+			// We saved the com object number in the field name.
+			comObjectNumber, _ := strconv.Atoi(fieldName)
+			groupAddress := groupAddressMap[uint16(comObjectNumber)]
+			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
+			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
+			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
+			// Find a matching datatype for the given value-type.
+			fieldType := b.getFieldTypeForValueType(descriptor.ValueType)
+
+			// Create a field for the given input.
+			field := b.getFieldForGroupAddress(groupAddress, fieldType)
+
+			results = append(results, apiModel.PlcBrowseQueryResult{
+				Field:             field,
+				Name:              fmt.Sprintf("#%d", comObjectNumber),
+				Readable:          readable,
+				Writable:          writable,
+				Subscribable:      subscribable,
+				PossibleDataTypes: nil,
+			})
+		}
+		// da 0700
+		// 0:07db1300 1:07dc4300 2:07dd1300 3:07de1300 4:07df1300
+		// 5:07e01300 6:07e11300 7:07e21300 8:07e31300 9:07e40b0a
+		// 10: 07e81700 07e91300 07ea1300 07eb1300 07ec1300
+		// 07ed1307 07ee1307 07ef4307 07f04300 07f11308
+		// 07f31300 07f44308 07f64300 07f71300 07
+		//
+		/*
+		   106: 856177
+		   184: 8B0177
+		   36: 86170
+		   166: 89C170
+		   132: 874177
+		   80: 838177
+		   88: 842170
+		   158: 892177
+		   210: 8CE177
+		   62: 824170
+		   10: 7E8170
+		   192: 8BA170
+		   114: 860170
+		   28: 7FC177
+		   140: 87E170
+		   54: 81A177
+
+		*/
 	} else {
 		readRequestBuilder = b.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
@@ -536,6 +634,33 @@ func (m KnxNetIpBrowser) parseAssociationTable(deviceDescriptor uint16, knxGroup
 		return groupAddress, comObjectNumber
 	}
 	return nil, 0
+}
+
+func (m KnxNetIpBrowser) getFieldForGroupAddress(groupAddress *driverModel.KnxGroupAddress, datatype driverModel.KnxDatapointType) apiModel.PlcField {
+	switch groupAddress.Child.(type) {
+	case *driverModel.KnxGroupAddress3Level:
+		groupAddress3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
+		return KnxNetIpGroupAddress3LevelPlcField{
+			MainGroup:   strconv.Itoa(int(groupAddress3Level.MainGroup)),
+			MiddleGroup: strconv.Itoa(int(groupAddress3Level.MiddleGroup)),
+			SubGroup:    strconv.Itoa(int(groupAddress3Level.SubGroup)),
+			FieldType:   &datatype,
+		}
+	case *driverModel.KnxGroupAddress2Level:
+		groupAddress2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
+		return KnxNetIpGroupAddress2LevelPlcField{
+			MainGroup: strconv.Itoa(int(groupAddress2Level.MainGroup)),
+			SubGroup:  strconv.Itoa(int(groupAddress2Level.SubGroup)),
+			FieldType: &datatype,
+		}
+	case *driverModel.KnxGroupAddressFreeLevel:
+		groupAddress1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
+		return KnxNetIpGroupAddress1LevelPlcField{
+			MainGroup: strconv.Itoa(int(groupAddress1Level.SubGroup)),
+			FieldType: &datatype,
+		}
+	}
+	return nil
 }
 
 func (m KnxNetIpBrowser) getFieldTypeForValueType(valueType driverModel.ComObjectValueType) driverModel.KnxDatapointType {

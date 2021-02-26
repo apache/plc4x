@@ -26,8 +26,7 @@ import (
 )
 
 // The data-structure of this message
-type GroupObjectDescriptorRealisationType7 struct {
-	DataAddress           uint16
+type GroupObjectDescriptorRealisationTypeB struct {
 	UpdateEnable          bool
 	TransmitEnable        bool
 	SegmentSelectorEnable bool
@@ -36,27 +35,27 @@ type GroupObjectDescriptorRealisationType7 struct {
 	CommunicationEnable   bool
 	Priority              CEMIPriority
 	ValueType             ComObjectValueType
-	IGroupObjectDescriptorRealisationType7
+	IGroupObjectDescriptorRealisationTypeB
 }
 
 // The corresponding interface
-type IGroupObjectDescriptorRealisationType7 interface {
+type IGroupObjectDescriptorRealisationTypeB interface {
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
 }
 
-func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationType7 {
-	return &GroupObjectDescriptorRealisationType7{DataAddress: dataAddress, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
+func NewGroupObjectDescriptorRealisationTypeB(updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationTypeB {
+	return &GroupObjectDescriptorRealisationTypeB{UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
 }
 
-func CastGroupObjectDescriptorRealisationType7(structType interface{}) *GroupObjectDescriptorRealisationType7 {
-	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationType7 {
-		if casted, ok := typ.(GroupObjectDescriptorRealisationType7); ok {
+func CastGroupObjectDescriptorRealisationTypeB(structType interface{}) *GroupObjectDescriptorRealisationTypeB {
+	castFunc := func(typ interface{}) *GroupObjectDescriptorRealisationTypeB {
+		if casted, ok := typ.(GroupObjectDescriptorRealisationTypeB); ok {
 			return &casted
 		}
-		if casted, ok := typ.(*GroupObjectDescriptorRealisationType7); ok {
+		if casted, ok := typ.(*GroupObjectDescriptorRealisationTypeB); ok {
 			return casted
 		}
 		return nil
@@ -64,15 +63,12 @@ func CastGroupObjectDescriptorRealisationType7(structType interface{}) *GroupObj
 	return castFunc(structType)
 }
 
-func (m *GroupObjectDescriptorRealisationType7) GetTypeName() string {
-	return "GroupObjectDescriptorRealisationType7"
+func (m *GroupObjectDescriptorRealisationTypeB) GetTypeName() string {
+	return "GroupObjectDescriptorRealisationTypeB"
 }
 
-func (m *GroupObjectDescriptorRealisationType7) LengthInBits() uint16 {
+func (m *GroupObjectDescriptorRealisationTypeB) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
-	// Simple field (dataAddress)
-	lengthInBits += 16
 
 	// Simple field (updateEnable)
 	lengthInBits += 1
@@ -101,17 +97,11 @@ func (m *GroupObjectDescriptorRealisationType7) LengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *GroupObjectDescriptorRealisationType7) LengthInBytes() uint16 {
+func (m *GroupObjectDescriptorRealisationTypeB) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType7Parse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
-
-	// Simple Field (dataAddress)
-	dataAddress, _dataAddressErr := io.ReadUint16(16)
-	if _dataAddressErr != nil {
-		return nil, errors.New("Error parsing 'dataAddress' field " + _dataAddressErr.Error())
-	}
+func GroupObjectDescriptorRealisationTypeBParse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationTypeB, error) {
 
 	// Simple Field (updateEnable)
 	updateEnable, _updateEnableErr := io.ReadBit()
@@ -162,17 +152,10 @@ func GroupObjectDescriptorRealisationType7Parse(io *utils.ReadBuffer) (*GroupObj
 	}
 
 	// Create the instance
-	return NewGroupObjectDescriptorRealisationType7(dataAddress, updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
+	return NewGroupObjectDescriptorRealisationTypeB(updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
 }
 
-func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) error {
-
-	// Simple Field (dataAddress)
-	dataAddress := uint16(m.DataAddress)
-	_dataAddressErr := io.WriteUint16(16, (dataAddress))
-	if _dataAddressErr != nil {
-		return errors.New("Error serializing 'dataAddress' field " + _dataAddressErr.Error())
-	}
+func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (updateEnable)
 	updateEnable := bool(m.UpdateEnable)
@@ -231,7 +214,7 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 	return nil
 }
 
-func (m *GroupObjectDescriptorRealisationType7) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+func (m *GroupObjectDescriptorRealisationTypeB) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	for {
@@ -246,12 +229,6 @@ func (m *GroupObjectDescriptorRealisationType7) UnmarshalXML(d *xml.Decoder, sta
 		case xml.StartElement:
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
-			case "dataAddress":
-				var data uint16
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.DataAddress = data
 			case "updateEnable":
 				var data bool
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -305,14 +282,11 @@ func (m *GroupObjectDescriptorRealisationType7) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
-func (m *GroupObjectDescriptorRealisationType7) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	className := "org.apache.plc4x.java.knxnetip.readwrite.GroupObjectDescriptorRealisationType7"
+func (m *GroupObjectDescriptorRealisationTypeB) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	className := "org.apache.plc4x.java.knxnetip.readwrite.GroupObjectDescriptorRealisationTypeB"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
 		{Name: xml.Name{Local: "className"}, Value: className},
 	}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.DataAddress, xml.StartElement{Name: xml.Name{Local: "dataAddress"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.UpdateEnable, xml.StartElement{Name: xml.Name{Local: "updateEnable"}}); err != nil {

@@ -70,6 +70,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
 		return model.DeviceStatusParse(io)
 	case "IPAddress":
 		return model.IPAddressParse(io)
+	case "GroupObjectDescriptorRealisationTypeB":
+		return model.GroupObjectDescriptorRealisationTypeBParse(io)
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
