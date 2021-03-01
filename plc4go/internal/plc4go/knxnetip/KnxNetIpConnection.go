@@ -950,7 +950,7 @@ func (m *KnxNetIpConnection) sendGroupAddressReadRequest(groupAddress []int8, da
 			// Parse the response data.
 			rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
 			// If the size of the field is greater than 6, we have to skip the first byte
-			if datapointType.LengthInBits() > 6 {
+			if datapointType.DatapointMainType().SizeInBits() > 6 {
 				_, _ = rb.ReadUint8(8)
 			}
 			if *datapointType == driverModel.KnxDatapointType_DPT_UNKNOWN {
