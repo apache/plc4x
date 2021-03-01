@@ -221,7 +221,7 @@
             <xsl:call-template name="getDatapointTypeId">
                 <xsl:with-param name="contextNode" select="."/>
             </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="position() + 4"/>' <xsl:value-of select="$datapointTypeId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="@SizeInBit"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position() + 5"/>' <xsl:value-of select="$datapointTypeId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="@SizeInBit"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:DatapointSubtype">
