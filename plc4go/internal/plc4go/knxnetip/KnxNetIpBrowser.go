@@ -278,11 +278,11 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	rrr = readRequest.Execute()
 	readResult = <-rrr
 	if readResult.Err != nil {
-		return nil, errors.New("error reading the group address association table content: " + readResult.Err.Error())
+		return nil, errors.New("error reading the group address association table address: " + readResult.Err.Error())
 	}
 	if (readResult.Response != nil) &&
 		(readResult.Response.GetResponseCode("groupAddressAssociationTableAddress") != apiModel.PlcResponseCode_OK) {
-		return nil, errors.New("error reading the group address association table content: " +
+		return nil, errors.New("error reading the group address association table address: " +
 			readResult.Response.GetResponseCode("groupAddressAssociationTableAddress").GetName())
 	}
 	groupAddressAssociationTableAddress := readResult.Response.GetValue("groupAddressAssociationTableAddress").GetUint16()
@@ -456,14 +456,16 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 		readRequestBuilder = b.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
-		groupAddressMap := map[uint16]*driverModel.KnxGroupAddress{}
+		groupAddressMap := map[uint16][]*driverModel.KnxGroupAddress{}
 		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
-			groupAddressMap[comObjectNumber] = groupAddress
+			if groupAddressMap[comObjectNumber] == nil {
+				groupAddressMap[comObjectNumber] = []*driverModel.KnxGroupAddress{}
+			}
+			groupAddressMap[comObjectNumber] = append(groupAddressMap[comObjectNumber], groupAddress)
 			entryAddress := comObjectTableAddresses.ComObjectTableAddress() + 3 + (comObjectNumber * 4)
 			readRequestBuilder.AddQuery(strconv.Itoa(int(comObjectNumber)),
 				fmt.Sprintf("%s#%X:USINT[4]", knxAddressString, entryAddress))
 		}
-		//readRequestBuilder.AddQuery("cot", fmt.Sprintf("%s#43FF:USINT[100]", knxAddressString))
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
 			return nil, errors.New("error creating read request: " + err.Error())
@@ -481,24 +483,26 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 			// We saved the com object number in the field name.
 			comObjectNumber, _ := strconv.Atoi(fieldName)
-			groupAddress := groupAddressMap[uint16(comObjectNumber)]
+			groupAddresses := groupAddressMap[uint16(comObjectNumber)]
 			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
 			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
 			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
 			// Find a matching datatype for the given value-type.
 			fieldType := b.getFieldTypeForValueType(descriptor.ValueType)
 
-			// Create a field for the given input.
-			field := b.getFieldForGroupAddress(groupAddress, fieldType)
+			// Create a field for each of the given inputs.
+			for _, groupAddress := range groupAddresses {
+				field := b.getFieldForGroupAddress(groupAddress, fieldType)
 
-			results = append(results, apiModel.PlcBrowseQueryResult{
-				Field:             field,
-				Name:              fmt.Sprintf("#%d", comObjectNumber),
-				Readable:          readable,
-				Writable:          writable,
-				Subscribable:      subscribable,
-				PossibleDataTypes: nil,
-			})
+				results = append(results, apiModel.PlcBrowseQueryResult{
+					Field:             field,
+					Name:              fmt.Sprintf("#%d", comObjectNumber),
+					Readable:          readable,
+					Writable:          writable,
+					Subscribable:      subscribable,
+					PossibleDataTypes: nil,
+				})
+			}
 		}
 		// da 0700
 		// 0:07db1300 1:07dc4300 2:07dd1300 3:07de1300 4:07df1300
