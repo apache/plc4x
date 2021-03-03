@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
+	"time"
 )
 
 func main() {
@@ -45,23 +46,27 @@ func main() {
 	// Make sure the connection is closed at the end
 	defer connection.BlockingClose()
 
-	// Prepare a read-request
-	rrb := connection.ReadRequestBuilder()
-	rrb.AddQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
-	rrb.AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
-	readRequest, err := rrb.Build()
+	// Prepare a subscription-request
+	srb := connection.SubscriptionRequestBuilder()
+	//	srb.AddChangeOfStateQuery("all", "*/*/*")
+	srb.AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
+	srb.AddChangeOfStateQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
+	srb.AddItemHandler(func(event model.PlcSubscriptionEvent) {
+		fmt.Printf("Got event %v\n", event)
+	})
+	subscriptionRequest, err := srb.Build()
 	if err != nil {
-		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing subscription-request: %s", connectionResult.Err.Error())
 		return
 	}
 
-	// Execute a read-request
-	rrc := readRequest.Execute()
+	// Execute a subscription-request
+	rrc := subscriptionRequest.Execute()
 
 	// Wait for the response to finish
 	rrr := <-rrc
 	if rrr.Err != nil {
-		fmt.Printf("error executing read-request: %s", rrr.Err.Error())
+		fmt.Printf("error executing subscription-request: %s", rrr.Err.Error())
 		return
 	}
 
@@ -71,16 +76,7 @@ func main() {
 			fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
 			continue
 		}
-
-		value := rrr.Response.GetValue(fieldName)
-		if value != nil {
-			fmt.Printf("Got nil for field %s\n", fieldName)
-		} else if value.GetStruct() != nil {
-			for address, structValue := range value.GetStruct() {
-				fmt.Printf("Got result for field %s with address: %s: %s °C\n", fieldName, address, structValue.GetString())
-			}
-		} else {
-			fmt.Printf("Got result for field %s: %s °C\n", fieldName, value.GetString())
-		}
 	}
+
+	time.Sleep(time.Minute * 5)
 }

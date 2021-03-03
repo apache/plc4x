@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"time"
@@ -120,18 +121,37 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 						if groupAddressField.GetFieldType().LengthInBits() > 6 {
 							_, _ = rb.ReadUint8(8)
 						}
-						plcValue, err2 := driverModel.KnxDatapointParse(rb, *groupAddressField.GetFieldType())
+						elementType := *groupAddressField.GetFieldType()
+						numElements := groupAddressField.GetQuantity()
+						if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
+							elementType = driverModel.KnxDatapointType_BYTE
+							numElements = uint16(rb.GetTotalBytes()) - rb.GetPos()
+						}
+
 						fields[fieldName] = field
 						types[fieldName] = subscriptionRequest.GetType(fieldName)
 						intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
 						addresses[fieldName] = destinationAddress
-						if err2 == nil {
-							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-							plcValues[fieldName] = plcValue
-						} else {
-							// TODO: Do a little more here ...
-							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
-							plcValues[fieldName] = nil
+
+						var values []values.PlcValue
+						responseCode := apiModel.PlcResponseCode_OK
+						for i := uint16(0); i < numElements; i++ {
+							plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
+							if err2 == nil {
+								values = append(values, plcValue)
+							} else {
+								// TODO: Do a little more here ...
+								responseCode = apiModel.PlcResponseCode_INTERNAL_ERROR
+								break
+							}
+						}
+						responseCodes[fieldName] = responseCode
+						if responseCode == apiModel.PlcResponseCode_OK {
+							if len(values) == 1 {
+								plcValues[fieldName] = values[0]
+							} else {
+								plcValues[fieldName] = values2.NewPlcList(values)
+							}
 						}
 					}
 				}
