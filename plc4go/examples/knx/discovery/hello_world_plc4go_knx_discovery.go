@@ -55,8 +55,8 @@ func main() {
 		// Try to find all KNX devices on the current network
 		browseRequestBuilder := connection.BrowseRequestBuilder()
 		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
-		browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
-		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.5")
+		//browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
+		browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
 		browseRequest, err := browseRequestBuilder.Build()
 		if err != nil {
 			log.Errorf("error creating browse request: %s", err.Error())

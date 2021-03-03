@@ -28,7 +28,7 @@ type PlcList struct {
 	PlcValueAdapter
 }
 
-func NewPlcList(values []api.PlcValue) PlcList {
+func NewPlcList(values []api.PlcValue) api.PlcValue {
 	return PlcList{
 		Values: values,
 	}

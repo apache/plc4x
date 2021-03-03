@@ -504,32 +504,6 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				})
 			}
 		}
-		// da 0700
-		// 0:07db1300 1:07dc4300 2:07dd1300 3:07de1300 4:07df1300
-		// 5:07e01300 6:07e11300 7:07e21300 8:07e31300 9:07e40b0a
-		// 10: 07e81700 07e91300 07ea1300 07eb1300 07ec1300
-		// 07ed1307 07ee1307 07ef4307 07f04300 07f11308
-		// 07f31300 07f44308 07f64300 07f71300 07
-		//
-		/*
-		   106: 856177
-		   184: 8B0177
-		   36: 86170
-		   166: 89C170
-		   132: 874177
-		   80: 838177
-		   88: 842170
-		   158: 892177
-		   210: 8CE177
-		   62: 824170
-		   10: 7E8170
-		   192: 8BA170
-		   114: 860170
-		   28: 7FC177
-		   140: 87E170
-		   54: 81A177
-
-		*/
 	} else {
 		readRequestBuilder = b.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
@@ -692,18 +666,22 @@ func (m KnxNetIpBrowser) getFieldTypeForValueType(valueType driverModel.ComObjec
 	case driverModel.ComObjectValueType_BYTE1:
 		return driverModel.KnxDatapointType_USINT
 	case driverModel.ComObjectValueType_BYTE2:
-		return driverModel.KnxDatapointType_USINT
+		return driverModel.KnxDatapointType_UINT
 	case driverModel.ComObjectValueType_BYTE3:
-		return driverModel.KnxDatapointType_USINT
+		return driverModel.KnxDatapointType_UDINT
 	case driverModel.ComObjectValueType_BYTE4:
 		return driverModel.KnxDatapointType_UDINT
 	case driverModel.ComObjectValueType_BYTE6:
+		// Will be an array
 		return driverModel.KnxDatapointType_USINT
 	case driverModel.ComObjectValueType_BYTE8:
-		return driverModel.KnxDatapointType_ULINT
+		// Will be an array
+		return driverModel.KnxDatapointType_USINT
 	case driverModel.ComObjectValueType_BYTE10:
+		// Will be an array
 		return driverModel.KnxDatapointType_USINT
 	case driverModel.ComObjectValueType_BYTE14:
+		// Will be an array
 		return driverModel.KnxDatapointType_USINT
 	}
 	// Just return "byte" in any other case.
