@@ -73,6 +73,10 @@ func (m RawPlcValue) RawHasMore() bool {
 	return m.readBuffer.HasMore(1)
 }
 
+func (m RawPlcValue) RawReset() {
+	m.readBuffer.Reset()
+}
+
 func (m RawPlcValue) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcByteArray"}}); err != nil {
 		return err

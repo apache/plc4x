@@ -92,8 +92,12 @@ type PlcValue interface {
    the payload yet. This allows an application to take the raw plc-value and have the payload decoded later.
 */
 type RawPlcValue interface {
+	// Read the internal buffer and parse a value of given type
 	RawDecodeValue(typeName string) PlcValue
+	// If the internal read-buffer has not yet reached the end
 	RawHasMore() bool
+	// Reset the internal read-buffer (For the case that a raw plc-value has to be parsed multiple times)
+	RawReset()
 
 	PlcValue
 }
