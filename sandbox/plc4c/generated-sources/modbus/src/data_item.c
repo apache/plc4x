@@ -36,7 +36,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
-                    unsigned int _reserved = 0;
+                    uint8_t _reserved = 0;
                     _res = plc4c_spi_read_unsigned_byte(io, 7, (uint8_t*) &_reserved);
                     if(_res != OK) {
                         return _res;

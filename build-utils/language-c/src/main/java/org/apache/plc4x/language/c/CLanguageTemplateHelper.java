@@ -178,6 +178,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
      */
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        System.out.println("Type Reference " + typeReference.getClass());
         if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {

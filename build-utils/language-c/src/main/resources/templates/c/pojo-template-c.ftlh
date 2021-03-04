@@ -64,6 +64,7 @@
 #include <stdio.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
+#include "enum_type.h"
 
 <#-- Helper function to get the discriminator for a given enum type constant -->
 <#if helper.isDiscriminatedParentTypeDefinition(type)>
@@ -73,8 +74,16 @@
 const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_discriminators[] = {
     <#if helper.getDiscriminatorValues()?has_content>
         <#list helper.getDiscriminatorValues() as name, typeValues>
+            // ${name}
+
   {/* ${helper.getCTypeName(name)} */
-   <#list typeValues as key, value>.${key} = <#if value??>${value}<#else>-1</#if><#sep>, </#list>}<#sep >,
+   <#list typeValues as key, value>
+       <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[key])>
+       .${key} = <#if value??>${value}<#else>-1</#if><#sep>,
+       <#else>
+       .${key} = <#if value??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${value}<#else>-1</#if><#sep>,
+       </#if>
+   </#list>}<#sep >,
 </#list>
     </#if>
 
@@ -251,11 +260,17 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
+        // Discriminator Field (${discriminatorField.name})
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type>
-
 <#if indentContent>  </#if>  // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getNullValueForTypeReference(discriminatorField.type)};
 <#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(discriminatorField.type, "&" + discriminatorField.name)};
+        <#elseif helper.isEnumField(field)>
+            <#assign simpleTypeReference = discriminatorField.type>
+<#if indentContent>  </#if>  enum ${helper.getLanguageTypeNameForTypeReference(discriminatorField.type)} ${discriminatorField.name};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "&${discriminatorField.name}")};
+        </#if>
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
@@ -385,10 +400,26 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "switch">
             <#assign switchField = field>
-
 <#if indentContent>  </#if>  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-            <#list switchField.cases as case>
-<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+        <#list switchField.cases as case>
+            <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])>
+            <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+            <#else>
+            <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+           </#if>
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    //Hello
+    <#assign discriminatedChildType = type>
+    <#-- @ftlvariable name="discriminatedChildType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition" -->
+    // Accessors for discriminator values.
+    // ${discriminatedChildType}
+    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+        ${discriminatorName}
+    </#list>
+</#if>
+                // ${baseType.name}
+
+
 <#if indentContent>  </#if>    (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};
                 <#list case.fields as caseField>
 <#if indentContent>  </#if>                    <@fieldParser baseType=case field=caseField indentContent=true/>
@@ -463,10 +494,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
+        <#if helper.isSimpleField(field)>
             <#assign simpleTypeReference = discriminatorField.type>
-
 <#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
 <#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
+        <#elseif helper.isEnumField(field)>
+<#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
+        </#if>
             <#break>
         <#case "enum">
             <#assign enumField = field>
@@ -632,10 +667,21 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#break>
             <#case "discriminator">
                 <#assign discriminatorField = field>
-                <#assign simpleTypeReference = discriminatorField.type>
 
-<#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
-<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+        // Discriminator Field (${discriminatorField.name})
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
+            <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+                <#assign simpleTypeReference = discriminatorField.type>
+                lengthInBits += ${simpleTypeReference.getLength()};
+            <#else>
+                <#assign simpleTypeReference = discriminatorField.type>
+                lengthInBits += ${simpleTypeReference.sizeInBits};
+            </#if>
+        <#elseif helper.isEnumField(field)>
+            lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+        <#else>
+            lengthInBits += ${discriminatorField.name}.getLengthInBits();
+        </#if>
                 <#break>
             <#case "enum">
                 <#assign enumField = field>

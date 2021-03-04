@@ -899,6 +899,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public SimpleTypeReference getEnumFieldSimpleTypeReference(TypeReference type, String fieldName) {
         TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(type);
+
         if (typeDefinition instanceof EnumTypeDefinition) {
             if (((EnumTypeDefinition) typeDefinition).getConstantType(fieldName) instanceof SimpleTypeReference) {
                 return (SimpleTypeReference) ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName);

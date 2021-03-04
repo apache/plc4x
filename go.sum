@@ -2,6 +2,10 @@ github.com/ajankovic/xdiff v0.0.1/go.mod h1:SUmEZ67uB97I0zkiuQ+lb+LOms9ipn8X+p+2
 github.com/antchfx/xpath v0.0.0-20170515025933-1f3266e77307/go.mod h1:Yee4kTMuNiPYJ7nSNorELQMr1J33uOpXDMByNYhvtNk=
 github.com/apache/plc4x/plc4go v0.0.0-20210219073003-e296ad46cf80 h1:TyB3rpzdyi3JNBBqhD/34Lzs72te/v/TPKrx5POxOe8=
 github.com/apache/plc4x/plc4go v0.0.0-20210219073003-e296ad46cf80/go.mod h1:ABIKjRX6noeeQA4saOUF9jPwY/58NxTQXW9m8o+xOME=
+github.com/apache/plc4x/plc4go v0.0.0-20210224090025-89ad4b386749 h1:E9ppUWBTELN8sV65e5/bVLYDM9VdLobVVluvPpKKhgU=
+github.com/apache/plc4x/plc4go v0.0.0-20210224090025-89ad4b386749/go.mod h1:ABIKjRX6noeeQA4saOUF9jPwY/58NxTQXW9m8o+xOME=
+github.com/apache/plc4x/plc4go v0.0.0-20210304084621-b47a1b9fff18 h1:9i1fESnDJXlYMBv57sEbnGyZOTpAmd0Mc8R+TgsQ8CU=
+github.com/apache/plc4x/plc4go v0.0.0-20210304084621-b47a1b9fff18/go.mod h1:ABIKjRX6noeeQA4saOUF9jPwY/58NxTQXW9m8o+xOME=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/icza/bitio v1.0.0/go.mod h1:0jGnlLAx8MKMr9VGnn/4YrvZiprkvBelsVIbA9Jjr9A=
 github.com/icza/mighty v0.0.0-20180919140131-cfd07d671de6/go.mod h1:xQig96I1VNBDIWGCdTt54nHt6EeI639SmHycLYL7FkA=
