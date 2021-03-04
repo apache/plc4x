@@ -26,6 +26,7 @@ import (
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"strconv"
 	"time"
 )
 
@@ -128,7 +129,8 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 							numElements = uint16(rb.GetTotalBytes()) - rb.GetPos()
 						}
 
-						fields[fieldName] = field
+						// Replace the potentially patten-field with a concrete version.
+						fields[fieldName] = m.getFieldFromGroupAddress(groupAddress, groupAddressField.GetFieldType())
 						types[fieldName] = subscriptionRequest.GetType(fieldName)
 						intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
 						addresses[fieldName] = destinationAddress
@@ -169,4 +171,31 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 			eventHandler(event)
 		}
 	}
+}
+
+func (m *KnxNetIpSubscriber) getFieldFromGroupAddress(groupAddress *driverModel.KnxGroupAddress, fieldType *driverModel.KnxDatapointType) apiModel.PlcField {
+	if groupAddress == nil {
+		return nil
+	}
+	switch groupAddress.Child.(type) {
+	case *driverModel.KnxGroupAddress3Level:
+		groupAddress3Level := groupAddress.Child.(*driverModel.KnxGroupAddress3Level)
+		return NewKnxNetIpGroupAddress3LevelPlcField(
+			strconv.Itoa(int(groupAddress3Level.MainGroup)),
+			strconv.Itoa(int(groupAddress3Level.MiddleGroup)),
+			strconv.Itoa(int(groupAddress3Level.SubGroup)),
+			fieldType)
+	case *driverModel.KnxGroupAddress2Level:
+		groupAddress2Level := groupAddress.Child.(*driverModel.KnxGroupAddress2Level)
+		return NewKnxNetIpGroupAddress2LevelPlcField(
+			strconv.Itoa(int(groupAddress2Level.MainGroup)),
+			strconv.Itoa(int(groupAddress2Level.SubGroup)),
+			fieldType)
+	case *driverModel.KnxGroupAddressFreeLevel:
+		groupAddress1Level := groupAddress.Child.(*driverModel.KnxGroupAddressFreeLevel)
+		return NewKnxNetIpGroupAddress1LevelPlcField(
+			strconv.Itoa(int(groupAddress1Level.SubGroup)),
+			fieldType)
+	}
+	return nil
 }
