@@ -62,6 +62,8 @@
     </#list>
 </#if>
 
+#include "enum_type.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,7 +80,12 @@ extern "C" {
 struct ${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
-  ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+        <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+            ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+        <#else>
+            enum ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+        </#if>
+
     </#list>
 </#if>
 };

@@ -93,7 +93,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* i
 
                     
     // Simple Field (tpduRef)
-    unsigned int tpduRef = 0;
+    uint8_t tpduRef = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 7, (uint8_t*) &tpduRef);
     if(_res != OK) {
       return _res;

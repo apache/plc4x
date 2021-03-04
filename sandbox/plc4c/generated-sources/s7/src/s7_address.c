@@ -111,7 +111,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
-      unsigned int _reserved = 0;
+      uint8_t _reserved = 0;
       _res = plc4c_spi_read_unsigned_byte(io, 5, (uint8_t*) &_reserved);
       if(_res != OK) {
         return _res;
@@ -134,7 +134,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
 
                     
     // Simple Field (bitAddress)
-    unsigned int bitAddress = 0;
+    uint8_t bitAddress = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 3, (uint8_t*) &bitAddress);
     if(_res != OK) {
       return _res;

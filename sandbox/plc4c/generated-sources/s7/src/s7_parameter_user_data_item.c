@@ -85,7 +85,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
                     
     // Simple Field (cpuFunctionType)
-    unsigned int cpuFunctionType = 0;
+    uint8_t cpuFunctionType = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &cpuFunctionType);
     if(_res != OK) {
       return _res;
@@ -95,7 +95,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
                     
     // Simple Field (cpuFunctionGroup)
-    unsigned int cpuFunctionGroup = 0;
+    uint8_t cpuFunctionGroup = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &cpuFunctionGroup);
     if(_res != OK) {
       return _res;

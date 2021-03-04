@@ -166,20 +166,37 @@
 // Discriminated Type
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'DiscriminatedType'
-    [discriminator uint 8 'discr']
+[discriminatedType 'EnumDiscriminatedType'
+    [discriminator EnumType 'discr']
     [typeSwitch 'discr'
-        ['0x01' DiscriminatedTypeA
+        ['BOOL' DiscriminatedTypeA
             [simple        uint 8 'simpA']
         ]
-        ['0x02' DiscriminatedTypeB
+        ['UINT' DiscriminatedTypeB
             [simple        uint 8 'simpB']
         ]
-        ['0x03' DiscriminatedTypeC
+        ['INT' DiscriminatedTypeC
             [simple        uint 8 'simpC']
         ]
     ]
 ]
+
+[discriminatedType 'SimpleDiscriminatedType'
+    [discriminator uint 8 'discr']
+    [typeSwitch 'discr'
+        ['0x00' DiscriminatedTypeA
+            [simple        uint 8 'simpA']
+        ]
+        ['0x01' DiscriminatedTypeB
+            [simple        uint 8 'simpB']
+        ]
+        ['0x02' DiscriminatedTypeC
+            [simple        uint 8 'simpC']
+        ]
+    ]
+]
+
+
 
 ////////////////////////////////////////////////////////////////
 // Arguments Type
@@ -192,8 +209,9 @@
 
 
 [enum uint 8 'EnumType'
-    ['1' BOOL]
-    ['2' UINT]
+    ['0x01' BOOL]
+    ['0x02' UINT]
+    ['0x03' INT]
 ]
 
 
