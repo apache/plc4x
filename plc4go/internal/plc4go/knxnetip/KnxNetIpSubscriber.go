@@ -26,7 +26,6 @@ import (
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	"strconv"
 	"time"
 )
 
@@ -124,35 +123,37 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 						}
 						elementType := *groupAddressField.GetFieldType()
 						numElements := groupAddressField.GetQuantity()
-						if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
-							elementType = driverModel.KnxDatapointType_BYTE
-							numElements = uint16(rb.GetTotalBytes()) - rb.GetPos()
-						}
 
-						// Replace the potentially patten-field with a concrete version.
-						fields[fieldName] = m.getFieldFromGroupAddress(groupAddress, groupAddressField.GetFieldType())
+						fields[fieldName] = groupAddressField
 						types[fieldName] = subscriptionRequest.GetType(fieldName)
 						intervals[fieldName] = subscriptionRequest.GetInterval(fieldName)
 						addresses[fieldName] = destinationAddress
 
-						var values []values.PlcValue
+						var plcValueList []values.PlcValue
 						responseCode := apiModel.PlcResponseCode_OK
 						for i := uint16(0); i < numElements; i++ {
-							plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
-							if err2 == nil {
-								values = append(values, plcValue)
+							// If we don't know the datatype, we'll create a RawPlcValue instead
+							// so the application can decode the content later on.
+							if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
+								plcValue := values2.NewRawPlcValue(rb, NewKnxNetIpValueDecoder(rb))
+								plcValueList = append(plcValueList, plcValue)
 							} else {
-								// TODO: Do a little more here ...
-								responseCode = apiModel.PlcResponseCode_INTERNAL_ERROR
-								break
+								plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
+								if err2 == nil {
+									plcValueList = append(plcValueList, plcValue)
+								} else {
+									// TODO: Do a little more here ...
+									responseCode = apiModel.PlcResponseCode_INTERNAL_ERROR
+									break
+								}
 							}
 						}
 						responseCodes[fieldName] = responseCode
 						if responseCode == apiModel.PlcResponseCode_OK {
-							if len(values) == 1 {
-								plcValues[fieldName] = values[0]
+							if len(plcValueList) == 1 {
+								plcValues[fieldName] = plcValueList[0]
 							} else {
-								plcValues[fieldName] = values2.NewPlcList(values)
+								plcValues[fieldName] = values2.NewPlcList(plcValueList)
 							}
 						}
 					}
@@ -171,31 +172,4 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 			eventHandler(event)
 		}
 	}
-}
-
-func (m *KnxNetIpSubscriber) getFieldFromGroupAddress(groupAddress *driverModel.KnxGroupAddress, fieldType *driverModel.KnxDatapointType) apiModel.PlcField {
-	if groupAddress == nil {
-		return nil
-	}
-	switch groupAddress.Child.(type) {
-	case *driverModel.KnxGroupAddress3Level:
-		groupAddress3Level := groupAddress.Child.(*driverModel.KnxGroupAddress3Level)
-		return NewKnxNetIpGroupAddress3LevelPlcField(
-			strconv.Itoa(int(groupAddress3Level.MainGroup)),
-			strconv.Itoa(int(groupAddress3Level.MiddleGroup)),
-			strconv.Itoa(int(groupAddress3Level.SubGroup)),
-			fieldType)
-	case *driverModel.KnxGroupAddress2Level:
-		groupAddress2Level := groupAddress.Child.(*driverModel.KnxGroupAddress2Level)
-		return NewKnxNetIpGroupAddress2LevelPlcField(
-			strconv.Itoa(int(groupAddress2Level.MainGroup)),
-			strconv.Itoa(int(groupAddress2Level.SubGroup)),
-			fieldType)
-	case *driverModel.KnxGroupAddressFreeLevel:
-		groupAddress1Level := groupAddress.Child.(*driverModel.KnxGroupAddressFreeLevel)
-		return NewKnxNetIpGroupAddress1LevelPlcField(
-			strconv.Itoa(int(groupAddress1Level.SubGroup)),
-			fieldType)
-	}
-	return nil
 }
