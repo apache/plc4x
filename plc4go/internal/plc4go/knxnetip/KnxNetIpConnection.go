@@ -1915,7 +1915,6 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 							payload = append(payload, groupValueWrite.Data...)
 
 							m.handleValueCacheUpdate(destinationAddress, payload)
-							// TODO: Continue
 						}
 					default:
 						// If this is an individual address and it is targeted at us, we need to ack that.

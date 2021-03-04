@@ -24,6 +24,8 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"strings"
 	"time"
 )
 
@@ -48,11 +50,37 @@ func main() {
 
 	// Prepare a subscription-request
 	srb := connection.SubscriptionRequestBuilder()
-	//	srb.AddChangeOfStateQuery("all", "*/*/*")
+	// Intentionally catching all without datatype and the temperature values of the first floor with type
+	srb.AddChangeOfStateQuery("all", "*/*/*")
 	srb.AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
-	srb.AddChangeOfStateQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
 	srb.AddItemHandler(func(event model.PlcSubscriptionEvent) {
-		fmt.Printf("Got event %v\n", event)
+		// Iterate over all fields that were triggered in the current event.
+		for _, fieldName := range event.GetFieldNames() {
+			if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
+				address := event.GetAddress(fieldName)
+				value := event.GetValue(fieldName)
+				// If the plc-value was a raw-plcValue, we will try lazily decode the value
+				// In my installation all group addresses ending with "/10" are temperature values,
+				// So if I find a group address ending on that, decode it with a given type name,
+				// If not, simply output it as array of USINT values.
+				switch value.(type) {
+				case values.RawPlcValue:
+					rawValue := value.(values.RawPlcValue)
+					datatypeName := "USINT"
+					if strings.HasSuffix(address, "/10") {
+						datatypeName = "DPT_Value_Temp"
+					}
+					fmt.Printf("Got raw-value event for address %s: ", address)
+					for rawValue.RawHasMore() {
+						value = rawValue.RawDecodeValue(datatypeName)
+						fmt.Printf(" %s", value.GetString())
+					}
+					fmt.Printf("\n")
+				default:
+					fmt.Printf("Got event for address %s: %s\n", address, value.GetString())
+				}
+			}
+		}
 	})
 	subscriptionRequest, err := srb.Build()
 	if err != nil {

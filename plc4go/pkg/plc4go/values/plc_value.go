@@ -86,3 +86,14 @@ type PlcValue interface {
 	GetValue(key string) PlcValue
 	GetStruct() map[string]PlcValue
 }
+
+/*
+   This type is used in cases where the driver doesn't have access to type information and therefore can't decode
+   the payload yet. This allows an application to take the raw plc-value and have the payload decoded later.
+*/
+type RawPlcValue interface {
+	RawDecodeValue(typeName string) PlcValue
+	RawHasMore() bool
+
+	PlcValue
+}
