@@ -74,14 +74,12 @@
 const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_discriminators[] = {
     <#if helper.getDiscriminatorValues()?has_content>
         <#list helper.getDiscriminatorValues() as name, typeValues>
-            // ${name}
-
   {/* ${helper.getCTypeName(name)} */
    <#list typeValues as key, value>
        <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[key])>
-       .${key} = <#if value??>${value}<#else>-1</#if><#sep>,
+    .${key} = <#if value??>${value}<#else>-1</#if><#sep>,
        <#else>
-       .${key} = <#if value??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${value}<#else>-1</#if><#sep>,
+    .${key} = <#if value??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${value}<#else>-1</#if><#sep>,
        </#if>
    </#list>}<#sep >,
 </#list>

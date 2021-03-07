@@ -240,7 +240,17 @@ func (m *${type.name}) LengthInBits() uint16 {
                 <#assign simpleTypeReference = discriminatorField.type>
 
     // Discriminator Field (${discriminatorField.name})
-    lengthInBits += ${simpleTypeReference.sizeInBits}
+                <#if helper.isSimpleTypeReference(simpleTypeReference)>
+                    <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+    lengthInBits += ${simpleTypeReference.getLength()};
+                    <#else>
+    lengthInBits += ${simpleTypeReference.sizeInBits};
+                    </#if>
+                <#elseif helper.isEnumField(discriminatorField)>
+    lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+                <#else>
+    lengthInBits += ${discriminatorField.name}.getLengthInBits();
+                </#if>
                 <#break>
             <#case "enum">
                 <#assign enumField = field>
@@ -439,7 +449,11 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
                 <#assign simpleTypeReference = discriminatorField.type>
 
     // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+            <#if helper.isEnumField(field)>
+    ${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type))}
+            <#else>
     ${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+            </#if>
     if _${discriminatorField.name}Err != nil {
         return nil, errors.New("Error parsing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
     }
@@ -747,7 +761,11 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
     // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
     ${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
+             <#if helper.isEnumField(field)>
+     _${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ")")}
+            <#else>
     _${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")}
+            </#if>
     if _${discriminatorField.name}Err != nil {
         return errors.New("Error serializing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
     }
