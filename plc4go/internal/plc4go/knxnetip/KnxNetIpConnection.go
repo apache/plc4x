@@ -845,7 +845,6 @@ func (m *KnxNetIpConnection) DeviceReadMemory(targetAddress driverModel.KnxAddre
 				// as some devices seem to be sending back less than the
 				// number of bytes specified than the maxApdu.
 				if uint8(len(memoryReadResponse.Data)) < numBytes {
-					// TODO: This is actually not correct ... it should be if the number is less than the ones requested in the current request (not in total)
 					connection.maxApdu = uint16(len(memoryReadResponse.Data) + 3)
 				}
 
