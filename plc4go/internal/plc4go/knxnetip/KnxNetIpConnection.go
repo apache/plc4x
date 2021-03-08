@@ -822,7 +822,6 @@ func (m *KnxNetIpConnection) DeviceReadMemory(targetAddress driverModel.KnxAddre
 
 		// If we successfully got a connection, read the property
 		if connection != nil {
-			numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
 			// Depending on the gateway Max APDU and the device Max APDU, split this up into multiple requests.
 			// An APDU starts with the last 6 bits of the first data byte containing the count
 			// followed by the 16-bit address, so these are already used.
@@ -835,7 +834,8 @@ func (m *KnxNetIpConnection) DeviceReadMemory(targetAddress driverModel.KnxAddre
 				maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
 				maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
 				numElements := uint8(math.Min(float64(remainingRequestElements), float64(maxNumElementsPerRequest)))
-				memoryReadResponse, err := m.sendDeviceMemoryReadRequest(targetAddress, curStartingAddress, numElements, *datapointType)
+				numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
+				memoryReadResponse, err := m.sendDeviceMemoryReadRequest(targetAddress, curStartingAddress, numBytes)
 				if err != nil {
 					return
 				}
@@ -929,8 +929,6 @@ func (m *KnxNetIpConnection) sendGatewaySearchRequest() (*driverModel.SearchResp
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for search response")*/
 	}
 }
 
@@ -974,8 +972,6 @@ func (m *KnxNetIpConnection) sendGatewayConnectionRequest() (*driverModel.Connec
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for connection response")*/
 	}
 }
 
@@ -1020,8 +1016,6 @@ func (m *KnxNetIpConnection) sendGatewayDisconnectionRequest() (*driverModel.Dis
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for disconnect response")*/
 	}
 }
 
@@ -1065,8 +1059,6 @@ func (m *KnxNetIpConnection) sendConnectionStateRequest() (*driverModel.Connecti
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for connection state response")*/
 	}
 }
 
@@ -1135,8 +1127,6 @@ func (m *KnxNetIpConnection) sendGroupAddressReadRequest(groupAddress []int8) (*
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for group address read response")*/
 	}
 }
 
@@ -1211,8 +1201,6 @@ func (m *KnxNetIpConnection) sendDeviceConnectionRequest(targetAddress driverMod
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for device connection response")*/
 	}
 }
 
@@ -1288,8 +1276,6 @@ func (m *KnxNetIpConnection) sendDeviceDisconnectionRequest(targetAddress driver
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for device disconnection response")*/
 	}
 }
 
@@ -1395,8 +1381,6 @@ func (m *KnxNetIpConnection) sendDeviceAuthentication(targetAddress driverModel.
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for device authentication response")*/
 	}
 }
 
@@ -1478,8 +1462,6 @@ func (m *KnxNetIpConnection) sendDeviceDeviceDescriptorReadRequest(targetAddress
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for device descriptor read response")*/
 	}
 }
 
@@ -1569,8 +1551,6 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for device descriptor read response")*/
 	}
 }
 
@@ -1660,15 +1640,12 @@ func (m *KnxNetIpConnection) sendDevicePropertyDescriptionReadRequest(targetAddr
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for property description read response")*/
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numElements uint8, datapointType driverModel.KnxDatapointType) (*driverModel.ApduDataMemoryResponse, error) {
+func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numBytes uint8) (*driverModel.ApduDataMemoryResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	counter := m.getNextCounter(targetAddress)
-	numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
 
 	// Send the property read request and wait for a confirmation that this property is readable.
 	propertyReadRequest := driverModel.NewTunnelingRequest(
@@ -1748,8 +1725,6 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
-		/*case <-time.After(m.defaultTtl):
-		  return nil, errors.New("got timeout waiting for memory read response")*/
 	}
 }
 
