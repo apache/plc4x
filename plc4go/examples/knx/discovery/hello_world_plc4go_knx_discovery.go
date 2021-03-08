@@ -23,7 +23,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"time"
@@ -35,12 +34,11 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 
 	driverManager := plc4go.NewPlcDriverManager()
-	transports.RegisterUdpTransport(driverManager)
 	drivers.RegisterKnxDriver(driverManager)
 
 	// Try to auto-find KNX gateways via broadcast-message discovery
 	driverManager.Discover(func(event model.PlcDiscoveryEvent) {
-		connStr := event.ProtocolCode + /*":" + event.TransportCode +*/ "://" + event.TransportUrl.Host + "?buildingKey=11AA00FF"
+		connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
 		crc := driverManager.GetConnection(connStr)
 
 		// Wait for the driver to connect (or not)
@@ -55,8 +53,8 @@ func main() {
 		// Try to find all KNX devices on the current network
 		browseRequestBuilder := connection.BrowseRequestBuilder()
 		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
-		//browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
-		browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
+		browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
+		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
 		browseRequest, err := browseRequestBuilder.Build()
 		if err != nil {
 			log.Errorf("error creating browse request: %s", err.Error())

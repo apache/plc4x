@@ -116,10 +116,12 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
-		deviceConnections := b.connection.ConnectToDevice(knxAddress)
+		deviceConnections := b.connection.DeviceConnect(knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
-			if deviceConnection != nil {
+			// If the request returned a connection, process it,
+			// otherwise just ignore it.
+			if deviceConnection.connection != nil {
 				queryResult := apiModel.PlcBrowseQueryResult{
 					Field: NewKnxNetIpDeviceQueryField(
 						strconv.Itoa(int(knxAddress.MainGroup)),
@@ -145,7 +147,7 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 					queryResults = append(queryResults, queryResult)
 				}
 
-				deviceDisconnections := b.connection.DisconnectFromDevice(knxAddress)
+				deviceDisconnections := b.connection.DeviceDisconnect(knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
 				case <-time.After(b.connection.defaultTtl * 10):
@@ -169,7 +171,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 	// If we have a building Key, try that to login in order to access protected
 	if b.connection.buildingKey != nil {
-		arr := b.connection.AuthenticateDevice(*knxAddress, b.connection.buildingKey)
+		arr := b.connection.DeviceAuthenticate(*knxAddress, b.connection.buildingKey)
 		<-arr
 	}
 

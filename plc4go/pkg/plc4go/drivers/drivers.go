@@ -22,12 +22,15 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
 func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
 	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	transports.RegisterUdpTransport(driverManager)
 }
 
 func RegisterModbusDriver(driverManager plc4go.PlcDriverManager) {
 	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	transports.RegisterTcpTransport(driverManager)
 }
