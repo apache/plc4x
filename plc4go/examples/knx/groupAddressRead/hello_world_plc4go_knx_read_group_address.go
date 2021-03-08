@@ -23,12 +23,10 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	transports.RegisterUdpTransport(driverManager)
 	drivers.RegisterKnxDriver(driverManager)
 
 	// Get a connection to a remote PLC
@@ -73,7 +71,7 @@ func main() {
 		}
 
 		value := rrr.Response.GetValue(fieldName)
-		if value != nil {
+		if value == nil {
 			fmt.Printf("Got nil for field %s\n", fieldName)
 		} else if value.GetStruct() != nil {
 			for address, structValue := range value.GetStruct() {

@@ -23,7 +23,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strings"
 	"time"
@@ -31,7 +30,6 @@ import (
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	transports.RegisterUdpTransport(driverManager)
 	drivers.RegisterKnxDriver(driverManager)
 
 	// Get a connection to a remote PLC
@@ -60,7 +58,8 @@ func main() {
 				address := event.GetAddress(fieldName)
 				value := event.GetValue(fieldName)
 				// If the plc-value was a raw-plcValue, we will try lazily decode the value
-				// In my installation all group addresses ending with "/10" are temperature values,
+				// In my installation all group addresses ending with "/10" are temperature values
+				// and ending on "/0" are light switch actions.
 				// So if I find a group address ending on that, decode it with a given type name,
 				// If not, simply output it as array of USINT values.
 				switch value.(type) {
@@ -69,11 +68,16 @@ func main() {
 					datatypeName := "USINT"
 					if strings.HasSuffix(address, "/10") {
 						datatypeName = "DPT_Value_Temp"
+					} else if strings.HasSuffix(address, "/0") {
+						datatypeName = "BOOL"
 					}
 					fmt.Printf("Got raw-value event for address %s: ", address)
+					if !rawValue.RawHasMore() {
+						fmt.Printf("nothing")
+					}
 					for rawValue.RawHasMore() {
 						value = rawValue.RawDecodeValue(datatypeName)
-						fmt.Printf(" %s", value.GetString())
+						fmt.Printf(" '%s'", value.GetString())
 					}
 					fmt.Printf("\n")
 				default:

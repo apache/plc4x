@@ -105,13 +105,14 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 				case KnxNetIpDevicePropertyAddressPlcField:
 					propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
 
-					results := m.connection.ReadDeviceProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
+					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
 					case result := <-results:
-						responseCodes[fieldName] = result.returnCode
-						if result.returnCode == apiModel.PlcResponseCode_OK {
+						if result.err == nil {
+							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
 						} else {
+							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
 					case <-time.After(m.connection.defaultTtl):
@@ -120,13 +121,14 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 					}
 				case KnxNetIpDeviceMemoryAddressPlcField:
 					memoryField := field.(KnxNetIpDeviceMemoryAddressPlcField)
-					results := m.connection.ReadDeviceMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
+					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
 					select {
 					case result := <-results:
-						responseCodes[fieldName] = result.returnCode
-						if result.returnCode == apiModel.PlcResponseCode_OK {
+						if result.err == nil {
+							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
 						} else {
+							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
 					case <-time.After(m.connection.defaultTtl):
@@ -183,11 +185,16 @@ func (m KnxNetIpReader) readGroupAddress(field KnxNetIpGroupAddressField) (apiMo
 			select {
 			case readResult := <-rrc:
 				if readResult.value != nil {
-					values[stringAddress] = *readResult.value
-					returnCodes[stringAddress] = readResult.returnCode
+					if readResult.err == nil {
+						returnCodes[stringAddress] = apiModel.PlcResponseCode_OK
+						values[stringAddress] = *readResult.value
+					} else {
+						returnCodes[stringAddress] = apiModel.PlcResponseCode_INTERNAL_ERROR
+						values[stringAddress] = nil
+					}
 				} else {
-					values[stringAddress] = nil
 					returnCodes[stringAddress] = apiModel.PlcResponseCode_NOT_FOUND
+					values[stringAddress] = nil
 				}
 			}
 		} else {

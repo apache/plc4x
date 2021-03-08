@@ -135,6 +135,10 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 							// If we don't know the datatype, we'll create a RawPlcValue instead
 							// so the application can decode the content later on.
 							if elementType == driverModel.KnxDatapointType_DPT_UNKNOWN {
+								// If this is an unknown 1 byte payload, we need the first byte.
+								if !rb.HasMore(1) {
+									rb.Reset()
+								}
 								plcValue := values2.NewRawPlcValue(rb, NewKnxNetIpValueDecoder(rb))
 								plcValueList = append(plcValueList, plcValue)
 							} else {

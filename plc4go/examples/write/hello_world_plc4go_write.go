@@ -23,12 +23,10 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	transports.RegisterTcpTransport(driverManager)
 	drivers.RegisterModbusDriver(driverManager)
 
 	// Get a connection to a remote PLC
