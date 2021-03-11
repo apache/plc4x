@@ -392,7 +392,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (languageTypeName) {
             case "*big.Int":
             case "*big.Float":
-                return "reserved.Cmp("+ getReservedValue(reservedField)+") != 0";
+                return "reserved.Cmp(" + getReservedValue(reservedField) + ") != 0";
             default:
                 return "reserved != " + getReservedValue(reservedField);
         }
@@ -841,6 +841,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (isDiscriminatedParentTypeDefinition()) {
             imports.add("\"reflect\"");
             imports.add("\"strings\"");
+        }
+
+        if (complexTypeDefinition.getFields().stream()
+            .filter(field -> field instanceof TypedField)
+            .map(TypedField.class::cast)
+            .map(TypedField::getType)
+            .filter(type -> type instanceof SimpleTypeReference)
+            .map(SimpleTypeReference.class::cast)
+            .anyMatch((simpleTypeReference) -> simpleTypeReference.getSizeInBits() > 64)) {
+            imports.add("\"math/big\"");
         }
 
         return imports;

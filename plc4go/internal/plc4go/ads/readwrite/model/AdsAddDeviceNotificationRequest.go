@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	log "github.com/sirupsen/logrus"
 	"io"
+	"math/big"
 )
 
 // The data-structure of this message
