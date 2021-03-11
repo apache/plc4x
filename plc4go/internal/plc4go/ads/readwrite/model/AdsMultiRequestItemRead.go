@@ -19,200 +19,202 @@
 package model
 
 import (
-	"encoding/xml"
-	"errors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/xml"
+    "errors"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type AdsMultiRequestItemRead struct {
-	ItemIndexGroup  uint32
-	ItemIndexOffset uint32
-	ItemReadLength  uint32
-	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemRead
+    ItemIndexGroup uint32
+    ItemIndexOffset uint32
+    ItemReadLength uint32
+    Parent *AdsMultiRequestItem
+    IAdsMultiRequestItemRead
 }
 
 // The corresponding interface
 type IAdsMultiRequestItemRead interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsMultiRequestItemRead) IndexGroup() uint32 {
-	return 61568
+    return 61568L
 }
+
 
 func (m *AdsMultiRequestItemRead) InitializeParent(parent *AdsMultiRequestItem) {
 }
 
 func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *AdsMultiRequestItem {
-	child := &AdsMultiRequestItemRead{
-		ItemIndexGroup:  itemIndexGroup,
-		ItemIndexOffset: itemIndexOffset,
-		ItemReadLength:  itemReadLength,
-		Parent:          NewAdsMultiRequestItem(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &AdsMultiRequestItemRead{
+        ItemIndexGroup: itemIndexGroup,
+        ItemIndexOffset: itemIndexOffset,
+        ItemReadLength: itemReadLength,
+        Parent: NewAdsMultiRequestItem(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastAdsMultiRequestItemRead(structType interface{}) *AdsMultiRequestItemRead {
-	castFunc := func(typ interface{}) *AdsMultiRequestItemRead {
-		if casted, ok := typ.(AdsMultiRequestItemRead); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*AdsMultiRequestItemRead); ok {
-			return casted
-		}
-		if casted, ok := typ.(AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemRead(casted.Child)
-		}
-		if casted, ok := typ.(*AdsMultiRequestItem); ok {
-			return CastAdsMultiRequestItemRead(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *AdsMultiRequestItemRead {
+        if casted, ok := typ.(AdsMultiRequestItemRead); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*AdsMultiRequestItemRead); ok {
+            return casted
+        }
+        if casted, ok := typ.(AdsMultiRequestItem); ok {
+            return CastAdsMultiRequestItemRead(casted.Child)
+        }
+        if casted, ok := typ.(*AdsMultiRequestItem); ok {
+            return CastAdsMultiRequestItemRead(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *AdsMultiRequestItemRead) GetTypeName() string {
-	return "AdsMultiRequestItemRead"
+    return "AdsMultiRequestItemRead"
 }
 
 func (m *AdsMultiRequestItemRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	// Simple field (itemIndexGroup)
-	lengthInBits += 32
+    // Simple field (itemIndexGroup)
+    lengthInBits += 32
 
-	// Simple field (itemIndexOffset)
-	lengthInBits += 32
+    // Simple field (itemIndexOffset)
+    lengthInBits += 32
 
-	// Simple field (itemReadLength)
-	lengthInBits += 32
+    // Simple field (itemReadLength)
+    lengthInBits += 32
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *AdsMultiRequestItemRead) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func AdsMultiRequestItemReadParse(io *utils.ReadBuffer) (*AdsMultiRequestItem, error) {
 
-	// Simple Field (itemIndexGroup)
-	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
-	if _itemIndexGroupErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
-	}
+    // Simple Field (itemIndexGroup)
+    itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
+    if _itemIndexGroupErr != nil {
+        return nil, errors.New("Error parsing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+    }
 
-	// Simple Field (itemIndexOffset)
-	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
-	if _itemIndexOffsetErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
-	}
+    // Simple Field (itemIndexOffset)
+    itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
+    if _itemIndexOffsetErr != nil {
+        return nil, errors.New("Error parsing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+    }
 
-	// Simple Field (itemReadLength)
-	itemReadLength, _itemReadLengthErr := io.ReadUint32(32)
-	if _itemReadLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemReadLength' field " + _itemReadLengthErr.Error())
-	}
+    // Simple Field (itemReadLength)
+    itemReadLength, _itemReadLengthErr := io.ReadUint32(32)
+    if _itemReadLengthErr != nil {
+        return nil, errors.New("Error parsing 'itemReadLength' field " + _itemReadLengthErr.Error())
+    }
 
-	// Create a partially initialized instance
-	_child := &AdsMultiRequestItemRead{
-		ItemIndexGroup:  itemIndexGroup,
-		ItemIndexOffset: itemIndexOffset,
-		ItemReadLength:  itemReadLength,
-		Parent:          &AdsMultiRequestItem{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &AdsMultiRequestItemRead{
+        ItemIndexGroup: itemIndexGroup,
+        ItemIndexOffset: itemIndexOffset,
+        ItemReadLength: itemReadLength,
+        Parent: &AdsMultiRequestItem{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (itemIndexGroup)
-		itemIndexGroup := uint32(m.ItemIndexGroup)
-		_itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
-		if _itemIndexGroupErr != nil {
-			return errors.New("Error serializing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
-		}
+    // Simple Field (itemIndexGroup)
+    itemIndexGroup := uint32(m.ItemIndexGroup)
+    _itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
+    if _itemIndexGroupErr != nil {
+        return errors.New("Error serializing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+    }
 
-		// Simple Field (itemIndexOffset)
-		itemIndexOffset := uint32(m.ItemIndexOffset)
-		_itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
-		if _itemIndexOffsetErr != nil {
-			return errors.New("Error serializing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
-		}
+    // Simple Field (itemIndexOffset)
+    itemIndexOffset := uint32(m.ItemIndexOffset)
+    _itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
+    if _itemIndexOffsetErr != nil {
+        return errors.New("Error serializing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+    }
 
-		// Simple Field (itemReadLength)
-		itemReadLength := uint32(m.ItemReadLength)
-		_itemReadLengthErr := io.WriteUint32(32, (itemReadLength))
-		if _itemReadLengthErr != nil {
-			return errors.New("Error serializing 'itemReadLength' field " + _itemReadLengthErr.Error())
-		}
+    // Simple Field (itemReadLength)
+    itemReadLength := uint32(m.ItemReadLength)
+    _itemReadLengthErr := io.WriteUint32(32, (itemReadLength))
+    if _itemReadLengthErr != nil {
+        return errors.New("Error serializing 'itemReadLength' field " + _itemReadLengthErr.Error())
+    }
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *AdsMultiRequestItemRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			case "itemIndexGroup":
-				var data uint32
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.ItemIndexGroup = data
-			case "itemIndexOffset":
-				var data uint32
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.ItemIndexOffset = data
-			case "itemReadLength":
-				var data uint32
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.ItemReadLength = data
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "itemIndexGroup":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ItemIndexGroup = data
+            case "itemIndexOffset":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ItemIndexOffset = data
+            case "itemReadLength":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ItemReadLength = data
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *AdsMultiRequestItemRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.ItemIndexGroup, xml.StartElement{Name: xml.Name{Local: "itemIndexGroup"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ItemIndexOffset, xml.StartElement{Name: xml.Name{Local: "itemIndexOffset"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ItemReadLength, xml.StartElement{Name: xml.Name{Local: "itemReadLength"}}); err != nil {
-		return err
-	}
-	return nil
+    if err := e.EncodeElement(m.ItemIndexGroup, xml.StartElement{Name: xml.Name{Local: "itemIndexGroup"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ItemIndexOffset, xml.StartElement{Name: xml.Name{Local: "itemIndexOffset"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ItemReadLength, xml.StartElement{Name: xml.Name{Local: "itemReadLength"}}); err != nil {
+        return err
+    }
+    return nil
 }
+
