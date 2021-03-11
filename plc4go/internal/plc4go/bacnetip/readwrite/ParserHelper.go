@@ -21,7 +21,6 @@ package readwrite
 import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -30,7 +29,7 @@ import (
 type BacnetipParserHelper struct {
 }
 
-func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "APDU":
 		apduLength, err := utils.StrToUint16(arguments[0])

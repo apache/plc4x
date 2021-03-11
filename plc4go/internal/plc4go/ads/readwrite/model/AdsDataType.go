@@ -27,7 +27,7 @@ import (
 type AdsDataType int8
 
 type IAdsDataType interface {
-	NumBytes() uint8
+	NumBytes() uint16
 	DataFormatName() string
 	Serialize(io utils.WriteBuffer) error
 }
@@ -75,7 +75,7 @@ const (
 	AdsDataType_DT            AdsDataType = 0x28
 )
 
-func (e AdsDataType) NumBytes() uint8 {
+func (e AdsDataType) NumBytes() uint16 {
 	switch e {
 	case 0x01:
 		{ /* '0x01' */

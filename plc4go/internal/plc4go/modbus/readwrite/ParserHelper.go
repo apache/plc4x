@@ -21,7 +21,6 @@ package readwrite
 import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -30,7 +29,7 @@ import (
 type ModbusParserHelper struct {
 }
 
-func (m ModbusParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m ModbusParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(io)

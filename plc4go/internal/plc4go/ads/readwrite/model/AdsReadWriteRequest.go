@@ -157,8 +157,8 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 	// Array field (items)
 	// Count array
-	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_READ.value)))) || bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE.value))))) || bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE.value))))), uint16(indexOffset), uint16(uint16(0))))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_READ.value)))) || bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE.value))))) || bool(bool(bool((indexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE.value))))), uint16(indexOffset), uint16(uint16(0)))); curItem++ {
+	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0))))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0)))); curItem++ {
 		_item, _err := AdsMultiRequestItemParse(io, indexGroup)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())
@@ -215,7 +215,7 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE.value))), uint16(uint32(16)), uint16(uint32(12))))))) + uint32(uint32(len(m.Data))))
+		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), uint16(uint32(16)), uint16(uint32(12))))))) + uint32(uint32(len(m.Data))))
 		_writeLengthErr := io.WriteUint32(32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.New("Error serializing 'writeLength' field " + _writeLengthErr.Error())
