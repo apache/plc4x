@@ -337,7 +337,7 @@
 [discriminatedType 'AdsMultiRequestItem' [uint 32 'indexGroup']
     [typeSwitch 'indexGroup'
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
-        ['61568L' AdsMultiRequestItemRead
+        ['61568' AdsMultiRequestItemRead
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'itemIndexGroup']
             // 4 bytes	Index Offset of the data which should be written.
@@ -346,7 +346,7 @@
             [simple uint 32 'itemReadLength']
         ]
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE
-        ['61569L' AdsMultiRequestItemWrite
+        ['61569' AdsMultiRequestItemWrite
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'itemIndexGroup']
             // 4 bytes	Index Offset of the data which should be written.
@@ -355,7 +355,7 @@
             [simple uint 32 'itemWriteLength']
         ]
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE
-        ['61570L' AdsMultiRequestItemReadWrite
+        ['61570' AdsMultiRequestItemReadWrite
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'itemIndexGroup']
             // 4 bytes	Index Offset of the data which should be written.
