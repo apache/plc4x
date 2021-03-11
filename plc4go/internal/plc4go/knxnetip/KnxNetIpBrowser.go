@@ -49,13 +49,13 @@ func NewKnxNetIpBrowser(connection *KnxNetIpConnection, messageCodec spi.Message
 	}
 }
 
-func (b KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return b.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
+func (m KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
+	return m.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
 		return true
 	})
 }
 
-func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
+func (m KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
 		result <- apiModel.PlcBrowseRequestResult{
@@ -69,7 +69,7 @@ func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 		results := map[string][]apiModel.PlcBrowseQueryResult{}
 		for _, queryName := range browseRequest.GetQueryNames() {
 			queryString := browseRequest.GetQueryString(queryName)
-			field, err := b.connection.fieldHandler.ParseQuery(queryString)
+			field, err := m.connection.fieldHandler.ParseQuery(queryString)
 			if err != nil {
 				sendResult(nil, err)
 				return
@@ -77,7 +77,7 @@ func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 
 			switch field.(type) {
 			case KnxNetIpDeviceQueryField:
-				queryResults, err := b.executeDeviceQuery(field.(KnxNetIpDeviceQueryField), browseRequest, queryName, interceptor)
+				queryResults, err := m.executeDeviceQuery(field.(KnxNetIpDeviceQueryField), browseRequest, queryName, interceptor)
 				if err != nil {
 					// TODO: Return some sort of return code like with the read and write APIs
 					results[queryName] = nil
@@ -85,7 +85,7 @@ func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 					results[queryName] = queryResults
 				}
 			case KnxNetIpCommunicationObjectQueryField:
-				queryResults, err := b.executeCommunicationObjectQuery(field.(KnxNetIpCommunicationObjectQueryField))
+				queryResults, err := m.executeCommunicationObjectQuery(field.(KnxNetIpCommunicationObjectQueryField))
 				if err != nil {
 					// TODO: Return some sort of return code like with the read and write APIs
 					results[queryName] = nil
@@ -102,9 +102,9 @@ func (b KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 	return result
 }
 
-func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
 	// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
-	knxAddresses, err := b.calculateAddresses(field)
+	knxAddresses, err := m.calculateAddresses(field)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
-		deviceConnections := b.connection.DeviceConnect(knxAddress)
+		deviceConnections := m.connection.DeviceConnect(knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
 			// If the request returned a connection, process it,
@@ -147,14 +147,14 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 					queryResults = append(queryResults, queryResult)
 				}
 
-				deviceDisconnections := b.connection.DeviceDisconnect(knxAddress)
+				deviceDisconnections := m.connection.DeviceDisconnect(knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
-				case <-time.After(b.connection.defaultTtl * 10):
+				case <-time.After(m.connection.defaultTtl * 10):
 					// Just ignore this case ...
 				}
 			}
-		case <-time.After(b.connection.defaultTtl):
+		case <-time.After(m.connection.defaultTtl):
 			// In this case the remote was just not responding.
 		}
 		// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
@@ -163,15 +163,15 @@ func (b KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 	return queryResults, nil
 }
 
-func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
 	var results []apiModel.PlcBrowseQueryResult
 
 	knxAddress := field.toKnxAddress()
 	knxAddressString := KnxAddressToString(knxAddress)
 
 	// If we have a building Key, try that to login in order to access protected
-	if b.connection.buildingKey != nil {
-		arr := b.connection.DeviceAuthenticate(*knxAddress, b.connection.buildingKey)
+	if m.connection.buildingKey != nil {
+		arr := m.connection.DeviceAuthenticate(*knxAddress, m.connection.buildingKey)
 		<-arr
 	}
 
@@ -180,7 +180,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// First of all, request the starting address of the group address table
-	readRequestBuilder := b.connection.ReadRequestBuilder()
+	readRequestBuilder := m.connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery("groupAddressTableAddress", knxAddressString+"#1/7")
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
@@ -199,10 +199,10 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 	// Then read one byte at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
-	readRequestBuilder = b.connection.ReadRequestBuilder()
+	readRequestBuilder = m.connection.ReadRequestBuilder()
 	// Depending on the type of device, query an USINT (1 byte) or UINT (2 bytes)
 	// TODO: Do this correctly depending on the device connection device-descriptor
-	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("numberOfAddressTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressTableStartAddress))
 	} else {
@@ -224,7 +224,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	}
 	numGroupAddresses := readResult.Response.GetValue("numberOfAddressTableEntries").GetUint16()
 
-	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		groupAddressTableStartAddress += 2
 	} else {
 		groupAddressTableStartAddress += 3
@@ -237,7 +237,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	}
 
 	// Read the data in the group address table
-	readRequestBuilder = b.connection.ReadRequestBuilder()
+	readRequestBuilder = m.connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery("groupAddressTable",
 		fmt.Sprintf("%s#%X:UINT[%d]", knxAddressString, groupAddressTableStartAddress, numGroupAddresses))
 	readRequest, err = readRequestBuilder.Build()
@@ -270,7 +270,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Now we read the group address association table address
-	readRequestBuilder = b.connection.ReadRequestBuilder()
+	readRequestBuilder = m.connection.ReadRequestBuilder()
 	readRequestBuilder.AddQuery("groupAddressAssociationTableAddress",
 		fmt.Sprintf("%s#2/7", knxAddressString))
 	readRequest, err = readRequestBuilder.Build()
@@ -291,8 +291,8 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 	// Then read one uint16 at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
-	readRequestBuilder = b.connection.ReadRequestBuilder()
-	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	readRequestBuilder = m.connection.ReadRequestBuilder()
+	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("numberOfGroupAddressAssociationTableEntries",
 			fmt.Sprintf("%s#%X:UINT", knxAddressString, groupAddressAssociationTableAddress))
 	} else {
@@ -316,12 +316,12 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	numberOfGroupAddressAssociationTableEntries := readResult.Response.GetValue("numberOfGroupAddressAssociationTableEntries").GetUint16()
 
 	// Read the data in the group address table
-	readRequestBuilder = b.connection.ReadRequestBuilder()
+	readRequestBuilder = m.connection.ReadRequestBuilder()
 	// TODO: This request needs to be automatically split up into multiple requests.
 	// Reasons for splitting up:
 	// - Max APDU Size exceeded
 	// - Max 63 bytes readable in one request, due to max of count field
-	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
 		readRequestBuilder.AddQuery("groupAddressAssociationTable",
 			fmt.Sprintf("%s#%X:UDINT[%d]", knxAddressString, groupAddressAssociationTableAddress+2, numberOfGroupAddressAssociationTableEntries))
 	} else {
@@ -346,14 +346,14 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	groupAddressComObjectNumberMapping := map[*driverModel.KnxGroupAddress]uint16{}
 	if readResult.Response.GetValue("groupAddressAssociationTable").IsList() {
 		for _, groupAddressAssociation := range readResult.Response.GetValue("groupAddressAssociationTable").GetList() {
-			groupAddress, comObjectNumber := b.parseAssociationTable(b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+			groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
 				knxGroupAddresses, groupAddressAssociation)
 			if groupAddress != nil {
 				groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
 			}
 		}
 	} else {
-		groupAddress, comObjectNumber := b.parseAssociationTable(b.connection.DeviceConnections[*knxAddress].deviceDescriptor,
+		groupAddress, comObjectNumber := m.parseAssociationTable(m.connection.DeviceConnections[*knxAddress].deviceDescriptor,
 			knxGroupAddresses, readResult.Response.GetValue("groupAddressAssociationTable"))
 		if groupAddress != nil {
 			groupAddressComObjectNumberMapping[groupAddress] = comObjectNumber
@@ -367,8 +367,8 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 
 	// In case of System B devices, the com object table is read as a property array
 	// In this case we can even read only the com objects we're interested in.
-	if b.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
-		readRequestBuilder = b.connection.ReadRequestBuilder()
+	if m.connection.DeviceConnections[*knxAddress].deviceDescriptor == uint16(0x07B0) /* SystemB */ {
+		readRequestBuilder = m.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
 		for _, comObjectNumber := range groupAddressComObjectNumberMapping {
 			readRequestBuilder.AddQuery(strconv.Itoa(int(comObjectNumber)),
@@ -397,7 +397,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				writable := descriptor.CommunicationEnable && descriptor.WriteEnable
 				subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
 				// Find a matching datatype for the given value-type.
-				fieldType := b.getFieldTypeForValueType(descriptor.ValueType)
+				fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
 				switch groupAddress.Child.(type) {
 				case *driverModel.KnxGroupAddress3Level:
 					address3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
@@ -425,13 +425,13 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				})
 			}
 		}
-	} else if (b.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
+	} else if (m.connection.DeviceConnections[*knxAddress].deviceDescriptor & 0xFFF0) == uint16(0x0700) /* System7 */ {
 		// For System 7 Devices we unfortunately can't access the information of where the memory address for the
 		// Com Object Table is programmatically, so we have to lookup the address which is extracted from the XML data
 		// Provided by the manufacturer. Unfortunately in order to be able to do this, we need to get the application
 		// version from the device first.
 
-		readRequestBuilder := b.connection.ReadRequestBuilder()
+		readRequestBuilder := m.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("applicationProgramVersion", knxAddressString+"#3/13")
 		readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddressString+"#4/13")
 		readRequest, err := readRequestBuilder.Build()
@@ -456,7 +456,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			return nil, errors.New("error getting com address table address. No table entry for application id: " + applicationId)
 		}
 
-		readRequestBuilder = b.connection.ReadRequestBuilder()
+		readRequestBuilder = m.connection.ReadRequestBuilder()
 		// Read data for all com objects that are assigned a group address
 		groupAddressMap := map[uint16][]*driverModel.KnxGroupAddress{}
 		for groupAddress, comObjectNumber := range groupAddressComObjectNumberMapping {
@@ -490,11 +490,11 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
 			subscribable := descriptor.CommunicationEnable && descriptor.TransmitEnable
 			// Find a matching datatype for the given value-type.
-			fieldType := b.getFieldTypeForValueType(descriptor.ValueType)
+			fieldType := m.getFieldTypeForValueType(descriptor.ValueType)
 
 			// Create a field for each of the given inputs.
 			for _, groupAddress := range groupAddresses {
-				field := b.getFieldForGroupAddress(groupAddress, fieldType)
+				field := m.getFieldForGroupAddress(groupAddress, fieldType)
 
 				results = append(results, apiModel.PlcBrowseQueryResult{
 					Field:             field,
@@ -507,7 +507,7 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 			}
 		}
 	} else {
-		readRequestBuilder = b.connection.ReadRequestBuilder()
+		readRequestBuilder = m.connection.ReadRequestBuilder()
 		readRequestBuilder.AddQuery("comObjectTableAddress", fmt.Sprintf("%s#3/7", knxAddressString))
 		readRequest, err = readRequestBuilder.Build()
 		if err != nil {
@@ -524,17 +524,17 @@ func (b KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	return results, nil
 }
 
-func (b KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]driverModel.KnxAddress, error) {
+func (m KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]driverModel.KnxAddress, error) {
 	var explodedAddresses []driverModel.KnxAddress
-	mainGroupOptions, err := b.explodeSegment(field.MainGroup, 1, 15)
+	mainGroupOptions, err := m.explodeSegment(field.MainGroup, 1, 15)
 	if err != nil {
 		return nil, err
 	}
-	middleGroupOptions, err := b.explodeSegment(field.MiddleGroup, 1, 15)
+	middleGroupOptions, err := m.explodeSegment(field.MiddleGroup, 1, 15)
 	if err != nil {
 		return nil, err
 	}
-	subGroupOptions, err := b.explodeSegment(field.SubGroup, 0, 255)
+	subGroupOptions, err := m.explodeSegment(field.SubGroup, 0, 255)
 	if err != nil {
 		return nil, err
 	}
@@ -542,7 +542,7 @@ func (b KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]d
 		for _, middleOption := range middleGroupOptions {
 			for _, subOption := range subGroupOptions {
 				// Don't try connecting to ourselves.
-				if b.connection.ClientKnxAddress != nil {
+				if m.connection.ClientKnxAddress != nil {
 					currentAddress := driverModel.KnxAddress{
 						MainGroup:   mainOption,
 						MiddleGroup: middleOption,
@@ -556,7 +556,7 @@ func (b KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]d
 	return explodedAddresses, nil
 }
 
-func (b KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
+func (m KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
 	var options []uint8
 	if strings.Contains(segment, "*") {
 		for i := min; i <= max; i++ {

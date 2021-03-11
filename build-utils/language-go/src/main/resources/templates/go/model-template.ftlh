@@ -1033,7 +1033,9 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
     if !ok {
         return errors.New("child is not castable to Marshaler")
     }
-    marshaller.MarshalXML(e, start)
+    if err := marshaller.MarshalXML(e, start); err != nil {
+        return err
+    }
             </#if>
         </#list>
     </#if>

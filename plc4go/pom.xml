@@ -184,18 +184,23 @@
         <executions>
           <execution>
             <id>default-fix</id>
-            <!-- Move the execution of this after the code generation -->
             <phase>process-sources</phase>
             <goals>
               <goal>fix</goal>
             </goals>
           </execution>
-          <!-- Move the execution of this after the code generation -->
           <execution>
             <id>default-get</id>
             <phase>process-sources</phase>
             <goals>
               <goal>get</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-fmt</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>fmt</goal>
             </goals>
           </execution>
           <execution>

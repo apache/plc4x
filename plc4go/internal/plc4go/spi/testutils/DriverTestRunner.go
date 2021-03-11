@@ -106,7 +106,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
 				fieldAddress := fieldNode.GetChild("address").Text
-				rrb.AddItem(fieldName, fieldAddress)
+				rrb.AddQuery(fieldName, fieldAddress)
 			}
 			readRequest, err := rrb.Build()
 			if err != nil {
@@ -137,10 +137,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 					for _, valueChild := range fieldNode.GetChildren("value") {
 						fieldValue = append(fieldValue, valueChild.Text)
 					}
-					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
 				} else {
 					fieldValue := fieldNode.GetChild("value").Text
-					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
 				}
 			}
 			writeRequest, err := wrb.Build()
