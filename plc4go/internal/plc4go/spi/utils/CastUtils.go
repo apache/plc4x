@@ -106,3 +106,11 @@ func StrToUint16(str string) (uint16, error) {
 	}
 	return uint16(intVal), nil
 }
+
+func StrToUint32(str string) (uint32, error) {
+	intVal, err := strconv.ParseInt(str, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint32(intVal), nil
+}
