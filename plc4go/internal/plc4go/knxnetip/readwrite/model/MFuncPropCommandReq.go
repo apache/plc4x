@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type MFuncPropCommandReq struct {
-    Parent *CEMI
-    IMFuncPropCommandReq
+	Parent *CEMI
+	IMFuncPropCommandReq
 }
 
 // The corresponding interface
 type IMFuncPropCommandReq interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *MFuncPropCommandReq) MessageCode() uint8 {
-    return 0xF8
+	return 0xF8
 }
-
 
 func (m *MFuncPropCommandReq) InitializeParent(parent *CEMI) {
 }
 
 func NewMFuncPropCommandReq() *CEMI {
-    child := &MFuncPropCommandReq{
-        Parent: NewCEMI(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &MFuncPropCommandReq{
+		Parent: NewCEMI(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastMFuncPropCommandReq(structType interface{}) *MFuncPropCommandReq {
-    castFunc := func(typ interface{}) *MFuncPropCommandReq {
-        if casted, ok := typ.(MFuncPropCommandReq); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*MFuncPropCommandReq); ok {
-            return casted
-        }
-        if casted, ok := typ.(CEMI); ok {
-            return CastMFuncPropCommandReq(casted.Child)
-        }
-        if casted, ok := typ.(*CEMI); ok {
-            return CastMFuncPropCommandReq(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *MFuncPropCommandReq {
+		if casted, ok := typ.(MFuncPropCommandReq); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*MFuncPropCommandReq); ok {
+			return casted
+		}
+		if casted, ok := typ.(CEMI); ok {
+			return CastMFuncPropCommandReq(casted.Child)
+		}
+		if casted, ok := typ.(*CEMI); ok {
+			return CastMFuncPropCommandReq(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *MFuncPropCommandReq) GetTypeName() string {
-    return "MFuncPropCommandReq"
+	return "MFuncPropCommandReq"
 }
 
 func (m *MFuncPropCommandReq) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func MFuncPropCommandReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-    // Create a partially initialized instance
-    _child := &MFuncPropCommandReq{
-        Parent: &CEMI{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &MFuncPropCommandReq{
+		Parent: &CEMI{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *MFuncPropCommandReq) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *MFuncPropCommandReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *MFuncPropCommandReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

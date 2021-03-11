@@ -19,155 +19,155 @@
 package values
 
 import (
-    "encoding/xml"
-    "fmt"
-    "math"
-    "math/big"
+	"encoding/xml"
+	"fmt"
+	"math"
+	"math/big"
 )
 
 type PlcBREAL struct {
-    value *big.Float
-    PlcSimpleNumericValueAdapter
+	value *big.Float
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcBREAL(value *big.Float) PlcBREAL {
-    return PlcBREAL{
-        value: value,
-    }
+	return PlcBREAL{
+		value: value,
+	}
 }
 
 func (m PlcBREAL) GetBoolean() bool {
-    if m.isZero() {
-        return false
-    }
-    return true
+	if m.isZero() {
+		return false
+	}
+	return true
 }
 
 func (m PlcBREAL) IsUint8() bool {
-    return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint8)
+	return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint8)
 }
 
 func (m PlcBREAL) GetUint8() uint8 {
-    if m.IsUint8() {
-        return uint8(m.GetFloat32())
-    }
-    return 0
+	if m.IsUint8() {
+		return uint8(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsUint16() bool {
-    return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint16)
+	return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint16)
 }
 
 func (m PlcBREAL) GetUint16() uint16 {
-    if m.IsUint16() {
-        return uint16(m.GetFloat32())
-    }
-    return 0
+	if m.IsUint16() {
+		return uint16(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsUint32() bool {
-    return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint32)
+	return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint32)
 }
 
 func (m PlcBREAL) GetUint32() uint32 {
-    if m.IsUint32() {
-        return uint32(m.GetFloat32())
-    }
-    return 0
+	if m.IsUint32() {
+		return uint32(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsUint64() bool {
-    return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint64)
+	return m.isGreaterOrEqual(0.0) && m.isLowerOrEqual(math.MaxUint64)
 }
 
 func (m PlcBREAL) GetUint64() uint64 {
-    if m.IsUint64() {
-        return uint64(m.GetFloat32())
-    }
-    return 0
+	if m.IsUint64() {
+		return uint64(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsInt8() bool {
-    return m.isGreaterOrEqual(math.MinInt8) && m.isLowerOrEqual(math.MaxInt8)
+	return m.isGreaterOrEqual(math.MinInt8) && m.isLowerOrEqual(math.MaxInt8)
 }
 
 func (m PlcBREAL) GetInt8() int8 {
-    if m.IsInt8() {
-        return int8(m.GetFloat32())
-    }
-    return 0
+	if m.IsInt8() {
+		return int8(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsInt16() bool {
-    return m.isGreaterOrEqual(math.MinInt16) && m.isLowerOrEqual(math.MaxInt16)
+	return m.isGreaterOrEqual(math.MinInt16) && m.isLowerOrEqual(math.MaxInt16)
 }
 
 func (m PlcBREAL) GetInt16() int16 {
-    if m.IsInt16() {
-        return int16(m.GetFloat32())
-    }
-    return 0
+	if m.IsInt16() {
+		return int16(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsInt32() bool {
-    return m.isGreaterOrEqual(math.MinInt32) && m.isLowerOrEqual(math.MaxInt32)
+	return m.isGreaterOrEqual(math.MinInt32) && m.isLowerOrEqual(math.MaxInt32)
 }
 
 func (m PlcBREAL) GetInt32() int32 {
-    if m.IsInt32() {
-        return int32(m.GetFloat32())
-    }
-    return 0
+	if m.IsInt32() {
+		return int32(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) IsInt64() bool {
-    return m.isGreaterOrEqual(math.MinInt64) && m.isLowerOrEqual(math.MaxInt64)
+	return m.isGreaterOrEqual(math.MinInt64) && m.isLowerOrEqual(math.MaxInt64)
 }
 
 func (m PlcBREAL) GetInt64() int64 {
-    if m.IsInt64() {
-        return int64(m.GetFloat32())
-    }
-    return 0
+	if m.IsInt64() {
+		return int64(m.GetFloat32())
+	}
+	return 0
 }
 
 func (m PlcBREAL) GetFloat32() float32 {
-    f, _ := m.value.Float32()
-    return f
+	f, _ := m.value.Float32()
+	return f
 }
 
 func (m PlcBREAL) GetFloat64() float64 {
-    f, _ := m.value.Float64()
-    return f
+	f, _ := m.value.Float64()
+	return f
 }
 
 func (m PlcBREAL) IsString() bool {
-    return true
+	return true
 }
 
 func (m PlcBREAL) GetString() string {
-    return fmt.Sprintf("%g", m.GetFloat64())
+	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
 func (m PlcBREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBREAL"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBREAL"}}); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m PlcBREAL) isZero() bool {
-    return m.value.Cmp(big.NewFloat(0.0)) == 0.0
+	return m.value.Cmp(big.NewFloat(0.0)) == 0.0
 }
 
 func (m PlcBREAL) isEqualsOrGreaterZero() bool {
-    return m.isGreaterOrEqual(0)
+	return m.isGreaterOrEqual(0)
 }
 
 func (m PlcBREAL) isGreaterOrEqual(other float64) bool {
-    return m.value.Cmp(big.NewFloat(other)) >= 0
+	return m.value.Cmp(big.NewFloat(other)) >= 0
 }
 
 func (m PlcBREAL) isLowerOrEqual(other float64) bool {
-    return m.value.Cmp(big.NewFloat(other)) <= 0
+	return m.value.Cmp(big.NewFloat(other)) <= 0
 }

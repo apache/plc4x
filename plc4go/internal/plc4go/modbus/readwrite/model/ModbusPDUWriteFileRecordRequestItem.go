@@ -19,237 +19,236 @@
 package model
 
 import (
-    "encoding/base64"
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/base64"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ModbusPDUWriteFileRecordRequestItem struct {
-    ReferenceType uint8
-    FileNumber uint16
-    RecordNumber uint16
-    RecordData []int8
-    IModbusPDUWriteFileRecordRequestItem
+	ReferenceType uint8
+	FileNumber    uint16
+	RecordNumber  uint16
+	RecordData    []int8
+	IModbusPDUWriteFileRecordRequestItem
 }
 
 // The corresponding interface
 type IModbusPDUWriteFileRecordRequestItem interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 func NewModbusPDUWriteFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []int8) *ModbusPDUWriteFileRecordRequestItem {
-    return &ModbusPDUWriteFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
+	return &ModbusPDUWriteFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
 }
 
 func CastModbusPDUWriteFileRecordRequestItem(structType interface{}) *ModbusPDUWriteFileRecordRequestItem {
-    castFunc := func(typ interface{}) *ModbusPDUWriteFileRecordRequestItem {
-        if casted, ok := typ.(ModbusPDUWriteFileRecordRequestItem); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ModbusPDUWriteFileRecordRequestItem); ok {
-            return casted
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ModbusPDUWriteFileRecordRequestItem {
+		if casted, ok := typ.(ModbusPDUWriteFileRecordRequestItem); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ModbusPDUWriteFileRecordRequestItem); ok {
+			return casted
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) GetTypeName() string {
-    return "ModbusPDUWriteFileRecordRequestItem"
+	return "ModbusPDUWriteFileRecordRequestItem"
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Simple field (referenceType)
-    lengthInBits += 8
+	// Simple field (referenceType)
+	lengthInBits += 8
 
-    // Simple field (fileNumber)
-    lengthInBits += 16
+	// Simple field (fileNumber)
+	lengthInBits += 16
 
-    // Simple field (recordNumber)
-    lengthInBits += 16
+	// Simple field (recordNumber)
+	lengthInBits += 16
 
-    // Implicit Field (recordLength)
-    lengthInBits += 16
+	// Implicit Field (recordLength)
+	lengthInBits += 16
 
-    // Array field
-    if len(m.RecordData) > 0 {
-        lengthInBits += 8 * uint16(len(m.RecordData))
-    }
+	// Array field
+	if len(m.RecordData) > 0 {
+		lengthInBits += 8 * uint16(len(m.RecordData))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ModbusPDUWriteFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDUWriteFileRecordRequestItem, error) {
 
-    // Simple Field (referenceType)
-    referenceType, _referenceTypeErr := io.ReadUint8(8)
-    if _referenceTypeErr != nil {
-        return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
-    }
+	// Simple Field (referenceType)
+	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	if _referenceTypeErr != nil {
+		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
-    // Simple Field (fileNumber)
-    fileNumber, _fileNumberErr := io.ReadUint16(16)
-    if _fileNumberErr != nil {
-        return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
-    }
+	// Simple Field (fileNumber)
+	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	if _fileNumberErr != nil {
+		return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
+	}
 
-    // Simple Field (recordNumber)
-    recordNumber, _recordNumberErr := io.ReadUint16(16)
-    if _recordNumberErr != nil {
-        return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
-    }
+	// Simple Field (recordNumber)
+	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	if _recordNumberErr != nil {
+		return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
+	}
 
-    // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    recordLength, _recordLengthErr := io.ReadUint16(16)
-    if _recordLengthErr != nil {
-        return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
-    }
+	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	recordLength, _recordLengthErr := io.ReadUint16(16)
+	if _recordLengthErr != nil {
+		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
+	}
 
-    // Array field (recordData)
-    // Length array
-    recordData := make([]int8, 0)
-    _recordDataLength := uint16(recordLength) * uint16(uint16(2))
-    _recordDataEndPos := io.GetPos() + uint16(_recordDataLength)
-    for ;io.GetPos() < _recordDataEndPos; {
-        _item, _err := io.ReadInt8(8)
-        if _err != nil {
-            return nil, errors.New("Error parsing 'recordData' field " + _err.Error())
-        }
-        recordData = append(recordData, _item)
-    }
+	// Array field (recordData)
+	// Length array
+	recordData := make([]int8, 0)
+	_recordDataLength := uint16(recordLength) * uint16(uint16(2))
+	_recordDataEndPos := io.GetPos() + uint16(_recordDataLength)
+	for io.GetPos() < _recordDataEndPos {
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'recordData' field " + _err.Error())
+		}
+		recordData = append(recordData, _item)
+	}
 
-    // Create the instance
-    return NewModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData), nil
+	// Create the instance
+	return NewModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData), nil
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) Serialize(io utils.WriteBuffer) error {
 
-    // Simple Field (referenceType)
-    referenceType := uint8(m.ReferenceType)
-    _referenceTypeErr := io.WriteUint8(8, (referenceType))
-    if _referenceTypeErr != nil {
-        return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
-    }
+	// Simple Field (referenceType)
+	referenceType := uint8(m.ReferenceType)
+	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	if _referenceTypeErr != nil {
+		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
-    // Simple Field (fileNumber)
-    fileNumber := uint16(m.FileNumber)
-    _fileNumberErr := io.WriteUint16(16, (fileNumber))
-    if _fileNumberErr != nil {
-        return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
-    }
+	// Simple Field (fileNumber)
+	fileNumber := uint16(m.FileNumber)
+	_fileNumberErr := io.WriteUint16(16, (fileNumber))
+	if _fileNumberErr != nil {
+		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
+	}
 
-    // Simple Field (recordNumber)
-    recordNumber := uint16(m.RecordNumber)
-    _recordNumberErr := io.WriteUint16(16, (recordNumber))
-    if _recordNumberErr != nil {
-        return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
-    }
+	// Simple Field (recordNumber)
+	recordNumber := uint16(m.RecordNumber)
+	_recordNumberErr := io.WriteUint16(16, (recordNumber))
+	if _recordNumberErr != nil {
+		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
+	}
 
-    // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
-    _recordLengthErr := io.WriteUint16(16, (recordLength))
-    if _recordLengthErr != nil {
-        return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
-    }
+	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
+	_recordLengthErr := io.WriteUint16(16, (recordLength))
+	if _recordLengthErr != nil {
+		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
+	}
 
-    // Array Field (recordData)
-    if m.RecordData != nil {
-        for _, _element := range m.RecordData {
-            _elementErr := io.WriteInt8(8, _element)
-            if _elementErr != nil {
-                return errors.New("Error serializing 'recordData' field " + _elementErr.Error())
-            }
-        }
-    }
+	// Array Field (recordData)
+	if m.RecordData != nil {
+		for _, _element := range m.RecordData {
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'recordData' field " + _elementErr.Error())
+			}
+		}
+	}
 
-    return nil
+	return nil
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    for {
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "referenceType":
-                var data uint8
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.ReferenceType = data
-            case "fileNumber":
-                var data uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.FileNumber = data
-            case "recordNumber":
-                var data uint16
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.RecordNumber = data
-            case "recordData":
-                var _encoded string
-                if err := d.DecodeElement(&_encoded, &tok); err != nil {
-                    return err
-                }
-                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
-                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
-                if err != nil {
-                    return err
-                }
-                m.RecordData = utils.ByteArrayToInt8Array(_decoded[0:_len])
-            }
-        }
-    }
+	var token xml.Token
+	var err error
+	for {
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "referenceType":
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.ReferenceType = data
+			case "fileNumber":
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.FileNumber = data
+			case "recordNumber":
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.RecordNumber = data
+			case "recordData":
+				var _encoded string
+				if err := d.DecodeElement(&_encoded, &tok); err != nil {
+					return err
+				}
+				_decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+				_len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+				if err != nil {
+					return err
+				}
+				m.RecordData = utils.ByteArrayToInt8Array(_decoded[0:_len])
+			}
+		}
+	}
 }
 
 func (m *ModbusPDUWriteFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    className := "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem"
-    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-            {Name: xml.Name{Local: "className"}, Value: className},
-        }}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.ReferenceType, xml.StartElement{Name: xml.Name{Local: "referenceType"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.FileNumber, xml.StartElement{Name: xml.Name{Local: "fileNumber"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeElement(m.RecordNumber, xml.StartElement{Name: xml.Name{Local: "recordNumber"}}); err != nil {
-        return err
-    }
-    _encodedRecordData := make([]byte, base64.StdEncoding.EncodedLen(len(m.RecordData)))
-    base64.StdEncoding.Encode(_encodedRecordData, utils.Int8ArrayToByteArray(m.RecordData))
-    if err := e.EncodeElement(_encodedRecordData, xml.StartElement{Name: xml.Name{Local: "recordData"}}); err != nil {
-        return err
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
-        return err
-    }
-    return nil
+	className := "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem"
+	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "className"}, Value: className},
+	}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.ReferenceType, xml.StartElement{Name: xml.Name{Local: "referenceType"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.FileNumber, xml.StartElement{Name: xml.Name{Local: "fileNumber"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.RecordNumber, xml.StartElement{Name: xml.Name{Local: "recordNumber"}}); err != nil {
+		return err
+	}
+	_encodedRecordData := make([]byte, base64.StdEncoding.EncodedLen(len(m.RecordData)))
+	base64.StdEncoding.Encode(_encodedRecordData, utils.Int8ArrayToByteArray(m.RecordData))
+	if err := e.EncodeElement(_encodedRecordData, xml.StartElement{Name: xml.Name{Local: "recordData"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+		return err
+	}
+	return nil
 }
-

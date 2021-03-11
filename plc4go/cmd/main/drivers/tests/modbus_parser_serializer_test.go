@@ -19,10 +19,10 @@
 package tests
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-    "testing"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"testing"
 )
 
 func TestModbusParserSerializer(t *testing.T) {
-    testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/modbus/ParserSerializerTestsuite.xml")
 }

@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduControlNack struct {
-    Parent *ApduControl
-    IApduControlNack
+	Parent *ApduControl
+	IApduControlNack
 }
 
 // The corresponding interface
 type IApduControlNack interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduControlNack) ControlType() uint8 {
-    return 0x3
+	return 0x3
 }
-
 
 func (m *ApduControlNack) InitializeParent(parent *ApduControl) {
 }
 
 func NewApduControlNack() *ApduControl {
-    child := &ApduControlNack{
-        Parent: NewApduControl(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduControlNack{
+		Parent: NewApduControl(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduControlNack(structType interface{}) *ApduControlNack {
-    castFunc := func(typ interface{}) *ApduControlNack {
-        if casted, ok := typ.(ApduControlNack); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduControlNack); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduControl); ok {
-            return CastApduControlNack(casted.Child)
-        }
-        if casted, ok := typ.(*ApduControl); ok {
-            return CastApduControlNack(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduControlNack {
+		if casted, ok := typ.(ApduControlNack); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduControlNack); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduControl); ok {
+			return CastApduControlNack(casted.Child)
+		}
+		if casted, ok := typ.(*ApduControl); ok {
+			return CastApduControlNack(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduControlNack) GetTypeName() string {
-    return "ApduControlNack"
+	return "ApduControlNack"
 }
 
 func (m *ApduControlNack) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduControlNack) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduControlNackParse(io *utils.ReadBuffer) (*ApduControl, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduControlNack{
-        Parent: &ApduControl{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduControlNack{
+		Parent: &ApduControl{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduControlNack) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduControlNack) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduControlNack) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

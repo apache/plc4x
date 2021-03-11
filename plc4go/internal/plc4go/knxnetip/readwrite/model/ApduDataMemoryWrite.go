@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataMemoryWrite struct {
-    Parent *ApduData
-    IApduDataMemoryWrite
+	Parent *ApduData
+	IApduDataMemoryWrite
 }
 
 // The corresponding interface
 type IApduDataMemoryWrite interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataMemoryWrite) ApciType() uint8 {
-    return 0xA
+	return 0xA
 }
-
 
 func (m *ApduDataMemoryWrite) InitializeParent(parent *ApduData) {
 }
 
 func NewApduDataMemoryWrite() *ApduData {
-    child := &ApduDataMemoryWrite{
-        Parent: NewApduData(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataMemoryWrite{
+		Parent: NewApduData(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataMemoryWrite(structType interface{}) *ApduDataMemoryWrite {
-    castFunc := func(typ interface{}) *ApduDataMemoryWrite {
-        if casted, ok := typ.(ApduDataMemoryWrite); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataMemoryWrite); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduData); ok {
-            return CastApduDataMemoryWrite(casted.Child)
-        }
-        if casted, ok := typ.(*ApduData); ok {
-            return CastApduDataMemoryWrite(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataMemoryWrite {
+		if casted, ok := typ.(ApduDataMemoryWrite); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataMemoryWrite); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduData); ok {
+			return CastApduDataMemoryWrite(casted.Child)
+		}
+		if casted, ok := typ.(*ApduData); ok {
+			return CastApduDataMemoryWrite(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataMemoryWrite) GetTypeName() string {
-    return "ApduDataMemoryWrite"
+	return "ApduDataMemoryWrite"
 }
 
 func (m *ApduDataMemoryWrite) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataMemoryWrite) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataMemoryWriteParse(io *utils.ReadBuffer) (*ApduData, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataMemoryWrite{
-        Parent: &ApduData{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataMemoryWrite{
+		Parent: &ApduData{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataMemoryWrite) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataMemoryWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataMemoryWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

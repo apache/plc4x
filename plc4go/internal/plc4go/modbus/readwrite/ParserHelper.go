@@ -19,45 +19,45 @@
 package readwrite
 
 import (
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type ModbusParserHelper struct {
 }
 
 func (m ModbusParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
-    switch typeName {
-    case "ModbusPDUWriteFileRecordRequestItem":
-        return model.ModbusPDUWriteFileRecordRequestItemParse(io)
-    case "ModbusPDUReadFileRecordResponseItem":
-        return model.ModbusPDUReadFileRecordResponseItemParse(io)
-    case "ModbusConstants":
-        return model.ModbusConstantsParse(io)
-    case "ModbusTcpADU":
-        response, err := utils.StrToBool(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.ModbusTcpADUParse(io, response)
-    case "ModbusPDUWriteFileRecordResponseItem":
-        return model.ModbusPDUWriteFileRecordResponseItemParse(io)
-    case "ModbusPDU":
-        response, err := utils.StrToBool(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.ModbusPDUParse(io, response)
-    case "ModbusPDUReadFileRecordRequestItem":
-        return model.ModbusPDUReadFileRecordRequestItemParse(io)
-    case "ModbusSerialADU":
-        response, err := utils.StrToBool(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.ModbusSerialADUParse(io, response)
-    }
-    return nil, errors.New("Unsupported type " + typeName)
+	switch typeName {
+	case "ModbusPDUWriteFileRecordRequestItem":
+		return model.ModbusPDUWriteFileRecordRequestItemParse(io)
+	case "ModbusPDUReadFileRecordResponseItem":
+		return model.ModbusPDUReadFileRecordResponseItemParse(io)
+	case "ModbusConstants":
+		return model.ModbusConstantsParse(io)
+	case "ModbusTcpADU":
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.ModbusTcpADUParse(io, response)
+	case "ModbusPDUWriteFileRecordResponseItem":
+		return model.ModbusPDUWriteFileRecordResponseItemParse(io)
+	case "ModbusPDU":
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.ModbusPDUParse(io, response)
+	case "ModbusPDUReadFileRecordRequestItem":
+		return model.ModbusPDUReadFileRecordRequestItemParse(io)
+	case "ModbusSerialADU":
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.ModbusSerialADUParse(io, response)
+	}
+	return nil, errors.New("Unsupported type " + typeName)
 }

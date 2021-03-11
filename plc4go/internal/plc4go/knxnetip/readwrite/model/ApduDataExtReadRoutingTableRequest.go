@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataExtReadRoutingTableRequest struct {
-    Parent *ApduDataExt
-    IApduDataExtReadRoutingTableRequest
+	Parent *ApduDataExt
+	IApduDataExtReadRoutingTableRequest
 }
 
 // The corresponding interface
 type IApduDataExtReadRoutingTableRequest interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataExtReadRoutingTableRequest) ExtApciType() uint8 {
-    return 0x01
+	return 0x01
 }
-
 
 func (m *ApduDataExtReadRoutingTableRequest) InitializeParent(parent *ApduDataExt) {
 }
 
 func NewApduDataExtReadRoutingTableRequest() *ApduDataExt {
-    child := &ApduDataExtReadRoutingTableRequest{
-        Parent: NewApduDataExt(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataExtReadRoutingTableRequest{
+		Parent: NewApduDataExt(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataExtReadRoutingTableRequest(structType interface{}) *ApduDataExtReadRoutingTableRequest {
-    castFunc := func(typ interface{}) *ApduDataExtReadRoutingTableRequest {
-        if casted, ok := typ.(ApduDataExtReadRoutingTableRequest); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataExtReadRoutingTableRequest); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduDataExt); ok {
-            return CastApduDataExtReadRoutingTableRequest(casted.Child)
-        }
-        if casted, ok := typ.(*ApduDataExt); ok {
-            return CastApduDataExtReadRoutingTableRequest(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataExtReadRoutingTableRequest {
+		if casted, ok := typ.(ApduDataExtReadRoutingTableRequest); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataExtReadRoutingTableRequest); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduDataExt); ok {
+			return CastApduDataExtReadRoutingTableRequest(casted.Child)
+		}
+		if casted, ok := typ.(*ApduDataExt); ok {
+			return CastApduDataExtReadRoutingTableRequest(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) GetTypeName() string {
-    return "ApduDataExtReadRoutingTableRequest"
+	return "ApduDataExtReadRoutingTableRequest"
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataExtReadRoutingTableRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataExtReadRoutingTableRequest{
-        Parent: &ApduDataExt{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataExtReadRoutingTableRequest{
+		Parent: &ApduDataExt{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataExtReadRoutingTableRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

@@ -19,150 +19,148 @@
 package model
 
 import (
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type AdsDeleteDeviceNotificationRequest struct {
-    NotificationHandle uint32
-    Parent *AdsData
-    IAdsDeleteDeviceNotificationRequest
+	NotificationHandle uint32
+	Parent             *AdsData
+	IAdsDeleteDeviceNotificationRequest
 }
 
 // The corresponding interface
 type IAdsDeleteDeviceNotificationRequest interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsDeleteDeviceNotificationRequest) CommandId() CommandId {
-    return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+	return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) Response() bool {
-    return false
+	return false
 }
-
 
 func (m *AdsDeleteDeviceNotificationRequest) InitializeParent(parent *AdsData) {
 }
 
 func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32) *AdsData {
-    child := &AdsDeleteDeviceNotificationRequest{
-        NotificationHandle: notificationHandle,
-        Parent: NewAdsData(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &AdsDeleteDeviceNotificationRequest{
+		NotificationHandle: notificationHandle,
+		Parent:             NewAdsData(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastAdsDeleteDeviceNotificationRequest(structType interface{}) *AdsDeleteDeviceNotificationRequest {
-    castFunc := func(typ interface{}) *AdsDeleteDeviceNotificationRequest {
-        if casted, ok := typ.(AdsDeleteDeviceNotificationRequest); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*AdsDeleteDeviceNotificationRequest); ok {
-            return casted
-        }
-        if casted, ok := typ.(AdsData); ok {
-            return CastAdsDeleteDeviceNotificationRequest(casted.Child)
-        }
-        if casted, ok := typ.(*AdsData); ok {
-            return CastAdsDeleteDeviceNotificationRequest(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *AdsDeleteDeviceNotificationRequest {
+		if casted, ok := typ.(AdsDeleteDeviceNotificationRequest); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*AdsDeleteDeviceNotificationRequest); ok {
+			return casted
+		}
+		if casted, ok := typ.(AdsData); ok {
+			return CastAdsDeleteDeviceNotificationRequest(casted.Child)
+		}
+		if casted, ok := typ.(*AdsData); ok {
+			return CastAdsDeleteDeviceNotificationRequest(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) GetTypeName() string {
-    return "AdsDeleteDeviceNotificationRequest"
+	return "AdsDeleteDeviceNotificationRequest"
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Simple field (notificationHandle)
-    lengthInBits += 32
+	// Simple field (notificationHandle)
+	lengthInBits += 32
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func AdsDeleteDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
-    // Simple Field (notificationHandle)
-    notificationHandle, _notificationHandleErr := io.ReadUint32(32)
-    if _notificationHandleErr != nil {
-        return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
-    }
+	// Simple Field (notificationHandle)
+	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	if _notificationHandleErr != nil {
+		return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
+	}
 
-    // Create a partially initialized instance
-    _child := &AdsDeleteDeviceNotificationRequest{
-        NotificationHandle: notificationHandle,
-        Parent: &AdsData{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &AdsDeleteDeviceNotificationRequest{
+		NotificationHandle: notificationHandle,
+		Parent:             &AdsData{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-    // Simple Field (notificationHandle)
-    notificationHandle := uint32(m.NotificationHandle)
-    _notificationHandleErr := io.WriteUint32(32, (notificationHandle))
-    if _notificationHandleErr != nil {
-        return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
-    }
+		// Simple Field (notificationHandle)
+		notificationHandle := uint32(m.NotificationHandle)
+		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+		if _notificationHandleErr != nil {
+			return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
+		}
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "notificationHandle":
-                var data uint32
-                if err := d.DecodeElement(&data, &tok); err != nil {
-                    return err
-                }
-                m.NotificationHandle = data
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "notificationHandle":
+				var data uint32
+				if err := d.DecodeElement(&data, &tok); err != nil {
+					return err
+				}
+				m.NotificationHandle = data
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeElement(m.NotificationHandle, xml.StartElement{Name: xml.Name{Local: "notificationHandle"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeElement(m.NotificationHandle, xml.StartElement{Name: xml.Name{Local: "notificationHandle"}}); err != nil {
+		return err
+	}
+	return nil
 }
-

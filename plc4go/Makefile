@@ -53,6 +53,10 @@ compile:
 	@-$(MAKE) -s go-compile 2> $(STDERR)
 	@cat $(STDERR) | sed -e '1s/.*/\nError:\n/'  | sed 's/make\[.*/ /' | sed "/^/s/^/     /" 1>&2
 
+## test: Runs test. Runs `mvn test` internally.
+test: compile
+	$(MVNBIN) test
+
 ## exec: Run given command, wrapped with custom GOPATH. e.g; make exec run="go test ./..."
 exec:
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) $(run)

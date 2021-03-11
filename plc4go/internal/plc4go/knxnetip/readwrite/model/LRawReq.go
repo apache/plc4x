@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type LRawReq struct {
-    Parent *CEMI
-    ILRawReq
+	Parent *CEMI
+	ILRawReq
 }
 
 // The corresponding interface
 type ILRawReq interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *LRawReq) MessageCode() uint8 {
-    return 0x10
+	return 0x10
 }
-
 
 func (m *LRawReq) InitializeParent(parent *CEMI) {
 }
 
 func NewLRawReq() *CEMI {
-    child := &LRawReq{
-        Parent: NewCEMI(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &LRawReq{
+		Parent: NewCEMI(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastLRawReq(structType interface{}) *LRawReq {
-    castFunc := func(typ interface{}) *LRawReq {
-        if casted, ok := typ.(LRawReq); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*LRawReq); ok {
-            return casted
-        }
-        if casted, ok := typ.(CEMI); ok {
-            return CastLRawReq(casted.Child)
-        }
-        if casted, ok := typ.(*CEMI); ok {
-            return CastLRawReq(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *LRawReq {
+		if casted, ok := typ.(LRawReq); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*LRawReq); ok {
+			return casted
+		}
+		if casted, ok := typ.(CEMI); ok {
+			return CastLRawReq(casted.Child)
+		}
+		if casted, ok := typ.(*CEMI); ok {
+			return CastLRawReq(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *LRawReq) GetTypeName() string {
-    return "LRawReq"
+	return "LRawReq"
 }
 
 func (m *LRawReq) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *LRawReq) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func LRawReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
-    // Create a partially initialized instance
-    _child := &LRawReq{
-        Parent: &CEMI{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &LRawReq{
+		Parent: &CEMI{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *LRawReq) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *LRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *LRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

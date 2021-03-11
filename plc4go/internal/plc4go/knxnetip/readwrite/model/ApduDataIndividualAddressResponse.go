@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataIndividualAddressResponse struct {
-    Parent *ApduData
-    IApduDataIndividualAddressResponse
+	Parent *ApduData
+	IApduDataIndividualAddressResponse
 }
 
 // The corresponding interface
 type IApduDataIndividualAddressResponse interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataIndividualAddressResponse) ApciType() uint8 {
-    return 0x5
+	return 0x5
 }
-
 
 func (m *ApduDataIndividualAddressResponse) InitializeParent(parent *ApduData) {
 }
 
 func NewApduDataIndividualAddressResponse() *ApduData {
-    child := &ApduDataIndividualAddressResponse{
-        Parent: NewApduData(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataIndividualAddressResponse{
+		Parent: NewApduData(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataIndividualAddressResponse(structType interface{}) *ApduDataIndividualAddressResponse {
-    castFunc := func(typ interface{}) *ApduDataIndividualAddressResponse {
-        if casted, ok := typ.(ApduDataIndividualAddressResponse); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataIndividualAddressResponse); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduData); ok {
-            return CastApduDataIndividualAddressResponse(casted.Child)
-        }
-        if casted, ok := typ.(*ApduData); ok {
-            return CastApduDataIndividualAddressResponse(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataIndividualAddressResponse {
+		if casted, ok := typ.(ApduDataIndividualAddressResponse); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataIndividualAddressResponse); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduData); ok {
+			return CastApduDataIndividualAddressResponse(casted.Child)
+		}
+		if casted, ok := typ.(*ApduData); ok {
+			return CastApduDataIndividualAddressResponse(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataIndividualAddressResponse) GetTypeName() string {
-    return "ApduDataIndividualAddressResponse"
+	return "ApduDataIndividualAddressResponse"
 }
 
 func (m *ApduDataIndividualAddressResponse) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataIndividualAddressResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataIndividualAddressResponse{
-        Parent: &ApduData{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataIndividualAddressResponse{
+		Parent: &ApduData{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataIndividualAddressResponse) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataIndividualAddressResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataIndividualAddressResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

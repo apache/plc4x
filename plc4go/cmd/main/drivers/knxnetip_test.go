@@ -108,9 +108,9 @@ func TestKnxNetIpPlc4goBrowse(t *testing.T) {
 
 			// Create a read-request to read the manufacturer and hardware ids
 			readRequestBuilder := connection.ReadRequestBuilder()
-			readRequestBuilder.AddItem("manufacturerId", result.Address+"/0/12")
-			readRequestBuilder.AddItem("applicationProgramVersion", result.Address+"/3/13")
-			readRequestBuilder.AddItem("interfaceProgramVersion", result.Address+"/4/13")
+			readRequestBuilder.AddQuery("manufacturerId", result.Address+"/0/12")
+			readRequestBuilder.AddQuery("applicationProgramVersion", result.Address+"/3/13")
+			readRequestBuilder.AddQuery("interfaceProgramVersion", result.Address+"/4/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
 				log.Errorf("Got an error creating read-request: %s", err.Error())
@@ -186,7 +186,7 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 	// Build a browse request, to scan the KNX network for KNX devices
 	// (Limiting the range to only the actually used range of addresses)
 	browseRequestBuilder := connection.BrowseRequestBuilder()
-	browseRequestBuilder.AddItem("findAllKnxDevices", "[1-3].[1-6].[1-60]")
+	browseRequestBuilder.AddQuery("findAllKnxDevices", "[1-3].[1-6].[1-60]")
 	browseRequest, err := browseRequestBuilder.Build()
 	if err != nil {
 		log.Errorf("Got an error preparing browse-request: %s", connectionResult.Err.Error())
@@ -204,9 +204,9 @@ func TestKnxNetIpPlc4goBlockingBrowseWithCallback(t *testing.T) {
 
 		// Create a read-request to read the manufacturer and hardware ids
 		readRequestBuilder := connection.ReadRequestBuilder()
-		readRequestBuilder.AddItem("manufacturerId", result.Result.Address+"/0/12")
-		readRequestBuilder.AddItem("applicationProgramVersion", result.Result.Address+"/3/13")
-		readRequestBuilder.AddItem("interfaceProgramVersion", result.Result.Address+"/4/13")
+		readRequestBuilder.AddQuery("manufacturerId", result.Result.Address+"/0/12")
+		readRequestBuilder.AddQuery("applicationProgramVersion", result.Result.Address+"/3/13")
+		readRequestBuilder.AddQuery("interfaceProgramVersion", result.Result.Address+"/4/13")
 		readRequest, err := readRequestBuilder.Build()
 		if err != nil {
 			log.Errorf("Got an error creating read-request: %s", err.Error())
@@ -321,11 +321,11 @@ func TestKnxNetIpPlc4goGroupAddressRead(t *testing.T) {
 
 	// Execute a read request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("energy-consumption", "1/1/211:DPT_Value_Power")
-	rrb.AddItem("actual-temperatures", "*/*/10:DPT_Value_Temp")
-	rrb.AddItem("set-temperatures", "*/*/11:DPT_Value_Temp")
-	rrb.AddItem("window-status", "*/*/[60,64]:DPT_Value_Temp")
-	rrb.AddItem("power-consumption", "*/*/[111,121,131,141]:DPT_Value_Temp")
+	rrb.AddQuery("energy-consumption", "1/1/211:DPT_Value_Power")
+	rrb.AddQuery("actual-temperatures", "*/*/10:DPT_Value_Temp")
+	rrb.AddQuery("set-temperatures", "*/*/11:DPT_Value_Temp")
+	rrb.AddQuery("window-status", "*/*/[60,64]:DPT_Value_Temp")
+	rrb.AddQuery("power-consumption", "*/*/[111,121,131,141]:DPT_Value_Temp")
 	readRequest, err := rrb.Build()
 	if err == nil {
 		rrr := readRequest.Execute()
@@ -361,8 +361,8 @@ func TestKnxNetIpPlc4goPropertyRead(t *testing.T) {
 	defer connection.BlockingClose()
 
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("manufacturerId", "1.1.10/0/12")
-	readRequestBuilder.AddItem("programVersion", "1.1.10/3/13")
+	readRequestBuilder.AddQuery("manufacturerId", "1.1.10/0/12")
+	readRequestBuilder.AddQuery("programVersion", "1.1.10/3/13")
 	readRequest, _ := readRequestBuilder.Build()
 
 	rrr := readRequest.Execute()
@@ -405,7 +405,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 
 	// First of all, request the starting address of the group address table
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("groupAddressTableAddress", "1.1.10/1/7")
+	readRequestBuilder.AddQuery("groupAddressTableAddress", "1.1.10/1/7")
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
 		t.Errorf("error creating read request: %s", err.Error())
@@ -419,7 +419,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	// Then read one byte at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
 	readRequestBuilder = connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("numberOfAddressTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
+	readRequestBuilder.AddQuery("numberOfAddressTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
 		groupAddressTableStartAddress))
 	readRequest, _ = readRequestBuilder.Build()
 	rrr = readRequest.Execute()
@@ -432,7 +432,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	// Reasons for splitting up:
 	// - Max APDU Size exceeded
 	// - Max 63 bytes readable in one request, due to max of count field
-	readRequestBuilder.AddItem("groupAddressTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
+	readRequestBuilder.AddQuery("groupAddressTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
 		groupAddressTableStartAddress+3, numGroupAddresses-1))
 	readRequest, _ = readRequestBuilder.Build()
 	rrr = readRequest.Execute()
@@ -451,7 +451,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 
 	// Now we read the group address association table address
 	readRequestBuilder = connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("groupAddressAssociationTableAddress", "1.1.10/2/7")
+	readRequestBuilder.AddQuery("groupAddressAssociationTableAddress", "1.1.10/2/7")
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
 		t.Errorf("error creating read request: %s", err.Error())
@@ -465,7 +465,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	// Then read one uint16 at the given location.
 	// This will return the number of entries in the group address table (each 2 bytes)
 	readRequestBuilder = connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("numberOfGroupAddressAssociationTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
+	readRequestBuilder.AddQuery("numberOfGroupAddressAssociationTableEntries", fmt.Sprintf("1.1.10#%X:USINT",
 		groupAddressAssociationTableAddress))
 	readRequest, _ = readRequestBuilder.Build()
 	rrr = readRequest.Execute()
@@ -478,7 +478,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 	// Reasons for splitting up:
 	// - Max APDU Size exceeded
 	// - Max 63 bytes readable in one request, due to max of count field
-	readRequestBuilder.AddItem("groupAddressAssociationTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
+	readRequestBuilder.AddQuery("groupAddressAssociationTable", fmt.Sprintf("1.1.10#%X:UINT[%d]",
 		groupAddressAssociationTableAddress+1, numberOfGroupAddressAssociationTableEntries))
 	readRequest, _ = readRequestBuilder.Build()
 	rrr = readRequest.Execute()
@@ -501,7 +501,7 @@ func TestKnxNetIpPlc4goMemoryRead(t *testing.T) {
 
 	// Now we read the group address association table address
 	readRequestBuilder = connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("comObjectTableAddress", "1.1.10/3/7")
+	readRequestBuilder.AddQuery("comObjectTableAddress", "1.1.10/3/7")
 	readRequest, err = readRequestBuilder.Build()
 	if err != nil {
 		t.Errorf("error creating read request: %s", err.Error())

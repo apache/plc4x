@@ -19,101 +19,101 @@
 package readwrite
 
 import (
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 )
 
 type BacnetipXmlParserHelper struct {
 }
 
 func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string) (spi.Message, error) {
-    switch typeName {
-    case "APDU":
-        var obj *model.APDU
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetTag":
-        var obj *model.BACnetTag
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetTagWithContent":
-        var obj *model.BACnetTagWithContent
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetError":
-        var obj *model.BACnetError
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "NLM":
-        var obj *model.NLM
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetConfirmedServiceRequest":
-        var obj *model.BACnetConfirmedServiceRequest
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetAddress":
-        var obj *model.BACnetAddress
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetConfirmedServiceACK":
-        var obj *model.BACnetConfirmedServiceACK
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetUnconfirmedServiceRequest":
-        var obj *model.BACnetUnconfirmedServiceRequest
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BACnetServiceAck":
-        var obj *model.BACnetServiceAck
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "BVLC":
-        var obj *model.BVLC
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "NPDU":
-        var obj *model.NPDU
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    }
-    return nil, errors.New("Unsupported type " + typeName)
+	switch typeName {
+	case "APDU":
+		var obj *model.APDU
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetTag":
+		var obj *model.BACnetTag
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetTagWithContent":
+		var obj *model.BACnetTagWithContent
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetError":
+		var obj *model.BACnetError
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "NLM":
+		var obj *model.NLM
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetConfirmedServiceRequest":
+		var obj *model.BACnetConfirmedServiceRequest
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetAddress":
+		var obj *model.BACnetAddress
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetConfirmedServiceACK":
+		var obj *model.BACnetConfirmedServiceACK
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetUnconfirmedServiceRequest":
+		var obj *model.BACnetUnconfirmedServiceRequest
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BACnetServiceAck":
+		var obj *model.BACnetServiceAck
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "BVLC":
+		var obj *model.BVLC
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "NPDU":
+		var obj *model.NPDU
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	}
+	return nil, errors.New("Unsupported type " + typeName)
 }

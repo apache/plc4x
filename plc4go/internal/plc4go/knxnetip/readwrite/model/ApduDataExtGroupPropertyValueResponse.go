@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueResponse struct {
-    Parent *ApduDataExt
-    IApduDataExtGroupPropertyValueResponse
+	Parent *ApduDataExt
+	IApduDataExtGroupPropertyValueResponse
 }
 
 // The corresponding interface
 type IApduDataExtGroupPropertyValueResponse interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataExtGroupPropertyValueResponse) ExtApciType() uint8 {
-    return 0x29
+	return 0x29
 }
-
 
 func (m *ApduDataExtGroupPropertyValueResponse) InitializeParent(parent *ApduDataExt) {
 }
 
 func NewApduDataExtGroupPropertyValueResponse() *ApduDataExt {
-    child := &ApduDataExtGroupPropertyValueResponse{
-        Parent: NewApduDataExt(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataExtGroupPropertyValueResponse{
+		Parent: NewApduDataExt(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataExtGroupPropertyValueResponse(structType interface{}) *ApduDataExtGroupPropertyValueResponse {
-    castFunc := func(typ interface{}) *ApduDataExtGroupPropertyValueResponse {
-        if casted, ok := typ.(ApduDataExtGroupPropertyValueResponse); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataExtGroupPropertyValueResponse); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduDataExt); ok {
-            return CastApduDataExtGroupPropertyValueResponse(casted.Child)
-        }
-        if casted, ok := typ.(*ApduDataExt); ok {
-            return CastApduDataExtGroupPropertyValueResponse(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataExtGroupPropertyValueResponse {
+		if casted, ok := typ.(ApduDataExtGroupPropertyValueResponse); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataExtGroupPropertyValueResponse); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduDataExt); ok {
+			return CastApduDataExtGroupPropertyValueResponse(casted.Child)
+		}
+		if casted, ok := typ.(*ApduDataExt); ok {
+			return CastApduDataExtGroupPropertyValueResponse(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) GetTypeName() string {
-    return "ApduDataExtGroupPropertyValueResponse"
+	return "ApduDataExtGroupPropertyValueResponse"
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataExtGroupPropertyValueResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataExtGroupPropertyValueResponse{
-        Parent: &ApduDataExt{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataExtGroupPropertyValueResponse{
+		Parent: &ApduDataExt{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-
