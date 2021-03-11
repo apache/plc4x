@@ -1486,7 +1486,7 @@ func (e KnxDatapointType) Name() string {
             return "current (mA)"
         }
         case 112: { /* '112' */
-            return "power denisity (W/m²)"
+            return "power density (W/m²)"
         }
         case 113: { /* '113' */
             return "kelvin/percent (K/%)"

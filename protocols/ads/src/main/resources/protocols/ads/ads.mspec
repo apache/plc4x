@@ -496,69 +496,69 @@
     ]
 ]
 
-[enum 'AdsDataType' [uint 8 'numBytes', string 'dataFormatName']
-    [BOOL       ['1', 'IEC61131_BOOL']]
-    [BIT        ['1', 'IEC61131_BOOL']]
-    [BIT8       ['1', 'IEC61131_BOOL']]
+[enum int 8 'AdsDataType' [uint 8 'numBytes', string 'dataFormatName']
+    ['0x01' BOOL       ['1', 'IEC61131_BOOL']]
+    ['0x02' BIT        ['1', 'IEC61131_BOOL']]
+    ['0x03' BIT8       ['1', 'IEC61131_BOOL']]
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------
     // 1 byte
-    [BYTE       ['1', 'IEC61131_BYTE']]
-    [BITARR8    ['1', 'IEC61131_BYTE']]
+    ['0x04' BYTE       ['1', 'IEC61131_BYTE']]
+    ['0x05' BITARR8    ['1', 'IEC61131_BYTE']]
     // 2 byte (16 bit)
-    [WORD       ['2', 'IEC61131_WORD']]
-    [BITARR16   ['2', 'IEC61131_WORD']]
+    ['0x06' WORD       ['2', 'IEC61131_WORD']]
+    ['0x07' BITARR16   ['2', 'IEC61131_WORD']]
     // 4 byte (32 bit)
-    [DWORD      ['4', 'IEC61131_DWORD']]
-    [BITARR32   ['4', 'IEC61131_DWORD']]
+    ['0x08' DWORD      ['4', 'IEC61131_DWORD']]
+    ['0x09' BITARR32   ['4', 'IEC61131_DWORD']]
     // -----------------------------------------
     // Integers
     // -----------------------------------------
     // 8 bit:
-    [SINT       ['1', 'IEC61131_SINT']]
-    [INT8       ['1', 'IEC61131_SINT']]
-    [USINT      ['1', 'IEC61131_USINT']]
-    [UINT8      ['1', 'IEC61131_USINT']]
+    ['0x0A' SINT       ['1', 'IEC61131_SINT']]
+    ['0x0B' INT8       ['1', 'IEC61131_SINT']]
+    ['0x0C' USINT      ['1', 'IEC61131_USINT']]
+    ['0x0D' UINT8      ['1', 'IEC61131_USINT']]
     // 16 bit:
-    [INT        ['2', 'IEC61131_INT']]
-    [INT16      ['2', 'IEC61131_INT']]
-    [UINT       ['2', 'IEC61131_UINT']]
-    [UINT16     ['2', 'IEC61131_UINT']]
+    ['0x0E' INT        ['2', 'IEC61131_INT']]
+    ['0x0F' INT16      ['2', 'IEC61131_INT']]
+    ['0x10' UINT       ['2', 'IEC61131_UINT']]
+    ['0x11' UINT16     ['2', 'IEC61131_UINT']]
     // 32 bit:
-    [DINT       ['4', 'IEC61131_DINT']]
-    [INT32      ['4', 'IEC61131_DINT']]
-    [UDINT      ['4', 'IEC61131_UDINT']]
-    [UINT32     ['4', 'IEC61131_UDINT']]
+    ['0x12' DINT       ['4', 'IEC61131_DINT']]
+    ['0x13' INT32      ['4', 'IEC61131_DINT']]
+    ['0x14' UDINT      ['4', 'IEC61131_UDINT']]
+    ['0x15' UINT32     ['4', 'IEC61131_UDINT']]
     // 64 bit:
-    [LINT       ['8', 'IEC61131_LINT']]
-    [INT64      ['8', 'IEC61131_LINT']]
-    [ULINT      ['8', 'IEC61131_ULINT']]
-    [UINT64     ['8', 'IEC61131_ULINT']]
+    ['0x16' LINT       ['8', 'IEC61131_LINT']]
+    ['0x17' INT64      ['8', 'IEC61131_LINT']]
+    ['0x18' ULINT      ['8', 'IEC61131_ULINT']]
+    ['0x19' UINT64     ['8', 'IEC61131_ULINT']]
     // -----------------------------------------
     // Floating point values
     // -----------------------------------------
-    [REAL       ['4', 'IEC61131_REAL']]
-    [FLOAT      ['4', 'IEC61131_REAL']]
-    [LREAL      ['8', 'IEC61131_LREAL']]
-    [DOUBLE     ['8', 'IEC61131_LREAL']]
+    ['0x1A' REAL       ['4', 'IEC61131_REAL']]
+    ['0x1B' FLOAT      ['4', 'IEC61131_REAL']]
+    ['0x1C' LREAL      ['8', 'IEC61131_LREAL']]
+    ['0x1D' DOUBLE     ['8', 'IEC61131_LREAL']]
     // -----------------------------------------
     // Characters & Strings
     // -----------------------------------------
-    [CHAR       ['1',   'IEC61131_CHAR']]
-    [WCHAR      ['2',   'IEC61131_WCHAR']]
-    [STRING     ['256', 'IEC61131_STRING']]
-    [WSTRING    ['512', 'IEC61131_WSTRING']]
+    ['0x1E' CHAR       ['1',   'IEC61131_CHAR']]
+    ['0x1F' WCHAR      ['2',   'IEC61131_WCHAR']]
+    ['0x20' STRING     ['256', 'IEC61131_STRING']]
+    ['0x21' WSTRING    ['512', 'IEC61131_WSTRING']]
     // -----------------------------------------
     // Dates & Times
     // -----------------------------------------
-    [TIME           ['4', 'IEC61131_TIME']]
-    [LTIME          ['8', 'IEC61131_LTIME']]
-    [DATE           ['4', 'IEC61131_DATE']]
-    [TIME_OF_DAY    ['4', 'IEC61131_TIME_OF_DAY']]
-    [TOD            ['4', 'IEC61131_TIME_OF_DAY']]
-    [DATE_AND_TIME  ['4', 'IEC61131_DATE_AND_TIME']]
-    [DT             ['4', 'IEC61131_DATE_AND_TIME']]
+    ['0x22' TIME           ['4', 'IEC61131_TIME']]
+    ['0x23' LTIME          ['8', 'IEC61131_LTIME']]
+    ['0x24' DATE           ['4', 'IEC61131_DATE']]
+    ['0x25' TIME_OF_DAY    ['4', 'IEC61131_TIME_OF_DAY']]
+    ['0x26' TOD            ['4', 'IEC61131_TIME_OF_DAY']]
+    ['0x27' DATE_AND_TIME  ['4', 'IEC61131_DATE_AND_TIME']]
+    ['0x28' DT             ['4', 'IEC61131_DATE_AND_TIME']]
 ]
 
 [enum uint 32 'ReservedIndexGroups'

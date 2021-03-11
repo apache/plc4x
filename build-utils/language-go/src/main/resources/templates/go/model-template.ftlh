@@ -587,7 +587,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
         if _err != nil {
             return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
         }
-        if reserved != ${helper.getReservedValue(reservedField)} {
+        if ${helper.toTypeSafeCompare(reservedField)} {
             log.WithFields(log.Fields{
                 "expected value": ${helper.getReservedValue(reservedField)},
                 "got value": reserved,
