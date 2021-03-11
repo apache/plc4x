@@ -19,105 +19,105 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type KnxMedium uint8
 
 type IKnxMedium interface {
-    Serialize(io utils.WriteBuffer) error
+	Serialize(io utils.WriteBuffer) error
 }
 
-const(
-    KnxMedium_MEDIUM_RESERVED_1 KnxMedium = 0x01
-    KnxMedium_MEDIUM_TP1 KnxMedium = 0x02
-    KnxMedium_MEDIUM_PL110 KnxMedium = 0x04
-    KnxMedium_MEDIUM_RESERVED_2 KnxMedium = 0x08
-    KnxMedium_MEDIUM_RF KnxMedium = 0x10
-    KnxMedium_MEDIUM_KNX_IP KnxMedium = 0x20
+const (
+	KnxMedium_MEDIUM_RESERVED_1 KnxMedium = 0x01
+	KnxMedium_MEDIUM_TP1        KnxMedium = 0x02
+	KnxMedium_MEDIUM_PL110      KnxMedium = 0x04
+	KnxMedium_MEDIUM_RESERVED_2 KnxMedium = 0x08
+	KnxMedium_MEDIUM_RF         KnxMedium = 0x10
+	KnxMedium_MEDIUM_KNX_IP     KnxMedium = 0x20
 )
 
 func KnxMediumByValue(value uint8) KnxMedium {
-    switch value {
-        case 0x01:
-            return KnxMedium_MEDIUM_RESERVED_1
-        case 0x02:
-            return KnxMedium_MEDIUM_TP1
-        case 0x04:
-            return KnxMedium_MEDIUM_PL110
-        case 0x08:
-            return KnxMedium_MEDIUM_RESERVED_2
-        case 0x10:
-            return KnxMedium_MEDIUM_RF
-        case 0x20:
-            return KnxMedium_MEDIUM_KNX_IP
-    }
-    return 0
+	switch value {
+	case 0x01:
+		return KnxMedium_MEDIUM_RESERVED_1
+	case 0x02:
+		return KnxMedium_MEDIUM_TP1
+	case 0x04:
+		return KnxMedium_MEDIUM_PL110
+	case 0x08:
+		return KnxMedium_MEDIUM_RESERVED_2
+	case 0x10:
+		return KnxMedium_MEDIUM_RF
+	case 0x20:
+		return KnxMedium_MEDIUM_KNX_IP
+	}
+	return 0
 }
 
 func KnxMediumByName(value string) KnxMedium {
-    switch value {
-    case "MEDIUM_RESERVED_1":
-        return KnxMedium_MEDIUM_RESERVED_1
-    case "MEDIUM_TP1":
-        return KnxMedium_MEDIUM_TP1
-    case "MEDIUM_PL110":
-        return KnxMedium_MEDIUM_PL110
-    case "MEDIUM_RESERVED_2":
-        return KnxMedium_MEDIUM_RESERVED_2
-    case "MEDIUM_RF":
-        return KnxMedium_MEDIUM_RF
-    case "MEDIUM_KNX_IP":
-        return KnxMedium_MEDIUM_KNX_IP
-    }
-    return 0
+	switch value {
+	case "MEDIUM_RESERVED_1":
+		return KnxMedium_MEDIUM_RESERVED_1
+	case "MEDIUM_TP1":
+		return KnxMedium_MEDIUM_TP1
+	case "MEDIUM_PL110":
+		return KnxMedium_MEDIUM_PL110
+	case "MEDIUM_RESERVED_2":
+		return KnxMedium_MEDIUM_RESERVED_2
+	case "MEDIUM_RF":
+		return KnxMedium_MEDIUM_RF
+	case "MEDIUM_KNX_IP":
+		return KnxMedium_MEDIUM_KNX_IP
+	}
+	return 0
 }
 
 func CastKnxMedium(structType interface{}) KnxMedium {
-    castFunc := func(typ interface{}) KnxMedium {
-        if sKnxMedium, ok := typ.(KnxMedium); ok {
-            return sKnxMedium
-        }
-        return 0
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) KnxMedium {
+		if sKnxMedium, ok := typ.(KnxMedium); ok {
+			return sKnxMedium
+		}
+		return 0
+	}
+	return castFunc(structType)
 }
 
 func (m KnxMedium) LengthInBits() uint16 {
-    return 8
+	return 8
 }
 
 func (m KnxMedium) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func KnxMediumParse(io *utils.ReadBuffer) (KnxMedium, error) {
-    val, err := io.ReadUint8(8)
-    if err != nil {
-        return 0, nil
-    }
-    return KnxMediumByValue(val), nil
+	val, err := io.ReadUint8(8)
+	if err != nil {
+		return 0, nil
+	}
+	return KnxMediumByValue(val), nil
 }
 
 func (e KnxMedium) Serialize(io utils.WriteBuffer) error {
-    err := io.WriteUint8(8, uint8(e))
-    return err
+	err := io.WriteUint8(8, uint8(e))
+	return err
 }
 
 func (e KnxMedium) String() string {
-    switch e {
-    case KnxMedium_MEDIUM_RESERVED_1:
-        return "MEDIUM_RESERVED_1"
-    case KnxMedium_MEDIUM_TP1:
-        return "MEDIUM_TP1"
-    case KnxMedium_MEDIUM_PL110:
-        return "MEDIUM_PL110"
-    case KnxMedium_MEDIUM_RESERVED_2:
-        return "MEDIUM_RESERVED_2"
-    case KnxMedium_MEDIUM_RF:
-        return "MEDIUM_RF"
-    case KnxMedium_MEDIUM_KNX_IP:
-        return "MEDIUM_KNX_IP"
-    }
-    return ""
+	switch e {
+	case KnxMedium_MEDIUM_RESERVED_1:
+		return "MEDIUM_RESERVED_1"
+	case KnxMedium_MEDIUM_TP1:
+		return "MEDIUM_TP1"
+	case KnxMedium_MEDIUM_PL110:
+		return "MEDIUM_PL110"
+	case KnxMedium_MEDIUM_RESERVED_2:
+		return "MEDIUM_RESERVED_2"
+	case KnxMedium_MEDIUM_RF:
+		return "MEDIUM_RF"
+	case KnxMedium_MEDIUM_KNX_IP:
+		return "MEDIUM_KNX_IP"
+	}
+	return ""
 }

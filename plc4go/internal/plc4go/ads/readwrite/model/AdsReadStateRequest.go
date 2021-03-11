@@ -19,121 +19,119 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type AdsReadStateRequest struct {
-    Parent *AdsData
-    IAdsReadStateRequest
+	Parent *AdsData
+	IAdsReadStateRequest
 }
 
 // The corresponding interface
 type IAdsReadStateRequest interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsReadStateRequest) CommandId() CommandId {
-    return CommandId_ADS_READ_STATE
+	return CommandId_ADS_READ_STATE
 }
 
 func (m *AdsReadStateRequest) Response() bool {
-    return false
+	return false
 }
-
 
 func (m *AdsReadStateRequest) InitializeParent(parent *AdsData) {
 }
 
 func NewAdsReadStateRequest() *AdsData {
-    child := &AdsReadStateRequest{
-        Parent: NewAdsData(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &AdsReadStateRequest{
+		Parent: NewAdsData(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastAdsReadStateRequest(structType interface{}) *AdsReadStateRequest {
-    castFunc := func(typ interface{}) *AdsReadStateRequest {
-        if casted, ok := typ.(AdsReadStateRequest); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*AdsReadStateRequest); ok {
-            return casted
-        }
-        if casted, ok := typ.(AdsData); ok {
-            return CastAdsReadStateRequest(casted.Child)
-        }
-        if casted, ok := typ.(*AdsData); ok {
-            return CastAdsReadStateRequest(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *AdsReadStateRequest {
+		if casted, ok := typ.(AdsReadStateRequest); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*AdsReadStateRequest); ok {
+			return casted
+		}
+		if casted, ok := typ.(AdsData); ok {
+			return CastAdsReadStateRequest(casted.Child)
+		}
+		if casted, ok := typ.(*AdsData); ok {
+			return CastAdsReadStateRequest(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *AdsReadStateRequest) GetTypeName() string {
-    return "AdsReadStateRequest"
+	return "AdsReadStateRequest"
 }
 
 func (m *AdsReadStateRequest) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *AdsReadStateRequest) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func AdsReadStateRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
-    // Create a partially initialized instance
-    _child := &AdsReadStateRequest{
-        Parent: &AdsData{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &AdsReadStateRequest{
+		Parent: &AdsData{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *AdsReadStateRequest) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *AdsReadStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *AdsReadStateRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

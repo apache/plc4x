@@ -19,94 +19,94 @@
 package readwrite
 
 import (
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 )
 
 type AdsXmlParserHelper struct {
 }
 
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string) (spi.Message, error) {
-    switch typeName {
-    case "AdsMultiRequestItem":
-        var obj *model.AdsMultiRequestItem
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsTCPPacket":
-        var obj *model.AmsTCPPacket
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "State":
-        var obj *model.State
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsPacket":
-        var obj *model.AmsPacket
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsSerialFrame":
-        var obj *model.AmsSerialFrame
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsSerialAcknowledgeFrame":
-        var obj *model.AmsSerialAcknowledgeFrame
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AdsData":
-        var obj *model.AdsData
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsNetId":
-        var obj *model.AmsNetId
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AdsStampHeader":
-        var obj *model.AdsStampHeader
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AmsSerialResetFrame":
-        var obj *model.AmsSerialResetFrame
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    case "AdsNotificationSample":
-        var obj *model.AdsNotificationSample
-        err := xml.Unmarshal([]byte(xmlString), &obj)
-        if err != nil {
-            return nil, errors.New("error unmarshalling xml: " + err.Error())
-        }
-        return obj, nil
-    }
-    return nil, errors.New("Unsupported type " + typeName)
+	switch typeName {
+	case "AdsMultiRequestItem":
+		var obj *model.AdsMultiRequestItem
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsTCPPacket":
+		var obj *model.AmsTCPPacket
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "State":
+		var obj *model.State
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsPacket":
+		var obj *model.AmsPacket
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsSerialFrame":
+		var obj *model.AmsSerialFrame
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsSerialAcknowledgeFrame":
+		var obj *model.AmsSerialAcknowledgeFrame
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AdsData":
+		var obj *model.AdsData
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsNetId":
+		var obj *model.AmsNetId
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AdsStampHeader":
+		var obj *model.AdsStampHeader
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AmsSerialResetFrame":
+		var obj *model.AmsSerialResetFrame
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	case "AdsNotificationSample":
+		var obj *model.AdsNotificationSample
+		err := xml.Unmarshal([]byte(xmlString), &obj)
+		if err != nil {
+			return nil, errors.New("error unmarshalling xml: " + err.Error())
+		}
+		return obj, nil
+	}
+	return nil, errors.New("Unsupported type " + typeName)
 }

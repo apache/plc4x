@@ -210,6 +210,65 @@
               <goal>vet</goal>
             </goals>
           </execution>
+          <!-- Get all dependencies for test cases -->
+          <execution>
+            <id>getTestDependencies</id>
+            <goals>
+              <goal>get</goal>
+            </goals>
+            <configuration>
+              <buildFlags>
+                <flag>-t</flag>
+              </buildFlags>
+              <packages>
+                <package>./...</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Get xunit generator -->
+          <execution>
+            <id>test-get</id>
+            <configuration>
+              <packages>
+                <package>github.com/tebeka/go2xunit</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <!-- Check all tests with producing report file in Golang format -->
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <buildFlags>
+                <flag>-v</flag>
+              </buildFlags>
+              <outLogFile>test-out-verbose.log</outLogFile>
+              <ignoreErrorExitCode>true</ignoreErrorExitCode>
+            </configuration>
+          </execution>
+
+          <!-- Convert generated test report into xunit format and save as file -->
+          <execution>
+            <id>makeXUnitReport</id>
+            <phase>test</phase>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go2xunit</exec>
+              <customCommand>-fail</customCommand>
+              <buildFlags>
+                <flag>-input</flag>
+                <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
+                <flag>-output</flag>
+                <flag>${xunit.report}</flag>
+              </buildFlags>
+              <echo>
+                <info>XUnit report saved as ${xunit.report}</info>
+              </echo>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
           <packages>

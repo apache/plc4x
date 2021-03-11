@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataRestart struct {
-    Parent *ApduData
-    IApduDataRestart
+	Parent *ApduData
+	IApduDataRestart
 }
 
 // The corresponding interface
 type IApduDataRestart interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataRestart) ApciType() uint8 {
-    return 0xE
+	return 0xE
 }
-
 
 func (m *ApduDataRestart) InitializeParent(parent *ApduData) {
 }
 
 func NewApduDataRestart() *ApduData {
-    child := &ApduDataRestart{
-        Parent: NewApduData(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataRestart{
+		Parent: NewApduData(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataRestart(structType interface{}) *ApduDataRestart {
-    castFunc := func(typ interface{}) *ApduDataRestart {
-        if casted, ok := typ.(ApduDataRestart); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataRestart); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduData); ok {
-            return CastApduDataRestart(casted.Child)
-        }
-        if casted, ok := typ.(*ApduData); ok {
-            return CastApduDataRestart(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataRestart {
+		if casted, ok := typ.(ApduDataRestart); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataRestart); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduData); ok {
+			return CastApduDataRestart(casted.Child)
+		}
+		if casted, ok := typ.(*ApduData); ok {
+			return CastApduDataRestart(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataRestart) GetTypeName() string {
-    return "ApduDataRestart"
+	return "ApduDataRestart"
 }
 
 func (m *ApduDataRestart) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataRestart) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataRestartParse(io *utils.ReadBuffer) (*ApduData, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataRestart{
-        Parent: &ApduData{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataRestart{
+		Parent: &ApduData{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataRestart) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataRestart) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

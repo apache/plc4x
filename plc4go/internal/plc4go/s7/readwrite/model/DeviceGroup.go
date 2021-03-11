@@ -19,84 +19,84 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type DeviceGroup int8
 
 type IDeviceGroup interface {
-    Serialize(io utils.WriteBuffer) error
+	Serialize(io utils.WriteBuffer) error
 }
 
-const(
-    DeviceGroup_PG_OR_PC DeviceGroup = 0x01
-    DeviceGroup_OS DeviceGroup = 0x02
-    DeviceGroup_OTHERS DeviceGroup = 0x03
+const (
+	DeviceGroup_PG_OR_PC DeviceGroup = 0x01
+	DeviceGroup_OS       DeviceGroup = 0x02
+	DeviceGroup_OTHERS   DeviceGroup = 0x03
 )
 
 func DeviceGroupByValue(value int8) DeviceGroup {
-    switch value {
-        case 0x01:
-            return DeviceGroup_PG_OR_PC
-        case 0x02:
-            return DeviceGroup_OS
-        case 0x03:
-            return DeviceGroup_OTHERS
-    }
-    return 0
+	switch value {
+	case 0x01:
+		return DeviceGroup_PG_OR_PC
+	case 0x02:
+		return DeviceGroup_OS
+	case 0x03:
+		return DeviceGroup_OTHERS
+	}
+	return 0
 }
 
 func DeviceGroupByName(value string) DeviceGroup {
-    switch value {
-    case "PG_OR_PC":
-        return DeviceGroup_PG_OR_PC
-    case "OS":
-        return DeviceGroup_OS
-    case "OTHERS":
-        return DeviceGroup_OTHERS
-    }
-    return 0
+	switch value {
+	case "PG_OR_PC":
+		return DeviceGroup_PG_OR_PC
+	case "OS":
+		return DeviceGroup_OS
+	case "OTHERS":
+		return DeviceGroup_OTHERS
+	}
+	return 0
 }
 
 func CastDeviceGroup(structType interface{}) DeviceGroup {
-    castFunc := func(typ interface{}) DeviceGroup {
-        if sDeviceGroup, ok := typ.(DeviceGroup); ok {
-            return sDeviceGroup
-        }
-        return 0
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) DeviceGroup {
+		if sDeviceGroup, ok := typ.(DeviceGroup); ok {
+			return sDeviceGroup
+		}
+		return 0
+	}
+	return castFunc(structType)
 }
 
 func (m DeviceGroup) LengthInBits() uint16 {
-    return 8
+	return 8
 }
 
 func (m DeviceGroup) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func DeviceGroupParse(io *utils.ReadBuffer) (DeviceGroup, error) {
-    val, err := io.ReadInt8(8)
-    if err != nil {
-        return 0, nil
-    }
-    return DeviceGroupByValue(val), nil
+	val, err := io.ReadInt8(8)
+	if err != nil {
+		return 0, nil
+	}
+	return DeviceGroupByValue(val), nil
 }
 
 func (e DeviceGroup) Serialize(io utils.WriteBuffer) error {
-    err := io.WriteInt8(8, int8(e))
-    return err
+	err := io.WriteInt8(8, int8(e))
+	return err
 }
 
 func (e DeviceGroup) String() string {
-    switch e {
-    case DeviceGroup_PG_OR_PC:
-        return "PG_OR_PC"
-    case DeviceGroup_OS:
-        return "OS"
-    case DeviceGroup_OTHERS:
-        return "OTHERS"
-    }
-    return ""
+	switch e {
+	case DeviceGroup_PG_OR_PC:
+		return "PG_OR_PC"
+	case DeviceGroup_OS:
+		return "OS"
+	case DeviceGroup_OTHERS:
+		return "OTHERS"
+	}
+	return ""
 }

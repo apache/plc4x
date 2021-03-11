@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataExtDomainAddressSerialNumberResponse struct {
-    Parent *ApduDataExt
-    IApduDataExtDomainAddressSerialNumberResponse
+	Parent *ApduDataExt
+	IApduDataExtDomainAddressSerialNumberResponse
 }
 
 // The corresponding interface
 type IApduDataExtDomainAddressSerialNumberResponse interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataExtDomainAddressSerialNumberResponse) ExtApciType() uint8 {
-    return 0x2D
+	return 0x2D
 }
-
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) InitializeParent(parent *ApduDataExt) {
 }
 
 func NewApduDataExtDomainAddressSerialNumberResponse() *ApduDataExt {
-    child := &ApduDataExtDomainAddressSerialNumberResponse{
-        Parent: NewApduDataExt(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataExtDomainAddressSerialNumberResponse{
+		Parent: NewApduDataExt(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataExtDomainAddressSerialNumberResponse(structType interface{}) *ApduDataExtDomainAddressSerialNumberResponse {
-    castFunc := func(typ interface{}) *ApduDataExtDomainAddressSerialNumberResponse {
-        if casted, ok := typ.(ApduDataExtDomainAddressSerialNumberResponse); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataExtDomainAddressSerialNumberResponse); ok {
-            return casted
-        }
-        if casted, ok := typ.(ApduDataExt); ok {
-            return CastApduDataExtDomainAddressSerialNumberResponse(casted.Child)
-        }
-        if casted, ok := typ.(*ApduDataExt); ok {
-            return CastApduDataExtDomainAddressSerialNumberResponse(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataExtDomainAddressSerialNumberResponse {
+		if casted, ok := typ.(ApduDataExtDomainAddressSerialNumberResponse); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataExtDomainAddressSerialNumberResponse); ok {
+			return casted
+		}
+		if casted, ok := typ.(ApduDataExt); ok {
+			return CastApduDataExtDomainAddressSerialNumberResponse(casted.Child)
+		}
+		if casted, ok := typ.(*ApduDataExt); ok {
+			return CastApduDataExtDomainAddressSerialNumberResponse(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) GetTypeName() string {
-    return "ApduDataExtDomainAddressSerialNumberResponse"
+	return "ApduDataExtDomainAddressSerialNumberResponse"
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataExtDomainAddressSerialNumberResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
 
-    // Create a partially initialized instance
-    _child := &ApduDataExtDomainAddressSerialNumberResponse{
-        Parent: &ApduDataExt{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataExtDomainAddressSerialNumberResponse{
+		Parent: &ApduDataExt{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

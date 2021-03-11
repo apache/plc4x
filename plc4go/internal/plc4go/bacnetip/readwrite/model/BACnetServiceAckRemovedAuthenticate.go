@@ -19,117 +19,115 @@
 package model
 
 import (
-    "encoding/xml"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type BACnetServiceAckRemovedAuthenticate struct {
-    Parent *BACnetServiceAck
-    IBACnetServiceAckRemovedAuthenticate
+	Parent *BACnetServiceAck
+	IBACnetServiceAckRemovedAuthenticate
 }
 
 // The corresponding interface
 type IBACnetServiceAckRemovedAuthenticate interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *BACnetServiceAckRemovedAuthenticate) ServiceChoice() uint8 {
-    return 0x18
+	return 0x18
 }
-
 
 func (m *BACnetServiceAckRemovedAuthenticate) InitializeParent(parent *BACnetServiceAck) {
 }
 
 func NewBACnetServiceAckRemovedAuthenticate() *BACnetServiceAck {
-    child := &BACnetServiceAckRemovedAuthenticate{
-        Parent: NewBACnetServiceAck(),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &BACnetServiceAckRemovedAuthenticate{
+		Parent: NewBACnetServiceAck(),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) *BACnetServiceAckRemovedAuthenticate {
-    castFunc := func(typ interface{}) *BACnetServiceAckRemovedAuthenticate {
-        if casted, ok := typ.(BACnetServiceAckRemovedAuthenticate); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*BACnetServiceAckRemovedAuthenticate); ok {
-            return casted
-        }
-        if casted, ok := typ.(BACnetServiceAck); ok {
-            return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
-        }
-        if casted, ok := typ.(*BACnetServiceAck); ok {
-            return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *BACnetServiceAckRemovedAuthenticate {
+		if casted, ok := typ.(BACnetServiceAckRemovedAuthenticate); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*BACnetServiceAckRemovedAuthenticate); ok {
+			return casted
+		}
+		if casted, ok := typ.(BACnetServiceAck); ok {
+			return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
+		}
+		if casted, ok := typ.(*BACnetServiceAck); ok {
+			return CastBACnetServiceAckRemovedAuthenticate(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) GetTypeName() string {
-    return "BACnetServiceAckRemovedAuthenticate"
+	return "BACnetServiceAckRemovedAuthenticate"
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 
-    // Create a partially initialized instance
-    _child := &BACnetServiceAckRemovedAuthenticate{
-        Parent: &BACnetServiceAck{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &BACnetServiceAckRemovedAuthenticate{
+		Parent: &BACnetServiceAck{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *BACnetServiceAckRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    return nil
+	return nil
 }
-

@@ -19,61 +19,61 @@
 package readwrite
 
 import (
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type BacnetipParserHelper struct {
 }
 
 func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
-    switch typeName {
-    case "APDU":
-        apduLength, err := utils.StrToUint16(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.APDUParse(io, apduLength)
-    case "BACnetTag":
-        return model.BACnetTagParse(io)
-    case "BACnetTagWithContent":
-        return model.BACnetTagWithContentParse(io)
-    case "BACnetError":
-        return model.BACnetErrorParse(io)
-    case "NLM":
-        apduLength, err := utils.StrToUint16(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.NLMParse(io, apduLength)
-    case "BACnetConfirmedServiceRequest":
-        len, err := utils.StrToUint16(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.BACnetConfirmedServiceRequestParse(io, len)
-    case "BACnetAddress":
-        return model.BACnetAddressParse(io)
-    case "BACnetConfirmedServiceACK":
-        return model.BACnetConfirmedServiceACKParse(io)
-    case "BACnetUnconfirmedServiceRequest":
-        len, err := utils.StrToUint16(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.BACnetUnconfirmedServiceRequestParse(io, len)
-    case "BACnetServiceAck":
-        return model.BACnetServiceAckParse(io)
-    case "BVLC":
-        return model.BVLCParse(io)
-    case "NPDU":
-        npduLength, err := utils.StrToUint16(arguments[0])
-        if err != nil {
-            return nil, err
-        }
-        return model.NPDUParse(io, npduLength)
-    }
-    return nil, errors.New("Unsupported type " + typeName)
+	switch typeName {
+	case "APDU":
+		apduLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.APDUParse(io, apduLength)
+	case "BACnetTag":
+		return model.BACnetTagParse(io)
+	case "BACnetTagWithContent":
+		return model.BACnetTagWithContentParse(io)
+	case "BACnetError":
+		return model.BACnetErrorParse(io)
+	case "NLM":
+		apduLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.NLMParse(io, apduLength)
+	case "BACnetConfirmedServiceRequest":
+		len, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.BACnetConfirmedServiceRequestParse(io, len)
+	case "BACnetAddress":
+		return model.BACnetAddressParse(io)
+	case "BACnetConfirmedServiceACK":
+		return model.BACnetConfirmedServiceACKParse(io)
+	case "BACnetUnconfirmedServiceRequest":
+		len, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.BACnetUnconfirmedServiceRequestParse(io, len)
+	case "BACnetServiceAck":
+		return model.BACnetServiceAckParse(io)
+	case "BVLC":
+		return model.BVLCParse(io)
+	case "NPDU":
+		npduLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, err
+		}
+		return model.NPDUParse(io, npduLength)
+	}
+	return nil, errors.New("Unsupported type " + typeName)
 }

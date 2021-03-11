@@ -160,8 +160,8 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field1", "holding-register:3:WORD")
-	rrb.AddItem("field2", "holding-register:26:REAL")
+	rrb.AddQuery("field1", "holding-register:3:WORD")
+	rrb.AddQuery("field2", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -188,8 +188,8 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a write-request
 	wrb := connection.WriteRequestBuilder()
-	wrb.AddItem("field1", "holding-register:1:REAL", 1.2345)
-	wrb.AddItem("field2", "holding-register:3:REAL", 2.3456)
+	wrb.AddQuery("field1", "holding-register:1:REAL", 1.2345)
+	wrb.AddQuery("field2", "holding-register:3:REAL", 2.3456)
 	writeRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())

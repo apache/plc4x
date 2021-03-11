@@ -19,147 +19,145 @@
 package model
 
 import (
-    "encoding/xml"
-    "errors"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-    "io"
+	"encoding/xml"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"io"
 )
 
 // The data-structure of this message
 type ApduDataContainer struct {
-    DataApdu *ApduData
-    Parent *Apdu
-    IApduDataContainer
+	DataApdu *ApduData
+	Parent   *Apdu
+	IApduDataContainer
 }
 
 // The corresponding interface
 type IApduDataContainer interface {
-    LengthInBytes() uint16
-    LengthInBits() uint16
-    Serialize(io utils.WriteBuffer) error
-    xml.Marshaler
+	LengthInBytes() uint16
+	LengthInBits() uint16
+	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataContainer) Control() uint8 {
-    return 0
+	return 0
 }
 
-
 func (m *ApduDataContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {
-    m.Parent.Numbered = numbered
-    m.Parent.Counter = counter
+	m.Parent.Numbered = numbered
+	m.Parent.Counter = counter
 }
 
 func NewApduDataContainer(dataApdu *ApduData, numbered bool, counter uint8) *Apdu {
-    child := &ApduDataContainer{
-        DataApdu: dataApdu,
-        Parent: NewApdu(numbered, counter),
-    }
-    child.Parent.Child = child
-    return child.Parent
+	child := &ApduDataContainer{
+		DataApdu: dataApdu,
+		Parent:   NewApdu(numbered, counter),
+	}
+	child.Parent.Child = child
+	return child.Parent
 }
 
 func CastApduDataContainer(structType interface{}) *ApduDataContainer {
-    castFunc := func(typ interface{}) *ApduDataContainer {
-        if casted, ok := typ.(ApduDataContainer); ok {
-            return &casted
-        }
-        if casted, ok := typ.(*ApduDataContainer); ok {
-            return casted
-        }
-        if casted, ok := typ.(Apdu); ok {
-            return CastApduDataContainer(casted.Child)
-        }
-        if casted, ok := typ.(*Apdu); ok {
-            return CastApduDataContainer(casted.Child)
-        }
-        return nil
-    }
-    return castFunc(structType)
+	castFunc := func(typ interface{}) *ApduDataContainer {
+		if casted, ok := typ.(ApduDataContainer); ok {
+			return &casted
+		}
+		if casted, ok := typ.(*ApduDataContainer); ok {
+			return casted
+		}
+		if casted, ok := typ.(Apdu); ok {
+			return CastApduDataContainer(casted.Child)
+		}
+		if casted, ok := typ.(*Apdu); ok {
+			return CastApduDataContainer(casted.Child)
+		}
+		return nil
+	}
+	return castFunc(structType)
 }
 
 func (m *ApduDataContainer) GetTypeName() string {
-    return "ApduDataContainer"
+	return "ApduDataContainer"
 }
 
 func (m *ApduDataContainer) LengthInBits() uint16 {
-    lengthInBits := uint16(0)
+	lengthInBits := uint16(0)
 
-    // Simple field (dataApdu)
-    lengthInBits += m.DataApdu.LengthInBits()
+	// Simple field (dataApdu)
+	lengthInBits += m.DataApdu.LengthInBits()
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m *ApduDataContainer) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
 func ApduDataContainerParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 
-    // Simple Field (dataApdu)
-    dataApdu, _dataApduErr := ApduDataParse(io, dataLength)
-    if _dataApduErr != nil {
-        return nil, errors.New("Error parsing 'dataApdu' field " + _dataApduErr.Error())
-    }
+	// Simple Field (dataApdu)
+	dataApdu, _dataApduErr := ApduDataParse(io, dataLength)
+	if _dataApduErr != nil {
+		return nil, errors.New("Error parsing 'dataApdu' field " + _dataApduErr.Error())
+	}
 
-    // Create a partially initialized instance
-    _child := &ApduDataContainer{
-        DataApdu: dataApdu,
-        Parent: &Apdu{},
-    }
-    _child.Parent.Child = _child
-    return _child.Parent, nil
+	// Create a partially initialized instance
+	_child := &ApduDataContainer{
+		DataApdu: dataApdu,
+		Parent:   &Apdu{},
+	}
+	_child.Parent.Child = _child
+	return _child.Parent, nil
 }
 
 func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
-    ser := func() error {
+	ser := func() error {
 
-    // Simple Field (dataApdu)
-    _dataApduErr := m.DataApdu.Serialize(io)
-    if _dataApduErr != nil {
-        return errors.New("Error serializing 'dataApdu' field " + _dataApduErr.Error())
-    }
+		// Simple Field (dataApdu)
+		_dataApduErr := m.DataApdu.Serialize(io)
+		if _dataApduErr != nil {
+			return errors.New("Error serializing 'dataApdu' field " + _dataApduErr.Error())
+		}
 
-        return nil
-    }
-    return m.Parent.SerializeParent(io, m, ser)
+		return nil
+	}
+	return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataContainer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    var token xml.Token
-    var err error
-    token = start
-    for {
-        switch token.(type) {
-        case xml.StartElement:
-            tok := token.(xml.StartElement)
-            switch tok.Name.Local {
-            case "dataApdu":
-                var dt *ApduData
-                if err := d.DecodeElement(&dt, &tok); err != nil {
-                    return err
-                }
-                m.DataApdu = dt
-            }
-        }
-        token, err = d.Token()
-        if err != nil {
-            if err == io.EOF {
-                return nil
-            }
-            return err
-        }
-    }
+	var token xml.Token
+	var err error
+	token = start
+	for {
+		switch token.(type) {
+		case xml.StartElement:
+			tok := token.(xml.StartElement)
+			switch tok.Name.Local {
+			case "dataApdu":
+				var dt *ApduData
+				if err := d.DecodeElement(&dt, &tok); err != nil {
+					return err
+				}
+				m.DataApdu = dt
+			}
+		}
+		token, err = d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+	}
 }
 
 func (m *ApduDataContainer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeElement(m.DataApdu, xml.StartElement{Name: xml.Name{Local: "dataApdu"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeElement(m.DataApdu, xml.StartElement{Name: xml.Name{Local: "dataApdu"}}); err != nil {
+		return err
+	}
+	return nil
 }
-
