@@ -30,7 +30,6 @@ type PlcBitString struct {
 
 func NewPlcBitString(value interface{}) PlcBitString {
 	var bools []api.PlcValue
-
 	switch value.(type) {
 	case uint8:
 		bools = make([]api.PlcValue, 8)
