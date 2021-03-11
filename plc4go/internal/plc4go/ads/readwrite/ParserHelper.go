@@ -21,7 +21,6 @@ package readwrite
 import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -30,7 +29,7 @@ import (
 type AdsParserHelper struct {
 }
 
-func (m AdsParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m AdsParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
@@ -49,12 +48,12 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io *utils.Re
 	case "AmsSerialAcknowledgeFrame":
 		return model.AmsSerialAcknowledgeFrameParse(io)
 	case "AdsData":
-		var commandId ICommandId
+		var commandId model.CommandId
 		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, err
 		}
-		return model.AdsDataParse(io, commandId, response)
+		return model.AdsDataParse(io, &commandId, response)
 	case "AmsNetId":
 		return model.AmsNetIdParse(io)
 	case "AdsStampHeader":

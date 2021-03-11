@@ -246,7 +246,8 @@
           </execution>
 
           <!-- Convert generated test report into xunit format and save as file -->
-          <execution>
+          <!-- TODO: Seems to require some sort of executable -->
+          <!--execution>
             <id>makeXUnitReport</id>
             <phase>test</phase>
             <goals>
@@ -265,7 +266,7 @@
                 <info>XUnit report saved as ${xunit.report}</info>
               </echo>
             </configuration>
-          </execution>
+          </execution-->
 
           <execution>
             <id>run-go-vet</id>

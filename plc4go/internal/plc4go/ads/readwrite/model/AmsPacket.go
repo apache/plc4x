@@ -83,7 +83,7 @@ func (m *AmsPacket) LengthInBits() uint16 {
 	// Simple field (sourceAmsPort)
 	lengthInBits += 16
 
-	// Enum Field (commandId)
+	// Simple field (commandId)
 	lengthInBits += 16
 
 	// Simple field (state)
@@ -134,7 +134,7 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.New("Error parsing 'sourceAmsPort' field " + _sourceAmsPortErr.Error())
 	}
 
-	// Enum field (commandId)
+	// Simple Field (commandId)
 	commandId, _commandIdErr := CommandIdParse(io)
 	if _commandIdErr != nil {
 		return nil, errors.New("Error parsing 'commandId' field " + _commandIdErr.Error())
@@ -165,7 +165,7 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (data)
-	data, _dataErr := AdsDataParse(io, commandId, state.Response)
+	data, _dataErr := AdsDataParse(io, &commandId, state.Response)
 	if _dataErr != nil {
 		return nil, errors.New("Error parsing 'data' field " + _dataErr.Error())
 	}
@@ -202,9 +202,8 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 		return errors.New("Error serializing 'sourceAmsPort' field " + _sourceAmsPortErr.Error())
 	}
 
-	// Enum field (commandId)
-	commandId := CastCommandId(m.CommandId)
-	_commandIdErr := commandId.Serialize(io)
+	// Simple Field (commandId)
+	_commandIdErr := m.CommandId.Serialize(io)
 	if _commandIdErr != nil {
 		return errors.New("Error serializing 'commandId' field " + _commandIdErr.Error())
 	}

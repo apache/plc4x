@@ -175,7 +175,7 @@ func DataItemParse(io *utils.ReadBuffer, dataFormatName string, stringLength int
 	case dataFormatName == "IEC61131_LTIME": // LTIME
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadInt64(64)
+		value, _valueErr := io.ReadUint64(64)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
@@ -196,14 +196,6 @@ func DataItemParse(io *utils.ReadBuffer, dataFormatName string, stringLength int
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcTIME_OF_DAY(value), nil
-	case dataFormatName == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
-
-		// Simple Field (value)
-		value, _valueErr := io.ReadUint32(32)
-		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-		}
-		return values.NewPlcDATE_AND_TIME(value), nil
 	}
 	return nil, errors.New("unsupported type")
 }
@@ -324,7 +316,7 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataFormatName
 	case dataFormatName == "IEC61131_LTIME": // LTIME
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
 	case dataFormatName == "IEC61131_DATE": // DATE
@@ -334,12 +326,6 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataFormatName
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
 	case dataFormatName == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
-
-		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
-		}
-	case dataFormatName == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {

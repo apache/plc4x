@@ -21,7 +21,6 @@ package readwrite
 import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -30,7 +29,7 @@ import (
 type KnxnetipParserHelper struct {
 }
 
-func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "HPAIControlEndpoint":
 		return model.HPAIControlEndpointParse(io)
@@ -77,8 +76,8 @@ func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *uti
 	case "CEMIAdditionalInformation":
 		return model.CEMIAdditionalInformationParse(io)
 	case "ComObjectTable":
-		var firmwareType IFirmwareType
-		return model.ComObjectTableParse(io, firmwareType)
+		var firmwareType model.FirmwareType
+		return model.ComObjectTableParse(io, &firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(io)
 	case "ConnectionResponseDataBlock":

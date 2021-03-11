@@ -1104,4 +1104,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         String enumConstant = expression.substring(expression.indexOf('.') + 1);
         return enumName + "_" + enumConstant;
     }
+
+    public boolean needsReferenceForParserArgument(String propertyName, TypeReference argumentType) {
+        // Check if this is a local field.
+        if(argumentType instanceof ComplexTypeReference) {
+            Field field = getFieldForNameFromCurrent(propertyName);
+            if (field instanceof TypedField) {
+                TypedField typedField = (TypedField) field;
+                return typedField.getType() instanceof ComplexTypeReference;
+            }
+        }
+        return false;
+    }
 }

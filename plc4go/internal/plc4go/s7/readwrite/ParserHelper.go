@@ -21,7 +21,6 @@ package readwrite
 import (
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -30,7 +29,7 @@ import (
 type S7ParserHelper struct {
 }
 
-func (m S7ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m S7ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "SzlId":
 		return model.SzlIdParse(io)
@@ -71,8 +70,8 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io *utils.Rea
 		if err != nil {
 			return nil, err
 		}
-		var parameter IS7Parameter
-		return model.S7PayloadParse(io, messageType, parameter)
+		var parameter model.S7Parameter
+		return model.S7PayloadParse(io, messageType, &parameter)
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(io)
 	case "S7VarPayloadDataItem":

@@ -93,7 +93,7 @@ func (m *AdsReadStateResponse) GetTypeName() string {
 func (m *AdsReadStateResponse) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
-	// Enum Field (result)
+	// Simple field (result)
 	lengthInBits += 32
 
 	// Simple field (adsState)
@@ -111,7 +111,7 @@ func (m *AdsReadStateResponse) LengthInBytes() uint16 {
 
 func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 
-	// Enum field (result)
+	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
@@ -143,9 +143,8 @@ func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 
-		// Enum field (result)
-		result := CastReturnCode(m.Result)
-		_resultErr := result.Serialize(io)
+		// Simple Field (result)
+		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
 			return errors.New("Error serializing 'result' field " + _resultErr.Error())
 		}

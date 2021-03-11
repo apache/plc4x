@@ -65,7 +65,6 @@ package ${outputFlavor?replace("-","")}
 import (
     "errors"
     "github.com/apache/plc4x/plc4go/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
     "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
@@ -74,7 +73,7 @@ import (
 type ${protocolName?cap_first}ParserHelper struct {
 }
 
-func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
+func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
     switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
     case "${typeDefinition.name}":
@@ -86,11 +85,11 @@ func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments 
             return nil, err
         }
             <#else>
-        var ${parserArgument.name} I${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+        var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
             </#if>
         </#list>
     </#if>
-        return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
+        return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument><#if helper.isComplexTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
     }
     return nil, errors.New("Unsupported type " + typeName)
