@@ -52,6 +52,15 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-ads</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**</excludes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-bacnetip</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
@@ -99,6 +108,19 @@
         <groupId>org.apache.plc4x.plugins</groupId>
         <artifactId>plc4x-maven-plugin</artifactId>
         <executions>
+          <execution>
+            <id>generate-driver-ads</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>ads</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/internal</outputDir>
+            </configuration>
+          </execution>
           <execution>
             <id>generate-driver-bacnetip</id>
             <phase>generate-sources</phase>
@@ -204,6 +226,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-ads</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>

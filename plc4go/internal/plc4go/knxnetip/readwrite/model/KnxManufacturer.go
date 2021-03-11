@@ -567,8 +567,14 @@ const(
     KnxManufacturer_M_NIETIAN KnxManufacturer = 533
     KnxManufacturer_M_SUMSIR KnxManufacturer = 534
     KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA KnxManufacturer = 535
-    KnxManufacturer_M_ABB___RESERVED KnxManufacturer = 536
-    KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED KnxManufacturer = 537
+    KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_ KnxManufacturer = 536
+    KnxManufacturer_M_ANLIPS KnxManufacturer = 537
+    KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD KnxManufacturer = 538
+    KnxManufacturer_M_BVK_TECHNOLOGY KnxManufacturer = 539
+    KnxManufacturer_M_SOLOMIO_SRL KnxManufacturer = 540
+    KnxManufacturer_M_DOMOTICA_LABS KnxManufacturer = 541
+    KnxManufacturer_M_ABB___RESERVED KnxManufacturer = 542
+    KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED KnxManufacturer = 543
 )
 
 
@@ -2033,13 +2039,31 @@ func (e KnxManufacturer) Number() uint16 {
             return 592
         }
         case 536: { /* '536' */
-            return 43954
+            return 593
         }
         case 537: { /* '537' */
-            return 43959
+            return 594
+        }
+        case 538: { /* '538' */
+            return 595
+        }
+        case 539: { /* '539' */
+            return 596
         }
         case 54: { /* '54' */
             return 92
+        }
+        case 540: { /* '540' */
+            return 597
+        }
+        case 541: { /* '541' */
+            return 598
+        }
+        case 542: { /* '542' */
+            return 43954
+        }
+        case 543: { /* '543' */
+            return 43959
         }
         case 55: { /* '55' */
             return 93
@@ -3655,13 +3679,31 @@ func (e KnxManufacturer) Name() string {
             return "ORBIS TECNOLOGIA ELECTRICA SA"
         }
         case 536: { /* '536' */
-            return "ABB - reserved"
+            return "Nanjing Zhongyi IoT Technology Co., Ltd."
         }
         case 537: { /* '537' */
-            return "Busch-Jaeger Elektro - reserved"
+            return "Anlips"
+        }
+        case 538: { /* '538' */
+            return "GUANGDONG PAK CORPORATION CO., LTD"
+        }
+        case 539: { /* '539' */
+            return "BVK Technology"
         }
         case 54: { /* '54' */
             return "DORMA GmbH + Co. KG"
+        }
+        case 540: { /* '540' */
+            return "Solomio srl"
+        }
+        case 541: { /* '541' */
+            return "Domotica Labs"
+        }
+        case 542: { /* '542' */
+            return "ABB - reserved"
+        }
+        case 543: { /* '543' */
+            return "Busch-Jaeger Elektro - reserved"
         }
         case 55: { /* '55' */
             return "WindowMaster A/S"
@@ -4790,11 +4832,23 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
         case 535:
             return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
         case 536:
-            return KnxManufacturer_M_ABB___RESERVED
+            return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
         case 537:
-            return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+            return KnxManufacturer_M_ANLIPS
+        case 538:
+            return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
+        case 539:
+            return KnxManufacturer_M_BVK_TECHNOLOGY
         case 54:
             return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
+        case 540:
+            return KnxManufacturer_M_SOLOMIO_SRL
+        case 541:
+            return KnxManufacturer_M_DOMOTICA_LABS
+        case 542:
+            return KnxManufacturer_M_ABB___RESERVED
+        case 543:
+            return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
         case 55:
             return KnxManufacturer_M_WINDOWMASTER_AS
         case 56:
@@ -5871,12 +5925,24 @@ func KnxManufacturerByName(value string) KnxManufacturer {
         return KnxManufacturer_M_SUMSIR
     case "M_ORBIS_TECNOLOGIA_ELECTRICA_SA":
         return KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA
+    case "M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_":
+        return KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_
+    case "M_ANLIPS":
+        return KnxManufacturer_M_ANLIPS
+    case "M_GUANGDONG_PAK_CORPORATION_CO___LTD":
+        return KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD
+    case "M_BVK_TECHNOLOGY":
+        return KnxManufacturer_M_BVK_TECHNOLOGY
+    case "M_DORMA_GMBH_Plus_CO__KG":
+        return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
+    case "M_SOLOMIO_SRL":
+        return KnxManufacturer_M_SOLOMIO_SRL
+    case "M_DOMOTICA_LABS":
+        return KnxManufacturer_M_DOMOTICA_LABS
     case "M_ABB___RESERVED":
         return KnxManufacturer_M_ABB___RESERVED
     case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
         return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
-    case "M_DORMA_GMBH_Plus_CO__KG":
-        return KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG
     case "M_WINDOWMASTER_AS":
         return KnxManufacturer_M_WINDOWMASTER_AS
     case "M_WALTHER_WERKE":
@@ -6984,12 +7050,24 @@ func (e KnxManufacturer) String() string {
         return "M_SUMSIR"
     case KnxManufacturer_M_ORBIS_TECNOLOGIA_ELECTRICA_SA:
         return "M_ORBIS_TECNOLOGIA_ELECTRICA_SA"
+    case KnxManufacturer_M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_:
+        return "M_NANJING_ZHONGYI_IOT_TECHNOLOGY_CO___LTD_"
+    case KnxManufacturer_M_ANLIPS:
+        return "M_ANLIPS"
+    case KnxManufacturer_M_GUANGDONG_PAK_CORPORATION_CO___LTD:
+        return "M_GUANGDONG_PAK_CORPORATION_CO___LTD"
+    case KnxManufacturer_M_BVK_TECHNOLOGY:
+        return "M_BVK_TECHNOLOGY"
+    case KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG:
+        return "M_DORMA_GMBH_Plus_CO__KG"
+    case KnxManufacturer_M_SOLOMIO_SRL:
+        return "M_SOLOMIO_SRL"
+    case KnxManufacturer_M_DOMOTICA_LABS:
+        return "M_DOMOTICA_LABS"
     case KnxManufacturer_M_ABB___RESERVED:
         return "M_ABB___RESERVED"
     case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
         return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-    case KnxManufacturer_M_DORMA_GMBH_Plus_CO__KG:
-        return "M_DORMA_GMBH_Plus_CO__KG"
     case KnxManufacturer_M_WINDOWMASTER_AS:
         return "M_WINDOWMASTER_AS"
     case KnxManufacturer_M_WALTHER_WERKE:

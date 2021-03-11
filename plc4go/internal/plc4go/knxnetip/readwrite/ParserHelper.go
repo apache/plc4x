@@ -19,108 +19,108 @@
 package readwrite
 
 import (
-	"errors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "errors"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type KnxnetipParserHelper struct {
 }
 
 func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (spi.Message, error) {
-	switch typeName {
-	case "HPAIControlEndpoint":
-		return model.HPAIControlEndpointParse(io)
-	case "TunnelingResponseDataBlock":
-		return model.TunnelingResponseDataBlockParse(io)
-	case "DeviceDescriptorType2":
-		return model.DeviceDescriptorType2Parse(io)
-	case "ChannelInformation":
-		return model.ChannelInformationParse(io)
-	case "DeviceConfigurationAckDataBlock":
-		return model.DeviceConfigurationAckDataBlockParse(io)
-	case "ConnectionRequestInformation":
-		return model.ConnectionRequestInformationParse(io)
-	case "Apdu":
-		dataLength, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, err
-		}
-		return model.ApduParse(io, dataLength)
-	case "HPAIDiscoveryEndpoint":
-		return model.HPAIDiscoveryEndpointParse(io)
-	case "ProjectInstallationIdentifier":
-		return model.ProjectInstallationIdentifierParse(io)
-	case "ServiceId":
-		return model.ServiceIdParse(io)
-	case "HPAIDataEndpoint":
-		return model.HPAIDataEndpointParse(io)
-	case "RelativeTimestamp":
-		return model.RelativeTimestampParse(io)
-	case "CEMI":
-		size, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, err
-		}
-		return model.CEMIParse(io, size)
-	case "KnxNetIpMessage":
-		return model.KnxNetIpMessageParse(io)
-	case "DeviceStatus":
-		return model.DeviceStatusParse(io)
-	case "IPAddress":
-		return model.IPAddressParse(io)
-	case "GroupObjectDescriptorRealisationTypeB":
-		return model.GroupObjectDescriptorRealisationTypeBParse(io)
-	case "CEMIAdditionalInformation":
-		return model.CEMIAdditionalInformationParse(io)
-	case "ComObjectTable":
-		var firmwareType IFirmwareType
-		return model.ComObjectTableParse(io, firmwareType)
-	case "KnxAddress":
-		return model.KnxAddressParse(io)
-	case "ConnectionResponseDataBlock":
-		return model.ConnectionResponseDataBlockParse(io)
-	case "TunnelingRequestDataBlock":
-		return model.TunnelingRequestDataBlockParse(io)
-	case "DIBDeviceInfo":
-		return model.DIBDeviceInfoParse(io)
-	case "DeviceConfigurationRequestDataBlock":
-		return model.DeviceConfigurationRequestDataBlockParse(io)
-	case "DIBSuppSvcFamilies":
-		return model.DIBSuppSvcFamiliesParse(io)
-	case "LDataFrame":
-		return model.LDataFrameParse(io)
-	case "ApduDataExt":
-		length, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, err
-		}
-		return model.ApduDataExtParse(io, length)
-	case "ApduControl":
-		return model.ApduControlParse(io)
-	case "KnxGroupAddress":
-		numLevels, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, err
-		}
-		return model.KnxGroupAddressParse(io, numLevels)
-	case "GroupObjectDescriptorRealisationType6":
-		return model.GroupObjectDescriptorRealisationType6Parse(io)
-	case "GroupObjectDescriptorRealisationType7":
-		return model.GroupObjectDescriptorRealisationType7Parse(io)
-	case "MACAddress":
-		return model.MACAddressParse(io)
-	case "GroupObjectDescriptorRealisationType2":
-		return model.GroupObjectDescriptorRealisationType2Parse(io)
-	case "ApduData":
-		dataLength, err := utils.StrToUint8(arguments[0])
-		if err != nil {
-			return nil, err
-		}
-		return model.ApduDataParse(io, dataLength)
-	case "GroupObjectDescriptorRealisationType1":
-		return model.GroupObjectDescriptorRealisationType1Parse(io)
-	}
-	return nil, errors.New("Unsupported type " + typeName)
+    switch typeName {
+    case "HPAIControlEndpoint":
+        return model.HPAIControlEndpointParse(io)
+    case "TunnelingResponseDataBlock":
+        return model.TunnelingResponseDataBlockParse(io)
+    case "DeviceDescriptorType2":
+        return model.DeviceDescriptorType2Parse(io)
+    case "ChannelInformation":
+        return model.ChannelInformationParse(io)
+    case "DeviceConfigurationAckDataBlock":
+        return model.DeviceConfigurationAckDataBlockParse(io)
+    case "ConnectionRequestInformation":
+        return model.ConnectionRequestInformationParse(io)
+    case "Apdu":
+        dataLength, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduParse(io, dataLength)
+    case "HPAIDiscoveryEndpoint":
+        return model.HPAIDiscoveryEndpointParse(io)
+    case "ProjectInstallationIdentifier":
+        return model.ProjectInstallationIdentifierParse(io)
+    case "ServiceId":
+        return model.ServiceIdParse(io)
+    case "HPAIDataEndpoint":
+        return model.HPAIDataEndpointParse(io)
+    case "RelativeTimestamp":
+        return model.RelativeTimestampParse(io)
+    case "CEMI":
+        size, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.CEMIParse(io, size)
+    case "KnxNetIpMessage":
+        return model.KnxNetIpMessageParse(io)
+    case "DeviceStatus":
+        return model.DeviceStatusParse(io)
+    case "IPAddress":
+        return model.IPAddressParse(io)
+    case "GroupObjectDescriptorRealisationTypeB":
+        return model.GroupObjectDescriptorRealisationTypeBParse(io)
+    case "CEMIAdditionalInformation":
+        return model.CEMIAdditionalInformationParse(io)
+    case "ComObjectTable":
+        var firmwareType IFirmwareType
+        return model.ComObjectTableParse(io, firmwareType)
+    case "KnxAddress":
+        return model.KnxAddressParse(io)
+    case "ConnectionResponseDataBlock":
+        return model.ConnectionResponseDataBlockParse(io)
+    case "TunnelingRequestDataBlock":
+        return model.TunnelingRequestDataBlockParse(io)
+    case "DIBDeviceInfo":
+        return model.DIBDeviceInfoParse(io)
+    case "DeviceConfigurationRequestDataBlock":
+        return model.DeviceConfigurationRequestDataBlockParse(io)
+    case "DIBSuppSvcFamilies":
+        return model.DIBSuppSvcFamiliesParse(io)
+    case "LDataFrame":
+        return model.LDataFrameParse(io)
+    case "ApduDataExt":
+        length, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduDataExtParse(io, length)
+    case "ApduControl":
+        return model.ApduControlParse(io)
+    case "KnxGroupAddress":
+        numLevels, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.KnxGroupAddressParse(io, numLevels)
+    case "GroupObjectDescriptorRealisationType6":
+        return model.GroupObjectDescriptorRealisationType6Parse(io)
+    case "GroupObjectDescriptorRealisationType7":
+        return model.GroupObjectDescriptorRealisationType7Parse(io)
+    case "MACAddress":
+        return model.MACAddressParse(io)
+    case "GroupObjectDescriptorRealisationType2":
+        return model.GroupObjectDescriptorRealisationType2Parse(io)
+    case "ApduData":
+        dataLength, err := utils.StrToUint8(arguments[0])
+        if err != nil {
+            return nil, err
+        }
+        return model.ApduDataParse(io, dataLength)
+    case "GroupObjectDescriptorRealisationType1":
+        return model.GroupObjectDescriptorRealisationType1Parse(io)
+    }
+    return nil, errors.New("Unsupported type " + typeName)
 }

@@ -19,190 +19,192 @@
 package model
 
 import (
-	"encoding/base64"
-	"encoding/xml"
-	"errors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"io"
+    "encoding/base64"
+    "encoding/xml"
+    "errors"
+    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+    "io"
 )
 
 // The data-structure of this message
 type ApduDataGroupValueWrite struct {
-	DataFirstByte int8
-	Data          []int8
-	Parent        *ApduData
-	IApduDataGroupValueWrite
+    DataFirstByte int8
+    Data []int8
+    Parent *ApduData
+    IApduDataGroupValueWrite
 }
 
 // The corresponding interface
 type IApduDataGroupValueWrite interface {
-	LengthInBytes() uint16
-	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
+    LengthInBytes() uint16
+    LengthInBits() uint16
+    Serialize(io utils.WriteBuffer) error
+    xml.Marshaler
 }
 
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduDataGroupValueWrite) ApciType() uint8 {
-	return 0x2
+    return 0x2
 }
+
 
 func (m *ApduDataGroupValueWrite) InitializeParent(parent *ApduData) {
 }
 
 func NewApduDataGroupValueWrite(dataFirstByte int8, data []int8) *ApduData {
-	child := &ApduDataGroupValueWrite{
-		DataFirstByte: dataFirstByte,
-		Data:          data,
-		Parent:        NewApduData(),
-	}
-	child.Parent.Child = child
-	return child.Parent
+    child := &ApduDataGroupValueWrite{
+        DataFirstByte: dataFirstByte,
+        Data: data,
+        Parent: NewApduData(),
+    }
+    child.Parent.Child = child
+    return child.Parent
 }
 
 func CastApduDataGroupValueWrite(structType interface{}) *ApduDataGroupValueWrite {
-	castFunc := func(typ interface{}) *ApduDataGroupValueWrite {
-		if casted, ok := typ.(ApduDataGroupValueWrite); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ApduDataGroupValueWrite); ok {
-			return casted
-		}
-		if casted, ok := typ.(ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		if casted, ok := typ.(*ApduData); ok {
-			return CastApduDataGroupValueWrite(casted.Child)
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) *ApduDataGroupValueWrite {
+        if casted, ok := typ.(ApduDataGroupValueWrite); ok {
+            return &casted
+        }
+        if casted, ok := typ.(*ApduDataGroupValueWrite); ok {
+            return casted
+        }
+        if casted, ok := typ.(ApduData); ok {
+            return CastApduDataGroupValueWrite(casted.Child)
+        }
+        if casted, ok := typ.(*ApduData); ok {
+            return CastApduDataGroupValueWrite(casted.Child)
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func (m *ApduDataGroupValueWrite) GetTypeName() string {
-	return "ApduDataGroupValueWrite"
+    return "ApduDataGroupValueWrite"
 }
 
 func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+    lengthInBits := uint16(0)
 
-	// Simple field (dataFirstByte)
-	lengthInBits += 6
+    // Simple field (dataFirstByte)
+    lengthInBits += 6
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
-	}
+    // Array field
+    if len(m.Data) > 0 {
+        lengthInBits += 8 * uint16(len(m.Data))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 
-	// Simple Field (dataFirstByte)
-	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
-	if _dataFirstByteErr != nil {
-		return nil, errors.New("Error parsing 'dataFirstByte' field " + _dataFirstByteErr.Error())
-	}
+    // Simple Field (dataFirstByte)
+    dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
+    if _dataFirstByteErr != nil {
+        return nil, errors.New("Error parsing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+    }
 
-	// Array field (data)
-	// Count array
-	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1)))))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1))))); curItem++ {
-		_item, _err := io.ReadInt8(8)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
-		}
-		data[curItem] = _item
-	}
+    // Array field (data)
+    // Count array
+    data := make([]int8, utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1)))))
+    for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < ((1)))), uint16(uint16(0)), uint16(uint16(dataLength) - uint16(uint16(1))))); curItem++ {
+        _item, _err := io.ReadInt8(8)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'data' field " + _err.Error())
+        }
+        data[curItem] = _item
+    }
 
-	// Create a partially initialized instance
-	_child := &ApduDataGroupValueWrite{
-		DataFirstByte: dataFirstByte,
-		Data:          data,
-		Parent:        &ApduData{},
-	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+    // Create a partially initialized instance
+    _child := &ApduDataGroupValueWrite{
+        DataFirstByte: dataFirstByte,
+        Data: data,
+        Parent: &ApduData{},
+    }
+    _child.Parent.Child = _child
+    return _child.Parent, nil
 }
 
 func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (dataFirstByte)
-		dataFirstByte := int8(m.DataFirstByte)
-		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
-		if _dataFirstByteErr != nil {
-			return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
-		}
+    // Simple Field (dataFirstByte)
+    dataFirstByte := int8(m.DataFirstByte)
+    _dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+    if _dataFirstByteErr != nil {
+        return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+    }
 
-		// Array Field (data)
-		if m.Data != nil {
-			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
-				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
-				}
-			}
-		}
+    // Array Field (data)
+    if m.Data != nil {
+        for _, _element := range m.Data {
+            _elementErr := io.WriteInt8(8, _element)
+            if _elementErr != nil {
+                return errors.New("Error serializing 'data' field " + _elementErr.Error())
+            }
+        }
+    }
 
-		return nil
-	}
-	return m.Parent.SerializeParent(io, m, ser)
+        return nil
+    }
+    return m.Parent.SerializeParent(io, m, ser)
 }
 
 func (m *ApduDataGroupValueWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	token = start
-	for {
-		switch token.(type) {
-		case xml.StartElement:
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			case "dataFirstByte":
-				var data int8
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.DataFirstByte = data
-			case "data":
-				var _encoded string
-				if err := d.DecodeElement(&_encoded, &tok); err != nil {
-					return err
-				}
-				_decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
-				_len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
-				if err != nil {
-					return err
-				}
-				m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
-			}
-		}
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
-	}
+    var token xml.Token
+    var err error
+    token = start
+    for {
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "dataFirstByte":
+                var data int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DataFirstByte = data
+            case "data":
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
+                    return err
+                }
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.Data = utils.ByteArrayToInt8Array(_decoded[0:_len])
+            }
+        }
+        token, err = d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+    }
 }
 
 func (m *ApduDataGroupValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
-		return err
-	}
-	_encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
-	base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
-	if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
-	return nil
+    if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
+        return err
+    }
+    _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ArrayToByteArray(m.Data))
+    if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+        return err
+    }
+    return nil
 }
+
