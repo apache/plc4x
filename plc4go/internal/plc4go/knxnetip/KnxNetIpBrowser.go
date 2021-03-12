@@ -28,7 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"strconv"
 	"strings"
 	"time"
@@ -387,7 +387,7 @@ func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				rb := utils.NewReadBuffer(data)
 				descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(rb)
 				if err != nil {
-					log.Infof("error parsing com object descriptor: %s", err.Error())
+					log.Info().Err(err).Msg("error parsing com object descriptor")
 					continue
 				}
 
@@ -517,7 +517,7 @@ func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 		readResult = <-rrr
 		if readResult.Response.GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
 			comObjectTableAddress := readResult.Response.GetValue("comObjectTableAddress").GetUint16()
-			log.Infof("Com Object Table Address: %x", comObjectTableAddress)
+			log.Info().Msgf("Com Object Table Address: %x", comObjectTableAddress)
 		}
 	}
 

@@ -820,7 +820,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // At least one reserved field or simple field with complex type
         if (complexTypeDefinition.getFields().stream().anyMatch(field ->
             (field instanceof ReservedField))) {
-            imports.add("log \"github.com/sirupsen/logrus\"");
+            imports.add("\"github.com/rs/zerolog/log\"");
         }
 
         imports.add("\"io\"");

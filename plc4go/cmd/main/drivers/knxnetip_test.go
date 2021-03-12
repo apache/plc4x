@@ -23,16 +23,8 @@ import (
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	log "github.com/sirupsen/logrus"
-	"os"
 	"testing"
 )
-
-func Init() {
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetOutput(os.Stdout)
-	log.SetLevel(log.DebugLevel)
-}
 
 func TestParser(t *testing.T) {
 	request, err := hex.DecodeString("06100202004e080100000000000036010200ff00000000c501010e37e000170c00246d00ec7830302d32342d36442d30302d45432d3738000000000000000000000000000a020201030104010501")

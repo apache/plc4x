@@ -23,16 +23,11 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	log "github.com/sirupsen/logrus"
-	"os"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
 func main() {
-	//log.SetFormatter(&log.JSONFormatter{})
-	log.SetOutput(os.Stdout)
-	log.SetLevel(log.DebugLevel)
-
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 
@@ -44,7 +39,7 @@ func main() {
 		// Wait for the driver to connect (or not)
 		connectionResult := <-crc
 		if connectionResult.Err != nil {
-			log.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+			log.Error().Msgf("error connecting to PLC: %s", connectionResult.Err.Error())
 			return
 		}
 		connection := connectionResult.Connection
@@ -57,26 +52,26 @@ func main() {
 		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
 		browseRequest, err := browseRequestBuilder.Build()
 		if err != nil {
-			log.Errorf("error creating browse request: %s", err.Error())
+			log.Error().Err(err).Msg("error creating browse request")
 			return
 		}
 		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
 			knxField := result.Result.Field
 			knxAddress := knxField.GetAddressString()
-			log.Info("Inspecting detected Device at KNX Address: " + knxAddress)
+			log.Info().Msgf("Inspecting detected Device at KNX Address: %s")
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequestBuilder = connection.BrowseRequestBuilder()
 			browseRequestBuilder.AddItem("comObjects", knxAddress+"#com-obj")
 			browseRequest, err := browseRequestBuilder.Build()
 			if err != nil {
-				log.Errorf("error creating read request: %s", err.Error())
+				log.Error().Err(err).Msg("error creating read request")
 				return false
 			}
 			brr := browseRequest.Execute()
 			browseResult := <-brr
 			if browseResult.Err != nil {
-				log.Errorf("error executing the browse request for com-objects: %s", browseResult.Err.Error())
+				log.Error().Err(err).Msg("error executing the browse request for com-objects")
 				return false
 			}
 			for _, result := range browseResult.Response.GetQueryResults("comObjects") {
@@ -96,7 +91,7 @@ func main() {
 				} else {
 					permissions += " "
 				}
-				log.Infof(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
+				log.Info().Msgf(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
 			}
 
 			readRequestBuilder := connection.ReadRequestBuilder()
@@ -104,7 +99,7 @@ func main() {
 			readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddress+"#4/13")
 			readRequest, err := readRequestBuilder.Build()
 			if err != nil {
-				log.Error("Error creating read request for scanning " + knxAddress)
+				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)
 				return false
 			}
 
@@ -112,7 +107,7 @@ func main() {
 			readRequestResult := <-rrr
 
 			if readRequestResult.Err != nil {
-				log.Error("Error executing read request for reading device identification information " + knxAddress)
+				log.Error().Msgf("Error executing read request for reading device identification information %s", knxAddress)
 				return false
 			}
 			readResponse := readRequestResult.Response
@@ -130,38 +125,38 @@ func main() {
 			if rb.GetTotalBytes() == 5 {
 				manufacturerId, err = rb.ReadUint16(16)
 				if err != nil {
-					log.Error("Error reading manufacturer id from " + knxAddress)
+					log.Error().Msgf("Error reading manufacturer id from %s")
 					return false
 				}
 				applicationId, err = rb.ReadUint16(16)
 				if err != nil {
-					log.Error("Error reading application id from " + knxAddress)
+					log.Error().Msgf("Error reading application id from %s")
 					return false
 				}
 				applicationVersionMajor, err = rb.ReadUint8(4)
 				if err != nil {
-					log.Error("Error reading application version major from " + knxAddress)
+					log.Error().Msgf("Error reading application version major from %s", knxAddress)
 					return false
 				}
 				applicationVersionMinor, err = rb.ReadUint8(4)
 				if err != nil {
-					log.Error("Error reading application version minor from " + knxAddress)
+					log.Error().Msgf("Error reading application version minor from %s", knxAddress)
 					return false
 				}
 			}
 
-			log.Infof("     manufacturer id: %d", manufacturerId)
-			log.Infof("     program id: %d version %d.%d", applicationId, applicationVersionMajor, applicationVersionMinor)
+			log.Info().Msgf("     manufacturer id: %d", manufacturerId)
+			log.Info().Msgf("     program id: %d version %d.%d", applicationId, applicationVersionMajor, applicationVersionMinor)
 
 			return true
 		})
 		if brr == nil {
-			log.Errorf("error executing browse request")
+			log.Error().Msg("error executing browse request")
 			return
 		}
 		select {
 		case browseRequestResult := <-brr:
-			log.Info(browseRequestResult)
+			log.Info().Msgf("Browse Request Result:\n%v", browseRequestResult)
 		}
 		return
 	})

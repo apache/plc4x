@@ -26,7 +26,7 @@ import (
 	errors2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -167,7 +167,7 @@ func work(m *KnxNetIpMessageCodec) {
 				// Call the error handler.
 				err := expectation.handleError(errors2.NewTimeoutError())
 				if err != nil {
-					log.Errorf("Got an error handling error on expectation: %s", err.Error())
+					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 				continue
 			}
@@ -223,7 +223,7 @@ func work(m *KnxNetIpMessageCodec) {
 						// Pass the error to the error handler.
 						err := expectation.handleError(err)
 						if err != nil {
-							log.Errorf("Got an error handling error on expectation: %s", err.Error())
+							log.Error().Err(err).Msg("Got an error handling error on expectation")
 						}
 					}
 				}

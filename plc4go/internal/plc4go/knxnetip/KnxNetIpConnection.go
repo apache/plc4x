@@ -35,7 +35,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"math"
 	"net"
 	"reflect"
@@ -267,13 +267,13 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 						if tunnelingRequest == nil {
 							tunnelingResponse := driverModel.CastTunnelingResponse(incomingMessage)
 							if tunnelingResponse != nil {
-								log.Warnf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
+								log.Warn().Msgf("Got an unhandled TunnelingResponse message %v\n", tunnelingResponse)
 							} else {
-								log.Warnf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
+								log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
 							}
 						} else {
 							if tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
-								log.Warnf("Not for this connection %v\n", tunnelingRequest)
+								log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
 								continue
 							}
 
@@ -345,7 +345,7 @@ func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 			case _ = <-disconnects:
 			case <-time.After(m.defaultTtl):
 				// If we got a timeout here, well just continue the device will just auto disconnect.
-				log.Debugf("Timeout disconnecting from device %s.", KnxAddressToString(&targetAddress))
+				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(&targetAddress))
 			}
 		}
 
@@ -1922,7 +1922,7 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 						if !dataFrame.GroupAddress {
 							targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
 							if *targetAddress == *m.ClientKnxAddress {
-								log.Infof("Acknowleding an unhandled data message.")
+								log.Info().Msg("Acknowleding an unhandled data message.")
 								_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
 							}
 						}
@@ -1932,13 +1932,13 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 					if !dataFrame.GroupAddress {
 						targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
 						if *targetAddress == *m.ClientKnxAddress {
-							log.Infof("Acknowleding an unhandled contol message.")
+							log.Info().Msg("Acknowleding an unhandled contol message.")
 							_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
 						}
 					}
 				}
 			default:
-				log.Infof("Unknown unhandled message.")
+				log.Info().Msg("Unknown unhandled message.")
 			}
 		}
 	}()
