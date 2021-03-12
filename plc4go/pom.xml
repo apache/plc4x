@@ -269,7 +269,7 @@
                 <flag>-v</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
-              <ignoreErrorExitCode>true</ignoreErrorExitCode>
+              <ignoreErrorExitCode>false</ignoreErrorExitCode>
               <packages>
                 <package>./...</package>
               </packages>
