@@ -58,7 +58,7 @@ func main() {
 		brr := browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
 			knxField := result.Result.Field
 			knxAddress := knxField.GetAddressString()
-			log.Info().Msgf("Inspecting detected Device at KNX Address: %s")
+			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
 			browseRequestBuilder = connection.BrowseRequestBuilder()
@@ -125,22 +125,22 @@ func main() {
 			if rb.GetTotalBytes() == 5 {
 				manufacturerId, err = rb.ReadUint16(16)
 				if err != nil {
-					log.Error().Msgf("Error reading manufacturer id from %s")
+					log.Error().Err(err).Msgf("Error reading manufacturer id from")
 					return false
 				}
 				applicationId, err = rb.ReadUint16(16)
 				if err != nil {
-					log.Error().Msgf("Error reading application id from %s")
+					log.Error().Err(err).Msgf("Error reading application id from")
 					return false
 				}
 				applicationVersionMajor, err = rb.ReadUint8(4)
 				if err != nil {
-					log.Error().Msgf("Error reading application version major from %s", knxAddress)
+					log.Error().Err(err).Msgf("Error reading application version major from %s", knxAddress)
 					return false
 				}
 				applicationVersionMinor, err = rb.ReadUint8(4)
 				if err != nil {
-					log.Error().Msgf("Error reading application version minor from %s", knxAddress)
+					log.Error().Err(err).Msgf("Error reading application version minor from %s", knxAddress)
 					return false
 				}
 			}

@@ -240,10 +240,5 @@ func (rb *ReadBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantiss
 }
 
 func (rb *ReadBuffer) ReadString(bitLength uint8) (string, error) {
-	rb.pos += uint64(bitLength)
-	res := string(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return "", rb.reader.TryError
-	}
-	return res, nil
+	return "", errors.New("not implemented yet")
 }
