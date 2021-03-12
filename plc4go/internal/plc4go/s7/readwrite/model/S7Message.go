@@ -22,7 +22,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"io"
 	"reflect"
 	"strconv"
@@ -151,10 +151,10 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
 		}
 		if reserved != uint16(0x0000) {
-			log.WithFields(log.Fields{
+			log.Info().Fields(map[string]interface{}{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
-			}).Info("Got unexpected response.")
+			}).Msg("Got unexpected response.")
 		}
 	}
 

@@ -202,6 +202,12 @@
             <goals>
               <goal>fmt</goal>
             </goals>
+            <configuration>
+              <packages>
+                <!-- We want to format every package here so we don't get dirty commits -->
+                <package>./...</package>
+              </packages>
+            </configuration>
           </execution>
 
           <!-- Get all dependencies for test cases -->
@@ -281,6 +287,7 @@
             <package>github.com/apache/plc4x/plc4go/cmd/main</package>
           </packages>
           <sources>${project.basedir}</sources>
+          <verbose>true</verbose>
         </configuration>
       </plugin>
     </plugins>

@@ -32,3 +32,6 @@ indent_size=2
 
 [*.go]
 indent_style = tab
+
+[*.ftlh]
+indent_style = unset
