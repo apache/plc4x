@@ -269,7 +269,7 @@
                 <flag>-v</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
-              <ignoreErrorExitCode>false</ignoreErrorExitCode>
+              <ignoreErrorExitCode>true</ignoreErrorExitCode>
               <packages>
                 <package>./...</package>
               </packages>
@@ -285,8 +285,9 @@
             </goals>
             <configuration>
               <exec>go2xunit</exec>
-              <customCommand>-input</customCommand>
+              <customCommand>-fail</customCommand>
               <buildFlags>
+                <flag>-input</flag>
                 <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
                 <flag>-output</flag>
               </buildFlags>
