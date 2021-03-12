@@ -16,22 +16,22 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package tests
+package ads
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
-	"os"
-	"testing"
+	"errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
-func TestAdsDriver(t *testing.T) {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, ads.NewAdsDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
+type FieldHandler struct {
+	spi.PlcFieldHandler
+}
+
+func NewFieldHandler() FieldHandler {
+	return FieldHandler{}
+}
+
+func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
+	return nil, errors.New("Invalid address format for address '" + query + "'")
 }
