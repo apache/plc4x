@@ -21,17 +21,10 @@ package tests
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
-	"os"
 	"testing"
 )
 
 func TestAdsDriver(t *testing.T) {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	t.Skip("Still a work in progress")
 	testutils.RunDriverTestsuite(t, ads.NewAdsDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }
