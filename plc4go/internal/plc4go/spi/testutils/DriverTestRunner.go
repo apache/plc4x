@@ -400,6 +400,7 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 	}
 	var testsuiteName string
 	var driverName string
+	driverParameters := make(map[string]string)
 	var setupSteps []TestStep
 	var teardownSteps []TestStep
 	var testcases []Testcase
@@ -409,6 +410,21 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 			testsuiteName = child.Text
 		} else if child.Name == "driver-name" {
 			driverName = child.Text
+		} else if child.Name == "driver-parameters" {
+			parameterList := child.FindByName("parameter")
+			for _, parameter := range parameterList {
+				nameElement := parameter.FindOneByName("name")
+				valueElement := parameter.FindOneByName("value")
+				if nameElement == nil || valueElement == nil {
+					return nil, errors.New("invalid parameter found: no present")
+				}
+				name := nameElement.Text
+				value := valueElement.Text
+				if name == "" || value == "" {
+					return nil, errors.New("invalid parameter found: empty")
+				}
+				driverParameters[name] = value
+			}
 		} else if child.Name == "setup" {
 			steps, err := ParseDriverTestsuiteSteps(child)
 			if err != nil {
@@ -434,16 +450,17 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 			}
 			testcases = append(testcases, testcase)
 		} else {
-			return nil, errors.New("invalid document structure")
+			return nil, errors.New("invalid document structure. Unhandled element " + child.Name)
 		}
 	}
 
 	return &DriverTestsuite{
-		name:          testsuiteName,
-		driverName:    driverName,
-		setupSteps:    setupSteps,
-		teardownSteps: teardownSteps,
-		testcases:     testcases,
+		name:             testsuiteName,
+		driverName:       driverName,
+		driverParameters: driverParameters,
+		setupSteps:       setupSteps,
+		teardownSteps:    teardownSteps,
+		testcases:        testcases,
 	}, nil
 }
 
