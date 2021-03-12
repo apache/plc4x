@@ -50,6 +50,8 @@
               <unpack>false</unpack>
               <outputDirectory>${project.build.directory}/downloads</outputDirectory>
               <outputFileName>knx-master-data.xml</outputFileName>
+              <!-- To ensure this is updated regularly -->
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
         </executions>
