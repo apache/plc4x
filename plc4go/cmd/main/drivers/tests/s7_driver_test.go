@@ -19,12 +19,12 @@
 package tests
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"testing"
 )
 
 func TestS7Driver(t *testing.T) {
 	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, modbus.NewModbusDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, s7.NewS7Driver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
 }
