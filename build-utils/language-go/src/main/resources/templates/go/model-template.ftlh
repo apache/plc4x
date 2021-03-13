@@ -906,14 +906,14 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 				<#assign hasSwitch = true>
 			<#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
 			case "${field.name}":
-			<#-- int8 arrays are serialized in Base64 encoding -->
+			<#-- int8 arrays are serialized in hex encoding -->
 				<#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {
 					return err
 				}
-				_decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
-				_len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                _decoded, err := hex.DecodeString(_encoded)
+                _len := len(_decoded)
 				if err != nil {
 					return err
 				}
@@ -1008,10 +1008,10 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	<#if type.fields?has_content>
 		<#list type.fields as field>
 			<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
-			<#-- int8 arrays are serialized in Base64 encoding -->
+			<#-- int8 arrays are serialized in hex string encoding -->
 				<#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
-	_encoded${field.name?cap_first} := make([]byte, base64.StdEncoding.EncodedLen(len(m.${field.name?cap_first})))
-	base64.StdEncoding.Encode(_encoded${field.name?cap_first}, utils.Int8ArrayToByteArray(m.${field.name?cap_first}))
+	_encoded${field.name?cap_first} := hex.EncodeToString(utils.Int8ArrayToByteArray(m.${field.name?cap_first}))
+    _encoded${field.name?cap_first} = strings.ToUpper(_encoded${field.name?cap_first})
 	if err := e.EncodeElement(_encoded${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
 		return err
 	}
