@@ -139,7 +139,7 @@
             <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AQ==</data>
+              <data>01</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -283,7 +283,7 @@
             <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteResponse">
               <result>OK</result>
-              <data>AAAAAAAAAAABAQ==</data>
+              <data>00000000000000000101</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -424,7 +424,7 @@
             <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AQCAGw==</data>
+              <data>0100801B</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -509,7 +509,7 @@
             <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AAAAAAAAAAABAQ==</data>
+              <data>00000000000000000101</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -637,7 +637,7 @@
             <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AQCAGw==</data>
+              <data>0100801B</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -722,7 +722,7 @@
             <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AAAAAAAAAAABAQ==</data>
+              <data>00000000000000000101</data>
             </data>
           </userdata>
         </AmsTCPPacket>
@@ -838,7 +838,7 @@
             <invokeId>3</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
-              <data>AAAAAAAAAAABAQ==</data>
+              <data>00000000000000000101</data>
             </data>
           </userdata>
         </AmsTCPPacket>
