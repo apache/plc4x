@@ -185,21 +185,21 @@
                   <items>
                     <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
                       <itemIndex>1</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <mlfb>36455337203231322d31424433302d3058423020</mlfb>
                       <moduleTypeId>8224</moduleTypeId>
                       <ausbg>1</ausbg>
                       <ausbe>8224</ausbe>
                     </items>
                     <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
                       <itemIndex>6</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <mlfb>36455337203231322d31424433302d3058423020</mlfb>
                       <moduleTypeId>8224</moduleTypeId>
                       <ausbg>1</ausbg>
                       <ausbe>8224</ausbe>
                     </items>
                     <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
                       <itemIndex>7</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
+                      <mlfb>36455337203231322d31424433302d3058423020</mlfb>
                       <moduleTypeId>8224</moduleTypeId>
                       <ausbg>22018</ausbg>
                       <ausbe>2</ausbe>
@@ -270,7 +270,7 @@
                   <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
                     <returnCode>OK</returnCode>
                     <transportSize>BIT</transportSize>
-                    <data>AQ==</data>
+                    <data>01</data>
                   </items>
                 </items>
               </payload>
