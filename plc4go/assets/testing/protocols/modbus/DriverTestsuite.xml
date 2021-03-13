@@ -275,7 +275,7 @@
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
             <startingAddress>0</startingAddress>
             <quantity>2</quantity>
-            <value>e34e3dd050c1</value>
+            <value>40490FDB</value>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -339,7 +339,7 @@
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
             <startingAddress>0</startingAddress>
             <quantity>4</quantity>
-            <value>e34e3dd050c1e34e3dd050c1</value>
+            <value>40490FDB40490FDB</value>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
