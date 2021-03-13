@@ -805,7 +805,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         List<String> imports = new ArrayList<>();
 
         if (complexTypeDefinition.getAllPropertyFields().stream().anyMatch(field -> isArrayField(field) && getLanguageTypeNameForField(field).equals("int8"))) {
-            imports.add("\"encoding/base64\"");
+            imports.add("\"encoding/hex\"");
+            imports.add("\"strings\"");
         }
 
         imports.add("\"encoding/xml\"");
