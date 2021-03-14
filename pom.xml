@@ -750,6 +750,18 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+            <exclude>**/*.make</exclude>
+            <exclude>**/*.cmake</exclude>
+            <exclude>**/*.internal</exclude>
+            <exclude>**/link.txt</exclude>
+            <exclude>**/Makefile</exclude>
+            <exclude>**/*.includecache</exclude>
+            <exclude>**/CMakeFiles/**</exclude>
+            <exclude>**/CMakeCache.txt</exclude>
+            <exclude>**/DartConfiguration.tcl</exclude>
+
+
+
 
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>

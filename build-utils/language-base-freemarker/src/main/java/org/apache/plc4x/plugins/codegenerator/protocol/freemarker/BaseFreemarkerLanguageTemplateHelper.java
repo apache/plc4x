@@ -282,6 +282,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @return simple type reference for the enum type referenced by the given type reference
      */
     public SimpleTypeReference getEnumBaseTypeReference(TypeReference typeReference) {
+        System.out.println(typeReference);
         if (!(typeReference instanceof ComplexTypeReference)) {
             throw new RuntimeException("type reference for enum types must be of type complex type");
         }

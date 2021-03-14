@@ -26,17 +26,17 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminators[] = {
   {/* plc4c_s7_read_write_cotp_packet_data */
-   .tpduCode = 0xF0},
+    .tpduCode = 0xF0   },
   {/* plc4c_s7_read_write_cotp_packet_connection_request */
-   .tpduCode = 0xE0},
+    .tpduCode = 0xE0   },
   {/* plc4c_s7_read_write_cotp_packet_connection_response */
-   .tpduCode = 0xD0},
+    .tpduCode = 0xD0   },
   {/* plc4c_s7_read_write_cotp_packet_disconnect_request */
-   .tpduCode = 0x80},
+    .tpduCode = 0x80   },
   {/* plc4c_s7_read_write_cotp_packet_disconnect_response */
-   .tpduCode = 0xC0},
+    .tpduCode = 0xC0   },
   {/* plc4c_s7_read_write_cotp_packet_tpdu_error */
-   .tpduCode = 0x70}
+    .tpduCode = 0x70   }
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -70,14 +70,13 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* i
   if(_res != OK) {
     return _res;
   }
-
+        // Discriminator Field (tpduCode)
   // Discriminator Field (tpduCode) (Used as input to a switch field)
   uint8_t tpduCode = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &tpduCode);
   if(_res != OK) {
     return _res;
   }
-
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(tpduCode == 0xF0) { /* COTPPacketData */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
@@ -293,8 +292,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   if(_res != OK) {
     return _res;
   }
-
-  // Discriminator Field (tpduCode)
+  // Enumerated Discriminator Field (tpduCode)
+            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@5870fc05
+            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@45e35a0d
+            // tpduCode
+            // plc4c_s7_read_write_cotp_packet
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
@@ -449,8 +451,8 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
   // Implicit Field (headerLength)
   lengthInBits += 8;
 
-  // Discriminator Field (tpduCode)
-  lengthInBits += 8;
+        // Discriminator Field (tpduCode)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

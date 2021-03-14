@@ -67,7 +67,7 @@
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include <plc4c/driver_${helper.getProtocolName()}.h>
+//#include <plc4c/driver_${helper.getProtocolName()}.h>
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
 
 // Parse function.
@@ -77,7 +77,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     plc4c_return_code _res = OK;
 
     <#list type.switchField.cases as case>
-    <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if></#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if><#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>strcmp(${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, "${discriminatorValue}") == 0<#else>${helper.toParseExpression(type, null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isComplexTypeReference(type.parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(type.parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(type.parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if></#if><#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
 <#--        (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};-->
         <#assign skipReturn=false>
         <#list case.fields as field>

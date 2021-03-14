@@ -44,7 +44,7 @@ plc4c_return_code plc4c_transport_tcp_configure_function(
   }
 
   char *port;
-  char *host = strtok_s(transport_connect_information, ":", &port);
+  char *host = strtok_r(transport_connect_information, ":", &port);
   tcp_configuration->address = host;
   // If no port was specified, generally use the default port for this driver
   if(strlen(port) == 0) {

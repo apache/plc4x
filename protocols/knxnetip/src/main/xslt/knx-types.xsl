@@ -115,78 +115,78 @@
 
 [dataIo 'KnxDatapoint' [KnxDatapointType 'datapointType']
     [typeSwitch 'datapointType'
-        ['KnxDatapointType.BOOL' BOOL
+        ['BOOL' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['KnxDatapointType.BYTE' BYTE
+        ['BYTE' BYTE
             [simple   uint 8    'value']
         ]
-        ['KnxDatapointType.WORD' WORD
+        ['WORD' WORD
             [simple   uint 16    'value']
         ]
-        ['KnxDatapointType.DWORD' DWORD
+        ['DWORD' DWORD
             [simple   uint 32    'value']
         ]
-        ['KnxDatapointType.LWORD' LWORD
+        ['LWORD' LWORD
             [simple   uint 64    'value']
         ]
-        ['KnxDatapointType.USINT' USINT
+        ['USINT' USINT
             [simple   uint 8     'value']
         ]
-        ['KnxDatapointType.SINT' SINT
+        ['SINT' SINT
             [simple   int 8      'value']
         ]
-        ['KnxDatapointType.UINT' UINT
+        ['UINT' UINT
             [simple   uint 16    'value']
         ]
-        ['KnxDatapointType.INT' INT
+        ['INT' INT
             [simple   int 16     'value']
         ]
-        ['KnxDatapointType.UDINT' UDINT
+        ['UDINT' UDINT
             [simple   uint 32    'value']
         ]
-        ['KnxDatapointType.DINT' DINT
+        ['DINT' DINT
             [simple   int 32     'value']
         ]
-        ['KnxDatapointType.ULINT' ULINT
+        ['ULINT' ULINT
             [simple   uint 64    'value']
         ]
-        ['KnxDatapointType.LINT' LINT
+        ['LINT' LINT
             [simple   int 64     'value']
         ]
-        ['KnxDatapointType.REAL' REAL
+        ['REAL' REAL
             [simple   float 8.23 'value']
         ]
-        ['KnxDatapointType.LREAL' LREAL
+        ['LREAL' LREAL
             [simple   float 11.52 'value']
         ]
-        ['KnxDatapointType.CHAR' CHAR
+        ['CHAR' CHAR
             [simple   uint 8     'value']
         ]
-        ['KnxDatapointType.WCHAR' WCHAR
+        ['WCHAR' WCHAR
             [simple   uint 16    'value']
         ]
-        //['KnxDatapointType.STRING' STRING
+        //['STRING' STRING
         //]
-        //['KnxDatapointType.WSTRING' WSTRING
+        //['WSTRING' WSTRING
         //]
-        ['KnxDatapointType.TIME' TIME
+        ['TIME' TIME
             [simple uint 32 'value']
         ]
-        ['KnxDatapointType.LTIME' LTIME
+        ['LTIME' LTIME
             [simple uint 64 'value']
         ]
-        ['KnxDatapointType.DATE' DATE
+        ['DATE' DATE
             [simple uint 16 'value']
         ]
-        ['KnxDatapointType.TIME_OF_DAY' TIME_OF_DAY
+        ['TIME_OF_DAY' TIME_OF_DAY
             [simple uint 32 'value']
         ]
-        ['KnxDatapointType.TOD' TIME_OF_DAY
+        ['TOD' TIME_OF_DAY
             [simple uint 32 'value']
         ]
-        ['KnxDatapointType.DATE_AND_TIME' DATE_AND_TIME
+        ['DATE_AND_TIME' DATE_AND_TIME
             [simple uint 16 'year']
             [simple uint 8  'month']
             [simple uint 8  'day']
@@ -196,7 +196,7 @@
             [simple uint 8  'seconds']
             [simple uint 32 'nanos']
         ]
-        ['KnxDatapointType.DT' DATE_AND_TIME
+        ['DT' DATE_AND_TIME
             [simple uint 16 'year']
             [simple uint 8  'month']
             [simple uint 8  'day']
@@ -373,7 +373,7 @@
                 <xsl:otherwise>Hurz:<xsl:value-of select="name($datapointSubtype/*)"/></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        ['KnxDatapointType.<xsl:value-of select="$datapointSubtypeId"/>' <xsl:value-of select="$datapointValueType"/>
+        ['<xsl:value-of select="$datapointSubtypeId"/>' <xsl:value-of select="$datapointValueType"/>
         <xsl:choose>
             <xsl:when test="count($datapointSubtype/knx:Format/knx:Bit|$datapointSubtype/knx:Format/knx:String|$datapointSubtype/knx:Format/knx:UnsignedInteger|$datapointSubtype/knx:Format/knx:SignedInteger|$datapointSubtype/knx:Format/knx:Float|$datapointSubtype/knx:Format/knx:Enumeration|$datapointSubtype/knx:Format/knx:RefType) &gt; 1">
                 <xsl:variable name="resolvedFields">

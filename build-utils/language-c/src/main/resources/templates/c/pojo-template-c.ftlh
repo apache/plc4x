@@ -64,7 +64,6 @@
 #include <stdio.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
-#include "enum_type.h"
 
 <#-- Helper function to get the discriminator for a given enum type constant -->
 <#if helper.isDiscriminatedParentTypeDefinition(type)>
@@ -401,9 +400,9 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list switchField.cases as case>
             <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])>
-            <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
             <#else>
-            <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
            </#if>
 <#if helper.isDiscriminatedChildTypeDefinition()>
     //Hello
@@ -415,9 +414,6 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         ${discriminatorName}
     </#list>
 </#if>
-                // ${baseType.name}
-
-
 <#if indentContent>  </#if>    (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};
                 <#list case.fields as caseField>
 <#if indentContent>  </#if>                    <@fieldParser baseType=case field=caseField indentContent=true/>
@@ -499,6 +495,13 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
         <#elseif helper.isEnumField(field)>
 <#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
 <#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
+        <#else>
+<#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
+            // ${discriminatorField}
+            // ${discriminatorField.type}
+            // ${discriminatorField.name}
+            // ${helper.getCTypeName(baseType.name)}
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
         </#if>
             <#break>
         <#case "enum">

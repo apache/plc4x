@@ -26,7 +26,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminators[] = {
   {/* plc4c_s7_read_write_s7_address_any */
-   .addressType = 0x10}
+    .addressType = 0x10   }
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -53,14 +53,13 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
+        // Discriminator Field (addressType)
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &addressType);
   if(_res != OK) {
     return _res;
   }
-
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(addressType == 0x10) { /* S7AddressAny */
     (*_message)->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
@@ -148,8 +147,11 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
 
 plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_address* _message) {
   plc4c_return_code _res = OK;
-
-  // Discriminator Field (addressType)
+  // Enumerated Discriminator Field (addressType)
+            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@6065bcb7
+            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@1ee6434
+            // addressType
+            // plc4c_s7_read_write_s7_address
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_address_get_discriminator(_message->_type).addressType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
@@ -212,8 +214,8 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_a
 uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_address* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (addressType)
-  lengthInBits += 8;
+        // Discriminator Field (addressType)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

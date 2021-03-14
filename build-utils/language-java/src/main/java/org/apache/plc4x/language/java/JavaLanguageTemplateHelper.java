@@ -26,12 +26,16 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
+
+    private final Logger logger = LoggerFactory.getLogger(JavaLanguageTemplateHelper.class);
 
     public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);
@@ -74,6 +78,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
+        logger.debug("Getting name of Java class for given type reference");
+        logger.debug("{}", typeReference.toString());
         if(typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
