@@ -247,9 +247,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         <#if helper.isEnumField(field)>
-            ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type))});
         <#else>
-            ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = <#if helper.isSimpleTypeReference(discriminatorField.type)>${helper.getReadBufferReadMethodCall(discriminatorField.type)}<#else>${discriminatorField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(discriminatorField.type, parserArgument?index), true)}) (${helper.toParseExpression(discriminatorField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = <#if helper.isSimpleTypeReference(discriminatorField.type)>${helper.getReadBufferReadMethodCall(discriminatorField.type)}<#else>${discriminatorField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(discriminatorField.type, parserArgument?index), true)}) (${helper.toParseExpression(discriminatorField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         </#if>
 
         <#break>
@@ -392,7 +392,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${type.name}Builder builder = null;
         <#list switchField.cases as case>
-        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{
+                <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])>${helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name].name}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{
             builder = ${case.name}IO.staticParse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>

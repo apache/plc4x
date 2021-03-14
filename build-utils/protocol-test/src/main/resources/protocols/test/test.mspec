@@ -169,13 +169,13 @@
 [discriminatedType 'EnumDiscriminatedType'
     [discriminator EnumType 'discr']
     [typeSwitch 'discr'
-        ['BOOL' DiscriminatedTypeA
+        ['BOOL' EnumDiscriminatedTypeA
             [simple        uint 8 'simpA']
         ]
-        ['UINT' DiscriminatedTypeB
+        ['UINT' EnumDiscriminatedTypeB
             [simple        uint 8 'simpB']
         ]
-        ['INT' DiscriminatedTypeC
+        ['INT' EnumDiscriminatedTypeC
             [simple        uint 8 'simpC']
         ]
     ]
@@ -184,13 +184,13 @@
 [discriminatedType 'SimpleDiscriminatedType'
     [discriminator uint 8 'discr']
     [typeSwitch 'discr'
-        ['0x00' DiscriminatedTypeA
+        ['0x00' SimpleDiscriminatedTypeA
             [simple        uint 8 'simpA']
         ]
-        ['0x01' DiscriminatedTypeB
+        ['0x01' SimpleDiscriminatedTypeB
             [simple        uint 8 'simpB']
         ]
-        ['0x02' DiscriminatedTypeC
+        ['0x02' SimpleDiscriminatedTypeC
             [simple        uint 8 'simpC']
         ]
     ]
@@ -215,6 +215,20 @@
 ]
 
 
-[dataIo 'DataIOType'
+[dataIo 'DataIOTypeEmpty'
 
+]
+
+[dataIo 'DataIOType' [EnumType 'dataType']
+    [typeSwitch 'dataType'
+        ['BOOL' BOOL
+            [simple bit 'value']
+        ]
+        ['UINT' USINT
+            [simple uint 8 'value']
+        ]
+        ['INT' UINT
+            [simple uint 16 'value']
+        ]
+    ]
 ]

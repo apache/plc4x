@@ -272,107 +272,107 @@
 
 [dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
-        ['ModbusDataType.BOOL','1' BOOL
+        ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['ModbusDataType.BOOL' List
+        ['BOOL' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.BYTE','1' BitString
+        ['BYTE','1' BitString
             [simple uint 8 'value']
         ]
-        ['ModbusDataType.BYTE' List
+        ['BYTE' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.WORD','1' BitString
+        ['WORD','1' BitString
             [simple uint 16 'value']
         ]
-        ['ModbusDataType.WORD' List
+        ['WORD' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.DWORD','1' BitString
+        ['DWORD','1' BitString
             [simple uint 32 'value']
         ]
-        ['ModbusDataType.DWORD' List
+        ['DWORD' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.LWORD','1' BitString
+        ['LWORD','1' BitString
             [simple uint 64 'value']
         ]
-        ['ModbusDataType.LWORD' List
+        ['LWORD' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.SINT','1' SINT
+        ['SINT','1' SINT
             [simple int 8 'value']
         ]
-        ['ModbusDataType.SINT' List
+        ['SINT' List
             [array int 8 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.INT','1' INT
+        ['INT','1' INT
             [simple int 16 'value']
         ]
-        ['ModbusDataType.INT' List
+        ['INT' List
             [array int 16 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.DINT','1' DINT
+        ['DINT','1' DINT
             [simple int 32 'value']
         ]
-        ['ModbusDataType.DINT' List
+        ['DINT' List
             [array int 32 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.LINT','1' LINT
+        ['LINT','1' LINT
             [simple int 64 'value']
         ]
-        ['ModbusDataType.LINT' List
+        ['LINT' List
             [array int 64 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.USINT','1' USINT
+        ['USINT','1' USINT
             [simple uint 8 'value']
         ]
-        ['ModbusDataType.USINT' List
+        ['USINT' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.UINT','1' UINT
+        ['UINT','1' UINT
             [simple uint 16 'value']
         ]
-        ['ModbusDataType.UINT' List
+        ['UINT' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.UDINT','1' UDINT
+        ['UDINT','1' UDINT
             [simple uint 32 'value']
         ]
-        ['ModbusDataType.UDINT' List
+        ['UDINT' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.ULINT','1' ULINT
+        ['ULINT','1' ULINT
             [simple uint 64 'value']
         ]
-        ['ModbusDataType.ULINT' List
+        ['ULINT' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.REAL','1' REAL
+        ['REAL','1' REAL
             [simple float 8.23  'value']
         ]
-        ['ModbusDataType.REAL' List
+        ['REAL' List
             [array float 8.23 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.LREAL','1' LREAL
+        ['LREAL','1' LREAL
             [simple float 11.52  'value']
         ]
-        ['ModbusDataType.LREAL' List
+        ['LREAL' List
             [array float 11.52 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.CHAR','1' CHAR
+        ['CHAR','1' CHAR
             [simple uint 8 'value']
         ]
-        ['ModbusDataType.CHAR' List
+        ['CHAR' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['ModbusDataType.WCHAR','1' WCHAR
+        ['WCHAR','1' WCHAR
             [simple uint 16 'value']
         ]
-        ['ModbusDataType.WCHAR' List
+        ['WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
     ]

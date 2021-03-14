@@ -23,7 +23,7 @@
 #include <plc4c/data.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include <plc4c/driver_s7.h>
+//#include <plc4c/driver_s7.h>
 #include "data_item.h"
 
 // Parse function.
@@ -32,7 +32,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
-    if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
+        if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -56,7 +56,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_bool_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_BYTE") == 0) { /* List */
+    } else         if(strcmp(dataProtocolId, "IEC61131_BYTE") == 0) { /* List */
 
         // Array field (value)
         // Count array
@@ -74,7 +74,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
         }
         *data_item = plc4c_data_create_list_data(*value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_WORD") == 0) { /* List */
+    } else         if(strcmp(dataProtocolId, "IEC61131_WORD") == 0) { /* List */
 
         // Array field (value)
         // Count array
@@ -92,7 +92,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
         }
         *data_item = plc4c_data_create_list_data(*value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_DWORD") == 0) { /* List */
+    } else         if(strcmp(dataProtocolId, "IEC61131_DWORD") == 0) { /* List */
 
         // Array field (value)
         // Count array
@@ -110,7 +110,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
         }
         *data_item = plc4c_data_create_list_data(*value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_LWORD") == 0) { /* List */
+    } else         if(strcmp(dataProtocolId, "IEC61131_LWORD") == 0) { /* List */
 
         // Array field (value)
         // Count array
@@ -128,7 +128,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
         }
         *data_item = plc4c_data_create_list_data(*value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_SINT") == 0) { /* SINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_SINT") == 0) { /* SINT */
 
                 // Simple Field (value)
                 int8_t value = 0;
@@ -140,7 +140,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_int8_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_USINT") == 0) { /* USINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_USINT") == 0) { /* USINT */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -152,7 +152,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_INT") == 0) { /* INT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_INT") == 0) { /* INT */
 
                 // Simple Field (value)
                 int16_t value = 0;
@@ -164,7 +164,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_int16_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_UINT") == 0) { /* UINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_UINT") == 0) { /* UINT */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -176,7 +176,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_DINT") == 0) { /* DINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_DINT") == 0) { /* DINT */
 
                 // Simple Field (value)
                 int32_t value = 0;
@@ -188,7 +188,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_int32_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_UDINT") == 0) { /* UDINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_UDINT") == 0) { /* UDINT */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -200,7 +200,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_LINT") == 0) { /* LINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_LINT") == 0) { /* LINT */
 
                 // Simple Field (value)
                 int64_t value = 0;
@@ -212,7 +212,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_int64_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_ULINT") == 0) { /* ULINT */
+    } else         if(strcmp(dataProtocolId, "IEC61131_ULINT") == 0) { /* ULINT */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -224,7 +224,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_REAL") == 0) { /* REAL */
+    } else         if(strcmp(dataProtocolId, "IEC61131_REAL") == 0) { /* REAL */
 
                 // Simple Field (value)
                 float value = 0.0f;
@@ -236,7 +236,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_float_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_LREAL") == 0) { /* LREAL */
+    } else         if(strcmp(dataProtocolId, "IEC61131_LREAL") == 0) { /* LREAL */
 
                 // Simple Field (value)
                 double value = 0.0f;
@@ -248,35 +248,35 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_double_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
+    } else         if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_char(io, "UTF-8"));
 
                 *data_item = plc4c_data_create_char_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
+    } else         if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_char(io, "UTF-16"));
 
                 *data_item = plc4c_data_create_char_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
+    } else         if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-8"));
 
                 *data_item = plc4c_data_create_string_data(stringLength, value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
+    } else         if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-16"));
 
                 *data_item = plc4c_data_create_string_data(stringLength, value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
+    } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -288,7 +288,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
+    } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -300,7 +300,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
+    } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -312,7 +312,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
+    } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -324,7 +324,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                     // Hurz
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
-    } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
+    } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
                 // Simple Field (year)
                 uint16_t year = 0;

@@ -26,7 +26,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions */
-   .itemType = 0x12}
+    .itemType = 0x12   }
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -53,14 +53,13 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
+        // Discriminator Field (itemType)
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &itemType);
   if(_res != OK) {
     return _res;
   }
-
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(itemType == 0x12) { /* S7ParameterUserDataItemCPUFunctions */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions;
@@ -186,8 +185,11 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
 plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_parameter_user_data_item* _message) {
   plc4c_return_code _res = OK;
-
-  // Discriminator Field (itemType)
+  // Enumerated Discriminator Field (itemType)
+            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@550f522b
+            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@1842dc39
+            // itemType
+            // plc4c_s7_read_write_s7_parameter_user_data_item
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(_message->_type).itemType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
@@ -268,8 +270,8 @@ uint16_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bytes(plc4c_s
 uint16_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits(plc4c_s7_read_write_s7_parameter_user_data_item* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (itemType)
-  lengthInBits += 8;
+        // Discriminator Field (itemType)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

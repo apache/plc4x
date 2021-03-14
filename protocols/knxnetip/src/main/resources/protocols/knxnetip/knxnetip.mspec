@@ -814,37 +814,37 @@
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
 [dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
     [typeSwitch 'propertyType','dataLengthInBytes'
-        ['KnxPropertyDataType.PDT_CONTROL' BOOL
+        ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           'value']
         ]
-        ['KnxPropertyDataType.PDT_CHAR' SINT
+        ['PDT_CHAR' SINT
             [simple   int 8         'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_CHAR' USINT
+        ['PDT_UNSIGNED_CHAR' USINT
             [simple   uint 8        'value']
         ]
-        ['KnxPropertyDataType.PDT_INT' INT
+        ['PDT_INT' INT
             [simple   int 16        'value']
         ]
         // On some systems this property is bigger
-        ['KnxPropertyDataType.PDT_UNSIGNED_INT','4' UDINT
+        ['PDT_UNSIGNED_INT','4' UDINT
             [simple   uint 32       'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_INT' UINT
+        ['PDT_UNSIGNED_INT' UINT
             [simple   uint 16       'value']
         ]
-        ['KnxPropertyDataType.PDT_KNX_FLOAT' REAL
+        ['PDT_KNX_FLOAT' REAL
             [simple   float 4.11    'value']
         ]
-        ['KnxPropertyDataType.PDT_DATE' Struct
+        ['PDT_DATE' Struct
             [reserved uint 3 '0x00']
             [simple uint 5 'dayOfMonth']
             [reserved uint 4 '0x00']
             [simple uint 4 'month']
             [reserved uint 1 '0x00']
             [simple uint 7 'year']        ]
-        ['KnxPropertyDataType.PDT_TIME' Struct
+        ['PDT_TIME' Struct
             [simple uint 3 'day']
             [simple uint 5 'hour']
             [reserved uint 2 '0x00']
@@ -852,31 +852,31 @@
             [reserved uint 2 '0x00']
             [simple uint 6 'seconds']
         ]
-        ['KnxPropertyDataType.PDT_LONG' DINT
+        ['PDT_LONG' DINT
             [simple   int 32        'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_LONG' UDINT
+        ['PDT_UNSIGNED_LONG' UDINT
             [simple   uint 32       'value']
         ]
-        ['KnxPropertyDataType.PDT_FLOAT' REAL
+        ['PDT_FLOAT' REAL
             [simple   float 8.23    'value']
         ]
-        ['KnxPropertyDataType.PDT_DOUBLE' LREAL
+        ['PDT_DOUBLE' LREAL
             [simple   float 11.52   'value']
         ]
-        ['KnxPropertyDataType.PDT_CHAR_BLOCK' List
+        ['PDT_CHAR_BLOCK' List
             [array uint 8           'value' count '10']
         ]
-        ['KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS' Struct
+        ['PDT_POLL_GROUP_SETTINGS' Struct
             [array    uint 8        'groupAddress' count '2']
             [simple   bit           'disable']
             [reserved uint 3        '0x0']
             [simple   uint 4        'pollingSoftNr']
         ]
-        ['KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK' List
+        ['PDT_SHORT_CHAR_BLOCK' List
             [array uint 8           'value' count '5']
         ]
-        ['KnxPropertyDataType.PDT_DATE_TIME' Struct
+        ['PDT_DATE_TIME' Struct
             [simple uint 8 'year']
             [reserved uint 4 '0x00']
             [simple uint 4 'month']
@@ -899,75 +899,75 @@
             [simple bit 'qualityOfClock']
             [reserved uint 7 '0x00']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_01' List
+        ['PDT_GENERIC_01' List
             [array uint 8           'value' count '1']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_02' List
+        ['PDT_GENERIC_02' List
             [array uint 8           'value' count '2']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_03' List
+        ['PDT_GENERIC_03' List
             [array uint 8           'value' count '3']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_04' List
+        ['PDT_GENERIC_04' List
             [array uint 8           'value' count '4']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_05' List
+        ['PDT_GENERIC_05' List
             [array uint 8           'value' count '5']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_06' List
+        ['PDT_GENERIC_06' List
             [array uint 8           'value' count '6']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_07' List
+        ['PDT_GENERIC_07' List
             [array uint 8           'value' count '7']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_08' List
+        ['PDT_GENERIC_08' List
             [array uint 8           'value' count '8']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_09' List
+        ['PDT_GENERIC_09' List
             [array uint 8           'value' count '9']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_10' List
+        ['PDT_GENERIC_10' List
             [array uint 8           'value' count '10']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_11' List
+        ['PDT_GENERIC_11' List
             [array uint 8           'value' count '11']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_12' List
+        ['PDT_GENERIC_12' List
             [array uint 8           'value' count '12']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_13' List
+        ['PDT_GENERIC_13' List
             [array uint 8           'value' count '13']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_14' List
+        ['PDT_GENERIC_14' List
             [array uint 8           'value' count '14']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_15' List
+        ['PDT_GENERIC_15' List
             [array uint 8           'value' count '15']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_16' List
+        ['PDT_GENERIC_16' List
             [array uint 8           'value' count '16']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_17' List
+        ['PDT_GENERIC_17' List
             [array uint 8           'value' count '17']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_18' List
+        ['PDT_GENERIC_18' List
             [array uint 8           'value' count '18']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_19' List
+        ['PDT_GENERIC_19' List
             [array uint 8           'value' count '19']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_20' List
+        ['PDT_GENERIC_20' List
             [array uint 8           'value' count '20']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_UTF_8'
+        //['PDT_UTF_8'
         //]
-        ['KnxPropertyDataType.PDT_VERSION' Struct
+        ['PDT_VERSION' Struct
             [simple uint 5 'magicNumber']
             [simple uint 5 'versionNumber']
             [simple uint 6 'revisionNumber']
         ]
-        ['KnxPropertyDataType.PDT_ALARM_INFO' Struct
+        ['PDT_ALARM_INFO' Struct
             [simple uint 8 'logNumber']
             [simple uint 8 'alarmPriority']
             [simple uint 8 'applicationArea']
@@ -982,33 +982,33 @@
             [simple bit 'alarmunack']
             [simple bit 'inalarm']
         ]
-        ['KnxPropertyDataType.PDT_BINARY_INFORMATION' BOOL
+        ['PDT_BINARY_INFORMATION' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           'value']
         ]
-        ['KnxPropertyDataType.PDT_BITSET8' List
+        ['PDT_BITSET8' List
             [array    bit           'value' count '8']
         ]
-        ['KnxPropertyDataType.PDT_BITSET16' List
+        ['PDT_BITSET16' List
             [array    bit           'value' count '16']
         ]
-        ['KnxPropertyDataType.PDT_ENUM8' USINT
+        ['PDT_ENUM8' USINT
             [simple uint 8 'value']
         ]
-        ['KnxPropertyDataType.PDT_SCALING' USINT
+        ['PDT_SCALING' USINT
             [simple uint 8 'value']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_NE_VL'
+        //['PDT_NE_VL'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_NE_FL'
+        //['PDT_NE_FL'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_FUNCTION'
+        //['PDT_FUNCTION'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_ESCAPE'
+        //['PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
         [ List [uint 8 'dataLengthInBytes']
