@@ -20,8 +20,6 @@ package org.apache.plc4x.java.profinet.dcp;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.profinet.dcp.configuration.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.dcp.field.ProfinetFieldHandler;
@@ -99,12 +97,6 @@ public class ProfinetDCPPlcDriver extends GeneratedDriverBase<EthernetFrame> {
                 byteBuf.readBytes(12);
             }
         }
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        PlcConnection connection = new PlcDriverManager().getConnection("profinet-dcp:raw://ens2f1?sender=00:10:18:6c:4c:e2");
-        //connection.connect();
     }
 
 }

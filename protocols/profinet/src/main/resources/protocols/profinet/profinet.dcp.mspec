@@ -99,7 +99,7 @@
             [simple uint 8 'instanceHigh'        ]
         ]
     ]
-    [padding uint 8                 'pad' '0x00' '46 - length']
+    [padding uint 8                 'pad' '0x00' '(length % 2 == 0 ? 0 : 1)']
 ]
 
 

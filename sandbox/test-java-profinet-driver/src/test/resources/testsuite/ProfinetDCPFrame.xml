@@ -23,7 +23,7 @@
 
   <testcase>
     <name>Profinet: DCP Identify Multicast</name>
-    <raw>fefe05000501000f00800004ffff0000000000000000000000000000000000000000000000000000000000000000</raw>
+    <raw>fefe05000501000f00800004ffff0000</raw>
     <root-type>ProfinetFrame</root-type>
     <xml>
       <ProfinetFrame className="org.apache.plc4x.java.profinet.dcp.readwrite.ProfinetFrame">

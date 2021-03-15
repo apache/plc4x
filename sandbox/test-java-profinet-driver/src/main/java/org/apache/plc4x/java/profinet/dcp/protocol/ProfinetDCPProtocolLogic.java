@@ -104,7 +104,7 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> i
                     }
                     if (block instanceof DeviceProperties) {
                         DeviceProperties properties = (DeviceProperties) block;
-                        logger.info("Device option: {}, value: {}", properties.getSubOption().name(), properties.getProperties().toPlcValue());
+                        logger.info("Device option: {}, value: {}", properties.getSubOption().name(), properties.getProperties());
                     }
                 }
             } else {
