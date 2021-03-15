@@ -23,6 +23,7 @@ import (
 	"errors"
 	"github.com/icza/bitio"
 	"math"
+	"math/big"
 )
 
 type WriteBuffer struct {
@@ -85,6 +86,10 @@ func (rb WriteBuffer) WriteInt32(bitLength uint8, value int32) error {
 
 func (rb WriteBuffer) WriteInt64(bitLength uint8, value int64) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
+}
+
+func (rb WriteBuffer) WriteBigInt(bitLength uint8, value *big.Int) error {
+	return errors.New("not implemented yet")
 }
 
 func (rb WriteBuffer) WriteFloat32(bitLength uint8, value float32) error {

@@ -40,6 +40,7 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 	valueHandler spi.PlcValueHandler
 	eventHandler model.PlcSubscriptionEventHandler
 	queries      map[string]string
+	fields       map[string]model.PlcField
 	types        map[string]SubscriptionType
 	intervals    map[string]time.Duration
 }
@@ -50,24 +51,41 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
 		fieldHandler: fieldHandler,
 		valueHandler: valueHandler,
 		queries:      map[string]string{},
+		fields:       map[string]model.PlcField{},
 		types:        map[string]SubscriptionType{},
 		intervals:    map[string]time.Duration{},
 	}
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicItem(name string, query string, interval time.Duration) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) {
 	m.queries[name] = query
 	m.types[name] = SUBSCRIPTION_CYCLIC
 	m.intervals[name] = interval
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateItem(name string, query string) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field model.PlcField, interval time.Duration) {
+	m.fields[name] = field
+	m.types[name] = SUBSCRIPTION_CYCLIC
+	m.intervals[name] = interval
+}
+
+func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) {
 	m.queries[name] = query
 	m.types[name] = SUBSCRIPTION_CHANGE_OF_STATE
 }
 
-func (m *DefaultPlcSubscriptionRequestBuilder) AddEventItem(name string, query string) {
+func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string, field model.PlcField) {
+	m.fields[name] = field
+	m.types[name] = SUBSCRIPTION_CHANGE_OF_STATE
+}
+
+func (m *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) {
 	m.queries[name] = query
+	m.types[name] = SUBSCRIPTION_EVENT
+}
+
+func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field model.PlcField) {
+	m.fields[name] = field
 	m.types[name] = SUBSCRIPTION_EVENT
 }
 
@@ -76,16 +94,15 @@ func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionRequest, error) {
-	fields := make(map[string]model.PlcField)
 	for name, query := range m.queries {
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
 			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
 		}
-		fields[name] = field
+		m.fields[name] = field
 	}
 	return DefaultPlcSubscriptionRequest{
-		fields:       fields,
+		fields:       m.fields,
 		types:        m.types,
 		intervals:    m.intervals,
 		subscriber:   m.subscriber,

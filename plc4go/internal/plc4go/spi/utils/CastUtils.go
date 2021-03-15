@@ -19,6 +19,7 @@
 package utils
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strconv"
 	"strings"
 )
@@ -66,6 +67,22 @@ func ByteArrayToInt8Array(input []byte) []int8 {
 	return output
 }
 
+func ByteArrayToUint8Array(input []byte) []uint8 {
+	output := make([]uint8, len(input))
+	for i, _val := range input {
+		output[i] = uint8(_val)
+	}
+	return output
+}
+
+func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
+	var result []byte
+	for _, valueItem := range value.GetList() {
+		result = append(result, valueItem.GetUint8())
+	}
+	return result
+}
+
 func StrToBool(str string) (bool, error) {
 	boolVal, err := strconv.ParseBool(str)
 	if err != nil {
@@ -88,4 +105,12 @@ func StrToUint16(str string) (uint16, error) {
 		return 0, err
 	}
 	return uint16(intVal), nil
+}
+
+func StrToUint32(str string) (uint32, error) {
+	intVal, err := strconv.ParseInt(str, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint32(intVal), nil
 }

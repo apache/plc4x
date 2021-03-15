@@ -80,7 +80,7 @@
                 <subindex>22</subindex>
               </address>
               <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>YXNkZg==</data>
+                <data>61736466</data>
               </payload>
             </response>
           </payload>
@@ -100,7 +100,7 @@
                 <subindex>22</subindex>
               </address>
               <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>YXNkZg==</data>
+                <data>61736466</data>
               </payload>
             </response>
           </payload>
@@ -177,7 +177,7 @@
                 <subindex>1</subindex>
               </address>
               <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>YXNkZg==</data>
+                <data>61736466</data>
                 as its timed out </payload>
             </response>
           </payload>
@@ -254,7 +254,7 @@
                 <subindex>22</subindex>
               </address>
               <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>YXNkZg==</data>
+                <data>61736466</data>
               </payload>
             </response>
           </payload>
@@ -274,7 +274,7 @@
                 <subindex>22</subindex>
               </address>
               <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>YXNkZg==</data>
+                <data>61736466</data>
               </payload>
             </response>
           </payload>
@@ -379,7 +379,7 @@
             <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
               <toggle>false</toggle>
               <last>false</last>
-              <data>YXNkZg==</data>
+              <data>61736466</data>
             </response>
           </payload>
         </CANOpenSocketCANFrame>
@@ -406,7 +406,7 @@
             <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
               <toggle>true</toggle>
               <last>false</last>
-              <data>YXNkZg==</data>
+              <data>61736466</data>
             </response>
           </payload>
         </CANOpenSocketCANFrame>
@@ -433,7 +433,7 @@
             <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
               <toggle>false</toggle>
               <last>true</last>
-              <data>YXNkZg==</data>
+              <data>61736466</data>
             </response>
           </payload>
         </CANOpenSocketCANFrame>

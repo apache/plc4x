@@ -48,9 +48,17 @@ public class KnxNetIpProtocol implements Protocol {
         InputStream masterDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/knx-master-data.mspec");
         if(masterDataInputStream == null) {
-            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+            throw new GenerationException("Error loading knx-master-data schema for protocol '" + getName() + "'");
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(masterDataInputStream));
+
+        InputStream deviceDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
+            "/protocols/knxnetip/device-info.mspec");
+        if(deviceDataInputStream == null) {
+            throw new GenerationException("Error loading device-info schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(deviceDataInputStream));
+
         return typeDefinitionMap;
     }
 

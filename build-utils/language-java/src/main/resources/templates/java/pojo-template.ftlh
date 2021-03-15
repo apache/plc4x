@@ -95,12 +95,16 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
     @JsonIgnore
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
+<<<<<<< HEAD
             <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
                 return <#if helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]) = "String"><#if discriminatorValue??>"${discriminatorValue}"<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if><#else><#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if></#if>;
             <#else>
                 return <#if helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]) = "String"><#if discriminatorValue??>"${discriminatorValue}"<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if><#else><#if discriminatorValue??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${discriminatorValue}<#else>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if></#if>;
             </#if>
 
+=======
+        return <#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+>>>>>>> develop
     }
         </#if>
     </#list>

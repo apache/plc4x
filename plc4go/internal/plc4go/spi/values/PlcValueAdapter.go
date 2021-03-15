@@ -152,16 +152,19 @@ func (m PlcValueAdapter) GetRaw() []byte {
 
 // List Methods
 func (m PlcValueAdapter) IsList() bool {
-	return false
+	return true
 }
 func (m PlcValueAdapter) GetLength() uint32 {
-	return 0
+	return 1
 }
 func (m PlcValueAdapter) GetIndex(i uint32) api.PlcValue {
+	if i == 0 {
+		return m
+	}
 	return nil
 }
 func (m PlcValueAdapter) GetList() []api.PlcValue {
-	return nil
+	return []api.PlcValue{m}
 }
 
 // Struct Methods

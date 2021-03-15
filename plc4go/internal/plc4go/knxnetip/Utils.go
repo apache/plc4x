@@ -24,6 +24,25 @@ import (
 	"strconv"
 )
 
+func NumericGroupAddressToString(numericAddress uint16, groupAddress KnxNetIpGroupAddressField) string {
+	if groupAddress != nil {
+		switch groupAddress.(type) {
+		case KnxNetIpGroupAddress3LevelPlcField:
+			main := numericAddress >> 11
+			middle := (numericAddress >> 8) & 0x07
+			sub := numericAddress & 0xFF
+			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
+		case KnxNetIpGroupAddress2LevelPlcField:
+			main := numericAddress >> 11
+			sub := numericAddress & 0x07FF
+			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
+		case KnxNetIpGroupAddress1LevelPlcField:
+			return strconv.Itoa(int(numericAddress))
+		}
+	}
+	return ""
+}
+
 func GroupAddressToString(groupAddress *driverModel.KnxGroupAddress) string {
 	if groupAddress != nil {
 		switch groupAddress.Child.(type) {
@@ -58,26 +77,25 @@ func KnxAddressToInt8Array(knxAddress driverModel.KnxAddress) []int8 {
 }
 
 func Uint16ToKnxAddress(data uint16) *driverModel.KnxAddress {
-    main := uint8(data >> 12)
-    middle := uint8(data >> 8) & 0xF
-    sub := uint8(data & 0xFF)
-    knxAddress := driverModel.KnxAddress{
-        MainGroup:   main,
-        MiddleGroup: middle,
-        SubGroup:    sub,
-    }
-    return &knxAddress
+	main := uint8(data >> 12)
+	middle := uint8(data>>8) & 0xF
+	sub := uint8(data & 0xFF)
+	knxAddress := driverModel.KnxAddress{
+		MainGroup:   main,
+		MiddleGroup: middle,
+		SubGroup:    sub,
+	}
+	return &knxAddress
 }
 
 func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) *driverModel.KnxGroupAddress {
-    rawData := make([]uint8, 2)
-    rawData[0] = uint8(data >> 8)
-    rawData[1] = uint8(data & 0xFF)
-    readBuffer := utils.NewReadBuffer(rawData)
-    knxGroupAddress, err := driverModel.KnxGroupAddressParse(readBuffer, numLevels)
-    if err != nil {
-        return nil
-    }
-    return knxGroupAddress
+	rawData := make([]uint8, 2)
+	rawData[0] = uint8(data >> 8)
+	rawData[1] = uint8(data & 0xFF)
+	readBuffer := utils.NewReadBuffer(rawData)
+	knxGroupAddress, err := driverModel.KnxGroupAddressParse(readBuffer, numLevels)
+	if err != nil {
+		return nil
+	}
+	return knxGroupAddress
 }
-

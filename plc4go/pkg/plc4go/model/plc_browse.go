@@ -24,7 +24,11 @@ type PlcBrowseRequestBuilder interface {
 }
 
 type PlcBrowseQueryResult struct {
-	Address           string
+	Field             PlcField
+	Name              string
+	Readable          bool
+	Writable          bool
+	Subscribable      bool
 	PossibleDataTypes []string
 }
 

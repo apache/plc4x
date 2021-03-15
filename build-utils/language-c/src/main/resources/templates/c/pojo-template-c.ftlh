@@ -482,25 +482,17 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
         <#case "const">
             <#assign constField = field>
             <#assign simpleTypeReference = constField.type>
-
 <#if indentContent>    </#if>  // Const Field (${constField.name})
 <#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()")};
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
-        <#if helper.isSimpleField(field)>
-            <#assign simpleTypeReference = discriminatorField.type>
-<#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
-<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
-        <#elseif helper.isEnumField(field)>
+        <#if helper.isEnumField(field)>
 <#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
 <#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
         <#else>
-<#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
-            // ${discriminatorField}
-            // ${discriminatorField.type}
-            // ${discriminatorField.name}
-            // ${helper.getCTypeName(baseType.name)}
+            <#assign simpleTypeReference = discriminatorField.type>
+<#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
 <#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
         </#if>
             <#break>

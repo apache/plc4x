@@ -86,7 +86,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "uint64";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "*big.Int";
                 }
                 case INT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -102,7 +102,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "int64";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "*big.Int";
                 }
                 case FLOAT:
                 case UFLOAT: {
@@ -115,7 +115,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (sizeInBits <= 64) {
                         return "float64";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "*big.Float";
                 }
                 case STRING: {
                     return "string";
@@ -157,7 +157,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "values.NewPlcULINT";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "values.NewPlcBINT";
                 }
                 case INT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -173,7 +173,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "values.NewPlcLINT";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "values.NewPlcBINT";
                 }
                 case FLOAT:
                 case UFLOAT: {
@@ -186,7 +186,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (sizeInBits <= 64) {
                         return "values.NewPlcLREAL";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    return "values.NewPlcBREAL";
                 }
                 case STRING: {
                     return "values.NewPlcSTRING";
@@ -279,6 +279,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "io.ReadUint64(" + integerTypeReference.getSizeInBits() + ")";
                 }
+                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -294,6 +295,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "io.ReadInt64(" + integerTypeReference.getSizeInBits() + ")";
                 }
+                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -303,6 +305,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (floatTypeReference.getSizeInBits() <= 64) {
                     return "io.ReadFloat64(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
+                return "io.ReadBigFloat(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
@@ -332,6 +335,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "io.WriteUint64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
+                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -347,6 +351,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (integerTypeReference.getSizeInBits() <= 64) {
                     return "io.WriteInt64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
+                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case FLOAT:
             case UFLOAT: {
@@ -357,6 +362,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (floatTypeReference.getSizeInBits() <= 64) {
                     return "io.WriteFloat64(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
+                return "io.WriteBigFloat(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
@@ -371,7 +377,25 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public String getReservedValue(ReservedField reservedField) {
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
-        return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
+        switch (languageTypeName) {
+            case "*big.Int":
+                return "big.NewInt(" + reservedField.getReferenceValue() + ")";
+            case "*big.Float":
+                return "*big.Float(" + reservedField.getReferenceValue() + ")";
+            default:
+                return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
+        }
+    }
+
+    public String toTypeSafeCompare(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
+        switch (languageTypeName) {
+            case "*big.Int":
+            case "*big.Float":
+                return "reserved.Cmp(" + getReservedValue(reservedField) + ") != 0";
+            default:
+                return "reserved != " + getReservedValue(reservedField);
+        }
     }
 
     public String toParseExpression(TypedField field, Term term, Argument[] parserArguments) {
@@ -781,7 +805,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         List<String> imports = new ArrayList<>();
 
         if (complexTypeDefinition.getAllPropertyFields().stream().anyMatch(field -> isArrayField(field) && getLanguageTypeNameForField(field).equals("int8"))) {
-            imports.add("\"encoding/base64\"");
+            imports.add("\"encoding/hex\"");
+            imports.add("\"strings\"");
         }
 
         imports.add("\"encoding/xml\"");
@@ -796,7 +821,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // At least one reserved field or simple field with complex type
         if (complexTypeDefinition.getFields().stream().anyMatch(field ->
             (field instanceof ReservedField))) {
-            imports.add("log \"github.com/sirupsen/logrus\"");
+            imports.add("\"github.com/rs/zerolog/log\"");
         }
 
         imports.add("\"io\"");
@@ -817,6 +842,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (isDiscriminatedParentTypeDefinition()) {
             imports.add("\"reflect\"");
             imports.add("\"strings\"");
+        }
+
+        if (complexTypeDefinition.getFields().stream()
+            .filter(field -> field instanceof TypedField)
+            .map(TypedField.class::cast)
+            .map(TypedField::getType)
+            .filter(type -> type instanceof SimpleTypeReference)
+            .map(SimpleTypeReference.class::cast)
+            .anyMatch((simpleTypeReference) -> simpleTypeReference.getSizeInBits() > 64)) {
+            imports.add("\"math/big\"");
         }
 
         return imports;
@@ -1069,5 +1104,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         String enumName = expression.substring(0, expression.indexOf('.'));
         String enumConstant = expression.substring(expression.indexOf('.') + 1);
         return enumName + "_" + enumConstant;
+    }
+
+    public boolean needsReferenceForParserArgument(String propertyName, TypeReference argumentType) {
+        // Check if this is a local field.
+        if(argumentType instanceof ComplexTypeReference) {
+            Field field = getFieldForNameFromCurrent(propertyName);
+            if (field instanceof TypedField) {
+                TypedField typedField = (TypedField) field;
+                return typedField.getType() instanceof ComplexTypeReference;
+            }
+        }
+        return false;
     }
 }

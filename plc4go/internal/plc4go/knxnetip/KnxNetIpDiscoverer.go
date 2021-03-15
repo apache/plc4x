@@ -28,7 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"net"
 	"net/url"
 	"time"
@@ -142,7 +142,7 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 					return nil
 				},
 				func(err error) error {
-					log.Debugf(fmt.Sprintf("got timeout waiting for search-response"))
+					log.Debug().Err(err).Msg("got timeout waiting for search-response")
 					return nil
 				},
 				time.Second*1)
