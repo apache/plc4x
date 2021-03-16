@@ -1261,17 +1261,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_pdu* _message) {
   plc4c_return_code _res = OK;
-  // Enumerated Discriminator Field (errorFlag)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@4888d1ea
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultBooleanTypeReference@217b0952
-            // errorFlag
-            // plc4c_modbus_read_write_modbus_pdu
+  // Discriminator Field (errorFlag)
   plc4c_spi_write_bit(io, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).errorFlag);
-  // Enumerated Discriminator Field (functionFlag)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@38ba8b45
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@41f23499
-            // functionFlag
-            // plc4c_modbus_read_write_modbus_pdu
+  // Discriminator Field (functionFlag)
   plc4c_spi_write_unsigned_byte(io, 7, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).functionFlag);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)

@@ -206,14 +206,9 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* io
 
 plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_message* _message) {
   plc4c_return_code _res = OK;
-
   // Const Field (protocolId)
   plc4c_spi_write_unsigned_byte(io, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID());
-  // Enumerated Discriminator Field (messageType)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@68b3979d
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@5fd31df7
-            // messageType
-            // plc4c_s7_read_write_s7_message
+  // Discriminator Field (messageType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_message_get_discriminator(_message->_type).messageType);
 
   // Reserved Field

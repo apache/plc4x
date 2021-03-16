@@ -47,7 +47,7 @@ type IComObjectTableRealisationType1 interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ComObjectTableRealisationType1) FirmwareType() FirmwareType {
-	return FirmwareType_SYSTEM_1
+	return SYSTEM_1
 }
 
 func (m *ComObjectTableRealisationType1) InitializeParent(parent *ComObjectTable) {

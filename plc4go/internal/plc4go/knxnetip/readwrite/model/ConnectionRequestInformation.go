@@ -81,7 +81,6 @@ func (m *ConnectionRequestInformation) LengthInBits() uint16 {
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
-
 	// Discriminator Field (connectionType)
 	lengthInBits += 8
 

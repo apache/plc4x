@@ -72,14 +72,16 @@
     [simple string '8' 'UTF-8' 'stringField']
 ]
 
-[type 'AbstractTypeTest'
-    [abstract bit 'bitField']
-    [abstract int 8 'intField']
-    [abstract uint 8 'uintField']
-    [abstract float 8.23 'floatField']
-    [abstract float 11.52 'doubleField']
-    [abstract string '8' 'UTF-8' 'stringField']
-]
+
+//Abstract fields don't require the errors module in Go, this causes an unused import error.
+//[type 'AbstractTypeTest'
+//    [abstract bit 'bitField']
+//    [abstract int 8 'intField']
+//    [abstract uint 8 'uintField']
+//    [abstract float 8.23 'floatField']
+//    [abstract float 11.52 'doubleField']
+//    [abstract string '8' 'UTF-8' 'stringField']
+//]
 
 [type 'ArrayTypeTest'
     [array bit 'bitField' count      '5']
@@ -107,7 +109,7 @@
     [const bit 'bitField' true]
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
-    [const float 8.23 'floatField' '100.0f']
+    [const float 8.23 'floatField' '100.0']
     [const float 11.52 'doubleField' '100.0']
     [const string '8' 'UTF-8' 'stringField' '"HELLO TODDY"']
 ]

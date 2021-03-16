@@ -78,7 +78,6 @@ func (m *BACnetConfirmedServiceRequest) GetTypeName() string {
 
 func (m *BACnetConfirmedServiceRequest) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 

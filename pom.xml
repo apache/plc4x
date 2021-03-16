@@ -742,9 +742,6 @@
             <exclude>**/CMakeCache.txt</exclude>
             <exclude>**/DartConfiguration.tcl</exclude>
 
-
-
-
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>
 

@@ -78,7 +78,6 @@ func (m *CEMI) GetTypeName() string {
 
 func (m *CEMI) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (messageCode)
 	lengthInBits += 8
 

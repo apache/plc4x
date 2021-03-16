@@ -411,7 +411,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {

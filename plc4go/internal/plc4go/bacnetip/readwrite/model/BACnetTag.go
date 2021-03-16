@@ -85,7 +85,6 @@ func (m *BACnetTag) LengthInBits() uint16 {
 
 	// Simple field (typeOrTagNumber)
 	lengthInBits += 4
-
 	// Discriminator Field (contextSpecificTag)
 	lengthInBits += 1
 

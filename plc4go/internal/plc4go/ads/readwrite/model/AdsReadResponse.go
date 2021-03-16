@@ -48,7 +48,7 @@ type IAdsReadResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsReadResponse) CommandId() CommandId {
-	return CommandId_ADS_READ
+	return ADS_READ
 }
 
 func (m *AdsReadResponse) Response() bool {

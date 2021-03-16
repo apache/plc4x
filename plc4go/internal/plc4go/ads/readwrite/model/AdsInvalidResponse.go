@@ -43,7 +43,7 @@ type IAdsInvalidResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsInvalidResponse) CommandId() CommandId {
-	return CommandId_INVALID
+	return INVALID
 }
 
 func (m *AdsInvalidResponse) Response() bool {

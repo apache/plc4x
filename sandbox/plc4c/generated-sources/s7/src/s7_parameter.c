@@ -255,11 +255,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
 plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_parameter* _message) {
   plc4c_return_code _res = OK;
-  // Enumerated Discriminator Field (parameterType)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@6ad26381
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@4b20aa21
-            // parameterType
-            // plc4c_s7_read_write_s7_parameter
+  // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_parameter_get_discriminator(_message->_type).parameterType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)

@@ -937,7 +937,7 @@ func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
 }
 
 func (m KnxPropertyDataType) LengthInBits() uint16 {
-	return 6
+	return 8
 }
 
 func (m KnxPropertyDataType) LengthInBytes() uint16 {
@@ -945,7 +945,7 @@ func (m KnxPropertyDataType) LengthInBytes() uint16 {
 }
 
 func KnxPropertyDataTypeParse(io *utils.ReadBuffer) (KnxPropertyDataType, error) {
-	val, err := io.ReadUint8(6)
+	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil
 	}
@@ -953,7 +953,7 @@ func KnxPropertyDataTypeParse(io *utils.ReadBuffer) (KnxPropertyDataType, error)
 }
 
 func (e KnxPropertyDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(6, uint8(e))
+	err := io.WriteUint8(8, uint8(e))
 	return err
 }
 

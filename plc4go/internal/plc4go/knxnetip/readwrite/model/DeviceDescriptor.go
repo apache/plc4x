@@ -70,119 +70,119 @@ func (e DeviceDescriptor) FirmwareType() FirmwareType {
 	switch e {
 	case 0x0010:
 		{ /* '0x0010' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x0011:
 		{ /* '0x0011' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x0012:
 		{ /* '0x0012' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x0013:
 		{ /* '0x0013' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x0020:
 		{ /* '0x0020' */
-			return FirmwareType_SYSTEM_2
+			return SYSTEM_2
 		}
 	case 0x0021:
 		{ /* '0x0021' */
-			return FirmwareType_SYSTEM_2
+			return SYSTEM_2
 		}
 	case 0x0025:
 		{ /* '0x0025' */
-			return FirmwareType_SYSTEM_2
+			return SYSTEM_2
 		}
 	case 0x0300:
 		{ /* '0x0300' */
-			return FirmwareType_SYSTEM_300
+			return SYSTEM_300
 		}
 	case 0x0700:
 		{ /* '0x0700' */
-			return FirmwareType_SYSTEM_7
+			return SYSTEM_7
 		}
 	case 0x0701:
 		{ /* '0x0701' */
-			return FirmwareType_SYSTEM_7
+			return SYSTEM_7
 		}
 	case 0x0705:
 		{ /* '0x0705' */
-			return FirmwareType_SYSTEM_7
+			return SYSTEM_7
 		}
 	case 0x07B0:
 		{ /* '0x07B0' */
-			return FirmwareType_SYSTEM_B
+			return SYSTEM_B
 		}
 	case 0x0810:
 		{ /* '0x0810' */
-			return FirmwareType_IR_DECODER
+			return IR_DECODER
 		}
 	case 0x0811:
 		{ /* '0x0811' */
-			return FirmwareType_IR_DECODER
+			return IR_DECODER
 		}
 	case 0x0910:
 		{ /* '0x0910' */
-			return FirmwareType_COUPLER
+			return COUPLER
 		}
 	case 0x0911:
 		{ /* '0x0911' */
-			return FirmwareType_COUPLER
+			return COUPLER
 		}
 	case 0x0912:
 		{ /* '0x0912' */
-			return FirmwareType_COUPLER
+			return COUPLER
 		}
 	case 0x091A:
 		{ /* '0x091A' */
-			return FirmwareType_COUPLER
+			return COUPLER
 		}
 	case 0x0AFD:
 		{ /* '0x0AFD' */
-			return FirmwareType_NONE
+			return NONE
 		}
 	case 0x0AFE:
 		{ /* '0x0AFE' */
-			return FirmwareType_NONE
+			return NONE
 		}
 	case 0x1012:
 		{ /* '0x1012' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x1013:
 		{ /* '0x1013' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x17B0:
 		{ /* '0x17B0' */
-			return FirmwareType_SYSTEM_B
+			return SYSTEM_B
 		}
 	case 0x1900:
 		{ /* '0x1900' */
-			return FirmwareType_MEDIA_COUPLER_PL_TP
+			return MEDIA_COUPLER_PL_TP
 		}
 	case 0x2010:
 		{ /* '0x2010' */
-			return FirmwareType_RF_BI_DIRECTIONAL_DEVICES
+			return RF_BI_DIRECTIONAL_DEVICES
 		}
 	case 0x2110:
 		{ /* '0x2110' */
-			return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
+			return RF_UNI_DIRECTIONAL_DEVICES
 		}
 	case 0x3012:
 		{ /* '0x3012' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x4012:
 		{ /* '0x4012' */
-			return FirmwareType_SYSTEM_1
+			return SYSTEM_1
 		}
 	case 0x5705:
 		{ /* '0x5705' */
-			return FirmwareType_SYSTEM_7
+			return SYSTEM_7
 		}
 	default:
 		{
@@ -195,119 +195,119 @@ func (e DeviceDescriptor) MediumType() DeviceDescriptorMediumType {
 	switch e {
 	case 0x0010:
 		{ /* '0x0010' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0011:
 		{ /* '0x0011' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0012:
 		{ /* '0x0012' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0013:
 		{ /* '0x0013' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0020:
 		{ /* '0x0020' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0021:
 		{ /* '0x0021' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0025:
 		{ /* '0x0025' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0300:
 		{ /* '0x0300' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0700:
 		{ /* '0x0700' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0701:
 		{ /* '0x0701' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0705:
 		{ /* '0x0705' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x07B0:
 		{ /* '0x07B0' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0810:
 		{ /* '0x0810' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0811:
 		{ /* '0x0811' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0910:
 		{ /* '0x0910' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0911:
 		{ /* '0x0911' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0912:
 		{ /* '0x0912' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x091A:
 		{ /* '0x091A' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0AFD:
 		{ /* '0x0AFD' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x0AFE:
 		{ /* '0x0AFE' */
-			return DeviceDescriptorMediumType_TP1
+			return TP1
 		}
 	case 0x1012:
 		{ /* '0x1012' */
-			return DeviceDescriptorMediumType_PL110
+			return PL110
 		}
 	case 0x1013:
 		{ /* '0x1013' */
-			return DeviceDescriptorMediumType_PL110
+			return PL110
 		}
 	case 0x17B0:
 		{ /* '0x17B0' */
-			return DeviceDescriptorMediumType_PL110
+			return PL110
 		}
 	case 0x1900:
 		{ /* '0x1900' */
-			return DeviceDescriptorMediumType_PL110
+			return PL110
 		}
 	case 0x2010:
 		{ /* '0x2010' */
-			return DeviceDescriptorMediumType_RF
+			return RF
 		}
 	case 0x2110:
 		{ /* '0x2110' */
-			return DeviceDescriptorMediumType_RF
+			return RF
 		}
 	case 0x3012:
 		{ /* '0x3012' */
-			return DeviceDescriptorMediumType_TP0
+			return TP0
 		}
 	case 0x4012:
 		{ /* '0x4012' */
-			return DeviceDescriptorMediumType_PL132
+			return PL132
 		}
 	case 0x5705:
 		{ /* '0x5705' */
-			return DeviceDescriptorMediumType_KNX_IP
+			return KNX_IP
 		}
 	default:
 		{

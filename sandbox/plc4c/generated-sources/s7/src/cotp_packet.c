@@ -292,11 +292,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   if(_res != OK) {
     return _res;
   }
-  // Enumerated Discriminator Field (tpduCode)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@5870fc05
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@45e35a0d
-            // tpduCode
-            // plc4c_s7_read_write_cotp_packet
+  // Discriminator Field (tpduCode)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)

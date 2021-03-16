@@ -83,7 +83,6 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* i
 
 plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_tpkt_packet* _message) {
   plc4c_return_code _res = OK;
-
   // Const Field (protocolId)
   plc4c_spi_write_unsigned_byte(io, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID());
 

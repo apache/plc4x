@@ -147,11 +147,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
 
 plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_address* _message) {
   plc4c_return_code _res = OK;
-  // Enumerated Discriminator Field (addressType)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@6065bcb7
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@1ee6434
-            // addressType
-            // plc4c_s7_read_write_s7_address
+  // Discriminator Field (addressType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_address_get_discriminator(_message->_type).addressType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)

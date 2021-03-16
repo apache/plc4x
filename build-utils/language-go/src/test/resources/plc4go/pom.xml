@@ -45,9 +45,65 @@
 
 </properties>
 
-
 <build>
   <plugins>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-resources-plugin</artifactId>
+      <version>2.5</version>
+      <executions>
+        <execution>
+          <id>go-pkg</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>copy-resources</goal>
+          </goals>
+          <configuration>
+            <outputDirectory>./pkg</outputDirectory>
+            <resources>
+              <resource>
+                <targetPath>.</targetPath>
+                <directory>../../../../../plc4go/pkg</directory>
+                <filtering>false</filtering>
+              </resource>
+            </resources>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-resources-plugin</artifactId>
+      <version>2.5</version>
+      <executions>
+        <execution>
+          <id>go-spi</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>copy-resources</goal>
+          </goals>
+          <configuration>
+            <outputDirectory>./internal/plc4go/spi</outputDirectory>
+            <resources>
+              <resource>
+                <targetPath>.</targetPath>
+                <directory>../../../../../plc4go/internal/plc4go/spi</directory>
+                <excludes>
+                  <exclude>testutils/**</exclude>
+                </excludes>
+                <filtering>true</filtering>
+              </resource>
+            </resources>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
+
     <plugin>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-maven-plugin</artifactId>
@@ -160,11 +216,12 @@
       </executions>
       <configuration>
         <packages>
-          <package>github.com/apache/plc4x/plc4go/cmd/main</package>
+          <!-- We want to format every package here so we don't get dirty commits -->
+          <package>./internal/...</package>
         </packages>
-        <sources>${project.basedir}</sources>
       </configuration>
     </plugin>
+
 
     <!--
         Make the failsafe execute all integration-tests

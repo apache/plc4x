@@ -83,7 +83,6 @@ func (m *COTPPacket) LengthInBits() uint16 {
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
-
 	// Discriminator Field (tpduCode)
 	lengthInBits += 8
 

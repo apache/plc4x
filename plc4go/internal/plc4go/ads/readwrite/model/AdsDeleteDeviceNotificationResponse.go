@@ -45,7 +45,7 @@ type IAdsDeleteDeviceNotificationResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsDeleteDeviceNotificationResponse) CommandId() CommandId {
-	return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+	return ADS_DELETE_DEVICE_NOTIFICATION
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) Response() bool {

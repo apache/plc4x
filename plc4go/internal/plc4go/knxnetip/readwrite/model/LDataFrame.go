@@ -87,13 +87,11 @@ func (m *LDataFrame) LengthInBits() uint16 {
 
 	// Simple field (frameType)
 	lengthInBits += 1
-
 	// Discriminator Field (polling)
 	lengthInBits += 1
 
 	// Simple field (notRepeated)
 	lengthInBits += 1
-
 	// Discriminator Field (notAckFrame)
 	lengthInBits += 1
 

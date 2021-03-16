@@ -88,7 +88,6 @@ func (m *KnxNetIpMessage) LengthInBits() uint16 {
 
 	// Const Field (protocolVersion)
 	lengthInBits += 8
-
 	// Discriminator Field (msgType)
 	lengthInBits += 16
 

@@ -79,7 +79,6 @@ func (m *NLM) GetTypeName() string {
 
 func (m *NLM) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (messageType)
 	lengthInBits += 8
 

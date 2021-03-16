@@ -309,7 +309,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ")";
+                return "io.ReadString(" + stringTypeReference.getLength() + ")";
             }
         }
         return "Hurz";
@@ -368,7 +368,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.WriteString(" + stringTypeReference.getLength() + ", \"" +
                     encoding + "\", " + fieldName + ")";
             }
         }
@@ -836,7 +836,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (complexTypeDefinition.getFields().stream().anyMatch(field ->
             (field instanceof ConstField))/* || complexTypeDefinition.getAllPropertyFields().stream().anyMatch(
                 propertyField -> isSimpleField(propertyField))*/) {
-            imports.add("\"strconv\"");
+            imports.add("\"fmt\"");
         }
 
         if (isDiscriminatedParentTypeDefinition()) {
