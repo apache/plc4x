@@ -80,7 +80,6 @@ func (m *ServiceId) GetTypeName() string {
 
 func (m *ServiceId) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
 

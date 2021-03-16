@@ -80,7 +80,6 @@ func (m *ApduControl) GetTypeName() string {
 
 func (m *ApduControl) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (controlType)
 	lengthInBits += 2
 

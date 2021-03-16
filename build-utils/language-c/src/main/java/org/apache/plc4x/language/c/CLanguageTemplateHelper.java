@@ -338,9 +338,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             if ("null".equals(valueString)) {
                 return "-1";
             }
-            String typeName = valueString.substring(0, valueString.indexOf('.'));
-            String constantName = valueString.substring(valueString.indexOf('.') + 1);
-            return getCTypeName(typeName) + "_" + constantName;
+            String typeName = getLanguageTypeNameForTypeReference(typeReference);
+            return typeName + "_" + valueString;
         } else {
             return escapeValue(typeReference, valueString);
         }

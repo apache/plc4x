@@ -97,11 +97,11 @@ func ComObjectTableParse(io *utils.ReadBuffer, firmwareType *FirmwareType) (*Com
 	var _parent *ComObjectTable
 	var typeSwitchError error
 	switch {
-	case *firmwareType == FirmwareType_SYSTEM_1:
+	case firmwareType == SYSTEM_1:
 		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_2:
+	case firmwareType == SYSTEM_2:
 		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_300:
+	case firmwareType == SYSTEM_300:
 		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(io)
 	}
 	if typeSwitchError != nil {

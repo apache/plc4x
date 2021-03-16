@@ -978,19 +978,19 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 	switch e {
 	case 0x01:
 		{ /* '0x01' */
-			return DataTransportSize_BIT
+			return BIT
 		}
 	case 0x02:
 		{ /* '0x02' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x05:
 		{ /* '0x05' */
@@ -998,27 +998,27 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x06:
 		{ /* '0x06' */
-			return DataTransportSize_INTEGER
+			return INTEGER
 		}
 	case 0x07:
 		{ /* '0x07' */
-			return DataTransportSize_INTEGER
+			return INTEGER
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return DataTransportSize_INTEGER
+			return INTEGER
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return DataTransportSize_INTEGER
+			return INTEGER
 		}
 	case 0x0C:
 		{ /* '0x0C' */
@@ -1030,7 +1030,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x0F:
 		{ /* '0x0F' */
@@ -1038,7 +1038,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x11:
 		{ /* '0x11' */
@@ -1046,7 +1046,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x13:
 		{ /* '0x13' */
@@ -1062,15 +1062,15 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x17:
 		{ /* '0x17' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x18:
 		{ /* '0x18' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x19:
 		{ /* '0x19' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return BYTE_WORD_DWORD
 		}
 	case 0x1A:
 		{ /* '0x1A' */
@@ -1103,7 +1103,7 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return TransportSize_WORD
+			return WORD
 		}
 	case 0x05:
 		{ /* '0x05' */
@@ -1115,31 +1115,31 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x07:
 		{ /* '0x07' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return TransportSize_INT
+			return INT
 		}
 	case 0x0E:
 		{ /* '0x0E' */
@@ -1147,7 +1147,7 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return TransportSize_REAL
+			return REAL
 		}
 	case 0x10:
 		{ /* '0x10' */
@@ -1171,7 +1171,7 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return TransportSize_TIME
+			return TIME
 		}
 	case 0x17:
 		{ /* '0x17' */

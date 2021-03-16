@@ -91,7 +91,6 @@ func (m *S7Message) LengthInBits() uint16 {
 
 	// Const Field (protocolId)
 	lengthInBits += 8
-
 	// Discriminator Field (messageType)
 	lengthInBits += 8
 

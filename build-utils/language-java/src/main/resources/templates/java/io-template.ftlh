@@ -465,7 +465,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = constField.type>
 
         // Const Field (${constField.name})
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
+        <#if helper.getLanguageTypeNameForField(field) = 'float'>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue + "f")};
+        <#else>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
+        </#if>
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>

@@ -1853,7 +1853,7 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 112:
 		{ /* '112' */
-			return "power density (W/m²)"
+			return "power denisity (W/m²)"
 		}
 	case 113:
 		{ /* '113' */
@@ -3190,1395 +3190,1395 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 	switch e {
 	case 0:
 		{ /* '0' */
-			return KnxDatapointMainType_DPT_UNKNOWN
+			return DPT_UNKNOWN
 		}
 	case 1:
 		{ /* '1' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 10:
 		{ /* '10' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 100:
 		{ /* '100' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 101:
 		{ /* '101' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 102:
 		{ /* '102' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 103:
 		{ /* '103' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 104:
 		{ /* '104' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 105:
 		{ /* '105' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 106:
 		{ /* '106' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 107:
 		{ /* '107' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 108:
 		{ /* '108' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 109:
 		{ /* '109' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 11:
 		{ /* '11' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 110:
 		{ /* '110' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 111:
 		{ /* '111' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 112:
 		{ /* '112' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 113:
 		{ /* '113' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 114:
 		{ /* '114' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 115:
 		{ /* '115' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 116:
 		{ /* '116' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 117:
 		{ /* '117' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 118:
 		{ /* '118' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 119:
 		{ /* '119' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 12:
 		{ /* '12' */
-			return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE
+			return DPT_8_BYTE_UNSIGNED_VALUE
 		}
 	case 120:
 		{ /* '120' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 121:
 		{ /* '121' */
-			return KnxDatapointMainType_DPT_TIME
+			return DPT_TIME
 		}
 	case 122:
 		{ /* '122' */
-			return KnxDatapointMainType_DPT_DATE
+			return DPT_DATE
 		}
 	case 123:
 		{ /* '123' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 124:
 		{ /* '124' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 125:
 		{ /* '125' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 126:
 		{ /* '126' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 127:
 		{ /* '127' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 128:
 		{ /* '128' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 129:
 		{ /* '129' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 13:
 		{ /* '13' */
-			return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE
+			return DPT_8_BYTE_SIGNED_VALUE
 		}
 	case 130:
 		{ /* '130' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 131:
 		{ /* '131' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 132:
 		{ /* '132' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 133:
 		{ /* '133' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 134:
 		{ /* '134' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 135:
 		{ /* '135' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 136:
 		{ /* '136' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 137:
 		{ /* '137' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 138:
 		{ /* '138' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 139:
 		{ /* '139' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 14:
 		{ /* '14' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 140:
 		{ /* '140' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 141:
 		{ /* '141' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 142:
 		{ /* '142' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 143:
 		{ /* '143' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 144:
 		{ /* '144' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 145:
 		{ /* '145' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 146:
 		{ /* '146' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 147:
 		{ /* '147' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 148:
 		{ /* '148' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 149:
 		{ /* '149' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 15:
 		{ /* '15' */
-			return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE
+			return DPT_8_BYTE_FLOAT_VALUE
 		}
 	case 150:
 		{ /* '150' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 151:
 		{ /* '151' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 152:
 		{ /* '152' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 153:
 		{ /* '153' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 154:
 		{ /* '154' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 155:
 		{ /* '155' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 156:
 		{ /* '156' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 157:
 		{ /* '157' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 158:
 		{ /* '158' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 159:
 		{ /* '159' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 16:
 		{ /* '16' */
-			return KnxDatapointMainType_DPT_CHARACTER
+			return DPT_CHARACTER
 		}
 	case 160:
 		{ /* '160' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 161:
 		{ /* '161' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 162:
 		{ /* '162' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 163:
 		{ /* '163' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 164:
 		{ /* '164' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 165:
 		{ /* '165' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 166:
 		{ /* '166' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 167:
 		{ /* '167' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 168:
 		{ /* '168' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 169:
 		{ /* '169' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 17:
 		{ /* '17' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 170:
 		{ /* '170' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 171:
 		{ /* '171' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 172:
 		{ /* '172' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 173:
 		{ /* '173' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 174:
 		{ /* '174' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 175:
 		{ /* '175' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 176:
 		{ /* '176' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 177:
 		{ /* '177' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 178:
 		{ /* '178' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 179:
 		{ /* '179' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 18:
 		{ /* '18' */
-			return KnxDatapointMainType_DPT_UNKNOWN
+			return DPT_UNKNOWN
 		}
 	case 180:
 		{ /* '180' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 181:
 		{ /* '181' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 182:
 		{ /* '182' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 183:
 		{ /* '183' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 184:
 		{ /* '184' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 185:
 		{ /* '185' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 186:
 		{ /* '186' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 187:
 		{ /* '187' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 188:
 		{ /* '188' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 189:
 		{ /* '189' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 19:
 		{ /* '19' */
-			return KnxDatapointMainType_DPT_UNKNOWN
+			return DPT_UNKNOWN
 		}
 	case 190:
 		{ /* '190' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 191:
 		{ /* '191' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 192:
 		{ /* '192' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 193:
 		{ /* '193' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 194:
 		{ /* '194' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 195:
 		{ /* '195' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 196:
 		{ /* '196' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 197:
 		{ /* '197' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 198:
 		{ /* '198' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 199:
 		{ /* '199' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 2:
 		{ /* '2' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 20:
 		{ /* '20' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 200:
 		{ /* '200' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 201:
 		{ /* '201' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 202:
 		{ /* '202' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 203:
 		{ /* '203' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 204:
 		{ /* '204' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 205:
 		{ /* '205' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 206:
 		{ /* '206' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 207:
 		{ /* '207' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 208:
 		{ /* '208' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 209:
 		{ /* '209' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 21:
 		{ /* '21' */
-			return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE
+			return DPT_8_BYTE_UNSIGNED_VALUE
 		}
 	case 210:
 		{ /* '210' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 211:
 		{ /* '211' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 212:
 		{ /* '212' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 213:
 		{ /* '213' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 214:
 		{ /* '214' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 215:
 		{ /* '215' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 216:
 		{ /* '216' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 217:
 		{ /* '217' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 218:
 		{ /* '218' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 219:
 		{ /* '219' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 22:
 		{ /* '22' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 220:
 		{ /* '220' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 221:
 		{ /* '221' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 222:
 		{ /* '222' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 223:
 		{ /* '223' */
-			return KnxDatapointMainType_DPT_ENTRANCE_ACCESS
+			return DPT_ENTRANCE_ACCESS
 		}
 	case 224:
 		{ /* '224' */
-			return KnxDatapointMainType_DPT_CHARACTER_STRING
+			return DPT_CHARACTER_STRING
 		}
 	case 225:
 		{ /* '225' */
-			return KnxDatapointMainType_DPT_CHARACTER_STRING
+			return DPT_CHARACTER_STRING
 		}
 	case 226:
 		{ /* '226' */
-			return KnxDatapointMainType_DPT_SCENE_NUMBER
+			return DPT_SCENE_NUMBER
 		}
 	case 227:
 		{ /* '227' */
-			return KnxDatapointMainType_DPT_SCENE_CONTROL
+			return DPT_SCENE_CONTROL
 		}
 	case 228:
 		{ /* '228' */
-			return KnxDatapointMainType_DPT_DATE_TIME
+			return DPT_DATE_TIME
 		}
 	case 229:
 		{ /* '229' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 23:
 		{ /* '23' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 230:
 		{ /* '230' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 231:
 		{ /* '231' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 232:
 		{ /* '232' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 233:
 		{ /* '233' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 234:
 		{ /* '234' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 235:
 		{ /* '235' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 236:
 		{ /* '236' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 237:
 		{ /* '237' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 238:
 		{ /* '238' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 239:
 		{ /* '239' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 24:
 		{ /* '24' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 240:
 		{ /* '240' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 241:
 		{ /* '241' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 242:
 		{ /* '242' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 243:
 		{ /* '243' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 244:
 		{ /* '244' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 245:
 		{ /* '245' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 246:
 		{ /* '246' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 247:
 		{ /* '247' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 248:
 		{ /* '248' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 249:
 		{ /* '249' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 25:
 		{ /* '25' */
-			return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
+			return DPT_12_BYTE_SIGNED_VALUE
 		}
 	case 250:
 		{ /* '250' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 251:
 		{ /* '251' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 252:
 		{ /* '252' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 253:
 		{ /* '253' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 254:
 		{ /* '254' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 255:
 		{ /* '255' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 256:
 		{ /* '256' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 257:
 		{ /* '257' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 258:
 		{ /* '258' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 259:
 		{ /* '259' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 26:
 		{ /* '26' */
-			return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE
+			return DPT_12_BYTE_SIGNED_VALUE
 		}
 	case 260:
 		{ /* '260' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 261:
 		{ /* '261' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 262:
 		{ /* '262' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 263:
 		{ /* '263' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 264:
 		{ /* '264' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 265:
 		{ /* '265' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 266:
 		{ /* '266' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 267:
 		{ /* '267' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 268:
 		{ /* '268' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 269:
 		{ /* '269' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 27:
 		{ /* '27' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 270:
 		{ /* '270' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 271:
 		{ /* '271' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 272:
 		{ /* '272' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 273:
 		{ /* '273' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 274:
 		{ /* '274' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 275:
 		{ /* '275' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 276:
 		{ /* '276' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 277:
 		{ /* '277' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 278:
 		{ /* '278' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 279:
 		{ /* '279' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 28:
 		{ /* '28' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 280:
 		{ /* '280' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 281:
 		{ /* '281' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 282:
 		{ /* '282' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 283:
 		{ /* '283' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 284:
 		{ /* '284' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return DPT_1_BYTE
 		}
 	case 285:
 		{ /* '285' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 286:
 		{ /* '286' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 287:
 		{ /* '287' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 288:
 		{ /* '288' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 289:
 		{ /* '289' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 29:
 		{ /* '29' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 290:
 		{ /* '290' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 291:
 		{ /* '291' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 292:
 		{ /* '292' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 293:
 		{ /* '293' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 294:
 		{ /* '294' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 295:
 		{ /* '295' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 296:
 		{ /* '296' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 297:
 		{ /* '297' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 298:
 		{ /* '298' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return DPT_8_BIT_SET
 		}
 	case 299:
 		{ /* '299' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 3:
 		{ /* '3' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 30:
 		{ /* '30' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 300:
 		{ /* '300' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 301:
 		{ /* '301' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 302:
 		{ /* '302' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 303:
 		{ /* '303' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 304:
 		{ /* '304' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return DPT_16_BIT_SET
 		}
 	case 305:
 		{ /* '305' */
-			return KnxDatapointMainType_DPT_2_BIT_SET
+			return DPT_2_BIT_SET
 		}
 	case 306:
 		{ /* '306' */
-			return KnxDatapointMainType_DPT_2_BIT_SET
+			return DPT_2_BIT_SET
 		}
 	case 307:
 		{ /* '307' */
-			return KnxDatapointMainType_DPT_2_BIT_SET
+			return DPT_2_BIT_SET
 		}
 	case 308:
 		{ /* '308' */
-			return KnxDatapointMainType_DPT_2_BIT_SET
+			return DPT_2_BIT_SET
 		}
 	case 309:
 		{ /* '309' */
-			return KnxDatapointMainType_DPT_2_NIBBLE_SET
+			return DPT_2_NIBBLE_SET
 		}
 	case 31:
 		{ /* '31' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 310:
 		{ /* '310' */
-			return KnxDatapointMainType_DPT_8_BIT_SET_2
+			return DPT_8_BIT_SET_2
 		}
 	case 311:
 		{ /* '311' */
-			return KnxDatapointMainType_DPT_32_BIT_SET
+			return DPT_32_BIT_SET
 		}
 	case 312:
 		{ /* '312' */
-			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+			return DPT_ELECTRICAL_ENERGY
 		}
 	case 313:
 		{ /* '313' */
-			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+			return DPT_ELECTRICAL_ENERGY
 		}
 	case 314:
 		{ /* '314' */
-			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+			return DPT_ELECTRICAL_ENERGY
 		}
 	case 315:
 		{ /* '315' */
-			return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
+			return DPT_24_TIMES_CHANNEL_ACTIVATION
 		}
 	case 316:
 		{ /* '316' */
-			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 317:
 		{ /* '317' */
-			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 318:
 		{ /* '318' */
-			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 319:
 		{ /* '319' */
-			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 32:
 		{ /* '32' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 320:
 		{ /* '320' */
-			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+			return DPT_DATAPOINT_TYPE_VERSION
 		}
 	case 321:
 		{ /* '321' */
-			return KnxDatapointMainType_DPT_ALARM_INFO
+			return DPT_ALARM_INFO
 		}
 	case 322:
 		{ /* '322' */
-			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+			return DPT_3X_2_BYTE_FLOAT_VALUE
 		}
 	case 323:
 		{ /* '323' */
-			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+			return DPT_3X_2_BYTE_FLOAT_VALUE
 		}
 	case 324:
 		{ /* '324' */
-			return KnxDatapointMainType_DPT_SCALING_SPEED
+			return DPT_SCALING_SPEED
 		}
 	case 325:
 		{ /* '325' */
-			return KnxDatapointMainType_DPT_SCALING_SPEED
+			return DPT_SCALING_SPEED
 		}
 	case 326:
 		{ /* '326' */
-			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+			return DPT_4_1_1_BYTE_COMBINED_INFORMATION
 		}
 	case 327:
 		{ /* '327' */
-			return KnxDatapointMainType_DPT_MBUS_ADDRESS
+			return DPT_MBUS_ADDRESS
 		}
 	case 328:
 		{ /* '328' */
-			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+			return DPT_3_BYTE_COLOUR_RGB
 		}
 	case 329:
 		{ /* '329' */
-			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+			return DPT_LANGUAGE_CODE_ISO_639_1
 		}
 	case 33:
 		{ /* '33' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 330:
 		{ /* '330' */
-			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+			return DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
 		}
 	case 331:
 		{ /* '331' */
-			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+			return DPT_PRIORITISED_MODE_CONTROL
 		}
 	case 332:
 		{ /* '332' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+			return DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
 		}
 	case 333:
 		{ /* '333' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+			return DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
 		}
 	case 334:
 		{ /* '334' */
-			return KnxDatapointMainType_DPT_POSITIONS
+			return DPT_POSITIONS
 		}
 	case 335:
 		{ /* '335' */
-			return KnxDatapointMainType_DPT_STATUS_32_BIT
+			return DPT_STATUS_32_BIT
 		}
 	case 336:
 		{ /* '336' */
-			return KnxDatapointMainType_DPT_STATUS_48_BIT
+			return DPT_STATUS_48_BIT
 		}
 	case 337:
 		{ /* '337' */
-			return KnxDatapointMainType_DPT_CONVERTER_STATUS
+			return DPT_CONVERTER_STATUS
 		}
 	case 338:
 		{ /* '338' */
-			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+			return DPT_CONVERTER_TEST_RESULT
 		}
 	case 339:
 		{ /* '339' */
-			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+			return DPT_BATTERY_INFORMATION
 		}
 	case 34:
 		{ /* '34' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 340:
 		{ /* '340' */
-			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+			return DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
 		}
 	case 341:
 		{ /* '341' */
-			return KnxDatapointMainType_DPT_STATUS_24_BIT
+			return DPT_STATUS_24_BIT
 		}
 	case 342:
 		{ /* '342' */
-			return KnxDatapointMainType_DPT_COLOUR_RGBW
+			return DPT_COLOUR_RGBW
 		}
 	case 343:
 		{ /* '343' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+			return DPT_RELATIVE_CONTROL_RGBW
 		}
 	case 344:
 		{ /* '344' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+			return DPT_RELATIVE_CONTROL_RGB
 		}
 	case 345:
 		{ /* '345' */
-			return KnxDatapointMainType_DPT_F32F32
+			return DPT_F32F32
 		}
 	case 346:
 		{ /* '346' */
-			return KnxDatapointMainType_DPT_F16F16F16F16
+			return DPT_F16F16F16F16
 		}
 	case 347:
 		{ /* '347' */
-			return KnxDatapointMainType_DPT_F16F16F16F16
+			return DPT_F16F16F16F16
 		}
 	case 35:
 		{ /* '35' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 36:
 		{ /* '36' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 37:
 		{ /* '37' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 38:
 		{ /* '38' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 39:
 		{ /* '39' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 4:
 		{ /* '4' */
-			return KnxDatapointMainType_DPT_32_BIT_SET
+			return DPT_32_BIT_SET
 		}
 	case 40:
 		{ /* '40' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 41:
 		{ /* '41' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 42:
 		{ /* '42' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 43:
 		{ /* '43' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 44:
 		{ /* '44' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 45:
 		{ /* '45' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 46:
 		{ /* '46' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 47:
 		{ /* '47' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 48:
 		{ /* '48' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 49:
 		{ /* '49' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 5:
 		{ /* '5' */
-			return KnxDatapointMainType_DPT_64_BIT_SET
+			return DPT_64_BIT_SET
 		}
 	case 50:
 		{ /* '50' */
-			return KnxDatapointMainType_DPT_1_BIT
+			return DPT_1_BIT
 		}
 	case 51:
 		{ /* '51' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 52:
 		{ /* '52' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 53:
 		{ /* '53' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 54:
 		{ /* '54' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 55:
 		{ /* '55' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 56:
 		{ /* '56' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 57:
 		{ /* '57' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 58:
 		{ /* '58' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 59:
 		{ /* '59' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 6:
 		{ /* '6' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 60:
 		{ /* '60' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 61:
 		{ /* '61' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 62:
 		{ /* '62' */
-			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED
+			return DPT_1_BIT_CONTROLLED
 		}
 	case 63:
 		{ /* '63' */
-			return KnxDatapointMainType_DPT_3_BIT_CONTROLLED
+			return DPT_3_BIT_CONTROLLED
 		}
 	case 64:
 		{ /* '64' */
-			return KnxDatapointMainType_DPT_3_BIT_CONTROLLED
+			return DPT_3_BIT_CONTROLLED
 		}
 	case 65:
 		{ /* '65' */
-			return KnxDatapointMainType_DPT_CHARACTER
+			return DPT_CHARACTER
 		}
 	case 66:
 		{ /* '66' */
-			return KnxDatapointMainType_DPT_CHARACTER
+			return DPT_CHARACTER
 		}
 	case 67:
 		{ /* '67' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 68:
 		{ /* '68' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 69:
 		{ /* '69' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 7:
 		{ /* '7' */
-			return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+			return DPT_8_BIT_SIGNED_VALUE
 		}
 	case 70:
 		{ /* '70' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 71:
 		{ /* '71' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 72:
 		{ /* '72' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 73:
 		{ /* '73' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE
+			return DPT_8_BIT_UNSIGNED_VALUE
 		}
 	case 74:
 		{ /* '74' */
-			return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+			return DPT_8_BIT_SIGNED_VALUE
 		}
 	case 75:
 		{ /* '75' */
-			return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+			return DPT_8_BIT_SIGNED_VALUE
 		}
 	case 76:
 		{ /* '76' */
-			return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE
+			return DPT_8_BIT_SIGNED_VALUE
 		}
 	case 77:
 		{ /* '77' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 78:
 		{ /* '78' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 79:
 		{ /* '79' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 8:
 		{ /* '8' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 80:
 		{ /* '80' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 81:
 		{ /* '81' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 82:
 		{ /* '82' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 83:
 		{ /* '83' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 84:
 		{ /* '84' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 85:
 		{ /* '85' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 86:
 		{ /* '86' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 87:
 		{ /* '87' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 88:
 		{ /* '88' */
-			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE
+			return DPT_2_BYTE_UNSIGNED_VALUE
 		}
 	case 89:
 		{ /* '89' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 9:
 		{ /* '9' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 90:
 		{ /* '90' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 91:
 		{ /* '91' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 92:
 		{ /* '92' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 93:
 		{ /* '93' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 94:
 		{ /* '94' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 95:
 		{ /* '95' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 96:
 		{ /* '96' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 97:
 		{ /* '97' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 98:
 		{ /* '98' */
-			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE
+			return DPT_2_BYTE_SIGNED_VALUE
 		}
 	case 99:
 		{ /* '99' */
-			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
+			return DPT_2_BYTE_FLOAT_VALUE
 		}
 	default:
 		{

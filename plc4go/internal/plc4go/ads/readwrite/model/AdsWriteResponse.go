@@ -46,7 +46,7 @@ type IAdsWriteResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsWriteResponse) CommandId() CommandId {
-	return CommandId_ADS_WRITE
+	return ADS_WRITE
 }
 
 func (m *AdsWriteResponse) Response() bool {

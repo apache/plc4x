@@ -81,7 +81,6 @@ func (m *S7Parameter) GetTypeName() string {
 
 func (m *S7Parameter) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 

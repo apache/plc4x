@@ -80,7 +80,6 @@ func (m *S7Address) GetTypeName() string {
 
 func (m *S7Address) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (addressType)
 	lengthInBits += 8
 

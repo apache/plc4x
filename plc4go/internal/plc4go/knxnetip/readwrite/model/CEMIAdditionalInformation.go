@@ -80,7 +80,6 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
 

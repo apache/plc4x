@@ -87,7 +87,6 @@ func (m *BVLC) LengthInBits() uint16 {
 
 	// Const Field (bacnetType)
 	lengthInBits += 8
-
 	// Discriminator Field (bvlcFunction)
 	lengthInBits += 8
 

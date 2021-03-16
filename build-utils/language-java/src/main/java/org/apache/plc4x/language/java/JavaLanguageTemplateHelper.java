@@ -88,13 +88,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
-<<<<<<< HEAD
-        logger.debug("Getting name of Java class for given type reference");
-        logger.debug("{}", typeReference.toString());
-        if(typeReference instanceof SimpleTypeReference) {
-=======
         if (typeReference instanceof SimpleTypeReference) {
->>>>>>> develop
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
@@ -421,7 +415,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {

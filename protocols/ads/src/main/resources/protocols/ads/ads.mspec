@@ -497,17 +497,11 @@
     ]
 ]
 
-<<<<<<< HEAD
-[enum 'AdsDataType' [uint 8 'numBytes', string '-1' 'dataFormatName']
-    [BOOL       ['1', 'IEC61131_BOOL']]
-    [BIT        ['1', 'IEC61131_BOOL']]
-    [BIT8       ['1', 'IEC61131_BOOL']]
-=======
-[enum int 8 'AdsDataType' [uint 16 'numBytes', string 'dataFormatName']
+[enum int 8 'AdsDataType' [uint 16 'numBytes', string '-1' 'dataFormatName']
     ['0x01' BOOL       ['1', 'IEC61131_BOOL']]
     ['0x02' BIT        ['1', 'IEC61131_BOOL']]
     ['0x03' BIT8       ['1', 'IEC61131_BOOL']]
->>>>>>> develop
+
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------

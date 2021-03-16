@@ -60,34 +60,34 @@
 ]
 
 [enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointMainType 'datapointMainType', string '-1' 'name']
-    ['0' DPT_UNKNOWN    ['0', 'KnxDatapointMainType.DPT_UNKNOWN',               '"Unknown Datapoint Subtype"']]
+    ['0' DPT_UNKNOWN    ['0', 'DPT_UNKNOWN',               '"Unknown Datapoint Subtype"']]
     // Begin: Some typed needed to support all IEC types on KNX (Which the standard generally doesn't support)
-    ['1' BOOL           ['0', 'KnxDatapointMainType.DPT_1_BIT',                 '"BOOL"']]
-    ['2' BYTE           ['0', 'KnxDatapointMainType.DPT_8_BIT_SET',             '"BYTE"']]
-    ['3' WORD           ['0', 'KnxDatapointMainType.DPT_16_BIT_SET',            '"WORD"']]
-    ['4' DWORD          ['0', 'KnxDatapointMainType.DPT_32_BIT_SET',            '"DWORD"']]
-    ['5' LWORD          ['0', 'KnxDatapointMainType.DPT_64_BIT_SET',            '"LWORD"']]
-    ['6' USINT          ['0', 'KnxDatapointMainType.DPT_8_BIT_UNSIGNED_VALUE',  '"USINT"']]
-    ['7' SINT           ['0', 'KnxDatapointMainType.DPT_8_BIT_SIGNED_VALUE',    '"SINT"']]
-    ['8' UINT           ['0', 'KnxDatapointMainType.DPT_2_BYTE_UNSIGNED_VALUE', '"UINT"']]
-    ['9' INT            ['0', 'KnxDatapointMainType.DPT_2_BYTE_SIGNED_VALUE',   '"INT"']]
-    ['10' UDINT         ['0', 'KnxDatapointMainType.DPT_4_BYTE_UNSIGNED_VALUE', '"UDINT"']]
-    ['11' DINT          ['0', 'KnxDatapointMainType.DPT_4_BYTE_SIGNED_VALUE',   '"DINT"']]
-    ['12' ULINT         ['0', 'KnxDatapointMainType.DPT_8_BYTE_UNSIGNED_VALUE', '"ULINT"']]
-    ['13' LINT          ['0', 'KnxDatapointMainType.DPT_8_BYTE_SIGNED_VALUE',   '"LINT"']]
-    ['14' REAL          ['0', 'KnxDatapointMainType.DPT_4_BYTE_FLOAT_VALUE',    '"REAL"']]
-    ['15' LREAL         ['0', 'KnxDatapointMainType.DPT_8_BYTE_FLOAT_VALUE',    '"LREAL"']]
-    ['16' CHAR          ['0', 'KnxDatapointMainType.DPT_CHARACTER',             '"CHAR"']]
-    ['17' WCHAR         ['0', 'KnxDatapointMainType.DPT_2_BYTE_UNSIGNED_VALUE', '"WCHAR"']]
-    ['18' STRING        ['0', 'KnxDatapointMainType.DPT_UNKNOWN',               '"STRING"']]
-    ['19' WSTRING       ['0', 'KnxDatapointMainType.DPT_UNKNOWN',               '"WSTRING"']]
-    ['20' TIME          ['0', 'KnxDatapointMainType.DPT_4_BYTE_UNSIGNED_VALUE', '"TIME"']]
-    ['21' LTIME         ['0', 'KnxDatapointMainType.DPT_8_BYTE_UNSIGNED_VALUE', '"LTIME"']]
-    ['22' DATE          ['0', 'KnxDatapointMainType.DPT_2_BYTE_UNSIGNED_VALUE', '"DATE"']]
-    ['23' TIME_OF_DAY   ['0', 'KnxDatapointMainType.DPT_4_BYTE_UNSIGNED_VALUE', '"TIME_OF_DAY"']]
-    ['24' TOD           ['0', 'KnxDatapointMainType.DPT_4_BYTE_UNSIGNED_VALUE', '"TOD"']]
-    ['25' DATE_AND_TIME ['0', 'KnxDatapointMainType.DPT_12_BYTE_SIGNED_VALUE',  '"DATE_AND_TIME"']]
-    ['26' DT            ['0', 'KnxDatapointMainType.DPT_12_BYTE_SIGNED_VALUE',  '"DT"']]
+    ['1' BOOL           ['0', 'DPT_1_BIT',                 '"BOOL"']]
+    ['2' BYTE           ['0', 'DPT_8_BIT_SET',             '"BYTE"']]
+    ['3' WORD           ['0', 'DPT_16_BIT_SET',            '"WORD"']]
+    ['4' DWORD          ['0', 'DPT_32_BIT_SET',            '"DWORD"']]
+    ['5' LWORD          ['0', 'DPT_64_BIT_SET',            '"LWORD"']]
+    ['6' USINT          ['0', 'DPT_8_BIT_UNSIGNED_VALUE',  '"USINT"']]
+    ['7' SINT           ['0', 'DPT_8_BIT_SIGNED_VALUE',    '"SINT"']]
+    ['8' UINT           ['0', 'DPT_2_BYTE_UNSIGNED_VALUE', '"UINT"']]
+    ['9' INT            ['0', 'DPT_2_BYTE_SIGNED_VALUE',   '"INT"']]
+    ['10' UDINT         ['0', 'DPT_4_BYTE_UNSIGNED_VALUE', '"UDINT"']]
+    ['11' DINT          ['0', 'DPT_4_BYTE_SIGNED_VALUE',   '"DINT"']]
+    ['12' ULINT         ['0', 'DPT_8_BYTE_UNSIGNED_VALUE', '"ULINT"']]
+    ['13' LINT          ['0', 'DPT_8_BYTE_SIGNED_VALUE',   '"LINT"']]
+    ['14' REAL          ['0', 'DPT_4_BYTE_FLOAT_VALUE',    '"REAL"']]
+    ['15' LREAL         ['0', 'DPT_8_BYTE_FLOAT_VALUE',    '"LREAL"']]
+    ['16' CHAR          ['0', 'DPT_CHARACTER',             '"CHAR"']]
+    ['17' WCHAR         ['0', 'DPT_2_BYTE_UNSIGNED_VALUE', '"WCHAR"']]
+    ['18' STRING        ['0', 'DPT_UNKNOWN',               '"STRING"']]
+    ['19' WSTRING       ['0', 'DPT_UNKNOWN',               '"WSTRING"']]
+    ['20' TIME          ['0', 'DPT_4_BYTE_UNSIGNED_VALUE', '"TIME"']]
+    ['21' LTIME         ['0', 'DPT_8_BYTE_UNSIGNED_VALUE', '"LTIME"']]
+    ['22' DATE          ['0', 'DPT_2_BYTE_UNSIGNED_VALUE', '"DATE"']]
+    ['23' TIME_OF_DAY   ['0', 'DPT_4_BYTE_UNSIGNED_VALUE', '"TIME_OF_DAY"']]
+    ['24' TOD           ['0', 'DPT_4_BYTE_UNSIGNED_VALUE', '"TOD"']]
+    ['25' DATE_AND_TIME ['0', 'DPT_12_BYTE_SIGNED_VALUE',  '"DATE_AND_TIME"']]
+    ['26' DT            ['0', 'DPT_12_BYTE_SIGNED_VALUE',  '"DT"']]
     // End: Custom types
         <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
@@ -99,15 +99,11 @@
 ]
 
 [enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string '-1' 'name']
-    ['0' PID_UNKNOWN    ['0', 'KnxInterfaceObjectType.OT_UNKNOWN', 'KnxPropertyDataType.PDT_UNKNOWN', '"Unknown Interface Object Property"']]
+    ['0' PID_UNKNOWN    ['0', 'OT_UNKNOWN', 'PDT_UNKNOWN', '"Unknown Interface Object Property"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
-<<<<<<< HEAD
 [enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string '-1' 'name']
-=======
-[enum uint 6 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 'name']
->>>>>>> develop
     ['0' PDT_UNKNOWN    ['0', '0',  '"Unknown Property Data Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
 ]
@@ -239,7 +235,7 @@
             <xsl:call-template name="getDatapointTypeId">
                 <xsl:with-param name="contextNode" select="../.."/>
             </xsl:call-template>
-        </xsl:variable>['<xsl:value-of select="position() + 26"/>' <xsl:value-of select="$datapointSubtypeId"/> ['<xsl:value-of select="@Number"/>', 'KnxDatapointMainType.<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position() + 26"/>' <xsl:value-of select="$datapointSubtypeId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$datapointTypeId"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:InterfaceObjectType">
@@ -261,8 +257,8 @@
         <xsl:variable name="objectType">
             <xsl:variable name="objectTypeId" select="@ObjectType"/>
             <xsl:choose>
-                <xsl:when test="@ObjectType">KnxInterfaceObjectType.<xsl:value-of select="//knx:InterfaceObjectType[@Id = $objectTypeId]/@Name"/></xsl:when>
-                <xsl:otherwise>KnxInterfaceObjectType.OT_GENERAL</xsl:otherwise>
+                <xsl:when test="@ObjectType"><xsl:value-of select="//knx:InterfaceObjectType[@Id = $objectTypeId]/@Name"/></xsl:when>
+                <xsl:otherwise>OT_GENERAL</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <xsl:variable name="propertyDataTypeName">
@@ -277,7 +273,7 @@
                 </xsl:when>
                 <xsl:otherwise>PDT_UNKNOWN</xsl:otherwise>
             </xsl:choose>
-        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$objectPropertyId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$objectType"/>', 'KnxPropertyDataType.<xsl:value-of select="$propertyDataTypeName"/>', '"<xsl:value-of select="@Text"/>"']]
+        </xsl:variable>['<xsl:value-of select="position()"/>' <xsl:value-of select="$objectPropertyId"/> ['<xsl:value-of select="@Number"/>', '<xsl:value-of select="$objectType"/>', '<xsl:value-of select="$propertyDataTypeName"/>', '"<xsl:value-of select="@Text"/>"']]
     </xsl:template>
 
     <xsl:template match="knx:PropertyDataType">
@@ -449,12 +445,7 @@
                         <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
-<<<<<<< HEAD
-            [reserved uint 8   '0x0']
             [simple   string '<xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/>' '<xsl:value-of select="$encoding"/>' 'value']
-=======
-            [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> '<xsl:value-of select="$encoding"/>' 'value']
->>>>>>> develop
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
                 <xsl:choose>

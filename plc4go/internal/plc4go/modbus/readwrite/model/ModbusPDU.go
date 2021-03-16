@@ -82,10 +82,8 @@ func (m *ModbusPDU) GetTypeName() string {
 
 func (m *ModbusPDU) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
-
 	// Discriminator Field (functionFlag)
 	lengthInBits += 7
 

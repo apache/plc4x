@@ -257,867 +257,867 @@ func (e KnxInterfaceObjectProperty) PropertyDataType() KnxPropertyDataType {
 	switch e {
 	case 0:
 		{ /* '0' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 1:
 		{ /* '1' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 10:
 		{ /* '10' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 100:
 		{ /* '100' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 101:
 		{ /* '101' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 102:
 		{ /* '102' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 103:
 		{ /* '103' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 104:
 		{ /* '104' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 105:
 		{ /* '105' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 106:
 		{ /* '106' */
-			return KnxPropertyDataType_PDT_GENERIC_16
+			return PDT_GENERIC_16
 		}
 	case 107:
 		{ /* '107' */
-			return KnxPropertyDataType_PDT_GENERIC_16
+			return PDT_GENERIC_16
 		}
 	case 108:
 		{ /* '108' */
-			return KnxPropertyDataType_PDT_GENERIC_16
+			return PDT_GENERIC_16
 		}
 	case 109:
 		{ /* '109' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 11:
 		{ /* '11' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 110:
 		{ /* '110' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 111:
 		{ /* '111' */
-			return KnxPropertyDataType_PDT_SCALING
+			return PDT_SCALING
 		}
 	case 112:
 		{ /* '112' */
-			return KnxPropertyDataType_PDT_GENERIC_02
+			return PDT_GENERIC_02
 		}
 	case 113:
 		{ /* '113' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 114:
 		{ /* '114' */
-			return KnxPropertyDataType_PDT_GENERIC_18
+			return PDT_GENERIC_18
 		}
 	case 115:
 		{ /* '115' */
-			return KnxPropertyDataType_PDT_GENERIC_18
+			return PDT_GENERIC_18
 		}
 	case 116:
 		{ /* '116' */
-			return KnxPropertyDataType_PDT_GENERIC_08
+			return PDT_GENERIC_08
 		}
 	case 117:
 		{ /* '117' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 118:
 		{ /* '118' */
-			return KnxPropertyDataType_PDT_GENERIC_16
+			return PDT_GENERIC_16
 		}
 	case 119:
 		{ /* '119' */
-			return KnxPropertyDataType_PDT_BITSET8
+			return PDT_BITSET8
 		}
 	case 12:
 		{ /* '12' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 120:
 		{ /* '120' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 121:
 		{ /* '121' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 122:
 		{ /* '122' */
-			return KnxPropertyDataType_PDT_GENERIC_19
+			return PDT_GENERIC_19
 		}
 	case 123:
 		{ /* '123' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 124:
 		{ /* '124' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 125:
 		{ /* '125' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 126:
 		{ /* '126' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 127:
 		{ /* '127' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 128:
 		{ /* '128' */
-			return KnxPropertyDataType_PDT_BITSET8
+			return PDT_BITSET8
 		}
 	case 129:
 		{ /* '129' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 13:
 		{ /* '13' */
-			return KnxPropertyDataType_PDT_GENERIC_05
+			return PDT_GENERIC_05
 		}
 	case 130:
 		{ /* '130' */
-			return KnxPropertyDataType_PDT_GENERIC_03
+			return PDT_GENERIC_03
 		}
 	case 131:
 		{ /* '131' */
-			return KnxPropertyDataType_PDT_GENERIC_04
+			return PDT_GENERIC_04
 		}
 	case 132:
 		{ /* '132' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 133:
 		{ /* '133' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 134:
 		{ /* '134' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 135:
 		{ /* '135' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 136:
 		{ /* '136' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 137:
 		{ /* '137' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 138:
 		{ /* '138' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 139:
 		{ /* '139' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 14:
 		{ /* '14' */
-			return KnxPropertyDataType_PDT_BITSET8
+			return PDT_BITSET8
 		}
 	case 140:
 		{ /* '140' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 141:
 		{ /* '141' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 142:
 		{ /* '142' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 143:
 		{ /* '143' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 144:
 		{ /* '144' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 145:
 		{ /* '145' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 146:
 		{ /* '146' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 147:
 		{ /* '147' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 148:
 		{ /* '148' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 149:
 		{ /* '149' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 15:
 		{ /* '15' */
-			return KnxPropertyDataType_PDT_GENERIC_10
+			return PDT_GENERIC_10
 		}
 	case 150:
 		{ /* '150' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 151:
 		{ /* '151' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 152:
 		{ /* '152' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 153:
 		{ /* '153' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 154:
 		{ /* '154' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 155:
 		{ /* '155' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 156:
 		{ /* '156' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 157:
 		{ /* '157' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 158:
 		{ /* '158' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 159:
 		{ /* '159' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 16:
 		{ /* '16' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 160:
 		{ /* '160' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 161:
 		{ /* '161' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 162:
 		{ /* '162' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 163:
 		{ /* '163' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 164:
 		{ /* '164' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 165:
 		{ /* '165' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 166:
 		{ /* '166' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 167:
 		{ /* '167' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 168:
 		{ /* '168' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 169:
 		{ /* '169' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 17:
 		{ /* '17' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 170:
 		{ /* '170' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 171:
 		{ /* '171' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 172:
 		{ /* '172' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 173:
 		{ /* '173' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 174:
 		{ /* '174' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 175:
 		{ /* '175' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 176:
 		{ /* '176' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 177:
 		{ /* '177' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 178:
 		{ /* '178' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 179:
 		{ /* '179' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 18:
 		{ /* '18' */
-			return KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS
+			return PDT_POLL_GROUP_SETTINGS
 		}
 	case 180:
 		{ /* '180' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 181:
 		{ /* '181' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 182:
 		{ /* '182' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 183:
 		{ /* '183' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 184:
 		{ /* '184' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 185:
 		{ /* '185' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 186:
 		{ /* '186' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 187:
 		{ /* '187' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 188:
 		{ /* '188' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 189:
 		{ /* '189' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 19:
 		{ /* '19' */
-			return KnxPropertyDataType_PDT_GENERIC_04
+			return PDT_GENERIC_04
 		}
 	case 190:
 		{ /* '190' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 191:
 		{ /* '191' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 192:
 		{ /* '192' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 193:
 		{ /* '193' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 194:
 		{ /* '194' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 195:
 		{ /* '195' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 196:
 		{ /* '196' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 197:
 		{ /* '197' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 198:
 		{ /* '198' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 199:
 		{ /* '199' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 2:
 		{ /* '2' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 20:
 		{ /* '20' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 200:
 		{ /* '200' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 201:
 		{ /* '201' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 202:
 		{ /* '202' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 203:
 		{ /* '203' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 204:
 		{ /* '204' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 205:
 		{ /* '205' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 206:
 		{ /* '206' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 207:
 		{ /* '207' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 208:
 		{ /* '208' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 209:
 		{ /* '209' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 21:
 		{ /* '21' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 210:
 		{ /* '210' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 211:
 		{ /* '211' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 212:
 		{ /* '212' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 213:
 		{ /* '213' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 214:
 		{ /* '214' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 215:
 		{ /* '215' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 22:
 		{ /* '22' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 23:
 		{ /* '23' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 24:
 		{ /* '24' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 25:
 		{ /* '25' */
-			return KnxPropertyDataType_PDT_VERSION
+			return PDT_VERSION
 		}
 	case 26:
 		{ /* '26' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 27:
 		{ /* '27' */
-			return KnxPropertyDataType_PDT_GENERIC_08
+			return PDT_GENERIC_08
 		}
 	case 28:
 		{ /* '28' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 29:
 		{ /* '29' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 3:
 		{ /* '3' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 30:
 		{ /* '30' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 31:
 		{ /* '31' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 32:
 		{ /* '32' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 33:
 		{ /* '33' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 34:
 		{ /* '34' */
-			return KnxPropertyDataType_PDT_BITSET8
+			return PDT_BITSET8
 		}
 	case 35:
 		{ /* '35' */
-			return KnxPropertyDataType_PDT_GENERIC_10
+			return PDT_GENERIC_10
 		}
 	case 36:
 		{ /* '36' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 37:
 		{ /* '37' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 38:
 		{ /* '38' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 39:
 		{ /* '39' */
-			return KnxPropertyDataType_PDT_GENERIC_04
+			return PDT_GENERIC_04
 		}
 	case 4:
 		{ /* '4' */
-			return KnxPropertyDataType_PDT_UNKNOWN
+			return PDT_UNKNOWN
 		}
 	case 40:
 		{ /* '40' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 41:
 		{ /* '41' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 42:
 		{ /* '42' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 43:
 		{ /* '43' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 44:
 		{ /* '44' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 45:
 		{ /* '45' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 46:
 		{ /* '46' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 47:
 		{ /* '47' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 48:
 		{ /* '48' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 49:
 		{ /* '49' */
-			return KnxPropertyDataType_PDT_ENUM8
+			return PDT_ENUM8
 		}
 	case 5:
 		{ /* '5' */
-			return KnxPropertyDataType_PDT_CONTROL
+			return PDT_CONTROL
 		}
 	case 50:
 		{ /* '50' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 51:
 		{ /* '51' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 52:
 		{ /* '52' */
-			return KnxPropertyDataType_PDT_GENERIC_10
+			return PDT_GENERIC_10
 		}
 	case 53:
 		{ /* '53' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 54:
 		{ /* '54' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 55:
 		{ /* '55' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 56:
 		{ /* '56' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 57:
 		{ /* '57' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 58:
 		{ /* '58' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 59:
 		{ /* '59' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 6:
 		{ /* '6' */
-			return KnxPropertyDataType_PDT_CONTROL
+			return PDT_CONTROL
 		}
 	case 60:
 		{ /* '60' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 61:
 		{ /* '61' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 62:
 		{ /* '62' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 63:
 		{ /* '63' */
-			return KnxPropertyDataType_PDT_GENERIC_02
+			return PDT_GENERIC_02
 		}
 	case 64:
 		{ /* '64' */
-			return KnxPropertyDataType_PDT_GENERIC_08
+			return PDT_GENERIC_08
 		}
 	case 65:
 		{ /* '65' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 66:
 		{ /* '66' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 67:
 		{ /* '67' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 68:
 		{ /* '68' */
-			return KnxPropertyDataType_PDT_GENERIC_08
+			return PDT_GENERIC_08
 		}
 	case 69:
 		{ /* '69' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 7:
 		{ /* '7' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 70:
 		{ /* '70' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 71:
 		{ /* '71' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 72:
 		{ /* '72' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 73:
 		{ /* '73' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 74:
 		{ /* '74' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 75:
 		{ /* '75' */
-			return KnxPropertyDataType_PDT_GENERIC_01
+			return PDT_GENERIC_01
 		}
 	case 76:
 		{ /* '76' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 77:
 		{ /* '77' */
-			return KnxPropertyDataType_PDT_ENUM8
+			return PDT_ENUM8
 		}
 	case 78:
 		{ /* '78' */
-			return KnxPropertyDataType_PDT_BINARY_INFORMATION
+			return PDT_BINARY_INFORMATION
 		}
 	case 79:
 		{ /* '79' */
-			return KnxPropertyDataType_PDT_FUNCTION
+			return PDT_FUNCTION
 		}
 	case 8:
 		{ /* '8' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 80:
 		{ /* '80' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 81:
 		{ /* '81' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 82:
 		{ /* '82' */
-			return KnxPropertyDataType_PDT_UNSIGNED_INT
+			return PDT_UNSIGNED_INT
 		}
 	case 83:
 		{ /* '83' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 84:
 		{ /* '84' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 85:
 		{ /* '85' */
-			return KnxPropertyDataType_PDT_BITSET8
+			return PDT_BITSET8
 		}
 	case 86:
 		{ /* '86' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 87:
 		{ /* '87' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 88:
 		{ /* '88' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 89:
 		{ /* '89' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 9:
 		{ /* '9' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 90:
 		{ /* '90' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 91:
 		{ /* '91' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 92:
 		{ /* '92' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 93:
 		{ /* '93' */
-			return KnxPropertyDataType_PDT_GENERIC_06
+			return PDT_GENERIC_06
 		}
 	case 94:
 		{ /* '94' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 95:
 		{ /* '95' */
-			return KnxPropertyDataType_PDT_UNSIGNED_LONG
+			return PDT_UNSIGNED_LONG
 		}
 	case 96:
 		{ /* '96' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 97:
 		{ /* '97' */
-			return KnxPropertyDataType_PDT_BITSET16
+			return PDT_BITSET16
 		}
 	case 98:
 		{ /* '98' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	case 99:
 		{ /* '99' */
-			return KnxPropertyDataType_PDT_UNSIGNED_CHAR
+			return PDT_UNSIGNED_CHAR
 		}
 	default:
 		{
@@ -2876,867 +2876,867 @@ func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
 	switch e {
 	case 0:
 		{ /* '0' */
-			return KnxInterfaceObjectType_OT_UNKNOWN
+			return OT_UNKNOWN
 		}
 	case 1:
 		{ /* '1' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 10:
 		{ /* '10' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 100:
 		{ /* '100' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 101:
 		{ /* '101' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 102:
 		{ /* '102' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 103:
 		{ /* '103' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 104:
 		{ /* '104' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 105:
 		{ /* '105' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 106:
 		{ /* '106' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 107:
 		{ /* '107' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 108:
 		{ /* '108' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 109:
 		{ /* '109' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 11:
 		{ /* '11' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 110:
 		{ /* '110' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 111:
 		{ /* '111' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 112:
 		{ /* '112' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 113:
 		{ /* '113' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 114:
 		{ /* '114' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 115:
 		{ /* '115' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 116:
 		{ /* '116' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 117:
 		{ /* '117' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 118:
 		{ /* '118' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 119:
 		{ /* '119' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 12:
 		{ /* '12' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 120:
 		{ /* '120' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 121:
 		{ /* '121' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 122:
 		{ /* '122' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 123:
 		{ /* '123' */
-			return KnxInterfaceObjectType_OT_SECURITY
+			return OT_SECURITY
 		}
 	case 124:
 		{ /* '124' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 125:
 		{ /* '125' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 126:
 		{ /* '126' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 127:
 		{ /* '127' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 128:
 		{ /* '128' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 129:
 		{ /* '129' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 13:
 		{ /* '13' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 130:
 		{ /* '130' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 131:
 		{ /* '131' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 132:
 		{ /* '132' */
-			return KnxInterfaceObjectType_OT_RF_MEDIUM
+			return OT_RF_MEDIUM
 		}
 	case 133:
 		{ /* '133' */
-			return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+			return OT_INDOOR_BRIGHTNESS_SENSOR
 		}
 	case 134:
 		{ /* '134' */
-			return KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR
+			return OT_INDOOR_BRIGHTNESS_SENSOR
 		}
 	case 135:
 		{ /* '135' */
-			return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+			return OT_INDOOR_LUMINANCE_SENSOR
 		}
 	case 136:
 		{ /* '136' */
-			return KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR
+			return OT_INDOOR_LUMINANCE_SENSOR
 		}
 	case 137:
 		{ /* '137' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 138:
 		{ /* '138' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 139:
 		{ /* '139' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 14:
 		{ /* '14' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 140:
 		{ /* '140' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 141:
 		{ /* '141' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 142:
 		{ /* '142' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 143:
 		{ /* '143' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 144:
 		{ /* '144' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 145:
 		{ /* '145' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 146:
 		{ /* '146' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 147:
 		{ /* '147' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 148:
 		{ /* '148' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 149:
 		{ /* '149' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 15:
 		{ /* '15' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 150:
 		{ /* '150' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 151:
 		{ /* '151' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 152:
 		{ /* '152' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 153:
 		{ /* '153' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 154:
 		{ /* '154' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 155:
 		{ /* '155' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 156:
 		{ /* '156' */
-			return KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC
+			return OT_LIGHT_SWITCHING_ACTUATOR_BASIC
 		}
 	case 157:
 		{ /* '157' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 158:
 		{ /* '158' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 159:
 		{ /* '159' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 16:
 		{ /* '16' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 160:
 		{ /* '160' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 161:
 		{ /* '161' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 162:
 		{ /* '162' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 163:
 		{ /* '163' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 164:
 		{ /* '164' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 165:
 		{ /* '165' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 166:
 		{ /* '166' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 167:
 		{ /* '167' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 168:
 		{ /* '168' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 169:
 		{ /* '169' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 17:
 		{ /* '17' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 170:
 		{ /* '170' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 171:
 		{ /* '171' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 172:
 		{ /* '172' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 173:
 		{ /* '173' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 174:
 		{ /* '174' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 175:
 		{ /* '175' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 176:
 		{ /* '176' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 177:
 		{ /* '177' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 178:
 		{ /* '178' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 179:
 		{ /* '179' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 18:
 		{ /* '18' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 180:
 		{ /* '180' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 181:
 		{ /* '181' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 182:
 		{ /* '182' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 183:
 		{ /* '183' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 184:
 		{ /* '184' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 185:
 		{ /* '185' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 186:
 		{ /* '186' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 187:
 		{ /* '187' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 188:
 		{ /* '188' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 189:
 		{ /* '189' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 19:
 		{ /* '19' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 190:
 		{ /* '190' */
-			return KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC
+			return OT_DIMMING_ACTUATOR_BASIC
 		}
 	case 191:
 		{ /* '191' */
-			return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+			return OT_DIMMING_SENSOR_BASIC
 		}
 	case 192:
 		{ /* '192' */
-			return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+			return OT_DIMMING_SENSOR_BASIC
 		}
 	case 193:
 		{ /* '193' */
-			return KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC
+			return OT_DIMMING_SENSOR_BASIC
 		}
 	case 194:
 		{ /* '194' */
-			return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+			return OT_SWITCHING_SENSOR_BASIC
 		}
 	case 195:
 		{ /* '195' */
-			return KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC
+			return OT_SWITCHING_SENSOR_BASIC
 		}
 	case 196:
 		{ /* '196' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 197:
 		{ /* '197' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 198:
 		{ /* '198' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 199:
 		{ /* '199' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 2:
 		{ /* '2' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 20:
 		{ /* '20' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 200:
 		{ /* '200' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 201:
 		{ /* '201' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 202:
 		{ /* '202' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 203:
 		{ /* '203' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 204:
 		{ /* '204' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 205:
 		{ /* '205' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 206:
 		{ /* '206' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 207:
 		{ /* '207' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 208:
 		{ /* '208' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 209:
 		{ /* '209' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 21:
 		{ /* '21' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 210:
 		{ /* '210' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 211:
 		{ /* '211' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 212:
 		{ /* '212' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC
+			return OT_SUNBLIND_ACTUATOR_BASIC
 		}
 	case 213:
 		{ /* '213' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+			return OT_SUNBLIND_SENSOR_BASIC
 		}
 	case 214:
 		{ /* '214' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+			return OT_SUNBLIND_SENSOR_BASIC
 		}
 	case 215:
 		{ /* '215' */
-			return KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC
+			return OT_SUNBLIND_SENSOR_BASIC
 		}
 	case 22:
 		{ /* '22' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 23:
 		{ /* '23' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 24:
 		{ /* '24' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 25:
 		{ /* '25' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 26:
 		{ /* '26' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 27:
 		{ /* '27' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 28:
 		{ /* '28' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 29:
 		{ /* '29' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 3:
 		{ /* '3' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 30:
 		{ /* '30' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 31:
 		{ /* '31' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 32:
 		{ /* '32' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 33:
 		{ /* '33' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 34:
 		{ /* '34' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 35:
 		{ /* '35' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 36:
 		{ /* '36' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 37:
 		{ /* '37' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 38:
 		{ /* '38' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 39:
 		{ /* '39' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 4:
 		{ /* '4' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 40:
 		{ /* '40' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 41:
 		{ /* '41' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 42:
 		{ /* '42' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 43:
 		{ /* '43' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 44:
 		{ /* '44' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 45:
 		{ /* '45' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 46:
 		{ /* '46' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 47:
 		{ /* '47' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 48:
 		{ /* '48' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 49:
 		{ /* '49' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 5:
 		{ /* '5' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 50:
 		{ /* '50' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 51:
 		{ /* '51' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 52:
 		{ /* '52' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 53:
 		{ /* '53' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 54:
 		{ /* '54' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 55:
 		{ /* '55' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 56:
 		{ /* '56' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 57:
 		{ /* '57' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 58:
 		{ /* '58' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 59:
 		{ /* '59' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 6:
 		{ /* '6' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 60:
 		{ /* '60' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 61:
 		{ /* '61' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 62:
 		{ /* '62' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 63:
 		{ /* '63' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 64:
 		{ /* '64' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 65:
 		{ /* '65' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 66:
 		{ /* '66' */
-			return KnxInterfaceObjectType_OT_DEVICE
+			return OT_DEVICE
 		}
 	case 67:
 		{ /* '67' */
-			return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+			return OT_GROUP_OBJECT_TABLE
 		}
 	case 68:
 		{ /* '68' */
-			return KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE
+			return OT_GROUP_OBJECT_TABLE
 		}
 	case 69:
 		{ /* '69' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 7:
 		{ /* '7' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 70:
 		{ /* '70' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 71:
 		{ /* '71' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 72:
 		{ /* '72' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 73:
 		{ /* '73' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 74:
 		{ /* '74' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 75:
 		{ /* '75' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 76:
 		{ /* '76' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 77:
 		{ /* '77' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 78:
 		{ /* '78' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 79:
 		{ /* '79' */
-			return KnxInterfaceObjectType_OT_ROUTER
+			return OT_ROUTER
 		}
 	case 8:
 		{ /* '8' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 80:
 		{ /* '80' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 81:
 		{ /* '81' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 82:
 		{ /* '82' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 83:
 		{ /* '83' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 84:
 		{ /* '84' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 85:
 		{ /* '85' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 86:
 		{ /* '86' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 87:
 		{ /* '87' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 88:
 		{ /* '88' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 89:
 		{ /* '89' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 9:
 		{ /* '9' */
-			return KnxInterfaceObjectType_OT_GENERAL
+			return OT_GENERAL
 		}
 	case 90:
 		{ /* '90' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 91:
 		{ /* '91' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 92:
 		{ /* '92' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 93:
 		{ /* '93' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 94:
 		{ /* '94' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 95:
 		{ /* '95' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 96:
 		{ /* '96' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 97:
 		{ /* '97' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 98:
 		{ /* '98' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	case 99:
 		{ /* '99' */
-			return KnxInterfaceObjectType_OT_KNXIP_PARAMETER
+			return OT_KNXIP_PARAMETER
 		}
 	default:
 		{

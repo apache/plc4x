@@ -80,7 +80,6 @@ func (m *COTPParameter) GetTypeName() string {
 
 func (m *COTPParameter) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 

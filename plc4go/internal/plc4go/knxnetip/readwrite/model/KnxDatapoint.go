@@ -30,7 +30,7 @@ import (
 
 func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (api.PlcValue, error) {
 	switch {
-	case datapointType == KnxDatapointType_BOOL: // BOOL
+	case datapointType == BOOL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -43,7 +43,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_BYTE: // BYTE
+	case datapointType == BYTE: // BYTE
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -51,7 +51,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBYTE(value), nil
-	case datapointType == KnxDatapointType_WORD: // WORD
+	case datapointType == WORD: // WORD
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -59,7 +59,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcWORD(value), nil
-	case datapointType == KnxDatapointType_DWORD: // DWORD
+	case datapointType == DWORD: // DWORD
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -67,7 +67,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDWORD(value), nil
-	case datapointType == KnxDatapointType_LWORD: // LWORD
+	case datapointType == LWORD: // LWORD
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint64(64)
@@ -75,7 +75,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLWORD(value), nil
-	case datapointType == KnxDatapointType_USINT: // USINT
+	case datapointType == USINT: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -83,7 +83,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_SINT: // SINT
+	case datapointType == SINT: // SINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt8(8)
@@ -91,7 +91,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSINT(value), nil
-	case datapointType == KnxDatapointType_UINT: // UINT
+	case datapointType == UINT: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -99,7 +99,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_INT: // INT
+	case datapointType == INT: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -107,7 +107,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_UDINT: // UDINT
+	case datapointType == UDINT: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -115,7 +115,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DINT: // DINT
+	case datapointType == DINT: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -123,7 +123,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_ULINT: // ULINT
+	case datapointType == ULINT: // ULINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint64(64)
@@ -131,7 +131,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcULINT(value), nil
-	case datapointType == KnxDatapointType_LINT: // LINT
+	case datapointType == LINT: // LINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt64(64)
@@ -139,7 +139,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLINT(value), nil
-	case datapointType == KnxDatapointType_REAL: // REAL
+	case datapointType == REAL: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -147,7 +147,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_LREAL: // LREAL
+	case datapointType == LREAL: // LREAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat64(true, 11, 52)
@@ -155,7 +155,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLREAL(value), nil
-	case datapointType == KnxDatapointType_CHAR: // CHAR
+	case datapointType == CHAR: // CHAR
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -163,7 +163,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcCHAR(value), nil
-	case datapointType == KnxDatapointType_WCHAR: // WCHAR
+	case datapointType == WCHAR: // WCHAR
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -171,7 +171,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcWCHAR(value), nil
-	case datapointType == KnxDatapointType_TIME: // TIME
+	case datapointType == TIME: // TIME
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -179,7 +179,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcTIME(value), nil
-	case datapointType == KnxDatapointType_LTIME: // LTIME
+	case datapointType == LTIME: // LTIME
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint64(64)
@@ -187,7 +187,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLTIME(value), nil
-	case datapointType == KnxDatapointType_DATE: // DATE
+	case datapointType == DATE: // DATE
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -195,7 +195,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDATE(value), nil
-	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
+	case datapointType == TIME_OF_DAY: // TIME_OF_DAY
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -203,7 +203,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcTIME_OF_DAY(value), nil
-	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
+	case datapointType == TOD: // TIME_OF_DAY
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -211,7 +211,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcTIME_OF_DAY(value), nil
-	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
+	case datapointType == DATE_AND_TIME: // DATE_AND_TIME
 
 		// Simple Field (year)
 		year, _yearErr := io.ReadUint16(16)
@@ -262,7 +262,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
 		return values.NewPlcDATE_AND_TIME(value), nil
-	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
+	case datapointType == DT: // DATE_AND_TIME
 
 		// Simple Field (year)
 		year, _yearErr := io.ReadUint16(16)
@@ -313,7 +313,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
 		return values.NewPlcDATE_AND_TIME(value), nil
-	case datapointType == KnxDatapointType_DPT_Switch: // BOOL
+	case datapointType == DPT_Switch: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -326,7 +326,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Bool: // BOOL
+	case datapointType == DPT_Bool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -339,7 +339,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Enable: // BOOL
+	case datapointType == DPT_Enable: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -352,7 +352,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Ramp: // BOOL
+	case datapointType == DPT_Ramp: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -365,7 +365,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Alarm: // BOOL
+	case datapointType == DPT_Alarm: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -378,7 +378,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_BinaryValue: // BOOL
+	case datapointType == DPT_BinaryValue: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -391,7 +391,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Step: // BOOL
+	case datapointType == DPT_Step: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -404,7 +404,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_UpDown: // BOOL
+	case datapointType == DPT_UpDown: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -417,7 +417,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_OpenClose: // BOOL
+	case datapointType == DPT_OpenClose: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -430,7 +430,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Start: // BOOL
+	case datapointType == DPT_Start: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -443,7 +443,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_State: // BOOL
+	case datapointType == DPT_State: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -456,7 +456,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Invert: // BOOL
+	case datapointType == DPT_Invert: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -469,7 +469,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_DimSendStyle: // BOOL
+	case datapointType == DPT_DimSendStyle: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -482,7 +482,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_InputSource: // BOOL
+	case datapointType == DPT_InputSource: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -495,7 +495,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Reset: // BOOL
+	case datapointType == DPT_Reset: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -508,7 +508,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Ack: // BOOL
+	case datapointType == DPT_Ack: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -521,7 +521,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Trigger: // BOOL
+	case datapointType == DPT_Trigger: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -534,7 +534,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Occupancy: // BOOL
+	case datapointType == DPT_Occupancy: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -547,7 +547,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Window_Door: // BOOL
+	case datapointType == DPT_Window_Door: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -560,7 +560,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_LogicalFunction: // BOOL
+	case datapointType == DPT_LogicalFunction: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -573,7 +573,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Scene_AB: // BOOL
+	case datapointType == DPT_Scene_AB: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -586,7 +586,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_ShutterBlinds_Mode: // BOOL
+	case datapointType == DPT_ShutterBlinds_Mode: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -599,7 +599,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_DayNight: // BOOL
+	case datapointType == DPT_DayNight: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -612,7 +612,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Heat_Cool: // BOOL
+	case datapointType == DPT_Heat_Cool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -625,7 +625,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_Switch_Control: // Struct
+	case datapointType == DPT_Switch_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -647,7 +647,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(on)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Bool_Control: // Struct
+	case datapointType == DPT_Bool_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -669,7 +669,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(valueTrue)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Enable_Control: // Struct
+	case datapointType == DPT_Enable_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -691,7 +691,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(enable)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Ramp_Control: // Struct
+	case datapointType == DPT_Ramp_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -713,7 +713,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(ramp)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Alarm_Control: // Struct
+	case datapointType == DPT_Alarm_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -735,7 +735,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(alarm)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_BinaryValue_Control: // Struct
+	case datapointType == DPT_BinaryValue_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -757,7 +757,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(high)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Step_Control: // Struct
+	case datapointType == DPT_Step_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -779,7 +779,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(increase)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Direction1_Control: // Struct
+	case datapointType == DPT_Direction1_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -801,7 +801,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(down)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Direction2_Control: // Struct
+	case datapointType == DPT_Direction2_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -823,7 +823,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(close)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Start_Control: // Struct
+	case datapointType == DPT_Start_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -845,7 +845,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(start)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_State_Control: // Struct
+	case datapointType == DPT_State_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -867,7 +867,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(active)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Invert_Control: // Struct
+	case datapointType == DPT_Invert_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -889,7 +889,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(inverted)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Control_Dimming: // Struct
+	case datapointType == DPT_Control_Dimming: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -911,7 +911,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(stepcode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Control_Blinds: // Struct
+	case datapointType == DPT_Control_Blinds: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -933,23 +933,23 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(stepcode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
+	case datapointType == DPT_Char_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadString(8)
+		value, _valueErr := io.ReadString(-1)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSTRING(value), nil
-	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
+	case datapointType == DPT_Char_8859_1: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadString(8)
+		value, _valueErr := io.ReadString(-1)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSTRING(value), nil
-	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
+	case datapointType == DPT_Scaling: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -957,7 +957,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Angle: // USINT
+	case datapointType == DPT_Angle: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -965,7 +965,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Percent_U8: // USINT
+	case datapointType == DPT_Percent_U8: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -973,7 +973,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DecimalFactor: // USINT
+	case datapointType == DPT_DecimalFactor: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -981,7 +981,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Tariff: // USINT
+	case datapointType == DPT_Tariff: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -989,7 +989,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_1_Ucount: // USINT
+	case datapointType == DPT_Value_1_Ucount: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -997,7 +997,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_FanStage: // USINT
+	case datapointType == DPT_FanStage: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -1005,7 +1005,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Percent_V8: // SINT
+	case datapointType == DPT_Percent_V8: // SINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt8(8)
@@ -1013,7 +1013,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_1_Count: // SINT
+	case datapointType == DPT_Value_1_Count: // SINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt8(8)
@@ -1021,7 +1021,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
+	case datapointType == DPT_Status_Mode3: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (statusA)
@@ -1066,7 +1066,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(mode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Value_2_Ucount: // UINT
+	case datapointType == DPT_Value_2_Ucount: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1074,7 +1074,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriodMsec: // UINT
+	case datapointType == DPT_TimePeriodMsec: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1082,7 +1082,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriod10Msec: // UINT
+	case datapointType == DPT_TimePeriod10Msec: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1090,7 +1090,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriod100Msec: // UINT
+	case datapointType == DPT_TimePeriod100Msec: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1098,7 +1098,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriodSec: // UINT
+	case datapointType == DPT_TimePeriodSec: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1106,7 +1106,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriodMin: // UINT
+	case datapointType == DPT_TimePeriodMin: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1114,7 +1114,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_TimePeriodHrs: // UINT
+	case datapointType == DPT_TimePeriodHrs: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1122,7 +1122,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_PropDataType: // UINT
+	case datapointType == DPT_PropDataType: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1130,7 +1130,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Length_mm: // UINT
+	case datapointType == DPT_Length_mm: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1138,7 +1138,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_UElCurrentmA: // UINT
+	case datapointType == DPT_UElCurrentmA: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1146,7 +1146,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Brightness: // UINT
+	case datapointType == DPT_Brightness: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1154,7 +1154,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Absolute_Colour_Temperature: // UINT
+	case datapointType == DPT_Absolute_Colour_Temperature: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -1162,7 +1162,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_2_Count: // INT
+	case datapointType == DPT_Value_2_Count: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1170,7 +1170,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTimeMsec: // INT
+	case datapointType == DPT_DeltaTimeMsec: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1178,7 +1178,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTime10Msec: // INT
+	case datapointType == DPT_DeltaTime10Msec: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1186,7 +1186,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTime100Msec: // INT
+	case datapointType == DPT_DeltaTime100Msec: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1194,7 +1194,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTimeSec: // INT
+	case datapointType == DPT_DeltaTimeSec: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1202,7 +1202,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTimeMin: // INT
+	case datapointType == DPT_DeltaTimeMin: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1210,7 +1210,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaTimeHrs: // INT
+	case datapointType == DPT_DeltaTimeHrs: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1218,7 +1218,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Percent_V16: // INT
+	case datapointType == DPT_Percent_V16: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1226,7 +1226,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Rotation_Angle: // INT
+	case datapointType == DPT_Rotation_Angle: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1234,7 +1234,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Length_m: // INT
+	case datapointType == DPT_Length_m: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -1242,7 +1242,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
+	case datapointType == DPT_Value_Temp: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1250,7 +1250,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
+	case datapointType == DPT_Value_Tempd: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1258,7 +1258,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
+	case datapointType == DPT_Value_Tempa: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1266,7 +1266,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
+	case datapointType == DPT_Value_Lux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1274,7 +1274,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
+	case datapointType == DPT_Value_Wsp: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1282,7 +1282,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
+	case datapointType == DPT_Value_Pres: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1290,7 +1290,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
+	case datapointType == DPT_Value_Humidity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1298,7 +1298,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
+	case datapointType == DPT_Value_AirQuality: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1306,7 +1306,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
+	case datapointType == DPT_Value_AirFlow: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1314,7 +1314,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
+	case datapointType == DPT_Value_Time1: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1322,7 +1322,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
+	case datapointType == DPT_Value_Time2: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1330,7 +1330,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
+	case datapointType == DPT_Value_Volt: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1338,7 +1338,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
+	case datapointType == DPT_Value_Curr: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1346,7 +1346,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
+	case datapointType == DPT_PowerDensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1354,7 +1354,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
+	case datapointType == DPT_KelvinPerPercent: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1362,7 +1362,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Power: // REAL
+	case datapointType == DPT_Power: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1370,7 +1370,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
+	case datapointType == DPT_Value_Volume_Flow: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1378,7 +1378,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
+	case datapointType == DPT_Rain_Amount: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1386,7 +1386,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
+	case datapointType == DPT_Value_Temp_F: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1394,7 +1394,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
+	case datapointType == DPT_Value_Wsp_kmh: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1402,7 +1402,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
+	case datapointType == DPT_Value_Absolute_Humidity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1410,7 +1410,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
+	case datapointType == DPT_Concentration_ygm3: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -1418,7 +1418,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
+	case datapointType == DPT_TimeOfDay: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (day)
@@ -1459,7 +1459,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(seconds)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Date: // Struct
+	case datapointType == DPT_Date: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -1498,7 +1498,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(year)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Value_4_Ucount: // UDINT
+	case datapointType == DPT_Value_4_Ucount: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1506,7 +1506,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Sec: // UDINT
+	case datapointType == DPT_LongTimePeriod_Sec: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1514,7 +1514,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Min: // UDINT
+	case datapointType == DPT_LongTimePeriod_Min: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1522,7 +1522,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Hrs: // UDINT
+	case datapointType == DPT_LongTimePeriod_Hrs: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1530,7 +1530,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_VolumeLiquid_Litre: // UDINT
+	case datapointType == DPT_VolumeLiquid_Litre: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1538,7 +1538,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Volume_m_3: // UDINT
+	case datapointType == DPT_Volume_m_3: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -1546,7 +1546,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_4_Count: // DINT
+	case datapointType == DPT_Value_4_Count: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1554,7 +1554,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_FlowRate_m3h: // DINT
+	case datapointType == DPT_FlowRate_m3h: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1562,7 +1562,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy: // DINT
+	case datapointType == DPT_ActiveEnergy: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1570,7 +1570,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+	case datapointType == DPT_ApparantEnergy: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1578,7 +1578,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy: // DINT
+	case datapointType == DPT_ReactiveEnergy: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1586,7 +1586,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_kWh: // DINT
+	case datapointType == DPT_ActiveEnergy_kWh: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1594,7 +1594,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+	case datapointType == DPT_ApparantEnergy_kVAh: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1602,7 +1602,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_kVARh: // DINT
+	case datapointType == DPT_ReactiveEnergy_kVARh: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1610,7 +1610,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_MWh: // DINT
+	case datapointType == DPT_ActiveEnergy_MWh: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1618,7 +1618,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LongDeltaTimeSec: // DINT
+	case datapointType == DPT_LongDeltaTimeSec: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1626,7 +1626,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaVolumeLiquid_Litre: // DINT
+	case datapointType == DPT_DeltaVolumeLiquid_Litre: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1634,7 +1634,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DeltaVolume_m_3: // DINT
+	case datapointType == DPT_DeltaVolume_m_3: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -1642,7 +1642,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
+	case datapointType == DPT_Value_Acceleration: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1650,7 +1650,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
+	case datapointType == DPT_Value_Acceleration_Angular: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1658,7 +1658,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
+	case datapointType == DPT_Value_Activation_Energy: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1666,7 +1666,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
+	case datapointType == DPT_Value_Activity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1674,7 +1674,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
+	case datapointType == DPT_Value_Mol: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1682,7 +1682,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
+	case datapointType == DPT_Value_Amplitude: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1690,7 +1690,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
+	case datapointType == DPT_Value_AngleRad: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1698,7 +1698,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
+	case datapointType == DPT_Value_AngleDeg: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1706,7 +1706,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
+	case datapointType == DPT_Value_Angular_Momentum: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1714,7 +1714,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
+	case datapointType == DPT_Value_Angular_Velocity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1722,7 +1722,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
+	case datapointType == DPT_Value_Area: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1730,7 +1730,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
+	case datapointType == DPT_Value_Capacitance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1738,7 +1738,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
+	case datapointType == DPT_Value_Charge_DensitySurface: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1746,7 +1746,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
+	case datapointType == DPT_Value_Charge_DensityVolume: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1754,7 +1754,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
+	case datapointType == DPT_Value_Compressibility: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1762,7 +1762,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
+	case datapointType == DPT_Value_Conductance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1770,7 +1770,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
+	case datapointType == DPT_Value_Electrical_Conductivity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1778,7 +1778,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
+	case datapointType == DPT_Value_Density: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1786,7 +1786,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
+	case datapointType == DPT_Value_Electric_Charge: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1794,7 +1794,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
+	case datapointType == DPT_Value_Electric_Current: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1802,7 +1802,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
+	case datapointType == DPT_Value_Electric_CurrentDensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1810,7 +1810,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
+	case datapointType == DPT_Value_Electric_DipoleMoment: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1818,7 +1818,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
+	case datapointType == DPT_Value_Electric_Displacement: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1826,7 +1826,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
+	case datapointType == DPT_Value_Electric_FieldStrength: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1834,7 +1834,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
+	case datapointType == DPT_Value_Electric_Flux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1842,7 +1842,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
+	case datapointType == DPT_Value_Electric_FluxDensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1850,7 +1850,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
+	case datapointType == DPT_Value_Electric_Polarization: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1858,7 +1858,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
+	case datapointType == DPT_Value_Electric_Potential: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1866,7 +1866,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
+	case datapointType == DPT_Value_Electric_PotentialDifference: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1874,7 +1874,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
+	case datapointType == DPT_Value_ElectromagneticMoment: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1882,7 +1882,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
+	case datapointType == DPT_Value_Electromotive_Force: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1890,7 +1890,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
+	case datapointType == DPT_Value_Energy: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1898,7 +1898,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
+	case datapointType == DPT_Value_Force: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1906,7 +1906,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
+	case datapointType == DPT_Value_Frequency: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1914,7 +1914,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
+	case datapointType == DPT_Value_Angular_Frequency: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1922,7 +1922,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
+	case datapointType == DPT_Value_Heat_Capacity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1930,7 +1930,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
+	case datapointType == DPT_Value_Heat_FlowRate: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1938,7 +1938,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
+	case datapointType == DPT_Value_Heat_Quantity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1946,7 +1946,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
+	case datapointType == DPT_Value_Impedance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1954,7 +1954,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
+	case datapointType == DPT_Value_Length: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1962,7 +1962,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
+	case datapointType == DPT_Value_Light_Quantity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1970,7 +1970,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
+	case datapointType == DPT_Value_Luminance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1978,7 +1978,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
+	case datapointType == DPT_Value_Luminous_Flux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1986,7 +1986,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
+	case datapointType == DPT_Value_Luminous_Intensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -1994,7 +1994,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
+	case datapointType == DPT_Value_Magnetic_FieldStrength: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2002,7 +2002,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
+	case datapointType == DPT_Value_Magnetic_Flux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2010,7 +2010,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
+	case datapointType == DPT_Value_Magnetic_FluxDensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2018,7 +2018,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
+	case datapointType == DPT_Value_Magnetic_Moment: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2026,7 +2026,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
+	case datapointType == DPT_Value_Magnetic_Polarization: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2034,7 +2034,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
+	case datapointType == DPT_Value_Magnetization: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2042,7 +2042,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
+	case datapointType == DPT_Value_MagnetomotiveForce: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2050,7 +2050,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
+	case datapointType == DPT_Value_Mass: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2058,7 +2058,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
+	case datapointType == DPT_Value_MassFlux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2066,7 +2066,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
+	case datapointType == DPT_Value_Momentum: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2074,7 +2074,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
+	case datapointType == DPT_Value_Phase_AngleRad: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2082,7 +2082,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
+	case datapointType == DPT_Value_Phase_AngleDeg: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2090,7 +2090,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
+	case datapointType == DPT_Value_Power: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2098,7 +2098,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
+	case datapointType == DPT_Value_Power_Factor: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2106,7 +2106,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
+	case datapointType == DPT_Value_Pressure: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2114,7 +2114,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
+	case datapointType == DPT_Value_Reactance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2122,7 +2122,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
+	case datapointType == DPT_Value_Resistance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2130,7 +2130,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
+	case datapointType == DPT_Value_Resistivity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2138,7 +2138,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
+	case datapointType == DPT_Value_SelfInductance: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2146,7 +2146,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
+	case datapointType == DPT_Value_SolidAngle: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2154,7 +2154,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
+	case datapointType == DPT_Value_Sound_Intensity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2162,7 +2162,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
+	case datapointType == DPT_Value_Speed: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2170,7 +2170,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
+	case datapointType == DPT_Value_Stress: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2178,7 +2178,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
+	case datapointType == DPT_Value_Surface_Tension: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2186,7 +2186,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
+	case datapointType == DPT_Value_Common_Temperature: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2194,7 +2194,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
+	case datapointType == DPT_Value_Absolute_Temperature: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2202,7 +2202,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
+	case datapointType == DPT_Value_TemperatureDifference: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2210,7 +2210,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
+	case datapointType == DPT_Value_Thermal_Capacity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2218,7 +2218,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
+	case datapointType == DPT_Value_Thermal_Conductivity: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2226,7 +2226,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
+	case datapointType == DPT_Value_ThermoelectricPower: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2234,7 +2234,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
+	case datapointType == DPT_Value_Time: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2242,7 +2242,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
+	case datapointType == DPT_Value_Torque: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2250,7 +2250,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
+	case datapointType == DPT_Value_Volume: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2258,7 +2258,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
+	case datapointType == DPT_Value_Volume_Flux: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2266,7 +2266,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
+	case datapointType == DPT_Value_Weight: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2274,7 +2274,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
+	case datapointType == DPT_Value_Work: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -2282,7 +2282,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
+	case datapointType == DPT_Volume_Flux_Meter: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -2290,7 +2290,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
+	case datapointType == DPT_Volume_Flux_ls: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -2298,7 +2298,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
+	case datapointType == DPT_Access_Data: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (hurz)
@@ -2378,23 +2378,23 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(indexOfAccessIdentificationCode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
+	case datapointType == DPT_String_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadString(112)
+		value, _valueErr := io.ReadString(-1)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSTRING(value), nil
-	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
+	case datapointType == DPT_String_8859_1: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadString(112)
+		value, _valueErr := io.ReadString(-1)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSTRING(value), nil
-	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
+	case datapointType == DPT_SceneNumber: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(6)
@@ -2402,7 +2402,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
+	case datapointType == DPT_SceneControl: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
@@ -2424,7 +2424,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(sceneNumber)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
+	case datapointType == DPT_DateTime: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (year)
@@ -2564,7 +2564,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing reserved field " + _err.Error())
 		}
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_SCLOMode: // USINT
+	case datapointType == DPT_SCLOMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2572,7 +2572,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_BuildingMode: // USINT
+	case datapointType == DPT_BuildingMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2580,7 +2580,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_OccMode: // USINT
+	case datapointType == DPT_OccMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2588,7 +2588,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Priority: // USINT
+	case datapointType == DPT_Priority: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2596,7 +2596,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LightApplicationMode: // USINT
+	case datapointType == DPT_LightApplicationMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2604,7 +2604,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApplicationArea: // USINT
+	case datapointType == DPT_ApplicationArea: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2612,7 +2612,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_AlarmClassType: // USINT
+	case datapointType == DPT_AlarmClassType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2620,7 +2620,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_PSUMode: // USINT
+	case datapointType == DPT_PSUMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2628,7 +2628,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ErrorClass_System: // USINT
+	case datapointType == DPT_ErrorClass_System: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2636,7 +2636,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ErrorClass_HVAC: // USINT
+	case datapointType == DPT_ErrorClass_HVAC: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2644,7 +2644,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Time_Delay: // USINT
+	case datapointType == DPT_Time_Delay: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2652,7 +2652,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Beaufort_Wind_Force_Scale: // USINT
+	case datapointType == DPT_Beaufort_Wind_Force_Scale: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2660,7 +2660,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SensorSelect: // USINT
+	case datapointType == DPT_SensorSelect: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2668,7 +2668,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ActuatorConnectType: // USINT
+	case datapointType == DPT_ActuatorConnectType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2676,7 +2676,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Cloud_Cover: // USINT
+	case datapointType == DPT_Cloud_Cover: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2684,7 +2684,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_PowerReturnMode: // USINT
+	case datapointType == DPT_PowerReturnMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2692,7 +2692,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_FuelType: // USINT
+	case datapointType == DPT_FuelType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2700,7 +2700,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_BurnerType: // USINT
+	case datapointType == DPT_BurnerType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2708,7 +2708,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HVACMode: // USINT
+	case datapointType == DPT_HVACMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2716,7 +2716,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DHWMode: // USINT
+	case datapointType == DPT_DHWMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2724,7 +2724,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LoadPriority: // USINT
+	case datapointType == DPT_LoadPriority: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2732,7 +2732,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HVACContrMode: // USINT
+	case datapointType == DPT_HVACContrMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2740,7 +2740,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HVACEmergMode: // USINT
+	case datapointType == DPT_HVACEmergMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2748,7 +2748,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ChangeoverMode: // USINT
+	case datapointType == DPT_ChangeoverMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2756,7 +2756,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ValveMode: // USINT
+	case datapointType == DPT_ValveMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2764,7 +2764,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DamperMode: // USINT
+	case datapointType == DPT_DamperMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2772,7 +2772,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HeaterMode: // USINT
+	case datapointType == DPT_HeaterMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2780,7 +2780,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_FanMode: // USINT
+	case datapointType == DPT_FanMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2788,7 +2788,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_MasterSlaveMode: // USINT
+	case datapointType == DPT_MasterSlaveMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2796,7 +2796,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_StatusRoomSetp: // USINT
+	case datapointType == DPT_StatusRoomSetp: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2804,7 +2804,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Metering_DeviceType: // USINT
+	case datapointType == DPT_Metering_DeviceType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2812,7 +2812,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HumDehumMode: // USINT
+	case datapointType == DPT_HumDehumMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2820,7 +2820,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_EnableHCStage: // USINT
+	case datapointType == DPT_EnableHCStage: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2828,7 +2828,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ADAType: // USINT
+	case datapointType == DPT_ADAType: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2836,7 +2836,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_BackupMode: // USINT
+	case datapointType == DPT_BackupMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2844,7 +2844,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_StartSynchronization: // USINT
+	case datapointType == DPT_StartSynchronization: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2852,7 +2852,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Behaviour_Lock_Unlock: // USINT
+	case datapointType == DPT_Behaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2860,7 +2860,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down: // USINT
+	case datapointType == DPT_Behaviour_Bus_Power_Up_Down: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2868,7 +2868,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DALI_Fade_Time: // USINT
+	case datapointType == DPT_DALI_Fade_Time: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2876,7 +2876,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_BlinkingMode: // USINT
+	case datapointType == DPT_BlinkingMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2884,7 +2884,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LightControlMode: // USINT
+	case datapointType == DPT_LightControlMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2892,7 +2892,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SwitchPBModel: // USINT
+	case datapointType == DPT_SwitchPBModel: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2900,7 +2900,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_PBAction: // USINT
+	case datapointType == DPT_PBAction: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2908,7 +2908,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DimmPBModel: // USINT
+	case datapointType == DPT_DimmPBModel: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2916,7 +2916,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SwitchOnMode: // USINT
+	case datapointType == DPT_SwitchOnMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2924,7 +2924,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LoadTypeSet: // USINT
+	case datapointType == DPT_LoadTypeSet: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2932,7 +2932,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_LoadTypeDetected: // USINT
+	case datapointType == DPT_LoadTypeDetected: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2940,7 +2940,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
+	case datapointType == DPT_Converter_Test_Control: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2948,7 +2948,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
+	case datapointType == DPT_SABExcept_Behaviour: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2956,7 +2956,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SABBehaviour_Lock_Unlock: // USINT
+	case datapointType == DPT_SABBehaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2964,7 +2964,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_SSSBMode: // USINT
+	case datapointType == DPT_SSSBMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2972,7 +2972,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_BlindsControlMode: // USINT
+	case datapointType == DPT_BlindsControlMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2980,7 +2980,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_CommMode: // USINT
+	case datapointType == DPT_CommMode: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2988,7 +2988,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_AddInfoTypes: // USINT
+	case datapointType == DPT_AddInfoTypes: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -2996,7 +2996,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_RF_ModeSelect: // USINT
+	case datapointType == DPT_RF_ModeSelect: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -3004,7 +3004,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_RF_FilterSelect: // USINT
+	case datapointType == DPT_RF_FilterSelect: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -3012,7 +3012,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
+	case datapointType == DPT_StatusGen: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3055,7 +3055,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(correspondingDatapointValueIsOutOfService)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Device_Control: // Struct
+	case datapointType == DPT_Device_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3084,7 +3084,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(theUserApplicationIsStopped)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
+	case datapointType == DPT_ForceSign: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomhmax)
@@ -3143,7 +3143,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(forcerequest)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_ForceSignCool: // BOOL
+	case datapointType == DPT_ForceSignCool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -3156,7 +3156,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_StatusRHC: // Struct
+	case datapointType == DPT_StatusRHC: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (summermode)
@@ -3215,7 +3215,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_StatusSDHWC: // Struct
+	case datapointType == DPT_StatusSDHWC: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3244,7 +3244,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
+	case datapointType == DPT_FuelTypeSet: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3273,7 +3273,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(oil)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_StatusRCC: // BOOL
+	case datapointType == DPT_StatusRCC: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -3286,7 +3286,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case datapointType == KnxDatapointType_DPT_StatusAHU: // Struct
+	case datapointType == DPT_StatusAHU: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3322,7 +3322,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
+	case datapointType == DPT_CombinedStatus_RTSM: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3365,7 +3365,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(effectiveValueOfTheWindowStatus)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
+	case datapointType == DPT_LightActuatorErrorInfo: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3422,7 +3422,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(loaddetectionerror)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_RF_ModeInfo: // Struct
+	case datapointType == DPT_RF_ModeInfo: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3451,7 +3451,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(asynchronous)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_RF_FilterInfo: // Struct
+	case datapointType == DPT_RF_FilterInfo: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3480,7 +3480,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(doaAndKnxSn)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
+	case datapointType == DPT_Channel_Activation_8: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -3539,7 +3539,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(activationStateOfChannel8)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_StatusDHWC: // Struct
+	case datapointType == DPT_StatusDHWC: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3603,7 +3603,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
+	case datapointType == DPT_StatusRHCC: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3716,7 +3716,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_HVA: // Struct
+	case datapointType == DPT_CombinedStatus_HVA: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3787,7 +3787,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(currentValvePosition)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
+	case datapointType == DPT_CombinedStatus_RTC: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3858,7 +3858,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(generalFailureInformation)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Media: // Struct
+	case datapointType == DPT_Media: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3904,7 +3904,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing reserved field " + _err.Error())
 		}
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
+	case datapointType == DPT_Channel_Activation_16: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -4019,7 +4019,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(activationStateOfChannel16)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_OnOffAction: // USINT
+	case datapointType == DPT_OnOffAction: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(6); _err != nil {
@@ -4032,7 +4032,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Alarm_Reaction: // USINT
+	case datapointType == DPT_Alarm_Reaction: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(6); _err != nil {
@@ -4045,7 +4045,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_UpDown_Action: // USINT
+	case datapointType == DPT_UpDown_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(6); _err != nil {
@@ -4058,7 +4058,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_HVAC_PB_Action: // USINT
+	case datapointType == DPT_HVAC_PB_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(6); _err != nil {
@@ -4071,7 +4071,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case datapointType == KnxDatapointType_DPT_DoubleNibble: // Struct
+	case datapointType == DPT_DoubleNibble: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (busy)
@@ -4088,7 +4088,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(nak)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
+	case datapointType == DPT_SceneInfo: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -4110,7 +4110,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(scenenumber)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
+	case datapointType == DPT_CombinedInfoOnOff: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (maskBitInfoOnOffOutput16)
@@ -4337,7 +4337,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(infoOnOffOutput1)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_V64: // LINT
+	case datapointType == DPT_ActiveEnergy_V64: // LINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt64(64)
@@ -4345,7 +4345,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+	case datapointType == DPT_ApparantEnergy_V64: // LINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt64(64)
@@ -4353,7 +4353,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLINT(value), nil
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_V64: // LINT
+	case datapointType == DPT_ReactiveEnergy_V64: // LINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt64(64)
@@ -4361,7 +4361,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLINT(value), nil
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
+	case datapointType == DPT_Channel_Activation_24: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -4532,7 +4532,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(activationStateOfChannel24)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_HVACModeNext: // Struct
+	case datapointType == DPT_HVACModeNext: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4549,7 +4549,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(hvacMode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
+	case datapointType == DPT_DHWModeNext: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4566,7 +4566,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(dhwMode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_OccModeNext: // Struct
+	case datapointType == DPT_OccModeNext: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4583,7 +4583,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(occupancyMode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_BuildingModeNext: // Struct
+	case datapointType == DPT_BuildingModeNext: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4600,7 +4600,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(buildingMode)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Version: // Struct
+	case datapointType == DPT_Version: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (magicNumber)
@@ -4624,7 +4624,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(revisionNumber)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
+	case datapointType == DPT_AlarmInfo: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (logNumber)
@@ -4714,7 +4714,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(inalarm)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_3: // Struct
+	case datapointType == DPT_TempRoomSetpSetF16_3: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpcomf)
@@ -4738,7 +4738,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpeco)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
+	case datapointType == DPT_TempRoomSetpSetShiftF16_3: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpshiftcomf)
@@ -4762,7 +4762,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcREAL(tempsetpshifteco)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
+	case datapointType == DPT_Scaling_Speed: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (timePeriod)
@@ -4779,7 +4779,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(percent)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Scaling_Step_Time: // Struct
+	case datapointType == DPT_Scaling_Step_Time: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (timePeriod)
@@ -4796,7 +4796,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(percent)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
+	case datapointType == DPT_MeteringValue: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (countval)
@@ -4853,7 +4853,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(outofservice)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_MBus_Address: // Struct
+	case datapointType == DPT_MBus_Address: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (manufactid)
@@ -4884,7 +4884,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(medium)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Colour_RGB: // Struct
+	case datapointType == DPT_Colour_RGB: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (r)
@@ -4908,15 +4908,15 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(b)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
+	case datapointType == DPT_LanguageCodeAlpha2_ASCII: // STRING
 
 		// Simple Field (value)
-		value, _valueErr := io.ReadString(16)
+		value, _valueErr := io.ReadString(-1)
 		if _valueErr != nil {
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSTRING(value), nil
-	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
+	case datapointType == DPT_Tariff_ActiveEnergy: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activeelectricalenergy)
@@ -4952,7 +4952,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(tariffvalidity)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Prioritised_Mode_Control: // Struct
+	case datapointType == DPT_Prioritised_Mode_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (deactivationOfPriority)
@@ -4976,7 +4976,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(modeLevel)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
+	case datapointType == DPT_DALI_Control_Gear_Diagnostic: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5026,7 +5026,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(daliDeviceAddressOrDaliGroupAddress)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_DALI_Diagnostics: // Struct
+	case datapointType == DPT_DALI_Diagnostics: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ballastFailure)
@@ -5050,7 +5050,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(deviceAddress)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
+	case datapointType == DPT_CombinedPosition: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (heightPosition)
@@ -5086,7 +5086,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(validitySlatsPosition)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
+	case datapointType == DPT_StatusSAB: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (heightPosition)
@@ -5199,7 +5199,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(validitySlatsPos)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Colour_xyY: // Struct
+	case datapointType == DPT_Colour_xyY: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (xAxis)
@@ -5242,7 +5242,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(validityBrightness)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
+	case datapointType == DPT_Converter_Status: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
@@ -5299,7 +5299,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(converterFailure)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
+	case datapointType == DPT_Converter_Test_Result: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ltrf)
@@ -5368,7 +5368,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(lpdtr)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Battery_Info: // Struct
+	case datapointType == DPT_Battery_Info: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5404,7 +5404,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcUSINT(batteryChargeLevel)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
+	case datapointType == DPT_Brightness_Colour_Temperature_Transition: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ms)
@@ -5454,7 +5454,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(validityOfTheAbsoluteBrightness)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
+	case datapointType == DPT_Brightness_Colour_Temperature_Control: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5514,7 +5514,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(cbAndStepCodeBrightnessValidity)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
+	case datapointType == DPT_Colour_RGBW: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (colourLevelRed)
@@ -5583,7 +5583,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcBOOL(mw)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
+	case datapointType == DPT_Relative_Control_RGBW: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (maskcw)
@@ -5695,7 +5695,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing reserved field " + _err.Error())
 		}
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
+	case datapointType == DPT_Relative_Control_RGB: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (cb)
@@ -5755,7 +5755,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 			return nil, errors.New("Error parsing reserved field " + _err.Error())
 		}
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
+	case datapointType == DPT_GeographicalLocation: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (longitude)
@@ -5772,7 +5772,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcREAL(latitude)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
+	case datapointType == DPT_TempRoomSetpSetF16_4: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointComfort)
@@ -5803,7 +5803,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointBuildingProtection)
 		return values.NewPlcStruct(_map), nil
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
+	case datapointType == DPT_TempRoomSetpSetShiftF16_4: // Struct
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
@@ -5840,7 +5840,7 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 
 func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointType KnxDatapointType) error {
 	switch {
-	case datapointType == KnxDatapointType_BOOL: // BOOL
+	case datapointType == BOOL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -5851,133 +5851,133 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_BYTE: // BYTE
+	case datapointType == BYTE: // BYTE
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_WORD: // WORD
+	case datapointType == WORD: // WORD
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DWORD: // DWORD
+	case datapointType == DWORD: // DWORD
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_LWORD: // LWORD
+	case datapointType == LWORD: // LWORD
 
 		// Simple Field (value)
 		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_USINT: // USINT
+	case datapointType == USINT: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_SINT: // SINT
+	case datapointType == SINT: // SINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_UINT: // UINT
+	case datapointType == UINT: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_INT: // INT
+	case datapointType == INT: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_UDINT: // UDINT
+	case datapointType == UDINT: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DINT: // DINT
+	case datapointType == DINT: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_ULINT: // ULINT
+	case datapointType == ULINT: // ULINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_LINT: // LINT
+	case datapointType == LINT: // LINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_REAL: // REAL
+	case datapointType == REAL: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_LREAL: // LREAL
+	case datapointType == LREAL: // LREAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_CHAR: // CHAR
+	case datapointType == CHAR: // CHAR
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_WCHAR: // WCHAR
+	case datapointType == WCHAR: // WCHAR
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_TIME: // TIME
+	case datapointType == TIME: // TIME
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_LTIME: // LTIME
+	case datapointType == LTIME: // LTIME
 
 		// Simple Field (value)
 		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DATE: // DATE
+	case datapointType == DATE: // DATE
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
+	case datapointType == TIME_OF_DAY: // TIME_OF_DAY
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
+	case datapointType == TOD: // TIME_OF_DAY
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
+	case datapointType == DATE_AND_TIME: // DATE_AND_TIME
 
 		// Simple Field (year)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -6018,7 +6018,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'nanos' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
+	case datapointType == DT: // DATE_AND_TIME
 
 		// Simple Field (year)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -6059,7 +6059,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'nanos' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Switch: // BOOL
+	case datapointType == DPT_Switch: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6070,7 +6070,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Bool: // BOOL
+	case datapointType == DPT_Bool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6081,7 +6081,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Enable: // BOOL
+	case datapointType == DPT_Enable: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6092,7 +6092,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Ramp: // BOOL
+	case datapointType == DPT_Ramp: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6103,7 +6103,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Alarm: // BOOL
+	case datapointType == DPT_Alarm: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6114,7 +6114,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BinaryValue: // BOOL
+	case datapointType == DPT_BinaryValue: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6125,7 +6125,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Step: // BOOL
+	case datapointType == DPT_Step: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6136,7 +6136,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_UpDown: // BOOL
+	case datapointType == DPT_UpDown: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6147,7 +6147,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_OpenClose: // BOOL
+	case datapointType == DPT_OpenClose: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6158,7 +6158,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Start: // BOOL
+	case datapointType == DPT_Start: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6169,7 +6169,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_State: // BOOL
+	case datapointType == DPT_State: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6180,7 +6180,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Invert: // BOOL
+	case datapointType == DPT_Invert: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6191,7 +6191,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DimSendStyle: // BOOL
+	case datapointType == DPT_DimSendStyle: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6202,7 +6202,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_InputSource: // BOOL
+	case datapointType == DPT_InputSource: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6213,7 +6213,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Reset: // BOOL
+	case datapointType == DPT_Reset: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6224,7 +6224,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Ack: // BOOL
+	case datapointType == DPT_Ack: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6235,7 +6235,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Trigger: // BOOL
+	case datapointType == DPT_Trigger: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6246,7 +6246,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Occupancy: // BOOL
+	case datapointType == DPT_Occupancy: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6257,7 +6257,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Window_Door: // BOOL
+	case datapointType == DPT_Window_Door: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6268,7 +6268,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LogicalFunction: // BOOL
+	case datapointType == DPT_LogicalFunction: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6279,7 +6279,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Scene_AB: // BOOL
+	case datapointType == DPT_Scene_AB: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6290,7 +6290,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ShutterBlinds_Mode: // BOOL
+	case datapointType == DPT_ShutterBlinds_Mode: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6301,7 +6301,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DayNight: // BOOL
+	case datapointType == DPT_DayNight: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6312,7 +6312,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Heat_Cool: // BOOL
+	case datapointType == DPT_Heat_Cool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -6323,7 +6323,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Switch_Control: // Struct
+	case datapointType == DPT_Switch_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6339,7 +6339,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'on' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Bool_Control: // Struct
+	case datapointType == DPT_Bool_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6355,7 +6355,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'valueTrue' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Enable_Control: // Struct
+	case datapointType == DPT_Enable_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6371,7 +6371,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'enable' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Ramp_Control: // Struct
+	case datapointType == DPT_Ramp_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6387,7 +6387,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'ramp' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Alarm_Control: // Struct
+	case datapointType == DPT_Alarm_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6403,7 +6403,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'alarm' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BinaryValue_Control: // Struct
+	case datapointType == DPT_BinaryValue_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6419,7 +6419,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'high' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Step_Control: // Struct
+	case datapointType == DPT_Step_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6435,7 +6435,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'increase' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Direction1_Control: // Struct
+	case datapointType == DPT_Direction1_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6451,7 +6451,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'down' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Direction2_Control: // Struct
+	case datapointType == DPT_Direction2_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6467,7 +6467,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'close' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Start_Control: // Struct
+	case datapointType == DPT_Start_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6483,7 +6483,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'start' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_State_Control: // Struct
+	case datapointType == DPT_State_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6499,7 +6499,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'active' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Invert_Control: // Struct
+	case datapointType == DPT_Invert_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -6515,7 +6515,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'inverted' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Control_Dimming: // Struct
+	case datapointType == DPT_Control_Dimming: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
@@ -6531,7 +6531,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'stepcode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Control_Blinds: // Struct
+	case datapointType == DPT_Control_Blinds: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
@@ -6547,73 +6547,73 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'stepcode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
+	case datapointType == DPT_Char_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(8, "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString(-1, "ASCII", value.GetString()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
+	case datapointType == DPT_Char_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(8, "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := io.WriteString(-1, "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
-
-		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
-		}
-	case datapointType == KnxDatapointType_DPT_Angle: // USINT
+	case datapointType == DPT_Scaling: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Percent_U8: // USINT
+	case datapointType == DPT_Angle: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DecimalFactor: // USINT
+	case datapointType == DPT_Percent_U8: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Tariff: // USINT
+	case datapointType == DPT_DecimalFactor: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_1_Ucount: // USINT
+	case datapointType == DPT_Tariff: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_FanStage: // USINT
+	case datapointType == DPT_Value_1_Ucount: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Percent_V8: // SINT
+	case datapointType == DPT_FanStage: // USINT
+
+		// Simple Field (value)
+		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+			return errors.New("Error serializing 'value' field " + _err.Error())
+		}
+	case datapointType == DPT_Percent_V8: // SINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_1_Count: // SINT
+	case datapointType == DPT_Value_1_Count: // SINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
+	case datapointType == DPT_Status_Mode3: // Struct
 
 		// Simple Field (statusA)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -6644,271 +6644,271 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'mode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_2_Ucount: // UINT
+	case datapointType == DPT_Value_2_Ucount: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriodMsec: // UINT
+	case datapointType == DPT_TimePeriodMsec: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriod10Msec: // UINT
+	case datapointType == DPT_TimePeriod10Msec: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriod100Msec: // UINT
+	case datapointType == DPT_TimePeriod100Msec: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriodSec: // UINT
+	case datapointType == DPT_TimePeriodSec: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriodMin: // UINT
+	case datapointType == DPT_TimePeriodMin: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimePeriodHrs: // UINT
+	case datapointType == DPT_TimePeriodHrs: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_PropDataType: // UINT
+	case datapointType == DPT_PropDataType: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Length_mm: // UINT
+	case datapointType == DPT_Length_mm: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_UElCurrentmA: // UINT
+	case datapointType == DPT_UElCurrentmA: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Brightness: // UINT
+	case datapointType == DPT_Brightness: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Absolute_Colour_Temperature: // UINT
+	case datapointType == DPT_Absolute_Colour_Temperature: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_2_Count: // INT
+	case datapointType == DPT_Value_2_Count: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTimeMsec: // INT
+	case datapointType == DPT_DeltaTimeMsec: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTime10Msec: // INT
+	case datapointType == DPT_DeltaTime10Msec: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTime100Msec: // INT
+	case datapointType == DPT_DeltaTime100Msec: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTimeSec: // INT
+	case datapointType == DPT_DeltaTimeSec: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTimeMin: // INT
+	case datapointType == DPT_DeltaTimeMin: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaTimeHrs: // INT
+	case datapointType == DPT_DeltaTimeHrs: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Percent_V16: // INT
+	case datapointType == DPT_Percent_V16: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Rotation_Angle: // INT
+	case datapointType == DPT_Rotation_Angle: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Length_m: // INT
+	case datapointType == DPT_Length_m: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
+	case datapointType == DPT_Value_Temp: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
+	case datapointType == DPT_Value_Tempd: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
+	case datapointType == DPT_Value_Tempa: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
+	case datapointType == DPT_Value_Lux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
+	case datapointType == DPT_Value_Wsp: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
+	case datapointType == DPT_Value_Pres: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
+	case datapointType == DPT_Value_Humidity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
+	case datapointType == DPT_Value_AirQuality: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
+	case datapointType == DPT_Value_AirFlow: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
+	case datapointType == DPT_Value_Time1: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
+	case datapointType == DPT_Value_Time2: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
+	case datapointType == DPT_Value_Volt: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
+	case datapointType == DPT_Value_Curr: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
+	case datapointType == DPT_PowerDensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
+	case datapointType == DPT_KelvinPerPercent: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Power: // REAL
+	case datapointType == DPT_Power: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
+	case datapointType == DPT_Value_Volume_Flow: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
+	case datapointType == DPT_Rain_Amount: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
+	case datapointType == DPT_Value_Temp_F: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
+	case datapointType == DPT_Value_Wsp_kmh: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
+	case datapointType == DPT_Value_Absolute_Humidity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
+	case datapointType == DPT_Concentration_ygm3: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
+	case datapointType == DPT_TimeOfDay: // Struct
 
 		// Simple Field (day)
 		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
@@ -6939,7 +6939,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'seconds' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Date: // Struct
+	case datapointType == DPT_Date: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
@@ -6970,607 +6970,607 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(7, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'year' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_4_Ucount: // UDINT
+	case datapointType == DPT_Value_4_Ucount: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Sec: // UDINT
+	case datapointType == DPT_LongTimePeriod_Sec: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Min: // UDINT
+	case datapointType == DPT_LongTimePeriod_Min: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Hrs: // UDINT
+	case datapointType == DPT_LongTimePeriod_Hrs: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_VolumeLiquid_Litre: // UDINT
+	case datapointType == DPT_VolumeLiquid_Litre: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Volume_m_3: // UDINT
+	case datapointType == DPT_Volume_m_3: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_4_Count: // DINT
+	case datapointType == DPT_Value_4_Count: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_FlowRate_m3h: // DINT
+	case datapointType == DPT_FlowRate_m3h: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy: // DINT
+	case datapointType == DPT_ActiveEnergy: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
+	case datapointType == DPT_ApparantEnergy: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy: // DINT
+	case datapointType == DPT_ReactiveEnergy: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_kWh: // DINT
+	case datapointType == DPT_ActiveEnergy_kWh: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
+	case datapointType == DPT_ApparantEnergy_kVAh: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_kVARh: // DINT
+	case datapointType == DPT_ReactiveEnergy_kVARh: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_MWh: // DINT
+	case datapointType == DPT_ActiveEnergy_MWh: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LongDeltaTimeSec: // DINT
+	case datapointType == DPT_LongDeltaTimeSec: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaVolumeLiquid_Litre: // DINT
+	case datapointType == DPT_DeltaVolumeLiquid_Litre: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DeltaVolume_m_3: // DINT
+	case datapointType == DPT_DeltaVolume_m_3: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
+	case datapointType == DPT_Value_Acceleration: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
+	case datapointType == DPT_Value_Acceleration_Angular: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
+	case datapointType == DPT_Value_Activation_Energy: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
+	case datapointType == DPT_Value_Activity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
+	case datapointType == DPT_Value_Mol: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
+	case datapointType == DPT_Value_Amplitude: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
+	case datapointType == DPT_Value_AngleRad: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
+	case datapointType == DPT_Value_AngleDeg: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
+	case datapointType == DPT_Value_Angular_Momentum: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
+	case datapointType == DPT_Value_Angular_Velocity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
+	case datapointType == DPT_Value_Area: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
+	case datapointType == DPT_Value_Capacitance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
+	case datapointType == DPT_Value_Charge_DensitySurface: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
+	case datapointType == DPT_Value_Charge_DensityVolume: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
+	case datapointType == DPT_Value_Compressibility: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
+	case datapointType == DPT_Value_Conductance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
+	case datapointType == DPT_Value_Electrical_Conductivity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
+	case datapointType == DPT_Value_Density: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
+	case datapointType == DPT_Value_Electric_Charge: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
+	case datapointType == DPT_Value_Electric_Current: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
+	case datapointType == DPT_Value_Electric_CurrentDensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
+	case datapointType == DPT_Value_Electric_DipoleMoment: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
+	case datapointType == DPT_Value_Electric_Displacement: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
+	case datapointType == DPT_Value_Electric_FieldStrength: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
+	case datapointType == DPT_Value_Electric_Flux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
+	case datapointType == DPT_Value_Electric_FluxDensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
+	case datapointType == DPT_Value_Electric_Polarization: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
+	case datapointType == DPT_Value_Electric_Potential: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
+	case datapointType == DPT_Value_Electric_PotentialDifference: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
+	case datapointType == DPT_Value_ElectromagneticMoment: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
+	case datapointType == DPT_Value_Electromotive_Force: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
+	case datapointType == DPT_Value_Energy: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
+	case datapointType == DPT_Value_Force: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
+	case datapointType == DPT_Value_Frequency: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
+	case datapointType == DPT_Value_Angular_Frequency: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
+	case datapointType == DPT_Value_Heat_Capacity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
+	case datapointType == DPT_Value_Heat_FlowRate: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
+	case datapointType == DPT_Value_Heat_Quantity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
+	case datapointType == DPT_Value_Impedance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
+	case datapointType == DPT_Value_Length: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
+	case datapointType == DPT_Value_Light_Quantity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
+	case datapointType == DPT_Value_Luminance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
+	case datapointType == DPT_Value_Luminous_Flux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
+	case datapointType == DPT_Value_Luminous_Intensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
+	case datapointType == DPT_Value_Magnetic_FieldStrength: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
+	case datapointType == DPT_Value_Magnetic_Flux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
+	case datapointType == DPT_Value_Magnetic_FluxDensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
+	case datapointType == DPT_Value_Magnetic_Moment: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
+	case datapointType == DPT_Value_Magnetic_Polarization: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
+	case datapointType == DPT_Value_Magnetization: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
+	case datapointType == DPT_Value_MagnetomotiveForce: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
+	case datapointType == DPT_Value_Mass: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
+	case datapointType == DPT_Value_MassFlux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
+	case datapointType == DPT_Value_Momentum: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
+	case datapointType == DPT_Value_Phase_AngleRad: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
+	case datapointType == DPT_Value_Phase_AngleDeg: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
+	case datapointType == DPT_Value_Power: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
+	case datapointType == DPT_Value_Power_Factor: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
+	case datapointType == DPT_Value_Pressure: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
+	case datapointType == DPT_Value_Reactance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
+	case datapointType == DPT_Value_Resistance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
+	case datapointType == DPT_Value_Resistivity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
+	case datapointType == DPT_Value_SelfInductance: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
+	case datapointType == DPT_Value_SolidAngle: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
+	case datapointType == DPT_Value_Sound_Intensity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
+	case datapointType == DPT_Value_Speed: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
+	case datapointType == DPT_Value_Stress: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
+	case datapointType == DPT_Value_Surface_Tension: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
+	case datapointType == DPT_Value_Common_Temperature: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
+	case datapointType == DPT_Value_Absolute_Temperature: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
+	case datapointType == DPT_Value_TemperatureDifference: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
+	case datapointType == DPT_Value_Thermal_Capacity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
+	case datapointType == DPT_Value_Thermal_Conductivity: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
+	case datapointType == DPT_Value_ThermoelectricPower: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
+	case datapointType == DPT_Value_Time: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
+	case datapointType == DPT_Value_Torque: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
+	case datapointType == DPT_Value_Volume: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
+	case datapointType == DPT_Value_Volume_Flux: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
+	case datapointType == DPT_Value_Weight: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
+	case datapointType == DPT_Value_Work: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
+	case datapointType == DPT_Volume_Flux_Meter: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
+	case datapointType == DPT_Volume_Flux_ls: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
+	case datapointType == DPT_Access_Data: // Struct
 
 		// Simple Field (hurz)
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
@@ -7626,25 +7626,25 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'indexOfAccessIdentificationCode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
+	case datapointType == DPT_String_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(112, "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString(-1, "ASCII", value.GetString()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
+	case datapointType == DPT_String_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(112, "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := io.WriteString(-1, "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
+	case datapointType == DPT_SceneNumber: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
+	case datapointType == DPT_SceneControl: // Struct
 
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -7660,7 +7660,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'sceneNumber' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
+	case datapointType == DPT_DateTime: // Struct
 
 		// Simple Field (year)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -7766,343 +7766,343 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
 			return errors.New("Error serializing reserved field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SCLOMode: // USINT
+	case datapointType == DPT_SCLOMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BuildingMode: // USINT
+	case datapointType == DPT_BuildingMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_OccMode: // USINT
+	case datapointType == DPT_OccMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Priority: // USINT
+	case datapointType == DPT_Priority: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LightApplicationMode: // USINT
+	case datapointType == DPT_LightApplicationMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ApplicationArea: // USINT
+	case datapointType == DPT_ApplicationArea: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_AlarmClassType: // USINT
+	case datapointType == DPT_AlarmClassType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_PSUMode: // USINT
+	case datapointType == DPT_PSUMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ErrorClass_System: // USINT
+	case datapointType == DPT_ErrorClass_System: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ErrorClass_HVAC: // USINT
+	case datapointType == DPT_ErrorClass_HVAC: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Time_Delay: // USINT
+	case datapointType == DPT_Time_Delay: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Beaufort_Wind_Force_Scale: // USINT
+	case datapointType == DPT_Beaufort_Wind_Force_Scale: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SensorSelect: // USINT
+	case datapointType == DPT_SensorSelect: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ActuatorConnectType: // USINT
+	case datapointType == DPT_ActuatorConnectType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Cloud_Cover: // USINT
+	case datapointType == DPT_Cloud_Cover: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_PowerReturnMode: // USINT
+	case datapointType == DPT_PowerReturnMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_FuelType: // USINT
+	case datapointType == DPT_FuelType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BurnerType: // USINT
+	case datapointType == DPT_BurnerType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HVACMode: // USINT
+	case datapointType == DPT_HVACMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DHWMode: // USINT
+	case datapointType == DPT_DHWMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LoadPriority: // USINT
+	case datapointType == DPT_LoadPriority: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HVACContrMode: // USINT
+	case datapointType == DPT_HVACContrMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HVACEmergMode: // USINT
+	case datapointType == DPT_HVACEmergMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ChangeoverMode: // USINT
+	case datapointType == DPT_ChangeoverMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ValveMode: // USINT
+	case datapointType == DPT_ValveMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DamperMode: // USINT
+	case datapointType == DPT_DamperMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HeaterMode: // USINT
+	case datapointType == DPT_HeaterMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_FanMode: // USINT
+	case datapointType == DPT_FanMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_MasterSlaveMode: // USINT
+	case datapointType == DPT_MasterSlaveMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusRoomSetp: // USINT
+	case datapointType == DPT_StatusRoomSetp: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Metering_DeviceType: // USINT
+	case datapointType == DPT_Metering_DeviceType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HumDehumMode: // USINT
+	case datapointType == DPT_HumDehumMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_EnableHCStage: // USINT
+	case datapointType == DPT_EnableHCStage: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ADAType: // USINT
+	case datapointType == DPT_ADAType: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BackupMode: // USINT
+	case datapointType == DPT_BackupMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StartSynchronization: // USINT
+	case datapointType == DPT_StartSynchronization: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Behaviour_Lock_Unlock: // USINT
+	case datapointType == DPT_Behaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down: // USINT
+	case datapointType == DPT_Behaviour_Bus_Power_Up_Down: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DALI_Fade_Time: // USINT
+	case datapointType == DPT_DALI_Fade_Time: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BlinkingMode: // USINT
+	case datapointType == DPT_BlinkingMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LightControlMode: // USINT
+	case datapointType == DPT_LightControlMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SwitchPBModel: // USINT
+	case datapointType == DPT_SwitchPBModel: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_PBAction: // USINT
+	case datapointType == DPT_PBAction: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DimmPBModel: // USINT
+	case datapointType == DPT_DimmPBModel: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SwitchOnMode: // USINT
+	case datapointType == DPT_SwitchOnMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LoadTypeSet: // USINT
+	case datapointType == DPT_LoadTypeSet: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LoadTypeDetected: // USINT
+	case datapointType == DPT_LoadTypeDetected: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
+	case datapointType == DPT_Converter_Test_Control: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
+	case datapointType == DPT_SABExcept_Behaviour: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SABBehaviour_Lock_Unlock: // USINT
+	case datapointType == DPT_SABBehaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SSSBMode: // USINT
+	case datapointType == DPT_SSSBMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BlindsControlMode: // USINT
+	case datapointType == DPT_BlindsControlMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CommMode: // USINT
+	case datapointType == DPT_CommMode: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_AddInfoTypes: // USINT
+	case datapointType == DPT_AddInfoTypes: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_RF_ModeSelect: // USINT
+	case datapointType == DPT_RF_ModeSelect: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_RF_FilterSelect: // USINT
+	case datapointType == DPT_RF_FilterSelect: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
+	case datapointType == DPT_StatusGen: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
@@ -8133,7 +8133,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'correspondingDatapointValueIsOutOfService' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Device_Control: // Struct
+	case datapointType == DPT_Device_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -8154,7 +8154,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'theUserApplicationIsStopped' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
+	case datapointType == DPT_ForceSign: // Struct
 
 		// Simple Field (roomhmax)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -8195,7 +8195,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'forcerequest' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ForceSignCool: // BOOL
+	case datapointType == DPT_ForceSignCool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -8206,7 +8206,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusRHC: // Struct
+	case datapointType == DPT_StatusRHC: // Struct
 
 		// Simple Field (summermode)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -8247,7 +8247,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'fault' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusSDHWC: // Struct
+	case datapointType == DPT_StatusSDHWC: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -8268,7 +8268,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'fault' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
+	case datapointType == DPT_FuelTypeSet: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -8289,7 +8289,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'oil' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusRCC: // BOOL
+	case datapointType == DPT_StatusRCC: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -8300,7 +8300,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusAHU: // Struct
+	case datapointType == DPT_StatusAHU: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
@@ -8326,7 +8326,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'fault' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
+	case datapointType == DPT_CombinedStatus_RTSM: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
@@ -8357,7 +8357,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'effectiveValueOfTheWindowStatus' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
+	case datapointType == DPT_LightActuatorErrorInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
@@ -8398,7 +8398,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'loaddetectionerror' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_RF_ModeInfo: // Struct
+	case datapointType == DPT_RF_ModeInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -8419,7 +8419,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'asynchronous' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_RF_FilterInfo: // Struct
+	case datapointType == DPT_RF_FilterInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -8440,7 +8440,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'doaAndKnxSn' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
+	case datapointType == DPT_Channel_Activation_8: // Struct
 
 		// Simple Field (activationStateOfChannel1)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -8481,7 +8481,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'activationStateOfChannel8' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusDHWC: // Struct
+	case datapointType == DPT_StatusDHWC: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(8, uint8(0x00)); _err != nil {
@@ -8527,7 +8527,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'fault' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
+	case datapointType == DPT_StatusRHCC: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
@@ -8608,7 +8608,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'fault' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_HVA: // Struct
+	case datapointType == DPT_CombinedStatus_HVA: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -8659,7 +8659,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'currentValvePosition' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
+	case datapointType == DPT_CombinedStatus_RTC: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -8710,7 +8710,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'generalFailureInformation' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Media: // Struct
+	case datapointType == DPT_Media: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint16(10, uint16(0x00)); _err != nil {
@@ -8746,7 +8746,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
 			return errors.New("Error serializing reserved field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
+	case datapointType == DPT_Channel_Activation_16: // Struct
 
 		// Simple Field (activationStateOfChannel1)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -8827,7 +8827,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'activationStateOfChannel16' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_OnOffAction: // USINT
+	case datapointType == DPT_OnOffAction: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -8838,7 +8838,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Alarm_Reaction: // USINT
+	case datapointType == DPT_Alarm_Reaction: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -8849,7 +8849,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_UpDown_Action: // USINT
+	case datapointType == DPT_UpDown_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -8860,7 +8860,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HVAC_PB_Action: // USINT
+	case datapointType == DPT_HVAC_PB_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
@@ -8871,7 +8871,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DoubleNibble: // Struct
+	case datapointType == DPT_DoubleNibble: // Struct
 
 		// Simple Field (busy)
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
@@ -8882,7 +8882,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'nak' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
+	case datapointType == DPT_SceneInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
@@ -8898,7 +8898,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'scenenumber' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
+	case datapointType == DPT_CombinedInfoOnOff: // Struct
 
 		// Simple Field (maskBitInfoOnOffOutput16)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -9059,25 +9059,25 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'infoOnOffOutput1' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ActiveEnergy_V64: // LINT
+	case datapointType == DPT_ActiveEnergy_V64: // LINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
+	case datapointType == DPT_ApparantEnergy_V64: // LINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_V64: // LINT
+	case datapointType == DPT_ReactiveEnergy_V64: // LINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
+	case datapointType == DPT_Channel_Activation_24: // Struct
 
 		// Simple Field (activationStateOfChannel1)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -9198,7 +9198,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'activationStateOfChannel24' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_HVACModeNext: // Struct
+	case datapointType == DPT_HVACModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9209,7 +9209,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'hvacMode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
+	case datapointType == DPT_DHWModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9220,7 +9220,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'dhwMode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_OccModeNext: // Struct
+	case datapointType == DPT_OccModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9231,7 +9231,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'occupancyMode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_BuildingModeNext: // Struct
+	case datapointType == DPT_BuildingModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9242,7 +9242,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'buildingMode' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Version: // Struct
+	case datapointType == DPT_Version: // Struct
 
 		// Simple Field (magicNumber)
 		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
@@ -9258,7 +9258,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'revisionNumber' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
+	case datapointType == DPT_AlarmInfo: // Struct
 
 		// Simple Field (logNumber)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -9324,7 +9324,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'inalarm' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_3: // Struct
+	case datapointType == DPT_TempRoomSetpSetF16_3: // Struct
 
 		// Simple Field (tempsetpcomf)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
@@ -9340,7 +9340,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'tempsetpeco' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
+	case datapointType == DPT_TempRoomSetpSetShiftF16_3: // Struct
 
 		// Simple Field (tempsetpshiftcomf)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
@@ -9356,7 +9356,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'tempsetpshifteco' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
+	case datapointType == DPT_Scaling_Speed: // Struct
 
 		// Simple Field (timePeriod)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9367,7 +9367,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'percent' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Scaling_Step_Time: // Struct
+	case datapointType == DPT_Scaling_Step_Time: // Struct
 
 		// Simple Field (timePeriod)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9378,7 +9378,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'percent' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
+	case datapointType == DPT_MeteringValue: // Struct
 
 		// Simple Field (countval)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
@@ -9419,7 +9419,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'outofservice' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_MBus_Address: // Struct
+	case datapointType == DPT_MBus_Address: // Struct
 
 		// Simple Field (manufactid)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9440,7 +9440,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'medium' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Colour_RGB: // Struct
+	case datapointType == DPT_Colour_RGB: // Struct
 
 		// Simple Field (r)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -9456,13 +9456,13 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'b' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
+	case datapointType == DPT_LanguageCodeAlpha2_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(16, "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString(-1, "ASCII", value.GetString()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
+	case datapointType == DPT_Tariff_ActiveEnergy: // Struct
 
 		// Simple Field (activeelectricalenergy)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
@@ -9488,7 +9488,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'tariffvalidity' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Prioritised_Mode_Control: // Struct
+	case datapointType == DPT_Prioritised_Mode_Control: // Struct
 
 		// Simple Field (deactivationOfPriority)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -9504,7 +9504,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'modeLevel' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
+	case datapointType == DPT_DALI_Control_Gear_Diagnostic: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -9540,7 +9540,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'daliDeviceAddressOrDaliGroupAddress' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_DALI_Diagnostics: // Struct
+	case datapointType == DPT_DALI_Diagnostics: // Struct
 
 		// Simple Field (ballastFailure)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -9556,7 +9556,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'deviceAddress' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
+	case datapointType == DPT_CombinedPosition: // Struct
 
 		// Simple Field (heightPosition)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -9582,7 +9582,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'validitySlatsPosition' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
+	case datapointType == DPT_StatusSAB: // Struct
 
 		// Simple Field (heightPosition)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -9663,7 +9663,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'validitySlatsPos' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Colour_xyY: // Struct
+	case datapointType == DPT_Colour_xyY: // Struct
 
 		// Simple Field (xAxis)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9694,7 +9694,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'validityBrightness' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
+	case datapointType == DPT_Converter_Status: // Struct
 
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
@@ -9735,7 +9735,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'converterFailure' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
+	case datapointType == DPT_Converter_Test_Result: // Struct
 
 		// Simple Field (ltrf)
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
@@ -9786,7 +9786,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'lpdtr' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Battery_Info: // Struct
+	case datapointType == DPT_Battery_Info: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
@@ -9812,7 +9812,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'batteryChargeLevel' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
+	case datapointType == DPT_Brightness_Colour_Temperature_Transition: // Struct
 
 		// Simple Field (ms)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
@@ -9848,7 +9848,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'validityOfTheAbsoluteBrightness' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
+	case datapointType == DPT_Brightness_Colour_Temperature_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
@@ -9894,7 +9894,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'cbAndStepCodeBrightnessValidity' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
+	case datapointType == DPT_Colour_RGBW: // Struct
 
 		// Simple Field (colourLevelRed)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -9945,7 +9945,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'mw' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
+	case datapointType == DPT_Relative_Control_RGBW: // Struct
 
 		// Simple Field (maskcw)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -10031,7 +10031,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
 			return errors.New("Error serializing reserved field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
+	case datapointType == DPT_Relative_Control_RGB: // Struct
 
 		// Simple Field (cb)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
@@ -10077,7 +10077,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
 			return errors.New("Error serializing reserved field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
+	case datapointType == DPT_GeographicalLocation: // Struct
 
 		// Simple Field (longitude)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
@@ -10088,7 +10088,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'latitude' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
+	case datapointType == DPT_TempRoomSetpSetF16_4: // Struct
 
 		// Simple Field (roomTemperatureSetpointComfort)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
@@ -10109,7 +10109,7 @@ func KnxDatapointSerialize(io *utils.WriteBuffer, value api.PlcValue, datapointT
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'roomTemperatureSetpointBuildingProtection' field " + _err.Error())
 		}
-	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
+	case datapointType == DPT_TempRoomSetpSetShiftF16_4: // Struct
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {

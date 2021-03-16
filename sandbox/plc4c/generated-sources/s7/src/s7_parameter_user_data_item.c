@@ -185,11 +185,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
 plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_parameter_user_data_item* _message) {
   plc4c_return_code _res = OK;
-  // Enumerated Discriminator Field (itemType)
-            // org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.DefaultDiscriminatorField@550f522b
-            // org.apache.plc4x.plugins.codegenerator.types.references.DefaultIntegerTypeReference@1842dc39
-            // itemType
-            // plc4c_s7_read_write_s7_parameter_user_data_item
+  // Discriminator Field (itemType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(_message->_type).itemType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)

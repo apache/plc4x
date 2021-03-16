@@ -80,7 +80,6 @@ func (m *APDU) GetTypeName() string {
 
 func (m *APDU) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (apduType)
 	lengthInBits += 4
 
