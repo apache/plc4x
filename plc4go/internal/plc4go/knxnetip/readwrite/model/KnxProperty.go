@@ -29,7 +29,7 @@ import (
 
 func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, dataLengthInBytes uint8) (api.PlcValue, error) {
 	switch {
-	case propertyType == PDT_CONTROL: // BOOL
+	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -42,7 +42,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case propertyType == PDT_CHAR: // SINT
+	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt8(8)
@@ -50,7 +50,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcSINT(value), nil
-	case propertyType == PDT_UNSIGNED_CHAR: // USINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -58,7 +58,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case propertyType == PDT_INT: // INT
+	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
@@ -66,7 +66,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcINT(value), nil
-	case propertyType == PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -74,7 +74,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case propertyType == PDT_UNSIGNED_INT: // UINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
@@ -82,7 +82,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUINT(value), nil
-	case propertyType == PDT_KNX_FLOAT: // REAL
+	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 4, 11)
@@ -90,7 +90,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case propertyType == PDT_DATE: // Struct
+	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -129,7 +130,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		_map["Struct"] = values.NewPlcUSINT(year)
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_TIME: // Struct
+	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (day)
@@ -170,7 +172,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		_map["Struct"] = values.NewPlcUSINT(seconds)
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_LONG: // DINT
+	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
@@ -178,7 +180,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcDINT(value), nil
-	case propertyType == PDT_UNSIGNED_LONG: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
@@ -186,7 +188,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUDINT(value), nil
-	case propertyType == PDT_FLOAT: // REAL
+	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
@@ -194,7 +196,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcREAL(value), nil
-	case propertyType == PDT_DOUBLE: // LREAL
+	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat64(true, 11, 52)
@@ -202,7 +204,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcLREAL(value), nil
-	case propertyType == PDT_CHAR_BLOCK: // List
+	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -214,7 +216,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_POLL_GROUP_SETTINGS: // Struct
+	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Array Field (groupAddress)
@@ -246,7 +249,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		_map["Struct"] = values.NewPlcUSINT(pollingSoftNr)
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_SHORT_CHAR_BLOCK: // List
+	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -258,7 +261,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_DATE_TIME: // Struct
+	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (year)
@@ -398,7 +402,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing reserved field " + _err.Error())
 		}
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_GENERIC_01: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -410,7 +414,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_02: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -422,7 +426,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_03: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -434,7 +438,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_04: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -446,7 +450,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_05: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -458,7 +462,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_06: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -470,7 +474,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_07: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -482,7 +486,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_08: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -494,7 +498,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_09: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -506,7 +510,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_10: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -518,7 +522,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_11: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -530,7 +534,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_12: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -542,7 +546,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_13: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -554,7 +558,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_14: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -566,7 +570,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_15: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -578,7 +582,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_16: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -590,7 +594,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_17: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -602,7 +606,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_18: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -614,7 +618,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_19: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -626,7 +630,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_GENERIC_20: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -638,7 +642,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcUSINT(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_VERSION: // Struct
+	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (magicNumber)
@@ -662,7 +667,8 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		_map["Struct"] = values.NewPlcUSINT(revisionNumber)
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_ALARM_INFO: // Struct
+	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
+
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (logNumber)
@@ -752,7 +758,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		_map["Struct"] = values.NewPlcBOOL(inalarm)
 		return values.NewPlcStruct(_map), nil
-	case propertyType == PDT_BINARY_INFORMATION: // BOOL
+	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
@@ -765,7 +771,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcBOOL(value), nil
-	case propertyType == PDT_BITSET8: // List
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -777,7 +783,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcBOOL(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_BITSET16: // List
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
 
 		// Array Field (value)
 		var value []api.PlcValue
@@ -789,7 +795,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			value = append(value, values.NewPlcBOOL(_item))
 		}
 		return values.NewPlcList(value), nil
-	case propertyType == PDT_ENUM8: // USINT
+	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -797,7 +803,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
 		}
 		return values.NewPlcUSINT(value), nil
-	case propertyType == PDT_SCALING: // USINT
+	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
@@ -823,7 +829,7 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 
 func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
 	switch {
-	case propertyType == PDT_CONTROL: // BOOL
+	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -834,43 +840,43 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_CHAR: // SINT
+	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_UNSIGNED_CHAR: // USINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_INT: // INT
+	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_UNSIGNED_INT: // UINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_KNX_FLOAT: // REAL
+	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_DATE: // Struct
+	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
@@ -901,7 +907,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteUint8(7, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'year' field " + _err.Error())
 		}
-	case propertyType == PDT_TIME: // Struct
+	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
 
 		// Simple Field (day)
 		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
@@ -932,31 +938,31 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'seconds' field " + _err.Error())
 		}
-	case propertyType == PDT_LONG: // DINT
+	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_UNSIGNED_LONG: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_FLOAT: // REAL
+	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_DOUBLE: // LREAL
+	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_CHAR_BLOCK: // List
+	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
@@ -965,7 +971,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_POLL_GROUP_SETTINGS: // Struct
+	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
 
 		// Array Field (groupAddress)
 		for i := uint32(0); i < uint32((2)); i++ {
@@ -990,7 +996,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'pollingSoftNr' field " + _err.Error())
 		}
-	case propertyType == PDT_SHORT_CHAR_BLOCK: // List
+	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
@@ -999,7 +1005,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_DATE_TIME: // Struct
+	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
 
 		// Simple Field (year)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -1105,7 +1111,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
 			return errors.New("Error serializing reserved field " + _err.Error())
 		}
-	case propertyType == PDT_GENERIC_01: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((1)); i++ {
@@ -1114,7 +1120,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_02: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((2)); i++ {
@@ -1123,7 +1129,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_03: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((3)); i++ {
@@ -1132,7 +1138,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_04: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((4)); i++ {
@@ -1141,7 +1147,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_05: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
@@ -1150,7 +1156,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_06: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((6)); i++ {
@@ -1159,7 +1165,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_07: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((7)); i++ {
@@ -1168,7 +1174,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_08: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
@@ -1177,7 +1183,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_09: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((9)); i++ {
@@ -1186,7 +1192,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_10: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
@@ -1195,7 +1201,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_11: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((11)); i++ {
@@ -1204,7 +1210,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_12: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((12)); i++ {
@@ -1213,7 +1219,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_13: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((13)); i++ {
@@ -1222,7 +1228,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_14: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((14)); i++ {
@@ -1231,7 +1237,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_15: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((15)); i++ {
@@ -1240,7 +1246,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_16: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
@@ -1249,7 +1255,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_17: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((17)); i++ {
@@ -1258,7 +1264,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_18: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((18)); i++ {
@@ -1267,7 +1273,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_19: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((19)); i++ {
@@ -1276,7 +1282,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_GENERIC_20: // List
+	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((20)); i++ {
@@ -1285,7 +1291,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_VERSION: // Struct
+	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
 
 		// Simple Field (magicNumber)
 		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
@@ -1301,7 +1307,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'revisionNumber' field " + _err.Error())
 		}
-	case propertyType == PDT_ALARM_INFO: // Struct
+	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
 
 		// Simple Field (logNumber)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
@@ -1367,7 +1373,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'inalarm' field " + _err.Error())
 		}
-	case propertyType == PDT_BINARY_INFORMATION: // BOOL
+	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
@@ -1378,7 +1384,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_BITSET8: // List
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
@@ -1387,7 +1393,7 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_BITSET16: // List
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
@@ -1396,13 +1402,13 @@ func KnxPropertySerialize(io *utils.WriteBuffer, value api.PlcValue, propertyTyp
 				return errors.New("Error serializing 'value' field " + _itemErr.Error())
 			}
 		}
-	case propertyType == PDT_ENUM8: // USINT
+	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
 			return errors.New("Error serializing 'value' field " + _err.Error())
 		}
-	case propertyType == PDT_SCALING: // USINT
+	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {

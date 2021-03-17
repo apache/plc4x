@@ -73,7 +73,7 @@
 ]
 
 
-//Abstract fields don't require the errors module in Go, this causes an unused import error.
+//Abstract fields don't require the 'errors' module in Go, this causes an unused import error.
 //[type 'AbstractTypeTest'
 //    [abstract bit 'bitField']
 //    [abstract int 8 'intField']

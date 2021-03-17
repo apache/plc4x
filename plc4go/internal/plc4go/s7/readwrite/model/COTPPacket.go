@@ -130,17 +130,23 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	var _parent *COTPPacket
 	var typeSwitchError error
 	switch {
-	case tpduCode == 0xF0:
+
+	case tpduCode == 0xF0: // COTPPacketData
 		_parent, typeSwitchError = COTPPacketDataParse(io)
-	case tpduCode == 0xE0:
+
+	case tpduCode == 0xE0: // COTPPacketConnectionRequest
 		_parent, typeSwitchError = COTPPacketConnectionRequestParse(io)
-	case tpduCode == 0xD0:
+
+	case tpduCode == 0xD0: // COTPPacketConnectionResponse
 		_parent, typeSwitchError = COTPPacketConnectionResponseParse(io)
-	case tpduCode == 0x80:
+
+	case tpduCode == 0x80: // COTPPacketDisconnectRequest
 		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(io)
-	case tpduCode == 0xC0:
+
+	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
 		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(io)
-	case tpduCode == 0x70:
+
+	case tpduCode == 0x70: // COTPPacketTpduError
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
 	}
 	if typeSwitchError != nil {
@@ -194,6 +200,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(child.TpduCode())
 	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
+
 	if _tpduCodeErr != nil {
 		return errors.New("Error serializing 'tpduCode' field " + _tpduCodeErr.Error())
 	}

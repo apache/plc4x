@@ -50,7 +50,7 @@ type IAdsWriteControlRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsWriteControlRequest) CommandId() CommandId {
-	return ADS_WRITE_CONTROL
+	return CommandId_ADS_WRITE_CONTROL
 }
 
 func (m *AdsWriteControlRequest) Response() bool {
@@ -142,6 +142,7 @@ func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())

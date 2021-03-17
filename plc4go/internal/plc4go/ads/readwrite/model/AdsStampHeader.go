@@ -105,6 +105,7 @@ func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
+
 		_item, _err := AdsNotificationSampleParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'adsNotificationSamples' field " + _err.Error())

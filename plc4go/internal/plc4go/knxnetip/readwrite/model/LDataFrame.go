@@ -164,11 +164,14 @@ func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	var _parent *LDataFrame
 	var typeSwitchError error
 	switch {
-	case notAckFrame == true && polling == false:
+
+	case notAckFrame == true && polling == false: // LDataExtended
 		_parent, typeSwitchError = LDataExtendedParse(io)
-	case notAckFrame == true && polling == true:
+
+	case notAckFrame == true && polling == true: // LPollData
 		_parent, typeSwitchError = LPollDataParse(io)
-	case notAckFrame == false:
+
+	case notAckFrame == false: // LDataFrameACK
 		_parent, typeSwitchError = LDataFrameACKParse(io)
 	}
 	if typeSwitchError != nil {
@@ -196,6 +199,7 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling := bool(child.Polling())
 	_pollingErr := io.WriteBit((polling))
+
 	if _pollingErr != nil {
 		return errors.New("Error serializing 'polling' field " + _pollingErr.Error())
 	}
@@ -210,6 +214,7 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame := bool(child.NotAckFrame())
 	_notAckFrameErr := io.WriteBit((notAckFrame))
+
 	if _notAckFrameErr != nil {
 		return errors.New("Error serializing 'notAckFrame' field " + _notAckFrameErr.Error())
 	}

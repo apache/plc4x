@@ -149,6 +149,7 @@ func ApduDataExtPropertyValueResponseParse(io *utils.ReadBuffer, length uint8) (
 	// Count array
 	data := make([]uint8, uint16(length)-uint16(uint16(5)))
 	for curItem := uint16(0); curItem < uint16(uint16(length)-uint16(uint16(5))); curItem++ {
+
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())

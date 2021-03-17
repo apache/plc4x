@@ -85,6 +85,7 @@ func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
 	// Count array
 	addr := make([]int8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'addr' field " + _err.Error())

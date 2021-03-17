@@ -105,6 +105,7 @@ func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, e
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())

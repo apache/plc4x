@@ -246,6 +246,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
+
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
@@ -277,6 +278,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
+
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())

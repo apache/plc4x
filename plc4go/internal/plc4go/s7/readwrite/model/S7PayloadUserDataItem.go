@@ -146,9 +146,11 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S
 	var _parent *S7PayloadUserDataItem
 	var typeSwitchError error
 	switch {
-	case cpuFunctionType == 0x04:
+
+	case cpuFunctionType == 0x04: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io)
-	case cpuFunctionType == 0x08:
+
+	case cpuFunctionType == 0x08: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io)
 	}
 	if typeSwitchError != nil {

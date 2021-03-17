@@ -22,9 +22,9 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -148,7 +148,7 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 		return nil, errors.New("Error parsing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
 	}
 	if objectIdentifierHeader != BACnetServiceAckReadProperty_OBJECTIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_OBJECTIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(objectIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_OBJECTIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", objectIdentifierHeader))
 	}
 
 	// Simple Field (objectType)
@@ -169,7 +169,7 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 		return nil, errors.New("Error parsing 'propertyIdentifierHeader' field " + _propertyIdentifierHeaderErr.Error())
 	}
 	if propertyIdentifierHeader != BACnetServiceAckReadProperty_PROPERTYIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_PROPERTYIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(propertyIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_PROPERTYIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", propertyIdentifierHeader))
 	}
 
 	// Simple Field (propertyIdentifierLength)
@@ -182,6 +182,7 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
@@ -195,7 +196,7 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 		return nil, errors.New("Error parsing 'openingTag' field " + _openingTagErr.Error())
 	}
 	if openingTag != BACnetServiceAckReadProperty_OPENINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_OPENINGTAG)) + " but got " + strconv.Itoa(int(openingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_OPENINGTAG) + " but got " + fmt.Sprintf("%d", openingTag))
 	}
 
 	// Simple Field (value)
@@ -210,7 +211,7 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 		return nil, errors.New("Error parsing 'closingTag' field " + _closingTagErr.Error())
 	}
 	if closingTag != BACnetServiceAckReadProperty_CLOSINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
 
 	// Create a partially initialized instance

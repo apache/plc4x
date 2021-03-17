@@ -121,9 +121,11 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	var _parent *NLM
 	var typeSwitchError error
 	switch {
-	case messageType == 0x0:
+
+	case messageType == 0x0: // NLMWhoIsRouterToNetwork
 		_parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
-	case messageType == 0x1:
+
+	case messageType == 0x1: // NLMIAmRouterToNetwork
 		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
 	}
 	if typeSwitchError != nil {
@@ -144,6 +146,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
 	_messageTypeErr := io.WriteUint8(8, (messageType))
+
 	if _messageTypeErr != nil {
 		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
 	}

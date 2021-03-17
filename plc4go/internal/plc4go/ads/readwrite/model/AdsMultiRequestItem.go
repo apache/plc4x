@@ -97,11 +97,14 @@ func AdsMultiRequestItemParse(io *utils.ReadBuffer, indexGroup uint32) (*AdsMult
 	var _parent *AdsMultiRequestItem
 	var typeSwitchError error
 	switch {
-	case indexGroup == 61568:
+
+	case indexGroup == 61568: // AdsMultiRequestItemRead
 		_parent, typeSwitchError = AdsMultiRequestItemReadParse(io)
-	case indexGroup == 61569:
+
+	case indexGroup == 61569: // AdsMultiRequestItemWrite
 		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(io)
-	case indexGroup == 61570:
+
+	case indexGroup == 61570: // AdsMultiRequestItemReadWrite
 		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(io)
 	}
 	if typeSwitchError != nil {

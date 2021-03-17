@@ -147,7 +147,9 @@ func DataItemParse(io *utils.ReadBuffer, dataFormatName string, stringLength int
 		}
 		return values.NewPlcLREAL(value), nil
 	case dataFormatName == "IEC61131_CHAR": // STRING
+
 	case dataFormatName == "IEC61131_WCHAR": // STRING
+
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)

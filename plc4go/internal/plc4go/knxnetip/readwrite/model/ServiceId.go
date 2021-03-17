@@ -105,19 +105,26 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 	var _parent *ServiceId
 	var typeSwitchError error
 	switch {
-	case serviceType == 0x02:
+
+	case serviceType == 0x02: // KnxNetIpCore
 		_parent, typeSwitchError = KnxNetIpCoreParse(io)
-	case serviceType == 0x03:
+
+	case serviceType == 0x03: // KnxNetIpDeviceManagement
 		_parent, typeSwitchError = KnxNetIpDeviceManagementParse(io)
-	case serviceType == 0x04:
+
+	case serviceType == 0x04: // KnxNetIpTunneling
 		_parent, typeSwitchError = KnxNetIpTunnelingParse(io)
-	case serviceType == 0x05:
+
+	case serviceType == 0x05: // KnxNetIpRouting
 		_parent, typeSwitchError = KnxNetIpRoutingParse(io)
-	case serviceType == 0x06:
+
+	case serviceType == 0x06: // KnxNetRemoteLogging
 		_parent, typeSwitchError = KnxNetRemoteLoggingParse(io)
-	case serviceType == 0x07:
+
+	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
 		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(io)
-	case serviceType == 0x08:
+
+	case serviceType == 0x08: // KnxNetObjectServer
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
 	}
 	if typeSwitchError != nil {
@@ -138,6 +145,7 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
 	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+
 	if _serviceTypeErr != nil {
 		return errors.New("Error serializing 'serviceType' field " + _serviceTypeErr.Error())
 	}
