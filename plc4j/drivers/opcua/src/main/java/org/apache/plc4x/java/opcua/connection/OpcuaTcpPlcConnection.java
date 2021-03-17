@@ -394,13 +394,6 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
                 UInteger clientHandle = uint(clientHandles.getAndIncrement());
 
-                MonitoringParameters parameters = new MonitoringParameters(
-                    clientHandle,
-                    (double) cycleTime,     // sampling interval
-                    null,       // filter, null means use default
-                    uint(1),   // queue size
-                    true        // discard oldest
-                );
                 MonitoringMode monitoringMode;
                 switch (subscriptionField.getPlcSubscriptionType()) {
                     case CYCLIC:
@@ -408,6 +401,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                         break;
                     case CHANGE_OF_STATE:
                         monitoringMode = MonitoringMode.Reporting;
+                        cycleTime = subscriptionField.getDuration().orElse(Duration.ofSeconds(0)).toMillis();
                         break;
                     case EVENT:
                         monitoringMode = MonitoringMode.Reporting;
@@ -415,6 +409,14 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     default:
                         monitoringMode = MonitoringMode.Reporting;
                 }
+
+                MonitoringParameters parameters = new MonitoringParameters(
+                    clientHandle,
+                    (double) cycleTime,     // sampling interval
+                    null,       // filter, null means use default
+                    uint(1),   // queue size
+                    true        // discard oldest
+                );
 
                 PlcSubscriptionHandle subHandle = null;
                 PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
