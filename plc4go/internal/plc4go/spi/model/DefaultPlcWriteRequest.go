@@ -32,6 +32,7 @@ type DefaultPlcWriteRequestBuilder struct {
 	fieldHandler spi.PlcFieldHandler
 	valueHandler spi.PlcValueHandler
 	queries      map[string]string
+	fields       map[string]model.PlcField
 	values       map[string]interface{}
 }
 
@@ -41,33 +42,43 @@ func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHan
 		fieldHandler: fieldHandler,
 		valueHandler: valueHandler,
 		queries:      map[string]string{},
+		fields:       map[string]model.PlcField{},
 		values:       map[string]interface{}{},
 	}
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddItem(name string, query string, value interface{}) {
+func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) {
 	m.queries[name] = query
 	m.values[name] = value
 }
 
+func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) {
+	m.fields[name] = field
+	m.values[name] = value
+}
+
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
-	fields := make(map[string]model.PlcField)
-	values := make(map[string]values.PlcValue)
+	// Parse the queries as well as pro
 	for name, query := range m.queries {
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
 			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
 		}
-		fields[name] = field
+		m.fields[name] = field
+	}
+
+	// Process the values for fields.
+	plcValues := make(map[string]values.PlcValue)
+	for name, field := range m.fields {
 		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
 		if err != nil {
 			return nil, errors.New("Error parsing value of type: " + field.GetTypeName() + ". Got error: " + err.Error())
 		}
-		values[name] = value
+		plcValues[name] = value
 	}
 	return DefaultPlcWriteRequest{
-		fields: fields,
-		values: values,
+		fields: m.fields,
+		values: plcValues,
 		writer: m.writer,
 	}, nil
 }

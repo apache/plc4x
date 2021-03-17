@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                bigEndian="true">
+
+  <name>Beckhoff ADS/AMS Discovery</name>
+
+  <testcase>
+    <name>ADS Discovery Request from 10.10.10.10.1.1</name>
+    <raw>0366147100000000010000000a0a0a0a0101102700000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
+        <operation>DISCOVERY</operation>
+        <direction>REQUEST</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>10</octet1>
+          <octet2>10</octet2>
+          <octet3>10</octet3>
+          <octet4>10</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+      </DiscoveryRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Discovery Response from 192.168.2.221.1.1</name>
+    <raw>036614710000000001000080c0a802dd0101102704000000050010004445534b544f502d54304e36554e4200</raw>
+    <!--
+    remaining part of frame
+    04001401140100000a00000000000000bb4700000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030004000301b80f120041003363303937326134386664623736663132613831323839613335643461333731653138666333303736363038323839373031386138626638386439393264633800
+    -->
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <DiscoveryResponse className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryResponse">
+        <operation>DISCOVERY</operation>
+        <direction>RESPONSE</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>2</octet3>
+          <octet4>221</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+        <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>4445534B544F502D54304E36554E42</text>
+        </name>
+      </DiscoveryResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Route Request from 10.10.10.10.1.1 via 10.10.10.10 with user='username' and pwd='password'</name>
+    <raw>0366147100000000060000000a0a0a0a01011027050000000c000c0031302e31302e31302e313000070006000a0a0a0a01010d000900757365726e616d65000200090070617373776f72640005000c0031302e31302e31302e313000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <RouteRequest className="org.apache.plc4x.java.ads.discovery.readwrite.RouteRequest">
+        <operation>ROUTE</operation>
+        <direction>REQUEST</direction>
+        <sender className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>10</octet1>
+          <octet2>10</octet2>
+          <octet3>10</octet3>
+          <octet4>10</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </sender>
+        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>31302E31302E31302E3130</text>
+        </routeName>
+        <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>10</octet1>
+          <octet2>10</octet2>
+          <octet3>10</octet3>
+          <octet4>10</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </target>
+        <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>757365726E616D65</text>
+        </username>
+        <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>70617373776F7264</text>
+        </password>
+        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>31302E31302E31302E3130</text>
+        </address>
+      </RouteRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Route Response with Success status</name>
+    <raw>036614710000000006000080c0a802dd01011027010000000100040000000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
+        <operation>ROUTE</operation>
+        <direction>RESPONSE</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>2</octet3>
+          <octet4>221</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+        <status>SUCCESS</status>
+      </RouteResponse>
+
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Route Response with Failure status</name>
+    <raw>036614710000000006000080c0a802dd01011027010000000100000407000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
+        <operation>ROUTE</operation>
+        <direction>RESPONSE</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>2</octet3>
+          <octet4>221</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+        <status>FAILURE</status>
+      </RouteResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Discovery Request</name>
+    <raw>036614710000000001000000c0a802e80101102700000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
+        <operation>DISCOVERY</operation>
+        <direction>REQUEST</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>2</octet3>
+          <octet4>232</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+      </DiscoveryRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Discovery Request (TC2)</name>
+    <raw>036614710000000001000000c0a800890101102700000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
+        <operation>DISCOVERY</operation>
+        <direction>REQUEST</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>0</octet3>
+          <octet4>137</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+      </DiscoveryRequest>
+    </xml>
+  </testcase>
+
+  <!-- Encoding of password is different for TC2 so this one currently fails.
+  <testcase>
+    <name>ADS Discovery Response (TC2)</name>
+    <raw>036614710000000001000080051c5b8c010110270300000005000900504c435f484f4d45000400140114010000060000000000000000000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000400020bc108</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <DiscoveryResponse className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryResponse">
+        <operation>DISCOVERY</operation>
+        <direction>RESPONSE</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>5</octet1>
+          <octet2>28</octet2>
+          <octet3>91</octet3>
+          <octet4>140</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+        <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>UExDX0hPTUU=</text>
+        </name>
+      </DiscoveryResponse>
+    </xml>
+  </testcase>
+  -->
+
+  <testcase>
+    <name>ADS Route Request (TC2)</name>
+    <raw>036614710000000006000000c0a8008901011027050000000c0010004445534b544f502d33504a314135440007000600c0a8008901010d000e0041646d696e6973747261746f72000200010000050010004445534b544f502d33504a3141354400</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <RouteRequest className="org.apache.plc4x.java.ads.discovery.readwrite.RouteRequest">
+        <operation>ROUTE</operation>
+        <direction>REQUEST</direction>
+        <sender className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>0</octet3>
+          <octet4>137</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </sender>
+        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>4445534B544F502D33504A31413544</text>
+        </routeName>
+        <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>0</octet3>
+          <octet4>137</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </target>
+        <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>41646D696E6973747261746F72</text>
+        </username>
+        <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text></text>
+        </password>
+        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
+          <text>4445534B544F502D33504A31413544</text>
+        </address>
+      </RouteRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ADS Route Response (TC2)</name>
+    <raw>036614710000000006000080051c5b8c01011027010000000100040000000000</raw>
+    <root-type>AdsDiscovery</root-type>
+    <xml>
+      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
+        <operation>ROUTE</operation>
+        <direction>RESPONSE</direction>
+        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
+          <octet1>5</octet1>
+          <octet2>28</octet2>
+          <octet3>91</octet3>
+          <octet4>140</octet4>
+          <octet5>1</octet5>
+          <octet6>1</octet6>
+        </amsNetId>
+        <status>SUCCESS</status>
+      </RouteResponse>
+    </xml>
+  </testcase>
+
+<!--
+collected sample frames, not covered by tests/mspec, route name=DESKTOP-OM18VQ9, ams=192.168.2.221.1.1, ip=192.168.2.221
+user=username, password=password, u (set undirectional), t=N (timeout N seconds, 5 if not set), m=N (max fragment size in kB), T=TCP, L=Lightbus, P=profibus dp, U=ADS UDP, C=canopen, D=device net S=SOAP, E=ethercat
+remote static    (T)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e0010004b161973d53d4032e10161e0150c6c5705000e003139322e3136382e322e32333200
+                              036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e001000c57730c6726c79d425eaee36fbc2018b05000e003139322e3136382e322e32333200
+                              036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e001000947ece82ba3b9286cbf0577c9a0f444a05000e003139322e3136382e322e32333200
+                              036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100040a64dec1e3c9350bb00700b1a70680105000e003139322e3136382e322e32333200
+                 (T,u)        036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100052d221f7aa561c82acfbc82accc5d8a305000e003139322e3136382e322e32333200
+                 (T,u, t=6)   036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e0010006db80352ac740b556c57e594f93ce25005000e003139322e3136382e322e32333200
+                 (T,u, t=7)   036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100010f8a99b21b0e333255fa269a9b0ff8105000e003139322e3136382e322e32333200
+                              036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e0010003fc8f87690bd1293de5f399afee6617205000e003139322e3136382e322e32333200
+                              036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f001000e3707a51b27e15fc96bd49bd6346a87d0e0010006c42e5e08dd2406334e9fcdec831861c05000e003139322e3136382e322e32333200
+                 (T,u t=5)    036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f001000e3707a51b27e15fc96bd49bd6346a87d0e0010006c42e5e08dd2406334e9fcdec831861c05000e003139322e3136382e322e32333200
+                 (T,u m=1)    036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e8010110000400000400000f001000dda70ca1ed02bf417f15e371d081784f0e00100074281319e44c44297ce26a66ffce587c05000e003139322e3136382e322e32333200
+                 (T,u m=2)    036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e8010110000400000800000f001000dda70ca1ed02bf417f15e371d081784f0e00100074281319e44c44297ce26a66ffce587c05000e003139322e3136382e322e32333200
+                 (T,u m=3)    036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e8010110000400000c00000f001000dda70ca1ed02bf417f15e371d081784f0e00100074281319e44c44297ce26a66ffce587c05000e003139322e3136382e322e32333200
+                 (T,u m=8)    036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e8010110000400002000000f001000dda70ca1ed02bf417f15e371d081784f0e00100074281319e44c44297ce26a66ffce587c05000e003139322e3136382e322e32333200
+
+remote temporary (T)          036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100027bf64e07a8166aa18c1040d4e6ca32d05000e003139322e3136382e322e323332000900040001000000
+remote temporary (T,u)        036614710000000006000000c0a802e801011027060000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100047a15792491b079f02fc42c947e8319805000e003139322e3136382e322e323332000900040001000000
+remote static    (L)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e001000aed37fff5ff62355f9c3fe06a73d6d5c05000e003139322e3136382e322e32333200
+remote static    (P)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100088d48e8f0189e322f8a1308d5429e7b105000e003139322e3136382e322e32333200
+remote static    (U)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e001000a1a73433b6932d8155d3c794d1f521fc05000e003139322e3136382e322e32333200
+remote static    (C)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e00100068b0ed86f5f766804e4e0333c94de44f05000e003139322e3136382e322e32333200
+remote static    (D)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e0010006db80352ac740b556c57e594f93ce25005000e003139322e3136382e322e32333200
+remote static    (S)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e0010001e52418cfef466a724fda494cb9e09c105000e003139322e3136382e322e32333200
+remote static    (E)          036614710000000006000000c0a802e801011027050000000c0010004445534b544f502d4f4d31385651390007000600c0a802e801010f0010003e92e0a029915511c09407a8350b0c9c0e001000db03a320dc535ec5b5b61ffa2ae9840605000e003139322e3136382e322e32333200
+
+Discovery responses below are dumps of data parts in UDP frames.
+Beginning is the same, differences starts from 03 00 04 sequence at the end.
+Supposing last part of TC2 packet is version (02 0b c1 08).
+For TC 3 this segment of frame (03 01 b8 0f 12) is bit longer.
+It is unclear yet which part of frame is responsible for shipping operating
+system information. Twincat 2 PLC reports Windows CE.
+
+TC2:
+0000   c8 f7 50 6c 68 c7 00 01 05 1c 5b 8c 08 00 45 00   ..Plh.....[...E.
+0010   01 61 c5 ce 00 00 80 11 f1 34 c0 a8 00 b4 c0 a8   .a.......4......
+0020   00 84 bf 03 bf 03 01 4d 21 5d 03 66 14 71 00 00   .......M!].f.q..
+0030   00 00 01 00 00 80 05 1c 5b 8c 01 01 10 27 03 00   ........[....'..
+0040   00 00 05 00 09 00 50 4c 43 5f 48 4f 4d 45 00    ......PLC_HOME
+
+                                                    04   ..
+0050   00 14 01 14 01 00 00 06 00 00 00 00 00 00 00 00   ................
+0060   00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0080   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0090   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00a0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00b0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00c0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00d0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00e0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00f0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0100   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0110   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0120   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0130   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0140   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0150   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0160   00 00 00 00 00 00 00 03 00 04 00 02 0b c1 08      ...............
+
+TC3:
+0000   1c 1b 0d 6a 88 84 9c b6 d0 98 df bb 08 00 45 00   ...j..........E.
+0010   01 ad 38 d1 00 00 80 11 79 d7 c0 a8 02 dd c0 a8   ..8.....y.......
+0020   02 6a bf 03 bf 03 01 99 25 86 03 66 14 71 00 00   .j......%..f.q..
+0030   00 00 01 00 00 80 c0 a8 02 dd 01 01 10 27 04 00   .............'..
+0040   00 00 05 00 10 00 44 45 53 4b 54 4f 50 2d 54 30   ......DESKTOP-T0
+0050   4e 36 55 4e 42 00                                 N6UNB
+
+                         04 00 14 01 14 01 00 00 0a 00   ...........
+0060   00 00 00 00 00 00 bb 47 00 00 02 00 00 00 00 00   .......G........
+0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0080   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0090   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00a0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00b0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00c0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00d0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00e0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+00f0   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0100   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0110   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0120   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0130   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0140   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0150   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0160   00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00   ................
+0170   04 00 03 01 b8 0f 12 00 41 00 33 63 30 39 37 32   ........A.3c0972
+0180   61 34 38 66 64 62 37 36 66 31 32 61 38 31 32 38   a48fdb76f12a8128
+0190   39 61 33 35 64 34 61 33 37 31 65 31 38 66 63 33   9a35d4a371e18fc3
+01a0   30 37 36 36 30 38 32 38 39 37 30 31 38 61 38 62   0766082897018a8b
+01b0   66 38 38 64 39 39 32 64 63 38 00                  f88d992dc8.
+
+ -->
+
+</test:testsuite>

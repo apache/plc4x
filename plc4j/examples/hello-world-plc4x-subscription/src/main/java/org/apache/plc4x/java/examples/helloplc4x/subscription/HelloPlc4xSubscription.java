@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.examples.helloplc4x.subscription;
 
-import com.google.gson.Gson;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -110,9 +109,15 @@ public class HelloPlc4xSubscription {
             // them to the console in a JSON format.
             for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
                 final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
-                // Simply convert the event into a JSON object.
-                String jsonString = new Gson().toJson(plcValue);
-                logger.info(String.format("Field '%s' value: %s", fieldName, jsonString));
+                if(plcValue.isList()) {
+                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    for (PlcValue value : plcValue.getList()) {
+                        sb.append(" ").append(value.getString());
+                    }
+                    logger.info(sb.toString());
+                } else {
+                    logger.info(String.format("Field '%s' value: %s", fieldName, plcValue.getString()));
+                }
             }
         }
     }

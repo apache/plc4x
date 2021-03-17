@@ -87,7 +87,7 @@ typedef void (*plc4c_connect_free_unsubscription_response_function)(
     plc4c_unsubscription_response *response);
 
 typedef plc4c_return_code (*plc4c_transport_configure_function)(
-    plc4c_list* parameters, void** configuration);
+    char* transport_connect_information, plc4c_list* parameters, void** configuration);
 
 // TODO: Implement the argument.
 typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);

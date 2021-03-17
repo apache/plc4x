@@ -20,9 +20,11 @@ package utils
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"github.com/icza/bitio"
 	"math"
+	"math/big"
 )
 
 type ReadBuffer struct {
@@ -143,6 +145,45 @@ func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
 	return res, nil
 }
 
+func (rb *ReadBuffer) ReadBigInt(bitLength uint64) (*big.Int, error) {
+	// TODO: highly experimental remove this comment when tested or verifyed
+	res := big.NewInt(0)
+
+	// TODO: maybe we can use left shift and or of big int
+	rawBytes := make([]byte, 0)
+	correction := uint8(0)
+
+	for remainingBits := bitLength; remainingBits > 0; {
+		// we can max read 64 bit with bitio
+		bitToRead := uint8(64)
+		if remainingBits < 64 {
+			bitToRead = uint8(remainingBits)
+		}
+		// we now read the bits
+		data := rb.reader.TryReadBits(bitToRead)
+
+		// and check for uneven bits for a right shift at the end
+		correction = 64 - bitToRead
+		data <<= correction
+
+		dataBytes := make([]byte, 8)
+		binary.BigEndian.PutUint64(dataBytes, data)
+		rawBytes = append(rawBytes, dataBytes...)
+
+		if rb.reader.TryError != nil {
+			return big.NewInt(0), rb.reader.TryError
+		}
+		remainingBits -= uint64(bitToRead)
+	}
+
+	res.SetBytes(rawBytes)
+
+	// now we need to shift the last correction to right again
+	res.Rsh(res, uint(correction))
+
+	return res, nil
+}
+
 func (rb *ReadBuffer) ReadFloat32(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float32, error) {
 	bitLength := exponentBitLength + mantissaBitLength
 	if signed {
@@ -193,11 +234,11 @@ func (rb *ReadBuffer) ReadFloat64(signed bool, exponentBitLength uint8, mantissa
 	return res, nil
 }
 
+func (rb *ReadBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (*big.Float, error) {
+	// TODO: highly experimental remove this comment when tested or verifyed
+	return nil, errors.New("not implemented yet")
+}
+
 func (rb *ReadBuffer) ReadString(bitLength uint8) (string, error) {
-	rb.pos += uint64(bitLength)
-	res := string(rb.reader.TryReadBits(bitLength))
-	if rb.reader.TryError != nil {
-		return "", rb.reader.TryError
-	}
-	return res, nil
+	return "", errors.New("not implemented yet")
 }

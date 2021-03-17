@@ -35,6 +35,7 @@
   <build>
     <plugins>
       <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <!-- TODO: Replace this with a groovy script that checks if the local file is from the current date and only downloads once a day and uses the cached version in case of no internet connection -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -97,6 +98,24 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
       <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Generally used for the metadata generator to not pollute the classpath -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20201115</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

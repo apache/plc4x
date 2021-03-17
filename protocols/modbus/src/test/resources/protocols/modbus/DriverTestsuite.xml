@@ -60,7 +60,7 @@
           <transactionIdentifier>1</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+            <value>40490fdb</value>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -121,7 +121,7 @@
           <transactionIdentifier>1</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP20BJD9s=</value>
+            <value>40490fdb40490fdb</value>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -189,7 +189,7 @@
           <transactionIdentifier>1</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+            <value>40490fdb</value>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -214,7 +214,7 @@
           <transactionIdentifier>2</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+            <value>40490fdb</value>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>

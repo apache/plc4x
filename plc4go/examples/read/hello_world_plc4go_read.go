@@ -20,16 +20,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(modbus.NewModbusDriver())
-	driverManager.RegisterTransport(tcp.NewTcpTransport())
+	drivers.RegisterModbusDriver(driverManager)
 
 	// Get a connection to a remote PLC
 	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
@@ -43,11 +41,11 @@ func main() {
 	connection := connectionResult.Connection
 
 	// Make sure the connection is closed at the end
-	defer connection.Close()
+	defer connection.BlockingClose()
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:26:REAL")
+	rrb.AddQuery("field", "holding-register:26:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())

@@ -29,6 +29,7 @@ type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
 	fieldHandler           spi.PlcFieldHandler
 	queries                map[string]string
+	fields                 map[string]model.PlcField
 	readRequestInterceptor ReadRequestInterceptor
 	model.PlcReadRequestBuilder
 }
@@ -42,26 +43,30 @@ func NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHan
 		reader:                 reader,
 		fieldHandler:           fieldHandler,
 		queries:                map[string]string{},
+		fields:                 map[string]model.PlcField{},
 		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
-func (m *DefaultPlcReadRequestBuilder) AddItem(name string, query string) {
+func (m *DefaultPlcReadRequestBuilder) AddQuery(name string, query string) {
 	m.queries[name] = query
 }
 
+func (m *DefaultPlcReadRequestBuilder) AddField(name string, field model.PlcField) {
+	m.fields[name] = field
+}
+
 func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
-	fields := make(map[string]model.PlcField)
 	for name := range m.queries {
 		query := m.queries[name]
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
 			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
 		}
-		fields[name] = field
+		m.fields[name] = field
 	}
 	return DefaultPlcReadRequest{
-		Fields:                 fields,
+		Fields:                 m.fields,
 		Reader:                 m.reader,
 		ReadRequestInterceptor: m.readRequestInterceptor,
 	}, nil

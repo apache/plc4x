@@ -21,7 +21,8 @@ package model
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 
 type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
+	AddQuery(name string, query string)
+	AddField(name string, field PlcField)
 	Build() (PlcReadRequest, error)
 }
 

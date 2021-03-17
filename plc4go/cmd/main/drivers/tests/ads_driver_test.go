@@ -16,28 +16,15 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package drivers
+package tests
 
 import (
-	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"testing"
 )
 
-func TestBacnetIp(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		t.Errorf("Error decoding test input")
-	}
-	rb := utils.NewReadBuffer(request)
-	adu, err := model.BVLCParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Do something ...
-	}
-
+func TestAdsDriver(t *testing.T) {
+	t.Skip("Still a work in progress")
+	testutils.RunDriverTestsuite(t, ads.NewAdsDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }

@@ -23,6 +23,8 @@ go 1.15
 require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/icza/bitio v1.0.0
-	github.com/sirupsen/logrus v1.7.0
+	github.com/pkg/errors v0.8.1
+	github.com/rs/zerolog v1.20.0
 	github.com/subchen/go-xmldom v1.1.2
+	github.com/tebeka/go2xunit v1.4.10 // indirect
 )

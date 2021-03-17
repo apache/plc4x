@@ -446,7 +446,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   // TODO: Somehow let the driver inject default values which the transport can then pickup ...
 
   // Prepare a configuration data structure for the current transport.
-  new_connection->transport->configure(NULL, &new_connection->transport_configuration);
+  new_connection->transport->configure(new_connection->transport_connect_information, NULL, &new_connection->transport_configuration);
 
   // Create a new connection task.
   plc4c_system_task *new_connection_task = NULL;

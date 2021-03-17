@@ -29,7 +29,7 @@ type PlcStruct struct {
 	PlcValueAdapter
 }
 
-func NewPlcStruct(value map[string]api.PlcValue) PlcStruct {
+func NewPlcStruct(value map[string]api.PlcValue) api.PlcValue {
 	return PlcStruct{
 		values: value,
 	}

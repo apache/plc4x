@@ -23,9 +23,10 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	errors2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -108,8 +109,6 @@ func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage s
 		return err
 	}
 	err = m.Expect(acceptsMessage, handleMessage, handleError, ttl)
-	// Throttle the throughput.
-	time.Sleep(time.Millisecond * 20)
 	return err
 }
 
@@ -153,9 +152,28 @@ func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
 }
 
 func work(m *KnxNetIpMessageCodec) {
+	// If this method ever exits, start it again.
+	defer work(m)
 	// Start an endless loop
-	// TODO: Provide some means to terminate this ...
 	for {
+		// Check for any expired expectations.
+		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
+		now := time.Now()
+		for index, expectation := range m.expectations {
+			// Check if this expectation has expired.
+			if now.After(expectation.expiration) {
+				// Remove this expectation from the list.
+				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+				// Call the error handler.
+				err := expectation.handleError(errors2.NewTimeoutError())
+				if err != nil {
+					log.Error().Err(err).Msg("Got an error handling error on expectation")
+				}
+				continue
+			}
+		}
+
+		// Check for incoming messages.
 		message, err := m.receive()
 		if err != nil {
 			fmt.Printf("got an error reading from transport %s", err.Error())
@@ -182,7 +200,6 @@ func work(m *KnxNetIpMessageCodec) {
 			}
 
 			// Handle the packet itself
-			now := time.Now()
 			// Give a message interceptor a chance to intercept
 			if m.messageInterceptor != nil {
 				m.messageInterceptor(message)
@@ -190,18 +207,6 @@ func work(m *KnxNetIpMessageCodec) {
 			// Go through all expectations
 			messageHandled := false
 			for index, expectation := range m.expectations {
-				// Check if this expectation has expired.
-				if now.After(expectation.expiration) {
-					// Remove this expectation from the list.
-					m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-					// Call the error handler.
-					err := expectation.handleError(errors.New("expectation timed out"))
-					if err != nil {
-						log.Errorf("Got an error handling error on expectation: %s", err.Error())
-					}
-					continue
-				}
-
 				// Check if the current message matches the expectations
 				// If it does, let it handle the message.
 				if accepts := expectation.acceptsMessage(message); accepts {
@@ -214,6 +219,12 @@ func work(m *KnxNetIpMessageCodec) {
 						} else if (index + 1) < len(m.expectations) {
 							m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 						}
+					} else {
+						// Pass the error to the error handler.
+						err := expectation.handleError(err)
+						if err != nil {
+							log.Error().Err(err).Msg("Got an error handling error on expectation")
+						}
 					}
 				}
 			}
@@ -223,7 +234,8 @@ func work(m *KnxNetIpMessageCodec) {
 				m.defaultIncomingMessageChannel <- message
 			}
 		} else {
-			// Sleep for 10ms
+			// Sleep for 10ms before checking again, in order to not
+			// consume 100% CPU Power.
 			time.Sleep(time.Millisecond * 10)
 		}
 	}
