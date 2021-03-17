@@ -51,7 +51,7 @@ type IAdsReadDeviceInfoResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsReadDeviceInfoResponse) CommandId() CommandId {
-	return ADS_READ_DEVICE_INFO
+	return CommandId_ADS_READ_DEVICE_INFO
 }
 
 func (m *AdsReadDeviceInfoResponse) Response() bool {
@@ -154,6 +154,7 @@ func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'device' field")

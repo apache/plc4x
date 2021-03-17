@@ -110,6 +110,7 @@ func S7PayloadWriteVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter
 	// Count array
 	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
+
 		_item, _err := S7VarPayloadStatusItemParse(io)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")

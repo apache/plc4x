@@ -119,6 +119,7 @@ func S7ParameterReadVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error) 
 	// Count array
 	items := make([]*S7VarRequestParameterItem, numItems)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
+
 		_item, _err := S7VarRequestParameterItemParse(io)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")

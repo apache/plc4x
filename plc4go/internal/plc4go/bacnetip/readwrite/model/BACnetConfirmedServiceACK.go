@@ -103,33 +103,47 @@ func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServi
 	var _parent *BACnetConfirmedServiceACK
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x03:
+
+	case serviceChoice == 0x03: // BACnetConfirmedServiceACKGetAlarmSummary
 		_parent, typeSwitchError = BACnetConfirmedServiceACKGetAlarmSummaryParse(io)
-	case serviceChoice == 0x04:
+
+	case serviceChoice == 0x04: // BACnetConfirmedServiceACKGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io)
-	case serviceChoice == 0x1D:
+
+	case serviceChoice == 0x1D: // BACnetConfirmedServiceACKGetEventInformation
 		_parent, typeSwitchError = BACnetConfirmedServiceACKGetEventInformationParse(io)
-	case serviceChoice == 0x06:
+
+	case serviceChoice == 0x06: // BACnetConfirmedServiceACKAtomicReadFile
 		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicReadFileParse(io)
-	case serviceChoice == 0x07:
+
+	case serviceChoice == 0x07: // BACnetConfirmedServiceACKAtomicWriteFile
 		_parent, typeSwitchError = BACnetConfirmedServiceACKAtomicWriteFileParse(io)
-	case serviceChoice == 0x0A:
+
+	case serviceChoice == 0x0A: // BACnetConfirmedServiceACKCreateObject
 		_parent, typeSwitchError = BACnetConfirmedServiceACKCreateObjectParse(io)
-	case serviceChoice == 0x0C:
+
+	case serviceChoice == 0x0C: // BACnetConfirmedServiceACKReadProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyParse(io)
-	case serviceChoice == 0x0E:
+
+	case serviceChoice == 0x0E: // BACnetConfirmedServiceACKReadPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceACKReadPropertyMultipleParse(io)
-	case serviceChoice == 0x1A:
+
+	case serviceChoice == 0x1A: // BACnetConfirmedServiceACKReadRange
 		_parent, typeSwitchError = BACnetConfirmedServiceACKReadRangeParse(io)
-	case serviceChoice == 0x12:
+
+	case serviceChoice == 0x12: // BACnetConfirmedServiceACKConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io)
-	case serviceChoice == 0x15:
+
+	case serviceChoice == 0x15: // BACnetConfirmedServiceACKVTOpen
 		_parent, typeSwitchError = BACnetConfirmedServiceACKVTOpenParse(io)
-	case serviceChoice == 0x17:
+
+	case serviceChoice == 0x17: // BACnetConfirmedServiceACKVTData
 		_parent, typeSwitchError = BACnetConfirmedServiceACKVTDataParse(io)
-	case serviceChoice == 0x18:
+
+	case serviceChoice == 0x18: // BACnetConfirmedServiceACKRemovedAuthenticate
 		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(io)
-	case serviceChoice == 0x0D:
+
+	case serviceChoice == 0x0D: // BACnetConfirmedServiceACKRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io)
 	}
 	if typeSwitchError != nil {
@@ -150,6 +164,7 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(io utils.WriteBuffer, child 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
 	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}

@@ -51,7 +51,7 @@ type IAdsReadWriteRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsReadWriteRequest) CommandId() CommandId {
-	return ADS_READ_WRITE
+	return CommandId_ADS_READ_WRITE
 }
 
 func (m *AdsReadWriteRequest) Response() bool {
@@ -161,6 +161,7 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0))))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0)))); curItem++ {
+
 		_item, _err := AdsMultiRequestItemParse(io, indexGroup)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")
@@ -172,6 +173,7 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")

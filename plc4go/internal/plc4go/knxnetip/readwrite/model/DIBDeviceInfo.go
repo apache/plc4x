@@ -157,6 +157,7 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	// Count array
 	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'knxNetIpDeviceSerialNumber' field")
@@ -180,6 +181,7 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	// Count array
 	deviceFriendlyName := make([]int8, uint16(30))
 	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
+
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceFriendlyName' field")

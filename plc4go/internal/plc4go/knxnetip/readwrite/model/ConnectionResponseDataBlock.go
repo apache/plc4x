@@ -112,9 +112,11 @@ func ConnectionResponseDataBlockParse(io *utils.ReadBuffer) (*ConnectionResponse
 	var _parent *ConnectionResponseDataBlock
 	var typeSwitchError error
 	switch {
-	case connectionType == 0x03:
+
+	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
 		_parent, typeSwitchError = ConnectionResponseDataBlockDeviceManagementParse(io)
-	case connectionType == 0x04:
+
+	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
 		_parent, typeSwitchError = ConnectionResponseDataBlockTunnelConnectionParse(io)
 	}
 	if typeSwitchError != nil {
@@ -142,6 +144,7 @@ func (m *ConnectionResponseDataBlock) SerializeParent(io utils.WriteBuffer, chil
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(child.ConnectionType())
 	_connectionTypeErr := io.WriteUint8(8, (connectionType))
+
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}

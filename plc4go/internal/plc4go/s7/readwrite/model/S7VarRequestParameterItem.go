@@ -103,7 +103,8 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 	var _parent *S7VarRequestParameterItem
 	var typeSwitchError error
 	switch {
-	case itemType == 0x12:
+
+	case itemType == 0x12: // S7VarRequestParameterItemAddress
 		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(io)
 	}
 	if typeSwitchError != nil {
@@ -124,6 +125,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
 	_itemTypeErr := io.WriteUint8(8, (itemType))
+
 	if _itemTypeErr != nil {
 		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
 	}

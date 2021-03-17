@@ -123,9 +123,11 @@ func ApduParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	var _parent *Apdu
 	var typeSwitchError error
 	switch {
-	case control == 1:
+
+	case control == 1: // ApduControlContainer
 		_parent, typeSwitchError = ApduControlContainerParse(io)
-	case control == 0:
+
+	case control == 0: // ApduDataContainer
 		_parent, typeSwitchError = ApduDataContainerParse(io, dataLength)
 	}
 	if typeSwitchError != nil {
@@ -146,6 +148,7 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.Control())
 	_controlErr := io.WriteUint8(1, (control))
+
 	if _controlErr != nil {
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
 	}

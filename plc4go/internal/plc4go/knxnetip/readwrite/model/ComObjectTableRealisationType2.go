@@ -47,7 +47,7 @@ type IComObjectTableRealisationType2 interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ComObjectTableRealisationType2) FirmwareType() FirmwareType {
-	return SYSTEM_2
+	return FirmwareType_SYSTEM_2
 }
 
 func (m *ComObjectTableRealisationType2) InitializeParent(parent *ComObjectTable) {
@@ -128,6 +128,7 @@ func ComObjectTableRealisationType2Parse(io *utils.ReadBuffer) (*ComObjectTable,
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType2, numEntries)
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
+
 		_item, _err := GroupObjectDescriptorRealisationType2Parse(io)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")

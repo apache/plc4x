@@ -115,6 +115,7 @@ func ApduDataExtAuthorizeRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error
 	// Count array
 	data := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
