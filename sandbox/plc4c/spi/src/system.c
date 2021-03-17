@@ -27,9 +27,9 @@
 
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
-const int hurz = 1;
 bool plc4c_is_bigendian() {
-  return (((char) &hurz) == 0);
+  const int hurz = 1;
+  return ( *((char*) &hurz) == 0 );
 }
 
 static void delete_driver_list_element(plc4c_list_element *driver_element) {
@@ -204,146 +204,71 @@ void plc4c_system_shutdown(plc4c_system *system) {}
 
 plc4c_return_code plc4c_system_create_connection(
     char *connection_string, plc4c_connection **connection) {
-  // Count the number of colons and question-marks so we know which pattern to
-  // use for matching and how large the arrays for containing the different
-  // segments should be.
-  int num_colons = 0;
-  int num_question_marks = 0;
-  char *protocol_code = NULL;
-  char *transport_code = NULL;
-  char *transport_connect_information = NULL;
-  char *parameters = NULL;
-  int start_segment_index = 0;
-  char *start_segment = connection_string;
-  // The connection string has two parts ... the first, where colons are the
-  // delimiters and the second where a question mark is the delimiter.
+
+  plc4c_connection *new_connection;
+  char connection_to_tokenize[strlen(connection_string) + 1];
+  char* connection_string_pos;
+  char* connection_token; 
+  char* parameters_token;
+  size_t i;
+
   enum mode {
     SEARCHING_FOR_COLONS,
     SEARCHING_FOR_QUESTION_MARKS
   } mode = SEARCHING_FOR_COLONS;
-  for (int i = 0; i <= strlen(connection_string); i++) {
-    // If we're in the first part of the connection string ... watch out for
-    // colons.
-    if (mode == SEARCHING_FOR_COLONS) {
-      // If we encounter a colon, depending on the number of colons already
-      // found, save the information in either the protocol code or transport
-      // code variable.
-      if (*(connection_string + i) == ':') {
-        num_colons++;
-        // The first colon delimits the protocol-code.
-        if (num_colons == 1) {
-          // Allocate enough memory to hold the sub-string.
-          protocol_code =
-              malloc(sizeof(char) * ((i - start_segment_index) + 1));
-          *(protocol_code + (i - start_segment_index)) = '\0';
-          // Copy the sub-string to the freshly allocated memory area.
-          strncpy(protocol_code, start_segment, (i - start_segment_index));
 
-          // Set the start of the next segment to directly after the colon.
-          start_segment_index = i + 1;
-          start_segment = connection_string + start_segment_index;
+  // Make a local copy so not to mess up oringal argument, needed later?
+  strcpy(connection_to_tokenize, connection_string);
 
-          // If the following character would be a slash, we're probably
-          // finished and no transport code is provided. If this is the case,
-          // ensure it's actually a double-slash and if this is the case switch
-          // to the question-mark searching mode.
-          if (*start_segment == '/') {
-            if (*(start_segment + 1) == '/') {
-              mode = SEARCHING_FOR_QUESTION_MARKS;
-              start_segment_index += 2;
-              start_segment += 2;
-            } else {
-              return INVALID_CONNECTION_STRING;
-            }
-          }
-        }
-        // If we encountered a second colon, this is the transport code.
-        else if (num_colons == 2) {
-          // Allocate enough memory to hold the sub-string.
-          transport_code =
-              malloc(sizeof(char) * ((i - start_segment_index) + 1));
-          *(transport_code + (i - start_segment_index)) = '\0';
-          // Copy the sub-string to the freshly allocated memory area.
-          strncpy(transport_code, start_segment, (i - start_segment_index));
+  // Inisalise the connection and set full connection string argument
+  new_connection = malloc(sizeof(plc4c_connection));
+  plc4c_connection_initialize(new_connection);
+  plc4c_connection_set_connection_string(new_connection, connection_string);
 
-          // Set the start of the next segment to directly after the colon.
-          start_segment_index = i + 1;
-          start_segment = connection_string + start_segment_index;
+  // Get the protocol code (1st item, ':' delimited, required)
+  connection_token = strtok_r(connection_to_tokenize, ":", &connection_string_pos);
+  plc4c_connection_set_protocol_code(new_connection, connection_token);
 
-          // The transport code is always followed by "://". So check if this is
-          // the case. If it is, switch to question-mark searching mode.
-          if ((*start_segment != '/') || (*(start_segment + 1) != '/')) {
-            return INVALID_CONNECTION_STRING;
-          }
-          mode = SEARCHING_FOR_QUESTION_MARKS;
+  // As protocol code required, check we found a ':'
+  if (strlen(connection_string_pos) == 0) 
+    return INVALID_CONNECTION_STRING;
 
-          // Bump the start of the segment to after the double slashes.
-          start_segment_index += 2;
-          start_segment += 2;
-        } else {
-          return INVALID_CONNECTION_STRING;
-        }
-      }
-    }
-    // If we're in the second part, look for question marks.
-    else {
-      // The question-mark separates the transport connect information from the
-      // parameters.
-      if (*(connection_string + i) == '?') {
-        num_question_marks++;
-        // Only one question-mark is allowed in connection strings.
-        if (num_question_marks > 1) {
-          return INVALID_CONNECTION_STRING;
-        }
-
-        // Allocate enough memory to hold the sub-string.
-        transport_connect_information =
-            malloc(sizeof(char) * ((i - start_segment_index) + 1));
-        *(transport_connect_information + (i - start_segment_index)) = '\0';
-        // Copy the sub-string to the freshly allocated memory area.
-        strncpy(transport_connect_information, start_segment,
-                (i - start_segment_index));
-
-        // Set the start of the next segment to directly after the
-        // question-mark.
-        start_segment_index = i + 1;
-        start_segment = connection_string + start_segment_index;
-      }
-      // This is the last character ... finish up the last loose end.
-      if (i == strlen(connection_string)) {
-        // If no question-mark has been encountered, this connection string
-        // doesn't have one and the remaining part is simply the transport
-        // connect information.
-        if (num_question_marks == 0) {
-          transport_connect_information =
-              malloc(sizeof(char) * ((i - start_segment_index)) + 2);
-          *(transport_connect_information + (i - start_segment_index) + 1) = '\0';
-          strncpy(transport_connect_information, start_segment,
-                  (i - start_segment_index) + 1);
-        }
-        // I a question-mark was found, this is the parameters section.
-        else {
-          parameters = malloc(sizeof(char) * (i - start_segment_index) + 2);
-          *(parameters + (i - start_segment_index) + 1) = '\0';
-          strncpy(parameters, start_segment, (i - start_segment_index) + 1);
-        }
-      }
-    }
-  }
-  if (num_colons == 0) {
+  // Check if protocol is followed by '//', if by just one '/' return error
+  if (strncmp(connection_string_pos, "//", 2) == 0) {
+    plc4c_connection_set_transport_code(new_connection, NULL);
+    mode = SEARCHING_FOR_QUESTION_MARKS;
+  } else if (strncmp(connection_string_pos, "/", 1) == 0) {
     return INVALID_CONNECTION_STRING;
   }
 
-  // Initialize a new connection data-structure with the parsed information.
-  plc4c_connection *new_connection = malloc(sizeof(plc4c_connection));
-  plc4c_connection_initialize(new_connection);
-  plc4c_connection_set_connection_string(new_connection, connection_string);
-  plc4c_connection_set_protocol_code(new_connection, protocol_code);
-  plc4c_connection_set_transport_code(new_connection, transport_code);
-  plc4c_connection_set_transport_connect_information(
-      new_connection, transport_connect_information);
-  plc4c_connection_set_parameters(new_connection, parameters);
+  // Get the transport code (2nd item, ':' delimited, optional)
+  if (mode == SEARCHING_FOR_COLONS) {
+    connection_token = strtok_r(connection_string_pos, ":", &connection_string_pos);
+    plc4c_connection_set_transport_code(new_connection, connection_token);
+    if (strncmp(connection_string_pos, "//", 2)) 
+      return INVALID_CONNECTION_STRING;
+  }
 
+  // Skip over the '//' we have now asserted MUST exist, and search for
+  // connection parameters (last item, '?' delimited, optional).
+  connection_string_pos += 2;
+  connection_token = strtok_r(connection_string_pos, "?", &parameters_token);
+  
+  // If any sting remains (ie. we found a '?'), check there isn't anymore
+  // occurrences of '?', and set connection parameters
+  if (strlen(parameters_token)) {
+    plc4c_connection_set_parameters(new_connection, parameters_token);
+    for (i = 0 ; i < strlen(parameters_token); i++)
+      if (parameters_token[i] == '?')
+        return INVALID_CONNECTION_STRING;
+  } else {
+    plc4c_connection_set_parameters(new_connection, NULL);
+  }
+
+  // Get the transport connect information (item after '://' and before 
+  // '?' or '/0', required)
+  plc4c_connection_set_transport_connect_information(new_connection, connection_token);
+  
   *connection = new_connection;
   return OK;
 }
@@ -446,7 +371,10 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   // TODO: Somehow let the driver inject default values which the transport can then pickup ...
 
   // Prepare a configuration data structure for the current transport.
-  new_connection->transport->configure(new_connection->transport_connect_information, NULL, &new_connection->transport_configuration);
+  result = new_connection->transport->configure(new_connection->transport_connect_information, NULL, &new_connection->transport_configuration);
+  if (result != OK) {
+    return -1;
+  }
 
   // Create a new connection task.
   plc4c_system_task *new_connection_task = NULL;
