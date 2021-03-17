@@ -124,9 +124,6 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
     // Constant values.
 <#list type.constFields as field>
-    // ${field.referenceValue}
-    // ${helper.getLanguageTypeNameForField(field)}
-    // ${field.typeName}
     public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = <#if helper.getLanguageTypeNameForField(field) = 'float'>${field.referenceValue}f<#else>${field.referenceValue}</#if>;
 </#list>
 </#if>

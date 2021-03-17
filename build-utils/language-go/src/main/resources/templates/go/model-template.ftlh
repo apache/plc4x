@@ -641,7 +641,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
-	<#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isEnumExpression(discriminatorValue)>*</#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>:
+	<#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isEnumExpression(discriminatorValue)>*</#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.isEnumExpression(type.parserArguments[discriminatorValue?index])>${type.name}_${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>:
 		_parent, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	}
