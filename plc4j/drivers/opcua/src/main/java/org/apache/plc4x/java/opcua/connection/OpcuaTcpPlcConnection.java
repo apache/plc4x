@@ -796,7 +796,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                             logger.warn("Unsupported data type : {}, {}", plcValue.getClass(), dataType);
                     }
                 }
-                DataValue value = new DataValue(var);
+                DataValue value = new DataValue(var, StatusCode.GOOD, null, null);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);
