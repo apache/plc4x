@@ -16,49 +16,45 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package modbus
+package knxnetip
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"net/url"
-	"strconv"
 )
 
-type ModbusDriver struct {
+type Driver struct {
 	fieldHandler spi.PlcFieldHandler
 }
 
-func NewModbusDriver() *ModbusDriver {
-	return &ModbusDriver{
+func NewDriver() *Driver {
+	return &Driver{
 		fieldHandler: NewFieldHandler(),
 	}
 }
 
-func (m ModbusDriver) GetProtocolCode() string {
-	return "modbus"
+func (m Driver) GetProtocolCode() string {
+	return "knxnet-ip"
 }
 
-func (m ModbusDriver) GetProtocolName() string {
-	return "Modbus"
+func (m Driver) GetProtocolName() string {
+	return "KNXNet/IP"
 }
 
-func (m ModbusDriver) GetDefaultTransport() string {
-	return "tcp"
+func (m Driver) GetDefaultTransport() string {
+	return "udp"
 }
 
-func (m ModbusDriver) CheckQuery(query string) error {
+func (m Driver) CheckQuery(query string) error {
 	_, err := m.fieldHandler.ParseQuery(query)
 	return err
 }
 
-func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -67,7 +63,7 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultTcpPort"] = []string{"502"}
+	options["defaultUdpPort"] = []string{"3671"}
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
@@ -76,41 +72,16 @@ func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]
 		return ch
 	}
 
-	// Create a new codec for taking care of encoding/decoding of messages
-	defaultChanel := make(chan interface{})
-	go func() {
-		for {
-			msg := <-defaultChanel
-			adu := msg.(model.ModbusTcpADU)
-			serialized, err := json.Marshal(adu)
-			if err != nil {
-				fmt.Printf("got error serializing adu: %s\n", err.Error())
-			} else {
-				fmt.Printf("got message in the default handler %s\n", serialized)
-			}
-		}
-	}()
-	codec := NewModbusMessageCodec(transportInstance, nil)
-
-	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
-	unitIdentifier := uint8(1)
-	if value, ok := options["unit-identifier"]; ok {
-		var intValue int
-		intValue, err = strconv.Atoi(value[0])
-		if err == nil {
-			unitIdentifier = uint8(intValue)
-		}
-	}
-
 	// Create the new connection
-	connection := NewModbusConnection(unitIdentifier, codec, options, m.fieldHandler)
+	connection := NewConnection(transportInstance, options, m.fieldHandler)
+
 	return connection.Connect()
 }
 
-func (m ModbusDriver) SupportsDiscovery() bool {
-	return false
+func (m Driver) SupportsDiscovery() bool {
+	return true
 }
 
-func (m ModbusDriver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
-	panic("implement me")
+func (m Driver) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+	return NewDiscoverer().Discover(callback)
 }

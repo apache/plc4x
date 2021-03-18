@@ -31,15 +31,15 @@ const (
 	MODBUS_PROTOCOL_ADDRESS_OFFSET = 1
 )
 
-type ModbusPlcField struct {
-	FieldType ModbusFieldType
+type PlcField struct {
+	FieldType FieldType
 	Address   uint16
 	Quantity  uint16
 	Datatype  model2.ModbusDataType
 }
 
-func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) ModbusPlcField {
-	return ModbusPlcField{
+func NewField(fieldType FieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) PlcField {
+	return PlcField{
 		FieldType: fieldType,
 		Address:   address - MODBUS_PROTOCOL_ADDRESS_OFFSET,
 		Quantity:  quantity,
@@ -47,7 +47,7 @@ func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint1
 	}
 }
 
-func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
+func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
 	address, err := strconv.Atoi(addressString)
 	if err != nil {
 		return nil, errors.New("Couldn't parse address string '" + addressString + "' into an int")
@@ -56,45 +56,45 @@ func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString strin
 	if err != nil {
 		quantity = 1
 	}
-	return NewModbusPlcField(fieldType, uint16(address), uint16(quantity), datatype), nil
+	return NewField(fieldType, uint16(address), uint16(quantity), datatype), nil
 }
 
-func (m ModbusPlcField) GetAddressString() string {
+func (m PlcField) GetAddressString() string {
 	switch m.FieldType {
-	case MODBUS_FIELD_COIL:
+	case Coil:
 		return fmt.Sprintf("0x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case MODBUS_FIELD_DISCRETE_INPUT:
+	case DiscreteInput:
 		return fmt.Sprintf("1x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case MODBUS_FIELD_INPUT_REGISTER:
+	case InputRegister:
 		return fmt.Sprintf("3x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case MODBUS_FIELD_HOLDING_REGISTER:
+	case HoldingRegister:
 		return fmt.Sprintf("4x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case MODBUS_FIELD_EXTENDED_REGISTER:
+	case ExtendedRegister:
 		return fmt.Sprintf("6x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
 	}
 	return ""
 }
 
-func (m ModbusPlcField) GetTypeName() string {
+func (m PlcField) GetTypeName() string {
 	return m.Datatype.String()
 }
 
-func (m ModbusPlcField) GetDataType() model2.ModbusDataType {
+func (m PlcField) GetDataType() model2.ModbusDataType {
 	return m.Datatype
 }
 
-func (m ModbusPlcField) GetQuantity() uint16 {
+func (m PlcField) GetQuantity() uint16 {
 	return m.Quantity
 }
 
-func CastToModbusFieldFromPlcField(plcField model.PlcField) (ModbusPlcField, error) {
-	if modbusField, ok := plcField.(ModbusPlcField); ok {
+func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
+	if modbusField, ok := plcField.(PlcField); ok {
 		return modbusField, nil
 	}
-	return ModbusPlcField{}, errors.New("couldn't cast to ModbusPlcField")
+	return PlcField{}, errors.New("couldn't cast to ModbusPlcField")
 }
 
-func (m ModbusPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
 		return err
 	}

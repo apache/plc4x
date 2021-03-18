@@ -34,27 +34,27 @@ import (
 	"time"
 )
 
-type KnxNetIpBrowser struct {
-	connection      *KnxNetIpConnection
+type Browser struct {
+	connection      *Connection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 }
 
-func NewKnxNetIpBrowser(connection *KnxNetIpConnection, messageCodec spi.MessageCodec) *KnxNetIpBrowser {
-	return &KnxNetIpBrowser{
+func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
+	return &Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
 }
 
-func (m KnxNetIpBrowser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
+func (m Browser) Browse(browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
 	return m.BrowseWithInterceptor(browseRequest, func(result apiModel.PlcBrowseEvent) bool {
 		return true
 	})
 }
 
-func (m KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
+func (m Browser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
 	result := make(chan apiModel.PlcBrowseRequestResult)
 	sendResult := func(browseResponse apiModel.PlcBrowseResponse, err error) {
 		result <- apiModel.PlcBrowseRequestResult{
@@ -75,16 +75,16 @@ func (m KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 			}
 
 			switch field.(type) {
-			case KnxNetIpDeviceQueryField:
-				queryResults, err := m.executeDeviceQuery(field.(KnxNetIpDeviceQueryField), browseRequest, queryName, interceptor)
+			case DeviceQueryField:
+				queryResults, err := m.executeDeviceQuery(field.(DeviceQueryField), browseRequest, queryName, interceptor)
 				if err != nil {
 					// TODO: Return some sort of return code like with the read and write APIs
 					results[queryName] = nil
 				} else {
 					results[queryName] = queryResults
 				}
-			case KnxNetIpCommunicationObjectQueryField:
-				queryResults, err := m.executeCommunicationObjectQuery(field.(KnxNetIpCommunicationObjectQueryField))
+			case CommunicationObjectQueryField:
+				queryResults, err := m.executeCommunicationObjectQuery(field.(CommunicationObjectQueryField))
 				if err != nil {
 					// TODO: Return some sort of return code like with the read and write APIs
 					results[queryName] = nil
@@ -101,7 +101,7 @@ func (m KnxNetIpBrowser) BrowseWithInterceptor(browseRequest apiModel.PlcBrowseR
 	return result
 }
 
-func (m KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseEvent) bool) ([]apiModel.PlcBrowseQueryResult, error) {
 	// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
 	knxAddresses, err := m.calculateAddresses(field)
 	if err != nil {
@@ -122,7 +122,7 @@ func (m KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
 				queryResult := apiModel.PlcBrowseQueryResult{
-					Field: NewKnxNetIpDeviceQueryField(
+					Field: NewDeviceQueryField(
 						strconv.Itoa(int(knxAddress.MainGroup)),
 						strconv.Itoa(int(knxAddress.MiddleGroup)),
 						strconv.Itoa(int(knxAddress.SubGroup)),
@@ -162,7 +162,7 @@ func (m KnxNetIpBrowser) executeDeviceQuery(field KnxNetIpDeviceQueryField, brow
 	return queryResults, nil
 }
 
-func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
+func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryField) ([]apiModel.PlcBrowseQueryResult, error) {
 	var results []apiModel.PlcBrowseQueryResult
 
 	knxAddress := field.toKnxAddress()
@@ -400,17 +400,17 @@ func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 				switch groupAddress.Child.(type) {
 				case *driverModel.KnxGroupAddress3Level:
 					address3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
-					field = NewKnxNetIpGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.MainGroup)),
+					field = NewGroupAddress3LevelPlcField(strconv.Itoa(int(address3Level.MainGroup)),
 						strconv.Itoa(int(address3Level.MiddleGroup)), strconv.Itoa(int(address3Level.SubGroup)),
 						&fieldType)
 				case *driverModel.KnxGroupAddress2Level:
 					address2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
-					field = NewKnxNetIpGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.MainGroup)),
+					field = NewGroupAddress2LevelPlcField(strconv.Itoa(int(address2Level.MainGroup)),
 						strconv.Itoa(int(address2Level.SubGroup)),
 						&fieldType)
 				case *driverModel.KnxGroupAddressFreeLevel:
 					address1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
-					field = NewKnxNetIpGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.SubGroup)),
+					field = NewGroupAddress1LevelPlcField(strconv.Itoa(int(address1Level.SubGroup)),
 						&fieldType)
 				}
 
@@ -523,7 +523,7 @@ func (m KnxNetIpBrowser) executeCommunicationObjectQuery(field KnxNetIpCommunica
 	return results, nil
 }
 
-func (m KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]driverModel.KnxAddress, error) {
+func (m Browser) calculateAddresses(field DeviceQueryField) ([]driverModel.KnxAddress, error) {
 	var explodedAddresses []driverModel.KnxAddress
 	mainGroupOptions, err := m.explodeSegment(field.MainGroup, 1, 15)
 	if err != nil {
@@ -555,7 +555,7 @@ func (m KnxNetIpBrowser) calculateAddresses(field KnxNetIpDeviceQueryField) ([]d
 	return explodedAddresses, nil
 }
 
-func (m KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
+func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, error) {
 	var options []uint8
 	if strings.Contains(segment, "*") {
 		for i := min; i <= max; i++ {
@@ -598,7 +598,7 @@ func (m KnxNetIpBrowser) explodeSegment(segment string, min uint8, max uint8) ([
 	return options, nil
 }
 
-func (m KnxNetIpBrowser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) (*driverModel.KnxGroupAddress, uint16) {
+func (m Browser) parseAssociationTable(deviceDescriptor uint16, knxGroupAddresses []*driverModel.KnxGroupAddress, value values.PlcValue) (*driverModel.KnxGroupAddress, uint16) {
 	var addressIndex uint16
 	var comObjectNumber uint16
 	if deviceDescriptor == uint16(0x07B0) /* SystemB */ {
@@ -615,11 +615,11 @@ func (m KnxNetIpBrowser) parseAssociationTable(deviceDescriptor uint16, knxGroup
 	return nil, 0
 }
 
-func (m KnxNetIpBrowser) getFieldForGroupAddress(groupAddress *driverModel.KnxGroupAddress, datatype driverModel.KnxDatapointType) apiModel.PlcField {
+func (m Browser) getFieldForGroupAddress(groupAddress *driverModel.KnxGroupAddress, datatype driverModel.KnxDatapointType) apiModel.PlcField {
 	switch groupAddress.Child.(type) {
 	case *driverModel.KnxGroupAddress3Level:
 		groupAddress3Level := driverModel.CastKnxGroupAddress3Level(groupAddress)
-		return KnxNetIpGroupAddress3LevelPlcField{
+		return GroupAddress3LevelPlcField{
 			MainGroup:   strconv.Itoa(int(groupAddress3Level.MainGroup)),
 			MiddleGroup: strconv.Itoa(int(groupAddress3Level.MiddleGroup)),
 			SubGroup:    strconv.Itoa(int(groupAddress3Level.SubGroup)),
@@ -627,14 +627,14 @@ func (m KnxNetIpBrowser) getFieldForGroupAddress(groupAddress *driverModel.KnxGr
 		}
 	case *driverModel.KnxGroupAddress2Level:
 		groupAddress2Level := driverModel.CastKnxGroupAddress2Level(groupAddress)
-		return KnxNetIpGroupAddress2LevelPlcField{
+		return GroupAddress2LevelPlcField{
 			MainGroup: strconv.Itoa(int(groupAddress2Level.MainGroup)),
 			SubGroup:  strconv.Itoa(int(groupAddress2Level.SubGroup)),
 			FieldType: &datatype,
 		}
 	case *driverModel.KnxGroupAddressFreeLevel:
 		groupAddress1Level := driverModel.CastKnxGroupAddressFreeLevel(groupAddress)
-		return KnxNetIpGroupAddress1LevelPlcField{
+		return GroupAddress1LevelPlcField{
 			MainGroup: strconv.Itoa(int(groupAddress1Level.SubGroup)),
 			FieldType: &datatype,
 		}
@@ -642,7 +642,7 @@ func (m KnxNetIpBrowser) getFieldForGroupAddress(groupAddress *driverModel.KnxGr
 	return nil
 }
 
-func (m KnxNetIpBrowser) getFieldTypeForValueType(valueType driverModel.ComObjectValueType) driverModel.KnxDatapointType {
+func (m Browser) getFieldTypeForValueType(valueType driverModel.ComObjectValueType) driverModel.KnxDatapointType {
 	switch valueType {
 	case driverModel.ComObjectValueType_BIT1:
 		return driverModel.KnxDatapointType_BOOL

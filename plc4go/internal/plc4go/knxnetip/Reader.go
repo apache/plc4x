@@ -31,17 +31,17 @@ import (
 	"time"
 )
 
-type KnxNetIpReader struct {
-	connection *KnxNetIpConnection
+type Reader struct {
+	connection *Connection
 }
 
-func NewKnxNetIpReader(connection *KnxNetIpConnection) *KnxNetIpReader {
-	return &KnxNetIpReader{
+func NewReader(connection *Connection) *Reader {
+	return &Reader{
 		connection: connection,
 	}
 }
 
-func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	resultChan := make(chan apiModel.PlcReadRequestResult)
 	go func() {
 		responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -49,11 +49,11 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 
 		// Sort the fields in direct properties and memory addresses, which will have to be actively
 		// read from the devices and group-addresses which will be locally processed from the local cache.
-		deviceAddresses := map[driverModel.KnxAddress]map[string]KnxNetIpDeviceField{}
-		groupAddresses := map[string]KnxNetIpGroupAddressField{}
+		deviceAddresses := map[driverModel.KnxAddress]map[string]DeviceField{}
+		groupAddresses := map[string]GroupAddressField{}
 		for _, fieldName := range readRequest.GetFieldNames() {
 			// Get the knx field
-			field, err := CastToKnxNetIpFieldFromPlcField(readRequest.GetField(fieldName))
+			field, err := CastToFieldFromPlcField(readRequest.GetField(fieldName))
 			if err != nil {
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				plcValues[fieldName] = nil
@@ -61,32 +61,32 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 			}
 
 			switch field.(type) {
-			case KnxNetIpDevicePropertyAddressPlcField:
-				propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
+			case DevicePropertyAddressPlcField:
+				propertyField := field.(DevicePropertyAddressPlcField)
 				knxAddress := propertyField.toKnxAddress()
 				if knxAddress == nil {
 					continue
 				}
 				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]KnxNetIpDeviceField{}
+					deviceAddresses[*knxAddress] = map[string]DeviceField{}
 				}
 				deviceAddresses[*knxAddress][fieldName] = propertyField
-			case KnxNetIpDeviceMemoryAddressPlcField:
-				memoryField := field.(KnxNetIpDeviceMemoryAddressPlcField)
+			case DeviceMemoryAddressPlcField:
+				memoryField := field.(DeviceMemoryAddressPlcField)
 				knxAddress := memoryField.toKnxAddress()
 				if knxAddress == nil {
 					continue
 				}
 				if _, ok := deviceAddresses[*knxAddress]; !ok {
-					deviceAddresses[*knxAddress] = map[string]KnxNetIpDeviceField{}
+					deviceAddresses[*knxAddress] = map[string]DeviceField{}
 				}
 				deviceAddresses[*knxAddress][fieldName] = memoryField
-			case KnxNetIpCommunicationObjectQueryField:
+			case CommunicationObjectQueryField:
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 				plcValues[fieldName] = nil
 				continue
-			case KnxNetIpGroupAddressField:
-				groupAddressField := field.(KnxNetIpGroupAddressField)
+			case GroupAddressField:
+				groupAddressField := field.(GroupAddressField)
 				groupAddresses[fieldName] = groupAddressField
 			default:
 				responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_ADDRESS
@@ -100,8 +100,8 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 			// Collect all the properties on this device
 			for fieldName, field := range fields {
 				switch field.(type) {
-				case KnxNetIpDevicePropertyAddressPlcField:
-					propertyField := field.(KnxNetIpDevicePropertyAddressPlcField)
+				case DevicePropertyAddressPlcField:
+					propertyField := field.(DevicePropertyAddressPlcField)
 
 					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
@@ -117,8 +117,8 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[fieldName] = nil
 					}
-				case KnxNetIpDeviceMemoryAddressPlcField:
-					memoryField := field.(KnxNetIpDeviceMemoryAddressPlcField)
+				case DeviceMemoryAddressPlcField:
+					memoryField := field.(DeviceMemoryAddressPlcField)
 					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
 					select {
 					case result := <-results:
@@ -155,7 +155,7 @@ func (m KnxNetIpReader) Read(readRequest apiModel.PlcReadRequest) <-chan apiMode
 	return resultChan
 }
 
-func (m KnxNetIpReader) readGroupAddress(field KnxNetIpGroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
+func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseCode, apiValues.PlcValue) {
 	rawAddresses, err := m.resolveAddresses(field)
 	if err != nil {
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
@@ -235,12 +235,12 @@ func (m KnxNetIpReader) readGroupAddress(field KnxNetIpGroupAddressField) (apiMo
 
 // If the given field is a field containing a pattern, resolve to all the possible addresses
 // it could be referring to.
-func (m KnxNetIpReader) resolveAddresses(field KnxNetIpGroupAddressField) ([]uint16, error) {
+func (m Reader) resolveAddresses(field GroupAddressField) ([]uint16, error) {
 	// Depending on the type of field, get the uint16 ids of all values that match the current field
 	var result []uint16
 	switch field.(type) {
-	case KnxNetIpGroupAddress3LevelPlcField:
-		address3LevelPlcField := field.(KnxNetIpGroupAddress3LevelPlcField)
+	case GroupAddress3LevelPlcField:
+		address3LevelPlcField := field.(GroupAddress3LevelPlcField)
 		mainSegmentValues, err := m.resoleSegment(address3LevelPlcField.MainGroup, 0, 31)
 		if err != nil {
 			return []uint16{}, err
@@ -260,8 +260,8 @@ func (m KnxNetIpReader) resolveAddresses(field KnxNetIpGroupAddressField) ([]uin
 				}
 			}
 		}
-	case KnxNetIpGroupAddress2LevelPlcField:
-		address2LevelPlcField := field.(KnxNetIpGroupAddress2LevelPlcField)
+	case GroupAddress2LevelPlcField:
+		address2LevelPlcField := field.(GroupAddress2LevelPlcField)
 		mainSegmentValues, err := m.resoleSegment(address2LevelPlcField.MainGroup, 0, 31)
 		if err != nil {
 			return []uint16{}, err
@@ -275,8 +275,8 @@ func (m KnxNetIpReader) resolveAddresses(field KnxNetIpGroupAddressField) ([]uin
 				result = append(result, main<<11|sub)
 			}
 		}
-	case KnxNetIpGroupAddress1LevelPlcField:
-		address1LevelPlcField := field.(KnxNetIpGroupAddress1LevelPlcField)
+	case GroupAddress1LevelPlcField:
+		address1LevelPlcField := field.(GroupAddress1LevelPlcField)
 		mainSegmentValues, err := m.resoleSegment(address1LevelPlcField.MainGroup, 0, 65535)
 		if err != nil {
 			return []uint16{}, err
@@ -288,7 +288,7 @@ func (m KnxNetIpReader) resolveAddresses(field KnxNetIpGroupAddressField) ([]uin
 	return result, nil
 }
 
-func (m KnxNetIpReader) resoleSegment(pattern string, minValue uint16, maxValue uint16) ([]uint16, error) {
+func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) ([]uint16, error) {
 	var results []uint16
 	// A "*" simply matches everything
 	if pattern == "*" {

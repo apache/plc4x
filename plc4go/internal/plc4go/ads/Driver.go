@@ -16,10 +16,32 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package bacnetip
+package ads
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+)
 
-func NewBacnetIpDriver() plc4go.PlcDriver {
-	return nil
+type Driver struct {
+	fieldHandler spi.PlcFieldHandler
+	plc4go.PlcDriver
+}
+
+func NewDriver() plc4go.PlcDriver {
+	return &Driver{
+		fieldHandler: NewFieldHandler(),
+	}
+}
+
+func (m Driver) GetProtocolCode() string {
+	return "ads"
+}
+
+func (m Driver) GetProtocolName() string {
+	return "Beckhoff TwinCat ADS"
+}
+
+func (m Driver) SupportsDiscovery() bool {
+	return false
 }

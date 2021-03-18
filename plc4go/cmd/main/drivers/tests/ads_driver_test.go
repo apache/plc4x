@@ -26,5 +26,5 @@ import (
 
 func TestAdsDriver(t *testing.T) {
 	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, ads.NewAdsDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }

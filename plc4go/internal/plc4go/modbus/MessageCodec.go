@@ -28,41 +28,41 @@ import (
 	"time"
 )
 
-type ModbusExpectation struct {
+type Expectation struct {
 	expiration     time.Time
 	acceptsMessage spi.AcceptsMessage
 	handleMessage  spi.HandleMessage
 	handleError    spi.HandleError
 }
 
-type ModbusMessageCodec struct {
+type MessageCodec struct {
 	expectationCounter            int32
 	transportInstance             transports.TransportInstance
 	defaultIncomingMessageChannel chan interface{}
-	expectations                  []ModbusExpectation
+	expectations                  []Expectation
 }
 
-func NewModbusMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *ModbusMessageCodec {
-	codec := &ModbusMessageCodec{
+func NewMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *MessageCodec {
+	codec := &MessageCodec{
 		expectationCounter:            1,
 		transportInstance:             transportInstance,
 		defaultIncomingMessageChannel: defaultIncomingMessageChannel,
-		expectations:                  []ModbusExpectation{},
+		expectations:                  []Expectation{},
 	}
 	// Start a worker that handles processing of responses
 	go work(codec)
 	return codec
 }
 
-func (m *ModbusMessageCodec) Connect() error {
+func (m *MessageCodec) Connect() error {
 	return m.transportInstance.Connect()
 }
 
-func (m *ModbusMessageCodec) Disconnect() error {
+func (m *MessageCodec) Disconnect() error {
 	return m.transportInstance.Close()
 }
 
-func (m *ModbusMessageCodec) Send(message interface{}) error {
+func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	adu := model.CastModbusTcpADU(message)
 	// Serialize the request
@@ -80,8 +80,8 @@ func (m *ModbusMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *ModbusMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	expectation := ModbusExpectation{
+func (m *MessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	expectation := Expectation{
 		expiration:     time.Now().Add(ttl),
 		acceptsMessage: acceptsMessage,
 		handleMessage:  handleMessage,
@@ -91,7 +91,7 @@ func (m *ModbusMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMes
 	return nil
 }
 
-func (m *ModbusMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *MessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
@@ -100,11 +100,11 @@ func (m *ModbusMessageCodec) SendRequest(message interface{}, acceptsMessage spi
 	return m.Expect(acceptsMessage, handleMessage, handleError, ttl)
 }
 
-func (m *ModbusMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
+func (m *MessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
 	return m.defaultIncomingMessageChannel
 }
 
-func (m *ModbusMessageCodec) receive() (interface{}, error) {
+func (m *MessageCodec) receive() (interface{}, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		data, err := m.transportInstance.PeekReadableBytes(6)
@@ -132,7 +132,7 @@ func (m *ModbusMessageCodec) receive() (interface{}, error) {
 	return nil, nil
 }
 
-func work(m *ModbusMessageCodec) {
+func work(m *MessageCodec) {
 	// Start an endless loop
 	// TODO: Provide some means to terminate this ...
 	for {
@@ -183,6 +183,6 @@ func work(m *ModbusMessageCodec) {
 	}
 }
 
-func (m ModbusMessageCodec) GetTransportInstance() transports.TransportInstance {
+func (m MessageCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }

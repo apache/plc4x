@@ -25,5 +25,5 @@ import (
 )
 
 func TestModbusDriver(t *testing.T) {
-	testutils.RunDriverTestsuite(t, modbus.NewModbusDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
 }

@@ -34,15 +34,15 @@ import (
 	"time"
 )
 
-type KnxNetIpDiscoverer struct {
+type Discoverer struct {
 	messageCodec spi.MessageCodec
 }
 
-func NewKnxNetIpDiscoverer() *KnxNetIpDiscoverer {
-	return &KnxNetIpDiscoverer{}
+func NewDiscoverer() *Discoverer {
+	return &Discoverer{}
 }
 
-func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
 	udpTransport := udp.NewUdpTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -102,7 +102,7 @@ func (d *KnxNetIpDiscoverer) Discover(callback func(event model.PlcDiscoveryEven
 	if len(tranportInstances) > 0 {
 		for _, transportInstance := range tranportInstances {
 			// Create a codec for sending and receiving messages.
-			codec := NewKnxNetIpMessageCodec(transportInstance, nil)
+			codec := NewMessageCodec(transportInstance, nil)
 
 			// Cast to the UDP transport instance so we can access information on the local port.
 			udpTransportInstance, ok := transportInstance.(*udp.UdpTransportInstance)

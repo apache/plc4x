@@ -21,7 +21,7 @@ package modbus
 import (
 	"errors"
 	"fmt"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
@@ -31,21 +31,21 @@ import (
 	"time"
 )
 
-type ModbusWriter struct {
+type Writer struct {
 	transactionIdentifier int32
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
 }
 
-func NewModbusWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) ModbusWriter {
-	return ModbusWriter{
+func NewWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) Writer {
+	return Writer{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
 	}
 }
 
-func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	result := make(chan model.PlcWriteRequestResult)
 	// If we are requesting only one field, use a
 	if len(writeRequest.GetFieldNames()) == 1 {
@@ -66,7 +66,7 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewWriteBuffer()
-		if err := modbusModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
+		if err := readWriteModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -79,19 +79,19 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))
 
-		var pdu *modbusModel.ModbusPDU
+		var pdu *readWriteModel.ModbusPDU
 		switch modbusField.FieldType {
-		case MODBUS_FIELD_COIL:
-			pdu = modbusModel.NewModbusPDUWriteMultipleCoilsRequest(
+		case Coil:
+			pdu = readWriteModel.NewModbusPDUWriteMultipleCoilsRequest(
 				modbusField.Address,
 				modbusField.Quantity,
 				data)
-		case MODBUS_FIELD_HOLDING_REGISTER:
-			pdu = modbusModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
+		case HoldingRegister:
+			pdu = readWriteModel.NewModbusPDUWriteMultipleHoldingRegistersRequest(
 				modbusField.Address,
 				numWords,
 				data)
-		case MODBUS_FIELD_EXTENDED_REGISTER:
+		case ExtendedRegister:
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
@@ -115,7 +115,7 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		}
 
 		// Assemble the finished ADU
-		requestAdu := modbusModel.ModbusTcpADU{
+		requestAdu := readWriteModel.ModbusTcpADU{
 			TransactionIdentifier: uint16(transactionIdentifier),
 			UnitIdentifier:        m.unitIdentifier,
 			Pdu:                   pdu,
@@ -125,13 +125,13 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 		err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
-				responseAdu := modbusModel.CastModbusTcpADU(message)
+				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
 					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
 			},
 			func(message interface{}) error {
 				// Convert the response into an ADU
-				responseAdu := modbusModel.CastModbusTcpADU(message)
+				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				// Convert the modbus response into a PLC4X response
 				readResponse, err := m.ToPlc4xWriteResponse(requestAdu, *responseAdu, writeRequest)
 
@@ -167,46 +167,46 @@ func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.Plc
 	return result
 }
 
-func (m ModbusWriter) ToPlc4xWriteResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
+func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, responseAdu readWriteModel.ModbusTcpADU, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
 	responseCodes := map[string]model.PlcResponseCode{}
 	fieldName := writeRequest.GetFieldNames()[0]
 
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
 	switch responseAdu.Pdu.Child.(type) {
-	case *modbusModel.ModbusPDUWriteMultipleCoilsResponse:
-		req := modbusModel.CastModbusPDUWriteMultipleCoilsRequest(requestAdu.Pdu)
-		resp := modbusModel.CastModbusPDUWriteMultipleCoilsResponse(responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
+		req := readWriteModel.CastModbusPDUWriteMultipleCoilsRequest(requestAdu.Pdu)
+		resp := readWriteModel.CastModbusPDUWriteMultipleCoilsResponse(responseAdu.Pdu)
 		if req.Quantity == resp.Quantity {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case *modbusModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
-		req := modbusModel.CastModbusPDUWriteMultipleHoldingRegistersRequest(requestAdu.Pdu)
-		resp := modbusModel.CastModbusPDUWriteMultipleHoldingRegistersResponse(responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUWriteMultipleHoldingRegistersResponse:
+		req := readWriteModel.CastModbusPDUWriteMultipleHoldingRegistersRequest(requestAdu.Pdu)
+		resp := readWriteModel.CastModbusPDUWriteMultipleHoldingRegistersResponse(responseAdu.Pdu)
 		if req.Quantity == resp.Quantity {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
-	case *modbusModel.ModbusPDUError:
-		resp := modbusModel.CastModbusPDUError(&responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUError:
+		resp := readWriteModel.CastModbusPDUError(&responseAdu.Pdu)
 		switch resp.ExceptionCode {
-		case modbusModel.ModbusErrorCode_ILLEGAL_FUNCTION:
+		case readWriteModel.ModbusErrorCode_ILLEGAL_FUNCTION:
 			responseCodes[fieldName] = model.PlcResponseCode_UNSUPPORTED
-		case modbusModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
+		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_ADDRESS:
 			responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
-		case modbusModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
+		case readWriteModel.ModbusErrorCode_ILLEGAL_DATA_VALUE:
 			responseCodes[fieldName] = model.PlcResponseCode_INVALID_DATA
-		case modbusModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
+		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_FAILURE:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
-		case modbusModel.ModbusErrorCode_ACKNOWLEDGE:
+		case readWriteModel.ModbusErrorCode_ACKNOWLEDGE:
 			responseCodes[fieldName] = model.PlcResponseCode_OK
-		case modbusModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
+		case readWriteModel.ModbusErrorCode_SLAVE_DEVICE_BUSY:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_BUSY
-		case modbusModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
+		case readWriteModel.ModbusErrorCode_NEGATIVE_ACKNOWLEDGE:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
-		case modbusModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
+		case readWriteModel.ModbusErrorCode_MEMORY_PARITY_ERROR:
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-		case modbusModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
+		case readWriteModel.ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE:
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
-		case modbusModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
+		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
 		}
 	}

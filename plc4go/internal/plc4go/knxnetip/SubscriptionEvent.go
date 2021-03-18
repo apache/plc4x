@@ -27,15 +27,15 @@ import (
 	"time"
 )
 
-type KnxNetIpSubscriptionEvent struct {
+type SubscriptionEvent struct {
 	addresses map[string][]int8
 	internalMode.DefaultPlcSubscriptionEvent
 }
 
-func NewKnxNetIpSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
+func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	addresses map[string][]int8, values map[string]values.PlcValue) KnxNetIpSubscriptionEvent {
-	return KnxNetIpSubscriptionEvent{
+	addresses map[string][]int8, values map[string]values.PlcValue) SubscriptionEvent {
+	return SubscriptionEvent{
 		addresses:                   addresses,
 		DefaultPlcSubscriptionEvent: internalMode.NewDefaultPlcSubscriptionEvent(fields, types, intervals, responseCodes, values),
 	}
@@ -44,18 +44,18 @@ func NewKnxNetIpSubscriptionEvent(fields map[string]apiModel.PlcField, types map
 /*
  * Decode the binary data in the address according to the field requested
  */
-func (m KnxNetIpSubscriptionEvent) GetAddress(name string) string {
+func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
 	rawAddressReadBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(rawAddress))
 	field := m.DefaultPlcSubscriptionEvent.GetField(name)
 	var groupAddress *driverModel.KnxGroupAddress
 	var err error
 	switch field.(type) {
-	case KnxNetIpGroupAddress3LevelPlcField:
+	case GroupAddress3LevelPlcField:
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 3)
-	case KnxNetIpGroupAddress2LevelPlcField:
+	case GroupAddress2LevelPlcField:
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 2)
-	case KnxNetIpGroupAddress1LevelPlcField:
+	case GroupAddress1LevelPlcField:
 		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 1)
 	}
 	if err != nil {

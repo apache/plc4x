@@ -103,14 +103,14 @@ type KnxMemoryReadFragment struct {
 	startingAddress uint16
 }
 
-type KnxNetIpConnection struct {
+type Connection struct {
 	messageCodec             spi.MessageCodec
 	options                  map[string][]string
 	fieldHandler             spi.PlcFieldHandler
 	valueHandler             spi.PlcValueHandler
 	connectionStateTimer     *time.Ticker
 	quitConnectionStateTimer chan struct{}
-	subscribers              []*KnxNetIpSubscriber
+	subscribers              []*Subscriber
 
 	valueCache      map[uint16][]int8
 	valueCacheMutex sync.RWMutex
@@ -159,13 +159,13 @@ type InternalResult struct {
 	err             error
 }
 
-func NewKnxNetIpConnection(transportInstance transports.TransportInstance, options map[string][]string, fieldHandler spi.PlcFieldHandler) *KnxNetIpConnection {
-	connection := &KnxNetIpConnection{
+func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
+	connection := &Connection{
 		options:            options,
 		fieldHandler:       fieldHandler,
 		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
-		subscribers:        []*KnxNetIpSubscriber{},
+		subscribers:        []*Subscriber{},
 		valueCache:         map[uint16][]int8{},
 		valueCacheMutex:    sync.RWMutex{},
 		metadata:           &ConnectionMetadata{},
@@ -181,11 +181,11 @@ func NewKnxNetIpConnection(transportInstance transports.TransportInstance, optio
 			connection.buildingKey = bc
 		}
 	}
-	connection.messageCodec = NewKnxNetIpMessageCodec(transportInstance, connection.interceptIncomingMessage)
+	connection.messageCodec = NewMessageCodec(transportInstance, connection.interceptIncomingMessage)
 	return connection
 }
 
-func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	result := make(chan plc4go.PlcConnectionConnectResult)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
 		result <- plc4go.NewPlcConnectionConnectResult(connection, err)
@@ -317,7 +317,7 @@ func (m *KnxNetIpConnection) Connect() <-chan plc4go.PlcConnectionConnectResult 
 	return result
 }
 
-func (m *KnxNetIpConnection) BlockingClose() {
+func (m *Connection) BlockingClose() {
 	closeResults := m.Close()
 	select {
 	case <-closeResults:
@@ -327,7 +327,7 @@ func (m *KnxNetIpConnection) BlockingClose() {
 	}
 }
 
-func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	result := make(chan plc4go.PlcConnectionCloseResult)
 
 	go func() {
@@ -360,7 +360,7 @@ func (m *KnxNetIpConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	return result
 }
 
-func (m *KnxNetIpConnection) IsConnected() bool {
+func (m *Connection) IsConnected() bool {
 	if m.messageCodec != nil {
 		pingChannel := m.Ping()
 		select {
@@ -374,7 +374,7 @@ func (m *KnxNetIpConnection) IsConnected() bool {
 	return false
 }
 
-func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	result := make(chan plc4go.PlcConnectionPingResult)
 
 	go func() {
@@ -392,46 +392,46 @@ func (m *KnxNetIpConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return result
 }
 
-func (m *KnxNetIpConnection) GetMetadata() apiModel.PlcConnectionMetadata {
+func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return m.metadata
 }
 
-func (m *KnxNetIpConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilder(
-		m.fieldHandler, NewKnxNetIpReader(m))
+		m.fieldHandler, NewReader(m))
 }
 
-func (m *KnxNetIpConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewKnxNetIpWriter(m.messageCodec))
+		m.fieldHandler, m.valueHandler, NewWriter(m.messageCodec))
 }
 
-func (m *KnxNetIpConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m))
+		m.fieldHandler, m.valueHandler, NewSubscriber(m))
 }
 
-func (m *KnxNetIpConnection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(NewKnxNetIpBrowser(m, m.messageCodec))
+func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(NewBrowser(m, m.messageCodec))
 }
 
-func (m *KnxNetIpConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	return nil /*internalModel.NewDefaultPlcUnsubscriptionRequestBuilder(
-	  m.fieldHandler, m.valueHandler, NewKnxNetIpSubscriber(m.messageCodec))*/
+	  m.fieldHandler, m.valueHandler, NewSubscriber(m.messageCodec))*/
 }
 
-func (m *KnxNetIpConnection) GetTransportInstance() transports.TransportInstance {
+func (m *Connection) GetTransportInstance() transports.TransportInstance {
 	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
 		return mc.GetTransportInstance()
 	}
 	return nil
 }
 
-func (m *KnxNetIpConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
+func (m *Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
 	return m.fieldHandler
 }
 
-func (m *KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
+func (m *Connection) GetPlcValueHandler() spi.PlcValueHandler {
 	return m.valueHandler
 }
 
@@ -446,7 +446,7 @@ func (m *KnxNetIpConnection) GetPlcValueHandler() spi.PlcValueHandler {
 // They expect the called private functions to handle timeouts, so these will not.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *KnxNetIpConnection) ReadGroupAddress(groupAddress []int8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
+func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
@@ -497,7 +497,7 @@ func (m *KnxNetIpConnection) ReadGroupAddress(groupAddress []int8, datapointType
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan KnxDeviceConnectResult {
+func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan KnxDeviceConnectResult {
 	result := make(chan KnxDeviceConnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
@@ -582,7 +582,7 @@ func (m *KnxNetIpConnection) DeviceConnect(targetAddress driverModel.KnxAddress)
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-chan KnxDeviceDisconnectResult {
+func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-chan KnxDeviceDisconnectResult {
 	result := make(chan KnxDeviceDisconnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
@@ -611,7 +611,7 @@ func (m *KnxNetIpConnection) DeviceDisconnect(targetAddress driverModel.KnxAddre
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, buildingKey []byte) <-chan KnxDeviceAuthenticateResult {
+func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, buildingKey []byte) <-chan KnxDeviceAuthenticateResult {
 	result := make(chan KnxDeviceAuthenticateResult)
 
 	sendResponse := func(err error) {
@@ -663,7 +663,7 @@ func (m *KnxNetIpConnection) DeviceAuthenticate(targetAddress driverModel.KnxAdd
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceReadProperty(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) <-chan KnxReadResult {
+func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
@@ -737,7 +737,7 @@ func (m *KnxNetIpConnection) DeviceReadProperty(targetAddress driverModel.KnxAdd
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) <-chan KnxReadResult {
+func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
@@ -790,7 +790,7 @@ func (m *KnxNetIpConnection) DeviceReadPropertyDescriptor(targetAddress driverMo
 	return result
 }
 
-func (m *KnxNetIpConnection) DeviceReadMemory(targetAddress driverModel.KnxAddress, address uint16, numElements uint8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
+func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, address uint16, numElements uint8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
@@ -895,7 +895,7 @@ func (m *KnxNetIpConnection) DeviceReadMemory(targetAddress driverModel.KnxAddre
 // They all assume the connection is checked and is available.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *KnxNetIpConnection) sendGatewaySearchRequest() (*driverModel.SearchResponse, error) {
+func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.New("error getting local address: " + err.Error())
@@ -940,7 +940,7 @@ func (m *KnxNetIpConnection) sendGatewaySearchRequest() (*driverModel.SearchResp
 	}
 }
 
-func (m *KnxNetIpConnection) sendGatewayConnectionRequest() (*driverModel.ConnectionResponse, error) {
+func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.New("error getting local address: " + err.Error())
@@ -987,7 +987,7 @@ func (m *KnxNetIpConnection) sendGatewayConnectionRequest() (*driverModel.Connec
 	}
 }
 
-func (m *KnxNetIpConnection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectResponse, error) {
+func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.New("error getting local address: " + err.Error())
@@ -1035,7 +1035,7 @@ func (m *KnxNetIpConnection) sendGatewayDisconnectionRequest() (*driverModel.Dis
 	}
 }
 
-func (m *KnxNetIpConnection) sendConnectionStateRequest() (*driverModel.ConnectionStateResponse, error) {
+func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
 		return nil, errors.New("error getting local address: " + err.Error())
@@ -1082,7 +1082,7 @@ func (m *KnxNetIpConnection) sendConnectionStateRequest() (*driverModel.Connecti
 	}
 }
 
-func (m *KnxNetIpConnection) sendGroupAddressReadRequest(groupAddress []int8) (*driverModel.ApduDataGroupValueResponse, error) {
+func (m *Connection) sendGroupAddressReadRequest(groupAddress []int8) (*driverModel.ApduDataGroupValueResponse, error) {
 	// Send the property read request and wait for a confirmation that this property is readable.
 	groupAddressReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -1154,7 +1154,7 @@ func (m *KnxNetIpConnection) sendGroupAddressReadRequest(groupAddress []int8) (*
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlConnect, error) {
+func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlConnect, error) {
 	// Send a connection request to the individual KNX device
 	deviceConnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -1232,7 +1232,7 @@ func (m *KnxNetIpConnection) sendDeviceConnectionRequest(targetAddress driverMod
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceDisconnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlDisconnect, error) {
+func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduControlDisconnect, error) {
 	// Send a connection request to the individual KNX device
 	deviceDisconnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -1311,7 +1311,7 @@ func (m *KnxNetIpConnection) sendDeviceDisconnectionRequest(targetAddress driver
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceAuthentication(targetAddress driverModel.KnxAddress, authenticationLevel uint8, buildingKey []byte) (*driverModel.ApduDataExtAuthorizeResponse, error) {
+func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddress, authenticationLevel uint8, buildingKey []byte) (*driverModel.ApduDataExtAuthorizeResponse, error) {
 	// Check if there is already a connection available,
 	// if not, create a new one.
 	connection, ok := m.DeviceConnections[targetAddress]
@@ -1421,7 +1421,7 @@ func (m *KnxNetIpConnection) sendDeviceAuthentication(targetAddress driverModel.
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduDataDeviceDescriptorResponse, error) {
+func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverModel.KnxAddress) (*driverModel.ApduDataDeviceDescriptorResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	counter := m.getNextCounter(targetAddress)
 	deviceDescriptorReadRequest := driverModel.NewTunnelingRequest(
@@ -1513,7 +1513,7 @@ func (m *KnxNetIpConnection) sendDeviceDeviceDescriptorReadRequest(targetAddress
 	}
 }
 
-func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) (*driverModel.ApduDataExtPropertyValueResponse, error) {
+func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) (*driverModel.ApduDataExtPropertyValueResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	// Send the property read request and wait for a confirmation that this property is readable.
 	counter := m.getNextCounter(targetAddress)
@@ -1613,7 +1613,7 @@ func (m *KnxNetIpConnection) sendDevicePropertyReadRequest(targetAddress driverM
 	}
 }
 
-func (m *KnxNetIpConnection) sendDevicePropertyDescriptionReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) (*driverModel.ApduDataExtPropertyDescriptionResponse, error) {
+func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) (*driverModel.ApduDataExtPropertyDescriptionResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	// Send the property read request and wait for a confirmation that this property is readable.
 	counter := m.getNextCounter(targetAddress)
@@ -1713,7 +1713,7 @@ func (m *KnxNetIpConnection) sendDevicePropertyDescriptionReadRequest(targetAddr
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numBytes uint8) (*driverModel.ApduDataMemoryResponse, error) {
+func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAddress, address uint16, numBytes uint8) (*driverModel.ApduDataMemoryResponse, error) {
 	// Next, read the device descriptor so we know how we have to communicate with the device.
 	counter := m.getNextCounter(targetAddress)
 
@@ -1809,7 +1809,7 @@ func (m *KnxNetIpConnection) sendDeviceMemoryReadRequest(targetAddress driverMod
 	}
 }
 
-func (m *KnxNetIpConnection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter uint8, callback func(err error)) error {
+func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter uint8, callback func(err error)) error {
 	ack := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
 		driverModel.NewLDataReq(0, nil,
@@ -1881,7 +1881,7 @@ func (m *KnxNetIpConnection) sendDeviceAck(targetAddress driverModel.KnxAddress,
 // Internal helper functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *KnxNetIpConnection) interceptIncomingMessage(interface{}) {
+func (m *Connection) interceptIncomingMessage(interface{}) {
 	m.resetTimeout()
 	if m.connectionStateTimer != nil {
 		// Reset the timer for sending the ConnectionStateRequest
@@ -1889,11 +1889,11 @@ func (m *KnxNetIpConnection) interceptIncomingMessage(interface{}) {
 	}
 }
 
-func (m *KnxNetIpConnection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
+func (m *Connection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
 	return driverModel.NewIPAddress(utils.ByteArrayToInt8Array(ip)[len(ip)-4:])
 }
 
-func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
+func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
 	go func() {
 		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
 		if lDataInd != nil {
@@ -1942,7 +1942,7 @@ func (m *KnxNetIpConnection) handleIncomingTunnelingRequest(tunnelingRequest *dr
 	}()
 }
 
-func (m *KnxNetIpConnection) handleValueCacheUpdate(destinationAddress []int8, payload []int8) {
+func (m *Connection) handleValueCacheUpdate(destinationAddress []int8, payload []int8) {
 	addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
 
 	m.valueCacheMutex.RLock()
@@ -1962,7 +1962,7 @@ func (m *KnxNetIpConnection) handleValueCacheUpdate(destinationAddress []int8, p
 	}
 }
 
-func (m *KnxNetIpConnection) handleTimeout() {
+func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
 	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
@@ -1973,18 +1973,18 @@ func (m *KnxNetIpConnection) handleTimeout() {
 	}
 }
 
-func (m *KnxNetIpConnection) resetTimeout() {
+func (m *Connection) resetTimeout() {
 	if m.connectionTimeoutTimer != nil {
 		m.connectionTimeoutTimer.Stop()
 		m.connectionTimeoutTimer = nil
 	}
 }
 
-func (m *KnxNetIpConnection) resetConnection() {
+func (m *Connection) resetConnection() {
 	fmt.Println("Bad connection detected")
 }
 
-func (m *KnxNetIpConnection) getGroupAddressNumLevels() uint8 {
+func (m *Connection) getGroupAddressNumLevels() uint8 {
 	if val, ok := m.options["group-address-num-levels"]; ok {
 		groupAddressNumLevels, err := strconv.Atoi(val[0])
 		if err == nil {
@@ -1994,7 +1994,7 @@ func (m *KnxNetIpConnection) getGroupAddressNumLevels() uint8 {
 	return 3
 }
 
-func (m *KnxNetIpConnection) addSubscriber(subscriber *KnxNetIpSubscriber) {
+func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
 			return
@@ -2003,7 +2003,7 @@ func (m *KnxNetIpConnection) addSubscriber(subscriber *KnxNetIpSubscriber) {
 	m.subscribers = append(m.subscribers, subscriber)
 }
 
-func (m *KnxNetIpConnection) removeSubscriber(subscriber *KnxNetIpSubscriber) {
+func (m *Connection) removeSubscriber(subscriber *Subscriber) {
 	for i, sub := range m.subscribers {
 		if sub == subscriber {
 			m.subscribers = append(m.subscribers[:i], m.subscribers[i+1:]...)
@@ -2011,7 +2011,7 @@ func (m *KnxNetIpConnection) removeSubscriber(subscriber *KnxNetIpSubscriber) {
 	}
 }
 
-func (m *KnxNetIpConnection) sliceEqual(a, b []int8) bool {
+func (m *Connection) sliceEqual(a, b []int8) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -2023,7 +2023,7 @@ func (m *KnxNetIpConnection) sliceEqual(a, b []int8) bool {
 	return true
 }
 
-func (m *KnxNetIpConnection) getLocalAddress() (*net.UDPAddr, error) {
+func (m *Connection) getLocalAddress() (*net.UDPAddr, error) {
 	transportInstanceExposer, ok := m.messageCodec.(spi.TransportInstanceExposer)
 	if !ok {
 		return nil, errors.New("used transport, is not a TransportInstanceExposer")
@@ -2038,7 +2038,7 @@ func (m *KnxNetIpConnection) getLocalAddress() (*net.UDPAddr, error) {
 	return udpTransportInstance.LocalAddress, nil
 }
 
-func (m *KnxNetIpConnection) getNewSequenceCounter() uint8 {
+func (m *Connection) getNewSequenceCounter() uint8 {
 	sequenceCounter := atomic.AddInt32(&m.SequenceCounter, 1)
 	if sequenceCounter >= math.MaxUint8 {
 		atomic.StoreInt32(&m.SequenceCounter, -1)
@@ -2047,7 +2047,7 @@ func (m *KnxNetIpConnection) getNewSequenceCounter() uint8 {
 	return uint8(sequenceCounter)
 }
 
-func (m *KnxNetIpConnection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 {
+func (m *Connection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 {
 	m.Lock()
 	defer m.Unlock()
 
