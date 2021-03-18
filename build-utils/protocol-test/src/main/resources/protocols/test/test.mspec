@@ -165,7 +165,7 @@
 ]
 
 ////////////////////////////////////////////////////////////////
-// Discriminated Type
+// Discriminated Type Tests
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType 'EnumDiscriminatedType'
@@ -178,6 +178,53 @@
             [simple        uint 8 'simpB']
         ]
         ['INT' EnumDiscriminatedTypeC
+            [simple        uint 8 'simpC']
+        ]
+    ]
+]
+
+// Multiple Enumerated discriminators
+[discriminatedType 'EnumDiscriminatedTypeMultiple'
+    [discriminator EnumType 'discr1']
+    [discriminator EnumTypeInt 'discr2']
+    [typeSwitch 'discr1','discr2'
+        ['BOOL','BOOLINT' EnumDiscriminatedTypeMultipleA
+            [simple        uint 8 'simpA']
+        ]
+        ['UINT','UINTINT' EnumDiscriminatedTypeMultipleB
+            [simple        uint 8 'simpB']
+        ]
+        ['INT','INTINT' EnumDiscriminatedTypeMultipleC
+            [simple        uint 8 'simpC']
+        ]
+    ]
+]
+
+// Enumerated Parameter
+[discriminatedType 'EnumDiscriminatedTypeParameter' [EnumType 'discr']
+    [typeSwitch 'discr'
+        ['BOOL' EnumDiscriminatedTypeAParameter
+            [simple        uint 8 'simpA']
+        ]
+        ['UINT' EnumDiscriminatedTypeBParameter
+            [simple        uint 8 'simpB']
+        ]
+        ['INT' EnumDiscriminatedTypeCParameter
+            [simple        uint 8 'simpC']
+        ]
+    ]
+]
+
+// Multiple Enumerated Parameters
+[discriminatedType 'EnumDiscriminatedTypeParameterMultiple' [EnumType 'discr1', EnumTypeInt 'discr2']
+    [typeSwitch 'discr1','discr2'
+        ['BOOL','BOOLINT' EnumDiscriminatedTypeAParameterMultiple
+            [simple        uint 8 'simpA']
+        ]
+        ['UINT','UINTINT' EnumDiscriminatedTypeBParameterMultiple
+            [simple        uint 8 'simpB']
+        ]
+        ['INT','INTINT' EnumDiscriminatedTypeCParameterMultiple
             [simple        uint 8 'simpC']
         ]
     ]
@@ -198,17 +245,26 @@
     ]
 ]
 
-
-
 ////////////////////////////////////////////////////////////////
-// Arguments Type
+// Enumerated Type Tests
 ////////////////////////////////////////////////////////////////
 
+//Not really useful, but this uses the pojo templates instead of the enum templates
+[enum int 8 'EnumEmpty'
 
-////////////////////////////////////////////////////////////////
-// Discriminated Type with multiple conditions
-////////////////////////////////////////////////////////////////
+]
 
+// Go doesn't support Enumerated Bits
+//[enum bit 'EnumTypeBit'
+//    ['true' TRUE]
+//    ['false' FALSE]
+//]
+
+[enum int 8 'EnumTypeInt'
+    ['0x01' BOOLINT]
+    ['0x02' UINTINT]
+    ['0x03' INTINT]
+]
 
 [enum uint 8 'EnumType'
     ['0x01' BOOL]
@@ -216,6 +272,53 @@
     ['0x03' INT]
 ]
 
+// C doesn't support non integer switch fields
+//[enum float 8.23 'EnumTypeFloat'
+//    ['100.0' LOW]
+//    ['101.0' MID]
+//    ['102.0' BIG]
+//]
+
+// C doesn't support non integer switch fields
+//[enum float 11.52 'EnumTypeDouble'
+//    ['100.0' LOW]
+//    ['101.0' MID]
+//    ['102.0' BIG]
+//]
+
+//String based enum's needs some work in C, compiles but assigns 0 as values.
+[enum string '-1' 'EnumTypeString'
+    ['Toddy1' TODDY]
+]
+
+// Fails to import the base Enum in C, need to find it in getComplexTypeReferences
+//[enum EnumType 'EnumTypeEnum'
+//    ['BOOL' BOOL]
+//    ['UINT' UINT]
+//    ['INT' INT]
+//]
+
+// Float parameters aren't implemented for constants in enums in C
+//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
+//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'IEC61131_BOOL'         , 'BOOL']]
+//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'IEC61131_BYTE'         , 'UINT']]
+//]
+
+// Keyword named parameters aren't allowed
+//[enum int 8 'EnumTypeIntTest'  [int 8 'int']
+//    ['0x01' BOOL             ['1']]
+//    ['0x02' BYTE             ['2']]
+//]
+
+//Showing allowed parameter types for enums
+[enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string '-1' 'stringType', EnumType 'enumType']
+    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'IEC61131_BOOL'         , 'BOOL']]
+    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'IEC61131_BYTE'         , 'UINT']]
+]
+
+////////////////////////////////////////////////////////////////
+// Data IO Tests
+////////////////////////////////////////////////////////////////
 
 [dataIo 'DataIOTypeEmpty'
 
