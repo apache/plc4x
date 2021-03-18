@@ -24,19 +24,19 @@ import (
 	"strconv"
 )
 
-func NumericGroupAddressToString(numericAddress uint16, groupAddress KnxNetIpGroupAddressField) string {
+func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressField) string {
 	if groupAddress != nil {
 		switch groupAddress.(type) {
-		case KnxNetIpGroupAddress3LevelPlcField:
+		case GroupAddress3LevelPlcField:
 			main := numericAddress >> 11
 			middle := (numericAddress >> 8) & 0x07
 			sub := numericAddress & 0xFF
 			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(middle)) + "/" + strconv.Itoa(int(sub))
-		case KnxNetIpGroupAddress2LevelPlcField:
+		case GroupAddress2LevelPlcField:
 			main := numericAddress >> 11
 			sub := numericAddress & 0x07FF
 			return strconv.Itoa(int(main)) + "/" + strconv.Itoa(int(sub))
-		case KnxNetIpGroupAddress1LevelPlcField:
+		case GroupAddress1LevelPlcField:
 			return strconv.Itoa(int(numericAddress))
 		}
 	}

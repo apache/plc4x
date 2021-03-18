@@ -20,23 +20,23 @@ package knxnetip
 
 import (
 	"errors"
-	knxnetipModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
-type KnxNetIpWriter struct {
+type Writer struct {
 	messageCodec spi.MessageCodec
 }
 
-func NewKnxNetIpWriter(messageCodec spi.MessageCodec) KnxNetIpWriter {
-	return KnxNetIpWriter{
+func NewWriter(messageCodec spi.MessageCodec) Writer {
+	return Writer{
 		messageCodec: messageCodec,
 	}
 }
 
-func (m KnxNetIpWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
 	result := make(chan model.PlcWriteRequestResult)
 	// If we are requesting only one field, use a
 	if len(writeRequest.GetFieldNames()) == 1 {
@@ -44,7 +44,7 @@ func (m KnxNetIpWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.P
 
 		// Get the KnxNetIp field instance from the request
 		field := writeRequest.GetField(fieldName)
-		knxNetIpField, err := CastToKnxNetIpFieldFromPlcField(field)
+		knxNetIpField, err := CastToFieldFromPlcField(field)
 		if err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
@@ -57,8 +57,8 @@ func (m KnxNetIpWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.P
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewWriteBuffer()
-		fieldType := knxnetipModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
-		if err := knxnetipModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
+		fieldType := readWriteModel.KnxDatapointTypeByName(knxNetIpField.GetTypeName())
+		if err := readWriteModel.KnxDatapointSerialize(io, value, fieldType); err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,

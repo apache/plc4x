@@ -26,5 +26,5 @@ import (
 
 func TestS7Driver(t *testing.T) {
 	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, s7.NewS7Driver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
 }

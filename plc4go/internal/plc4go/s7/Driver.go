@@ -16,32 +16,10 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package ads
+package s7
 
-import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-)
+import "github.com/apache/plc4x/plc4go/pkg/plc4go"
 
-type AdsDriver struct {
-	fieldHandler spi.PlcFieldHandler
-	plc4go.PlcDriver
-}
-
-func NewAdsDriver() plc4go.PlcDriver {
-	return &AdsDriver{
-		fieldHandler: NewFieldHandler(),
-	}
-}
-
-func (m AdsDriver) GetProtocolCode() string {
-	return "ads"
-}
-
-func (m AdsDriver) GetProtocolName() string {
-	return "Beckhoff TwinCat ADS"
-}
-
-func (m AdsDriver) SupportsDiscovery() bool {
-	return false
+func NewDriver() plc4go.PlcDriver {
+	return nil
 }

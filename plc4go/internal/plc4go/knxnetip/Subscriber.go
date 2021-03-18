@@ -28,19 +28,19 @@ import (
 	"time"
 )
 
-type KnxNetIpSubscriber struct {
-	connection           *KnxNetIpConnection
+type Subscriber struct {
+	connection           *Connection
 	subscriptionRequests []internalModel.DefaultPlcSubscriptionRequest
 }
 
-func NewKnxNetIpSubscriber(connection *KnxNetIpConnection) *KnxNetIpSubscriber {
-	return &KnxNetIpSubscriber{
+func NewSubscriber(connection *Connection) *Subscriber {
+	return &Subscriber{
 		connection:           connection,
 		subscriptionRequests: []internalModel.DefaultPlcSubscriptionRequest{},
 	}
 }
 
-func (m *KnxNetIpSubscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
+func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
 	result := make(chan apiModel.PlcSubscriptionRequestResult)
 	go func() {
 		// Add this subscriber to the connection.
@@ -64,7 +64,7 @@ func (m *KnxNetIpSubscriber) Subscribe(subscriptionRequest apiModel.PlcSubscript
 	return result
 }
 
-func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
+func (m *Subscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
 
 	// TODO: As soon as we establish a connection, we start getting data...
@@ -76,7 +76,7 @@ func (m *KnxNetIpSubscriber) Unsubscribe(unsubscriptionRequest apiModel.PlcUnsub
 /*
  * Callback for incoming value change events from the KNX bus
  */
-func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payload []int8, changed bool) {
+func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8, changed bool) {
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
 	garb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(destinationAddress))
@@ -97,14 +97,14 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 		// Check if this datagram matches any address in this subscription request
 		// As depending on the address used for fields, the decoding is different, we need to decode on-demand here.
 		for _, fieldName := range subscriptionRequest.GetFieldNames() {
-			field, err := CastToKnxNetIpFieldFromPlcField(subscriptionRequest.GetField(fieldName))
+			field, err := CastToFieldFromPlcField(subscriptionRequest.GetField(fieldName))
 			if err != nil {
 				continue
 			}
 			switch field.(type) {
-			case KnxNetIpGroupAddressField:
+			case GroupAddressField:
 				subscriptionType := subscriptionRequest.GetType(fieldName)
-				groupAddressField := field.(KnxNetIpGroupAddressField)
+				groupAddressField := field.(GroupAddressField)
 				// If it matches, take the datatype of each matching field and try to decode the payload
 				if groupAddressField.matches(groupAddress) {
 					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
@@ -137,7 +137,7 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 								if !rb.HasMore(1) {
 									rb.Reset()
 								}
-								plcValue := values2.NewRawPlcValue(rb, NewKnxNetIpValueDecoder(rb))
+								plcValue := values2.NewRawPlcValue(rb, NewValueDecoder(rb))
 								plcValueList = append(plcValueList, plcValue)
 							} else {
 								plcValue, err2 := driverModel.KnxDatapointParse(rb, elementType)
@@ -168,7 +168,7 @@ func (m *KnxNetIpSubscriber) handleValueChange(destinationAddress []int8, payloa
 
 		// Assemble a PlcSubscription event
 		if len(plcValues) > 0 {
-			event := NewKnxNetIpSubscriptionEvent(
+			event := NewSubscriptionEvent(
 				fields, types, intervals, responseCodes, addresses, plcValues)
 			eventHandler := subscriptionRequest.GetEventHandler()
 			eventHandler(event)

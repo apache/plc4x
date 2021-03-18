@@ -19,17 +19,26 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
-type KnxNetIpValueHandler struct {
+type ValueDecoder struct {
+	rb *utils.ReadBuffer
 }
 
-func NewValueHandler() KnxNetIpValueHandler {
-	return KnxNetIpValueHandler{}
+func NewValueDecoder(rb *utils.ReadBuffer) ValueDecoder {
+	return ValueDecoder{
+		rb: rb,
+	}
 }
 
-func (m KnxNetIpValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
-	return nil, nil
+func (m ValueDecoder) Decode(typeName string) api.PlcValue {
+	datatype := driverModel.KnxDatapointTypeByName(typeName)
+	plcValue, err := driverModel.KnxDatapointParse(m.rb, datatype)
+	if err != nil {
+		return nil
+	}
+	return plcValue
 }

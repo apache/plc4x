@@ -30,28 +30,28 @@ import (
 	"time"
 )
 
-type KnxNetIpExpectation struct {
+type Expectation struct {
 	expiration     time.Time
 	acceptsMessage spi.AcceptsMessage
 	handleMessage  spi.HandleMessage
 	handleError    spi.HandleError
 }
 
-type KnxNetIpMessageCodec struct {
+type MessageCodec struct {
 	sequenceCounter               int32
 	transportInstance             transports.TransportInstance
 	messageInterceptor            func(message interface{})
 	defaultIncomingMessageChannel chan interface{}
-	expectations                  []KnxNetIpExpectation
+	expectations                  []Expectation
 }
 
-func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message interface{})) *KnxNetIpMessageCodec {
-	codec := &KnxNetIpMessageCodec{
+func NewMessageCodec(transportInstance transports.TransportInstance, messageInterceptor func(message interface{})) *MessageCodec {
+	codec := &MessageCodec{
 		sequenceCounter:               0,
 		transportInstance:             transportInstance,
 		messageInterceptor:            messageInterceptor,
 		defaultIncomingMessageChannel: make(chan interface{}),
-		expectations:                  []KnxNetIpExpectation{},
+		expectations:                  []Expectation{},
 	}
 	// Start a worker that handles processing of responses
 	go func() {
@@ -63,16 +63,16 @@ func NewKnxNetIpMessageCodec(transportInstance transports.TransportInstance, mes
 	return codec
 }
 
-func (m *KnxNetIpMessageCodec) Connect() error {
+func (m *MessageCodec) Connect() error {
 	// "connect" to the remote UDP server
 	return m.transportInstance.Connect()
 }
 
-func (m *KnxNetIpMessageCodec) Disconnect() error {
+func (m *MessageCodec) Disconnect() error {
 	return m.transportInstance.Close()
 }
 
-func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
+func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	knxMessage := model.CastKnxNetIpMessage(message)
 	// Serialize the request
@@ -91,8 +91,8 @@ func (m *KnxNetIpMessageCodec) Send(message interface{}) error {
 	return nil
 }
 
-func (m *KnxNetIpMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	expectation := KnxNetIpExpectation{
+func (m *MessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	expectation := Expectation{
 		expiration:     time.Now().Add(ttl),
 		acceptsMessage: acceptsMessage,
 		handleMessage:  handleMessage,
@@ -102,7 +102,7 @@ func (m *KnxNetIpMessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleM
 	return nil
 }
 
-func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+func (m *MessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// Send the actual message
 	err := m.Send(message)
 	if err != nil {
@@ -112,11 +112,11 @@ func (m *KnxNetIpMessageCodec) SendRequest(message interface{}, acceptsMessage s
 	return err
 }
 
-func (m *KnxNetIpMessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
+func (m *MessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
 	return m.defaultIncomingMessageChannel
 }
 
-func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
+func (m *MessageCodec) receive() (interface{}, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		data, err := m.transportInstance.PeekReadableBytes(6)
@@ -151,7 +151,7 @@ func (m *KnxNetIpMessageCodec) receive() (interface{}, error) {
 	return nil, nil
 }
 
-func work(m *KnxNetIpMessageCodec) {
+func work(m *MessageCodec) {
 	// If this method ever exits, start it again.
 	defer work(m)
 	// Start an endless loop
@@ -241,6 +241,6 @@ func work(m *KnxNetIpMessageCodec) {
 	}
 }
 
-func (m KnxNetIpMessageCodec) GetTransportInstance() transports.TransportInstance {
+func (m MessageCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
 }

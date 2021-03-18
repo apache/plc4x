@@ -20,7 +20,7 @@ package modbus
 
 import (
 	"errors"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
@@ -31,21 +31,21 @@ import (
 	"time"
 )
 
-type ModbusReader struct {
+type Reader struct {
 	transactionIdentifier int32
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
 }
 
-func NewModbusReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *ModbusReader {
-	return &ModbusReader{
+func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
+	return &Reader{
 		transactionIdentifier: 0,
 		unitIdentifier:        unitIdentifier,
 		messageCodec:          messageCodec,
 	}
 }
 
-func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	result := make(chan model.PlcReadRequestResult)
 	// If we are requesting only one field, use a
 	if len(readRequest.GetFieldNames()) == 1 {
@@ -61,17 +61,17 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 			return result
 		}
 		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
-		var pdu *modbusModel.ModbusPDU = nil
+		var pdu *readWriteModel.ModbusPDU = nil
 		switch modbusField.FieldType {
-		case MODBUS_FIELD_COIL:
-			pdu = modbusModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
-		case MODBUS_FIELD_DISCRETE_INPUT:
-			pdu = modbusModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
-		case MODBUS_FIELD_INPUT_REGISTER:
-			pdu = modbusModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
-		case MODBUS_FIELD_HOLDING_REGISTER:
-			pdu = modbusModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
-		case MODBUS_FIELD_EXTENDED_REGISTER:
+		case Coil:
+			pdu = readWriteModel.NewModbusPDUReadCoilsRequest(modbusField.Address, modbusField.Quantity)
+		case DiscreteInput:
+			pdu = readWriteModel.NewModbusPDUReadDiscreteInputsRequest(modbusField.Address, modbusField.Quantity)
+		case InputRegister:
+			pdu = readWriteModel.NewModbusPDUReadInputRegistersRequest(modbusField.Address, numWords)
+		case HoldingRegister:
+			pdu = readWriteModel.NewModbusPDUReadHoldingRegistersRequest(modbusField.Address, numWords)
+		case ExtendedRegister:
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
@@ -95,7 +95,7 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 		}
 
 		// Assemble the finished ADU
-		requestAdu := modbusModel.ModbusTcpADU{
+		requestAdu := readWriteModel.ModbusTcpADU{
 			TransactionIdentifier: uint16(transactionIdentifier),
 			UnitIdentifier:        m.unitIdentifier,
 			Pdu:                   pdu,
@@ -105,13 +105,13 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 		err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
-				responseAdu := modbusModel.CastModbusTcpADU(message)
+				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				return responseAdu.TransactionIdentifier == uint16(transactionIdentifier) &&
 					responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
 			},
 			func(message interface{}) error {
 				// Convert the response into an ADU
-				responseAdu := modbusModel.CastModbusTcpADU(message)
+				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				// Convert the modbus response into a PLC4X response
 				readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
 
@@ -153,25 +153,25 @@ func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRe
 	return result
 }
 
-func (m *ModbusReader) ToPlc4xReadResponse(responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
+func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
 	var data []uint8
 	switch responseAdu.Pdu.Child.(type) {
-	case *modbusModel.ModbusPDUReadDiscreteInputsResponse:
-		pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUReadDiscreteInputsResponse:
+		pdu := readWriteModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
 		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// Pure Boolean ...
-	case *modbusModel.ModbusPDUReadCoilsResponse:
-		pdu := modbusModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUReadCoilsResponse:
+		pdu := readWriteModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
 		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// Pure Boolean ...
-	case *modbusModel.ModbusPDUReadInputRegistersResponse:
-		pdu := modbusModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUReadInputRegistersResponse:
+		pdu := readWriteModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ArrayToUint8Array(pdu.Value)
 		// DataIo ...
-	case *modbusModel.ModbusPDUReadHoldingRegistersResponse:
-		pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
+	case *readWriteModel.ModbusPDUReadHoldingRegistersResponse:
+		pdu := readWriteModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ArrayToUint8Array(pdu.Value)
-	case *modbusModel.ModbusPDUError:
+	case *readWriteModel.ModbusPDUError:
 		return nil, errors.New("got an error from remote")
 	default:
 		return nil, errors.New("unsupported response type")
@@ -186,7 +186,7 @@ func (m *ModbusReader) ToPlc4xReadResponse(responseAdu modbusModel.ModbusTcpADU,
 
 	// Decode the data according to the information from the request
 	rb := utils.NewReadBuffer(data)
-	value, err := modbusModel.DataItemParse(rb, field.Datatype, field.Quantity)
+	value, err := readWriteModel.DataItemParse(rb, field.Datatype, field.Quantity)
 	if err != nil {
 		return nil, err
 	}
