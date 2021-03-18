@@ -19,6 +19,7 @@
 package tests
 
 import (
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"testing"

@@ -16,15 +16,15 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package tests
+package initializetest
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"testing"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"os"
 )
 
-func TestAdsParserSerializer(t *testing.T) {
-	t.Skip("Still a work in progress")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml")
+func init() {
+	onJenkins := os.Getenv("JENKINS_URL") != ""
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: onJenkins})
 }
