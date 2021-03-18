@@ -225,6 +225,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Compare the bytes read with the ones we expect
 		for i := range expectedRawOutput {
 			if expectedRawOutput[i] != rawOutput[i] {
+				// TODO: render diff
 				return errors.New("actual output doesn't match expected output")
 			}
 		}
@@ -242,6 +243,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Compare the bytes read with the ones we expect
 		for i := range expectedRawInput {
+			// TODO: render diff
 			if expectedRawInput[i] != rawInput[i] {
 				return errors.New("actual output doesn't match expected output")
 			}

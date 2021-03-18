@@ -21,7 +21,6 @@ package modbus
 import (
 	"errors"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"regexp"
@@ -64,7 +63,6 @@ type FieldHandler struct {
 	numericHoldingRegisterPattern  *regexp.Regexp
 	plc4xExtendedRegisterPattern   *regexp.Regexp
 	numericExtendedRegisterPattern *regexp.Regexp
-	spi.PlcFieldHandler
 }
 
 func NewFieldHandler() FieldHandler {

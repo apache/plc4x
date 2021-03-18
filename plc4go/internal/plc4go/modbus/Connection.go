@@ -61,7 +61,6 @@ type Connection struct {
 	fieldHandler       spi.PlcFieldHandler
 	valueHandler       spi.PlcValueHandler
 	requestInterceptor internalModel.RequestInterceptor
-	plc4go.PlcConnection
 }
 
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) Connection {
@@ -161,6 +160,10 @@ func (m Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequest
 }
 
 func (m Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	panic("implement me")
+}
+
+func (m Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	panic("implement me")
 }
 

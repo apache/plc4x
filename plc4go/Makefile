@@ -57,6 +57,10 @@ compile:
 test: compile
 	$(MVNBIN) test
 
+## test: Runs gotestsum.
+test-readable: compile
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) gotestsum ./...
+
 ## exec: Run given command, wrapped with custom GOPATH. e.g; make exec run="go test ./..."
 exec:
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) $(run)
