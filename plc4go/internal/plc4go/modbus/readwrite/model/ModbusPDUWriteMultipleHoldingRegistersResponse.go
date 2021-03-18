@@ -32,7 +32,6 @@ type ModbusPDUWriteMultipleHoldingRegistersResponse struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUWriteMultipleHoldingRegistersResponse
 }
 
 // The corresponding interface

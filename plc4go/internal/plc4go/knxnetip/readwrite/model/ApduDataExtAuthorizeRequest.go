@@ -32,7 +32,6 @@ type ApduDataExtAuthorizeRequest struct {
 	Level  uint8
 	Data   []uint8
 	Parent *ApduDataExt
-	IApduDataExtAuthorizeRequest
 }
 
 // The corresponding interface

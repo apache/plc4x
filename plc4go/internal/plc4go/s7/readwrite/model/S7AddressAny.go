@@ -37,7 +37,6 @@ type S7AddressAny struct {
 	ByteAddress      uint16
 	BitAddress       uint8
 	Parent           *S7Address
-	IS7AddressAny
 }
 
 // The corresponding interface

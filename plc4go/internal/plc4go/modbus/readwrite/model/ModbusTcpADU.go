@@ -36,7 +36,6 @@ type ModbusTcpADU struct {
 	TransactionIdentifier uint16
 	UnitIdentifier        uint8
 	Pdu                   *ModbusPDU
-	IModbusTcpADU
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type AdsWriteControlResponse struct {
 	Result ReturnCode
 	Parent *AdsData
-	IAdsWriteControlResponse
 }
 
 // The corresponding interface

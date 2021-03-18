@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type CEMIAdditionalInformation struct {
 	Child ICEMIAdditionalInformationChild
-	ICEMIAdditionalInformation
-	ICEMIAdditionalInformationParent
 }
 
 // The corresponding interface

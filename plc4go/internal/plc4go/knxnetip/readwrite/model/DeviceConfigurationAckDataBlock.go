@@ -32,7 +32,6 @@ type DeviceConfigurationAckDataBlock struct {
 	CommunicationChannelId uint8
 	SequenceCounter        uint8
 	Status                 Status
-	IDeviceConfigurationAckDataBlock
 }
 
 // The corresponding interface

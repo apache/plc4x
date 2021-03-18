@@ -31,7 +31,6 @@ import (
 type S7VarRequestParameterItemAddress struct {
 	Address *S7Address
 	Parent  *S7VarRequestParameterItem
-	IS7VarRequestParameterItemAddress
 }
 
 // The corresponding interface

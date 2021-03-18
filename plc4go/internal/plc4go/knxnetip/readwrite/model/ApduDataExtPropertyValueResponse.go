@@ -35,7 +35,6 @@ type ApduDataExtPropertyValueResponse struct {
 	Index       uint16
 	Data        []uint8
 	Parent      *ApduDataExt
-	IApduDataExtPropertyValueResponse
 }
 
 // The corresponding interface

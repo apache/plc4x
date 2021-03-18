@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadExceptionStatusResponse struct {
 	Value  uint8
 	Parent *ModbusPDU
-	IModbusPDUReadExceptionStatusResponse
 }
 
 // The corresponding interface

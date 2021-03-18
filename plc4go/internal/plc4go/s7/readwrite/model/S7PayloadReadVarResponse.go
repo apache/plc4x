@@ -31,7 +31,6 @@ import (
 type S7PayloadReadVarResponse struct {
 	Items  []*S7VarPayloadDataItem
 	Parent *S7Payload
-	IS7PayloadReadVarResponse
 }
 
 // The corresponding interface

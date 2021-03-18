@@ -40,7 +40,6 @@ type DIBDeviceInfo struct {
 	KnxNetIpDeviceMulticastAddress *IPAddress
 	KnxNetIpDeviceMacAddress       *MACAddress
 	DeviceFriendlyName             []int8
-	IDIBDeviceInfo
 }
 
 // The corresponding interface

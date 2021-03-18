@@ -33,7 +33,6 @@ type COTPPacketDisconnectRequest struct {
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
 	Parent               *COTPPacket
-	ICOTPPacketDisconnectRequest
 }
 
 // The corresponding interface

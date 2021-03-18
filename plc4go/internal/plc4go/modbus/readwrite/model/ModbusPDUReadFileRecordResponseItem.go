@@ -33,7 +33,6 @@ import (
 type ModbusPDUReadFileRecordResponseItem struct {
 	ReferenceType uint8
 	Data          []int8
-	IModbusPDUReadFileRecordResponseItem
 }
 
 // The corresponding interface

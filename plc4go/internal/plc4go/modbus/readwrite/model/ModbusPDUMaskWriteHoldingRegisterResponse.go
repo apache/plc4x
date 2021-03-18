@@ -33,7 +33,6 @@ type ModbusPDUMaskWriteHoldingRegisterResponse struct {
 	AndMask          uint16
 	OrMask           uint16
 	Parent           *ModbusPDU
-	IModbusPDUMaskWriteHoldingRegisterResponse
 }
 
 // The corresponding interface

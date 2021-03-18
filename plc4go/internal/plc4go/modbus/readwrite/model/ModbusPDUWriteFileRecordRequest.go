@@ -31,7 +31,6 @@ import (
 type ModbusPDUWriteFileRecordRequest struct {
 	Items  []*ModbusPDUWriteFileRecordRequestItem
 	Parent *ModbusPDU
-	IModbusPDUWriteFileRecordRequest
 }
 
 // The corresponding interface

@@ -34,7 +34,6 @@ type S7ParameterSetupCommunication struct {
 	MaxAmqCallee uint16
 	PduLength    uint16
 	Parent       *S7Parameter
-	IS7ParameterSetupCommunication
 }
 
 // The corresponding interface

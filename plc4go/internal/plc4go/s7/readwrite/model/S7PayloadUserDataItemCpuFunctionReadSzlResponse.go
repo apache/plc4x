@@ -35,7 +35,6 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = 28
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 	Items  []*SzlDataTreeItem
 	Parent *S7PayloadUserDataItem
-	IS7PayloadUserDataItemCpuFunctionReadSzlResponse
 }
 
 // The corresponding interface

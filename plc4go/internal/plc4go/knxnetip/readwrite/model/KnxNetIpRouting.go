@@ -31,7 +31,6 @@ import (
 type KnxNetIpRouting struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetIpRouting
 }
 
 // The corresponding interface

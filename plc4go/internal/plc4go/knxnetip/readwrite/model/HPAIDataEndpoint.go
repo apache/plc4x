@@ -32,7 +32,6 @@ type HPAIDataEndpoint struct {
 	HostProtocolCode HostProtocolCode
 	IpAddress        *IPAddress
 	IpPort           uint16
-	IHPAIDataEndpoint
 }
 
 // The corresponding interface

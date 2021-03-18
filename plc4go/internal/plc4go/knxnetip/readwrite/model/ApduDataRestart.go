@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataRestart struct {
 	Parent *ApduData
-	IApduDataRestart
 }
 
 // The corresponding interface

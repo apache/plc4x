@@ -32,7 +32,6 @@ type COTPPacketDisconnectResponse struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	Parent               *COTPPacket
-	ICOTPPacketDisconnectResponse
 }
 
 // The corresponding interface

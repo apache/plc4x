@@ -35,7 +35,6 @@ type AdsWriteRequest struct {
 	IndexOffset uint32
 	Data        []int8
 	Parent      *AdsData
-	IAdsWriteRequest
 }
 
 // The corresponding interface

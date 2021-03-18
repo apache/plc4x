@@ -33,7 +33,6 @@ import (
 type BACnetTagApplicationEnumerated struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagApplicationEnumerated
 }
 
 // The corresponding interface

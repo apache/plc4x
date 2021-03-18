@@ -32,7 +32,6 @@ type AdsStampHeader struct {
 	Timestamp              uint64
 	Samples                uint32
 	AdsNotificationSamples []*AdsNotificationSample
-	IAdsStampHeader
 }
 
 // The corresponding interface

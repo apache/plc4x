@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ApduDataExt struct {
 	Child IApduDataExtChild
-	IApduDataExt
-	IApduDataExtParent
 }
 
 // The corresponding interface

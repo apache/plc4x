@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MPropWriteCon struct {
 	Parent *CEMI
-	IMPropWriteCon
 }
 
 // The corresponding interface

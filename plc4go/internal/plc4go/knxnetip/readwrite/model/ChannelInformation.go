@@ -31,7 +31,6 @@ import (
 type ChannelInformation struct {
 	NumChannels uint8
 	ChannelCode uint16
-	IChannelInformation
 }
 
 // The corresponding interface

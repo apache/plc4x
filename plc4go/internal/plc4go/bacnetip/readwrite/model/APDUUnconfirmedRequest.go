@@ -32,7 +32,6 @@ import (
 type APDUUnconfirmedRequest struct {
 	ServiceRequest *BACnetUnconfirmedServiceRequest
 	Parent         *APDU
-	IAPDUUnconfirmedRequest
 }
 
 // The corresponding interface

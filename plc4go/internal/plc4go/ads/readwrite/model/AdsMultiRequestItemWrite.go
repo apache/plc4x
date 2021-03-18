@@ -33,7 +33,6 @@ type AdsMultiRequestItemWrite struct {
 	ItemIndexOffset uint32
 	ItemWriteLength uint32
 	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemWrite
 }
 
 // The corresponding interface

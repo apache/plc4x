@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type S7MessageRequest struct {
 	Parent *S7Message
-	IS7MessageRequest
 }
 
 // The corresponding interface

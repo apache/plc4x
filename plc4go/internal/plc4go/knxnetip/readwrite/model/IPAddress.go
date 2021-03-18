@@ -32,7 +32,6 @@ import (
 // The data-structure of this message
 type IPAddress struct {
 	Addr []int8
-	IIPAddress
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type BACnetTagApplicationReal struct {
 	Value  float32
 	Parent *BACnetTag
-	IBACnetTagApplicationReal
 }
 
 // The corresponding interface

@@ -39,7 +39,6 @@ type State struct {
 	NoReturn            bool
 	Response            bool
 	Broadcast           bool
-	IState
 }
 
 // The corresponding interface

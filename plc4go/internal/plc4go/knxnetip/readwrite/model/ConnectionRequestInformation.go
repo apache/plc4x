@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ConnectionRequestInformation struct {
 	Child IConnectionRequestInformationChild
-	IConnectionRequestInformation
-	IConnectionRequestInformationParent
 }
 
 // The corresponding interface

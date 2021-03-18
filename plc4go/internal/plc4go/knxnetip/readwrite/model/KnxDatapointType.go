@@ -1853,7 +1853,7 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 112:
 		{ /* '112' */
-			return "power density (W/m²)"
+			return "power denisity (W/m²)"
 		}
 	case 113:
 		{ /* '113' */

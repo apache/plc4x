@@ -36,7 +36,6 @@ type LPollData struct {
 	TargetAddress          []int8
 	NumberExpectedPollData uint8
 	Parent                 *LDataFrame
-	ILPollData
 }
 
 // The corresponding interface

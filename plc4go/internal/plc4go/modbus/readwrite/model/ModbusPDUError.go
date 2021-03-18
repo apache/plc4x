@@ -31,7 +31,6 @@ import (
 type ModbusPDUError struct {
 	ExceptionCode ModbusErrorCode
 	Parent        *ModbusPDU
-	IModbusPDUError
 }
 
 // The corresponding interface

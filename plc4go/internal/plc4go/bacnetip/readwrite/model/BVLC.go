@@ -36,8 +36,6 @@ const BVLC_BACNETTYPE uint8 = 0x81
 // The data-structure of this message
 type BVLC struct {
 	Child IBVLCChild
-	IBVLC
-	IBVLCParent
 }
 
 // The corresponding interface

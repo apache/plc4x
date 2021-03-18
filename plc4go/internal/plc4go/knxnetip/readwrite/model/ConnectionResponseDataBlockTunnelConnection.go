@@ -31,7 +31,6 @@ import (
 type ConnectionResponseDataBlockTunnelConnection struct {
 	KnxAddress *KnxAddress
 	Parent     *ConnectionResponseDataBlock
-	IConnectionResponseDataBlockTunnelConnection
 }
 
 // The corresponding interface

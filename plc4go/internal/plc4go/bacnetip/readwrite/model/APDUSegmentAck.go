@@ -36,7 +36,6 @@ type APDUSegmentAck struct {
 	SequenceNumber     uint8
 	ProposedWindowSize uint8
 	Parent             *APDU
-	IAPDUSegmentAck
 }
 
 // The corresponding interface

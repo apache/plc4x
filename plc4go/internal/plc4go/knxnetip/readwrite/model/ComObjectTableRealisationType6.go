@@ -31,7 +31,6 @@ import (
 type ComObjectTableRealisationType6 struct {
 	ComObjectDescriptors *GroupObjectDescriptorRealisationType6
 	Parent               *ComObjectTable
-	IComObjectTableRealisationType6
 }
 
 // The corresponding interface

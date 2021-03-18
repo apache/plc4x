@@ -42,7 +42,6 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	ServiceNumber uint16
 	Values        []int8
 	Parent        *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 }
 
 // The corresponding interface

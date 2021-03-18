@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type S7VarPayloadStatusItem struct {
 	ReturnCode DataTransportErrorCode
-	IS7VarPayloadStatusItem
 }
 
 // The corresponding interface

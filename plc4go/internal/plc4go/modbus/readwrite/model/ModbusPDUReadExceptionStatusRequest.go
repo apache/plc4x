@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusRequest struct {
 	Parent *ModbusPDU
-	IModbusPDUReadExceptionStatusRequest
 }
 
 // The corresponding interface

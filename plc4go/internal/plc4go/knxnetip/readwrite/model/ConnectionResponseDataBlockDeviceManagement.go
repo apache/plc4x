@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ConnectionResponseDataBlockDeviceManagement struct {
 	Parent *ConnectionResponseDataBlock
-	IConnectionResponseDataBlockDeviceManagement
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type COTPParameterChecksum struct {
 	Crc    uint8
 	Parent *COTPParameter
-	ICOTPParameterChecksum
 }
 
 // The corresponding interface

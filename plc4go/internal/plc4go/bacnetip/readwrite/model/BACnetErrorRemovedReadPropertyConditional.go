@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorRemovedReadPropertyConditional struct {
 	Parent *BACnetError
-	IBACnetErrorRemovedReadPropertyConditional
 }
 
 // The corresponding interface

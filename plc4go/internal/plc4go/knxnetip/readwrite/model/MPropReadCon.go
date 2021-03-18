@@ -36,7 +36,6 @@ type MPropReadCon struct {
 	StartIndex          uint16
 	Unknown             uint16
 	Parent              *CEMI
-	IMPropReadCon
 }
 
 // The corresponding interface

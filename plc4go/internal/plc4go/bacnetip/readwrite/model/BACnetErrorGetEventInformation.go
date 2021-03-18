@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorGetEventInformation struct {
 	Parent *BACnetError
-	IBACnetErrorGetEventInformation
 }
 
 // The corresponding interface

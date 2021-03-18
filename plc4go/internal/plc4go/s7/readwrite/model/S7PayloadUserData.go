@@ -31,7 +31,6 @@ import (
 type S7PayloadUserData struct {
 	Items  []*S7PayloadUserDataItem
 	Parent *S7Payload
-	IS7PayloadUserData
 }
 
 // The corresponding interface

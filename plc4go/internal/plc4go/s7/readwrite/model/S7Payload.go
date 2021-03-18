@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7Payload struct {
 	Child IS7PayloadChild
-	IS7Payload
-	IS7PayloadParent
 }
 
 // The corresponding interface
@@ -98,13 +96,13 @@ func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter *S7Parame
 	var _parent *S7Payload
 	var typeSwitchError error
 	switch {
-	case CastS7Parameter(parameter).ParameterType() == 0x04 && messageType == 0x03:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x04 && messageType == 0x03:
 		_parent, typeSwitchError = S7PayloadReadVarResponseParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x01:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x01:
 		_parent, typeSwitchError = S7PayloadWriteVarRequestParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x03:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x03:
 		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x00 && messageType == 0x07:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x00 && messageType == 0x07:
 		_parent, typeSwitchError = S7PayloadUserDataParse(io, parameter)
 	}
 	if typeSwitchError != nil {

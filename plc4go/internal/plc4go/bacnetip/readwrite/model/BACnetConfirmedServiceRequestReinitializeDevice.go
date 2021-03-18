@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReinitializeDevice struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestReinitializeDevice
 }
 
 // The corresponding interface

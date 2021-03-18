@@ -31,7 +31,6 @@ import (
 type DescriptionRequest struct {
 	HpaiControlEndpoint *HPAIControlEndpoint
 	Parent              *KnxNetIpMessage
-	IDescriptionRequest
 }
 
 // The corresponding interface

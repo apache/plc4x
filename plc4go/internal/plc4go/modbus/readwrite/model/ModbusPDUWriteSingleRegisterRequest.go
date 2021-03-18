@@ -32,7 +32,6 @@ type ModbusPDUWriteSingleRegisterRequest struct {
 	Address uint16
 	Value   uint16
 	Parent  *ModbusPDU
-	IModbusPDUWriteSingleRegisterRequest
 }
 
 // The corresponding interface

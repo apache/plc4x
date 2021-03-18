@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressWrite struct {
 	Parent *ApduData
-	IApduDataIndividualAddressWrite
 }
 
 // The corresponding interface

@@ -33,7 +33,6 @@ type DisconnectRequest struct {
 	CommunicationChannelId uint8
 	HpaiControlEndpoint    *HPAIControlEndpoint
 	Parent                 *KnxNetIpMessage
-	IDisconnectRequest
 }
 
 // The corresponding interface

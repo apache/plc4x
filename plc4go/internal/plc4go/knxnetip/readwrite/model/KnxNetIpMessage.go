@@ -36,8 +36,6 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 // The data-structure of this message
 type KnxNetIpMessage struct {
 	Child IKnxNetIpMessageChild
-	IKnxNetIpMessage
-	IKnxNetIpMessageParent
 }
 
 // The corresponding interface

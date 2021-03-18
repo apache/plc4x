@@ -31,7 +31,6 @@ import (
 type ApduDataContainer struct {
 	DataApdu *ApduData
 	Parent   *Apdu
-	IApduDataContainer
 }
 
 // The corresponding interface

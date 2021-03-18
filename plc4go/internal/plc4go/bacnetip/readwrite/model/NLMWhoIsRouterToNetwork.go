@@ -31,7 +31,6 @@ import (
 type NLMWhoIsRouterToNetwork struct {
 	DestinationNetworkAddress []uint16
 	Parent                    *NLM
-	INLMWhoIsRouterToNetwork
 }
 
 // The corresponding interface

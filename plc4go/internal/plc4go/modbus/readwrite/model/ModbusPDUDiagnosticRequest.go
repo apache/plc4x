@@ -32,7 +32,6 @@ type ModbusPDUDiagnosticRequest struct {
 	SubFunction uint16
 	Data        uint16
 	Parent      *ModbusPDU
-	IModbusPDUDiagnosticRequest
 }
 
 // The corresponding interface

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type RoutingIndication struct {
 	Parent *KnxNetIpMessage
-	IRoutingIndication
 }
 
 // The corresponding interface

@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type COTPParameter struct {
 	Child ICOTPParameterChild
-	ICOTPParameter
-	ICOTPParameterParent
 }
 
 // The corresponding interface

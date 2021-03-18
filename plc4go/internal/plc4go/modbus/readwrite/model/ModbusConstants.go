@@ -33,7 +33,6 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = 502
 
 // The data-structure of this message
 type ModbusConstants struct {
-	IModbusConstants
 }
 
 // The corresponding interface

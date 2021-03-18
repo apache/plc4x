@@ -32,7 +32,6 @@ import (
 // The data-structure of this message
 type MACAddress struct {
 	Addr []int8
-	IMACAddress
 }
 
 // The corresponding interface

@@ -20,7 +20,6 @@ package knxnetip
 
 import (
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
@@ -32,7 +31,6 @@ import (
 type KnxNetIpSubscriber struct {
 	connection           *KnxNetIpConnection
 	subscriptionRequests []internalModel.DefaultPlcSubscriptionRequest
-	spi.PlcWriter
 }
 
 func NewKnxNetIpSubscriber(connection *KnxNetIpConnection) *KnxNetIpSubscriber {

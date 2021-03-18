@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type RelativeTimestamp struct {
 	Timestamp uint16
-	IRelativeTimestamp
 }
 
 // The corresponding interface

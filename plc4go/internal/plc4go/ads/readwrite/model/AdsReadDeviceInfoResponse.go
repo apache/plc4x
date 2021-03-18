@@ -37,7 +37,6 @@ type AdsReadDeviceInfoResponse struct {
 	Version      uint16
 	Device       []int8
 	Parent       *AdsData
-	IAdsReadDeviceInfoResponse
 }
 
 // The corresponding interface

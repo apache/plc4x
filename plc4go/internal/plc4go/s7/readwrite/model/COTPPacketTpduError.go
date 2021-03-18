@@ -32,7 +32,6 @@ type COTPPacketTpduError struct {
 	DestinationReference uint16
 	RejectCause          uint8
 	Parent               *COTPPacket
-	ICOTPPacketTpduError
 }
 
 // The corresponding interface

@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequest struct {
 	Child IBACnetConfirmedServiceRequestChild
-	IBACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestParent
 }
 
 // The corresponding interface

@@ -33,7 +33,6 @@ import (
 
 type ModbusDriver struct {
 	fieldHandler spi.PlcFieldHandler
-	plc4go.PlcDriver
 }
 
 func NewModbusDriver() *ModbusDriver {

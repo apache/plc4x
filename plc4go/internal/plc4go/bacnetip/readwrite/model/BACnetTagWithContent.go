@@ -41,7 +41,6 @@ type BACnetTagWithContent struct {
 	ExtLength          *uint8
 	PropertyIdentifier []uint8
 	Value              *BACnetTag
-	IBACnetTagWithContent
 }
 
 // The corresponding interface

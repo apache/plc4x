@@ -32,7 +32,6 @@ type DeviceConfigurationRequest struct {
 	DeviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock
 	Cemi                                *CEMI
 	Parent                              *KnxNetIpMessage
-	IDeviceConfigurationRequest
 }
 
 // The corresponding interface

@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7Address struct {
 	Child IS7AddressChild
-	IS7Address
-	IS7AddressParent
 }
 
 // The corresponding interface

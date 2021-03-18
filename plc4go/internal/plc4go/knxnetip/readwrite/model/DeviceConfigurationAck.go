@@ -31,7 +31,6 @@ import (
 type DeviceConfigurationAck struct {
 	DeviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock
 	Parent                          *KnxNetIpMessage
-	IDeviceConfigurationAck
 }
 
 // The corresponding interface

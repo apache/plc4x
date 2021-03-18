@@ -34,7 +34,6 @@ type AdsReadWriteResponse struct {
 	Result ReturnCode
 	Data   []int8
 	Parent *AdsData
-	IAdsReadWriteResponse
 }
 
 // The corresponding interface

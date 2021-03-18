@@ -44,7 +44,6 @@ type BACnetServiceAckReadProperty struct {
 	PropertyIdentifier       []int8
 	Value                    *BACnetTag
 	Parent                   *BACnetServiceAck
-	IBACnetServiceAckReadProperty
 }
 
 // The corresponding interface

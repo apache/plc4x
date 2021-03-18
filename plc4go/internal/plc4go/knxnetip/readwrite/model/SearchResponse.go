@@ -33,7 +33,6 @@ type SearchResponse struct {
 	DibDeviceInfo       *DIBDeviceInfo
 	DibSuppSvcFamilies  *DIBSuppSvcFamilies
 	Parent              *KnxNetIpMessage
-	ISearchResponse
 }
 
 // The corresponding interface

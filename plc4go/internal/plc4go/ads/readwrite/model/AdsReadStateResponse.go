@@ -33,7 +33,6 @@ type AdsReadStateResponse struct {
 	AdsState    uint16
 	DeviceState uint16
 	Parent      *AdsData
-	IAdsReadStateResponse
 }
 
 // The corresponding interface

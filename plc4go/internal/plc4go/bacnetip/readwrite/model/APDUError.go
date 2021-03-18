@@ -33,7 +33,6 @@ type APDUError struct {
 	OriginalInvokeId uint8
 	Error            *BACnetError
 	Parent           *APDU
-	IAPDUError
 }
 
 // The corresponding interface

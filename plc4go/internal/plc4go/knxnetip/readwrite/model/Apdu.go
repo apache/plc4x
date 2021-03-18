@@ -34,8 +34,6 @@ type Apdu struct {
 	Numbered bool
 	Counter  uint8
 	Child    IApduChild
-	IApdu
-	IApduParent
 }
 
 // The corresponding interface

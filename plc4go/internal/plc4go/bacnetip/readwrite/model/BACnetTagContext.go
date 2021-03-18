@@ -33,7 +33,6 @@ import (
 type BACnetTagContext struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagContext
 }
 
 // The corresponding interface

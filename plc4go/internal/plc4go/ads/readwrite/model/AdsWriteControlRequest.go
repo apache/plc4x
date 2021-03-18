@@ -35,7 +35,6 @@ type AdsWriteControlRequest struct {
 	DeviceState uint16
 	Data        []int8
 	Parent      *AdsData
-	IAdsWriteControlRequest
 }
 
 // The corresponding interface

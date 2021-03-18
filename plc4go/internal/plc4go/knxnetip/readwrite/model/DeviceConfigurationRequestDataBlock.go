@@ -32,7 +32,6 @@ import (
 type DeviceConfigurationRequestDataBlock struct {
 	CommunicationChannelId uint8
 	SequenceCounter        uint8
-	IDeviceConfigurationRequestDataBlock
 }
 
 // The corresponding interface

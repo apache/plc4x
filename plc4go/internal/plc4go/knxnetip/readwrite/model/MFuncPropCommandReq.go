@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MFuncPropCommandReq struct {
 	Parent *CEMI
-	IMFuncPropCommandReq
 }
 
 // The corresponding interface

@@ -33,7 +33,6 @@ type APDUReject struct {
 	OriginalInvokeId uint8
 	RejectReason     uint8
 	Parent           *APDU
-	IAPDUReject
 }
 
 // The corresponding interface

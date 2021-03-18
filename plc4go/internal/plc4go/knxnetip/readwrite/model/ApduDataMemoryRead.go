@@ -32,7 +32,6 @@ type ApduDataMemoryRead struct {
 	NumBytes uint8
 	Address  uint16
 	Parent   *ApduData
-	IApduDataMemoryRead
 }
 
 // The corresponding interface

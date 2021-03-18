@@ -36,8 +36,6 @@ type S7PayloadUserDataItem struct {
 	SzlId         *SzlId
 	SzlIndex      uint16
 	Child         IS7PayloadUserDataItemChild
-	IS7PayloadUserDataItem
-	IS7PayloadUserDataItemParent
 }
 
 // The corresponding interface

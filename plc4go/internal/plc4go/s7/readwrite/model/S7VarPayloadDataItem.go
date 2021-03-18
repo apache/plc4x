@@ -35,7 +35,6 @@ type S7VarPayloadDataItem struct {
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
 	Data          []int8
-	IS7VarPayloadDataItem
 }
 
 // The corresponding interface

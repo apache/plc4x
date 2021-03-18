@@ -33,7 +33,6 @@ type ApduDataExtPropertyDescriptionRead struct {
 	PropertyId  uint8
 	Index       uint8
 	Parent      *ApduDataExt
-	IApduDataExtPropertyDescriptionRead
 }
 
 // The corresponding interface

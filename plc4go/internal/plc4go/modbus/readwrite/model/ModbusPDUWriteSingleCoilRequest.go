@@ -32,7 +32,6 @@ type ModbusPDUWriteSingleCoilRequest struct {
 	Address uint16
 	Value   uint16
 	Parent  *ModbusPDU
-	IModbusPDUWriteSingleCoilRequest
 }
 
 // The corresponding interface

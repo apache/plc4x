@@ -35,7 +35,6 @@ type ModbusPDUWriteMultipleCoilsRequest struct {
 	Quantity        uint16
 	Value           []int8
 	Parent          *ModbusPDU
-	IModbusPDUWriteMultipleCoilsRequest
 }
 
 // The corresponding interface

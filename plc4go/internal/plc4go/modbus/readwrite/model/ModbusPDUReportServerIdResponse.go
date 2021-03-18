@@ -33,7 +33,6 @@ import (
 type ModbusPDUReportServerIdResponse struct {
 	Value  []int8
 	Parent *ModbusPDU
-	IModbusPDUReportServerIdResponse
 }
 
 // The corresponding interface

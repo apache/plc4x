@@ -35,7 +35,6 @@ type MPropReadReq struct {
 	NumberOfElements    uint8
 	StartIndex          uint16
 	Parent              *CEMI
-	IMPropReadReq
 }
 
 // The corresponding interface

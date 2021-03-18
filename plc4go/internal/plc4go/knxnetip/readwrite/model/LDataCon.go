@@ -33,7 +33,6 @@ type LDataCon struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Parent                      *CEMI
-	ILDataCon
 }
 
 // The corresponding interface

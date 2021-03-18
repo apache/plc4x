@@ -31,7 +31,6 @@ import (
 type BACnetAddress struct {
 	Address []uint8
 	Port    uint16
-	IBACnetAddress
 }
 
 // The corresponding interface

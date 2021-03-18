@@ -32,7 +32,6 @@ import (
 )
 
 type ConnectionMetadata struct {
-	apiModel.PlcConnectionMetadata
 }
 
 func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {

@@ -34,7 +34,6 @@ type ApduDataExtPropertyValueRead struct {
 	Count       uint8
 	Index       uint16
 	Parent      *ApduDataExt
-	IApduDataExtPropertyValueRead
 }
 
 // The corresponding interface

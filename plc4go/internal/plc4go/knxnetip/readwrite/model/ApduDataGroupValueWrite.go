@@ -34,7 +34,6 @@ type ApduDataGroupValueWrite struct {
 	DataFirstByte int8
 	Data          []int8
 	Parent        *ApduData
-	IApduDataGroupValueWrite
 }
 
 // The corresponding interface

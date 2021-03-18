@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCDeleteForeignDeviceTableEntry struct {
 	Parent *BVLC
-	IBVLCDeleteForeignDeviceTableEntry
 }
 
 // The corresponding interface

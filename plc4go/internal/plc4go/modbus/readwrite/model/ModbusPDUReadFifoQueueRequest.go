@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadFifoQueueRequest struct {
 	FifoPointerAddress uint16
 	Parent             *ModbusPDU
-	IModbusPDUReadFifoQueueRequest
 }
 
 // The corresponding interface

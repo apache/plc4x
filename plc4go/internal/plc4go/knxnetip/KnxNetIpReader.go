@@ -21,7 +21,6 @@ package knxnetip
 import (
 	"errors"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
@@ -34,7 +33,6 @@ import (
 
 type KnxNetIpReader struct {
 	connection *KnxNetIpConnection
-	spi.PlcReader
 }
 
 func NewKnxNetIpReader(connection *KnxNetIpConnection) *KnxNetIpReader {

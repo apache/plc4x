@@ -82,7 +82,7 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // The data-structure of this message
 type ${type.name} struct {
-<#-- Prpoerty fields are fields that require a property in the pojo -->
+<#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 	<#list type.propertyFields as field>
 	${field.name?cap_first} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
@@ -97,10 +97,6 @@ type ${type.name} struct {
 -->
 <#if type.parentType??>
 	Parent *${type.parentType.name}
-</#if>
-	I${type.name}
-<#if helper.isDiscriminatedParentTypeDefinition()>
-	I${type.name}Parent
 </#if>
 }
 

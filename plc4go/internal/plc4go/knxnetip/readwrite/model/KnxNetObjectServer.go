@@ -31,7 +31,6 @@ import (
 type KnxNetObjectServer struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetObjectServer
 }
 
 // The corresponding interface

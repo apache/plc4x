@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type AdsMultiRequestItem struct {
 	Child IAdsMultiRequestItemChild
-	IAdsMultiRequestItem
-	IAdsMultiRequestItemParent
 }
 
 // The corresponding interface

@@ -36,7 +36,6 @@ import (
 
 type KnxNetIpDiscoverer struct {
 	messageCodec spi.MessageCodec
-	spi.PlcDiscoverer
 }
 
 func NewKnxNetIpDiscoverer() *KnxNetIpDiscoverer {

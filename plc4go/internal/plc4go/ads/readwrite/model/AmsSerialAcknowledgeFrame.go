@@ -35,7 +35,6 @@ type AmsSerialAcknowledgeFrame struct {
 	FragmentNumber     int8
 	Length             int8
 	Crc                uint16
-	IAmsSerialAcknowledgeFrame
 }
 
 // The corresponding interface

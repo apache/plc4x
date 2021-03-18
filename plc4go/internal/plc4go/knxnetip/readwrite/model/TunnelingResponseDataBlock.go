@@ -32,7 +32,6 @@ type TunnelingResponseDataBlock struct {
 	CommunicationChannelId uint8
 	SequenceCounter        uint8
 	Status                 Status
-	ITunnelingResponseDataBlock
 }
 
 // The corresponding interface

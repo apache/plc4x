@@ -33,7 +33,6 @@ type ConnectionStateRequest struct {
 	CommunicationChannelId uint8
 	HpaiControlEndpoint    *HPAIControlEndpoint
 	Parent                 *KnxNetIpMessage
-	IConnectionStateRequest
 }
 
 // The corresponding interface

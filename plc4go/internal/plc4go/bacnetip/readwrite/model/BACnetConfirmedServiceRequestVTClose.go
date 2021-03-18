@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTClose struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestVTClose
 }
 
 // The corresponding interface

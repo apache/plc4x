@@ -40,8 +40,6 @@ type S7Message struct {
 	Parameter     *S7Parameter
 	Payload       *S7Payload
 	Child         IS7MessageChild
-	IS7Message
-	IS7MessageParent
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type ApduDataGroupValueRead struct {
 	Parent *ApduData
-	IApduDataGroupValueRead
 }
 
 // The corresponding interface

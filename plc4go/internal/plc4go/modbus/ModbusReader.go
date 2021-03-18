@@ -35,7 +35,6 @@ type ModbusReader struct {
 	transactionIdentifier int32
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
-	spi.PlcReader
 }
 
 func NewModbusReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *ModbusReader {

@@ -35,7 +35,6 @@ type ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 	Quantity        uint16
 	Value           []int8
 	Parent          *ModbusPDU
-	IModbusPDUWriteMultipleHoldingRegistersRequest
 }
 
 // The corresponding interface

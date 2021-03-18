@@ -31,7 +31,6 @@ import (
 type ApduDataOther struct {
 	ExtendedApdu *ApduDataExt
 	Parent       *ApduData
-	IApduDataOther
 }
 
 // The corresponding interface

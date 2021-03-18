@@ -32,7 +32,6 @@ type DescriptionResponse struct {
 	DibDeviceInfo      *DIBDeviceInfo
 	DibSuppSvcFamilies *DIBSuppSvcFamilies
 	Parent             *KnxNetIpMessage
-	IDescriptionResponse
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type AdsDeleteDeviceNotificationRequest struct {
 	NotificationHandle uint32
 	Parent             *AdsData
-	IAdsDeleteDeviceNotificationRequest
 }
 
 // The corresponding interface

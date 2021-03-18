@@ -32,7 +32,6 @@ type ModbusPDUWriteSingleCoilResponse struct {
 	Address uint16
 	Value   uint16
 	Parent  *ModbusPDU
-	IModbusPDUWriteSingleCoilResponse
 }
 
 // The corresponding interface

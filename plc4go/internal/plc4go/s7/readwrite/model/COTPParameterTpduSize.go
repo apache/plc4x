@@ -31,7 +31,6 @@ import (
 type COTPParameterTpduSize struct {
 	TpduSize COTPTpduSize
 	Parent   *COTPParameter
-	ICOTPParameterTpduSize
 }
 
 // The corresponding interface

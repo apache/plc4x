@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetError struct {
 	Child IBACnetErrorChild
-	IBACnetError
-	IBACnetErrorParent
 }
 
 // The corresponding interface

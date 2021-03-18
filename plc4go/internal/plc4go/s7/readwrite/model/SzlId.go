@@ -32,7 +32,6 @@ type SzlId struct {
 	TypeClass      SzlModuleTypeClass
 	SublistExtract uint8
 	SublistList    SzlSublist
-	ISzlId
 }
 
 // The corresponding interface

@@ -34,7 +34,6 @@ type AdsNotificationSample struct {
 	NotificationHandle uint32
 	SampleSize         uint32
 	Data               []int8
-	IAdsNotificationSample
 }
 
 // The corresponding interface

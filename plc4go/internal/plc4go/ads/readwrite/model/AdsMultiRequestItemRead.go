@@ -33,7 +33,6 @@ type AdsMultiRequestItemRead struct {
 	ItemIndexOffset uint32
 	ItemReadLength  uint32
 	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemRead
 }
 
 // The corresponding interface

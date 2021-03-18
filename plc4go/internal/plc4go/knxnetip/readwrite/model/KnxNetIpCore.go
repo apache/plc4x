@@ -31,7 +31,6 @@ import (
 type KnxNetIpCore struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetIpCore
 }
 
 // The corresponding interface

@@ -41,7 +41,6 @@ type BACnetErrorReadProperty struct {
 	ErrorCodeLength  uint8
 	ErrorCode        []int8
 	Parent           *BACnetError
-	IBACnetErrorReadProperty
 }
 
 // The corresponding interface
