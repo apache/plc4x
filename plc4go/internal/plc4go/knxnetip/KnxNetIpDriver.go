@@ -29,7 +29,6 @@ import (
 
 type KnxNetIpDriver struct {
 	fieldHandler spi.PlcFieldHandler
-	plc4go.PlcDriver
 }
 
 func NewKnxNetIpDriver() *KnxNetIpDriver {

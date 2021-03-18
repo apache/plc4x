@@ -31,7 +31,6 @@ import (
 type ProjectInstallationIdentifier struct {
 	ProjectNumber      uint8
 	InstallationNumber uint8
-	IProjectInstallationIdentifier
 }
 
 // The corresponding interface

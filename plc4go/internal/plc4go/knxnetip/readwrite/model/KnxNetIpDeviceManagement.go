@@ -31,7 +31,6 @@ import (
 type KnxNetIpDeviceManagement struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetIpDeviceManagement
 }
 
 // The corresponding interface

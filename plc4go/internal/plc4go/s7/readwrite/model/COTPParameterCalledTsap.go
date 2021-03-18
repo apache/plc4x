@@ -31,7 +31,6 @@ import (
 type COTPParameterCalledTsap struct {
 	TsapId uint16
 	Parent *COTPParameter
-	ICOTPParameterCalledTsap
 }
 
 // The corresponding interface

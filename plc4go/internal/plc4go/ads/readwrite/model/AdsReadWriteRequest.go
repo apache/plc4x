@@ -37,7 +37,6 @@ type AdsReadWriteRequest struct {
 	Items       []*AdsMultiRequestItem
 	Data        []int8
 	Parent      *AdsData
-	IAdsReadWriteRequest
 }
 
 // The corresponding interface

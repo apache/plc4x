@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ComObjectTable struct {
 	Child IComObjectTableChild
-	IComObjectTable
-	IComObjectTableParent
 }
 
 // The corresponding interface

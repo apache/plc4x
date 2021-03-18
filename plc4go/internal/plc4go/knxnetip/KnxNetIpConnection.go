@@ -58,8 +58,6 @@ type ConnectionMetadata struct {
 	DeviceMulticastAddress []int8
 	DeviceMacAddress       []int8
 	SupportedServices      []string
-
-	apiModel.PlcConnectionMetadata
 }
 
 func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {

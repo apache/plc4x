@@ -33,7 +33,6 @@ type BVLCForwardedNPDU struct {
 	Port   uint16
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCForwardedNPDU
 }
 
 // The corresponding interface

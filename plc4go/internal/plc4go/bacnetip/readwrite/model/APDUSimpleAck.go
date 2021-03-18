@@ -33,7 +33,6 @@ type APDUSimpleAck struct {
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
 	Parent           *APDU
-	IAPDUSimpleAck
 }
 
 // The corresponding interface

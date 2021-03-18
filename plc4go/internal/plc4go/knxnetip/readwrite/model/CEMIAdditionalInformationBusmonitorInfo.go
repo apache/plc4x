@@ -40,7 +40,6 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 	LostFlag        bool
 	SequenceNumber  uint8
 	Parent          *CEMIAdditionalInformation
-	ICEMIAdditionalInformationBusmonitorInfo
 }
 
 // The corresponding interface

@@ -34,7 +34,6 @@ type ModbusSerialADU struct {
 	Length        uint16
 	Address       uint8
 	Pdu           *ModbusPDU
-	IModbusSerialADU
 }
 
 // The corresponding interface

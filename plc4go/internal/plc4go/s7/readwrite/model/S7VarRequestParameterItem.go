@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7VarRequestParameterItem struct {
 	Child IS7VarRequestParameterItemChild
-	IS7VarRequestParameterItem
-	IS7VarRequestParameterItemParent
 }
 
 // The corresponding interface

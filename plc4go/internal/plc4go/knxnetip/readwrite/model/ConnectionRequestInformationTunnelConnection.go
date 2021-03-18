@@ -32,7 +32,6 @@ import (
 type ConnectionRequestInformationTunnelConnection struct {
 	KnxLayer KnxLayer
 	Parent   *ConnectionRequestInformation
-	IConnectionRequestInformationTunnelConnection
 }
 
 // The corresponding interface

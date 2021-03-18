@@ -45,7 +45,6 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	SegmentationSupported           uint8
 	VendorId                        uint8
 	Parent                          *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestIAm
 }
 
 // The corresponding interface

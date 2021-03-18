@@ -22,7 +22,6 @@ import (
 	"encoding/hex"
 	"errors"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"regexp"
@@ -51,7 +50,6 @@ type FieldHandler struct {
 	knxNetIpDevicePropertyAddress          *regexp.Regexp
 	knxNetIpDeviceMemoryAddress            *regexp.Regexp
 	knxNetIpDeviceCommunicationObjectQuery *regexp.Regexp
-	spi.PlcFieldHandler
 }
 
 func NewFieldHandler() FieldHandler {

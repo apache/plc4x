@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtMemoryBitWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtMemoryBitWrite
 }
 
 // The corresponding interface

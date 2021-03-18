@@ -32,7 +32,6 @@ type ModbusPDUReadCoilsRequest struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUReadCoilsRequest
 }
 
 // The corresponding interface

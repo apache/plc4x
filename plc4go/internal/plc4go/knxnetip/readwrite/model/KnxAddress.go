@@ -32,7 +32,6 @@ type KnxAddress struct {
 	MainGroup   uint8
 	MiddleGroup uint8
 	SubGroup    uint8
-	IKnxAddress
 }
 
 // The corresponding interface

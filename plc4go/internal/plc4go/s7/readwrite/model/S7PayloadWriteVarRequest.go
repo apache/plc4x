@@ -31,7 +31,6 @@ import (
 type S7PayloadWriteVarRequest struct {
 	Items  []*S7VarPayloadDataItem
 	Parent *S7Payload
-	IS7PayloadWriteVarRequest
 }
 
 // The corresponding interface

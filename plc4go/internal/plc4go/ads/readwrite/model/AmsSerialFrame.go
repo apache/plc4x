@@ -36,7 +36,6 @@ type AmsSerialFrame struct {
 	Length             int8
 	Userdata           *AmsPacket
 	Crc                uint16
-	IAmsSerialFrame
 }
 
 // The corresponding interface

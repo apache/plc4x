@@ -32,7 +32,6 @@ type ModbusPDUReadDiscreteInputsRequest struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUReadDiscreteInputsRequest
 }
 
 // The corresponding interface

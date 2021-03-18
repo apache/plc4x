@@ -33,7 +33,6 @@ type ModbusPDUReadFileRecordRequestItem struct {
 	FileNumber    uint16
 	RecordNumber  uint16
 	RecordLength  uint16
-	IModbusPDUReadFileRecordRequestItem
 }
 
 // The corresponding interface

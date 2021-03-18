@@ -38,7 +38,6 @@ type LDataExtended struct {
 	DestinationAddress  []int8
 	Apdu                *Apdu
 	Parent              *LDataFrame
-	ILDataExtended
 }
 
 // The corresponding interface

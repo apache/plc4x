@@ -49,7 +49,6 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	LifetimeSeconds                           []int8
 	Notifications                             []*BACnetTagWithContent
 	Parent                                    *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestConfirmedCOVNotification
 }
 
 // The corresponding interface

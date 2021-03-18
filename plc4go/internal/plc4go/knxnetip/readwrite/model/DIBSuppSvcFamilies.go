@@ -31,7 +31,6 @@ import (
 type DIBSuppSvcFamilies struct {
 	DescriptionType uint8
 	ServiceIds      []*ServiceId
-	IDIBSuppSvcFamilies
 }
 
 // The corresponding interface

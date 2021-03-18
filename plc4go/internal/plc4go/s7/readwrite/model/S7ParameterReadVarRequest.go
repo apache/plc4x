@@ -31,7 +31,6 @@ import (
 type S7ParameterReadVarRequest struct {
 	Items  []*S7VarRequestParameterItem
 	Parent *S7Parameter
-	IS7ParameterReadVarRequest
 }
 
 // The corresponding interface

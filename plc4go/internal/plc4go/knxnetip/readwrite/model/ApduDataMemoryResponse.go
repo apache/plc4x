@@ -32,7 +32,6 @@ type ApduDataMemoryResponse struct {
 	Address uint16
 	Data    []uint8
 	Parent  *ApduData
-	IApduDataMemoryResponse
 }
 
 // The corresponding interface

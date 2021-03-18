@@ -36,7 +36,6 @@ type SzlDataTreeItem struct {
 	ModuleTypeId uint16
 	Ausbg        uint16
 	Ausbe        uint16
-	ISzlDataTreeItem
 }
 
 // The corresponding interface

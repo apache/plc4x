@@ -35,7 +35,6 @@ type AmsSerialResetFrame struct {
 	FragmentNumber     int8
 	Length             int8
 	Crc                uint16
-	IAmsSerialResetFrame
 }
 
 // The corresponding interface

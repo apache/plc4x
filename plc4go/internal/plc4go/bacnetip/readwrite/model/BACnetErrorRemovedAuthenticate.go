@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorRemovedAuthenticate struct {
 	Parent *BACnetError
-	IBACnetErrorRemovedAuthenticate
 }
 
 // The corresponding interface

@@ -32,7 +32,6 @@ type KnxGroupAddress2Level struct {
 	MainGroup uint8
 	SubGroup  uint16
 	Parent    *KnxGroupAddress
-	IKnxGroupAddress2Level
 }
 
 // The corresponding interface

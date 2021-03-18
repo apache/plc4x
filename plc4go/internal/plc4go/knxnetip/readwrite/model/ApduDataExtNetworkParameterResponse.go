@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtNetworkParameterResponse struct {
 	Parent *ApduDataExt
-	IApduDataExtNetworkParameterResponse
 }
 
 // The corresponding interface

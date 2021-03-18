@@ -39,7 +39,6 @@ type ApduDataExtPropertyDescriptionResponse struct {
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
 	Parent           *ApduDataExt
-	IApduDataExtPropertyDescriptionResponse
 }
 
 // The corresponding interface

@@ -35,7 +35,6 @@ type ModbusPDUWriteFileRecordResponseItem struct {
 	FileNumber    uint16
 	RecordNumber  uint16
 	RecordData    []int8
-	IModbusPDUWriteFileRecordResponseItem
 }
 
 // The corresponding interface

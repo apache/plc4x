@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type LDataFrameACK struct {
 	Parent *LDataFrame
-	ILDataFrameACK
 }
 
 // The corresponding interface

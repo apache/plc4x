@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type AmsTCPPacket struct {
 	Userdata *AmsPacket
-	IAmsTCPPacket
 }
 
 // The corresponding interface

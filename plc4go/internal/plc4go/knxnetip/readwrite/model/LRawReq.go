@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type LRawReq struct {
 	Parent *CEMI
-	ILRawReq
 }
 
 // The corresponding interface

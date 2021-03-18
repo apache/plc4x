@@ -36,8 +36,6 @@ type BACnetTag struct {
 	ExtTagNumber    *uint8
 	ExtLength       *uint8
 	Child           IBACnetTagChild
-	IBACnetTag
-	IBACnetTagParent
 }
 
 // The corresponding interface

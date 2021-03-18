@@ -32,7 +32,6 @@ type S7MessageResponseData struct {
 	ErrorClass uint8
 	ErrorCode  uint8
 	Parent     *S7Message
-	IS7MessageResponseData
 }
 
 // The corresponding interface

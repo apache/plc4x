@@ -33,7 +33,6 @@ import (
 type ModbusPDUReadCoilsResponse struct {
 	Value  []int8
 	Parent *ModbusPDU
-	IModbusPDUReadCoilsResponse
 }
 
 // The corresponding interface

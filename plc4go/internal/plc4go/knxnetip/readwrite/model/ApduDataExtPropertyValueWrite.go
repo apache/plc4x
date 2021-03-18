@@ -35,7 +35,6 @@ type ApduDataExtPropertyValueWrite struct {
 	Index       uint16
 	Data        []uint8
 	Parent      *ApduDataExt
-	IApduDataExtPropertyValueWrite
 }
 
 // The corresponding interface

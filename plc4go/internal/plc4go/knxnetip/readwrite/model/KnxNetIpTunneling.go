@@ -31,7 +31,6 @@ import (
 type KnxNetIpTunneling struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetIpTunneling
 }
 
 // The corresponding interface

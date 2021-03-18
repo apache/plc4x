@@ -34,7 +34,6 @@ type ApduDataGroupValueResponse struct {
 	DataFirstByte int8
 	Data          []int8
 	Parent        *ApduData
-	IApduDataGroupValueResponse
 }
 
 // The corresponding interface

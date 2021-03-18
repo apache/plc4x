@@ -34,7 +34,6 @@ type ApduDataDeviceDescriptorResponse struct {
 	DescriptorType uint8
 	Data           []int8
 	Parent         *ApduData
-	IApduDataDeviceDescriptorResponse
 }
 
 // The corresponding interface

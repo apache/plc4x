@@ -45,7 +45,6 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 	Value                    *BACnetTag
 	Priority                 *BACnetTag
 	Parent                   *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestWriteProperty
 }
 
 // The corresponding interface

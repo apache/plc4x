@@ -40,7 +40,6 @@ type APDUConfirmedRequest struct {
 	ProposedWindowSize        *uint8
 	ServiceRequest            *BACnetConfirmedServiceRequest
 	Parent                    *APDU
-	IAPDUConfirmedRequest
 }
 
 // The corresponding interface

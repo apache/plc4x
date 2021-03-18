@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckRemovedReadPropertyConditional struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckRemovedReadPropertyConditional
 }
 
 // The corresponding interface

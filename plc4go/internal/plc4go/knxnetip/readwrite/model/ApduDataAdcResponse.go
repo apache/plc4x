@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataAdcResponse struct {
 	Parent *ApduData
-	IApduDataAdcResponse
 }
 
 // The corresponding interface

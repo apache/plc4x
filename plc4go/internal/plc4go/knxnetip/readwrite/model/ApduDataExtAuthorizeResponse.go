@@ -31,7 +31,6 @@ import (
 type ApduDataExtAuthorizeResponse struct {
 	Level  uint8
 	Parent *ApduDataExt
-	IApduDataExtAuthorizeResponse
 }
 
 // The corresponding interface

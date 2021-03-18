@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type KnxGroupAddress struct {
 	Child IKnxGroupAddressChild
-	IKnxGroupAddress
-	IKnxGroupAddressParent
 }
 
 // The corresponding interface

@@ -32,7 +32,6 @@ type ModbusPDUGetComEventCounterResponse struct {
 	Status     uint16
 	EventCount uint16
 	Parent     *ModbusPDU
-	IModbusPDUGetComEventCounterResponse
 }
 
 // The corresponding interface

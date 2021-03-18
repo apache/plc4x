@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type AdsData struct {
 	Child IAdsDataChild
-	IAdsData
-	IAdsDataParent
 }
 
 // The corresponding interface

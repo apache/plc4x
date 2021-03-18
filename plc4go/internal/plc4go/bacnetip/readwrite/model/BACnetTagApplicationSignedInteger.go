@@ -33,7 +33,6 @@ import (
 type BACnetTagApplicationSignedInteger struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagApplicationSignedInteger
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type KnxNetRemoteLogging struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetRemoteLogging
 }
 
 // The corresponding interface

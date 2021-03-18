@@ -32,7 +32,6 @@ type DisconnectResponse struct {
 	CommunicationChannelId uint8
 	Status                 Status
 	Parent                 *KnxNetIpMessage
-	IDisconnectResponse
 }
 
 // The corresponding interface

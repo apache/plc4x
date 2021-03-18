@@ -35,7 +35,6 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = 2
 type CEMIAdditionalInformationRelativeTimestamp struct {
 	RelativeTimestamp *RelativeTimestamp
 	Parent            *CEMIAdditionalInformation
-	ICEMIAdditionalInformationRelativeTimestamp
 }
 
 // The corresponding interface

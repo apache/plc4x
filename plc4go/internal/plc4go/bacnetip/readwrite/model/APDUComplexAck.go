@@ -37,7 +37,6 @@ type APDUComplexAck struct {
 	ProposedWindowSize *uint8
 	ServiceAck         *BACnetServiceAck
 	Parent             *APDU
-	IAPDUComplexAck
 }
 
 // The corresponding interface

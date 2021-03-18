@@ -33,7 +33,6 @@ type ComObjectTableRealisationType2 struct {
 	RamFlagsTablePointer uint8
 	ComObjectDescriptors []*GroupObjectDescriptorRealisationType2
 	Parent               *ComObjectTable
-	IComObjectTableRealisationType2
 }
 
 // The corresponding interface

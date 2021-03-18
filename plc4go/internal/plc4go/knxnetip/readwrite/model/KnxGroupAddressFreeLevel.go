@@ -31,7 +31,6 @@ import (
 type KnxGroupAddressFreeLevel struct {
 	SubGroup uint16
 	Parent   *KnxGroupAddress
-	IKnxGroupAddressFreeLevel
 }
 
 // The corresponding interface

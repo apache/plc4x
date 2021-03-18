@@ -33,7 +33,6 @@ type ConnectionRequest struct {
 	HpaiDataEndpoint             *HPAIDataEndpoint
 	ConnectionRequestInformation *ConnectionRequestInformation
 	Parent                       *KnxNetIpMessage
-	IConnectionRequest
 }
 
 // The corresponding interface

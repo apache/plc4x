@@ -32,7 +32,6 @@ type COTPPacketData struct {
 	Eot     bool
 	TpduRef uint8
 	Parent  *COTPPacket
-	ICOTPPacketData
 }
 
 // The corresponding interface

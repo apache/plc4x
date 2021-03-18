@@ -31,7 +31,6 @@ import (
 type AdsDeleteDeviceNotificationResponse struct {
 	Result ReturnCode
 	Parent *AdsData
-	IAdsDeleteDeviceNotificationResponse
 }
 
 // The corresponding interface

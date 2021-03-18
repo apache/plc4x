@@ -38,7 +38,6 @@ type AdsAddDeviceNotificationRequest struct {
 	MaxDelay         uint32
 	CycleTime        uint32
 	Parent           *AdsData
-	IAdsAddDeviceNotificationRequest
 }
 
 // The corresponding interface

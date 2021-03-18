@@ -19,13 +19,11 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type KnxNetIpValueHandler struct {
-	spi.PlcValueHandler
 }
 
 func NewValueHandler() KnxNetIpValueHandler {

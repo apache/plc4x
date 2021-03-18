@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestDeleteObject struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestDeleteObject
 }
 
 // The corresponding interface

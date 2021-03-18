@@ -34,7 +34,6 @@ type ConnectionResponse struct {
 	HpaiDataEndpoint            *HPAIDataEndpoint
 	ConnectionResponseDataBlock *ConnectionResponseDataBlock
 	Parent                      *KnxNetIpMessage
-	IConnectionResponse
 }
 
 // The corresponding interface

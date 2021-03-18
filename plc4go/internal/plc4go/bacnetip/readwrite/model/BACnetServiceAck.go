@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAck struct {
 	Child IBACnetServiceAckChild
-	IBACnetServiceAck
-	IBACnetServiceAckParent
 }
 
 // The corresponding interface

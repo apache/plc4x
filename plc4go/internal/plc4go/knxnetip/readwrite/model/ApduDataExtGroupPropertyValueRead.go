@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtGroupPropertyValueRead struct {
 	Parent *ApduDataExt
-	IApduDataExtGroupPropertyValueRead
 }
 
 // The corresponding interface

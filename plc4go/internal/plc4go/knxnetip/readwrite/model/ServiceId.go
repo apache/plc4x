@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ServiceId struct {
 	Child IServiceIdChild
-	IServiceId
-	IServiceIdParent
 }
 
 // The corresponding interface

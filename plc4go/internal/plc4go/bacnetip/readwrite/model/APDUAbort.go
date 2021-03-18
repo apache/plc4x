@@ -34,7 +34,6 @@ type APDUAbort struct {
 	OriginalInvokeId uint8
 	AbortReason      uint8
 	Parent           *APDU
-	IAPDUAbort
 }
 
 // The corresponding interface

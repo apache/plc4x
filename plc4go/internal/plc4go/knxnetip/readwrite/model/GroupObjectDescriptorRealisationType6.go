@@ -28,7 +28,6 @@ import (
 
 // The data-structure of this message
 type GroupObjectDescriptorRealisationType6 struct {
-	IGroupObjectDescriptorRealisationType6
 }
 
 // The corresponding interface

@@ -45,7 +45,6 @@ type NPDU struct {
 	HopCount                  *uint8
 	Nlm                       *NLM
 	Apdu                      *APDU
-	INPDU
 }
 
 // The corresponding interface

@@ -39,7 +39,6 @@ type DeviceDescriptorType2 struct {
 	ChannelInfo2   *ChannelInformation
 	ChannelInfo3   *ChannelInformation
 	ChannelInfo4   *ChannelInformation
-	IDeviceDescriptorType2
 }
 
 // The corresponding interface

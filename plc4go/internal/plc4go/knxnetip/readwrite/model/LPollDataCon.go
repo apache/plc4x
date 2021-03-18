@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type LPollDataCon struct {
 	Parent *CEMI
-	ILPollDataCon
 }
 
 // The corresponding interface

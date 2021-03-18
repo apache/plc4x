@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ConnectionResponseDataBlock struct {
 	Child IConnectionResponseDataBlockChild
-	IConnectionResponseDataBlock
-	IConnectionResponseDataBlockParent
 }
 
 // The corresponding interface

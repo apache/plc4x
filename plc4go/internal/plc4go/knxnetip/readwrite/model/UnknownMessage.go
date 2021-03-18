@@ -33,7 +33,6 @@ import (
 type UnknownMessage struct {
 	UnknownData []int8
 	Parent      *KnxNetIpMessage
-	IUnknownMessage
 }
 
 // The corresponding interface

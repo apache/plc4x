@@ -35,7 +35,6 @@ type AmsNetId struct {
 	Octet4 uint8
 	Octet5 uint8
 	Octet6 uint8
-	IAmsNetId
 }
 
 // The corresponding interface

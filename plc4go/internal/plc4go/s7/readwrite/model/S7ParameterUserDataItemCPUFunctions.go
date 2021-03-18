@@ -38,7 +38,6 @@ type S7ParameterUserDataItemCPUFunctions struct {
 	LastDataUnit            *uint8
 	ErrorCode               *uint16
 	Parent                  *S7ParameterUserDataItem
-	IS7ParameterUserDataItemCPUFunctions
 }
 
 // The corresponding interface

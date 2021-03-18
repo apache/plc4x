@@ -36,7 +36,6 @@ type ModbusPDUGetComEventLogResponse struct {
 	MessageCount uint16
 	Events       []int8
 	Parent       *ModbusPDU
-	IModbusPDUGetComEventLogResponse
 }
 
 // The corresponding interface

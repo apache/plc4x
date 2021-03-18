@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type DeviceStatus struct {
 	ProgramMode bool
-	IDeviceStatus
 }
 
 // The corresponding interface

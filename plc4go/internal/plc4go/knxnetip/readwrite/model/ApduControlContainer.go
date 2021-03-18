@@ -31,7 +31,6 @@ import (
 type ApduControlContainer struct {
 	ControlApdu *ApduControl
 	Parent      *Apdu
-	IApduControlContainer
 }
 
 // The corresponding interface

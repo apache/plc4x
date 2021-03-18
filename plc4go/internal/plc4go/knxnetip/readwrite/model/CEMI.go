@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type CEMI struct {
 	Child ICEMIChild
-	ICEMI
-	ICEMIParent
 }
 
 // The corresponding interface

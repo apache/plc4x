@@ -42,7 +42,6 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 	ObjectNameCharacterSet  uint8
 	ObjectName              []int8
 	Parent                  *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestWhoHas
 }
 
 // The corresponding interface

@@ -37,8 +37,6 @@ type LDataFrame struct {
 	AcknowledgeRequested bool
 	ErrorFlag            bool
 	Child                ILDataFrameChild
-	ILDataFrame
-	ILDataFrameParent
 }
 
 // The corresponding interface

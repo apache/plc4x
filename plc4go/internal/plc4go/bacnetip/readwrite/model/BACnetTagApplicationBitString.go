@@ -34,7 +34,6 @@ type BACnetTagApplicationBitString struct {
 	UnusedBits uint8
 	Data       []int8
 	Parent     *BACnetTag
-	IBACnetTagApplicationBitString
 }
 
 // The corresponding interface

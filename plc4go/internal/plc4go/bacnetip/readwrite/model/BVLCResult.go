@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCResult struct {
 	Parent *BVLC
-	IBVLCResult
 }
 
 // The corresponding interface

@@ -33,8 +33,6 @@ import (
 type NLM struct {
 	VendorId *uint16
 	Child    INLMChild
-	INLM
-	INLMParent
 }
 
 // The corresponding interface

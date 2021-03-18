@@ -31,7 +31,6 @@ import (
 type SearchRequest struct {
 	HpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint
 	Parent                 *KnxNetIpMessage
-	ISearchRequest
 }
 
 // The corresponding interface

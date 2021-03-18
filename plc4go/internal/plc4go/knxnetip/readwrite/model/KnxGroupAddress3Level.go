@@ -33,7 +33,6 @@ type KnxGroupAddress3Level struct {
 	MiddleGroup uint8
 	SubGroup    uint8
 	Parent      *KnxGroupAddress
-	IKnxGroupAddress3Level
 }
 
 // The corresponding interface

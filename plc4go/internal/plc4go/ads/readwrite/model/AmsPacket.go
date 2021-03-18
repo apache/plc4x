@@ -38,7 +38,6 @@ type AmsPacket struct {
 	ErrorCode      uint32
 	InvokeId       uint32
 	Data           *AdsData
-	IAmsPacket
 }
 
 // The corresponding interface

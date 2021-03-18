@@ -32,7 +32,6 @@ type ModbusPDUReadHoldingRegistersRequest struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUReadHoldingRegistersRequest
 }
 
 // The corresponding interface

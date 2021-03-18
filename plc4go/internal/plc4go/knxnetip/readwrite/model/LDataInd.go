@@ -33,7 +33,6 @@ type LDataInd struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Parent                      *CEMI
-	ILDataInd
 }
 
 // The corresponding interface

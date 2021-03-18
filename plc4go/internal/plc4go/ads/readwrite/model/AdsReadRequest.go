@@ -33,7 +33,6 @@ type AdsReadRequest struct {
 	IndexOffset uint32
 	Length      uint32
 	Parent      *AdsData
-	IAdsReadRequest
 }
 
 // The corresponding interface

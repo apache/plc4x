@@ -41,7 +41,6 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
 	DeviceInstanceRangeHighLimitLength uint8
 	DeviceInstanceRangeHighLimit       []int8
 	Parent                             *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestWhoIs
 }
 
 // The corresponding interface

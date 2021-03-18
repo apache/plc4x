@@ -34,7 +34,6 @@ type AdsMultiRequestItemReadWrite struct {
 	ItemReadLength  uint32
 	ItemWriteLength uint32
 	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemReadWrite
 }
 
 // The corresponding interface

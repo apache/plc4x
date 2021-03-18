@@ -34,8 +34,6 @@ type COTPPacket struct {
 	Parameters []*COTPParameter
 	Payload    *S7Message
 	Child      ICOTPPacketChild
-	ICOTPPacket
-	ICOTPPacketParent
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type S7ParameterWriteVarResponse struct {
 	NumItems uint8
 	Parent   *S7Parameter
-	IS7ParameterWriteVarResponse
 }
 
 // The corresponding interface

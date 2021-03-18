@@ -32,7 +32,6 @@ type ModbusPDUWriteMultipleCoilsResponse struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUWriteMultipleCoilsResponse
 }
 
 // The corresponding interface

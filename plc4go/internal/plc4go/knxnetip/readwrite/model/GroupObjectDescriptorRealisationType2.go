@@ -38,7 +38,6 @@ type GroupObjectDescriptorRealisationType2 struct {
 	CommunicationEnable   bool
 	Priority              CEMIPriority
 	ValueType             ComObjectValueType
-	IGroupObjectDescriptorRealisationType2
 }
 
 // The corresponding interface

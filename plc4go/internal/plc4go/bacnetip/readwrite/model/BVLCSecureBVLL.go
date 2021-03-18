@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCSecureBVLL struct {
 	Parent *BVLC
-	IBVLCSecureBVLL
 }
 
 // The corresponding interface

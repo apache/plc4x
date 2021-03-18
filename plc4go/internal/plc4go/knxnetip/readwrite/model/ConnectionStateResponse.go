@@ -32,7 +32,6 @@ type ConnectionStateResponse struct {
 	CommunicationChannelId uint8
 	Status                 Status
 	Parent                 *KnxNetIpMessage
-	IConnectionStateResponse
 }
 
 // The corresponding interface

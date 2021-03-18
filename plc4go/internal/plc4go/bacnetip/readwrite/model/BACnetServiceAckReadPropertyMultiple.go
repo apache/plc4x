@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckReadPropertyMultiple struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckReadPropertyMultiple
 }
 
 // The corresponding interface

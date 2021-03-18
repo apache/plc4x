@@ -31,7 +31,6 @@ import (
 type TunnelingResponse struct {
 	TunnelingResponseDataBlock *TunnelingResponseDataBlock
 	Parent                     *KnxNetIpMessage
-	ITunnelingResponse
 }
 
 // The corresponding interface

@@ -38,7 +38,6 @@ type KnxNetIpBrowser struct {
 	connection      *KnxNetIpConnection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
-	spi.PlcBrowser
 }
 
 func NewKnxNetIpBrowser(connection *KnxNetIpConnection, messageCodec spi.MessageCodec) *KnxNetIpBrowser {

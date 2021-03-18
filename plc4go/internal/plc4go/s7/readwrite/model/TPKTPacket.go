@@ -35,7 +35,6 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 // The data-structure of this message
 type TPKTPacket struct {
 	Payload *COTPPacket
-	ITPKTPacket
 }
 
 // The corresponding interface

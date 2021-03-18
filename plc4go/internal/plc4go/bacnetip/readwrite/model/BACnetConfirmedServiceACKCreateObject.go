@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceACKCreateObject struct {
 	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKCreateObject
 }
 
 // The corresponding interface

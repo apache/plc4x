@@ -41,7 +41,6 @@ type BACnetConfirmedServiceRequestReadProperty struct {
 	PropertyIdentifierLength uint8
 	PropertyIdentifier       []int8
 	Parent                   *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestReadProperty
 }
 
 // The corresponding interface

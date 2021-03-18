@@ -28,7 +28,6 @@ import (
 
 type KnxNetIpWriter struct {
 	messageCodec spi.MessageCodec
-	spi.PlcWriter
 }
 
 func NewKnxNetIpWriter(messageCodec spi.MessageCodec) KnxNetIpWriter {

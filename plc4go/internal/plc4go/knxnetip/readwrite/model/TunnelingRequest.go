@@ -32,7 +32,6 @@ type TunnelingRequest struct {
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
 	Parent                    *KnxNetIpMessage
-	ITunnelingRequest
 }
 
 // The corresponding interface

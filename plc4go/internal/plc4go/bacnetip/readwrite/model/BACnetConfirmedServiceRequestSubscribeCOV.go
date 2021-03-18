@@ -46,7 +46,6 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 	LifetimeLength                uint8
 	LifetimeSeconds               []int8
 	Parent                        *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestSubscribeCOV
 }
 
 // The corresponding interface

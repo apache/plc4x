@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	Parent *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 }
 
 // The corresponding interface

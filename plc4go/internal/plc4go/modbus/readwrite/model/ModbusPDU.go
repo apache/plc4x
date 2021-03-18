@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ModbusPDU struct {
 	Child IModbusPDUChild
-	IModbusPDU
-	IModbusPDUParent
 }
 
 // The corresponding interface

@@ -31,7 +31,6 @@ import (
 type ApduDataDeviceDescriptorRead struct {
 	DescriptorType uint8
 	Parent         *ApduData
-	IApduDataDeviceDescriptorRead
 }
 
 // The corresponding interface

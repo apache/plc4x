@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ConnectionRequestInformationDeviceManagement struct {
 	Parent *ConnectionRequestInformation
-	IConnectionRequestInformationDeviceManagement
 }
 
 // The corresponding interface

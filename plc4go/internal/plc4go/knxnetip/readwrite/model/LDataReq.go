@@ -33,7 +33,6 @@ type LDataReq struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Parent                      *CEMI
-	ILDataReq
 }
 
 // The corresponding interface

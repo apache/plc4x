@@ -33,7 +33,6 @@ type AdsDeviceNotificationRequest struct {
 	Stamps          uint32
 	AdsStampHeaders []*AdsStampHeader
 	Parent          *AdsData
-	IAdsDeviceNotificationRequest
 }
 
 // The corresponding interface

@@ -35,7 +35,6 @@ type ModbusWriter struct {
 	transactionIdentifier int32
 	unitIdentifier        uint8
 	messageCodec          spi.MessageCodec
-	spi.PlcWriter
 }
 
 func NewModbusWriter(unitIdentifier uint8, messageCodec spi.MessageCodec) ModbusWriter {

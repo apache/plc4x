@@ -31,7 +31,6 @@ import (
 type BVLCOriginalUnicastNPDU struct {
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCOriginalUnicastNPDU
 }
 
 // The corresponding interface

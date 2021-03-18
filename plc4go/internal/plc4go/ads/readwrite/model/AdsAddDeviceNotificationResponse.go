@@ -32,7 +32,6 @@ type AdsAddDeviceNotificationResponse struct {
 	Result             ReturnCode
 	NotificationHandle uint32
 	Parent             *AdsData
-	IAdsAddDeviceNotificationResponse
 }
 
 // The corresponding interface

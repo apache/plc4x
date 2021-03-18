@@ -32,7 +32,6 @@ import (
 type TunnelingRequestDataBlock struct {
 	CommunicationChannelId uint8
 	SequenceCounter        uint8
-	ITunnelingRequestDataBlock
 }
 
 // The corresponding interface

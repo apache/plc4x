@@ -31,7 +31,6 @@ import (
 type COTPParameterDisconnectAdditionalInformation struct {
 	Data   []uint8
 	Parent *COTPParameter
-	ICOTPParameterDisconnectAdditionalInformation
 }
 
 // The corresponding interface
