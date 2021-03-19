@@ -24,6 +24,7 @@ import (
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
 	"os"
 	"strconv"
@@ -31,7 +32,11 @@ import (
 	"testing"
 )
 
-func RunParserSerializerTestsuite(t *testing.T, testPath string) {
+func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCases ...string) {
+	skippedTestCasesMap := map[string]bool{}
+	for _, skippedTestCase := range skippedTestCases {
+		skippedTestCasesMap[skippedTestCase] = true
+	}
 	// Get the current working directory
 	path, err := os.Getwd()
 	if err != nil {
@@ -69,91 +74,99 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string) {
 			t.Error("Invalid document structure")
 			curFailed = true
 		} else {
-			t.Logf("running testsuite: %s test: %s", testsuiteName, (*(child.FindOneByName("name"))).Text)
-			rawInputText := (*(child.FindOneByName("raw"))).Text
-			rootType := (*(child.FindOneByName("root-type"))).Text
-			parserArgumentsXml := child.FindOneByName("parser-arguments")
-			var parserArguments []string
-			if parserArgumentsXml != nil {
-				for _, parserArgumentXml := range parserArgumentsXml.Children {
-					parserArguments = append(parserArguments, parserArgumentXml.Text)
+			testCaseName := child.FindOneByName("name").Text
+			t.Run(testCaseName, func(t *testing.T) {
+				if skippedTestCasesMap[testCaseName] {
+					log.Warn().Msgf("Testcase %s skipped", testCaseName)
+					t.Skipf("Testcase %s skipped", testCaseName)
+					return
 				}
-			}
-			referenceXml := child.FindOneByName("xml")
-			normalizeXml(referenceXml)
-			referenceSerialized := referenceXml.FirstChild().XML()
+				t.Logf("running testsuite: %s test: %s", testsuiteName, testCaseName)
+				rawInputText := (*(child.FindOneByName("raw"))).Text
+				rootType := (*(child.FindOneByName("root-type"))).Text
+				parserArgumentsXml := child.FindOneByName("parser-arguments")
+				var parserArguments []string
+				if parserArgumentsXml != nil {
+					for _, parserArgumentXml := range parserArgumentsXml.Children {
+						parserArguments = append(parserArguments, parserArgumentXml.Text)
+					}
+				}
+				referenceXml := child.FindOneByName("xml")
+				normalizeXml(referenceXml)
+				referenceSerialized := referenceXml.FirstChild().XML()
 
-			// Get the raw input by decoding the hex-encoded binary input
-			rawInput, err := hex.DecodeString(rawInputText)
-			if err != nil {
-				t.Errorf("Error decoding test input")
-				t.Fail()
-				curFailed = true
-			}
-			readBuffer := utils.NewReadBuffer(rawInput)
-
-			// Parse the input according to the settings of the testcase
-			helper := new(model2.ModbusParserHelper)
-			msg, err := helper.Parse(rootType, parserArguments, readBuffer)
-			if err != nil {
-				t.Error("Error parsing input data: " + err.Error())
-				t.Fail()
-				curFailed = true
-			}
-
-			// Serialize the parsed object to XML
-			actualSerialized, err := xml.Marshal(msg)
-			if err != nil {
-				t.Error("Error serializing the actual message: " + err.Error())
-				t.Fail()
-				curFailed = true
-			}
-
-			// Compare the actual and the expected xml
-			err = CompareResults(actualSerialized, []byte(referenceSerialized))
-			if err != nil {
-				t.Error("Error comparing the results: " + err.Error())
-				t.Fail()
-				curFailed = true
-			}
-
-			// If all was ok, serialize the object again
-			s, ok := msg.(utils.Serializable)
-			if !ok {
-				t.Error("Couldn't cast message to Serializable")
-				t.Fail()
-				curFailed = true
-			}
-			writeBuffer := utils.NewWriteBuffer()
-			err = s.Serialize(*writeBuffer)
-			if !ok {
-				t.Error("Couldn't serialize message back to byte array")
-				t.Fail()
-				curFailed = true
-			}
-
-			// Check if the output matches in size and content
-			rawOutput := writeBuffer.GetBytes()
-			if len(rawInput) != len(rawOutput) {
-				t.Error("Couldn't serialize message back to byte array")
-				t.Fail()
-				curFailed = true
-			}
-			for i, val := range rawInput {
-				if rawOutput[i] != val {
-					t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
+				// Get the raw input by decoding the hex-encoded binary input
+				rawInput, err := hex.DecodeString(rawInputText)
+				if err != nil {
+					t.Errorf("Error decoding test input")
 					t.Fail()
 					curFailed = true
 				}
-			}
+				readBuffer := utils.NewReadBuffer(rawInput)
 
-			if curFailed {
-				// All worked
-				t.Logf("FAILED")
-			} else {
-				// All worked
-				t.Logf("SUCCESS")
-			}
+				// Parse the input according to the settings of the testcase
+				helper := new(model2.ModbusParserHelper)
+				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
+				if err != nil {
+					t.Error("Error parsing input data: " + err.Error())
+					t.Fail()
+					curFailed = true
+				}
+
+				// Serialize the parsed object to XML
+				actualSerialized, err := xml.Marshal(msg)
+				if err != nil {
+					t.Error("Error serializing the actual message: " + err.Error())
+					t.Fail()
+					curFailed = true
+				}
+
+				// Compare the actual and the expected xml
+				err = CompareResults(actualSerialized, []byte(referenceSerialized))
+				if err != nil {
+					t.Error("Error comparing the results: " + err.Error())
+					t.Fail()
+					curFailed = true
+				}
+
+				// If all was ok, serialize the object again
+				s, ok := msg.(utils.Serializable)
+				if !ok {
+					t.Error("Couldn't cast message to Serializable")
+					t.Fail()
+					curFailed = true
+				}
+				writeBuffer := utils.NewWriteBuffer()
+				err = s.Serialize(*writeBuffer)
+				if !ok {
+					t.Error("Couldn't serialize message back to byte array")
+					t.Fail()
+					curFailed = true
+				}
+
+				// Check if the output matches in size and content
+				rawOutput := writeBuffer.GetBytes()
+				if len(rawInput) != len(rawOutput) {
+					t.Error("Couldn't serialize message back to byte array")
+					t.Fail()
+					curFailed = true
+				}
+				for i, val := range rawInput {
+					if rawOutput[i] != val {
+						t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
+						t.Fail()
+						curFailed = true
+					}
+				}
+
+				if curFailed {
+					// All worked
+					t.Logf("FAILED")
+				} else {
+					// All worked
+					t.Logf("SUCCESS")
+				}
+			})
 		}
 	}
 	fmt.Printf("name = %v\n", node.Name)
