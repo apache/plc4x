@@ -191,10 +191,10 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 		return nil, err
 	}
 	responseCodes := map[string]model.PlcResponseCode{}
-	values := map[string]values.PlcValue{}
-	values[fieldName] = value
+	plcValues := map[string]values.PlcValue{}
+	plcValues[fieldName] = value
 	responseCodes[fieldName] = model.PlcResponseCode_OK
 
 	// Return the response
-	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, values), nil
+	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }

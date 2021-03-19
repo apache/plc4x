@@ -31,7 +31,6 @@ type DefaultPlcSubscriptionEvent struct {
 	intervals     map[string]time.Duration
 	responseCodes map[string]model.PlcResponseCode
 	values        map[string]values.PlcValue
-	model.PlcSubscriptionEvent
 }
 
 func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[string]SubscriptionType,
@@ -48,7 +47,7 @@ func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[
 
 func (m DefaultPlcSubscriptionEvent) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.fields {
+	for fieldName := range m.fields {
 		fieldNames = append(fieldNames, fieldName)
 	}
 	return fieldNames

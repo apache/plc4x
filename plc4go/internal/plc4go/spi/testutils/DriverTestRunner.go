@@ -56,7 +56,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		return errors.Wrap(connectionResult.Err, "error getting a connection")
 	}
 
-	log.Info().Msgf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n", testcase.name)
+	log.Info().Msgf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------", testcase.name)
 
 	// Run the setup steps
 	for _, testStep := range m.setupSteps {
@@ -82,7 +82,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		}
 	}
 
-	log.Info().Msgf("-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
+	log.Info().Msgf("\n\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n\n")
 	return nil
 }
 
@@ -99,7 +99,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	log.Info().Msgf(" - Executing step: %s \n", step.name)
 
 	switch step.stepType {
-	case StepType_API_REQUEST:
+	case StepTypeApiRequest:
 		switch step.payload.Name {
 		case "TestReadRequest":
 			// Assemble a read-request according to the information in the test xml
@@ -153,7 +153,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			testcase.writeRequestResultChannel = writeRequest.Execute()
 		}
-	case StepType_API_RESPONSE:
+	case StepTypeApiResponse:
 		switch step.payload.Name {
 		case "PlcReadResponse":
 			if testcase.readRequestResultChannel == nil {
@@ -190,7 +190,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				return errors.Wrap(err, "Error comparing the results")
 			}
 		}
-	case StepType_OUTGOING_PLC_MESSAGE:
+	case StepTypeOutgoingPlcMessage:
 		typeName := step.payload.Name
 		payloadString := step.payload.XML()
 
@@ -229,7 +229,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
-	case StepType_OUTGOING_PLC_BYTES:
+	case StepTypeOutgoingPlcBytes:
 		// Read exactly this amount of bytes from the transport
 		expectedRawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
@@ -247,7 +247,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
-	case StepType_INCOMING_PLC_MESSAGE:
+	case StepTypeIncomingPlcMessage:
 		typeName := step.payload.Name
 		payloadString := step.payload.XML()
 
@@ -273,7 +273,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if err != nil {
 			return errors.Wrap(err, "error writing data to transport")
 		}
-	case StepType_INCOMING_PLC_BYTES:
+	case StepTypeIncomingPlcBytes:
 		// Get the raw hex-data.
 		rawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
@@ -285,7 +285,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if err != nil {
 			return errors.Wrap(err, "error writing data to transport")
 		}
-	case StepType_DELAY:
+	case StepTypeDelay:
 		// Get the number of milliseconds
 		delay, err := strconv.Atoi(step.payload.Text)
 		if err != nil {
@@ -293,7 +293,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		// Sleep for that long
 		time.Sleep(time.Duration(delay))
-	case StepType_TERMINATE:
+	case StepTypeTerminate:
 		// Simply close the transport connection
 		err := testTransportInstance.Close()
 		if err != nil {
@@ -325,14 +325,14 @@ type TestStep struct {
 type StepType uint8
 
 const (
-	StepType_OUTGOING_PLC_MESSAGE StepType = 0x01
-	StepType_OUTGOING_PLC_BYTES   StepType = 0x02
-	StepType_INCOMING_PLC_MESSAGE StepType = 0x03
-	StepType_INCOMING_PLC_BYTES   StepType = 0x04
-	StepType_API_REQUEST          StepType = 0x05
-	StepType_API_RESPONSE         StepType = 0x06
-	StepType_DELAY                StepType = 0x07
-	StepType_TERMINATE            StepType = 0x08
+	StepTypeOutgoingPlcMessage StepType = 0x01
+	StepTypeOutgoingPlcBytes   StepType = 0x02
+	StepTypeIncomingPlcMessage StepType = 0x03
+	StepTypeIncomingPlcBytes   StepType = 0x04
+	StepTypeApiRequest         StepType = 0x05
+	StepTypeApiResponse        StepType = 0x06
+	StepTypeDelay              StepType = 0x07
+	StepTypeTerminate          StepType = 0x08
 )
 
 func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) {
@@ -360,13 +360,13 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) 
 
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterTransport(test.NewTestTransport())
+	driverManager.RegisterTransport(test.NewTransport())
 	driverManager.RegisterDriver(driver)
 
 	for _, testcase := range testsuite.testcases {
 		err := testsuite.Run(driverManager, testcase)
 		if err != nil {
-			log.Err(err).Msgf("-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
+			log.Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
 			t.Fail()
 		}
 	}
@@ -484,21 +484,21 @@ func ParseDriverTestsuiteSteps(node xmldom.Node) ([]TestStep, error) {
 		var stepType StepType
 		switch step.Name {
 		case "api-request":
-			stepType = StepType_API_REQUEST
+			stepType = StepTypeApiRequest
 		case "api-response":
-			stepType = StepType_API_RESPONSE
+			stepType = StepTypeApiResponse
 		case "outgoing-plc-message":
-			stepType = StepType_OUTGOING_PLC_MESSAGE
+			stepType = StepTypeOutgoingPlcMessage
 		case "incoming-plc-message":
-			stepType = StepType_INCOMING_PLC_MESSAGE
+			stepType = StepTypeIncomingPlcMessage
 		case "outgoing-plc-bytes":
-			stepType = StepType_OUTGOING_PLC_BYTES
+			stepType = StepTypeOutgoingPlcBytes
 		case "incoming-plc-bytes":
-			stepType = StepType_INCOMING_PLC_BYTES
+			stepType = StepTypeIncomingPlcBytes
 		case "delay":
-			stepType = StepType_DELAY
+			stepType = StepTypeDelay
 		case "terminate":
-			stepType = StepType_TERMINATE
+			stepType = StepTypeTerminate
 		default:
 			return nil, errors.Errorf("Unknown step with name %s", step.Name)
 		}
@@ -517,7 +517,7 @@ func ParseDriverTestsuiteSteps(node xmldom.Node) ([]TestStep, error) {
 				return nil, errors.New("test step can only contain a single payload element")
 			}
 		}
-		if stepType == StepType_DELAY {
+		if stepType == StepTypeDelay {
 			payload = step
 		}
 		if payload == nil {

@@ -16,13 +16,16 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package utils
+package tests
 
-// InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a uint16, b uint16) uint16 {
-	if test {
-		return a
-	} else {
-		return b
-	}
+import (
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"testing"
+)
+
+func TestKNXNetIPDriver(t *testing.T) {
+	t.Skip("Still a work in progress")
+	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml")
 }

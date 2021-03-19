@@ -31,13 +31,14 @@ import (
 type FieldType uint8
 
 const (
-	KNX_NET_IP_FIELD_COIL FieldType = 0x00
+	FieldCoil FieldType = 0x00
 )
 
 func (m FieldType) GetName() string {
 	switch m {
-	case KNX_NET_IP_FIELD_COIL:
-		return "ModbusFieldHoldingRegister"
+	case FieldCoil:
+		// TODO: these looked like copy paste from modbus before change this name might be therefore completly wrong
+		return "KNXNETIPFIELDCOIL"
 	}
 	return ""
 }

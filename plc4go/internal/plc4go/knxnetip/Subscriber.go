@@ -108,7 +108,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 				// If it matches, take the datatype of each matching field and try to decode the payload
 				if groupAddressField.matches(groupAddress) {
 					// If this is a CHANGE_OF_STATE field, filter out the events where the value actually hasn't changed.
-					if subscriptionType == internalModel.SUBSCRIPTION_CHANGE_OF_STATE && changed {
+					if subscriptionType == internalModel.SubscriptionChangeOfState && changed {
 						rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
 						if groupAddressField.GetFieldType() == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INVALID_DATATYPE

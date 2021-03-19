@@ -96,7 +96,7 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 
 func (m DefaultPlcWriteRequest) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.fields {
+	for fieldName := range m.fields {
 		fieldNames = append(fieldNames, fieldName)
 	}
 	return fieldNames
@@ -139,7 +139,9 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 				if !subValue.IsString() {
 					return errors.New("value not serializable to string")
 				}
-				e.EncodeToken(xml.CharData(subValue.GetString()))
+				if err := e.EncodeToken(xml.CharData(subValue.GetString())); err != nil {
+					return err
+				}
 				if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
 					return err
 				}
@@ -151,7 +153,9 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 			if !value.IsString() {
 				return errors.New("value not serializable to string")
 			}
-			e.EncodeToken(xml.CharData(value.GetString()))
+			if err := e.EncodeToken(xml.CharData(value.GetString())); err != nil {
+				return err
+			}
 			if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
 				return err
 			}
