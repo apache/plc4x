@@ -16,20 +16,24 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package initializetest
+package logging
 
 import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
+// init is used for _ imports for easy log config
 func init() {
-	onJenkins := os.Getenv("JENKINS_URL") != ""
-	log.Logger = log.
-		//// Enable below if you want to see the filenames
-		//With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: onJenkins}).
-		// TODO: set to INFO once log mining is done
-		Level(zerolog.TraceLevel)
+	log.Logger.Level(zerolog.ErrorLevel)
+}
+
+// Info configures zerolog to InfoLevel
+func Info() {
+	log.Logger.Level(zerolog.InfoLevel)
+}
+
+// Debug configures zerolog to InfoLevel
+func Debug() {
+	log.Logger.Level(zerolog.DebugLevel)
 }
