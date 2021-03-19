@@ -215,7 +215,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Read exactly this amount of bytes from the transport
 		if testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
-			return errors.New("error getting bytes from transport. Not enough data available")
+			return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d)", testTransportInstance.GetNumDrainableBytes(), expectedRawOutputLength)
 		}
 		rawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if err != nil {
@@ -335,7 +335,11 @@ const (
 	StepTypeTerminate          StepType = 0x08
 )
 
-func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) {
+func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, skippedTestCases ...string) {
+	skippedTestCasesMap := map[string]bool{}
+	for _, skippedTestCase := range skippedTestCases {
+		skippedTestCasesMap[skippedTestCase] = true
+	}
 	// Read the test-specification as XML file
 	rootNode, err := ParseDriverTestsuiteXml(testPath)
 	if err != nil {
@@ -364,11 +368,19 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) 
 	driverManager.RegisterDriver(driver)
 
 	for _, testcase := range testsuite.testcases {
-		err := testsuite.Run(driverManager, testcase)
-		if err != nil {
-			log.Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
-			t.Fail()
-		}
+		t.Run(testcase.name, func(t *testing.T) {
+			if skippedTestCasesMap[testcase.name] {
+				log.Warn().Msgf("Testcase %s skipped", testcase.name)
+				t.Skipf("Testcase %s skipped", testcase.name)
+				return
+			}
+			log.Info().Msgf("Running testcase %s", testcase.name)
+			err := testsuite.Run(driverManager, testcase)
+			if err != nil {
+				log.Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
+				t.Fail()
+			}
+		})
 	}
 	// Execute the tests in the testsuite
 	log.Info().Msgf(testsuite.name)

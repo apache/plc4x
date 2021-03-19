@@ -19,7 +19,9 @@
 package interceptors
 
 import (
+	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
@@ -43,6 +45,7 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest apiModel.
 		field := readRequest.GetField(fieldName)
 		subReadRequest := model.NewDefaultPlcReadRequest(
 			map[string]apiModel.PlcField{fieldName: field},
+			[]string{fieldName},
 			defaultReadRequest.Reader,
 			defaultReadRequest.ReadRequestInterceptor)
 		readRequests = append(readRequests, subReadRequest)
@@ -57,11 +60,15 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest apiModel.
 
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
-	var err error
+	var err *utils.MultiError = nil
 	for _, readResult := range readResults {
 		if readResult.Err != nil {
-			// TODO: Handle the case that multiple requests had errors that are different
-			err = readResult.Err
+			if err == nil {
+				// Lazy initialization of multi error
+				err = &utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.Err}}
+			} else {
+				err.Errors = append(err.Errors, readResult.Err)
+			}
 		} else if readResult.Response != nil {
 			for _, fieldName := range readResult.Response.GetRequest().GetFieldNames() {
 				responseCodes[fieldName] = readResult.Response.GetResponseCode(fieldName)
@@ -81,5 +88,6 @@ func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest apiMode
 }
 
 func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest apiModel.PlcWriteRequest, writeResponses []apiModel.PlcWriteRequestResult) apiModel.PlcWriteRequestResult {
+	// TODO: unfinished implementation
 	return apiModel.PlcWriteRequestResult{}
 }
