@@ -47,8 +47,16 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 
 func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	result := make(chan model.PlcReadRequestResult)
-	// If we are requesting only one field, use a
-	if len(readRequest.GetFieldNames()) == 1 {
+	go func() {
+		// If we are requesting only one field, use a
+		if len(readRequest.GetFieldNames()) != 1 {
+			result <- model.PlcReadRequestResult{
+				Request:  readRequest,
+				Response: nil,
+				Err:      errors.New("modbus only supports single-item requests"),
+			}
+			return
+		}
 		fieldName := readRequest.GetFieldNames()[0]
 		field := readRequest.GetField(fieldName)
 		modbusField, err := CastToModbusFieldFromPlcField(field)
@@ -58,7 +66,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				Response: nil,
 				Err:      errors.New("invalid field item type"),
 			}
-			return result
+			return
 		}
 		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
 		var pdu *readWriteModel.ModbusPDU = nil
@@ -77,14 +85,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				Response: nil,
 				Err:      errors.New("modbus currently doesn't support extended register requests"),
 			}
-			return result
+			return
 		default:
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("unsupported field type"),
 			}
-			return result
+			return
 		}
 
 		// Calculate a new transaction identifier
@@ -102,7 +110,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		}
 
 		// Send the ADU over the wire
-		err = m.messageCodec.SendRequest(
+		if err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
 				responseAdu := readWriteModel.CastModbusTcpADU(message)
@@ -120,11 +128,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						Request: readRequest,
 						Err:     errors.New("Error decoding response: " + err.Error()),
 					}
-				} else {
-					result <- model.PlcReadRequestResult{
-						Request:  readRequest,
-						Response: readResponse,
-					}
+					// TODO: should we return the error here?
+					return nil
+				}
+				result <- model.PlcReadRequestResult{
+					Request:  readRequest,
+					Response: readResponse,
 				}
 				return nil
 			},
@@ -135,21 +144,14 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				}
 				return nil
 			},
-			time.Second*1)
-		if err != nil {
+			time.Second*1); err != nil {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("error sending message: " + err.Error()),
 			}
 		}
-	} else {
-		result <- model.PlcReadRequestResult{
-			Request:  readRequest,
-			Response: nil,
-			Err:      errors.New("modbus only supports single-item requests"),
-		}
-	}
+	}()
 	return result
 }
 

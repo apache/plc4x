@@ -20,9 +20,9 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -40,7 +40,9 @@ type DefaultPlcSubscriptionRequestBuilder struct {
 	valueHandler spi.PlcValueHandler
 	eventHandler model.PlcSubscriptionEventHandler
 	queries      map[string]string
+	queryNames   []string
 	fields       map[string]model.PlcField
+	fieldNames   []string
 	types        map[string]SubscriptionType
 	intervals    map[string]time.Duration
 }
@@ -52,39 +54,46 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
 		valueHandler: valueHandler,
 		queries:      map[string]string{},
 		fields:       map[string]model.PlcField{},
+		fieldNames:   make([]string, 0),
 		types:        map[string]SubscriptionType{},
 		intervals:    map[string]time.Duration{},
 	}
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) {
+	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field model.PlcField, interval time.Duration) {
+	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) {
+	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionChangeOfState
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string, field model.PlcField) {
+	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionChangeOfState
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) {
+	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.types[name] = SubscriptionEvent
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field model.PlcField) {
+	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.types[name] = SubscriptionEvent
 }
@@ -94,15 +103,18 @@ func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionRequest, error) {
-	for name, query := range m.queries {
+	for _, name := range m.queryNames {
+		query := m.queries[name]
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
-			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
+			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
 		}
+		m.fieldNames = append(m.fieldNames, name)
 		m.fields[name] = field
 	}
 	return DefaultPlcSubscriptionRequest{
 		fields:       m.fields,
+		fieldNames:   m.fieldNames,
 		types:        m.types,
 		intervals:    m.intervals,
 		subscriber:   m.subscriber,
@@ -112,11 +124,11 @@ func (m *DefaultPlcSubscriptionRequestBuilder) Build() (model.PlcSubscriptionReq
 
 type DefaultPlcSubscriptionRequest struct {
 	fields       map[string]model.PlcField
+	fieldNames   []string
 	types        map[string]SubscriptionType
 	intervals    map[string]time.Duration
 	eventHandler model.PlcSubscriptionEventHandler
 	subscriber   spi.PlcSubscriber
-	model.PlcSubscriptionRequest
 }
 
 func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionRequestResult {
@@ -124,11 +136,7 @@ func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionReq
 }
 
 func (m DefaultPlcSubscriptionRequest) GetFieldNames() []string {
-	var fieldNames []string
-	for fieldName := range m.fields {
-		fieldNames = append(fieldNames, fieldName)
-	}
-	return fieldNames
+	return m.fieldNames
 }
 
 func (m DefaultPlcSubscriptionRequest) GetField(name string) model.PlcField {
@@ -155,7 +163,8 @@ func (m DefaultPlcSubscriptionRequest) MarshalXML(e *xml.Encoder, start xml.Star
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
 		return err
 	}
-	for fieldName, field := range m.fields {
+	for _, fieldName := range m.fieldNames {
+		field := m.fields[fieldName]
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err
 		}
