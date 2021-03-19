@@ -70,7 +70,7 @@ func ByteArrayToInt8Array(input []byte) []int8 {
 func ByteArrayToUint8Array(input []byte) []uint8 {
 	output := make([]uint8, len(input))
 	for i, _val := range input {
-		output[i] = uint8(_val)
+		output[i] = _val
 	}
 	return output
 }

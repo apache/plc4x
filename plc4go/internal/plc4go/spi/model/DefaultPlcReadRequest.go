@@ -31,7 +31,6 @@ type DefaultPlcReadRequestBuilder struct {
 	queries                map[string]string
 	fields                 map[string]model.PlcField
 	readRequestInterceptor ReadRequestInterceptor
-	model.PlcReadRequestBuilder
 }
 
 func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {

@@ -28,7 +28,6 @@ type DefaultPlcReadResponse struct {
 	request       model.PlcReadRequest
 	responseCodes map[string]model.PlcResponseCode
 	values        map[string]values.PlcValue
-	model.PlcReadResponse
 }
 
 func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) DefaultPlcReadResponse {
@@ -41,7 +40,7 @@ func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[s
 
 func (m DefaultPlcReadResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.values {
+	for fieldName := range m.values {
 		fieldNames = append(fieldNames, fieldName)
 	}
 	return fieldNames

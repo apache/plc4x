@@ -69,7 +69,7 @@ func (rb WriteBuffer) WriteUint32(bitLength uint8, value uint32) error {
 }
 
 func (rb WriteBuffer) WriteUint64(bitLength uint8, value uint64) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
+	return rb.writer.WriteBits(value, bitLength)
 }
 
 func (rb WriteBuffer) WriteInt8(bitLength uint8, value int8) error {

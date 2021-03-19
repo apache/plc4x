@@ -165,7 +165,7 @@ func work(m *MessageCodec) {
 				// Remove this expectation from the list.
 				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 				// Call the error handler.
-				err := expectation.handleError(errors2.NewTimeoutError())
+				err := expectation.handleError(errors2.NewTimeoutError(now.Sub(expectation.expiration)))
 				if err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}

@@ -29,23 +29,22 @@ import (
 	"strconv"
 )
 
-type TcpTransport struct {
-	transports.Transport
+type Transport struct {
 }
 
-func NewTcpTransport() *TcpTransport {
-	return &TcpTransport{}
+func NewTransport() *Transport {
+	return &Transport{}
 }
 
-func (m TcpTransport) GetTransportCode() string {
+func (m Transport) GetTransportCode() string {
 	return "tcp"
 }
 
-func (m TcpTransport) GetTransportName() string {
+func (m Transport) GetTransportName() string {
 	return "TCP/IP Socket Transport"
 }
 
-func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
 	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
 	var address string
 	var port int
@@ -102,24 +101,24 @@ func (m TcpTransport) CreateTransportInstance(transportUrl url.URL, options map[
 	return castFunc(transportInstance)
 }
 
-type TcpTransportInstance struct {
+type TransportInstance struct {
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
-	transport      *TcpTransport
+	transport      *Transport
 	tcpConn        net.Conn
 	reader         *bufio.Reader
 }
 
-func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *TcpTransport) *TcpTransportInstance {
-	return &TcpTransportInstance{
+func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
+	return &TransportInstance{
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 	}
 }
 
-func (m *TcpTransportInstance) Connect() error {
+func (m *TransportInstance) Connect() error {
 	var err error
 	m.tcpConn, err = net.Dial("tcp", m.RemoteAddress.String())
 	if err != nil {
@@ -133,7 +132,7 @@ func (m *TcpTransportInstance) Connect() error {
 	return nil
 }
 
-func (m *TcpTransportInstance) Close() error {
+func (m *TransportInstance) Close() error {
 	if m.tcpConn != nil {
 		err := m.tcpConn.Close()
 		if err != nil {
@@ -143,7 +142,7 @@ func (m *TcpTransportInstance) Close() error {
 	return nil
 }
 
-func (m *TcpTransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader != nil {
 		_, _ = m.reader.Peek(1)
 		return uint32(m.reader.Buffered()), nil
@@ -151,14 +150,14 @@ func (m *TcpTransportInstance) GetNumReadableBytes() (uint32, error) {
 	return 0, nil
 }
 
-func (m *TcpTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
 	if m.reader != nil {
 		return m.reader.Peek(int(numBytes))
 	}
 	return nil, errors.New("error peeking from transport. No reader available")
 }
 
-func (m *TcpTransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	if m.reader != nil {
 		data := make([]uint8, numBytes)
 		for i := uint32(0); i < numBytes; i++ {
@@ -173,7 +172,7 @@ func (m *TcpTransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	return nil, errors.New("error reading from transport. No reader available")
 }
 
-func (m *TcpTransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []uint8) error {
 	if m.tcpConn != nil {
 		num, err := m.tcpConn.Write(data)
 		if err != nil {

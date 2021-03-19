@@ -24,24 +24,24 @@ import (
 	"net/url"
 )
 
-type TestTransport struct {
+type Transport struct {
 	transports.Transport
 }
 
-func NewTestTransport() *TestTransport {
-	return &TestTransport{}
+func NewTransport() *Transport {
+	return &Transport{}
 }
 
-func (m TestTransport) GetTransportCode() string {
+func (m Transport) GetTransportCode() string {
 	return "test"
 }
 
-func (m TestTransport) GetTransportName() string {
+func (m Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m TestTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	transportInstance := NewTestTransportInstance(&m)
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+	transportInstance := NewTransportInstance(&m)
 
 	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
 		if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -52,57 +52,57 @@ func (m TestTransport) CreateTransportInstance(transportUrl url.URL, options map
 	return castFunc(transportInstance)
 }
 
-type TestTransportInstance struct {
+type TransportInstance struct {
 	readBuffer  []byte
 	writeBuffer []byte
-	transport   *TestTransport
+	transport   *Transport
 }
 
-func NewTestTransportInstance(transport *TestTransport) *TestTransportInstance {
-	return &TestTransportInstance{
+func NewTransportInstance(transport *Transport) *TransportInstance {
+	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
 		transport:   transport,
 	}
 }
 
-func (m *TestTransportInstance) Connect() error {
+func (m *TransportInstance) Connect() error {
 	return nil
 }
 
-func (m *TestTransportInstance) Close() error {
+func (m *TransportInstance) Close() error {
 	return nil
 }
 
-func (m *TestTransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	return uint32(len(m.readBuffer)), nil
 }
 
-func (m *TestTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
 	return m.readBuffer[0:numBytes], nil
 }
 
-func (m *TestTransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
 	return data, nil
 }
 
-func (m *TestTransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []uint8) error {
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
-func (m *TestTransportInstance) FillReadBuffer(data []uint8) error {
+func (m *TransportInstance) FillReadBuffer(data []uint8) error {
 	m.readBuffer = append(m.readBuffer, data...)
 	return nil
 }
 
-func (m *TestTransportInstance) GetNumDrainableBytes() uint32 {
+func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 	return uint32(len(m.writeBuffer))
 }
 
-func (m *TestTransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
 	return data, nil

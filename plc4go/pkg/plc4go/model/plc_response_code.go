@@ -59,6 +59,9 @@ func (m PlcResponseCode) GetName() string {
 		return "UNSUPPORTED"
 	case PlcResponseCode_RESPONSE_PENDING:
 		return "RESPONSE_PENDING"
+	case PlcResponseCode_REQUEST_TIMEOUT:
+		return "REQUEST_TIMEOUT"
+	default:
+		return ""
 	}
-	return ""
 }

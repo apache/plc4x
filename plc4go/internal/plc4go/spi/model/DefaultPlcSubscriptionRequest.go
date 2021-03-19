@@ -29,9 +29,9 @@ import (
 type SubscriptionType uint8
 
 const (
-	SUBSCRIPTION_CYCLIC          SubscriptionType = 0x01
-	SUBSCRIPTION_CHANGE_OF_STATE SubscriptionType = 0x02
-	SUBSCRIPTION_EVENT           SubscriptionType = 0x03
+	SubscriptionCyclic        SubscriptionType = 0x01
+	SubscriptionChangeOfState SubscriptionType = 0x02
+	SubscriptionEvent         SubscriptionType = 0x03
 )
 
 type DefaultPlcSubscriptionRequestBuilder struct {
@@ -59,34 +59,34 @@ func NewDefaultPlcSubscriptionRequestBuilder(fieldHandler spi.PlcFieldHandler, v
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicQuery(name string, query string, interval time.Duration) {
 	m.queries[name] = query
-	m.types[name] = SUBSCRIPTION_CYCLIC
+	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddCyclicField(name string, field model.PlcField, interval time.Duration) {
 	m.fields[name] = field
-	m.types[name] = SUBSCRIPTION_CYCLIC
+	m.types[name] = SubscriptionCyclic
 	m.intervals[name] = interval
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateQuery(name string, query string) {
 	m.queries[name] = query
-	m.types[name] = SUBSCRIPTION_CHANGE_OF_STATE
+	m.types[name] = SubscriptionChangeOfState
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddChangeOfStateField(name string, field model.PlcField) {
 	m.fields[name] = field
-	m.types[name] = SUBSCRIPTION_CHANGE_OF_STATE
+	m.types[name] = SubscriptionChangeOfState
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddEventQuery(name string, query string) {
 	m.queries[name] = query
-	m.types[name] = SUBSCRIPTION_EVENT
+	m.types[name] = SubscriptionEvent
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddEventField(name string, field model.PlcField) {
 	m.fields[name] = field
-	m.types[name] = SUBSCRIPTION_EVENT
+	m.types[name] = SubscriptionEvent
 }
 
 func (m *DefaultPlcSubscriptionRequestBuilder) AddItemHandler(eventHandler model.PlcSubscriptionEventHandler) {
@@ -125,7 +125,7 @@ func (m DefaultPlcSubscriptionRequest) Execute() <-chan model.PlcSubscriptionReq
 
 func (m DefaultPlcSubscriptionRequest) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.fields {
+	for fieldName := range m.fields {
 		fieldNames = append(fieldNames, fieldName)
 	}
 	return fieldNames

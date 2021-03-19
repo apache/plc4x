@@ -29,27 +29,27 @@ import (
 	"strconv"
 )
 
-type UdpTransport struct {
+type Transport struct {
 	transports.Transport
 }
 
-func NewUdpTransport() *UdpTransport {
-	return &UdpTransport{}
+func NewTransport() *Transport {
+	return &Transport{}
 }
 
-func (m UdpTransport) GetTransportCode() string {
+func (m Transport) GetTransportCode() string {
 	return "udp"
 }
 
-func (m UdpTransport) GetTransportName() string {
+func (m Transport) GetTransportName() string {
 	return "UDP Datagram Transport"
 }
 
-func (m UdpTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
 	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
 }
 
-func (m UdpTransport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
 	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
 	var remoteAddressString string
 	var remotePort int
@@ -96,7 +96,7 @@ func (m UdpTransport) CreateTransportInstanceForLocalAddress(transportUrl url.UR
 		return nil, errors.New("error resolving typ address: " + err.Error())
 	}
 
-	transportInstance := NewUdpTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
+	transportInstance := NewTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
 
 	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
 		if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -107,17 +107,17 @@ func (m UdpTransport) CreateTransportInstanceForLocalAddress(transportUrl url.UR
 	return castFunc(transportInstance)
 }
 
-type UdpTransportInstance struct {
+type TransportInstance struct {
 	LocalAddress   *net.UDPAddr
 	RemoteAddress  *net.UDPAddr
 	ConnectTimeout uint32
-	transport      *UdpTransport
+	transport      *Transport
 	udpConn        *net.UDPConn
 	reader         *bufio.Reader
 }
 
-func NewUdpTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, transport *UdpTransport) *UdpTransportInstance {
-	return &UdpTransportInstance{
+func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
+	return &TransportInstance{
 		LocalAddress:   localAddress,
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
@@ -125,7 +125,7 @@ func NewUdpTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAd
 	}
 }
 
-func (m *UdpTransportInstance) Connect() error {
+func (m *TransportInstance) Connect() error {
 	// If we haven't provided a local address, have the system figure it out by dialing
 	// the remote address and then using that connections local address as local address.
 	if m.LocalAddress == nil {
@@ -162,7 +162,7 @@ func (m *UdpTransportInstance) Connect() error {
 	return nil
 }
 
-func (m *UdpTransportInstance) Close() error {
+func (m *TransportInstance) Close() error {
 	if m.udpConn != nil {
 		err := m.udpConn.Close()
 		if err != nil {
@@ -172,7 +172,7 @@ func (m *UdpTransportInstance) Close() error {
 	return nil
 }
 
-func (m *UdpTransportInstance) GetNumReadableBytes() (uint32, error) {
+func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader != nil {
 		_, _ = m.reader.Peek(1)
 		return uint32(m.reader.Buffered()), nil
@@ -180,14 +180,14 @@ func (m *UdpTransportInstance) GetNumReadableBytes() (uint32, error) {
 	return 0, nil
 }
 
-func (m *UdpTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
 	if m.reader != nil {
 		return m.reader.Peek(int(numBytes))
 	}
 	return nil, errors.New("error peeking from transport. No reader available")
 }
 
-func (m *UdpTransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	if m.reader != nil {
 		data := make([]uint8, numBytes)
 		for i := uint32(0); i < numBytes; i++ {
@@ -202,7 +202,7 @@ func (m *UdpTransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	return nil, errors.New("error reading from transport. No reader available")
 }
 
-func (m *UdpTransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []uint8) error {
 	if m.udpConn != nil {
 		num, err := m.udpConn.WriteToUDP(data, m.RemoteAddress)
 		if err != nil {

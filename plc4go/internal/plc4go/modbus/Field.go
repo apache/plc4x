@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	MODBUS_PROTOCOL_ADDRESS_OFFSET = 1
+	AddressOffset = 1
 )
 
 type PlcField struct {
@@ -41,7 +41,7 @@ type PlcField struct {
 func NewField(fieldType FieldType, address uint16, quantity uint16, datatype model2.ModbusDataType) PlcField {
 	return PlcField{
 		FieldType: fieldType,
-		Address:   address - MODBUS_PROTOCOL_ADDRESS_OFFSET,
+		Address:   address - AddressOffset,
 		Quantity:  quantity,
 		Datatype:  datatype,
 	}

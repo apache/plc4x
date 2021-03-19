@@ -18,13 +18,19 @@
 //
 package errors
 
+import (
+	"fmt"
+	"time"
+)
+
 type TimeoutError struct {
+	timeout time.Duration
 }
 
-func NewTimeoutError() TimeoutError {
-	return TimeoutError{}
+func NewTimeoutError(timeout time.Duration) TimeoutError {
+	return TimeoutError{timeout: timeout}
 }
 
 func (t TimeoutError) Error() string {
-	return "got timeout"
+	return fmt.Sprintf("got timeout after %v", t.timeout)
 }

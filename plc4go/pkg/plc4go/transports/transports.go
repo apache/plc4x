@@ -25,9 +25,9 @@ import (
 )
 
 func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterTransport(tcp.NewTcpTransport())
+	driverManager.RegisterTransport(tcp.NewTransport())
 }
 
 func RegisterUdpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterTransport(udp.NewUdpTransport())
+	driverManager.RegisterTransport(udp.NewTransport())
 }

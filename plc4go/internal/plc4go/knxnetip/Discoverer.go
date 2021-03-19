@@ -43,7 +43,7 @@ func NewDiscoverer() *Discoverer {
 }
 
 func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
-	udpTransport := udp.NewUdpTransport()
+	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
 	connectionUrl, err := url.Parse("udp://224.0.23.12:3671")
@@ -105,7 +105,7 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 			codec := NewMessageCodec(transportInstance, nil)
 
 			// Cast to the UDP transport instance so we can access information on the local port.
-			udpTransportInstance, ok := transportInstance.(*udp.UdpTransportInstance)
+			udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
 			if !ok {
 				return errors.New("couldn't cast transport instance to UDP transport instance")
 			}

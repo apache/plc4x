@@ -256,6 +256,7 @@
             <configuration>
               <packages>
                 <package>github.com/tebeka/go2xunit</package>
+                <package>gotest.tools/gotestsum</package>
               </packages>
             </configuration>
           </execution>
@@ -270,6 +271,23 @@
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
               <ignoreErrorExitCode>true</ignoreErrorExitCode>
+              <packages>
+                <package>./...</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>readable-test</id>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>gotestsum</exec>
+              <customCommand>-f</customCommand>
+              <buildFlags>
+                <flag>short</flag>
+              </buildFlags>
               <packages>
                 <package>./...</package>
               </packages>
