@@ -41,6 +41,10 @@ func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]
 	}
 }
 
+func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
+	panic("implement me")
+}
+
 /*
  * Decode the binary data in the address according to the field requested
  */
