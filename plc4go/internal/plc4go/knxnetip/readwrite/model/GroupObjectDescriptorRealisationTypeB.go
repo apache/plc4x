@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -107,49 +107,49 @@ func GroupObjectDescriptorRealisationTypeBParse(io *utils.ReadBuffer) (*GroupObj
 	// Simple Field (updateEnable)
 	updateEnable, _updateEnableErr := io.ReadBit()
 	if _updateEnableErr != nil {
-		return nil, errors.New("Error parsing 'updateEnable' field " + _updateEnableErr.Error())
+		return nil, errors.Wrap(_updateEnableErr, "Error parsing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
 	transmitEnable, _transmitEnableErr := io.ReadBit()
 	if _transmitEnableErr != nil {
-		return nil, errors.New("Error parsing 'transmitEnable' field " + _transmitEnableErr.Error())
+		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
 	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit()
 	if _segmentSelectorEnableErr != nil {
-		return nil, errors.New("Error parsing 'segmentSelectorEnable' field " + _segmentSelectorEnableErr.Error())
+		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
 	writeEnable, _writeEnableErr := io.ReadBit()
 	if _writeEnableErr != nil {
-		return nil, errors.New("Error parsing 'writeEnable' field " + _writeEnableErr.Error())
+		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
 	readEnable, _readEnableErr := io.ReadBit()
 	if _readEnableErr != nil {
-		return nil, errors.New("Error parsing 'readEnable' field " + _readEnableErr.Error())
+		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
 	communicationEnable, _communicationEnableErr := io.ReadBit()
 	if _communicationEnableErr != nil {
-		return nil, errors.New("Error parsing 'communicationEnable' field " + _communicationEnableErr.Error())
+		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
 	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
-		return nil, errors.New("Error parsing 'priority' field " + _priorityErr.Error())
+		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
 
 	// Simple Field (valueType)
 	valueType, _valueTypeErr := ComObjectValueTypeParse(io)
 	if _valueTypeErr != nil {
-		return nil, errors.New("Error parsing 'valueType' field " + _valueTypeErr.Error())
+		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
 
 	// Create the instance
@@ -162,54 +162,54 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) 
 	updateEnable := bool(m.UpdateEnable)
 	_updateEnableErr := io.WriteBit((updateEnable))
 	if _updateEnableErr != nil {
-		return errors.New("Error serializing 'updateEnable' field " + _updateEnableErr.Error())
+		return errors.Wrap(_updateEnableErr, "Error serializing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
 	transmitEnable := bool(m.TransmitEnable)
 	_transmitEnableErr := io.WriteBit((transmitEnable))
 	if _transmitEnableErr != nil {
-		return errors.New("Error serializing 'transmitEnable' field " + _transmitEnableErr.Error())
+		return errors.Wrap(_transmitEnableErr, "Error serializing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
 	segmentSelectorEnable := bool(m.SegmentSelectorEnable)
 	_segmentSelectorEnableErr := io.WriteBit((segmentSelectorEnable))
 	if _segmentSelectorEnableErr != nil {
-		return errors.New("Error serializing 'segmentSelectorEnable' field " + _segmentSelectorEnableErr.Error())
+		return errors.Wrap(_segmentSelectorEnableErr, "Error serializing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
 	writeEnable := bool(m.WriteEnable)
 	_writeEnableErr := io.WriteBit((writeEnable))
 	if _writeEnableErr != nil {
-		return errors.New("Error serializing 'writeEnable' field " + _writeEnableErr.Error())
+		return errors.Wrap(_writeEnableErr, "Error serializing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
 	readEnable := bool(m.ReadEnable)
 	_readEnableErr := io.WriteBit((readEnable))
 	if _readEnableErr != nil {
-		return errors.New("Error serializing 'readEnable' field " + _readEnableErr.Error())
+		return errors.Wrap(_readEnableErr, "Error serializing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
 	communicationEnable := bool(m.CommunicationEnable)
 	_communicationEnableErr := io.WriteBit((communicationEnable))
 	if _communicationEnableErr != nil {
-		return errors.New("Error serializing 'communicationEnable' field " + _communicationEnableErr.Error())
+		return errors.Wrap(_communicationEnableErr, "Error serializing 'communicationEnable' field")
 	}
 
 	// Simple Field (priority)
 	_priorityErr := m.Priority.Serialize(io)
 	if _priorityErr != nil {
-		return errors.New("Error serializing 'priority' field " + _priorityErr.Error())
+		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (valueType)
 	_valueTypeErr := m.ValueType.Serialize(io)
 	if _valueTypeErr != nil {
-		return errors.New("Error serializing 'valueType' field " + _valueTypeErr.Error())
+		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
 	return nil

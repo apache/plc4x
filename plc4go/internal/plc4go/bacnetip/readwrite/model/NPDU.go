@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -160,20 +160,20 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
 	if _protocolVersionNumberErr != nil {
-		return nil, errors.New("Error parsing 'protocolVersionNumber' field " + _protocolVersionNumberErr.Error())
+		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field")
 	}
 
 	// Simple Field (messageTypeFieldPresent)
 	messageTypeFieldPresent, _messageTypeFieldPresentErr := io.ReadBit()
 	if _messageTypeFieldPresentErr != nil {
-		return nil, errors.New("Error parsing 'messageTypeFieldPresent' field " + _messageTypeFieldPresentErr.Error())
+		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(1)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -186,14 +186,14 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Simple Field (destinationSpecified)
 	destinationSpecified, _destinationSpecifiedErr := io.ReadBit()
 	if _destinationSpecifiedErr != nil {
-		return nil, errors.New("Error parsing 'destinationSpecified' field " + _destinationSpecifiedErr.Error())
+		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(1)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -206,19 +206,19 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Simple Field (sourceSpecified)
 	sourceSpecified, _sourceSpecifiedErr := io.ReadBit()
 	if _sourceSpecifiedErr != nil {
-		return nil, errors.New("Error parsing 'sourceSpecified' field " + _sourceSpecifiedErr.Error())
+		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field")
 	}
 
 	// Simple Field (expectingReply)
 	expectingReply, _expectingReplyErr := io.ReadBit()
 	if _expectingReplyErr != nil {
-		return nil, errors.New("Error parsing 'expectingReply' field " + _expectingReplyErr.Error())
+		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field")
 	}
 
 	// Simple Field (networkPriority)
 	networkPriority, _networkPriorityErr := io.ReadUint8(2)
 	if _networkPriorityErr != nil {
-		return nil, errors.New("Error parsing 'networkPriority' field " + _networkPriorityErr.Error())
+		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field")
 	}
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
@@ -226,7 +226,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if destinationSpecified {
 		_val, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
 		destinationNetworkAddress = &_val
 	}
@@ -236,7 +236,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if destinationSpecified {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'destinationLength' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field")
 		}
 		destinationLength = &_val
 	}
@@ -247,7 +247,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
 		}
 		destinationAddress[curItem] = _item
 	}
@@ -257,7 +257,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if sourceSpecified {
 		_val, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'sourceNetworkAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field")
 		}
 		sourceNetworkAddress = &_val
 	}
@@ -267,7 +267,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if sourceSpecified {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'sourceLength' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field")
 		}
 		sourceLength = &_val
 	}
@@ -278,7 +278,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
 		}
 		sourceAddress[curItem] = _item
 	}
@@ -288,7 +288,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if destinationSpecified {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'hopCount' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field")
 		}
 		hopCount = &_val
 	}
@@ -298,7 +298,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if messageTypeFieldPresent {
 		_val, _err := NLMParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16((*sourceLength))), uint16(uint16(0))))))+uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16((*destinationLength))), uint16(uint16(0))))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
 		if _err != nil {
-			return nil, errors.New("Error parsing 'nlm' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		}
 		nlm = _val
 	}
@@ -308,7 +308,7 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	if !(messageTypeFieldPresent) {
 		_val, _err := APDUParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16((*sourceLength))), uint16(uint16(0))))))+uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16((*destinationLength))), uint16(uint16(0))))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
 		if _err != nil {
-			return nil, errors.New("Error parsing 'apdu' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		}
 		apdu = _val
 	}
@@ -323,21 +323,21 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	protocolVersionNumber := uint8(m.ProtocolVersionNumber)
 	_protocolVersionNumberErr := io.WriteUint8(8, (protocolVersionNumber))
 	if _protocolVersionNumberErr != nil {
-		return errors.New("Error serializing 'protocolVersionNumber' field " + _protocolVersionNumberErr.Error())
+		return errors.Wrap(_protocolVersionNumberErr, "Error serializing 'protocolVersionNumber' field")
 	}
 
 	// Simple Field (messageTypeFieldPresent)
 	messageTypeFieldPresent := bool(m.MessageTypeFieldPresent)
 	_messageTypeFieldPresentErr := io.WriteBit((messageTypeFieldPresent))
 	if _messageTypeFieldPresentErr != nil {
-		return errors.New("Error serializing 'messageTypeFieldPresent' field " + _messageTypeFieldPresentErr.Error())
+		return errors.Wrap(_messageTypeFieldPresentErr, "Error serializing 'messageTypeFieldPresent' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteUint8(1, uint8(0))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -345,14 +345,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	destinationSpecified := bool(m.DestinationSpecified)
 	_destinationSpecifiedErr := io.WriteBit((destinationSpecified))
 	if _destinationSpecifiedErr != nil {
-		return errors.New("Error serializing 'destinationSpecified' field " + _destinationSpecifiedErr.Error())
+		return errors.Wrap(_destinationSpecifiedErr, "Error serializing 'destinationSpecified' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteUint8(1, uint8(0))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -360,21 +360,21 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	sourceSpecified := bool(m.SourceSpecified)
 	_sourceSpecifiedErr := io.WriteBit((sourceSpecified))
 	if _sourceSpecifiedErr != nil {
-		return errors.New("Error serializing 'sourceSpecified' field " + _sourceSpecifiedErr.Error())
+		return errors.Wrap(_sourceSpecifiedErr, "Error serializing 'sourceSpecified' field")
 	}
 
 	// Simple Field (expectingReply)
 	expectingReply := bool(m.ExpectingReply)
 	_expectingReplyErr := io.WriteBit((expectingReply))
 	if _expectingReplyErr != nil {
-		return errors.New("Error serializing 'expectingReply' field " + _expectingReplyErr.Error())
+		return errors.Wrap(_expectingReplyErr, "Error serializing 'expectingReply' field")
 	}
 
 	// Simple Field (networkPriority)
 	networkPriority := uint8(m.NetworkPriority)
 	_networkPriorityErr := io.WriteUint8(2, (networkPriority))
 	if _networkPriorityErr != nil {
-		return errors.New("Error serializing 'networkPriority' field " + _networkPriorityErr.Error())
+		return errors.Wrap(_networkPriorityErr, "Error serializing 'networkPriority' field")
 	}
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
@@ -383,7 +383,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		destinationNetworkAddress = m.DestinationNetworkAddress
 		_destinationNetworkAddressErr := io.WriteUint16(16, *(destinationNetworkAddress))
 		if _destinationNetworkAddressErr != nil {
-			return errors.New("Error serializing 'destinationNetworkAddress' field " + _destinationNetworkAddressErr.Error())
+			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
 	}
 
@@ -393,7 +393,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		destinationLength = m.DestinationLength
 		_destinationLengthErr := io.WriteUint8(8, *(destinationLength))
 		if _destinationLengthErr != nil {
-			return errors.New("Error serializing 'destinationLength' field " + _destinationLengthErr.Error())
+			return errors.Wrap(_destinationLengthErr, "Error serializing 'destinationLength' field")
 		}
 	}
 
@@ -402,7 +402,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.DestinationAddress {
 			_elementErr := io.WriteUint8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'destinationAddress' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 			}
 		}
 	}
@@ -413,7 +413,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		sourceNetworkAddress = m.SourceNetworkAddress
 		_sourceNetworkAddressErr := io.WriteUint16(16, *(sourceNetworkAddress))
 		if _sourceNetworkAddressErr != nil {
-			return errors.New("Error serializing 'sourceNetworkAddress' field " + _sourceNetworkAddressErr.Error())
+			return errors.Wrap(_sourceNetworkAddressErr, "Error serializing 'sourceNetworkAddress' field")
 		}
 	}
 
@@ -423,7 +423,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		sourceLength = m.SourceLength
 		_sourceLengthErr := io.WriteUint8(8, *(sourceLength))
 		if _sourceLengthErr != nil {
-			return errors.New("Error serializing 'sourceLength' field " + _sourceLengthErr.Error())
+			return errors.Wrap(_sourceLengthErr, "Error serializing 'sourceLength' field")
 		}
 	}
 
@@ -432,7 +432,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.SourceAddress {
 			_elementErr := io.WriteUint8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'sourceAddress' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 			}
 		}
 	}
@@ -443,7 +443,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		hopCount = m.HopCount
 		_hopCountErr := io.WriteUint8(8, *(hopCount))
 		if _hopCountErr != nil {
-			return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
+			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}
 	}
 
@@ -453,7 +453,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		nlm = m.Nlm
 		_nlmErr := nlm.Serialize(io)
 		if _nlmErr != nil {
-			return errors.New("Error serializing 'nlm' field " + _nlmErr.Error())
+			return errors.Wrap(_nlmErr, "Error serializing 'nlm' field")
 		}
 	}
 
@@ -463,7 +463,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		apdu = m.Apdu
 		_apduErr := apdu.Serialize(io)
 		if _apduErr != nil {
-			return errors.New("Error serializing 'apdu' field " + _apduErr.Error())
+			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}
 	}
 

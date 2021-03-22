@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -116,7 +116,7 @@ func ModbusPDUReadDiscreteInputsResponseParse(io *utils.ReadBuffer) (*ModbusPDU,
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (value)
@@ -125,7 +125,7 @@ func ModbusPDUReadDiscreteInputsResponseParse(io *utils.ReadBuffer) (*ModbusPDU,
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
@@ -146,7 +146,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) Serialize(io utils.WriteBuffer) er
 		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (value)
@@ -154,7 +154,7 @@ func (m *ModbusPDUReadDiscreteInputsResponse) Serialize(io utils.WriteBuffer) er
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
 		}

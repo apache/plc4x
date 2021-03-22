@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -99,37 +99,37 @@ func AmsNetIdParse(io *utils.ReadBuffer) (*AmsNetId, error) {
 	// Simple Field (octet1)
 	octet1, _octet1Err := io.ReadUint8(8)
 	if _octet1Err != nil {
-		return nil, errors.New("Error parsing 'octet1' field " + _octet1Err.Error())
+		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field")
 	}
 
 	// Simple Field (octet2)
 	octet2, _octet2Err := io.ReadUint8(8)
 	if _octet2Err != nil {
-		return nil, errors.New("Error parsing 'octet2' field " + _octet2Err.Error())
+		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field")
 	}
 
 	// Simple Field (octet3)
 	octet3, _octet3Err := io.ReadUint8(8)
 	if _octet3Err != nil {
-		return nil, errors.New("Error parsing 'octet3' field " + _octet3Err.Error())
+		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field")
 	}
 
 	// Simple Field (octet4)
 	octet4, _octet4Err := io.ReadUint8(8)
 	if _octet4Err != nil {
-		return nil, errors.New("Error parsing 'octet4' field " + _octet4Err.Error())
+		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field")
 	}
 
 	// Simple Field (octet5)
 	octet5, _octet5Err := io.ReadUint8(8)
 	if _octet5Err != nil {
-		return nil, errors.New("Error parsing 'octet5' field " + _octet5Err.Error())
+		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field")
 	}
 
 	// Simple Field (octet6)
 	octet6, _octet6Err := io.ReadUint8(8)
 	if _octet6Err != nil {
-		return nil, errors.New("Error parsing 'octet6' field " + _octet6Err.Error())
+		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field")
 	}
 
 	// Create the instance
@@ -142,42 +142,42 @@ func (m *AmsNetId) Serialize(io utils.WriteBuffer) error {
 	octet1 := uint8(m.Octet1)
 	_octet1Err := io.WriteUint8(8, (octet1))
 	if _octet1Err != nil {
-		return errors.New("Error serializing 'octet1' field " + _octet1Err.Error())
+		return errors.Wrap(_octet1Err, "Error serializing 'octet1' field")
 	}
 
 	// Simple Field (octet2)
 	octet2 := uint8(m.Octet2)
 	_octet2Err := io.WriteUint8(8, (octet2))
 	if _octet2Err != nil {
-		return errors.New("Error serializing 'octet2' field " + _octet2Err.Error())
+		return errors.Wrap(_octet2Err, "Error serializing 'octet2' field")
 	}
 
 	// Simple Field (octet3)
 	octet3 := uint8(m.Octet3)
 	_octet3Err := io.WriteUint8(8, (octet3))
 	if _octet3Err != nil {
-		return errors.New("Error serializing 'octet3' field " + _octet3Err.Error())
+		return errors.Wrap(_octet3Err, "Error serializing 'octet3' field")
 	}
 
 	// Simple Field (octet4)
 	octet4 := uint8(m.Octet4)
 	_octet4Err := io.WriteUint8(8, (octet4))
 	if _octet4Err != nil {
-		return errors.New("Error serializing 'octet4' field " + _octet4Err.Error())
+		return errors.Wrap(_octet4Err, "Error serializing 'octet4' field")
 	}
 
 	// Simple Field (octet5)
 	octet5 := uint8(m.Octet5)
 	_octet5Err := io.WriteUint8(8, (octet5))
 	if _octet5Err != nil {
-		return errors.New("Error serializing 'octet5' field " + _octet5Err.Error())
+		return errors.Wrap(_octet5Err, "Error serializing 'octet5' field")
 	}
 
 	// Simple Field (octet6)
 	octet6 := uint8(m.Octet6)
 	_octet6Err := io.WriteUint8(8, (octet6))
 	if _octet6Err != nil {
-		return errors.New("Error serializing 'octet6' field " + _octet6Err.Error())
+		return errors.Wrap(_octet6Err, "Error serializing 'octet6' field")
 	}
 
 	return nil

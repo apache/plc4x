@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -126,7 +126,7 @@ func APDUSegmentAckParse(io *utils.ReadBuffer) (*APDU, error) {
 	{
 		reserved, _err := io.ReadUint8(2)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -139,31 +139,31 @@ func APDUSegmentAckParse(io *utils.ReadBuffer) (*APDU, error) {
 	// Simple Field (negativeAck)
 	negativeAck, _negativeAckErr := io.ReadBit()
 	if _negativeAckErr != nil {
-		return nil, errors.New("Error parsing 'negativeAck' field " + _negativeAckErr.Error())
+		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field")
 	}
 
 	// Simple Field (server)
 	server, _serverErr := io.ReadBit()
 	if _serverErr != nil {
-		return nil, errors.New("Error parsing 'server' field " + _serverErr.Error())
+		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
 
 	// Simple Field (originalInvokeId)
 	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (sequenceNumber)
 	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
 	if _sequenceNumberErr != nil {
-		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
 
 	// Simple Field (proposedWindowSize)
 	proposedWindowSize, _proposedWindowSizeErr := io.ReadUint8(8)
 	if _proposedWindowSizeErr != nil {
-		return nil, errors.New("Error parsing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field")
 	}
 
 	// Create a partially initialized instance
@@ -186,7 +186,7 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(2, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -194,35 +194,35 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 		negativeAck := bool(m.NegativeAck)
 		_negativeAckErr := io.WriteBit((negativeAck))
 		if _negativeAckErr != nil {
-			return errors.New("Error serializing 'negativeAck' field " + _negativeAckErr.Error())
+			return errors.Wrap(_negativeAckErr, "Error serializing 'negativeAck' field")
 		}
 
 		// Simple Field (server)
 		server := bool(m.Server)
 		_serverErr := io.WriteBit((server))
 		if _serverErr != nil {
-			return errors.New("Error serializing 'server' field " + _serverErr.Error())
+			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
-			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
 		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
-			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (proposedWindowSize)
 		proposedWindowSize := uint8(m.ProposedWindowSize)
 		_proposedWindowSizeErr := io.WriteUint8(8, (proposedWindowSize))
 		if _proposedWindowSizeErr != nil {
-			return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+			return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 		}
 
 		return nil

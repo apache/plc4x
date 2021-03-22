@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -101,7 +101,7 @@ func DeviceConfigurationAckParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error)
 	// Simple Field (deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(io)
 	if _deviceConfigurationAckDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
 	}
 
 	// Create a partially initialized instance
@@ -119,7 +119,7 @@ func (m *DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (deviceConfigurationAckDataBlock)
 		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(io)
 		if _deviceConfigurationAckDataBlockErr != nil {
-			return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 
 		return nil

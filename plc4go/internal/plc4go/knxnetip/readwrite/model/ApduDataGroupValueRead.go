@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -101,7 +101,7 @@ func ApduDataGroupValueReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 	{
 		reserved, _err := io.ReadUint8(6)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -126,7 +126,7 @@ func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(6, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 

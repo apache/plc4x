@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -101,7 +101,7 @@ func COTPParameterCalledTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) 
 	// Simple Field (tsapId)
 	tsapId, _tsapIdErr := io.ReadUint16(16)
 	if _tsapIdErr != nil {
-		return nil, errors.New("Error parsing 'tsapId' field " + _tsapIdErr.Error())
+		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 		tsapId := uint16(m.TsapId)
 		_tsapIdErr := io.WriteUint16(16, (tsapId))
 		if _tsapIdErr != nil {
-			return errors.New("Error serializing 'tsapId' field " + _tsapIdErr.Error())
+			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
 		return nil

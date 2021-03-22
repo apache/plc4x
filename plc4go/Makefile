@@ -82,6 +82,9 @@ go-get:
 	@echo "  >  Checking if there is any missing dependencies..."
 	$(MVNBIN) verify
 
+go-generate:
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go generate ./...
+
 go-install: go-build
 	$(MVNBIN) install
 

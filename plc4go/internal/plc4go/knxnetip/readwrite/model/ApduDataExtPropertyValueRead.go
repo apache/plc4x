@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -116,25 +116,25 @@ func ApduDataExtPropertyValueReadParse(io *utils.ReadBuffer) (*ApduDataExt, erro
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8(8)
 	if _objectIndexErr != nil {
-		return nil, errors.New("Error parsing 'objectIndex' field " + _objectIndexErr.Error())
+		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
 	propertyId, _propertyIdErr := io.ReadUint8(8)
 	if _propertyIdErr != nil {
-		return nil, errors.New("Error parsing 'propertyId' field " + _propertyIdErr.Error())
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (count)
 	count, _countErr := io.ReadUint8(4)
 	if _countErr != nil {
-		return nil, errors.New("Error parsing 'count' field " + _countErr.Error())
+		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
 	}
 
 	// Simple Field (index)
 	index, _indexErr := io.ReadUint16(12)
 	if _indexErr != nil {
-		return nil, errors.New("Error parsing 'index' field " + _indexErr.Error())
+		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 
 	// Create a partially initialized instance
@@ -156,28 +156,28 @@ func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 		objectIndex := uint8(m.ObjectIndex)
 		_objectIndexErr := io.WriteUint8(8, (objectIndex))
 		if _objectIndexErr != nil {
-			return errors.New("Error serializing 'objectIndex' field " + _objectIndexErr.Error())
+			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
 		_propertyIdErr := io.WriteUint8(8, (propertyId))
 		if _propertyIdErr != nil {
-			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
+			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (count)
 		count := uint8(m.Count)
 		_countErr := io.WriteUint8(4, (count))
 		if _countErr != nil {
-			return errors.New("Error serializing 'count' field " + _countErr.Error())
+			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		// Simple Field (index)
 		index := uint16(m.Index)
 		_indexErr := io.WriteUint16(12, (index))
 		if _indexErr != nil {
-			return errors.New("Error serializing 'index' field " + _indexErr.Error())
+			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
 		return nil

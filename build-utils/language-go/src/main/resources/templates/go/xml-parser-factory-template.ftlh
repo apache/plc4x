@@ -64,7 +64,7 @@ package ${outputFlavor?replace("-","")}
 
 import (
 	"encoding/xml"
-	"errors"
+    "github.com/pkg/errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
 )
 
@@ -80,11 +80,11 @@ func (m ${protocolName?cap_first}XmlParserHelper) Parse(typeName string, xmlStri
 		var obj *model.${helper.getLanguageTypeNameForTypeReference(typeDefinition.typeReference)}
 		err := xml.Unmarshal([]byte(xmlString), &obj)
 		if err != nil {
-			return nil, errors.New("error unmarshalling xml: " + err.Error())
+			return nil, errors.Wrap(err ,"error unmarshalling xml")
 		}
 		return obj, nil
 </#list>
 	}
-	return nil, errors.New("Unsupported type " + typeName)
+	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 </#outputformat>

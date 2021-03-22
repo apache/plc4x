@@ -20,13 +20,13 @@ package modbus
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/url"
 	"strconv"
 )
@@ -59,11 +59,13 @@ func (m Driver) CheckQuery(query string) error {
 }
 
 func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
+		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't find transport for given transport url "+transportUrl.String()))
+		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -71,6 +73,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	// Have the transport create a new transport-instance.
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
+		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
@@ -84,13 +87,14 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 			adu := msg.(model.ModbusTcpADU)
 			serialized, err := json.Marshal(adu)
 			if err != nil {
-				fmt.Printf("got error serializing adu: %s\n", err.Error())
+				log.Error().Err(err).Msg("got error serializing adu")
 			} else {
-				fmt.Printf("got message in the default handler %s\n", serialized)
+				log.Debug().Msgf("got message in the default handler %s\n", serialized)
 			}
 		}
 	}()
 	codec := NewMessageCodec(transportInstance, nil)
+	log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
@@ -101,9 +105,11 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 			unitIdentifier = uint8(intValue)
 		}
 	}
+	log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
 	connection := NewConnection(unitIdentifier, codec, options, m.fieldHandler)
+	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 

@@ -358,7 +358,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 					</#if>
 		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
-			return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")
 		}
 		${arrayField.name}[curItem] = _item
 	}
@@ -372,7 +372,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	for ;io.GetPos() < _${arrayField.name}EndPos; {
 		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
-			return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")
 		}
 		${arrayField.name} = append(${arrayField.name}, _item)
 					<#-- After parsing, update the current position, but only if it's needed -->
@@ -387,7 +387,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); {
 		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
-			return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")
 		}
 		${arrayField.name} = append(${arrayField.name}, _item)
 
@@ -409,11 +409,11 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 		checksumRawData := io.getBytes(startPos, io.GetPos())
 		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 		if _checksumRefErr != nil {
-			return nil, errors.New("Error parsing 'checksum' field " + _checksumRefErr.Error())
+			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")
 		}
 		checksum, _checksumErr = ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
 		if _checksumErr != nil {
-			return nil, errors.New("Error parsing 'checksum' field " + _checksumErr.Error())
+			return nil, errors.Wrap(_checksumErr, "Error parsing 'checksum' field")
 		}
 		if checksum != checksumRef {
 			return nil, errors.New("Checksum verification failed. Expected " + (checksumRef & 0xFFFF) + " but got " + (checksum & 0xFFFF)")
@@ -427,7 +427,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Const Field (${constField.name})
 	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 	if _${constField.name}Err != nil {
-		return nil, errors.New("Error parsing '${constField.name}' field " + _${constField.name}Err.Error())
+		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field")
 	}
 	if ${constField.name} != ${type.name}_${constField.name?upper_case} {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(${type.name}_${constField.name?upper_case})) + " but got " + strconv.Itoa(int(${constField.name})))
@@ -440,7 +440,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 	if _${discriminatorField.name}Err != nil {
-		return nil, errors.New("Error parsing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
+		return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")
 	}
 				<#break>
 			<#case "enum">
@@ -449,7 +449,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Enum field (${enumField.name})
 	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
 	if _${enumField.name}Err != nil {
-		return nil, errors.New("Error parsing '${enumField.name}' field " + _${enumField.name}Err.Error())
+		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")
 	}
 				<#break>
 			<#case "implicit">
@@ -459,7 +459,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	${helper.getVariableName(field)}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 	if _${implicitField.name}Err != nil {
-		return nil, errors.New("Error parsing '${implicitField.name}' field " + _${implicitField.name}Err.Error())
+		return nil, errors.Wrap(_${implicitField.name}Err, "Error parsing '${implicitField.name}' field")
 	}
 				<#break>
 			<#case "manualArray">
@@ -527,7 +527,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Manual Field (${manualField.name})
 	${manualField.name}, _${manualField.name}Err = ${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)}
 	if _${implicitField.name}Err != nil {
-		return nil, errors.New("Error parsing '${manualField.name}' field " + _${manualField.name}Err.Error())
+		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")
 	}
 			<#break>
 			<#case "optional">
@@ -542,19 +542,19 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			<#if helper.isSimpleTypeReference(optionalField.type)>
 		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.type)}
 		if _err != nil {
-			return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")
 		}
 		${optionalField.name} = &_val
 			<#elseif helper.isEnumField(field)>
 		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")
 		}
 		${optionalField.name} = &_val
 			<#else>
 		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
 		if _err != nil {
-			return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")
 		}
 		${optionalField.name} = _val
 			</#if>
@@ -571,7 +571,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			// Just read the padding data and ignore it
 			_, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 			if _err != nil {
-				return nil, errors.New("Error parsing 'padding' field " + _err.Error())
+				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
 			}
 		}
 	}
@@ -584,7 +584,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	{
 		reserved, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if ${helper.toTypeSafeCompare(reservedField)} {
 			log.Info().Fields(map[string]interface{}{
@@ -601,9 +601,9 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 	if _${simpleField.name}Err != nil {
 			<#if helper.isEnumField(field)>
-		return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")
 			<#else>
-		return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")
 			</#if>
 	}
 				<#break>
@@ -621,7 +621,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				</#list>
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 				<#break>
 
@@ -631,7 +631,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	// Virtual field (Just declare a local variable so we can access it in the parser)
 	${virtualField.name}, _${virtualField.name}Err := ${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)}
 	if _${virtualField.name}Err != nil {
-		return nil, errors.New("Error parsing '${virtualField.name}' field " + _${virtualField.name}Err.Error())
+		return nil, errors.Wrap(_${virtualField.name}Err, "Error parsing '${virtualField.name}' field")
 	}
 				<#break>
 		</#switch>
@@ -706,7 +706,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			_elementErr := _element.Serialize(io<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#if>
 			if _elementErr != nil {
-				return errors.New("Error serializing '${arrayField.name}' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")
 			}
 				<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
 			curItem++
@@ -726,7 +726,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
 		_checksumErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")}
 		if _elementErr != nil {
-			return errors.New("Error serializing 'checksum' field " + _elementErr.Error())
+			return errors.Wrap(_elementErr, "Error serializing 'checksum' field")
 		}
 	}
 				<#break>
@@ -737,7 +737,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	// Const Field (${constField.name})
 	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)}
 	if _${constField.name}Err != nil {
-		return errors.New("Error serializing '${constField.name}' field " + _${constField.name}Err.Error())
+		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")
 	}
 				<#break>
 			<#case "discriminator">
@@ -748,7 +748,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
 	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")}
 	if _${discriminatorField.name}Err != nil {
-		return errors.New("Error serializing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
+		return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")
 	}
 				<#break>
 			<#case "enum">
@@ -758,7 +758,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
 	_${enumField.name}Err := ${enumField.name}.Serialize(io)
 	if _${enumField.name}Err != nil {
-		return errors.New("Error serializing '${enumField.name}' field " + _${enumField.name}Err.Error())
+		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")
 	}
 				<#break>
 			<#case "implicit">
@@ -769,7 +769,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
 	_${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")}
 	if _${implicitField.name}Err != nil {
-		return errors.New("Error serializing '${implicitField.name}' field " + _${implicitField.name}Err.Error())
+		return errors.Wrap(_${implicitField.name}Err, "Error serializing '${implicitField.name}' field")
 	}
 				<#break>
 			<#case "manualArray">
@@ -804,7 +804,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		_${optionalField.name}Err := ${optionalField.name}.Serialize(io)
 				</#if>
 		if _${optionalField.name}Err != nil {
-			return errors.New("Error serializing '${optionalField.name}' field " + _${optionalField.name}Err.Error())
+			return errors.Wrap(_${optionalField.name}Err, "Error serializing '${optionalField.name}' field")
 		}
 	}
 				<#break>
@@ -819,7 +819,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
 			_paddingErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")}
 			if _paddingErr != nil {
-				return errors.New("Error serializing 'padding' field " + _paddingErr.Error())
+				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}
 		}
 	}
@@ -832,7 +832,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	{
 		_err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))}
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 				<#break>
@@ -849,7 +849,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(io)
 				</#if>
 	if _${simpleField.name}Err != nil {
-		return errors.New("Error serializing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+		return errors.Wrap(_${simpleField.name}Err, "Error serializing '${simpleField.name}' field")
 	}
 				<#break>
 			<#case "switch">
@@ -858,7 +858,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 				<#break>
 			<#case "virtual">
@@ -1030,7 +1030,7 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 			<#elseif helper.isSwitchField(field)>
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

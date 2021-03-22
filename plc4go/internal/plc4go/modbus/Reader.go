@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"math"
 	"sync/atomic"
 	"time"
@@ -46,17 +47,19 @@ func NewReader(unitIdentifier uint8, messageCodec spi.MessageCodec) *Reader {
 }
 
 func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		// If we are requesting only one field, use a
 		if len(readRequest.GetFieldNames()) != 1 {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.New("modbus only supports single-item requests"),
 			}
+			log.Debug().Msgf("modbus only supports single-item requests. Got %d fields", len(readRequest.GetFieldNames()))
 			return
 		}
+		// If we are requesting only one field, use a
 		fieldName := readRequest.GetFieldNames()[0]
 		field := readRequest.GetField(fieldName)
 		modbusField, err := CastToModbusFieldFromPlcField(field)
@@ -66,9 +69,11 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
 			}
+			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
 		numWords := uint16(math.Ceil(float64(modbusField.Quantity*uint16(modbusField.Datatype.DataTypeSize())) / float64(2)))
+		log.Debug().Msgf("Working with %d words", numWords)
 		var pdu *readWriteModel.ModbusPDU = nil
 		switch modbusField.FieldType {
 		case Coil:
@@ -90,8 +95,9 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.New("unsupported field type"),
+				Err:      errors.Errorf("unsupported field type %x", modbusField.FieldType),
 			}
+			log.Debug().Msgf("Unsupported field type %x", modbusField.FieldType)
 			return
 		}
 
@@ -101,8 +107,10 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			transactionIdentifier = 1
 			atomic.StoreInt32(&m.transactionIdentifier, 1)
 		}
+		log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
 
 		// Assemble the finished ADU
+		log.Trace().Msg("Assemble ADU")
 		requestAdu := readWriteModel.ModbusTcpADU{
 			TransactionIdentifier: uint16(transactionIdentifier),
 			UnitIdentifier:        m.unitIdentifier,
@@ -110,6 +118,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		}
 
 		// Send the ADU over the wire
+		log.Trace().Msg("Send ADU")
 		if err = m.messageCodec.SendRequest(
 			requestAdu,
 			func(message interface{}) bool {
@@ -119,8 +128,10 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			},
 			func(message interface{}) error {
 				// Convert the response into an ADU
+				log.Trace().Msg("convert response to ADU")
 				responseAdu := readWriteModel.CastModbusTcpADU(message)
 				// Convert the modbus response into a PLC4X response
+				log.Trace().Msg("convert response to PLC4X response")
 				readResponse, err := m.ToPlc4xReadResponse(*responseAdu, readRequest)
 
 				if err != nil {
@@ -174,12 +185,13 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 		pdu := readWriteModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ArrayToUint8Array(pdu.Value)
 	case *readWriteModel.ModbusPDUError:
-		return nil, errors.New("got an error from remote")
+		return nil, errors.Errorf("got an error from remote. Errorcode %x", responseAdu.Pdu.Child.(*readWriteModel.ModbusPDUError).ExceptionCode)
 	default:
-		return nil, errors.New("unsupported response type")
+		return nil, errors.Errorf("unsupported response type %T", responseAdu.Pdu.Child)
 	}
 
 	// Get the field from the request
+	log.Trace().Msg("get a field from request")
 	fieldName := readRequest.GetFieldNames()[0]
 	field, err := CastToModbusFieldFromPlcField(readRequest.GetField(fieldName))
 	if err != nil {
@@ -187,6 +199,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	}
 
 	// Decode the data according to the information from the request
+	log.Trace().Msg("decode data")
 	rb := utils.NewReadBuffer(data)
 	value, err := readWriteModel.DataItemParse(rb, field.Datatype, field.Quantity)
 	if err != nil {
@@ -198,5 +211,6 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	responseCodes[fieldName] = model.PlcResponseCode_OK
 
 	// Return the response
+	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 }

@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	errors2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/errors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
@@ -165,7 +165,7 @@ func work(m *MessageCodec) {
 				// Remove this expectation from the list.
 				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 				// Call the error handler.
-				err := expectation.handleError(errors2.NewTimeoutError(now.Sub(expectation.expiration)))
+				err := expectation.handleError(plcerrors.NewTimeoutError(now.Sub(expectation.expiration)))
 				if err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}

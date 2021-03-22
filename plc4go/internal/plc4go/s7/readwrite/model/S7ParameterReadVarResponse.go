@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -105,7 +105,7 @@ func S7ParameterReadVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error)
 	// Simple Field (numItems)
 	numItems, _numItemsErr := io.ReadUint8(8)
 	if _numItemsErr != nil {
-		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
 	// Create a partially initialized instance
@@ -124,7 +124,7 @@ func (m *S7ParameterReadVarResponse) Serialize(io utils.WriteBuffer) error {
 		numItems := uint8(m.NumItems)
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
-			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
 		return nil

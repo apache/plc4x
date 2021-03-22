@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -109,7 +109,7 @@ func ModbusPDUReadFifoQueueRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error
 	// Simple Field (fifoPointerAddress)
 	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
 	if _fifoPointerAddressErr != nil {
-		return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
 
 	// Create a partially initialized instance
@@ -128,7 +128,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
 		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
 		if _fifoPointerAddressErr != nil {
-			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}
 
 		return nil

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -83,13 +83,13 @@ func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallat
 	// Simple Field (projectNumber)
 	projectNumber, _projectNumberErr := io.ReadUint8(8)
 	if _projectNumberErr != nil {
-		return nil, errors.New("Error parsing 'projectNumber' field " + _projectNumberErr.Error())
+		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber, _installationNumberErr := io.ReadUint8(8)
 	if _installationNumberErr != nil {
-		return nil, errors.New("Error parsing 'installationNumber' field " + _installationNumberErr.Error())
+		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
 	}
 
 	// Create the instance
@@ -102,14 +102,14 @@ func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 	projectNumber := uint8(m.ProjectNumber)
 	_projectNumberErr := io.WriteUint8(8, (projectNumber))
 	if _projectNumberErr != nil {
-		return errors.New("Error serializing 'projectNumber' field " + _projectNumberErr.Error())
+		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.InstallationNumber)
 	_installationNumberErr := io.WriteUint8(8, (installationNumber))
 	if _installationNumberErr != nil {
-		return errors.New("Error serializing 'installationNumber' field " + _installationNumberErr.Error())
+		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}
 
 	return nil

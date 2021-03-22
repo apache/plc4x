@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 	"strings"
@@ -128,7 +128,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
-		return nil, errors.New("Error parsing 'sourceAddress' field " + _sourceAddressErr.Error())
+		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
 
 	// Array field (targetAddress)
@@ -137,7 +137,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'targetAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'targetAddress' field")
 		}
 		targetAddress[curItem] = _item
 	}
@@ -146,7 +146,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -159,7 +159,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	// Simple Field (numberExpectedPollData)
 	numberExpectedPollData, _numberExpectedPollDataErr := io.ReadUint8(6)
 	if _numberExpectedPollDataErr != nil {
-		return nil, errors.New("Error parsing 'numberExpectedPollData' field " + _numberExpectedPollDataErr.Error())
+		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field")
 	}
 
 	// Create a partially initialized instance
@@ -179,7 +179,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (sourceAddress)
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
 		if _sourceAddressErr != nil {
-			return errors.New("Error serializing 'sourceAddress' field " + _sourceAddressErr.Error())
+			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
 		// Array Field (targetAddress)
@@ -187,7 +187,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.TargetAddress {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'targetAddress' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
 			}
 		}
@@ -196,7 +196,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -204,7 +204,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		numberExpectedPollData := uint8(m.NumberExpectedPollData)
 		_numberExpectedPollDataErr := io.WriteUint8(6, (numberExpectedPollData))
 		if _numberExpectedPollDataErr != nil {
-			return errors.New("Error serializing 'numberExpectedPollData' field " + _numberExpectedPollDataErr.Error())
+			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}
 
 		return nil

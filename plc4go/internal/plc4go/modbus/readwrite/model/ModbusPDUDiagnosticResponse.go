@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -114,13 +114,13 @@ func ModbusPDUDiagnosticResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) 
 	// Simple Field (subFunction)
 	subFunction, _subFunctionErr := io.ReadUint16(16)
 	if _subFunctionErr != nil {
-		return nil, errors.New("Error parsing 'subFunction' field " + _subFunctionErr.Error())
+		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
 
 	// Simple Field (data)
 	data, _dataErr := io.ReadUint16(16)
 	if _dataErr != nil {
-		return nil, errors.New("Error parsing 'data' field " + _dataErr.Error())
+		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
 
 	// Create a partially initialized instance
@@ -140,14 +140,14 @@ func (m *ModbusPDUDiagnosticResponse) Serialize(io utils.WriteBuffer) error {
 		subFunction := uint16(m.SubFunction)
 		_subFunctionErr := io.WriteUint16(16, (subFunction))
 		if _subFunctionErr != nil {
-			return errors.New("Error serializing 'subFunction' field " + _subFunctionErr.Error())
+			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.Data)
 		_dataErr := io.WriteUint16(16, (data))
 		if _dataErr != nil {
-			return errors.New("Error serializing 'data' field " + _dataErr.Error())
+			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
 		return nil

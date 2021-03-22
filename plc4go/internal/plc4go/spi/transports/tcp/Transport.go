@@ -20,9 +20,9 @@ package tcp
 
 import (
 	"bufio"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"regexp"
@@ -59,14 +59,14 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 		if val, ok := match["port"]; ok && len(val) > 0 {
 			portVal, err := strconv.Atoi(val)
 			if err != nil {
-				return nil, errors.New("error setting port: " + err.Error())
+				return nil, errors.Wrap(err, "error setting port")
 			} else {
 				port = portVal
 			}
 		} else if val, ok := options["defaultTcpPort"]; ok && len(val) > 0 {
 			portVal, err := strconv.Atoi(val[0])
 			if err != nil {
-				return nil, errors.New("error setting default tcp port: " + err.Error())
+				return nil, errors.Wrap(err, "error setting default tcp port")
 			} else {
 				port = portVal
 			}
@@ -78,7 +78,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	if val, ok := options["connect-timeout"]; ok {
 		ival, err := strconv.Atoi(val[0])
 		if err != nil {
-			return nil, errors.New("error setting connect-timeout: " + err.Error())
+			return nil, errors.Wrap(err, "error setting connect-timeout")
 		} else {
 			connectTimeout = uint32(ival)
 		}
@@ -87,7 +87,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	// Potentially resolve the ip address, if a hostname was provided
 	tcpAddr, err := net.ResolveTCPAddr("tcp", address+":"+strconv.Itoa(port))
 	if err != nil {
-		return nil, errors.New("error resolving typ address: " + err.Error())
+		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
 	transportInstance := NewTcpTransportInstance(tcpAddr, connectTimeout, &m)
@@ -122,7 +122,7 @@ func (m *TransportInstance) Connect() error {
 	var err error
 	m.tcpConn, err = net.Dial("tcp", m.RemoteAddress.String())
 	if err != nil {
-		return errors.New("error connecting to remote address: " + err.Error())
+		return errors.Wrap(err, "error connecting to remote address")
 	}
 
 	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
@@ -133,11 +133,12 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
-	if m.tcpConn != nil {
-		err := m.tcpConn.Close()
-		if err != nil {
-			return errors.New("error closing connection: " + err.Error())
-		}
+	if m.tcpConn == nil {
+		return nil
+	}
+	err := m.tcpConn.Close()
+	if err != nil {
+		return errors.Wrap(err, "error closing connection")
 	}
 	return nil
 }
@@ -163,7 +164,7 @@ func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 		for i := uint32(0); i < numBytes; i++ {
 			val, err := m.reader.ReadByte()
 			if err != nil {
-				return nil, errors.New("error reading: " + err.Error())
+				return nil, errors.Wrap(err, "error reading")
 			}
 			data[i] = val
 		}
@@ -176,7 +177,7 @@ func (m *TransportInstance) Write(data []uint8) error {
 	if m.tcpConn != nil {
 		num, err := m.tcpConn.Write(data)
 		if err != nil {
-			return errors.New("error writing: " + err.Error())
+			return errors.Wrap(err, "error writing")
 		}
 		if num != len(data) {
 			return errors.New("error writing: not all bytes written")

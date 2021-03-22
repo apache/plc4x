@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strconv"
 )
@@ -97,13 +97,13 @@ func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, erro
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)
 	if _transactionIdentifierErr != nil {
-		return nil, errors.New("Error parsing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
+		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
 	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16(16)
 	if _protocolIdentifierErr != nil {
-		return nil, errors.New("Error parsing 'protocolIdentifier' field " + _protocolIdentifierErr.Error())
+		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field")
 	}
 	if protocolIdentifier != ModbusTcpADU_PROTOCOLIDENTIFIER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusTcpADU_PROTOCOLIDENTIFIER)) + " but got " + strconv.Itoa(int(protocolIdentifier)))
@@ -112,19 +112,19 @@ func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, erro
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _lengthErr := io.ReadUint16(16)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier, _unitIdentifierErr := io.ReadUint8(8)
 	if _unitIdentifierErr != nil {
-		return nil, errors.New("Error parsing 'unitIdentifier' field " + _unitIdentifierErr.Error())
+		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
 
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
-		return nil, errors.New("Error parsing 'pdu' field " + _pduErr.Error())
+		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
 
 	// Create the instance
@@ -137,33 +137,33 @@ func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 	transactionIdentifier := uint16(m.TransactionIdentifier)
 	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
 	if _transactionIdentifierErr != nil {
-		return errors.New("Error serializing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
+		return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
 	_protocolIdentifierErr := io.WriteUint16(16, 0x0000)
 	if _protocolIdentifierErr != nil {
-		return errors.New("Error serializing 'protocolIdentifier' field " + _protocolIdentifierErr.Error())
+		return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
 	_lengthErr := io.WriteUint16(16, (length))
 	if _lengthErr != nil {
-		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier := uint8(m.UnitIdentifier)
 	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
 	if _unitIdentifierErr != nil {
-		return errors.New("Error serializing 'unitIdentifier' field " + _unitIdentifierErr.Error())
+		return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
 	}
 
 	// Simple Field (pdu)
 	_pduErr := m.Pdu.Serialize(io)
 	if _pduErr != nil {
-		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())
+		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
 	return nil
