@@ -120,7 +120,7 @@
                                                <img src="images/integrations/apache_iotdb_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
-                                               <h5 class="card-title"><b>Apache IoTDB (incubating)</b></h5>
+                                               <h5 class="card-title"><b>Apache IoTDB</b></h5>
                                            </div>
                                        </div>
                                    </div>
