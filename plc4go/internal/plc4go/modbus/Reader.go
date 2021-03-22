@@ -19,13 +19,13 @@
 package modbus
 
 import (
-	"errors"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 	"math"
 	"sync/atomic"
 	"time"
@@ -64,7 +64,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.New("invalid field item type"),
+				Err:      errors.Wrap(err, "invalid field item type"),
 			}
 			return
 		}
@@ -126,7 +126,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				if err != nil {
 					result <- model.PlcReadRequestResult{
 						Request: readRequest,
-						Err:     errors.New("Error decoding response: " + err.Error()),
+						Err:     errors.Wrap(err, "Error decoding response"),
 					}
 					// TODO: should we return the error here?
 					return nil
@@ -140,7 +140,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			func(err error) error {
 				result <- model.PlcReadRequestResult{
 					Request: readRequest,
-					Err:     errors.New("got timeout while waiting for response"),
+					Err:     errors.Wrap(err, "got timeout while waiting for response"),
 				}
 				return nil
 			},
@@ -148,7 +148,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.New("error sending message: " + err.Error()),
+				Err:      errors.Wrap(err, "error sending message"),
 			}
 		}
 	}()
@@ -183,14 +183,14 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	fieldName := readRequest.GetFieldNames()[0]
 	field, err := CastToModbusFieldFromPlcField(readRequest.GetField(fieldName))
 	if err != nil {
-		return nil, errors.New("error casting to modbus-field")
+		return nil, errors.Wrap(err, "error casting to modbus-field")
 	}
 
 	// Decode the data according to the information from the request
 	rb := utils.NewReadBuffer(data)
 	value, err := readWriteModel.DataItemParse(rb, field.Datatype, field.Quantity)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Error parsing data item")
 	}
 	responseCodes := map[string]model.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
