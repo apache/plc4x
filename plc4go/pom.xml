@@ -216,6 +216,30 @@
             </goals>
           </execution>
           <execution>
+            <id>get-stringer</id>
+            <goals>
+              <goal>get</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>golang.org/x/tools/cmd/stringer</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-generate</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <!-- We want to format every package here so we don't get dirty commits -->
+                <package>./...</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
             <id>default-fmt</id>
             <phase>process-sources</phase>
             <goals>
@@ -324,6 +348,37 @@
             <goals>
               <goal>vet</goal>
             </goals>
+          </execution>
+
+          <!-- Get licenser generator -->
+          <execution>
+            <id>get-licenser</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>get</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>github.com/elastic/go-licenser</package>
+              </packages>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>add-license</id>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
+                <package>internal/plc4go/modbus/fieldtype_string.go</package>
+              </packages>
+            </configuration>
           </execution>
         </executions>
         <configuration>

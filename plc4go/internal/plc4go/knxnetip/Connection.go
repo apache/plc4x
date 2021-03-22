@@ -25,9 +25,9 @@ import (
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	errors2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
@@ -920,7 +920,7 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing search request: %s", err))
@@ -967,7 +967,7 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1015,7 +1015,7 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1062,7 +1062,7 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1134,7 +1134,7 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []int8) (*driverMo
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1212,7 +1212,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1291,7 +1291,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1401,7 +1401,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1493,7 +1493,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1593,7 +1593,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1693,7 +1693,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1789,7 +1789,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
@@ -1862,7 +1862,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(errors2.TimeoutError); isTimeout {
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			callback(errors.New(fmt.Sprintf("got error processing request: %s", err)))

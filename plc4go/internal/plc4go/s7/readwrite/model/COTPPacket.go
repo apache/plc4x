@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -116,13 +116,13 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := io.ReadUint8(8)
 	if _headerLengthErr != nil {
-		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode, _tpduCodeErr := io.ReadUint8(8)
 	if _tpduCodeErr != nil {
-		return nil, errors.New("Error parsing 'tpduCode' field " + _tpduCodeErr.Error())
+		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -143,7 +143,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Array field (parameters)
@@ -155,7 +155,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	for io.GetPos() < _parametersEndPos {
 		_item, _err := COTPParameterParse(io, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 		if _err != nil {
-			return nil, errors.New("Error parsing 'parameters' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
 		}
 		parameters = append(parameters, _item)
 		curPos = io.GetPos() - startPos
@@ -167,7 +167,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	if bool((curPos) < (cotpLen)) {
 		_val, _err := S7MessageParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'payload' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		}
 		payload = _val
 	}
@@ -187,20 +187,20 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), uint16(m.Payload.LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
 	_headerLengthErr := io.WriteUint8(8, (headerLength))
 	if _headerLengthErr != nil {
-		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
+		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(child.TpduCode())
 	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
 	if _tpduCodeErr != nil {
-		return errors.New("Error serializing 'tpduCode' field " + _tpduCodeErr.Error())
+		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	// Array Field (parameters)
@@ -208,7 +208,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'parameters' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
 		}
 	}
@@ -219,7 +219,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		payload = m.Payload
 		_payloadErr := payload.Serialize(io)
 		if _payloadErr != nil {
-			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 	}
 
@@ -345,7 +345,7 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

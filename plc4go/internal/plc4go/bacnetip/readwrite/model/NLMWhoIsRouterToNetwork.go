@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -109,7 +109,7 @@ func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messa
 	for io.GetPos() < _destinationNetworkAddressEndPos {
 		_item, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
@@ -131,7 +131,7 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := io.WriteUint16(16, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'destinationNetworkAddress' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 				}
 			}
 		}

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -97,7 +97,7 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
 	if _additionalInformationTypeErr != nil {
-		return nil, errors.New("Error parsing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
+		return nil, errors.Wrap(_additionalInformationTypeErr, "Error parsing 'additionalInformationType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -110,7 +110,7 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -128,13 +128,13 @@ func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child 
 	additionalInformationType := uint8(child.AdditionalInformationType())
 	_additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
 	if _additionalInformationTypeErr != nil {
-		return errors.New("Error serializing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
+		return errors.Wrap(_additionalInformationTypeErr, "Error serializing 'additionalInformationType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -197,7 +197,7 @@ func (m *CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartEl
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

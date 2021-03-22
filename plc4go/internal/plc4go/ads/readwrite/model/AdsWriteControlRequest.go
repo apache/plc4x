@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -122,19 +122,19 @@ func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (adsState)
 	adsState, _adsStateErr := io.ReadUint16(16)
 	if _adsStateErr != nil {
-		return nil, errors.New("Error parsing 'adsState' field " + _adsStateErr.Error())
+		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
 	deviceState, _deviceStateErr := io.ReadUint16(16)
 	if _deviceStateErr != nil {
-		return nil, errors.New("Error parsing 'deviceState' field " + _deviceStateErr.Error())
+		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := io.ReadUint32(32)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Array field (data)
@@ -143,7 +143,7 @@ func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -166,21 +166,21 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 		adsState := uint16(m.AdsState)
 		_adsStateErr := io.WriteUint16(16, (adsState))
 		if _adsStateErr != nil {
-			return errors.New("Error serializing 'adsState' field " + _adsStateErr.Error())
+			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
 		_deviceStateErr := io.WriteUint16(16, (deviceState))
 		if _deviceStateErr != nil {
-			return errors.New("Error serializing 'deviceState' field " + _deviceStateErr.Error())
+			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.Data)))
 		_lengthErr := io.WriteUint32(32, (length))
 		if _lengthErr != nil {
-			return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Array Field (data)
@@ -188,7 +188,7 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

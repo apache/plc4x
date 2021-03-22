@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -109,7 +109,7 @@ func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
-		return nil, errors.New("Error parsing 'exceptionCode' field " + _exceptionCodeErr.Error())
+		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
 
 	// Create a partially initialized instance
@@ -128,7 +128,7 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
 		_exceptionCodeErr := exceptionCode.Serialize(io)
 		if _exceptionCodeErr != nil {
-			return errors.New("Error serializing 'exceptionCode' field " + _exceptionCodeErr.Error())
+			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
 		return nil

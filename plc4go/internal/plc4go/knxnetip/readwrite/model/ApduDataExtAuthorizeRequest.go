@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -108,7 +108,7 @@ func ApduDataExtAuthorizeRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error
 	// Simple Field (level)
 	level, _levelErr := io.ReadUint8(8)
 	if _levelErr != nil {
-		return nil, errors.New("Error parsing 'level' field " + _levelErr.Error())
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
 
 	// Array field (data)
@@ -117,7 +117,7 @@ func ApduDataExtAuthorizeRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -139,7 +139,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 		level := uint8(m.Level)
 		_levelErr := io.WriteUint8(8, (level))
 		if _levelErr != nil {
-			return errors.New("Error serializing 'level' field " + _levelErr.Error())
+			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
 		// Array Field (data)
@@ -147,7 +147,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

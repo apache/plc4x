@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -79,7 +79,7 @@ func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem,
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
-		return nil, errors.New("Error parsing 'returnCode' field " + _returnCodeErr.Error())
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
 
 	// Create the instance
@@ -92,7 +92,7 @@ func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
-		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
 	return nil

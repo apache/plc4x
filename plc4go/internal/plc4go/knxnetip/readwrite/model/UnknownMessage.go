@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -108,7 +108,7 @@ func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMes
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
 		}
 		unknownData[curItem] = _item
 	}
@@ -130,7 +130,7 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
 		}

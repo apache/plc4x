@@ -20,10 +20,11 @@ package modbus
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"strconv"
 )
 
@@ -50,29 +51,18 @@ func NewField(fieldType FieldType, address uint16, quantity uint16, datatype mod
 func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
 	address, err := strconv.Atoi(addressString)
 	if err != nil {
-		return nil, errors.New("Couldn't parse address string '" + addressString + "' into an int")
+		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
 	quantity, err := strconv.Atoi(quantityString)
 	if err != nil {
+		log.Warn().Err(err).Msgf("Error during atoi for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
 	return NewField(fieldType, uint16(address), uint16(quantity), datatype), nil
 }
 
 func (m PlcField) GetAddressString() string {
-	switch m.FieldType {
-	case Coil:
-		return fmt.Sprintf("0x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case DiscreteInput:
-		return fmt.Sprintf("1x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case InputRegister:
-		return fmt.Sprintf("3x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case HoldingRegister:
-		return fmt.Sprintf("4x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	case ExtendedRegister:
-		return fmt.Sprintf("6x%05d:%s[%d]", m.Address, m.Datatype.String(), m.Quantity)
-	}
-	return ""
+	return fmt.Sprintf("%dx%05d:%s[%d]", m.FieldType, m.Address, m.Datatype.String(), m.Quantity)
 }
 
 func (m PlcField) GetTypeName() string {
@@ -95,6 +85,7 @@ func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
 }
 
 func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	log.Trace().Msg("MarshalXML")
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
 		return err
 	}

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -90,26 +90,26 @@ func TunnelingRequestDataBlockParse(io *utils.ReadBuffer) (*TunnelingRequestData
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _structureLengthErr := io.ReadUint8(8)
 	if _structureLengthErr != nil {
-		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter, _sequenceCounterErr := io.ReadUint8(8)
 	if _sequenceCounterErr != nil {
-		return nil, errors.New("Error parsing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -129,28 +129,28 @@ func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 	structureLength := uint8(uint8(m.LengthInBytes()))
 	_structureLengthErr := io.WriteUint8(8, (structureLength))
 	if _structureLengthErr != nil {
-		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.CommunicationChannelId)
 	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 	if _communicationChannelIdErr != nil {
-		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.SequenceCounter)
 	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
 	if _sequenceCounterErr != nil {
-		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteUint8(8, uint8(0x00))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 

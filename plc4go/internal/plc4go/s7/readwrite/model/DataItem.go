@@ -19,10 +19,10 @@
 package model
 
 import (
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -34,13 +34,13 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := io.ReadUint8(7); _err != nil {
-			return nil, errors.New("Error parsing reserved field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (value)
 		value, _valueErr := io.ReadBit()
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcBOOL(value), nil
 	case dataProtocolId == "IEC61131_BYTE": // List
@@ -50,7 +50,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		for i := 0; i < int((8)); i++ {
 			_item, _itemErr := io.ReadBit()
 			if _itemErr != nil {
-				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
@@ -62,7 +62,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		for i := 0; i < int((16)); i++ {
 			_item, _itemErr := io.ReadBit()
 			if _itemErr != nil {
-				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
@@ -74,7 +74,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		for i := 0; i < int((32)); i++ {
 			_item, _itemErr := io.ReadBit()
 			if _itemErr != nil {
-				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
@@ -86,7 +86,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		for i := 0; i < int((64)); i++ {
 			_item, _itemErr := io.ReadBit()
 			if _itemErr != nil {
-				return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
@@ -96,7 +96,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt8(8)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcSINT(value), nil
 	case dataProtocolId == "IEC61131_USINT": // USINT
@@ -104,7 +104,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint8(8)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcUSINT(value), nil
 	case dataProtocolId == "IEC61131_INT": // INT
@@ -112,7 +112,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt16(16)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcINT(value), nil
 	case dataProtocolId == "IEC61131_UINT": // UINT
@@ -120,7 +120,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcUINT(value), nil
 	case dataProtocolId == "IEC61131_DINT": // DINT
@@ -128,7 +128,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt32(32)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcDINT(value), nil
 	case dataProtocolId == "IEC61131_UDINT": // UDINT
@@ -136,7 +136,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcUDINT(value), nil
 	case dataProtocolId == "IEC61131_LINT": // LINT
@@ -144,7 +144,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadInt64(64)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcLINT(value), nil
 	case dataProtocolId == "IEC61131_ULINT": // ULINT
@@ -152,7 +152,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint64(64)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcULINT(value), nil
 	case dataProtocolId == "IEC61131_REAL": // REAL
@@ -160,7 +160,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat32(true, 8, 23)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcREAL(value), nil
 	case dataProtocolId == "IEC61131_LREAL": // LREAL
@@ -168,7 +168,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadFloat64(true, 11, 52)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcLREAL(value), nil
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
@@ -176,7 +176,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Manual Field (value)
 		value, _valueErr := StaticHelperParseS7Char(io, "UTF-8")
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
@@ -184,7 +184,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Manual Field (value)
 		value, _valueErr := StaticHelperParseS7Char(io, "UTF-16")
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcCHAR(value), nil
 	case dataProtocolId == "IEC61131_STRING": // STRING
@@ -192,7 +192,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Manual Field (value)
 		value, _valueErr := StaticHelperParseS7String(io, stringLength, "UTF-8")
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
@@ -200,7 +200,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Manual Field (value)
 		value, _valueErr := StaticHelperParseS7String(io, stringLength, "UTF-16")
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_TIME": // TIME
@@ -208,7 +208,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcTIME(value), nil
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
@@ -216,7 +216,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint64(64)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcLTIME(value), nil
 	case dataProtocolId == "IEC61131_DATE": // DATE
@@ -224,7 +224,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint16(16)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcDATE(value), nil
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
@@ -232,7 +232,7 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (value)
 		value, _valueErr := io.ReadUint32(32)
 		if _valueErr != nil {
-			return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		return values.NewPlcTIME_OF_DAY(value), nil
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
@@ -240,53 +240,54 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId string, stringLength int
 		// Simple Field (year)
 		year, _yearErr := io.ReadUint16(16)
 		if _yearErr != nil {
-			return nil, errors.New("Error parsing 'year' field " + _yearErr.Error())
+			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
 
 		// Simple Field (month)
 		month, _monthErr := io.ReadUint8(8)
 		if _monthErr != nil {
-			return nil, errors.New("Error parsing 'month' field " + _monthErr.Error())
+			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
 
 		// Simple Field (day)
 		day, _dayErr := io.ReadUint8(8)
 		if _dayErr != nil {
-			return nil, errors.New("Error parsing 'day' field " + _dayErr.Error())
+			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
 		_, _dayOfWeekErr := io.ReadUint8(8)
 		if _dayOfWeekErr != nil {
-			return nil, errors.New("Error parsing 'dayOfWeek' field " + _dayOfWeekErr.Error())
+			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
 		hour, _hourErr := io.ReadUint8(8)
 		if _hourErr != nil {
-			return nil, errors.New("Error parsing 'hour' field " + _hourErr.Error())
+			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
 
 		// Simple Field (minutes)
 		minutes, _minutesErr := io.ReadUint8(8)
 		if _minutesErr != nil {
-			return nil, errors.New("Error parsing 'minutes' field " + _minutesErr.Error())
+			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
 		seconds, _secondsErr := io.ReadUint8(8)
 		if _secondsErr != nil {
-			return nil, errors.New("Error parsing 'seconds' field " + _secondsErr.Error())
+			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 
 		// Simple Field (nanos)
 		_, _nanosErr := io.ReadUint32(32)
 		if _nanosErr != nil {
-			return nil, errors.New("Error parsing 'nanos' field " + _nanosErr.Error())
+			return nil, errors.Wrap(_nanosErr, "Error parsing 'nanos' field")
 		}
 		value := time.Date(int(year), time.Month(month), int(day), int(hour), int(minutes), int(seconds), 0, nil)
 		return values.NewPlcDATE_AND_TIME(value), nil
 	}
+	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
 }
 
@@ -296,12 +297,12 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
 
 		// Reserved Field (Just skip the bytes)
 		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
-			return errors.New("Error serializing reserved field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
 		if _err := io.WriteBit(value.GetBool()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_BYTE": // List
 
@@ -309,7 +310,7 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
 		for i := uint32(0); i < uint32((8)); i++ {
 			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
 			if _itemErr != nil {
-				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataProtocolId == "IEC61131_WORD": // List
@@ -318,7 +319,7 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
 		for i := uint32(0); i < uint32((16)); i++ {
 			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
 			if _itemErr != nil {
-				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataProtocolId == "IEC61131_DWORD": // List
@@ -327,7 +328,7 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
 		for i := uint32(0); i < uint32((32)); i++ {
 			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
 			if _itemErr != nil {
-				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataProtocolId == "IEC61131_LWORD": // List
@@ -336,164 +337,164 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataProtocolId
 		for i := uint32(0); i < uint32((64)); i++ {
 			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
 			if _itemErr != nil {
-				return errors.New("Error serializing 'value' field " + _itemErr.Error())
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataProtocolId == "IEC61131_SINT": // SINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_USINT": // USINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_INT": // INT
 
 		// Simple Field (value)
 		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UINT": // UINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DINT": // DINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UDINT": // UDINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LINT": // LINT
 
 		// Simple Field (value)
 		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_ULINT": // ULINT
 
 		// Simple Field (value)
 		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_REAL": // REAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LREAL": // LREAL
 
 		// Simple Field (value)
 		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_CHAR": // CHAR
 
 		// Manual Field (value)
 		_valueErr := StaticHelperSerializeS7Char(io, value, "UTF-8")
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WCHAR": // CHAR
 
 		// Manual Field (value)
 		_valueErr := StaticHelperSerializeS7Char(io, value, "UTF-16")
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
 		_valueErr := StaticHelperSerializeS7String(io, value, stringLength, "UTF-8")
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WSTRING": // STRING
 
 		// Manual Field (value)
 		_valueErr := StaticHelperSerializeS7String(io, value, stringLength, "UTF-16")
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_TIME": // TIME
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
 
 		// Simple Field (value)
 		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DATE": // DATE
 
 		// Simple Field (value)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
 
 		// Simple Field (value)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
-			return errors.New("Error serializing 'value' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 
 		// Simple Field (year)
 		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
-			return errors.New("Error serializing 'year' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'month' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'day' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'dayOfWeek' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'hour' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'minutes' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
 		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
-			return errors.New("Error serializing 'seconds' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanos)
 		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
-			return errors.New("Error serializing 'nanos' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'nanos' field")
 		}
 	default:
-
+		// TODO: add more info which type it is actually
 		return errors.New("unsupported type")
 	}
 	return nil

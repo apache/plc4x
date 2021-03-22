@@ -19,8 +19,9 @@
 package test
 
 import (
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
@@ -41,13 +42,14 @@ func (m Transport) GetTransportName() string {
 }
 
 func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+	log.Trace().Msg("create transport instance")
 	transportInstance := NewTransportInstance(&m)
 
 	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
 		if transportInstance, ok := typ.(transports.TransportInstance); ok {
 			return transportInstance, nil
 		}
-		return nil, errors.New("couldn't cast to TransportInstance")
+		return nil, errors.Errorf("couldn't cast to TransportInstance. Actual instance: %T", typ)
 	}
 	return castFunc(transportInstance)
 }
@@ -67,42 +69,51 @@ func NewTransportInstance(transport *Transport) *TransportInstance {
 }
 
 func (m *TransportInstance) Connect() error {
+	log.Trace().Msg("Connect")
 	return nil
 }
 
 func (m *TransportInstance) Close() error {
+	log.Trace().Msg("Close")
 	return nil
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
+	log.Trace().Msg("get number of readable bytes")
 	return uint32(len(m.readBuffer)), nil
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+	log.Trace().Msg("Peek readable bytes")
 	return m.readBuffer[0:numBytes], nil
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
+	log.Trace().Msg("Read")
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
 	return data, nil
 }
 
 func (m *TransportInstance) Write(data []uint8) error {
+	log.Trace().Msg("Write")
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) FillReadBuffer(data []uint8) error {
+	log.Trace().Msg("FillReadBuffer")
 	m.readBuffer = append(m.readBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
+	log.Trace().Msg("get number of drainable bytes")
 	return uint32(len(m.writeBuffer))
 }
 
 func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
+	log.Trace().Msg("Drain write buffer")
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
 	return data, nil

@@ -63,7 +63,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
 package ${outputFlavor?replace("-","")}
 
 import (
-	"errors"
+    "github.com/pkg/errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/${protocolName}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
@@ -82,7 +82,7 @@ func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments 
 			<#if helper.isSimpleTypeReference(parserArgument.type)>
 		${parserArgument.name}, err := utils.StrTo${helper.getLanguageTypeNameForTypeReference(parserArgument.type)?cap_first}(arguments[${parserArgument?index}])
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "Error parsing")
 		}
 			<#else>
 		var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
@@ -92,6 +92,6 @@ func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments 
 		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument><#if helper.isComplexTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
-	return nil, errors.New("Unsupported type " + typeName)
+	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 </#outputformat>

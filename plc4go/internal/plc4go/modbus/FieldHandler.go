@@ -20,6 +20,7 @@ package modbus
 
 import (
 	"errors"
+	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -28,6 +29,7 @@ import (
 
 type FieldType uint8
 
+//go:generate stringer -type FieldType
 const (
 	Coil             FieldType = 0x00
 	DiscreteInput    FieldType = 0x01
@@ -36,20 +38,8 @@ const (
 	ExtendedRegister FieldType = 0x06
 )
 
-func (m FieldType) GetName() string {
-	switch m {
-	case Coil:
-		return "ModbusFieldHoldingRegister"
-	case DiscreteInput:
-		return "ModbusFieldDiscreteInput"
-	case InputRegister:
-		return "ModbusFieldInputRegister"
-	case HoldingRegister:
-		return "ModbusFieldHoldingRegister"
-	case ExtendedRegister:
-		return "ModbusFieldExtendedRegister"
-	}
-	return ""
+func (i FieldType) GetName() string {
+	return fmt.Sprintf("ModbusField%s", i.String())
 }
 
 type FieldHandler struct {

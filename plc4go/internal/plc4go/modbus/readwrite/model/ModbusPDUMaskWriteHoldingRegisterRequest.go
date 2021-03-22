@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -119,19 +119,19 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *utils.ReadBuffer) (*Modbu
 	// Simple Field (referenceAddress)
 	referenceAddress, _referenceAddressErr := io.ReadUint16(16)
 	if _referenceAddressErr != nil {
-		return nil, errors.New("Error parsing 'referenceAddress' field " + _referenceAddressErr.Error())
+		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field")
 	}
 
 	// Simple Field (andMask)
 	andMask, _andMaskErr := io.ReadUint16(16)
 	if _andMaskErr != nil {
-		return nil, errors.New("Error parsing 'andMask' field " + _andMaskErr.Error())
+		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field")
 	}
 
 	// Simple Field (orMask)
 	orMask, _orMaskErr := io.ReadUint16(16)
 	if _orMaskErr != nil {
-		return nil, errors.New("Error parsing 'orMask' field " + _orMaskErr.Error())
+		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
 	}
 
 	// Create a partially initialized instance
@@ -152,21 +152,21 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io utils.WriteBuffe
 		referenceAddress := uint16(m.ReferenceAddress)
 		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
 		if _referenceAddressErr != nil {
-			return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
+			return errors.Wrap(_referenceAddressErr, "Error serializing 'referenceAddress' field")
 		}
 
 		// Simple Field (andMask)
 		andMask := uint16(m.AndMask)
 		_andMaskErr := io.WriteUint16(16, (andMask))
 		if _andMaskErr != nil {
-			return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
+			return errors.Wrap(_andMaskErr, "Error serializing 'andMask' field")
 		}
 
 		// Simple Field (orMask)
 		orMask := uint16(m.OrMask)
 		_orMaskErr := io.WriteUint16(16, (orMask))
 		if _orMaskErr != nil {
-			return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())
+			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
 		}
 
 		return nil

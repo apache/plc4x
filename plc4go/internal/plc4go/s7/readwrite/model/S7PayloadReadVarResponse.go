@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -113,7 +113,7 @@ func S7PayloadReadVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter)
 		lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).NumItems-1)
 		_item, _err := S7VarPayloadDataItemParse(io, lastItem)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -138,7 +138,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 				var lastItem bool = curItem == (itemCount - 1)
 				_elementErr := _element.Serialize(io, lastItem)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 				curItem++
 			}

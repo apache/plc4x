@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -105,14 +105,14 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
 	if _knxLayerErr != nil {
-		return nil, errors.New("Error parsing 'knxLayer' field " + _knxLayerErr.Error())
+		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -137,14 +137,14 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 		// Simple Field (knxLayer)
 		_knxLayerErr := m.KnxLayer.Serialize(io)
 		if _knxLayerErr != nil {
-			return errors.New("Error serializing 'knxLayer' field " + _knxLayerErr.Error())
+			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(8, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 

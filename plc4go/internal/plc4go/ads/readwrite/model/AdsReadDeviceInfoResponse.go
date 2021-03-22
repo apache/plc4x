@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -129,25 +129,25 @@ func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Simple Field (majorVersion)
 	majorVersion, _majorVersionErr := io.ReadUint8(8)
 	if _majorVersionErr != nil {
-		return nil, errors.New("Error parsing 'majorVersion' field " + _majorVersionErr.Error())
+		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
 	}
 
 	// Simple Field (minorVersion)
 	minorVersion, _minorVersionErr := io.ReadUint8(8)
 	if _minorVersionErr != nil {
-		return nil, errors.New("Error parsing 'minorVersion' field " + _minorVersionErr.Error())
+		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
 	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint16(16)
 	if _versionErr != nil {
-		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
 	// Array field (device)
@@ -156,7 +156,7 @@ func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'device' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'device' field")
 		}
 		device[curItem] = _item
 	}
@@ -180,28 +180,28 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.MajorVersion)
 		_majorVersionErr := io.WriteUint8(8, (majorVersion))
 		if _majorVersionErr != nil {
-			return errors.New("Error serializing 'majorVersion' field " + _majorVersionErr.Error())
+			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.MinorVersion)
 		_minorVersionErr := io.WriteUint8(8, (minorVersion))
 		if _minorVersionErr != nil {
-			return errors.New("Error serializing 'minorVersion' field " + _minorVersionErr.Error())
+			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}
 
 		// Simple Field (version)
 		version := uint16(m.Version)
 		_versionErr := io.WriteUint16(16, (version))
 		if _versionErr != nil {
-			return errors.New("Error serializing 'version' field " + _versionErr.Error())
+			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
 		// Array Field (device)
@@ -209,7 +209,7 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Device {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'device' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}
 			}
 		}

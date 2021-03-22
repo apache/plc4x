@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -103,7 +103,7 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := io.ReadUint8(8)
 	if _messageTypeErr != nil {
-		return nil, errors.New("Error parsing 'messageType' field " + _messageTypeErr.Error())
+		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field")
 	}
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
@@ -111,7 +111,7 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
 		_val, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'vendorId' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
 		}
 		vendorId = &_val
 	}
@@ -126,7 +126,7 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -144,7 +144,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 	messageType := uint8(child.MessageType())
 	_messageTypeErr := io.WriteUint8(8, (messageType))
 	if _messageTypeErr != nil {
-		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
+		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
 	}
 
 	// Optional Field (vendorId) (Can be skipped, if the value is null)
@@ -153,14 +153,14 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 		vendorId = m.VendorId
 		_vendorIdErr := io.WriteUint16(16, *(vendorId))
 		if _vendorIdErr != nil {
-			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -232,7 +232,7 @@ func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -97,7 +97,7 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := io.ReadUint8(8)
 	if _serviceTypeErr != nil {
-		return nil, errors.New("Error parsing 'serviceType' field " + _serviceTypeErr.Error())
+		return nil, errors.Wrap(_serviceTypeErr, "Error parsing 'serviceType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -120,7 +120,7 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -138,13 +138,13 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 	serviceType := uint8(child.ServiceType())
 	_serviceTypeErr := io.WriteUint8(8, (serviceType))
 	if _serviceTypeErr != nil {
-		return errors.New("Error serializing 'serviceType' field " + _serviceTypeErr.Error())
+		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -267,7 +267,7 @@ func (m *ServiceId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

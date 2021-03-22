@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -101,7 +101,7 @@ func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
-		return nil, errors.New("Error parsing 'tpduSize' field " + _tpduSizeErr.Error())
+		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
 		_tpduSizeErr := tpduSize.Serialize(io)
 		if _tpduSizeErr != nil {
-			return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())
+			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
 		return nil

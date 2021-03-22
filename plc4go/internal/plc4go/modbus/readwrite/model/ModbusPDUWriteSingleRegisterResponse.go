@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -114,13 +114,13 @@ func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (*ModbusPDU
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16(16)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint16(16)
 	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
 	// Create a partially initialized instance
@@ -140,14 +140,14 @@ func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) e
 		address := uint16(m.Address)
 		_addressErr := io.WriteUint16(16, (address))
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
 		_valueErr := io.WriteUint16(16, (value))
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		return nil

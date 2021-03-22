@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -90,13 +90,13 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8(8)
 	if _structureLengthErr != nil {
-		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType, _descriptionTypeErr := io.ReadUint8(8)
 	if _descriptionTypeErr != nil {
-		return nil, errors.New("Error parsing 'descriptionType' field " + _descriptionTypeErr.Error())
+		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
 
 	// Array field (serviceIds)
@@ -107,7 +107,7 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) 
 	for io.GetPos() < _serviceIdsEndPos {
 		_item, _err := ServiceIdParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'serviceIds' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field")
 		}
 		serviceIds = append(serviceIds, _item)
 	}
@@ -122,14 +122,14 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 	structureLength := uint8(uint8(m.LengthInBytes()))
 	_structureLengthErr := io.WriteUint8(8, (structureLength))
 	if _structureLengthErr != nil {
-		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.DescriptionType)
 	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
 	if _descriptionTypeErr != nil {
-		return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
+		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}
 
 	// Array Field (serviceIds)
@@ -137,7 +137,7 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.ServiceIds {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'serviceIds' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 			}
 		}
 	}

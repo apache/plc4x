@@ -91,7 +91,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			for i := 0; i < int(${helper.toParseExpression(null, field.loopExpression, type.parserArguments)}); i++ {
 				_item, _itemErr := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
-					return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 				}
 				${field.name} = append(${field.name}, ${helper.getPlcValueTypeForTypeReference(field.type)}(_item))
 			}
@@ -105,7 +105,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			// Manual Field (${field.name})
 			${field.name}, _${field.name}Err := ${helper.toParseExpression(field, field.parseExpression, type.parserArguments)}
 			if _${field.name}Err != nil {
-				return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
+				return nil, errors.Wrap(_${field.name}Err, "Error parsing '${field.name}' field")
 			}
 					<#if field.name == "value">
 						<#assign valueDefined=true>
@@ -116,7 +116,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 
 			// Reserved Field (Just skip the bytes)
 			if _, _err := ${helper.getReadBufferReadMethodCall(field.type)}; _err != nil {
-				return nil, errors.New("Error parsing reserved field " + _err.Error())
+				return nil, errors.Wrap(_err, "Error parsing reserved field")
 			}
 					<#break>
 				<#case "simple">
@@ -125,7 +125,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			// Simple Field (${field.name})
 			<#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) || field.name == "value">${field.name}<#else>_</#if>, _${field.name}Err := <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
 			if _${field.name}Err != nil {
-				return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
+				return nil, errors.Wrap(_${field.name}Err, "Error parsing '${field.name}' field")
 			}
 					<#if case.name == "Struct">
 			_map["${case.name}"] = ${helper.getPlcValueTypeForTypeReference(field.type)}(${field.name})
@@ -166,6 +166,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 		</#if>
 	</#list>
 	}
+    // TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
 }
 
@@ -186,7 +187,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					</#if>
 				_itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()")}<#else>Complex type array in data-io serialization currently not implemented</#if>
 				if _itemErr != nil {
-					return errors.New("Error serializing 'value' field " + _itemErr.Error())
+					return errors.Wrap(_itemErr, "Error serializing 'value' field")
 				}
 			}
 					<#break>
@@ -196,7 +197,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 			// Manual Field (${field.name})
 			_${field.name}Err := ${helper.toSerializationExpression(field, manualField.serializeExpression, type.parserArguments)}
 			if _${field.name}Err != nil {
-				return errors.New("Error serializing '${field.name}' field " + _${field.name}Err.Error())
+				return errors.Wrap(_${field.name}Err, "Error serializing '${field.name}' field")
 			}
 					<#break>
 				<#case "reserved">
@@ -204,7 +205,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 
 			// Reserved Field (Just skip the bytes)
 			if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))}; _err != nil {
-				return errors.New("Error serializing reserved field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing reserved field")
 			}
 					<#break>
 				<#case "simple">
@@ -212,7 +213,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 
 			// Simple Field (${field.name})
 			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()")}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
-				return errors.New("Error serializing '${field.name}' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing '${field.name}' field")
 			}
 					<#break>
 			</#switch>
@@ -220,7 +221,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 	</#list>
 	<#if !defaultSet>
 		default:
-
+            // TODO: add more info which type it is actually
 			return errors.New("unsupported type")
 	</#if>
 	}

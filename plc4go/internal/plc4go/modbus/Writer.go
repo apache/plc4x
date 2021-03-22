@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"math"
 	"sync/atomic"
 	"time"
@@ -171,6 +172,7 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 	responseCodes := map[string]model.PlcResponseCode{}
 	fieldName := writeRequest.GetFieldNames()[0]
 
+	// we default to an error until its proven wrong
 	responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
 	switch responseAdu.Pdu.Child.(type) {
 	case *readWriteModel.ModbusPDUWriteMultipleCoilsResponse:
@@ -208,9 +210,14 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
 			responseCodes[fieldName] = model.PlcResponseCode_REMOTE_ERROR
+		default:
+			log.Debug().Msgf("Unmapped exception code %x", resp.ExceptionCode)
 		}
+	default:
+		return nil, errors.Errorf("unsupported response type %T", responseAdu.Pdu.Child)
 	}
 
 	// Return the response
+	log.Trace().Msg("Returning the response")
 	return plc4goModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil
 }

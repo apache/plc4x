@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -115,19 +115,19 @@ func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Simple Field (adsState)
 	adsState, _adsStateErr := io.ReadUint16(16)
 	if _adsStateErr != nil {
-		return nil, errors.New("Error parsing 'adsState' field " + _adsStateErr.Error())
+		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
 	deviceState, _deviceStateErr := io.ReadUint16(16)
 	if _deviceStateErr != nil {
-		return nil, errors.New("Error parsing 'deviceState' field " + _deviceStateErr.Error())
+		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
 	// Create a partially initialized instance
@@ -147,21 +147,21 @@ func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
 		_adsStateErr := io.WriteUint16(16, (adsState))
 		if _adsStateErr != nil {
-			return errors.New("Error serializing 'adsState' field " + _adsStateErr.Error())
+			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
 		_deviceStateErr := io.WriteUint16(16, (deviceState))
 		if _deviceStateErr != nil {
-			return errors.New("Error serializing 'deviceState' field " + _deviceStateErr.Error())
+			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		return nil
