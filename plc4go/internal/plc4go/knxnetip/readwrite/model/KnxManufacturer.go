@@ -575,8 +575,9 @@ const (
 	KnxManufacturer_M_BVK_TECHNOLOGY                                     KnxManufacturer = 539
 	KnxManufacturer_M_SOLOMIO_SRL                                        KnxManufacturer = 540
 	KnxManufacturer_M_DOMOTICA_LABS                                      KnxManufacturer = 541
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 542
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 543
+	KnxManufacturer_M_NVC_INTERNATIONAL                                  KnxManufacturer = 542
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 543
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 544
 )
 
 func (e KnxManufacturer) Number() uint16 {
@@ -2555,10 +2556,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 542:
 		{ /* '542' */
-			return 43954
+			return 599
 		}
 	case 543:
 		{ /* '543' */
+			return 43954
+		}
+	case 544:
+		{ /* '544' */
 			return 43959
 		}
 	case 55:
@@ -4740,10 +4745,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 542:
 		{ /* '542' */
-			return "ABB - reserved"
+			return "NVC International"
 		}
 	case 543:
 		{ /* '543' */
+			return "ABB - reserved"
+		}
+	case 544:
+		{ /* '544' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 55:
@@ -5937,8 +5946,10 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 541:
 		return KnxManufacturer_M_DOMOTICA_LABS
 	case 542:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_NVC_INTERNATIONAL
 	case 543:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 544:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 55:
 		return KnxManufacturer_M_WINDOWMASTER_AS
@@ -7030,6 +7041,8 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_SOLOMIO_SRL
 	case "M_DOMOTICA_LABS":
 		return KnxManufacturer_M_DOMOTICA_LABS
+	case "M_NVC_INTERNATIONAL":
+		return KnxManufacturer_M_NVC_INTERNATIONAL
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -8155,6 +8168,8 @@ func (e KnxManufacturer) String() string {
 		return "M_SOLOMIO_SRL"
 	case KnxManufacturer_M_DOMOTICA_LABS:
 		return "M_DOMOTICA_LABS"
+	case KnxManufacturer_M_NVC_INTERNATIONAL:
+		return "M_NVC_INTERNATIONAL"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
