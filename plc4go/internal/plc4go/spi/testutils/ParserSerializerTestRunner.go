@@ -160,8 +160,9 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 
 				if curFailed {
-					// All worked
+					// All failed
 					t.Logf("FAILED")
+					t.Fail()
 				} else {
 					// All worked
 					t.Logf("SUCCESS")

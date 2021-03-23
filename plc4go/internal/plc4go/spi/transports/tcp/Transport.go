@@ -67,21 +67,19 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 			portVal, err := strconv.Atoi(val[0])
 			if err != nil {
 				return nil, errors.Wrap(err, "error setting default tcp port")
-			} else {
-				port = portVal
 			}
+			port = portVal
 		} else {
 			return nil, errors.New("error setting port. No explicit or default port provided")
 		}
 	}
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
-		ival, err := strconv.Atoi(val[0])
+		integerValue, err := strconv.Atoi(val[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "error setting connect-timeout")
-		} else {
-			connectTimeout = uint32(ival)
 		}
+		connectTimeout = uint32(integerValue)
 	}
 
 	// Potentially resolve the ip address, if a hostname was provided
@@ -144,45 +142,45 @@ func (m *TransportInstance) Close() error {
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
-	if m.reader != nil {
-		_, _ = m.reader.Peek(1)
-		return uint32(m.reader.Buffered()), nil
+	if m.reader == nil {
+		return 0, nil
 	}
-	return 0, nil
+	_, _ = m.reader.Peek(1)
+	return uint32(m.reader.Buffered()), nil
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-	if m.reader != nil {
-		return m.reader.Peek(int(numBytes))
+	if m.reader == nil {
+		return nil, errors.New("error peeking from transport. No reader available")
 	}
-	return nil, errors.New("error peeking from transport. No reader available")
+	return m.reader.Peek(int(numBytes))
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
-	if m.reader != nil {
-		data := make([]uint8, numBytes)
-		for i := uint32(0); i < numBytes; i++ {
-			val, err := m.reader.ReadByte()
-			if err != nil {
-				return nil, errors.Wrap(err, "error reading")
-			}
-			data[i] = val
-		}
-		return data, nil
+	if m.reader == nil {
+		return nil, errors.New("error reading from transport. No reader available")
 	}
-	return nil, errors.New("error reading from transport. No reader available")
+	data := make([]uint8, numBytes)
+	for i := uint32(0); i < numBytes; i++ {
+		val, err := m.reader.ReadByte()
+		if err != nil {
+			return nil, errors.Wrap(err, "error reading")
+		}
+		data[i] = val
+	}
+	return data, nil
 }
 
 func (m *TransportInstance) Write(data []uint8) error {
-	if m.tcpConn != nil {
-		num, err := m.tcpConn.Write(data)
-		if err != nil {
-			return errors.Wrap(err, "error writing")
-		}
-		if num != len(data) {
-			return errors.New("error writing: not all bytes written")
-		}
-		return nil
+	if m.tcpConn == nil {
+		return errors.New("error writing to transport. No writer available")
 	}
-	return errors.New("error writing to transport. No writer available")
+	num, err := m.tcpConn.Write(data)
+	if err != nil {
+		return errors.Wrap(err, "error writing")
+	}
+	if num != len(data) {
+		return errors.New("error writing: not all bytes written")
+	}
+	return nil
 }
