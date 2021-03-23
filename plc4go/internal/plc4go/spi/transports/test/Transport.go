@@ -84,25 +84,25 @@ func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-	log.Trace().Msg("Peek readable bytes")
+	log.Trace().Msgf("Peek %d readable bytes", numBytes)
 	return m.readBuffer[0:numBytes], nil
 }
 
 func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
-	log.Trace().Msg("Read")
+	log.Trace().Msgf("Read num bytes %d", numBytes)
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
 	return data, nil
 }
 
 func (m *TransportInstance) Write(data []uint8) error {
-	log.Trace().Msg("Write")
+	log.Trace().Msgf("Write data 0x%x", data)
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) FillReadBuffer(data []uint8) error {
-	log.Trace().Msg("FillReadBuffer")
+	log.Trace().Msgf("FillReadBuffer with 0x%x", data)
 	m.readBuffer = append(m.readBuffer, data...)
 	return nil
 }
@@ -113,7 +113,7 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 }
 
 func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
-	log.Trace().Msg("Drain write buffer")
+	log.Trace().Msgf("Drain write buffer with number of bytes %d", numBytes)
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
 	return data, nil

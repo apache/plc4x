@@ -26,8 +26,5 @@ import (
 )
 
 func TestModbusDriver(t *testing.T) {
-	testutils.RunDriverTestsuite(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml",
-		// TODO: this testcase has still some concurrency issues regarding the order of data
-		"Multi element read request",
-	)
+	testutils.RunDriverTestsuite(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
 }

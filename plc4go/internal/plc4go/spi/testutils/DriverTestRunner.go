@@ -98,11 +98,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 	log.Info().Msgf(" - Executing step: %s \n", step.name)
 
+	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
 	switch step.stepType {
 	case StepTypeApiRequest:
 		switch step.payload.Name {
 		case "TestReadRequest":
 			// Assemble a read-request according to the information in the test xml
+			log.Trace().Msg("Assemble read request")
 			rrb := connection.ReadRequestBuilder()
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
@@ -115,11 +117,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 
 			// Execute the read-request and store the response-channel in the testcase.
+			log.Trace().Msg("Execute read request")
 			if testcase.readRequestResultChannel != nil {
 				return errors.New("testcase read-request result channel already occupied")
 			}
 			testcase.readRequestResultChannel = readRequest.Execute()
 		case "TestWriteRequest":
+			log.Trace().Msg("Assemble write request")
 			wrb := connection.WriteRequestBuilder()
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
@@ -148,6 +152,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if err != nil {
 				return errors.Wrap(err, "Error creating write-request")
 			}
+			log.Trace().Msg("Execute write request")
 			if testcase.writeRequestResultChannel != nil {
 				return errors.New("testcase write-request result channel already occupied")
 			}
@@ -159,6 +164,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if testcase.readRequestResultChannel == nil {
 				return errors.New("no read response expected")
 			}
+			log.Trace().Msg("Waiting for read request result")
 			readRequestResult := <-testcase.readRequestResultChannel
 			// Serialize the response to XML
 			actualResponse, err := xml.Marshal(readRequestResult.Response)
@@ -176,6 +182,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if testcase.writeRequestResultChannel == nil {
 				return errors.New("no write response expected")
 			}
+			log.Trace().Msg("Waiting for write request result")
 			writeResponseResult := <-testcase.writeRequestResultChannel
 			// Serialize the response to XML
 			actualResponse, err := xml.Marshal(writeResponseResult.Response)
@@ -195,12 +202,14 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		payloadString := step.payload.XML()
 
 		// Parse the xml into a real model
+		log.Trace().Msg("parsing xml")
 		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 		if err != nil {
 			return errors.Wrap(err, "error parsing xml")
 		}
 
 		// Serialize the model into bytes
+		log.Trace().Msg("Write to bytes")
 		ser, ok := message.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
@@ -215,6 +224,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		now := time.Now()
 		// Read exactly this amount of bytes from the transport
+		log.Trace().Uint32("expectedRawOutputLength", expectedRawOutputLength).Msg("Reading bytes")
 		for testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
 			if time.Now().Sub(now) > 2*time.Second {
 				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d)", testTransportInstance.GetNumDrainableBytes(), expectedRawOutputLength)
@@ -227,6 +237,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		// Compare the bytes read with the ones we expect
+		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
 			if expectedRawOutput[i] != rawOutput[i] {
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
@@ -235,6 +246,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// If there's a difference, parse the input and display it to simplify debugging
 	case StepTypeOutgoingPlcBytes:
 		// Read exactly this amount of bytes from the transport
+		log.Trace().Msg("Reading bytes")
 		expectedRawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
 			return errors.Wrap(err, "error decoding hex-encoded byte data")
@@ -245,6 +257,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		// Compare the bytes read with the ones we expect
+		log.Trace().Msg("Comparing bytes")
 		for i := range expectedRawInput {
 			if expectedRawInput[i] != rawInput[i] {
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawInput, expectedRawInput)
@@ -256,12 +269,14 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		payloadString := step.payload.XML()
 
 		// Parse the xml into a real model
+		log.Trace().Msg("Parsing model")
 		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 		if err != nil {
 			return errors.Wrap(err, "error parsing xml")
 		}
 
 		// Serialize the model into bytes
+		log.Trace().Msg("Serializing bytes")
 		ser, ok := message.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
@@ -273,32 +288,38 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		// Send these bytes to the transport
+		log.Trace().Msg("Writing to transport")
 		err = testTransportInstance.FillReadBuffer(wb.GetBytes())
 		if err != nil {
 			return errors.Wrap(err, "error writing data to transport")
 		}
 	case StepTypeIncomingPlcBytes:
 		// Get the raw hex-data.
+		log.Trace().Msg("Get hex data")
 		rawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
 			return errors.Wrap(err, "error decoding hex-encoded byte data: ")
 		}
 
 		// Send these bytes to the transport
+		log.Trace().Msg("Writing bytes to transport")
 		err = testTransportInstance.FillReadBuffer(rawInput)
 		if err != nil {
 			return errors.Wrap(err, "error writing data to transport")
 		}
 	case StepTypeDelay:
 		// Get the number of milliseconds
+		log.Trace().Msg("Getting millis")
 		delay, err := strconv.Atoi(step.payload.Text)
 		if err != nil {
 			return errors.Wrap(err, "invalid delay format")
 		}
 		// Sleep for that long
+		log.Debug().Int("delay", delay).Msg("Sleeping")
 		time.Sleep(time.Duration(delay))
 	case StepTypeTerminate:
 		// Simply close the transport connection
+		log.Trace().Msg("closing transport")
 		err := testTransportInstance.Close()
 		if err != nil {
 			return errors.Wrap(err, "error closing transport")
@@ -328,6 +349,7 @@ type TestStep struct {
 
 type StepType uint8
 
+//go:generate stringer -type StepType
 const (
 	StepTypeOutgoingPlcMessage StepType = 0x01
 	StepTypeOutgoingPlcBytes   StepType = 0x02

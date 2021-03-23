@@ -23,6 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
+	"time"
 )
 
 type DefaultPlcReadRequestBuilder struct {
@@ -112,8 +113,8 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	// Iterate over all requests and add the result-channels to the list
 	for _, subRequest := range readRequests {
 		subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
-		// TODO: Replace this with a real queueing of requests.
-		//time.Sleep(time.Millisecond * 20)
+		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
+		time.Sleep(time.Millisecond * 4)
 	}
 
 	// Create a new result-channel, which completes as soon as all sub-result-channels have returned

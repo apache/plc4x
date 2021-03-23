@@ -53,6 +53,10 @@ func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, qua
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
+	if quantityString == "" {
+		log.Debug().Msg("No quantity supplied, assuming 1")
+		quantityString = "1"
+	}
 	quantity, err := strconv.Atoi(quantityString)
 	if err != nil {
 		log.Warn().Err(err).Msgf("Error during atoi for %s. Falling back to 1", quantityString)
