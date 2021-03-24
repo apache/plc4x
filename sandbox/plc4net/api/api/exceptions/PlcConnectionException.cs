@@ -41,9 +41,7 @@ namespace org.apache.plc4net.exceptions
         {
         }
 
-        protected PlcConnectionException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
+        protected PlcConnectionException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

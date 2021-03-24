@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using org.apache.plc4net.api;
 using org.apache.plc4net.api.authentication;
 using org.apache.plc4net.exceptions;
+using System.Threading;
 
 namespace org.apache.plc4net
 {
@@ -44,12 +45,12 @@ namespace org.apache.plc4net
         /// <summary>
         /// Dictionary for the drivers
         /// </summary>
-        private readonly Dictionary<string, IPlcDriver> _drivers;
+        private IDictionary<string, IPlcDriver> _drivers;
 
         /// <summary>
         /// Private constructor for the singleton driver manager.
         /// </summary>
-        private PlcDriverManager()
+        public PlcDriverManager()
         {
             _drivers = new Dictionary<string, IPlcDriver>();
 
@@ -76,6 +77,18 @@ namespace org.apache.plc4net
                 await connection.ConnectAsync();
             }
 
+            return connection;
+        }
+        /// <summary>
+		/// Connects to a PLC using the given plc connection string.
+		/// </summary>
+		/// <param name="url"> plc connection string. </param>
+		/// <returns> PlcConnection object. </returns>
+        public virtual IPlcConnection GetConnection(string url)
+        {
+            IPlcDriver driver = GetDriver(url);
+            IPlcConnection connection = (IPlcConnection)driver.ConnectAsync(url);
+            connection.ConnectAsync();
             return connection;
         }
 
