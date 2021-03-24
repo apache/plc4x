@@ -25,6 +25,13 @@
 #include "plc4c/spi/system_private.h"
 #include "plc4c/spi/types_private.h"
 
+// Uncomment to add printf spam at end of plc4c_system_create_connection()
+#define DEBUG_PLC4C_SYSTEM
+
+#ifdef _WIN32
+#define strtok_r strtok_s
+#endif
+
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
 bool plc4c_is_bigendian() {
@@ -205,70 +212,71 @@ void plc4c_system_shutdown(plc4c_system *system) {}
 plc4c_return_code plc4c_system_create_connection(
     char *connection_string, plc4c_connection **connection) {
 
+  // Check we have a valid connection string
+  if ((connection_string == NULL) || (strlen(connection_string) == 0))
+    return INVALID_CONNECTION_STRING;
+
   plc4c_connection *new_connection;
-  char connection_to_tokenize[strlen(connection_string) + 1];
+  char connection_string_to_tokenize[strlen(connection_string) + 1];
   char* connection_string_pos;
   char* connection_token; 
   char* parameters_token;
   size_t i;
-
-  enum mode {
-    SEARCHING_FOR_COLONS,
-    SEARCHING_FOR_QUESTION_MARKS
-  } mode = SEARCHING_FOR_COLONS;
-
-  // Make a local copy so not to mess up oringal argument, needed later?
-  strcpy(connection_to_tokenize, connection_string);
-
-  // Inisalise the connection and set full connection string argument
+  
+  // Dont mess up the original connection_string arg, so make a copy and 
+  // initialise a new connection, setting the connection string
+  strcpy(connection_string_to_tokenize, connection_string);
   new_connection = malloc(sizeof(plc4c_connection));
   plc4c_connection_initialize(new_connection);
   plc4c_connection_set_connection_string(new_connection, connection_string);
 
-  // Get the protocol code (1st item, ':' delimited, required)
-  connection_token = strtok_r(connection_to_tokenize, ":", &connection_string_pos);
+  // PROTOCOL CODE (1st item, ':' delimited, required)
+  connection_token = strtok_r(connection_string_to_tokenize, ":", &connection_string_pos);
   plc4c_connection_set_protocol_code(new_connection, connection_token);
 
-  // As protocol code required, check we found a ':'
-  if (strlen(connection_string_pos) == 0) 
-    return INVALID_CONNECTION_STRING;
-
-  // Check if protocol is followed by '//', if by just one '/' return error
+  // TRANSPORT CODE (2nd item, ':' delimited, optional)
   if (strncmp(connection_string_pos, "//", 2) == 0) {
     plc4c_connection_set_transport_code(new_connection, NULL);
-    mode = SEARCHING_FOR_QUESTION_MARKS;
-  } else if (strncmp(connection_string_pos, "/", 1) == 0) {
-    return INVALID_CONNECTION_STRING;
-  }
-
-  // Get the transport code (2nd item, ':' delimited, optional)
-  if (mode == SEARCHING_FOR_COLONS) {
+  } else {
     connection_token = strtok_r(connection_string_pos, ":", &connection_string_pos);
-    plc4c_connection_set_transport_code(new_connection, connection_token);
-    if (strncmp(connection_string_pos, "//", 2)) 
+    if (strncmp(connection_string_pos, "//", 2) != 0)
       return INVALID_CONNECTION_STRING;
+    plc4c_connection_set_transport_code(new_connection, connection_token);
   }
 
-  // Skip over the '//' we have now asserted MUST exist, and search for
-  // connection parameters (last item, '?' delimited, optional).
-  connection_string_pos += 2;
+  // Skip over the '//' we have now asserted MUST exist
+  connection_string_pos += 2; 
+
+  // TRANSPORT CONNECT INFO (item after '://' before '?' or '\0', required) 
   connection_token = strtok_r(connection_string_pos, "?", &parameters_token);
-  
-  // If any sting remains (ie. we found a '?'), check there isn't anymore
-  // occurrences of '?', and set connection parameters
-  if (strlen(parameters_token)) {
+  if ((connection_token == NULL) || (strlen(connection_token) == 0))
+    return INVALID_CONNECTION_STRING;
+  plc4c_connection_set_transport_connect_information(new_connection, connection_token);
+
+  // PARAMETERS (last item, '?' delimited, optional)
+  if (strlen(parameters_token) > 0)  {
     plc4c_connection_set_parameters(new_connection, parameters_token);
-    for (i = 0 ; i < strlen(parameters_token); i++)
-      if (parameters_token[i] == '?')
-        return INVALID_CONNECTION_STRING;
+    if (strchr(parameters_token,'?'))
+      return INVALID_CONNECTION_STRING;
   } else {
     plc4c_connection_set_parameters(new_connection, NULL);
   }
-
-  // Get the transport connect information (item after '://' and before 
-  // '?' or '/0', required)
-  plc4c_connection_set_transport_connect_information(new_connection, connection_token);
   
+#ifdef DEBUG_PLC4C_SYSTEM
+#include <stdio.h>
+  printf("\n~~~~~~~~ PLC4C Connection ~~~~~~~~\n"
+    "Connection String:\t%s\n"
+    "Protocol Code:\t\t%s\n"
+    "Transport Code:\t\t%s\n"
+    "Connection Info:\t%s\n"
+    "Parameters:\t\t%s\n",
+    new_connection->connection_string ? new_connection->connection_string : "NULL",
+    new_connection->protocol_code ? new_connection->protocol_code : "NULL",
+    new_connection->transport_code ? new_connection->transport_code : "NULL",
+    new_connection->transport_connect_information ? new_connection->transport_connect_information : "NULL",
+    new_connection->parameters ? new_connection->parameters : "NULL");
+#endif
+
   *connection = new_connection;
   return OK;
 }
@@ -402,16 +410,20 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
 }
 
 plc4c_return_code plc4c_system_loop(plc4c_system *system) {
+  
+  plc4c_list_element *cur_task_element;
+  plc4c_system_task *cur_task;
+  
   // If the task-queue is empty, just return.
   if (plc4c_utils_list_empty(system->task_list)) {
     return OK;
   }
 
-  plc4c_list_element *cur_task_element =
-      plc4c_utils_list_head(system->task_list);
+  cur_task_element = plc4c_utils_list_head(system->task_list);
+  
   do {
     // Get the current element's system task.
-    plc4c_system_task *cur_task = cur_task_element->value;
+    cur_task = cur_task_element->value;
 
     // If the task is already completed, no need to do anything.
     if ((!cur_task->completed) && (cur_task->state_machine_function != NULL)) {

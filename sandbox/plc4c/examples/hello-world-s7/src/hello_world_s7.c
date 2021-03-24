@@ -21,7 +21,6 @@
 #include <plc4c/transport_tcp.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
@@ -151,8 +150,6 @@ int main(int argc, char** argv) {
         } else if (plc4c_connection_has_error(connection)) {
           printf("FAILED\n");
           return -1;
-        } else {
-          usleep(1000*100);
         }
         break;
       }

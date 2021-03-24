@@ -1,0 +1,271 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+#include <plc4c/driver_s7.h>
+#include <plc4c/plc4c.h>
+#include <plc4c/transport_tcp.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "../../../spi/include/plc4c/spi/types_private.h"
+
+#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://0.0.0.0:102"
+
+int numOpenConnections = 0;
+
+/**
+ * Here we could implement something that keeps track of all open connections.
+ * For example on embedded devices using the W5100 SPI Network device, this can
+ * only handle 4 simultaneous connections.
+ *
+ * @param connection the connection that was just established
+ */
+void onGlobalConnect(plc4c_connection *cur_connection) {
+  printf("Connected to %s",
+         plc4c_connection_get_connection_string(cur_connection));
+  numOpenConnections++;
+}
+
+void onGlobalDisconnect(plc4c_connection *cur_connection) {
+  printf("Disconnected from %s",
+         plc4c_connection_get_connection_string(cur_connection));
+  numOpenConnections--;
+}
+
+enum plc4c_connection_state_t {
+  CONNECTING,
+  WRITE_REQUEST_CREATE,
+  WRITE_REQUEST_SENT,
+  WRITE_RESPONSE_RECEIVED,
+  READ_REQUEST_CREATE,
+  READ_REQUEST_SENT,
+  READ_RESPONSE_RECEIVED,
+  DISCONNECTING,
+  DISCONNECTED
+};
+typedef enum plc4c_connection_state_t plc4c_connection_state;
+
+//#pragma clang diagnostic push
+//#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
+#include <unistd.h>
+
+#define CHECK_RESULT(chk, ret, fs) do {if (chk) {printf(fs); return(ret);}} while(0)
+
+int main(int argc, char** argv) {
+  
+  char* connection_test_string;
+  plc4c_return_code result;
+  plc4c_connection_state state;
+  bool loop = true;
+  plc4c_system *system = NULL;
+  plc4c_connection *connection = NULL;
+  
+  plc4c_read_request *read_request = NULL;
+  plc4c_read_request_execution *read_request_execution = NULL;
+  plc4c_read_response *read_response;
+
+  plc4c_write_request *write_request = NULL;
+  plc4c_write_request_execution *write_request_execution = NULL;
+  plc4c_write_response *write_response;
+
+  plc4c_list_element *cur_element;
+  plc4c_response_value_item *value_item;
+
+  int8_t loopback_value;
+  plc4c_data *loopback_data;
+  
+  // Connection string argument and do_write test arg (defaults to off as
+  // not currently working)
+  if (argc < 2)
+    connection_test_string = DEFAULT_CONNECTION_TEST_STRING;
+  else
+    connection_test_string = argv[1];
+
+  if (argc < 3)
+    loopback_value = 12;
+  else
+    loopback_value = atoi(argv[2]);
+
+  // Initialisation and startup sequence
+  result = plc4c_system_create(&system);
+  CHECK_RESULT(result != OK, result, "plc4c_system_create failed\n");
+  plc4c_driver *s7_driver = plc4c_driver_s7_create();
+  result = plc4c_system_add_driver(system, s7_driver);
+  CHECK_RESULT(result != OK, result, "plc4c_system_add_driver failed\n");
+  plc4c_transport *tcp_transport = plc4c_transport_tcp_create();
+  result = plc4c_system_add_transport(system, tcp_transport);
+  CHECK_RESULT(result != OK, result, "plc4c_system_add_transport failed\n");
+  result = plc4c_system_init(system);
+  CHECK_RESULT(result != OK, result, "plc4c_system_init failed\n");
+
+  // Register the global callbacks
+  plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
+  plc4c_system_set_on_disconnect_success_callback(system, &onGlobalDisconnect);
+
+  // Establish connections to remote devices
+  result = plc4c_system_connect(system, connection_test_string, &connection);
+  CHECK_RESULT(result != OK, result, "plc4c_system_connect failed\n");
+
+
+  // Central program loop ...
+  state = CONNECTING;
+
+  while (loop) {
+
+    usleep(1000*100);
+    // Give plc4c a chance to do something. This is where all I/O is done.
+    if (plc4c_system_loop(system) != OK) {
+      printf("ERROR in the system loop\n");
+      break;
+    }
+
+    // Depending on the current state, implement some logic
+    switch (state) {
+      case CONNECTING: {
+        // Check if the connection is established:
+        if (plc4c_connection_get_connected(connection)) {
+          state = WRITE_REQUEST_CREATE;
+        } else if (plc4c_connection_has_error(connection)) {
+          printf("FAILED\n");
+          return -1;
+        } 
+        break;
+      }
+
+      case WRITE_REQUEST_CREATE: {
+
+        result = plc4c_connection_create_write_request(connection, &write_request);
+        CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
+        
+        printf("Writing %d to %%DB4:0.0:SINT ...", loopback_value);
+        loopback_data = plc4c_data_create_int8_t_data(loopback_value);
+        result = plc4c_write_request_add_item(write_request, "%DB4:0.0:SINT", loopback_data);
+        
+        result = plc4c_write_request_execute(write_request, &write_request_execution);
+        CHECK_RESULT(result != OK, result,"plc4c_write_request_execute failed\n");
+        
+        state = WRITE_REQUEST_SENT;
+        break;
+      }
+
+      case WRITE_REQUEST_SENT: {
+        if (plc4c_write_request_check_finished_successfully(write_request_execution)) {
+          printf("Success\n");
+          state = WRITE_RESPONSE_RECEIVED;
+        } else if (plc4c_write_request_execution_check_completed_with_error(write_request_execution)) {
+          printf("FAILED\n");
+          return -1;
+        }
+        break;
+      }
+
+      case WRITE_RESPONSE_RECEIVED: {
+        write_response = plc4c_write_request_execution_get_response(write_request_execution);
+        CHECK_RESULT(write_response == NULL, -1,"plc4c_write_request_execution_get_response failed (no responce)\n");
+        cur_element = plc4c_utils_list_tail(write_response->response_items);
+        while (cur_element != NULL) {
+          cur_element = cur_element->next;
+          // todo: check responce is error free
+        }
+        state = READ_REQUEST_CREATE;
+        plc4c_write_destroy_write_response(write_response);
+        plc4c_write_request_execution_destroy(write_request_execution);
+        plc4c_write_request_destroy(write_request);
+        break;
+      }
+
+      case READ_REQUEST_CREATE: {
+        result = plc4c_connection_create_read_request(connection, &read_request);
+        CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
+        printf("Reading from %%DB4:0.0:SINT\n");
+        result = plc4c_read_request_add_item(read_request, "SINT", "%DB4:0.0:SINT");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        result = plc4c_read_request_execute(read_request, &read_request_execution);
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");
+        state = READ_REQUEST_SENT;
+        break;
+      }
+
+      // Wait until the read-request execution is finished
+      case READ_REQUEST_SENT: {
+        if (plc4c_read_request_execution_check_finished_successfully(read_request_execution)) {
+          state = READ_RESPONSE_RECEIVED;
+        } else if (plc4c_read_request_execution_check_finished_with_error(read_request_execution)) {
+          printf("plc4c_read_request_execution_check_finished_with_error FAILED\n");
+          return -1;
+        }
+        break;
+      }
+
+      case READ_RESPONSE_RECEIVED: {
+
+        read_response = plc4c_read_request_execution_get_response(read_request_execution);
+        CHECK_RESULT(read_response == NULL, -1, "plc4c_read_request_execution_get_response failed (No Response)\n");
+        
+        // Iterate over all returned items.
+        cur_element = plc4c_utils_list_tail(read_response->items);
+        while (cur_element != NULL) {
+          value_item = cur_element->value;
+          printf("Value %s (%s): ", value_item->item->name,
+                 plc4c_response_code_to_message(value_item->response_code));
+          plc4c_data_printf(value_item->value);
+          printf("\n");
+          cur_element = cur_element->next;
+        }
+
+        plc4c_read_destroy_read_response(read_response);
+        plc4c_read_request_execution_destroy(read_request_execution);
+        plc4c_read_request_destroy(read_request);
+
+        result = plc4c_connection_disconnect(connection);
+        CHECK_RESULT(result != OK, -1,"plc4c_connection_disconnect failed\n");
+        state = DISCONNECTING;
+        break;
+      }
+      
+      // Wait until the connection is disconnected
+      case DISCONNECTING: {
+        if (!plc4c_connection_get_connected(connection)) {
+          printf("SUCCESS\n");
+          plc4c_system_remove_connection(system, connection);
+          plc4c_connection_destroy(connection);
+          state = DISCONNECTED;
+          loop = false;
+        }
+        break;
+      }
+      
+      // End the loop
+      case DISCONNECTED: {
+        loop = false;
+        break;
+      }
+      default: {
+      }
+    }
+
+  }
+
+  // Make sure everything is cleaned up correctly then destroy the 
+  // plc4c_system, freeing up all memory allocated by plc4
+  plc4c_system_shutdown(system);
+  plc4c_system_destroy(system);
+  return 0;
+}
+
+//#pragma clang diagnostic pop
