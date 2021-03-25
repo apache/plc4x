@@ -28,6 +28,12 @@
 
 int numOpenConnections = 0;
 
+#ifndef _WIN32
+  #include <unistd.h>
+  #include <time.h>
+  #define S7_LOOPBACK_TIME_IO
+#endif
+
 /**
  * Here we could implement something that keeps track of all open connections.
  * For example on embedded devices using the W5100 SPI Network device, this can
@@ -62,12 +68,23 @@ typedef enum plc4c_connection_state_t plc4c_connection_state;
 
 //#pragma clang diagnostic push
 //#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
-#include <unistd.h>
+
 
 #define CHECK_RESULT(chk, ret, fs) do {if (chk) {printf(fs); return(ret);}} while(0)
 
+void get_user_loopback_values(int argc, char **argv, long *value) {
+  int count = 0;
+  while (count < argc)
+    value[count++] = atol(argv[count]);
+}
+
 int main(int argc, char** argv) {
   
+#ifdef S7_LOOPBACK_TIME_IO
+  struct timespec start, finish;
+  long delta_us, diff_s, diff_ns;
+#endif
+
   char* connection_test_string;
   plc4c_return_code result;
   plc4c_connection_state state;
@@ -86,7 +103,7 @@ int main(int argc, char** argv) {
   plc4c_list_element *cur_element;
   plc4c_response_value_item *value_item;
 
-  int8_t loopback_value;
+  long loopback_value[5] = {0,0,0,0,0};
   plc4c_data *loopback_data;
   
   // Connection string argument and do_write test arg (defaults to off as
@@ -96,10 +113,15 @@ int main(int argc, char** argv) {
   else
     connection_test_string = argv[1];
 
-  if (argc < 3)
-    loopback_value = 12;
-  else
-    loopback_value = atoi(argv[2]);
+  if (argc < 3) {
+    loopback_value[0] = 0; // bool
+    loopback_value[1] = 123; // uint8
+    loopback_value[2] = -123; // int8
+    loopback_value[3] = 2545; // uint16
+    loopback_value[4] = -2545; //int16
+  } else {
+    get_user_loopback_values(argc - 2, &argv[2], loopback_value);
+  }
 
   // Initialisation and startup sequence
   result = plc4c_system_create(&system);
@@ -126,8 +148,7 @@ int main(int argc, char** argv) {
   state = CONNECTING;
 
   while (loop) {
-
-    usleep(1000*100);
+    
     // Give plc4c a chance to do something. This is where all I/O is done.
     if (plc4c_system_loop(system) != OK) {
       printf("ERROR in the system loop\n");
@@ -152,10 +173,13 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_write_request(connection, &write_request);
         CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
         
-        printf("Writing %d to %%DB4:0.0:SINT ...", loopback_value);
-        loopback_data = plc4c_data_create_int8_t_data(loopback_value);
+        printf("Writing %d to %%DB4:0.0:SINT ...", (uint8_t) loopback_value[1]);
+        loopback_data = plc4c_data_create_int8_t_data((uint8_t) loopback_value[1]);
         result = plc4c_write_request_add_item(write_request, "%DB4:0.0:SINT", loopback_data);
         
+#ifdef S7_LOOPBACK_TIME_IO
+        clock_gettime(CLOCK_MONOTONIC,&start);
+#endif
         result = plc4c_write_request_execute(write_request, &write_request_execution);
         CHECK_RESULT(result != OK, result,"plc4c_write_request_execute failed\n");
         
@@ -182,6 +206,14 @@ int main(int argc, char** argv) {
           cur_element = cur_element->next;
           // todo: check responce is error free
         }
+
+#ifdef S7_LOOPBACK_TIME_IO
+        clock_gettime(CLOCK_MONOTONIC,&finish);
+        diff_s = finish.tv_sec - start.tv_sec;
+        diff_ns = finish.tv_nsec - start.tv_nsec;
+        delta_us = (diff_s * 1000000L) + (diff_ns / 1000L);
+        printf("Write took %ld us\n", delta_us);
+#endif
         state = READ_REQUEST_CREATE;
         plc4c_write_destroy_write_response(write_response);
         plc4c_write_request_execution_destroy(write_request_execution);
@@ -198,6 +230,9 @@ int main(int argc, char** argv) {
         result = plc4c_read_request_execute(read_request, &read_request_execution);
         CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");
         state = READ_REQUEST_SENT;
+#ifdef S7_LOOPBACK_TIME_IO
+        clock_gettime(CLOCK_MONOTONIC,&start);
+#endif
         break;
       }
 
@@ -205,6 +240,13 @@ int main(int argc, char** argv) {
       case READ_REQUEST_SENT: {
         if (plc4c_read_request_execution_check_finished_successfully(read_request_execution)) {
           state = READ_RESPONSE_RECEIVED;
+#ifdef S7_LOOPBACK_TIME_IO
+          clock_gettime(CLOCK_MONOTONIC,&finish);
+          diff_s = finish.tv_sec - start.tv_sec;
+          diff_ns = finish.tv_nsec - start.tv_nsec;
+          delta_us = (diff_s * 1000000L) + (diff_ns / 1000L);
+          printf("Write took %ld us\n", delta_us);
+#endif
         } else if (plc4c_read_request_execution_check_finished_with_error(read_request_execution)) {
           printf("plc4c_read_request_execution_check_finished_with_error FAILED\n");
           return -1;

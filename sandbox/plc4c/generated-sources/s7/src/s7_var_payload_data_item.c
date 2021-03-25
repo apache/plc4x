@@ -122,7 +122,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
 
       int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->data, curItem);
       // TODO: fix this brutal hack gets us from data_item to data_item->data
-      plc4c_spi_write_signed_byte(io, 8, *(_value+=16)); 
+      plc4c_spi_write_signed_byte(io, 8, *(_value+0)); 
     }
   }
 

@@ -487,47 +487,48 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
 
 
   plc4c_driver_s7_config* configuration;
-  plc4c_s7_read_write_cotp_packet *payload;
+  plc4c_s7_read_write_cotp_packet *cotp_packet;
+  plc4c_s7_read_write_s7_message *s7_packet;
   plc4c_list_element* list_item;
   plc4c_s7_read_write_s7_parameter* s7_parameters;
   plc4c_s7_read_write_s7_payload* s7_payload;
 
   configuration = request->connection->configuration;
 
-  *request_packet = malloc(sizeof(request_packet));
+  *request_packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
   if (*request_packet == NULL) 
     return NO_MEMORY;
   
-
   (*request_packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
   if ((*request_packet)->payload == NULL) 
     return NO_MEMORY;
   
   // Terse local variable for clarity
-  payload = (*request_packet)->payload;
+  cotp_packet = (*request_packet)->payload;
 
-  payload->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
-  payload->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
-  payload->cotp_packet_data_eot = true;
-  payload->parameters = NULL;
+  cotp_packet->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
+  cotp_packet->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
+  cotp_packet->cotp_packet_data_eot = true;
+  cotp_packet->parameters = NULL;
 
   // Allocate and initalise payload->payload 
-  payload->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
-  if (payload->payload == NULL)
+  cotp_packet->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  s7_packet = cotp_packet->payload;
+  if (s7_packet == NULL)
     return NO_MEMORY;
-  payload->payload->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
+  s7_packet->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
 
   // Allocate and initalise payload->payload->parameter
-  payload->payload->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-  s7_parameters = payload->payload->parameter;
+  s7_packet->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  s7_parameters = s7_packet->parameter;
   if (s7_parameters == NULL)
     return NO_MEMORY;
   s7_parameters->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
   plc4c_utils_list_create(&s7_parameters->s7_parameter_write_var_request_items);
   
   //  Allocate and initalise payload->payload->payload
-  payload->payload->payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
-  s7_payload = payload->payload->payload;
+  s7_packet->payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
+  s7_payload = s7_packet->payload;
   if (s7_payload == NULL) 
     return NO_MEMORY;
   s7_payload->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request;
@@ -577,7 +578,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     request_value = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
     request_value->transport_size = plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     plc4c_utils_list_create(&request_value->data);
-    plc4c_utils_list_insert_head_value(request_value->data, parsed_value);
+    plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
     
     // Add the new parameter to the request
     plc4c_utils_list_insert_head_value(s7_parameters->s7_parameter_write_var_request_items, request_param);
