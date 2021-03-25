@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -39,7 +39,6 @@ type State struct {
 	NoReturn            bool
 	Response            bool
 	Broadcast           bool
-	IState
 }
 
 // The corresponding interface
@@ -116,62 +115,62 @@ func StateParse(io *utils.ReadBuffer) (*State, error) {
 	// Simple Field (initCommand)
 	initCommand, _initCommandErr := io.ReadBit()
 	if _initCommandErr != nil {
-		return nil, errors.New("Error parsing 'initCommand' field " + _initCommandErr.Error())
+		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field")
 	}
 
 	// Simple Field (updCommand)
 	updCommand, _updCommandErr := io.ReadBit()
 	if _updCommandErr != nil {
-		return nil, errors.New("Error parsing 'updCommand' field " + _updCommandErr.Error())
+		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field")
 	}
 
 	// Simple Field (timestampAdded)
 	timestampAdded, _timestampAddedErr := io.ReadBit()
 	if _timestampAddedErr != nil {
-		return nil, errors.New("Error parsing 'timestampAdded' field " + _timestampAddedErr.Error())
+		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field")
 	}
 
 	// Simple Field (highPriorityCommand)
 	highPriorityCommand, _highPriorityCommandErr := io.ReadBit()
 	if _highPriorityCommandErr != nil {
-		return nil, errors.New("Error parsing 'highPriorityCommand' field " + _highPriorityCommandErr.Error())
+		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field")
 	}
 
 	// Simple Field (systemCommand)
 	systemCommand, _systemCommandErr := io.ReadBit()
 	if _systemCommandErr != nil {
-		return nil, errors.New("Error parsing 'systemCommand' field " + _systemCommandErr.Error())
+		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field")
 	}
 
 	// Simple Field (adsCommand)
 	adsCommand, _adsCommandErr := io.ReadBit()
 	if _adsCommandErr != nil {
-		return nil, errors.New("Error parsing 'adsCommand' field " + _adsCommandErr.Error())
+		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field")
 	}
 
 	// Simple Field (noReturn)
 	noReturn, _noReturnErr := io.ReadBit()
 	if _noReturnErr != nil {
-		return nil, errors.New("Error parsing 'noReturn' field " + _noReturnErr.Error())
+		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field")
 	}
 
 	// Simple Field (response)
 	response, _responseErr := io.ReadBit()
 	if _responseErr != nil {
-		return nil, errors.New("Error parsing 'response' field " + _responseErr.Error())
+		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
 	}
 
 	// Simple Field (broadcast)
 	broadcast, _broadcastErr := io.ReadBit()
 	if _broadcastErr != nil {
-		return nil, errors.New("Error parsing 'broadcast' field " + _broadcastErr.Error())
+		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadInt8(7)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != int8(0x0) {
 			log.Info().Fields(map[string]interface{}{
@@ -191,70 +190,70 @@ func (m *State) Serialize(io utils.WriteBuffer) error {
 	initCommand := bool(m.InitCommand)
 	_initCommandErr := io.WriteBit((initCommand))
 	if _initCommandErr != nil {
-		return errors.New("Error serializing 'initCommand' field " + _initCommandErr.Error())
+		return errors.Wrap(_initCommandErr, "Error serializing 'initCommand' field")
 	}
 
 	// Simple Field (updCommand)
 	updCommand := bool(m.UpdCommand)
 	_updCommandErr := io.WriteBit((updCommand))
 	if _updCommandErr != nil {
-		return errors.New("Error serializing 'updCommand' field " + _updCommandErr.Error())
+		return errors.Wrap(_updCommandErr, "Error serializing 'updCommand' field")
 	}
 
 	// Simple Field (timestampAdded)
 	timestampAdded := bool(m.TimestampAdded)
 	_timestampAddedErr := io.WriteBit((timestampAdded))
 	if _timestampAddedErr != nil {
-		return errors.New("Error serializing 'timestampAdded' field " + _timestampAddedErr.Error())
+		return errors.Wrap(_timestampAddedErr, "Error serializing 'timestampAdded' field")
 	}
 
 	// Simple Field (highPriorityCommand)
 	highPriorityCommand := bool(m.HighPriorityCommand)
 	_highPriorityCommandErr := io.WriteBit((highPriorityCommand))
 	if _highPriorityCommandErr != nil {
-		return errors.New("Error serializing 'highPriorityCommand' field " + _highPriorityCommandErr.Error())
+		return errors.Wrap(_highPriorityCommandErr, "Error serializing 'highPriorityCommand' field")
 	}
 
 	// Simple Field (systemCommand)
 	systemCommand := bool(m.SystemCommand)
 	_systemCommandErr := io.WriteBit((systemCommand))
 	if _systemCommandErr != nil {
-		return errors.New("Error serializing 'systemCommand' field " + _systemCommandErr.Error())
+		return errors.Wrap(_systemCommandErr, "Error serializing 'systemCommand' field")
 	}
 
 	// Simple Field (adsCommand)
 	adsCommand := bool(m.AdsCommand)
 	_adsCommandErr := io.WriteBit((adsCommand))
 	if _adsCommandErr != nil {
-		return errors.New("Error serializing 'adsCommand' field " + _adsCommandErr.Error())
+		return errors.Wrap(_adsCommandErr, "Error serializing 'adsCommand' field")
 	}
 
 	// Simple Field (noReturn)
 	noReturn := bool(m.NoReturn)
 	_noReturnErr := io.WriteBit((noReturn))
 	if _noReturnErr != nil {
-		return errors.New("Error serializing 'noReturn' field " + _noReturnErr.Error())
+		return errors.Wrap(_noReturnErr, "Error serializing 'noReturn' field")
 	}
 
 	// Simple Field (response)
 	response := bool(m.Response)
 	_responseErr := io.WriteBit((response))
 	if _responseErr != nil {
-		return errors.New("Error serializing 'response' field " + _responseErr.Error())
+		return errors.Wrap(_responseErr, "Error serializing 'response' field")
 	}
 
 	// Simple Field (broadcast)
 	broadcast := bool(m.Broadcast)
 	_broadcastErr := io.WriteBit((broadcast))
 	if _broadcastErr != nil {
-		return errors.New("Error serializing 'broadcast' field " + _broadcastErr.Error())
+		return errors.Wrap(_broadcastErr, "Error serializing 'broadcast' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteInt8(7, int8(0x0))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 

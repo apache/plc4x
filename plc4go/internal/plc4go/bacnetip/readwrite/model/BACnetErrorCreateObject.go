@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorCreateObject struct {
 	Parent *BACnetError
-	IBACnetErrorCreateObject
 }
 
 // The corresponding interface

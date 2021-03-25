@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type S7MessageResponse struct {
 	ErrorClass uint8
 	ErrorCode  uint8
 	Parent     *S7Message
-	IS7MessageResponse
 }
 
 // The corresponding interface
@@ -110,13 +109,13 @@ func S7MessageResponseParse(io *utils.ReadBuffer) (*S7Message, error) {
 	// Simple Field (errorClass)
 	errorClass, _errorClassErr := io.ReadUint8(8)
 	if _errorClassErr != nil {
-		return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
+		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode, _errorCodeErr := io.ReadUint8(8)
 	if _errorCodeErr != nil {
-		return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
 	// Create a partially initialized instance
@@ -136,14 +135,14 @@ func (m *S7MessageResponse) Serialize(io utils.WriteBuffer) error {
 		errorClass := uint8(m.ErrorClass)
 		_errorClassErr := io.WriteUint8(8, (errorClass))
 		if _errorClassErr != nil {
-			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
+			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
 		_errorCodeErr := io.WriteUint8(8, (errorCode))
 		if _errorCodeErr != nil {
-			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
 		return nil

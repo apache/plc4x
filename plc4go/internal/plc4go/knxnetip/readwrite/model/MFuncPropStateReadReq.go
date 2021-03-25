@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MFuncPropStateReadReq struct {
 	Parent *CEMI
-	IMFuncPropStateReadReq
 }
 
 // The corresponding interface

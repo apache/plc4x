@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -39,7 +39,6 @@ type ApduDataExtPropertyDescriptionResponse struct {
 	ReadLevel        AccessLevel
 	WriteLevel       AccessLevel
 	Parent           *ApduDataExt
-	IApduDataExtPropertyDescriptionResponse
 }
 
 // The corresponding interface
@@ -144,32 +143,32 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8(8)
 	if _objectIndexErr != nil {
-		return nil, errors.New("Error parsing 'objectIndex' field " + _objectIndexErr.Error())
+		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
 	propertyId, _propertyIdErr := io.ReadUint8(8)
 	if _propertyIdErr != nil {
-		return nil, errors.New("Error parsing 'propertyId' field " + _propertyIdErr.Error())
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (index)
 	index, _indexErr := io.ReadUint8(8)
 	if _indexErr != nil {
-		return nil, errors.New("Error parsing 'index' field " + _indexErr.Error())
+		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 
 	// Simple Field (writeEnabled)
 	writeEnabled, _writeEnabledErr := io.ReadBit()
 	if _writeEnabledErr != nil {
-		return nil, errors.New("Error parsing 'writeEnabled' field " + _writeEnabledErr.Error())
+		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(1)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x0) {
 			log.Info().Fields(map[string]interface{}{
@@ -182,14 +181,14 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 	// Simple Field (propertyDataType)
 	propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(io)
 	if _propertyDataTypeErr != nil {
-		return nil, errors.New("Error parsing 'propertyDataType' field " + _propertyDataTypeErr.Error())
+		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x0) {
 			log.Info().Fields(map[string]interface{}{
@@ -202,19 +201,19 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 	// Simple Field (maxNrOfElements)
 	maxNrOfElements, _maxNrOfElementsErr := io.ReadUint16(12)
 	if _maxNrOfElementsErr != nil {
-		return nil, errors.New("Error parsing 'maxNrOfElements' field " + _maxNrOfElementsErr.Error())
+		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
 
 	// Simple Field (readLevel)
 	readLevel, _readLevelErr := AccessLevelParse(io)
 	if _readLevelErr != nil {
-		return nil, errors.New("Error parsing 'readLevel' field " + _readLevelErr.Error())
+		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
 	}
 
 	// Simple Field (writeLevel)
 	writeLevel, _writeLevelErr := AccessLevelParse(io)
 	if _writeLevelErr != nil {
-		return nil, errors.New("Error parsing 'writeLevel' field " + _writeLevelErr.Error())
+		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
 
 	// Create a partially initialized instance
@@ -240,49 +239,49 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		objectIndex := uint8(m.ObjectIndex)
 		_objectIndexErr := io.WriteUint8(8, (objectIndex))
 		if _objectIndexErr != nil {
-			return errors.New("Error serializing 'objectIndex' field " + _objectIndexErr.Error())
+			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
 		_propertyIdErr := io.WriteUint8(8, (propertyId))
 		if _propertyIdErr != nil {
-			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
+			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.Index)
 		_indexErr := io.WriteUint8(8, (index))
 		if _indexErr != nil {
-			return errors.New("Error serializing 'index' field " + _indexErr.Error())
+			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
 		// Simple Field (writeEnabled)
 		writeEnabled := bool(m.WriteEnabled)
 		_writeEnabledErr := io.WriteBit((writeEnabled))
 		if _writeEnabledErr != nil {
-			return errors.New("Error serializing 'writeEnabled' field " + _writeEnabledErr.Error())
+			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(1, uint8(0x0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (propertyDataType)
 		_propertyDataTypeErr := m.PropertyDataType.Serialize(io)
 		if _propertyDataTypeErr != nil {
-			return errors.New("Error serializing 'propertyDataType' field " + _propertyDataTypeErr.Error())
+			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(4, uint8(0x0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -290,19 +289,19 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		maxNrOfElements := uint16(m.MaxNrOfElements)
 		_maxNrOfElementsErr := io.WriteUint16(12, (maxNrOfElements))
 		if _maxNrOfElementsErr != nil {
-			return errors.New("Error serializing 'maxNrOfElements' field " + _maxNrOfElementsErr.Error())
+			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
 		}
 
 		// Simple Field (readLevel)
 		_readLevelErr := m.ReadLevel.Serialize(io)
 		if _readLevelErr != nil {
-			return errors.New("Error serializing 'readLevel' field " + _readLevelErr.Error())
+			return errors.Wrap(_readLevelErr, "Error serializing 'readLevel' field")
 		}
 
 		// Simple Field (writeLevel)
 		_writeLevelErr := m.WriteLevel.Serialize(io)
 		if _writeLevelErr != nil {
-			return errors.New("Error serializing 'writeLevel' field " + _writeLevelErr.Error())
+			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}
 
 		return nil

@@ -47,7 +47,7 @@ watch:
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) yolo -i . -e vendor -e bin -c "$(run)"
 
 ## compile: Compile the binary.
-compile:
+compile: target
 	@-touch $(STDERR)
 	@-rm $(STDERR)
 	@-$(MAKE) -s go-compile 2> $(STDERR)
@@ -56,6 +56,13 @@ compile:
 ## test: Runs test. Runs `mvn test` internally.
 test: compile
 	$(MVNBIN) test
+
+## test: Runs gotestsum.
+test-readable: compile
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) gotestsum ./...
+
+test-readable-mvn: compile
+	$(MVNBIN) mvn-golang-wrapper:custom@readable-test
 
 ## exec: Run given command, wrapped with custom GOPATH. e.g; make exec run="go test ./..."
 exec:
@@ -74,6 +81,9 @@ go-build: go-fmt
 go-get:
 	@echo "  >  Checking if there is any missing dependencies..."
 	$(MVNBIN) verify
+
+go-generate:
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go generate ./...
 
 go-install: go-build
 	$(MVNBIN) install

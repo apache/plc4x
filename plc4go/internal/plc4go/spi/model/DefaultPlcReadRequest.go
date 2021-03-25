@@ -20,18 +20,20 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
+	"time"
 )
 
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
 	fieldHandler           spi.PlcFieldHandler
 	queries                map[string]string
+	queryNames             []string
 	fields                 map[string]model.PlcField
+	fieldNames             []string
 	readRequestInterceptor ReadRequestInterceptor
-	model.PlcReadRequestBuilder
 }
 
 func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {
@@ -43,30 +45,35 @@ func NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHan
 		reader:                 reader,
 		fieldHandler:           fieldHandler,
 		queries:                map[string]string{},
+		queryNames:             make([]string, 0),
 		fields:                 map[string]model.PlcField{},
+		fieldNames:             make([]string, 0),
 		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
 func (m *DefaultPlcReadRequestBuilder) AddQuery(name string, query string) {
+	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 }
 
 func (m *DefaultPlcReadRequestBuilder) AddField(name string, field model.PlcField) {
+	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 }
 
 func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
-	for name := range m.queries {
+	for _, name := range m.queryNames {
 		query := m.queries[name]
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
-			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
+			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
 		}
-		m.fields[name] = field
+		m.AddField(name, field)
 	}
 	return DefaultPlcReadRequest{
 		Fields:                 m.fields,
+		FieldNames:             m.fieldNames,
 		Reader:                 m.reader,
 		ReadRequestInterceptor: m.readRequestInterceptor,
 	}, nil
@@ -74,14 +81,15 @@ func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 
 type DefaultPlcReadRequest struct {
 	Fields                 map[string]model.PlcField
+	FieldNames             []string
 	Reader                 spi.PlcReader
 	ReadRequestInterceptor ReadRequestInterceptor
-	model.PlcReadRequest
 }
 
-func NewDefaultPlcReadRequest(fields map[string]model.PlcField, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) DefaultPlcReadRequest {
+func NewDefaultPlcReadRequest(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) DefaultPlcReadRequest {
 	return DefaultPlcReadRequest{
 		Fields:                 fields,
+		FieldNames:             fieldNames,
 		Reader:                 reader,
 		ReadRequestInterceptor: readRequestInterceptor,
 	}
@@ -98,42 +106,37 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	// Shortcut for single-request-requests
 	if len(readRequests) == 1 {
 		return m.Reader.Read(readRequests[0])
-	} else {
-		// Create a sub-result-channel slice
-		var subResultChannels []<-chan model.PlcReadRequestResult
-
-		// Iterate over all requests and add the result-channels to the list
-		for _, subRequest := range readRequests {
-			subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
-			// TODO: Replace this with a real queueing of requests.
-			//time.Sleep(time.Millisecond * 20)
-		}
-
-		// Create a new result-channel, which completes as soon as all sub-result-channels have returned
-		resultChannel := make(chan model.PlcReadRequestResult)
-		go func() {
-			var subResults []model.PlcReadRequestResult
-			// Iterate over all sub-results
-			for _, subResultChannel := range subResultChannels {
-				subResult := <-subResultChannel
-				subResults = append(subResults, subResult)
-			}
-			// As soon as all are done, process the results
-			result := m.ReadRequestInterceptor.ProcessReadResponses(m, subResults)
-			// Return the final result
-			resultChannel <- result
-		}()
-
-		return resultChannel
 	}
+	// Create a sub-result-channel slice
+	var subResultChannels []<-chan model.PlcReadRequestResult
+
+	// Iterate over all requests and add the result-channels to the list
+	for _, subRequest := range readRequests {
+		subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
+		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
+		time.Sleep(time.Millisecond * 4)
+	}
+
+	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
+	resultChannel := make(chan model.PlcReadRequestResult)
+	go func() {
+		var subResults []model.PlcReadRequestResult
+		// Iterate over all sub-results
+		for _, subResultChannel := range subResultChannels {
+			subResult := <-subResultChannel
+			subResults = append(subResults, subResult)
+		}
+		// As soon as all are done, process the results
+		result := m.ReadRequestInterceptor.ProcessReadResponses(m, subResults)
+		// Return the final result
+		resultChannel <- result
+	}()
+
+	return resultChannel
 }
 
 func (m DefaultPlcReadRequest) GetFieldNames() []string {
-	var fieldNames []string
-	for name := range m.Fields {
-		fieldNames = append(fieldNames, name)
-	}
-	return fieldNames
+	return m.FieldNames
 }
 
 func (m DefaultPlcReadRequest) GetField(name string) model.PlcField {
@@ -151,7 +154,8 @@ func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
 		return err
 	}
-	for fieldName, field := range m.Fields {
+	for _, fieldName := range m.FieldNames {
+		field := m.Fields[fieldName]
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err
 		}

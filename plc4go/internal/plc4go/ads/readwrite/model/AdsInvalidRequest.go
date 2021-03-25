@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type AdsInvalidRequest struct {
 	Parent *AdsData
-	IAdsInvalidRequest
 }
 
 // The corresponding interface

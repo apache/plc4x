@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadExceptionStatusResponse struct {
 	Value  uint8
 	Parent *ModbusPDU
-	IModbusPDUReadExceptionStatusResponse
 }
 
 // The corresponding interface
@@ -110,7 +109,7 @@ func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint8(8)
 	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
 	// Create a partially initialized instance
@@ -129,7 +128,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) e
 		value := uint8(m.Value)
 		_valueErr := io.WriteUint8(8, (value))
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		return nil

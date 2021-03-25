@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduControlNack struct {
 	Parent *ApduControl
-	IApduControlNack
 }
 
 // The corresponding interface

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadFileRecordResponse struct {
 	Items  []*ModbusPDUReadFileRecordResponseItem
 	Parent *ModbusPDU
-	IModbusPDUReadFileRecordResponse
 }
 
 // The corresponding interface
@@ -117,7 +116,7 @@ func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (items)
@@ -128,7 +127,7 @@ func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	for io.GetPos() < _itemsEndPos {
 		_item, _err := ModbusPDUReadFileRecordResponseItemParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items = append(items, _item)
 	}
@@ -156,7 +155,7 @@ func (m *ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error 
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (items)
@@ -164,7 +163,7 @@ func (m *ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error 
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}

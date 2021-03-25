@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ModbusPDUReportServerIdRequest struct {
 	Parent *ModbusPDU
-	IModbusPDUReportServerIdRequest
 }
 
 // The corresponding interface

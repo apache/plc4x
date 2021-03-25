@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type AdsStampHeader struct {
 	Timestamp              uint64
 	Samples                uint32
 	AdsNotificationSamples []*AdsNotificationSample
-	IAdsStampHeader
 }
 
 // The corresponding interface
@@ -92,13 +91,13 @@ func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint64(64)
 	if _timestampErr != nil {
-		return nil, errors.New("Error parsing 'timestamp' field " + _timestampErr.Error())
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples, _samplesErr := io.ReadUint32(32)
 	if _samplesErr != nil {
-		return nil, errors.New("Error parsing 'samples' field " + _samplesErr.Error())
+		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
 
 	// Array field (adsNotificationSamples)
@@ -107,7 +106,7 @@ func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
 		_item, _err := AdsNotificationSampleParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'adsNotificationSamples' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field")
 		}
 		adsNotificationSamples[curItem] = _item
 	}
@@ -122,14 +121,14 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 	timestamp := uint64(m.Timestamp)
 	_timestampErr := io.WriteUint64(64, (timestamp))
 	if _timestampErr != nil {
-		return errors.New("Error serializing 'timestamp' field " + _timestampErr.Error())
+		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples := uint32(m.Samples)
 	_samplesErr := io.WriteUint32(32, (samples))
 	if _samplesErr != nil {
-		return errors.New("Error serializing 'samples' field " + _samplesErr.Error())
+		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
 	}
 
 	// Array Field (adsNotificationSamples)
@@ -137,7 +136,7 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'adsNotificationSamples' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 			}
 		}
 	}

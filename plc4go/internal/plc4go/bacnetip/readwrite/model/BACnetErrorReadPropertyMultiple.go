@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorReadPropertyMultiple struct {
 	Parent *BACnetError
-	IBACnetErrorReadPropertyMultiple
 }
 
 // The corresponding interface

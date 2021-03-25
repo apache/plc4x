@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7ParameterWriteVarRequest struct {
 	Items  []*S7VarRequestParameterItem
 	Parent *S7Parameter
-	IS7ParameterWriteVarRequest
 }
 
 // The corresponding interface
@@ -113,7 +112,7 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8(8)
 	if _numItemsErr != nil {
-		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
 	// Array field (items)
@@ -122,7 +121,7 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 		_item, _err := S7VarRequestParameterItemParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -143,7 +142,7 @@ func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 		numItems := uint8(uint8(len(m.Items)))
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
-			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
 		// Array Field (items)
@@ -151,7 +150,7 @@ func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}

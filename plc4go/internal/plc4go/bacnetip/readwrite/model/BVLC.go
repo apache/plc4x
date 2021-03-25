@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strconv"
@@ -36,8 +36,6 @@ const BVLC_BACNETTYPE uint8 = 0x81
 // The data-structure of this message
 type BVLC struct {
 	Child IBVLCChild
-	IBVLC
-	IBVLCParent
 }
 
 // The corresponding interface
@@ -109,7 +107,7 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 	// Const Field (bacnetType)
 	bacnetType, _bacnetTypeErr := io.ReadUint8(8)
 	if _bacnetTypeErr != nil {
-		return nil, errors.New("Error parsing 'bacnetType' field " + _bacnetTypeErr.Error())
+		return nil, errors.Wrap(_bacnetTypeErr, "Error parsing 'bacnetType' field")
 	}
 	if bacnetType != BVLC_BACNETTYPE {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BVLC_BACNETTYPE)) + " but got " + strconv.Itoa(int(bacnetType)))
@@ -118,13 +116,13 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction, _bvlcFunctionErr := io.ReadUint8(8)
 	if _bvlcFunctionErr != nil {
-		return nil, errors.New("Error parsing 'bvlcFunction' field " + _bvlcFunctionErr.Error())
+		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength, _bvlcLengthErr := io.ReadUint16(16)
 	if _bvlcLengthErr != nil {
-		return nil, errors.New("Error parsing 'bvlcLength' field " + _bvlcLengthErr.Error())
+		return nil, errors.Wrap(_bvlcLengthErr, "Error parsing 'bvlcLength' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -159,7 +157,7 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 		_parent, typeSwitchError = BVLCSecureBVLLParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -176,27 +174,27 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 	// Const Field (bacnetType)
 	_bacnetTypeErr := io.WriteUint8(8, 0x81)
 	if _bacnetTypeErr != nil {
-		return errors.New("Error serializing 'bacnetType' field " + _bacnetTypeErr.Error())
+		return errors.Wrap(_bacnetTypeErr, "Error serializing 'bacnetType' field")
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction := uint8(child.BvlcFunction())
 	_bvlcFunctionErr := io.WriteUint8(8, (bvlcFunction))
 	if _bvlcFunctionErr != nil {
-		return errors.New("Error serializing 'bvlcFunction' field " + _bvlcFunctionErr.Error())
+		return errors.Wrap(_bvlcFunctionErr, "Error serializing 'bvlcFunction' field")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.LengthInBytes()))
 	_bvlcLengthErr := io.WriteUint16(16, (bvlcLength))
 	if _bvlcLengthErr != nil {
-		return errors.New("Error serializing 'bvlcLength' field " + _bvlcLengthErr.Error())
+		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -391,7 +389,7 @@ func (m *BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

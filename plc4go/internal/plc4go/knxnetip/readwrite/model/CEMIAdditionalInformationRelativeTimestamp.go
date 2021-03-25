@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strconv"
 )
@@ -35,7 +35,6 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = 2
 type CEMIAdditionalInformationRelativeTimestamp struct {
 	RelativeTimestamp *RelativeTimestamp
 	Parent            *CEMIAdditionalInformation
-	ICEMIAdditionalInformationRelativeTimestamp
 }
 
 // The corresponding interface
@@ -109,7 +108,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEM
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8(8)
 	if _lenErr != nil {
-		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 	if len != CEMIAdditionalInformationRelativeTimestamp_LEN {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(CEMIAdditionalInformationRelativeTimestamp_LEN)) + " but got " + strconv.Itoa(int(len)))
@@ -118,7 +117,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEM
 	// Simple Field (relativeTimestamp)
 	relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(io)
 	if _relativeTimestampErr != nil {
-		return nil, errors.New("Error parsing 'relativeTimestamp' field " + _relativeTimestampErr.Error())
+		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
 
 	// Create a partially initialized instance
@@ -136,13 +135,13 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuf
 		// Const Field (len)
 		_lenErr := io.WriteUint8(8, 2)
 		if _lenErr != nil {
-			return errors.New("Error serializing 'len' field " + _lenErr.Error())
+			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (relativeTimestamp)
 		_relativeTimestampErr := m.RelativeTimestamp.Serialize(io)
 		if _relativeTimestampErr != nil {
-			return errors.New("Error serializing 'relativeTimestamp' field " + _relativeTimestampErr.Error())
+			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}
 
 		return nil

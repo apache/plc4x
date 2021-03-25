@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type SearchRequest struct {
 	HpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint
 	Parent                 *KnxNetIpMessage
-	ISearchRequest
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func SearchRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +119,7 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
 		if _hpaiIDiscoveryEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
+			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
 		return nil

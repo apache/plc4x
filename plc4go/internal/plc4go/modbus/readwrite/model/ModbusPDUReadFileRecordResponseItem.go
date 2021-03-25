@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type ModbusPDUReadFileRecordResponseItem struct {
 	ReferenceType uint8
 	Data          []int8
-	IModbusPDUReadFileRecordResponseItem
 }
 
 // The corresponding interface
@@ -91,13 +90,13 @@ func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUR
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8(8)
 	if _dataLengthErr != nil {
-		return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)
 	if _referenceTypeErr != nil {
-		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Array field (data)
@@ -108,7 +107,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUR
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
@@ -123,14 +122,14 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) er
 	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
 	_dataLengthErr := io.WriteUint8(8, (dataLength))
 	if _dataLengthErr != nil {
-		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
 	_referenceTypeErr := io.WriteUint8(8, (referenceType))
 	if _referenceTypeErr != nil {
-		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Array Field (data)
@@ -138,7 +137,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) er
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
 	}

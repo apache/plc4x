@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCWideBroadcastDistributionTable struct {
 	Parent *BVLC
-	IBVLCWideBroadcastDistributionTable
 }
 
 // The corresponding interface

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ApduDataExtAuthorizeResponse struct {
 	Level  uint8
 	Parent *ApduDataExt
-	IApduDataExtAuthorizeResponse
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func ApduDataExtAuthorizeResponseParse(io *utils.ReadBuffer) (*ApduDataExt, erro
 	// Simple Field (level)
 	level, _levelErr := io.ReadUint8(8)
 	if _levelErr != nil {
-		return nil, errors.New("Error parsing 'level' field " + _levelErr.Error())
+		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +120,7 @@ func (m *ApduDataExtAuthorizeResponse) Serialize(io utils.WriteBuffer) error {
 		level := uint8(m.Level)
 		_levelErr := io.WriteUint8(8, (level))
 		if _levelErr != nil {
-			return errors.New("Error serializing 'level' field " + _levelErr.Error())
+			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
 		return nil

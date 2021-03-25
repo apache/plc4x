@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceACK struct {
 	Child IBACnetConfirmedServiceACKChild
-	IBACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKParent
 }
 
 // The corresponding interface
@@ -99,7 +97,7 @@ func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServi
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
 	if _serviceChoiceErr != nil {
-		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -136,7 +134,7 @@ func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServi
 		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -154,13 +152,13 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(io utils.WriteBuffer, child 
 	serviceChoice := uint8(child.ServiceChoice())
 	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
 	if _serviceChoiceErr != nil {
-		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -367,7 +365,7 @@ func (m *BACnetConfirmedServiceACK) MarshalXML(e *xml.Encoder, start xml.StartEl
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

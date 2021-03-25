@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -36,7 +36,6 @@ type ModbusPDUGetComEventLogResponse struct {
 	MessageCount uint16
 	Events       []int8
 	Parent       *ModbusPDU
-	IModbusPDUGetComEventLogResponse
 }
 
 // The corresponding interface
@@ -132,25 +131,25 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Simple Field (status)
 	status, _statusErr := io.ReadUint16(16)
 	if _statusErr != nil {
-		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Simple Field (eventCount)
 	eventCount, _eventCountErr := io.ReadUint16(16)
 	if _eventCountErr != nil {
-		return nil, errors.New("Error parsing 'eventCount' field " + _eventCountErr.Error())
+		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
 
 	// Simple Field (messageCount)
 	messageCount, _messageCountErr := io.ReadUint16(16)
 	if _messageCountErr != nil {
-		return nil, errors.New("Error parsing 'messageCount' field " + _messageCountErr.Error())
+		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
 
 	// Array field (events)
@@ -159,7 +158,7 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'events' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'events' field")
 		}
 		events[curItem] = _item
 	}
@@ -183,28 +182,28 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Simple Field (status)
 		status := uint16(m.Status)
 		_statusErr := io.WriteUint16(16, (status))
 		if _statusErr != nil {
-			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.EventCount)
 		_eventCountErr := io.WriteUint16(16, (eventCount))
 		if _eventCountErr != nil {
-			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
+			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.MessageCount)
 		_messageCountErr := io.WriteUint16(16, (messageCount))
 		if _messageCountErr != nil {
-			return errors.New("Error serializing 'messageCount' field " + _messageCountErr.Error())
+			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
 		}
 
 		// Array Field (events)
@@ -212,7 +211,7 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 			for _, _element := range m.Events {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'events' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'events' field")
 				}
 			}
 		}

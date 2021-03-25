@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type KnxGroupAddress2Level struct {
 	MainGroup uint8
 	SubGroup  uint16
 	Parent    *KnxGroupAddress
-	IKnxGroupAddress2Level
 }
 
 // The corresponding interface
@@ -107,13 +106,13 @@ func KnxGroupAddress2LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8(5)
 	if _mainGroupErr != nil {
-		return nil, errors.New("Error parsing 'mainGroup' field " + _mainGroupErr.Error())
+		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint16(11)
 	if _subGroupErr != nil {
-		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
 	// Create a partially initialized instance
@@ -133,14 +132,14 @@ func (m *KnxGroupAddress2Level) Serialize(io utils.WriteBuffer) error {
 		mainGroup := uint8(m.MainGroup)
 		_mainGroupErr := io.WriteUint8(5, (mainGroup))
 		if _mainGroupErr != nil {
-			return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
+			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
 		_subGroupErr := io.WriteUint16(11, (subGroup))
 		if _subGroupErr != nil {
-			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
 		return nil

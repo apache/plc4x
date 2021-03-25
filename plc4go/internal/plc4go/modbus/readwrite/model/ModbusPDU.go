@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ModbusPDU struct {
 	Child IModbusPDUChild
-	IModbusPDU
-	IModbusPDUParent
 }
 
 // The corresponding interface
@@ -104,13 +102,13 @@ func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := io.ReadBit()
 	if _errorFlagErr != nil {
-		return nil, errors.New("Error parsing 'errorFlag' field " + _errorFlagErr.Error())
+		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag, _functionFlagErr := io.ReadUint8(7)
 	if _functionFlagErr != nil {
-		return nil, errors.New("Error parsing 'functionFlag' field " + _functionFlagErr.Error())
+		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -197,7 +195,7 @@ func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -215,20 +213,20 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 	errorFlag := bool(child.ErrorFlag())
 	_errorFlagErr := io.WriteBit((errorFlag))
 	if _errorFlagErr != nil {
-		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())
+		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.FunctionFlag())
 	_functionFlagErr := io.WriteUint8(7, (functionFlag))
 	if _functionFlagErr != nil {
-		return errors.New("Error serializing 'functionFlag' field " + _functionFlagErr.Error())
+		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -735,7 +733,7 @@ func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

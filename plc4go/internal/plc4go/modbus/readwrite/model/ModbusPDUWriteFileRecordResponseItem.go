@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -35,7 +35,6 @@ type ModbusPDUWriteFileRecordResponseItem struct {
 	FileNumber    uint16
 	RecordNumber  uint16
 	RecordData    []int8
-	IModbusPDUWriteFileRecordResponseItem
 }
 
 // The corresponding interface
@@ -99,25 +98,25 @@ func ModbusPDUWriteFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDU
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)
 	if _referenceTypeErr != nil {
-		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber, _fileNumberErr := io.ReadUint16(16)
 	if _fileNumberErr != nil {
-		return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
+		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber, _recordNumberErr := io.ReadUint16(16)
 	if _recordNumberErr != nil {
-		return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
+		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength, _recordLengthErr := io.ReadUint16(16)
 	if _recordLengthErr != nil {
-		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
+		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
 
 	// Array field (recordData)
@@ -128,7 +127,7 @@ func ModbusPDUWriteFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDU
 	for io.GetPos() < _recordDataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'recordData' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'recordData' field")
 		}
 		recordData = append(recordData, _item)
 	}
@@ -143,28 +142,28 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(io utils.WriteBuffer) e
 	referenceType := uint8(m.ReferenceType)
 	_referenceTypeErr := io.WriteUint8(8, (referenceType))
 	if _referenceTypeErr != nil {
-		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.FileNumber)
 	_fileNumberErr := io.WriteUint16(16, (fileNumber))
 	if _fileNumberErr != nil {
-		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
+		return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.RecordNumber)
 	_recordNumberErr := io.WriteUint16(16, (recordNumber))
 	if _recordNumberErr != nil {
-		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
+		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
 	_recordLengthErr := io.WriteUint16(16, (recordLength))
 	if _recordLengthErr != nil {
-		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
+		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}
 
 	// Array Field (recordData)
@@ -172,7 +171,7 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(io utils.WriteBuffer) e
 		for _, _element := range m.RecordData {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'recordData' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'recordData' field")
 			}
 		}
 	}

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type KnxGroupAddress struct {
 	Child IKnxGroupAddressChild
-	IKnxGroupAddress
-	IKnxGroupAddressParent
 }
 
 // The corresponding interface
@@ -105,7 +103,7 @@ func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddre
 		_parent, typeSwitchError = KnxGroupAddress3LevelParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -122,7 +120,7 @@ func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupA
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -197,7 +195,7 @@ func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

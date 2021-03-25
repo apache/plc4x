@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckVTData struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckVTData
 }
 
 // The corresponding interface

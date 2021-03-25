@@ -46,16 +46,13 @@ import org.apache.plc4x.test.driver.model.DriverTestsuite;
 import org.apache.plc4x.test.driver.model.StepType;
 import org.apache.plc4x.test.driver.model.TestStep;
 import org.apache.plc4x.test.driver.model.Testcase;
-import org.apache.plc4x.test.driver.model.api.TestField;
-import org.apache.plc4x.test.driver.model.api.TestReadRequest;
-import org.apache.plc4x.test.driver.model.api.TestRequest;
-import org.apache.plc4x.test.driver.model.api.TestWriteRequest;
 import org.apache.plc4x.test.mapper.TestSuiteMappingModule;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
@@ -69,8 +66,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -82,8 +77,11 @@ public class DriverTestsuiteRunner extends XmlTestsuiteRunner {
 
     private CompletableFuture<? extends PlcResponse> responseFuture;
 
-    public DriverTestsuiteRunner(String testsuiteDocument) {
+    private final Set<String>ignoredTestCases = new HashSet<>();
+
+    public DriverTestsuiteRunner(String testsuiteDocument, String... ignoredTestCases) {
         super(testsuiteDocument);
+        Collections.addAll(this.ignoredTestCases, ignoredTestCases);
     }
 
     @TestFactory
@@ -92,9 +90,12 @@ public class DriverTestsuiteRunner extends XmlTestsuiteRunner {
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for (Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
+
             String testcaseLabel = testSuite.getName() + ": " + testcaseName;
-            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () ->
-                run(testSuite, testcase)
+            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () -> {
+                Assumptions.assumeFalse(() -> ignoredTestCases.contains(testcaseName),"Testcase "+ testcaseName+ " ignored");
+                run(testSuite, testcase);
+                }
             );
             dynamicTests.add(test);
         }

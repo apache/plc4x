@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -34,7 +34,6 @@ type BACnetTagApplicationBitString struct {
 	UnusedBits uint8
 	Data       []int8
 	Parent     *BACnetTag
-	IBACnetTagApplicationBitString
 }
 
 // The corresponding interface
@@ -115,7 +114,7 @@ func BACnetTagApplicationBitStringParse(io *utils.ReadBuffer, lengthValueType ui
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := io.ReadUint8(8)
 	if _unusedBitsErr != nil {
-		return nil, errors.New("Error parsing 'unusedBits' field " + _unusedBitsErr.Error())
+		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
 	}
 
 	// Array field (data)
@@ -126,7 +125,7 @@ func BACnetTagApplicationBitStringParse(io *utils.ReadBuffer, lengthValueType ui
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
@@ -148,7 +147,7 @@ func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 		unusedBits := uint8(m.UnusedBits)
 		_unusedBitsErr := io.WriteUint8(8, (unusedBits))
 		if _unusedBitsErr != nil {
-			return errors.New("Error serializing 'unusedBits' field " + _unusedBitsErr.Error())
+			return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
 		}
 
 		// Array Field (data)
@@ -156,7 +155,7 @@ func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

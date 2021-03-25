@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type ComObjectTableRealisationType1 struct {
 	RamFlagsTablePointer uint8
 	ComObjectDescriptors []*GroupObjectDescriptorRealisationType1
 	Parent               *ComObjectTable
-	IComObjectTableRealisationType1
 }
 
 // The corresponding interface
@@ -116,13 +115,13 @@ func ComObjectTableRealisationType1Parse(io *utils.ReadBuffer) (*ComObjectTable,
 	// Simple Field (numEntries)
 	numEntries, _numEntriesErr := io.ReadUint8(8)
 	if _numEntriesErr != nil {
-		return nil, errors.New("Error parsing 'numEntries' field " + _numEntriesErr.Error())
+		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
 	}
 
 	// Simple Field (ramFlagsTablePointer)
 	ramFlagsTablePointer, _ramFlagsTablePointerErr := io.ReadUint8(8)
 	if _ramFlagsTablePointerErr != nil {
-		return nil, errors.New("Error parsing 'ramFlagsTablePointer' field " + _ramFlagsTablePointerErr.Error())
+		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
 
 	// Array field (comObjectDescriptors)
@@ -131,7 +130,7 @@ func ComObjectTableRealisationType1Parse(io *utils.ReadBuffer) (*ComObjectTable,
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
 		_item, _err := GroupObjectDescriptorRealisationType1Parse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'comObjectDescriptors' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
 		}
 		comObjectDescriptors[curItem] = _item
 	}
@@ -154,14 +153,14 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 		numEntries := uint8(m.NumEntries)
 		_numEntriesErr := io.WriteUint8(8, (numEntries))
 		if _numEntriesErr != nil {
-			return errors.New("Error serializing 'numEntries' field " + _numEntriesErr.Error())
+			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
 		}
 
 		// Simple Field (ramFlagsTablePointer)
 		ramFlagsTablePointer := uint8(m.RamFlagsTablePointer)
 		_ramFlagsTablePointerErr := io.WriteUint8(8, (ramFlagsTablePointer))
 		if _ramFlagsTablePointerErr != nil {
-			return errors.New("Error serializing 'ramFlagsTablePointer' field " + _ramFlagsTablePointerErr.Error())
+			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}
 
 		// Array Field (comObjectDescriptors)
@@ -169,7 +168,7 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.ComObjectDescriptors {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'comObjectDescriptors' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 				}
 			}
 		}

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7Address struct {
 	Child IS7AddressChild
-	IS7Address
-	IS7AddressParent
 }
 
 // The corresponding interface
@@ -99,7 +97,7 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := io.ReadUint8(8)
 	if _addressTypeErr != nil {
-		return nil, errors.New("Error parsing 'addressType' field " + _addressTypeErr.Error())
+		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -110,7 +108,7 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 		_parent, typeSwitchError = S7AddressAnyParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -128,13 +126,13 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 	addressType := uint8(child.AddressType())
 	_addressTypeErr := io.WriteUint8(8, (addressType))
 	if _addressTypeErr != nil {
-		return errors.New("Error serializing 'addressType' field " + _addressTypeErr.Error())
+		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -185,7 +183,7 @@ func (m *S7Address) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type TunnelingRequest struct {
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
 	Parent                    *KnxNetIpMessage
-	ITunnelingRequest
 }
 
 // The corresponding interface
@@ -107,13 +106,13 @@ func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpM
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
 	if _tunnelingRequestDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field")
 	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
-		return nil, errors.New("Error parsing 'cemi' field " + _cemiErr.Error())
+		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
 
 	// Create a partially initialized instance
@@ -132,13 +131,13 @@ func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (tunnelingRequestDataBlock)
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
 		if _tunnelingRequestDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
 		_cemiErr := m.Cemi.Serialize(io)
 		if _cemiErr != nil {
-			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
 		return nil

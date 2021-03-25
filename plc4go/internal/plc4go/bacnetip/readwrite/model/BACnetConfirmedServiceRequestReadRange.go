@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReadRange struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestReadRange
 }
 
 // The corresponding interface

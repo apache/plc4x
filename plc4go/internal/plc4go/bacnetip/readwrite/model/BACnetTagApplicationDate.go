@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetTagApplicationDate struct {
 	Parent *BACnetTag
-	IBACnetTagApplicationDate
 }
 
 // The corresponding interface

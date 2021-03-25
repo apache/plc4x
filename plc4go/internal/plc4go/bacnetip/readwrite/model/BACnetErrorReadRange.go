@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorReadRange struct {
 	Parent *BACnetError
-	IBACnetErrorReadRange
 }
 
 // The corresponding interface

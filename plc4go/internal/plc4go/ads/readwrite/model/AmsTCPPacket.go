@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type AmsTCPPacket struct {
 	Userdata *AmsPacket
-	IAmsTCPPacket
 }
 
 // The corresponding interface
@@ -88,7 +87,7 @@ func AmsTCPPacketParse(io *utils.ReadBuffer) (*AmsTCPPacket, error) {
 	{
 		reserved, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint16(0x0000) {
 			log.Info().Fields(map[string]interface{}{
@@ -101,13 +100,13 @@ func AmsTCPPacketParse(io *utils.ReadBuffer) (*AmsTCPPacket, error) {
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _lengthErr := io.ReadUint32(32)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
-		return nil, errors.New("Error parsing 'userdata' field " + _userdataErr.Error())
+		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
 
 	// Create the instance
@@ -120,7 +119,7 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 	{
 		_err := io.WriteUint16(16, uint16(0x0000))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -128,13 +127,13 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 	length := uint32(m.Userdata.LengthInBytes())
 	_lengthErr := io.WriteUint32(32, (length))
 	if _lengthErr != nil {
-		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (userdata)
 	_userdataErr := m.Userdata.Serialize(io)
 	if _userdataErr != nil {
-		return errors.New("Error serializing 'userdata' field " + _userdataErr.Error())
+		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
 	return nil

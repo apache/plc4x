@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCRegisterForeignDevice struct {
 	Parent *BVLC
-	IBVLCRegisterForeignDevice
 }
 
 // The corresponding interface

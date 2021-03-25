@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ApduDataMemoryResponse struct {
 	Address uint16
 	Data    []uint8
 	Parent  *ApduData
-	IApduDataMemoryResponse
 }
 
 // The corresponding interface
@@ -112,13 +111,13 @@ func ApduDataMemoryResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBytes, _numBytesErr := io.ReadUint8(6)
 	if _numBytesErr != nil {
-		return nil, errors.New("Error parsing 'numBytes' field " + _numBytesErr.Error())
+		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16(16)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Array field (data)
@@ -127,7 +126,7 @@ func ApduDataMemoryResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -149,14 +148,14 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 		numBytes := uint8(uint8(len(m.Data)))
 		_numBytesErr := io.WriteUint8(6, (numBytes))
 		if _numBytesErr != nil {
-			return errors.New("Error serializing 'numBytes' field " + _numBytesErr.Error())
+			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
 		_addressErr := io.WriteUint16(16, (address))
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Array Field (data)
@@ -164,7 +163,7 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

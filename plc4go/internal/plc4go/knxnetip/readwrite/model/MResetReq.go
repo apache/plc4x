@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MResetReq struct {
 	Parent *CEMI
-	IMResetReq
 }
 
 // The corresponding interface

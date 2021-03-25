@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorVTOpen struct {
 	Parent *BACnetError
-	IBACnetErrorVTOpen
 }
 
 // The corresponding interface

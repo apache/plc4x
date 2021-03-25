@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -37,7 +37,6 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 	WriteQuantity        uint16
 	Value                []int8
 	Parent               *ModbusPDU
-	IModbusPDUReadWriteMultipleHoldingRegistersRequest
 }
 
 // The corresponding interface
@@ -137,31 +136,31 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer
 	// Simple Field (readStartingAddress)
 	readStartingAddress, _readStartingAddressErr := io.ReadUint16(16)
 	if _readStartingAddressErr != nil {
-		return nil, errors.New("Error parsing 'readStartingAddress' field " + _readStartingAddressErr.Error())
+		return nil, errors.Wrap(_readStartingAddressErr, "Error parsing 'readStartingAddress' field")
 	}
 
 	// Simple Field (readQuantity)
 	readQuantity, _readQuantityErr := io.ReadUint16(16)
 	if _readQuantityErr != nil {
-		return nil, errors.New("Error parsing 'readQuantity' field " + _readQuantityErr.Error())
+		return nil, errors.Wrap(_readQuantityErr, "Error parsing 'readQuantity' field")
 	}
 
 	// Simple Field (writeStartingAddress)
 	writeStartingAddress, _writeStartingAddressErr := io.ReadUint16(16)
 	if _writeStartingAddressErr != nil {
-		return nil, errors.New("Error parsing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
+		return nil, errors.Wrap(_writeStartingAddressErr, "Error parsing 'writeStartingAddress' field")
 	}
 
 	// Simple Field (writeQuantity)
 	writeQuantity, _writeQuantityErr := io.ReadUint16(16)
 	if _writeQuantityErr != nil {
-		return nil, errors.New("Error parsing 'writeQuantity' field " + _writeQuantityErr.Error())
+		return nil, errors.Wrap(_writeQuantityErr, "Error parsing 'writeQuantity' field")
 	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (value)
@@ -170,7 +169,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
@@ -195,35 +194,35 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 		readStartingAddress := uint16(m.ReadStartingAddress)
 		_readStartingAddressErr := io.WriteUint16(16, (readStartingAddress))
 		if _readStartingAddressErr != nil {
-			return errors.New("Error serializing 'readStartingAddress' field " + _readStartingAddressErr.Error())
+			return errors.Wrap(_readStartingAddressErr, "Error serializing 'readStartingAddress' field")
 		}
 
 		// Simple Field (readQuantity)
 		readQuantity := uint16(m.ReadQuantity)
 		_readQuantityErr := io.WriteUint16(16, (readQuantity))
 		if _readQuantityErr != nil {
-			return errors.New("Error serializing 'readQuantity' field " + _readQuantityErr.Error())
+			return errors.Wrap(_readQuantityErr, "Error serializing 'readQuantity' field")
 		}
 
 		// Simple Field (writeStartingAddress)
 		writeStartingAddress := uint16(m.WriteStartingAddress)
 		_writeStartingAddressErr := io.WriteUint16(16, (writeStartingAddress))
 		if _writeStartingAddressErr != nil {
-			return errors.New("Error serializing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
+			return errors.Wrap(_writeStartingAddressErr, "Error serializing 'writeStartingAddress' field")
 		}
 
 		// Simple Field (writeQuantity)
 		writeQuantity := uint16(m.WriteQuantity)
 		_writeQuantityErr := io.WriteUint16(16, (writeQuantity))
 		if _writeQuantityErr != nil {
-			return errors.New("Error serializing 'writeQuantity' field " + _writeQuantityErr.Error())
+			return errors.Wrap(_writeQuantityErr, "Error serializing 'writeQuantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (value)
@@ -231,7 +230,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
 		}

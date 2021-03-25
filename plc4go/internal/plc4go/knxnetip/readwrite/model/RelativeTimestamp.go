@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type RelativeTimestamp struct {
 	Timestamp uint16
-	IRelativeTimestamp
 }
 
 // The corresponding interface
@@ -80,7 +79,7 @@ func RelativeTimestampParse(io *utils.ReadBuffer) (*RelativeTimestamp, error) {
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint16(16)
 	if _timestampErr != nil {
-		return nil, errors.New("Error parsing 'timestamp' field " + _timestampErr.Error())
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
 	// Create the instance
@@ -93,7 +92,7 @@ func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 	timestamp := uint16(m.Timestamp)
 	_timestampErr := io.WriteUint16(16, (timestamp))
 	if _timestampErr != nil {
-		return errors.New("Error serializing 'timestamp' field " + _timestampErr.Error())
+		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	return nil

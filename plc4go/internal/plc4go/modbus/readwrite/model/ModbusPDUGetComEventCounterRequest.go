@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ModbusPDUGetComEventCounterRequest struct {
 	Parent *ModbusPDU
-	IModbusPDUGetComEventCounterRequest
 }
 
 // The corresponding interface

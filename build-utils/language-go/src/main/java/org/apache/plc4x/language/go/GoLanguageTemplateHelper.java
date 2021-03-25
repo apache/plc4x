@@ -692,7 +692,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     String childProperty = vl.getChild().getName();
                     final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream().filter(field -> (field instanceof DiscriminatorField) && ((DiscriminatorField) field).getName().equals(childProperty)).findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
-                        return "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ")." + StringUtils.capitalize(childProperty) + "()";
+                        return "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ").Child." + StringUtils.capitalize(childProperty) + "()";
                     }
                 }
             }
@@ -813,7 +813,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
         // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
         if (!complexTypeDefinition.getFields().isEmpty()) {
-            imports.add("\"errors\"");
+            imports.add("\"github.com/pkg/errors\"");
         }
 
         imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
@@ -862,7 +862,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
         List<String> imports = new ArrayList<>();
 
-        imports.add("\"errors\"");
+        imports.add("\"github.com/pkg/errors\"");
         imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values\"");
         imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
         imports.add("api \"github.com/apache/plc4x/plc4go/pkg/plc4go/values\"");

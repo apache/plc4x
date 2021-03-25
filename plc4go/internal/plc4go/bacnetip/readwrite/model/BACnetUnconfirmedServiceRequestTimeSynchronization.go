@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 	Parent *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestTimeSynchronization
 }
 
 // The corresponding interface

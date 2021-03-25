@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtWriteRouterMemoryRequest struct {
 	Parent *ApduDataExt
-	IApduDataExtWriteRouterMemoryRequest
 }
 
 // The corresponding interface

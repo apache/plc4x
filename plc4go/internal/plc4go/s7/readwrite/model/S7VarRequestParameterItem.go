@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7VarRequestParameterItem struct {
 	Child IS7VarRequestParameterItemChild
-	IS7VarRequestParameterItem
-	IS7VarRequestParameterItemParent
 }
 
 // The corresponding interface
@@ -99,7 +97,7 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8(8)
 	if _itemTypeErr != nil {
-		return nil, errors.New("Error parsing 'itemType' field " + _itemTypeErr.Error())
+		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -110,7 +108,7 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -128,13 +126,13 @@ func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child 
 	itemType := uint8(child.ItemType())
 	_itemTypeErr := io.WriteUint8(8, (itemType))
 	if _itemTypeErr != nil {
-		return errors.New("Error serializing 'itemType' field " + _itemTypeErr.Error())
+		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -185,7 +183,7 @@ func (m *S7VarRequestParameterItem) MarshalXML(e *xml.Encoder, start xml.StartEl
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

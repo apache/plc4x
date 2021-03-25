@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type DeviceConfigurationRequest struct {
 	DeviceConfigurationRequestDataBlock *DeviceConfigurationRequestDataBlock
 	Cemi                                *CEMI
 	Parent                              *KnxNetIpMessage
-	IDeviceConfigurationRequest
 }
 
 // The corresponding interface
@@ -107,13 +106,13 @@ func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
 	if _deviceConfigurationRequestDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
+		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
 	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
-		return nil, errors.New("Error parsing 'cemi' field " + _cemiErr.Error())
+		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
 
 	// Create a partially initialized instance
@@ -132,13 +131,13 @@ func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (deviceConfigurationRequestDataBlock)
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
 		if _deviceConfigurationRequestDataBlockErr != nil {
-			return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
+			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
 		_cemiErr := m.Cemi.Serialize(io)
 		if _cemiErr != nil {
-			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
 		return nil

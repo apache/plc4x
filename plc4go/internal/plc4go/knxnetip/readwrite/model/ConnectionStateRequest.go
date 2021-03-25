@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -33,7 +33,6 @@ type ConnectionStateRequest struct {
 	CommunicationChannelId uint8
 	HpaiControlEndpoint    *HPAIControlEndpoint
 	Parent                 *KnxNetIpMessage
-	IConnectionStateRequest
 }
 
 // The corresponding interface
@@ -111,14 +110,14 @@ func ConnectionStateRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error)
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -131,7 +130,7 @@ func ConnectionStateRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error)
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
 
 	// Create a partially initialized instance
@@ -151,21 +150,21 @@ func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
-			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(8, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		return nil

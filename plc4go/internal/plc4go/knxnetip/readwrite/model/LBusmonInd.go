@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -34,7 +34,6 @@ type LBusmonInd struct {
 	DataFrame                   *LDataFrame
 	Crc                         *uint8
 	Parent                      *CEMI
-	ILBusmonInd
 }
 
 // The corresponding interface
@@ -123,7 +122,7 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
 	if _additionalInformationLengthErr != nil {
-		return nil, errors.New("Error parsing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
 
 	// Array field (additionalInformation)
@@ -134,7 +133,7 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	for io.GetPos() < _additionalInformationEndPos {
 		_item, _err := CEMIAdditionalInformationParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'additionalInformation' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
@@ -142,15 +141,15 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
-		return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
+		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc *uint8 = nil
-	if CastLDataFrame(dataFrame).NotAckFrame() {
+	if CastLDataFrame(dataFrame).Child.NotAckFrame() {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'crc' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
 		}
 		crc = &_val
 	}
@@ -174,7 +173,7 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
 		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
 		if _additionalInformationLengthErr != nil {
-			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
 
 		// Array Field (additionalInformation)
@@ -182,7 +181,7 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'additionalInformation' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
 		}
@@ -190,7 +189,7 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (dataFrame)
 		_dataFrameErr := m.DataFrame.Serialize(io)
 		if _dataFrameErr != nil {
-			return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
+			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
 		// Optional Field (crc) (Can be skipped, if the value is null)
@@ -199,7 +198,7 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 			crc = m.Crc
 			_crcErr := io.WriteUint8(8, *(crc))
 			if _crcErr != nil {
-				return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 			}
 		}
 

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type LDataInd struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Parent                      *CEMI
-	ILDataInd
 }
 
 // The corresponding interface
@@ -116,7 +115,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
 	if _additionalInformationLengthErr != nil {
-		return nil, errors.New("Error parsing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
 
 	// Array field (additionalInformation)
@@ -127,7 +126,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	for io.GetPos() < _additionalInformationEndPos {
 		_item, _err := CEMIAdditionalInformationParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'additionalInformation' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
@@ -135,7 +134,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
-		return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
+		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
 
 	// Create a partially initialized instance
@@ -156,7 +155,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
 		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
 		if _additionalInformationLengthErr != nil {
-			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
 
 		// Array Field (additionalInformation)
@@ -164,7 +163,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'additionalInformation' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
 		}
@@ -172,7 +171,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (dataFrame)
 		_dataFrameErr := m.DataFrame.Serialize(io)
 		if _dataFrameErr != nil {
-			return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
+			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
 		return nil

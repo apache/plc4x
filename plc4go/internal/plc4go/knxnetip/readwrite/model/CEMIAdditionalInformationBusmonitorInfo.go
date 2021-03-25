@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strconv"
 )
@@ -40,7 +40,6 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 	LostFlag        bool
 	SequenceNumber  uint8
 	Parent          *CEMIAdditionalInformation
-	ICEMIAdditionalInformationBusmonitorInfo
 }
 
 // The corresponding interface
@@ -134,7 +133,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAd
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8(8)
 	if _lenErr != nil {
-		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 	if len != CEMIAdditionalInformationBusmonitorInfo_LEN {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(CEMIAdditionalInformationBusmonitorInfo_LEN)) + " but got " + strconv.Itoa(int(len)))
@@ -143,37 +142,37 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAd
 	// Simple Field (frameErrorFlag)
 	frameErrorFlag, _frameErrorFlagErr := io.ReadBit()
 	if _frameErrorFlagErr != nil {
-		return nil, errors.New("Error parsing 'frameErrorFlag' field " + _frameErrorFlagErr.Error())
+		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field")
 	}
 
 	// Simple Field (bitErrorFlag)
 	bitErrorFlag, _bitErrorFlagErr := io.ReadBit()
 	if _bitErrorFlagErr != nil {
-		return nil, errors.New("Error parsing 'bitErrorFlag' field " + _bitErrorFlagErr.Error())
+		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field")
 	}
 
 	// Simple Field (parityErrorFlag)
 	parityErrorFlag, _parityErrorFlagErr := io.ReadBit()
 	if _parityErrorFlagErr != nil {
-		return nil, errors.New("Error parsing 'parityErrorFlag' field " + _parityErrorFlagErr.Error())
+		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field")
 	}
 
 	// Simple Field (unknownFlag)
 	unknownFlag, _unknownFlagErr := io.ReadBit()
 	if _unknownFlagErr != nil {
-		return nil, errors.New("Error parsing 'unknownFlag' field " + _unknownFlagErr.Error())
+		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field")
 	}
 
 	// Simple Field (lostFlag)
 	lostFlag, _lostFlagErr := io.ReadBit()
 	if _lostFlagErr != nil {
-		return nil, errors.New("Error parsing 'lostFlag' field " + _lostFlagErr.Error())
+		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field")
 	}
 
 	// Simple Field (sequenceNumber)
 	sequenceNumber, _sequenceNumberErr := io.ReadUint8(3)
 	if _sequenceNumberErr != nil {
-		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
 
 	// Create a partially initialized instance
@@ -196,49 +195,49 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer
 		// Const Field (len)
 		_lenErr := io.WriteUint8(8, 1)
 		if _lenErr != nil {
-			return errors.New("Error serializing 'len' field " + _lenErr.Error())
+			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (frameErrorFlag)
 		frameErrorFlag := bool(m.FrameErrorFlag)
 		_frameErrorFlagErr := io.WriteBit((frameErrorFlag))
 		if _frameErrorFlagErr != nil {
-			return errors.New("Error serializing 'frameErrorFlag' field " + _frameErrorFlagErr.Error())
+			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
 		}
 
 		// Simple Field (bitErrorFlag)
 		bitErrorFlag := bool(m.BitErrorFlag)
 		_bitErrorFlagErr := io.WriteBit((bitErrorFlag))
 		if _bitErrorFlagErr != nil {
-			return errors.New("Error serializing 'bitErrorFlag' field " + _bitErrorFlagErr.Error())
+			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
 		}
 
 		// Simple Field (parityErrorFlag)
 		parityErrorFlag := bool(m.ParityErrorFlag)
 		_parityErrorFlagErr := io.WriteBit((parityErrorFlag))
 		if _parityErrorFlagErr != nil {
-			return errors.New("Error serializing 'parityErrorFlag' field " + _parityErrorFlagErr.Error())
+			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
 		}
 
 		// Simple Field (unknownFlag)
 		unknownFlag := bool(m.UnknownFlag)
 		_unknownFlagErr := io.WriteBit((unknownFlag))
 		if _unknownFlagErr != nil {
-			return errors.New("Error serializing 'unknownFlag' field " + _unknownFlagErr.Error())
+			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
 		}
 
 		// Simple Field (lostFlag)
 		lostFlag := bool(m.LostFlag)
 		_lostFlagErr := io.WriteBit((lostFlag))
 		if _lostFlagErr != nil {
-			return errors.New("Error serializing 'lostFlag' field " + _lostFlagErr.Error())
+			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
 		_sequenceNumberErr := io.WriteUint8(3, (sequenceNumber))
 		if _sequenceNumberErr != nil {
-			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		return nil

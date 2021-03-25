@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ConnectionRequestInformation struct {
 	Child IConnectionRequestInformationChild
-	IConnectionRequestInformation
-	IConnectionRequestInformationParent
 }
 
 // The corresponding interface
@@ -102,13 +100,13 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequest
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _structureLengthErr := io.ReadUint8(8)
 	if _structureLengthErr != nil {
-		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType, _connectionTypeErr := io.ReadUint8(8)
 	if _connectionTypeErr != nil {
-		return nil, errors.New("Error parsing 'connectionType' field " + _connectionTypeErr.Error())
+		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -121,7 +119,7 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequest
 		_parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -139,20 +137,20 @@ func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, chi
 	structureLength := uint8(uint8(m.LengthInBytes()))
 	_structureLengthErr := io.WriteUint8(8, (structureLength))
 	if _structureLengthErr != nil {
-		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(child.ConnectionType())
 	_connectionTypeErr := io.WriteUint8(8, (connectionType))
 	if _connectionTypeErr != nil {
-		return errors.New("Error serializing 'connectionType' field " + _connectionTypeErr.Error())
+		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -215,7 +213,7 @@ func (m *ConnectionRequestInformation) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

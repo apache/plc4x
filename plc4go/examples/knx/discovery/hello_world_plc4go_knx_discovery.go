@@ -32,7 +32,7 @@ func main() {
 	drivers.RegisterKnxDriver(driverManager)
 
 	// Try to auto-find KNX gateways via broadcast-message discovery
-	driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+	_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
 		connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
 		crc := driverManager.GetConnection(connStr)
 

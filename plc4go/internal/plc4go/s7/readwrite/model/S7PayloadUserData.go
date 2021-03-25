@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7PayloadUserData struct {
 	Items  []*S7PayloadUserDataItem
 	Parent *S7Payload
-	IS7PayloadUserData
 }
 
 // The corresponding interface
@@ -113,7 +112,7 @@ func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Pa
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {
 		_item, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -135,7 +134,7 @@ func (m *S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}

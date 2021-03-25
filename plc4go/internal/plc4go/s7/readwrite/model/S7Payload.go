@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7Payload struct {
 	Child IS7PayloadChild
-	IS7Payload
-	IS7PayloadParent
 }
 
 // The corresponding interface
@@ -98,17 +96,17 @@ func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter *S7Parame
 	var _parent *S7Payload
 	var typeSwitchError error
 	switch {
-	case CastS7Parameter(parameter).ParameterType() == 0x04 && messageType == 0x03:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x04 && messageType == 0x03:
 		_parent, typeSwitchError = S7PayloadReadVarResponseParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x01:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x01:
 		_parent, typeSwitchError = S7PayloadWriteVarRequestParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x03:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x03:
 		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(io, parameter)
-	case CastS7Parameter(parameter).ParameterType() == 0x00 && messageType == 0x07:
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x00 && messageType == 0x07:
 		_parent, typeSwitchError = S7PayloadUserDataParse(io, parameter)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -125,7 +123,7 @@ func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, seri
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -212,7 +210,7 @@ func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

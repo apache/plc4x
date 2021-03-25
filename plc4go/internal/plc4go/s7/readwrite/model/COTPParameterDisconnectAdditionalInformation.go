@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type COTPParameterDisconnectAdditionalInformation struct {
 	Data   []uint8
 	Parent *COTPParameter
-	ICOTPParameterDisconnectAdditionalInformation
 }
 
 // The corresponding interface
@@ -107,7 +106,7 @@ func COTPParameterDisconnectAdditionalInformationParse(io *utils.ReadBuffer, res
 	for curItem := uint16(0); curItem < uint16(rest); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -129,7 +128,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteB
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

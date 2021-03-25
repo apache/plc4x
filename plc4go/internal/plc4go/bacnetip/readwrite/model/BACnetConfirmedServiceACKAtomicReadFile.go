@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceACKAtomicReadFile struct {
 	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKAtomicReadFile
 }
 
 // The corresponding interface

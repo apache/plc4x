@@ -27,16 +27,16 @@ import (
 )
 
 func RegisterAdsDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(ads.NewAdsDriver())
+	driverManager.RegisterDriver(ads.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
 }
 
 func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	driverManager.RegisterDriver(knxnetip.NewDriver())
 	transports.RegisterUdpTransport(driverManager)
 }
 
 func RegisterModbusDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterDriver(modbus.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
 }

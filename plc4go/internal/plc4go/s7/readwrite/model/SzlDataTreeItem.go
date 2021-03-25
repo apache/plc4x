@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -36,7 +36,6 @@ type SzlDataTreeItem struct {
 	ModuleTypeId uint16
 	Ausbg        uint16
 	Ausbe        uint16
-	ISzlDataTreeItem
 }
 
 // The corresponding interface
@@ -100,7 +99,7 @@ func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	// Simple Field (itemIndex)
 	itemIndex, _itemIndexErr := io.ReadUint16(16)
 	if _itemIndexErr != nil {
-		return nil, errors.New("Error parsing 'itemIndex' field " + _itemIndexErr.Error())
+		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
 	}
 
 	// Array field (mlfb)
@@ -109,7 +108,7 @@ func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'mlfb' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'mlfb' field")
 		}
 		mlfb[curItem] = _item
 	}
@@ -117,19 +116,19 @@ func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	// Simple Field (moduleTypeId)
 	moduleTypeId, _moduleTypeIdErr := io.ReadUint16(16)
 	if _moduleTypeIdErr != nil {
-		return nil, errors.New("Error parsing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
+		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
 	ausbg, _ausbgErr := io.ReadUint16(16)
 	if _ausbgErr != nil {
-		return nil, errors.New("Error parsing 'ausbg' field " + _ausbgErr.Error())
+		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
 	ausbe, _ausbeErr := io.ReadUint16(16)
 	if _ausbeErr != nil {
-		return nil, errors.New("Error parsing 'ausbe' field " + _ausbeErr.Error())
+		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field")
 	}
 
 	// Create the instance
@@ -142,7 +141,7 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 	itemIndex := uint16(m.ItemIndex)
 	_itemIndexErr := io.WriteUint16(16, (itemIndex))
 	if _itemIndexErr != nil {
-		return errors.New("Error serializing 'itemIndex' field " + _itemIndexErr.Error())
+		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
 	}
 
 	// Array Field (mlfb)
@@ -150,7 +149,7 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.Mlfb {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'mlfb' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
 			}
 		}
 	}
@@ -159,21 +158,21 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 	moduleTypeId := uint16(m.ModuleTypeId)
 	_moduleTypeIdErr := io.WriteUint16(16, (moduleTypeId))
 	if _moduleTypeIdErr != nil {
-		return errors.New("Error serializing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
+		return errors.Wrap(_moduleTypeIdErr, "Error serializing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
 	ausbg := uint16(m.Ausbg)
 	_ausbgErr := io.WriteUint16(16, (ausbg))
 	if _ausbgErr != nil {
-		return errors.New("Error serializing 'ausbg' field " + _ausbgErr.Error())
+		return errors.Wrap(_ausbgErr, "Error serializing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
 	ausbe := uint16(m.Ausbe)
 	_ausbeErr := io.WriteUint16(16, (ausbe))
 	if _ausbeErr != nil {
-		return errors.New("Error serializing 'ausbe' field " + _ausbeErr.Error())
+		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
 	}
 
 	return nil

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorAtomicReadFile struct {
 	Parent *BACnetError
-	IBACnetErrorAtomicReadFile
 }
 
 // The corresponding interface

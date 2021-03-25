@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ChannelInformation struct {
 	NumChannels uint8
 	ChannelCode uint16
-	IChannelInformation
 }
 
 // The corresponding interface
@@ -84,13 +83,13 @@ func ChannelInformationParse(io *utils.ReadBuffer) (*ChannelInformation, error) 
 	// Simple Field (numChannels)
 	numChannels, _numChannelsErr := io.ReadUint8(3)
 	if _numChannelsErr != nil {
-		return nil, errors.New("Error parsing 'numChannels' field " + _numChannelsErr.Error())
+		return nil, errors.Wrap(_numChannelsErr, "Error parsing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
 	channelCode, _channelCodeErr := io.ReadUint16(13)
 	if _channelCodeErr != nil {
-		return nil, errors.New("Error parsing 'channelCode' field " + _channelCodeErr.Error())
+		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field")
 	}
 
 	// Create the instance
@@ -103,14 +102,14 @@ func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
 	numChannels := uint8(m.NumChannels)
 	_numChannelsErr := io.WriteUint8(3, (numChannels))
 	if _numChannelsErr != nil {
-		return errors.New("Error serializing 'numChannels' field " + _numChannelsErr.Error())
+		return errors.Wrap(_numChannelsErr, "Error serializing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
 	channelCode := uint16(m.ChannelCode)
 	_channelCodeErr := io.WriteUint16(13, (channelCode))
 	if _channelCodeErr != nil {
-		return errors.New("Error serializing 'channelCode' field " + _channelCodeErr.Error())
+		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}
 
 	return nil
