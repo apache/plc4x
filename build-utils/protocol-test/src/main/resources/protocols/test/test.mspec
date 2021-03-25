@@ -21,6 +21,15 @@
 // Simple Type
 ////////////////////////////////////////////////////////////////
 
+//Showing below an example comment including which languages it is supported in and ascii doc reference.
+// Bit Field Test Single
+// Java +, C +, Go +
+// tag::SimpleBitTypeTest[]
+[type 'SimpleBitTypeTest'
+    [simple bit 'bitField']
+]
+// end::SimpleBitTypeTest[]
+
 [type 'FieldTypeTest'
     [simple         uint 8 'simpleField']
     [abstract       unit 8  'abstractField']
@@ -118,6 +127,16 @@
     [enum           EnumType  'enumField']
 ]
 
+[type 'PascalStringTypeTest'
+    [simple int 8 'stringLength']
+    [simple string 'stringLength' 'UTF-8' 'stringField']
+]
+
+[type 'ImplicitPascalStringTypeTest'
+    [implicit int 8 'stringLength' 'stringField.length']
+    [simple string 'stringLength' 'UTF-8' 'stringField']
+]
+
 [type 'ImplicitTypeTest'
     //Implicit types have the requirement that the expression is of a similar type to the field
     //i.e Integers can't be cast to Booleans
@@ -162,6 +181,12 @@
     [simple uint 24 'WordPlusByteField']
     [simple uint 32 'DoubleIntField']
     [simple uint 64 'QuadIntField']
+]
+
+//Specific test confirming a continous loop isn't formed when working out the length.
+[type 'LentghLoopTest'
+    [simple        uint 16 'commandType']
+    [implicit      uint 16 'len' 'lengthInBytes - 8']
 ]
 
 ////////////////////////////////////////////////////////////////

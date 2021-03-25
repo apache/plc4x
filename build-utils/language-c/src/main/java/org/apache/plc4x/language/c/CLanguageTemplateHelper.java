@@ -918,31 +918,45 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "";
             }
         } else {
-            StringBuilder sb = new StringBuilder("_message->");
-            // If this is a property of a sub-type, add the sub-type name to the property.
-            if(baseType != getThisTypeDefinition()) {
-                sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
-            }
+            // If it wasn't an enum, treat it as a normal property.
+            System.out.println(camelCaseToSnakeCase(baseType.getName()));
+            System.out.println(vl.getName());
+            System.out.println(field.getTypeName());
 
-            // If this expression references enum constants we need to do things differently
-            final Optional<TypeReference> typeReferenceForProperty =
-                getTypeReferenceForProperty((ComplexTypeDefinition) baseType, vl.getName());
-            if(typeReferenceForProperty.isPresent()) {
-                final TypeReference typeReference = typeReferenceForProperty.get();
-                if(typeReference instanceof ComplexTypeReference) {
-                    final TypeDefinition typeDefinitionForTypeReference =
-                        getTypeDefinitionForTypeReference(typeReference);
-                    if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (vl.getChild() != null)){
-                        sb.append(camelCaseToSnakeCase(vl.getName()));
-                        return getCTypeName(typeDefinitionForTypeReference.getName()) +
-                            "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
-                            "(" + sb.toString() + ")";
+            if (vl.getName().equals("lengthInBits")) {
+                StringBuilder sb = new StringBuilder(getCTypeName(baseType.getName()));
+                sb.append("_length_in_bits(_message)");
+                System.out.println(getCTypeName(baseType.getName()));
+                return sb.toString();
+            } else {
+                StringBuilder sb = new StringBuilder("_message->");
+                // If this is a property of a sub-type, add the sub-type name to the property.
+                if(baseType != getThisTypeDefinition()) {
+                    sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
+                }
+
+                // If this expression references enum constants we need to do things differently
+                final Optional<TypeReference> typeReferenceForProperty =
+                    getTypeReferenceForProperty((ComplexTypeDefinition) baseType, vl.getName());
+                if(typeReferenceForProperty.isPresent()) {
+                    final TypeReference typeReference = typeReferenceForProperty.get();
+                    if(typeReference instanceof ComplexTypeReference) {
+                        final TypeDefinition typeDefinitionForTypeReference =
+                            getTypeDefinitionForTypeReference(typeReference);
+                        if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (vl.getChild() != null)){
+                            sb.append(camelCaseToSnakeCase(vl.getName()));
+                            return getCTypeName(typeDefinitionForTypeReference.getName()) +
+                                "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
+                                "(" + sb.toString() + ")";
+                        }
                     }
                 }
+
+                appendVariableExpressionRest(sb, baseType, vl);
+                return sb.toString();
             }
-            // If it wasn't an enum, treat it as a normal property.
-            appendVariableExpressionRest(sb, baseType, vl);
-            return sb.toString();
+
+
         }
     }
 

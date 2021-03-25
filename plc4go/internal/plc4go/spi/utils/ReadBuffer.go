@@ -239,6 +239,6 @@ func (rb *ReadBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantiss
 	return nil, errors.New("not implemented yet")
 }
 
-func (rb *ReadBuffer) ReadString(bitLength uint8) (string, error) {
+func (rb *ReadBuffer) ReadString(bitLength uint32) (string, error) {
 	return "", errors.New("not implemented yet")
 }

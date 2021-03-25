@@ -20,6 +20,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -122,12 +123,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public abstract String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
-        return getReadBufferReadMethodCall(simpleTypeReference, null);
+        return getReadBufferReadMethodCall(simpleTypeReference, null, null);
     }
 
-    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString);
+    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, TypedField field, DefaultTypeDefinition ctx);
 
-    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName);
+    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, DefaultTypeDefinition ctx);
 
     public abstract String getNullValueForTypeReference(TypeReference typeReference);
 
