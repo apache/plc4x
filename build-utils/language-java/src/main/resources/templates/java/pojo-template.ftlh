@@ -159,7 +159,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 </#list>
 <#list type.virtualFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type)});
     }
 
 </#list>
@@ -173,6 +173,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     @JsonIgnore
     public int getLengthInBits() {
         int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+        ${helper.getLanguageTypeNameForTypeReference(type.typeReference)} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -209,11 +210,10 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Discriminator Field (${discriminatorField.name})
         <#if helper.isSimpleTypeReference(discriminatorField.type)>
+            <#assign simpleTypeReference = discriminatorField.type>
             <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-                <#assign simpleTypeReference = discriminatorField.type>
-                lengthInBits += ${simpleTypeReference.getLength()};
+                lengthInBits += ${toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type) };
             <#else>
-                <#assign simpleTypeReference = discriminatorField.type>
                 lengthInBits += ${simpleTypeReference.sizeInBits};
             </#if>
         <#elseif helper.isEnumField(field)>
@@ -234,18 +234,19 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Implicit Field (${implicitField.name})
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        //${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type)});
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field>
 
         // Manual Array Field (${manualArrayField.name})
-        lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8;
+        lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type)} * 8;
         <#break>
     <#case "manual">
         <#assign manualField = field>
 
         // Manual Field (${manualField.name})
-        lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8;
+        lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type)} * 8;
         <#break>
     <#case "optional">
         <#assign optionalField = field>
@@ -273,7 +274,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")});
+        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type)?replace("lastItem", "false")});
         while (_timesPadding-- > 0) {
             lengthInBits += ${simpleTypeReference.sizeInBits};
         }
@@ -292,7 +293,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if helper.isSimpleTypeReference(simpleField.type)>
                 <#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "String">
                     <#assign simpleTypeReference = simpleField.type>
-        lengthInBits += ${simpleTypeReference.getLength()};
+        lengthInBits += ${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type)};
                 <#else>
                     <#assign simpleTypeReference = simpleField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits};

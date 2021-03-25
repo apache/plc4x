@@ -438,11 +438,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
-        // String types need an additional "encoding" field and an optional size.
+        // String types need an additional "encoding" field and length expression.
         if(simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
-            String size = ctx.length.getText().substring( 1, ctx.length.getText().length() - 1 );
             String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
-            return new DefaultStringTypeReference(simpleBaseType, size, encoding);
+            Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
+            return new DefaultStringTypeReference(simpleBaseType, lengthExpression, encoding);
         }
         // If a size it specified its a simple integer length based type.
         if (ctx.size != null) {

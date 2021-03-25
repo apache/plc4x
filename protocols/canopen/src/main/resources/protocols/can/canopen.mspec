@@ -333,24 +333,15 @@
             [array int 8 'value' length 'size']
         ]
         ['OCTET_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.parseString", io, size, _type.encoding)'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.serializeString", io, _value, _type.encoding)' '_value.length * 8'
-            ]
+           [simple string 'size' 'UTF-8' 'value']
         ]
         ['VISIBLE_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.parseString", io, size, _type.encoding)'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.serializeString", io, _value, _type.encoding)' '_value.length * 8'
-            ]
+            [simple string 'size' 'UTF-8' 'value']
         ]
         //CANOpenDataType.TIME_OF_DAY' CANOpenTime
         //CANOpenDataType.TIME_DIFFERENCE' CANOpenTime
         ['UNICODE_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.parseString", io, size, _type.encoding)'
-                'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.serializeString", io, _value, _type.encoding)' '_value.length'
-            ]
+            [simple string 'size/8' 'UTF-8' 'value']
         ]
     ]
 ]

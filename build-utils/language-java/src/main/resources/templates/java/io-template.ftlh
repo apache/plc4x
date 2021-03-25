@@ -159,17 +159,17 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- If this is a count array, we can directly initialize an array with the given size -->
         <#if helper.isCountArrayField(field)>
         // Count array
-        if(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
-            throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+        if(${helper.toParseExpression(arrayField, arrayField.loopExpression, type)} > Integer.MAX_VALUE) {
+            throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, type)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
         ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name};
         {
-            int itemCount = Math.max(0, (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)});
+            int itemCount = Math.max(0, (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, type)});
             ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
             for(int curItem = 0; curItem < itemCount; curItem++) {
                 <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
                 <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-                ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)<#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>.build()</#if></#if>;
+                ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference, arrayField, type)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type)})<#sep>, </#sep></#list></#if>)<#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>.build()</#if></#if>;
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -177,11 +177,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+        int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
         int ${arrayField.name}EndPos = io.getPos() + _${arrayField.name}Length;
         while(io.getPos() < ${arrayField.name}EndPos) {
-            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference, arrayField, type)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if arrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -191,8 +191,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#elseif helper.isTerminatedArrayField(field)>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}))) {
-            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+        while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, type)}))) {
+            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference, arrayField, type)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.type)})<#sep>, </#sep></#list></#if>)</#if>);
 
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if arrayField.loopExpression.contains("curPos")>
@@ -224,8 +224,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             ${helper.getLanguageTypeNameForField(field)} checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
             // Create an array of all the bytes read in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-            ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
-            checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
+            ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference, checksumField, type)};
+            checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type)});
             if(checksum != checksumRef) {
                 throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X", checksumRef & 0xFFFF, checksum & 0xFFFF));
             }
@@ -236,7 +236,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = constField.type>
 
         // Const Field (${constField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference, constField, type)};
         if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
             throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name});
         }
@@ -247,9 +247,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         <#if helper.isEnumField(field)>
-        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), discriminatorField, type)});
         <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = <#if helper.isSimpleTypeReference(discriminatorField.type)>${helper.getReadBufferReadMethodCall(discriminatorField.type)}<#else>${discriminatorField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(discriminatorField.type, parserArgument?index), true)}) (${helper.toParseExpression(discriminatorField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = <#if helper.isSimpleTypeReference(discriminatorField.type)>${helper.getReadBufferReadMethodCall(discriminatorField.type, discriminatorField, type)}<#else>${discriminatorField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(discriminatorField.type, parserArgument?index), true)}) (${helper.toParseExpression(discriminatorField, parserArgument, type)})<#sep>, </#sep></#list></#if>)</#if>;
         </#if>
 
         <#break>
@@ -258,9 +258,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Enum field (${enumField.name})
         <#if enumField.fieldName?has_content>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName?cap_first}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName?cap_first}(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), enumField, type)});
         <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), enumField, type)});
         </#if>
         <#break>
     <#case "implicit">
@@ -268,7 +268,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = implicitField.type>
 
         // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference, implicitField, type)};
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field>
@@ -281,21 +281,21 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- If this is a count array, we can directly initialize an array with the given size -->
         <#if helper.isCountArrayField(field)>
         // Count array
-        int _${manualArrayField.name}Count = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        int _${manualArrayField.name}Count = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type)};
         ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count];
         for(int i = 0; i < _${manualArrayField.name}Count; i++) {
-            ${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)});
+            ${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type)});
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        int _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
         int ${manualArrayField.name}EndPos = io.getPos() + _${manualArrayField.name}Length;
         while(io.getPos() < ${manualArrayField.name}EndPos) {
-            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
+            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type)}));
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if manualArrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -305,8 +305,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#elseif helper.isTerminatedArrayField(field)>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)}))) {
-            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
+        while(!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type)}))) {
+            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type)}));
 
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if manualArrayField.loopExpression.contains("curPos")>
@@ -333,7 +333,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign manualField = field>
 
         // Manual Field (${manualField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, type)});
         <#break>
     <#case "optional">
         <#assign optionalField = field>
@@ -343,11 +343,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         curPos = io.getPos() - startPos;
         </#if>
         ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
-        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression, type.parserArguments)}) {
+        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression, type)}) {
             <#if helper.isEnumField(field)>
-            ${optionalField.name} = ${helper.getLanguageTypeNameForField(optionalField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(optionalField.type))});
+            ${optionalField.name} = ${helper.getLanguageTypeNameForField(optionalField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(optionalField.type), optionalField, type)});
             <#else>
-            ${optionalField.name} = <#if helper.isSimpleTypeReference(optionalField.type)>${helper.getReadBufferReadMethodCall(optionalField.type)}<#else>${optionalField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(optionalField.type, parserArgument?index), true)}) (${helper.toParseExpression(optionalField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${optionalField.name} = <#if helper.isSimpleTypeReference(optionalField.type)>${helper.getReadBufferReadMethodCall(optionalField.type, optionalField, type)}<#else>${optionalField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(optionalField.type, parserArgument?index), true)}) (${helper.toParseExpression(optionalField, parserArgument, type)})<#sep>, </#sep></#list></#if>)</#if>;
             </#if>
         }
         <#break>
@@ -357,10 +357,10 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type)});
             while ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
-                ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+                ${helper.getReadBufferReadMethodCall(simpleTypeReference, paddingField, type)};
             }
         }
         <#break>
@@ -370,7 +370,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
         {
-            ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+            ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(simpleTypeReference, reservedField, type)};
             if(reserved != ${helper.getReservedValue(reservedField)}) {
                 LOGGER.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.");
             }
@@ -381,9 +381,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Simple Field (${simpleField.name})
         <#if helper.isEnumField(field)>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type))});
+        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), simpleField, type)});
         <#else>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference, simpleField, type)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type)})<#sep>, </#sep></#list></#if>)</#if>;
         </#if>
         <#break>
     <#case "switch">
@@ -392,7 +392,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         ${type.name}Builder builder = null;
         <#list switchField.cases as case>
-                <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])>${helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name].name}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{
+                <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type)}, <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])>${helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name].name}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) </#if>{
             builder = ${case.name}IO.staticParse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
@@ -405,7 +405,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign virtualField = field>
 
         // Virtual field (Just declare a local variable so we can access it in the parser)
-        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, type)});
         <#break>
 </#switch>
 </#list>
@@ -437,7 +437,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
                 <#if helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type>
-                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "element")};
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "element", field, type)};
                 <#else>
                     <#assign complexTypeReference = arrayField.type>
                 boolean lastItem = curItem == (itemCount - 1);
@@ -456,8 +456,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
             // Create an array of all the bytes written in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-            _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")};
+            _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type)});
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)", field, type)};
         }
         <#break>
     <#case "const">
@@ -465,8 +465,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = constField.type>
 
         // Const Field (${constField.name})
-        <#if helper.getLanguageTypeNameForField(field) = 'float'>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue + "f")};
-        <#else>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
+        <#if helper.getLanguageTypeNameForField(field) = 'float'>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue + "f", field, type)};
+        <#else>${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue, field, type)};
         </#if>
         <#break>
     <#case "discriminator">
@@ -477,11 +477,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();
         <#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type>
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")", field, type)};
         <#else>
             <#assign complexTypeReference = discriminatorField.type>
             <#if helper.isEnumField(field)>
-                ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ".getValue())")};
+                ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ".getValue())", field, type)};
             <#else>
                 ${complexTypeReference.name}IO.staticSerialize(io, ${discriminatorField.name});
             </#if>
@@ -493,9 +493,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
         <#if enumField.fieldName?has_content>
-        ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())")};
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", field, type)};
         <#else>
-        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())", field, type)};
         </#if>
         <#break>
     <#case "implicit">
@@ -503,8 +503,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = implicitField.type>
 
         // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)});
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")};
+        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type)});
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")", field, type)};
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field>
@@ -512,7 +512,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Manual Array Field (${manualArrayField.name})
         if(_value.get${manualArrayField.name?cap_first}() != null) {
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${manualArrayField.name?cap_first}()) {
-                ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)};
+                ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type)};
             }
         }
         <#break>
@@ -520,7 +520,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign manualField = field>
 
         // Manual Field (${manualField.name})
-        ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)};
+        ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type)};
        <#break>
     <#case "optional">
         <#assign optionalField = field>
@@ -531,11 +531,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             ${optionalField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${optionalField.name?cap_first}();
             <#if helper.isSimpleTypeReference(optionalField.type)>
                 <#assign simpleTypeReference = optionalField.type>
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")")};
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")", field, type)};
             <#else>
                 <#assign complexTypeReference = optionalField.type>
                 <#if helper.isEnumField(field)>
-            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(optionalField.type), "(" + optionalField.name + ".getValue())")};
+            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(optionalField.type), "(" + optionalField.name + ".getValue())", field, type)};
                 <#else>
             ${complexTypeReference.name}IO.staticSerialize(io, ${optionalField.name});
                 </#if>
@@ -548,10 +548,10 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type)});
             while (_timesPadding-- > 0) {
-                ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
-                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
+                ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type)});
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)", field, type)};
             }
         }
         <#break>
@@ -560,7 +560,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = reservedField.type>
 
         // Reserved Field (reserved)
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field), field, type)};
         <#break>
     <#case "simple">
         <#assign simpleField = field>
@@ -569,11 +569,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
         <#if helper.isSimpleTypeReference(simpleField.type)>
             <#assign simpleTypeReference = simpleField.type>
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")", field, type)};
         <#else>
             <#assign complexTypeReference = simpleField.type>
             <#if helper.isEnumField(field)>
-        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "(" + simpleField.name + ".getValue())")};
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "(" + simpleField.name + ".getValue())", field, type)};
             <#else>
         ${complexTypeReference.name}IO.staticSerialize(io, ${simpleField.name});
             </#if>

@@ -292,6 +292,7 @@
     <scope>test</scope>
   </dependency>
 
+
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-language-go</artifactId>

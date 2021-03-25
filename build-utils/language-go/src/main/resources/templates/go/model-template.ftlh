@@ -272,6 +272,8 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#assign simpleTypeReference = implicitField.type>
 
 	// Implicit Field (${implicitField.name})
+    ${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
+    _ = ${implicitField.name}
 	lengthInBits += ${simpleTypeReference.sizeInBits}
 				<#break>
 			<#case "manualArray">
@@ -322,14 +324,12 @@ func (m *${type.name}) LengthInBits() uint16 {
 			<#case "simple">
 				<#assign simpleField = field>
 
-
-
-
 	// Simple field (${simpleField.name})
 				<#if helper.isSimpleTypeReference(simpleField.type)>
                     <#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
                         <#assign simpleTypeReference = simpleField.type>
-    lengthInBits += ${simpleTypeReference.getLength()};
+    lengthInBits += uint16(${helper.toSerializationExpression(simpleField, helper.parseExpression(simpleTypeReference.getLength()), type.parserArguments, type.fields)})
+    //lengthInBits += uint16(${simpleTypeReference.getLength()})
                     <#else>
                         <#assign simpleTypeReference = simpleField.type>
     lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -491,7 +491,8 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign simpleTypeReference = implicitField.type>
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	${helper.getVariableName(field)}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    ${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    _ = ${implicitField.name}
 	if _${implicitField.name}Err != nil {
 		return nil, errors.New("Error parsing '${implicitField.name}' field " + _${implicitField.name}Err.Error())
 	}

@@ -41,18 +41,37 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-types-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-base</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+
   </dependencies>
 
   <build>

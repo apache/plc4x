@@ -124,10 +124,10 @@
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['IEC61131_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '_value.length + 2']
+            [simple string '255' 'UTF-8' 'value']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string '-1' 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.parsePascalString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.simulated.utils.StaticHelper.serializePascalString", io, _value, _type.encoding)' '(_value.length * 2) + 2']
+            [simple string '255' 'UTF-8' 'value']
         ]
     ]
 ]
