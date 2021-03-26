@@ -55,7 +55,7 @@ plc4c_return_code plc4c_write_request_add_item(
   value_item->item = address_item;
   value_item->value = value;
 
-  plc4c_utils_list_insert_tail_value(write_request->items, value_item);
+  plc4c_utils_list_insert_head_value(write_request->items, value_item);
   return OK;
 }
 

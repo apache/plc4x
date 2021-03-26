@@ -174,8 +174,6 @@ plc4c_return_code plc4c_driver_s7_parse_write_responce(
   plc4c_spi_read_buffer* read_buffer;
   plc4c_response_item* response_item;
 
-  uint8_t* byte_array;
-  size_t list_size;
   enum plc4c_return_code result;
   
 	// Iterate over the request items and use the types to decode the
