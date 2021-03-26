@@ -22,26 +22,23 @@
   <name>Profinet DCP Block</name>
 
   <testcase>
-    <name>Profinet: AllSelector</name>
-    <raw>ff0000</raw>
+    <name>Wireshark Block: All/All</name>
+    <raw>ffff0000</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>ALL_SELECTOR</blockType>
-    </parser-arguments>
     <xml>
-      <AllSelector className="org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector"/>
+      <AllSelector className="org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector">
+        <blockType>ALL_SELECTOR</blockType>
+      </AllSelector>
     </xml>
   </testcase>
 
   <testcase>
-    <name>Profinet: Device Options</name>
-    <raw>05000400000207</raw>
+    <name>Wireshark Block: Device/Device Options</name>
+    <raw>0205000400000207</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_OPTIONS</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">
           <length>4</length>
@@ -54,20 +51,18 @@
   </testcase>
 
   <testcase>
-    <name>Profinet: Station Type</name>
-    <raw>010009000053372d31323030</raw>
+    <name>Wireshark Block: Device/Manufacturer specific (Station Type)</name>
+    <raw>0201000c000041584320462032313532</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>STATION_TYPE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationType">
-          <length>9</length>
+          <length>12</length>
           <info>0</info>
           <vendorNameForDevice className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
-            <text>S7-1200</text>
+            <text>AXC F 2152</text>
           </vendorNameForDevice>
         </properties>
       </DeviceProperties>
@@ -75,20 +70,18 @@
   </testcase>
 
   <testcase>
-    <name>Profinet: Station Name</name>
-    <raw>02000c0000706c6378623164306564</raw>
+    <name>Wireshark Block: Device/NameOfStation</name>
+    <raw>0202000e00006178632d662d323135322d31</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>STATION_NAME</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationName">
-          <length>12</length>
+          <length>14</length>
           <info>0</info>
           <name className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
-            <text>plcxb1d0ed</text>
+            <text>axc-f-2152-1</text>
           </name>
         </properties>
       </DeviceProperties>
@@ -96,81 +89,93 @@
   </testcase>
 
   <testcase>
-    <name>Profinet: Device ID</name>
-    <raw>0300060000002a010d</raw>
+    <name>Wireshark Block: Device/NameOfStation (with padding)</name>
+    <raw>0202002300006d313835302e786430312d34353575312d65787868617573742e66616e6435343500</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
+        <subOption>STATION_NAME</subOption>
+        <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationName">
+          <length>35</length>
+          <info>0</info>
+          <name className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
+            <text>m1850.xd01-455u1-exxhaust.fand545</text>
+          </name>
+        </properties>
+      </DeviceProperties>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Wireshark Block: Device/Device ID</name>
+    <raw>02030006000000b00142</raw>
+    <root-type>DCPBlock</root-type>
+    <xml>
+      <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_ID</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceId">
           <length>6</length>
           <info>0</info>
-          <vendorId>42</vendorId>
-          <deviceId>269</deviceId>
+          <vendorId>176</vendorId>
+          <deviceId>322</deviceId>
         </properties>
       </DeviceProperties>
     </xml>
   </testcase>
 
   <testcase>
-    <name>Profinet: Device Role</name>
-    <raw>04000400000200</raw>
+    <name>Wireshark Block: Device/Device Role</name>
+    <raw>0204000400000300</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_ROLE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceRole">
           <length>4</length>
           <info>0</info>
-          <role>2</role>
+          <role>3</role>
         </properties>
       </DeviceProperties>
     </xml>
   </testcase>
 
   <testcase>
-    <name>Profinet: Device Instance</name>
-    <raw>07000400000064</raw>
+    <name>Wireshark Block: Device/Device Instance</name>
+    <raw>0207000400000064</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>DEVICE_PROPERTIES</blockType>
-    </parser-arguments>
     <xml>
       <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_INSTANCE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceInstance">
           <length>4</length>
           <info>0</info>
-          <instanceLow>0</instanceLow>
-          <instanceHigh>100</instanceHigh>
+          <instanceHigh>0</instanceHigh>
+          <instanceLow>100</instanceLow>
         </properties>
       </DeviceProperties>
     </xml>
   </testcase>
 
   <testcase>
-    <name>Profinet: IP/IP</name>
-    <raw>02000e0001c0a802f1ffffff00c0a80201</raw>
+    <name>Wireshark Block: IP/IP</name>
+<!--    <raw>02000e0001c0a802f1ffffff00c0a80201</raw>-->
+    <raw>0102000e0001c0a80065ffffff00c0a80001</raw>
     <root-type>DCPBlock</root-type>
-    <parser-arguments>
-      <blockType>IP</blockType>
-    </parser-arguments>
     <xml>
       <IP className="org.apache.plc4x.java.profinet.dcp.readwrite.IP">
+        <blockType>IP</blockType>
         <subOption>IP_PARAMETER</subOption>
         <length>14</length>
         <info>1</info>
         <ipAddress className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
           <octet1>192</octet1>
           <octet2>168</octet2>
-          <octet3>2</octet3>
-          <octet4>241</octet4>
+          <octet3>0</octet3>
+          <octet4>101</octet4>
         </ipAddress>
         <subnetMask className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
           <octet1>255</octet1>
@@ -181,12 +186,11 @@
         <standardGateway className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
           <octet1>192</octet1>
           <octet2>168</octet2>
-          <octet3>2</octet3>
+          <octet3>0</octet3>
           <octet4>1</octet4>
         </standardGateway>
       </IP>
     </xml>
   </testcase>
-
 
 </test:testsuite>

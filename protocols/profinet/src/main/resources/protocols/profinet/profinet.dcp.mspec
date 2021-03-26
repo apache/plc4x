@@ -27,6 +27,7 @@
 [type 'ProfinetFrame'
     [enum FrameType 'frameType'                ]
     [simple ProfinetData 'frame'  ['frameType']]
+    [padding uint 8 'alignment' '0x00' '40 - frame.lengthInBytes']
 ]
 
 [discriminatedType 'ProfinetData' [FrameType 'frameType']
@@ -95,11 +96,14 @@
             [enum DevicePropertiesSubOption 'subOption'         ]
         ]
         ['DevicePropertiesSubOption.DEVICE_INSTANCE' DeviceInstance
-            [simple uint 8 'instanceLow'         ]
             [simple uint 8 'instanceHigh'        ]
+            [simple uint 8 'instanceLow'         ]
         ]
     ]
-    [padding uint 8                 'pad' '0x00' '(length % 2 == 0 ? 0 : 1)']
+    // Padding using 0..1 old format
+    //[padding uint 8                 'pad' '0x00' '(length % 2 == 0 ? 0 : 1)']
+    // Padding using 0..N new format
+    [padding uint 8                 'pad' '0x00' 'length % 2']
 ]
 
 
