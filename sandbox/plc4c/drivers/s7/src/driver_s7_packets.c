@@ -597,7 +597,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
         break;
       case plc4c_s7_read_write_transport_size_DINT:
       case plc4c_s7_read_write_transport_size_UDINT:
-        request_value->transport_size = plc4c_s7_read_write_data_transport_size_DINTEGER;
+        request_value->transport_size = plc4c_s7_read_write_data_transport_size_INTEGER;
         break;
     }
 
