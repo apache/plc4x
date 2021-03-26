@@ -106,11 +106,43 @@
     [padding uint 8                 'pad' '0x00' 'length % 2']
 ]
 
-
 [enum uint 8 'DCPBlockOption'
     ['0x01' IP                          ]
     ['0x02' DEVICE_PROPERTIES           ]
+    ['0x03' DHCP                        ]
+    // TODO implement DCPBlockOption case
+    ['0x05' CONTROL                     ]
+    ['0x06' DEVICE_INACTIVE             ]
     ['0xFF' ALL_SELECTOR                ]
+]
+// TODO implement DCPBlockOption case
+[enum uint 8 'ControlOption'
+    ['0x00' RESERVED                    ]
+    ['0x01' START_TRANSACTION           ]
+    ['0x02' END_TRANSACTION             ]
+    ['0x03' FLASH_LED                   ]
+    ['0x04' RESPONSE                    ]
+    //Reset Factory Settings (0x05)
+    ['0x05' FACTORY_RESET               ]
+    ['0x06' RESET_TO_FACTORY            ]
+]
+// TODO implement DCPBlockOption case
+[enum uint 8 'DeviceInactiveOption'
+    ['0x00' RESERVED                    ]
+    ['0x01' DEVICE_INITIATIVE           ]
+]
+
+// Not implemented yet! Vars from https://github.com/dark-lbp/isf/blob/master/icssploit/protocols/pn_dcp.py
+[enum uint 8 'DHCPOptions'
+    ['0x0c' HOST_NAME                   ]
+    ['0x2b' VENDOR_SPECIFIC             ]
+    ['0x36' SERVER_IDENTIFIER           ]
+    ['0x37' PARAMETER_REQUEST_LIST      ]
+    ['0x3c' CLASS_IDENTIFIER            ]
+    ['0x3d' DHCP_CLIENT_IDENTIFIER      ]
+    ['0x51' FQDN_FULLY_QUALIFIED_DOMAIN_NAME       ]
+    ['0x61' UUID_GUID_BASED_CLIENT      ]
+    ['0xFF' CONTROL_DHCP_FOR_ADDRESS_RESOLUTION    ]
 ]
 
 [enum uint 8 'DevicePropertiesSubOption'
@@ -119,15 +151,22 @@
     ['0x03' DEVICE_ID                   ]
     ['0x04' DEVICE_ROLE                 ]
     ['0x05' DEVICE_OPTIONS              ]
+    ['0x06' ALIAS_NAME                  ]
     ['0x07' DEVICE_INSTANCE             ]
+    ['0x08' OEM_DEVICE_ID               ]
 ]
 
 [enum uint 8 'IpSubOption'
+    ['0x00' RESERVED                    ]
+    ['0x01' MAC_ADDRESS                 ]
     ['0x02' IP_PARAMETER                ]
 ]
 
 [enum uint 8 'DCPServiceID'
-    ['0x05' IDENTIFY]
+    ['0x03' GET                         ]
+    ['0x04' SET                         ]
+    ['0x05' IDENTIFY                    ]
+    ['0x06' HELLO                       ]
     ['0xFEFE' IDENTIFY_RESPONSE         ]
 ]
 
@@ -164,4 +203,10 @@
         'STATIC_CALL("org.apache.plc4x.java.profinet.dcp.DCPUtil.writeString", io, _value, _type.encoding)'
         'STATIC_CALL("org.apache.plc4x.java.profinet.dcp.DCPUtil.length", text)'
     ]
+]
+
+[enum uint 16 'TypeLAN'
+    ['0x8100' VLAN             ]
+    ['0x8892' PN_DCP           ]
+    ['0x88CC' LLDP             ]
 ]
