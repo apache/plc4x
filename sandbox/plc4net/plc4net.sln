@@ -24,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modbus", "drivers\modbus\Mo
 		{7906988A-C7CA-4886-A343-EBC17C0BAB59} = {7906988A-C7CA-4886-A343-EBC17C0BAB59}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CANopen", "CANopen\CANopen.csproj", "{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CANopen", "drivers\CANopen\CANopen.csproj", "{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
