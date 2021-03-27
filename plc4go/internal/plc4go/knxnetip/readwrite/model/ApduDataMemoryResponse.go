@@ -111,6 +111,7 @@ func ApduDataMemoryResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBytes, _numBytesErr := io.ReadUint8(6)
+	_ = numBytes
 	if _numBytesErr != nil {
 		return nil, errors.New("Error parsing 'numBytes' field " + _numBytesErr.Error())
 	}

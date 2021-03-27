@@ -165,12 +165,14 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := io.ReadUint16(16)
+	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength, _payloadLengthErr := io.ReadUint16(16)
+	_ = payloadLength
 	if _payloadLengthErr != nil {
 		return nil, errors.New("Error parsing 'payloadLength' field " + _payloadLengthErr.Error())
 	}
@@ -179,16 +181,12 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 	var _parent *S7Message
 	var typeSwitchError error
 	switch {
-
 	case messageType == 0x01: // S7MessageRequest
 		_parent, typeSwitchError = S7MessageRequestParse(io)
-
 	case messageType == 0x02: // S7MessageResponse
 		_parent, typeSwitchError = S7MessageResponseParse(io)
-
 	case messageType == 0x03: // S7MessageResponseData
 		_parent, typeSwitchError = S7MessageResponseDataParse(io)
-
 	case messageType == 0x07: // S7MessageUserData
 		_parent, typeSwitchError = S7MessageUserDataParse(io)
 	}

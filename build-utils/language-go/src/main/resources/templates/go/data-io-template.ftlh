@@ -185,7 +185,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#if case.name = "Struct">
 				${arrayField.name} := value.GetValue("${arrayField.name}")
 					</#if>
-				_itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()")}<#else>Complex type array in data-io serialization currently not implemented</#if>
+				_itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()", field)}<#else>Complex type array in data-io serialization currently not implemented</#if>
 				if _itemErr != nil {
 					return errors.New("Error serializing 'value' field " + _itemErr.Error())
 				}
@@ -204,7 +204,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#assign reservedField = field>
 
 			// Reserved Field (Just skip the bytes)
-			if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))}; _err != nil {
+			if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field), field)}; _err != nil {
 				return errors.New("Error serializing reserved field " + _err.Error())
 			}
 					<#break>
@@ -212,7 +212,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#assign simpleField = field>
 
 			// Simple Field (${field.name})
-			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()")}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
+			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()", field)}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.New("Error serializing '${field.name}' field " + _err.Error())
 			}
 					<#break>

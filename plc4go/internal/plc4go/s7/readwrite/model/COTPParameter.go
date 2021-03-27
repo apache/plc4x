@@ -105,7 +105,8 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _parameterLengthErr := io.ReadUint8(8)
+	parameterLength, _parameterLengthErr := io.ReadUint8(8)
+	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
 	}
@@ -114,19 +115,14 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 	var _parent *COTPParameter
 	var typeSwitchError error
 	switch {
-
 	case parameterType == 0xC0: // COTPParameterTpduSize
 		_parent, typeSwitchError = COTPParameterTpduSizeParse(io)
-
 	case parameterType == 0xC1: // COTPParameterCallingTsap
 		_parent, typeSwitchError = COTPParameterCallingTsapParse(io)
-
 	case parameterType == 0xC2: // COTPParameterCalledTsap
 		_parent, typeSwitchError = COTPParameterCalledTsapParse(io)
-
 	case parameterType == 0xC3: // COTPParameterChecksum
 		_parent, typeSwitchError = COTPParameterChecksumParse(io)
-
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
 	}

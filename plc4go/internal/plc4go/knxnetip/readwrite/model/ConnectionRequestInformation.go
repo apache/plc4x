@@ -99,7 +99,8 @@ func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
 func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8(8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
 	}
@@ -114,10 +115,8 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequest
 	var _parent *ConnectionRequestInformation
 	var typeSwitchError error
 	switch {
-
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
 		_parent, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(io)
-
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
 		_parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
 	}

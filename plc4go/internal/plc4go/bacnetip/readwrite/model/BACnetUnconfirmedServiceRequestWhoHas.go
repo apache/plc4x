@@ -177,6 +177,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 
 	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	objectNameLength, _objectNameLengthErr := io.ReadUint8(8)
+	_ = objectNameLength
 	if _objectNameLengthErr != nil {
 		return nil, errors.New("Error parsing 'objectNameLength' field " + _objectNameLengthErr.Error())
 	}

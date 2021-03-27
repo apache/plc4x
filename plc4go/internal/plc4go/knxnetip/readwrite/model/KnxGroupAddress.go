@@ -97,13 +97,10 @@ func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddre
 	var _parent *KnxGroupAddress
 	var typeSwitchError error
 	switch {
-
 	case numLevels == 1: // KnxGroupAddressFreeLevel
 		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(io)
-
 	case numLevels == 2: // KnxGroupAddress2Level
 		_parent, typeSwitchError = KnxGroupAddress2LevelParse(io)
-
 	case numLevels == 3: // KnxGroupAddress3Level
 		_parent, typeSwitchError = KnxGroupAddress3LevelParse(io)
 	}

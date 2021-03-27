@@ -105,25 +105,18 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 	var _parent *ServiceId
 	var typeSwitchError error
 	switch {
-
 	case serviceType == 0x02: // KnxNetIpCore
 		_parent, typeSwitchError = KnxNetIpCoreParse(io)
-
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
 		_parent, typeSwitchError = KnxNetIpDeviceManagementParse(io)
-
 	case serviceType == 0x04: // KnxNetIpTunneling
 		_parent, typeSwitchError = KnxNetIpTunnelingParse(io)
-
 	case serviceType == 0x05: // KnxNetIpRouting
 		_parent, typeSwitchError = KnxNetIpRoutingParse(io)
-
 	case serviceType == 0x06: // KnxNetRemoteLogging
 		_parent, typeSwitchError = KnxNetRemoteLoggingParse(io)
-
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
 		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(io)
-
 	case serviceType == 0x08: // KnxNetObjectServer
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
 	}

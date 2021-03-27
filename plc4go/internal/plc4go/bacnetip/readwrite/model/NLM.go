@@ -121,10 +121,8 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	var _parent *NLM
 	var typeSwitchError error
 	switch {
-
 	case messageType == 0x0: // NLMWhoIsRouterToNetwork
 		_parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
-
 	case messageType == 0x1: // NLMIAmRouterToNetwork
 		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
 	}

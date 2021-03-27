@@ -128,6 +128,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 
 	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	szlItemCount, _szlItemCountErr := io.ReadUint16(16)
+	_ = szlItemCount
 	if _szlItemCountErr != nil {
 		return nil, errors.New("Error parsing 'szlItemCount' field " + _szlItemCountErr.Error())
 	}

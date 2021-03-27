@@ -105,46 +105,32 @@ func BACnetErrorParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	var _parent *BACnetError
 	var typeSwitchError error
 	switch {
-
 	case serviceChoice == 0x03: // BACnetErrorGetAlarmSummary
 		_parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(io)
-
 	case serviceChoice == 0x04: // BACnetErrorGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(io)
-
 	case serviceChoice == 0x1D: // BACnetErrorGetEventInformation
 		_parent, typeSwitchError = BACnetErrorGetEventInformationParse(io)
-
 	case serviceChoice == 0x06: // BACnetErrorAtomicReadFile
 		_parent, typeSwitchError = BACnetErrorAtomicReadFileParse(io)
-
 	case serviceChoice == 0x07: // BACnetErrorAtomicWriteFile
 		_parent, typeSwitchError = BACnetErrorAtomicWriteFileParse(io)
-
 	case serviceChoice == 0x0A: // BACnetErrorCreateObject
 		_parent, typeSwitchError = BACnetErrorCreateObjectParse(io)
-
 	case serviceChoice == 0x0C: // BACnetErrorReadProperty
 		_parent, typeSwitchError = BACnetErrorReadPropertyParse(io)
-
 	case serviceChoice == 0x0E: // BACnetErrorReadPropertyMultiple
 		_parent, typeSwitchError = BACnetErrorReadPropertyMultipleParse(io)
-
 	case serviceChoice == 0x1A: // BACnetErrorReadRange
 		_parent, typeSwitchError = BACnetErrorReadRangeParse(io)
-
 	case serviceChoice == 0x12: // BACnetErrorConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(io)
-
 	case serviceChoice == 0x15: // BACnetErrorVTOpen
 		_parent, typeSwitchError = BACnetErrorVTOpenParse(io)
-
 	case serviceChoice == 0x17: // BACnetErrorVTData
 		_parent, typeSwitchError = BACnetErrorVTDataParse(io)
-
 	case serviceChoice == 0x18: // BACnetErrorRemovedAuthenticate
 		_parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(io)
-
 	case serviceChoice == 0x0D: // BACnetErrorRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(io)
 	}

@@ -116,13 +116,15 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _byteCountErr := io.ReadUint16(16)
+	byteCount, _byteCountErr := io.ReadUint16(16)
+	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := io.ReadUint16(16)
+	_ = fifoCount
 	if _fifoCountErr != nil {
 		return nil, errors.New("Error parsing 'fifoCount' field " + _fifoCountErr.Error())
 	}

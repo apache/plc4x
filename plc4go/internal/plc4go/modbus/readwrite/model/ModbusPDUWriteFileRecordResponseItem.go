@@ -116,6 +116,7 @@ func ModbusPDUWriteFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDU
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength, _recordLengthErr := io.ReadUint16(16)
+	_ = recordLength
 	if _recordLengthErr != nil {
 		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
 	}

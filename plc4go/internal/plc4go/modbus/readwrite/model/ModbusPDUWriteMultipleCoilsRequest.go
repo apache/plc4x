@@ -138,6 +138,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, 
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
+	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
 	}

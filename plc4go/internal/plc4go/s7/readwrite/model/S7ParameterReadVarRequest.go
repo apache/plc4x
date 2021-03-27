@@ -112,6 +112,7 @@ func S7ParameterReadVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error) 
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8(8)
+	_ = numItems
 	if _numItemsErr != nil {
 		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
 	}

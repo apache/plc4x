@@ -105,7 +105,6 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 	var _parent *S7Address
 	var typeSwitchError error
 	switch {
-
 	case addressType == 0x10: // S7AddressAny
 		_parent, typeSwitchError = S7AddressAnyParse(io)
 	}

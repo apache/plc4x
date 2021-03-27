@@ -111,7 +111,8 @@ func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, erro
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _lengthErr := io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16(16)
+	_ = length
 	if _lengthErr != nil {
 		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
 	}

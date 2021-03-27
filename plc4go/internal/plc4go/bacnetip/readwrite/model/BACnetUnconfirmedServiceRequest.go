@@ -105,40 +105,28 @@ func BACnetUnconfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BA
 	var _parent *BACnetUnconfirmedServiceRequest
 	var typeSwitchError error
 	switch {
-
 	case serviceChoice == 0x00: // BACnetUnconfirmedServiceRequestIAm
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(io)
-
 	case serviceChoice == 0x01: // BACnetUnconfirmedServiceRequestIHave
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(io)
-
 	case serviceChoice == 0x02: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io)
-
 	case serviceChoice == 0x03: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io)
-
 	case serviceChoice == 0x04: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io, len)
-
 	case serviceChoice == 0x05: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io)
-
 	case serviceChoice == 0x06: // BACnetUnconfirmedServiceRequestTimeSynchronization
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io)
-
 	case serviceChoice == 0x07: // BACnetUnconfirmedServiceRequestWhoHas
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(io)
-
 	case serviceChoice == 0x08: // BACnetUnconfirmedServiceRequestWhoIs
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(io)
-
 	case serviceChoice == 0x09: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io)
-
 	case serviceChoice == 0x0A: // BACnetUnconfirmedServiceRequestWriteGroup
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(io)
-
 	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io)
 	}

@@ -105,28 +105,20 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	var _parent *APDU
 	var typeSwitchError error
 	switch {
-
 	case apduType == 0x0: // APDUConfirmedRequest
 		_parent, typeSwitchError = APDUConfirmedRequestParse(io, apduLength)
-
 	case apduType == 0x1: // APDUUnconfirmedRequest
 		_parent, typeSwitchError = APDUUnconfirmedRequestParse(io, apduLength)
-
 	case apduType == 0x2: // APDUSimpleAck
 		_parent, typeSwitchError = APDUSimpleAckParse(io)
-
 	case apduType == 0x3: // APDUComplexAck
 		_parent, typeSwitchError = APDUComplexAckParse(io)
-
 	case apduType == 0x4: // APDUSegmentAck
 		_parent, typeSwitchError = APDUSegmentAckParse(io)
-
 	case apduType == 0x5: // APDUError
 		_parent, typeSwitchError = APDUErrorParse(io)
-
 	case apduType == 0x6: // APDUReject
 		_parent, typeSwitchError = APDURejectParse(io)
-
 	case apduType == 0x7: // APDUAbort
 		_parent, typeSwitchError = APDUAbortParse(io)
 	}

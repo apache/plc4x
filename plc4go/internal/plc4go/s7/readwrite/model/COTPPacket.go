@@ -116,6 +116,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := io.ReadUint8(8)
+	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
 	}
@@ -130,22 +131,16 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	var _parent *COTPPacket
 	var typeSwitchError error
 	switch {
-
 	case tpduCode == 0xF0: // COTPPacketData
 		_parent, typeSwitchError = COTPPacketDataParse(io)
-
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
 		_parent, typeSwitchError = COTPPacketConnectionRequestParse(io)
-
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
 		_parent, typeSwitchError = COTPPacketConnectionResponseParse(io)
-
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
 		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(io)
-
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
 		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(io)
-
 	case tpduCode == 0x70: // COTPPacketTpduError
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
 	}

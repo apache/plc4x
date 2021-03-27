@@ -105,73 +105,50 @@ func CEMIParse(io *utils.ReadBuffer, size uint8) (*CEMI, error) {
 	var _parent *CEMI
 	var typeSwitchError error
 	switch {
-
 	case messageCode == 0x2B: // LBusmonInd
 		_parent, typeSwitchError = LBusmonIndParse(io)
-
 	case messageCode == 0x11: // LDataReq
 		_parent, typeSwitchError = LDataReqParse(io)
-
 	case messageCode == 0x29: // LDataInd
 		_parent, typeSwitchError = LDataIndParse(io)
-
 	case messageCode == 0x2E: // LDataCon
 		_parent, typeSwitchError = LDataConParse(io)
-
 	case messageCode == 0x10: // LRawReq
 		_parent, typeSwitchError = LRawReqParse(io)
-
 	case messageCode == 0x2D: // LRawInd
 		_parent, typeSwitchError = LRawIndParse(io)
-
 	case messageCode == 0x2F: // LRawCon
 		_parent, typeSwitchError = LRawConParse(io)
-
 	case messageCode == 0x13: // LPollDataReq
 		_parent, typeSwitchError = LPollDataReqParse(io)
-
 	case messageCode == 0x25: // LPollDataCon
 		_parent, typeSwitchError = LPollDataConParse(io)
-
 	case messageCode == 0x41: // TDataConnectedReq
 		_parent, typeSwitchError = TDataConnectedReqParse(io)
-
 	case messageCode == 0x89: // TDataConnectedInd
 		_parent, typeSwitchError = TDataConnectedIndParse(io)
-
 	case messageCode == 0x4A: // TDataIndividualReq
 		_parent, typeSwitchError = TDataIndividualReqParse(io)
-
 	case messageCode == 0x94: // TDataIndividualInd
 		_parent, typeSwitchError = TDataIndividualIndParse(io)
-
 	case messageCode == 0xFC: // MPropReadReq
 		_parent, typeSwitchError = MPropReadReqParse(io)
-
 	case messageCode == 0xFB: // MPropReadCon
 		_parent, typeSwitchError = MPropReadConParse(io)
-
 	case messageCode == 0xF6: // MPropWriteReq
 		_parent, typeSwitchError = MPropWriteReqParse(io)
-
 	case messageCode == 0xF5: // MPropWriteCon
 		_parent, typeSwitchError = MPropWriteConParse(io)
-
 	case messageCode == 0xF7: // MPropInfoInd
 		_parent, typeSwitchError = MPropInfoIndParse(io)
-
 	case messageCode == 0xF8: // MFuncPropCommandReq
 		_parent, typeSwitchError = MFuncPropCommandReqParse(io)
-
 	case messageCode == 0xF9: // MFuncPropStateReadReq
 		_parent, typeSwitchError = MFuncPropStateReadReqParse(io)
-
 	case messageCode == 0xFA: // MFuncPropCon
 		_parent, typeSwitchError = MFuncPropConParse(io)
-
 	case messageCode == 0xF1: // MResetReq
 		_parent, typeSwitchError = MResetReqParse(io)
-
 	case messageCode == 0xF0: // MResetInd
 		_parent, typeSwitchError = MResetIndParse(io)
 	}

@@ -154,6 +154,7 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 	// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	writeLength, _writeLengthErr := io.ReadUint32(32)
+	_ = writeLength
 	if _writeLengthErr != nil {
 		return nil, errors.New("Error parsing 'writeLength' field " + _writeLengthErr.Error())
 	}

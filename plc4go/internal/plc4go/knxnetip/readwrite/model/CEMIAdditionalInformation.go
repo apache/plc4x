@@ -105,10 +105,8 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 	var _parent *CEMIAdditionalInformation
 	var typeSwitchError error
 	switch {
-
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
 		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
-
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
 		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
 	}

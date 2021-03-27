@@ -109,7 +109,8 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8(8)
+	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
 	}
@@ -131,6 +132,7 @@ func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength, _totalLengthErr := io.ReadUint16(16)
+	_ = totalLength
 	if _totalLengthErr != nil {
 		return nil, errors.New("Error parsing 'totalLength' field " + _totalLengthErr.Error())
 	}
@@ -139,52 +141,36 @@ func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	var _parent *KnxNetIpMessage
 	var typeSwitchError error
 	switch {
-
 	case msgType == 0x0201: // SearchRequest
 		_parent, typeSwitchError = SearchRequestParse(io)
-
 	case msgType == 0x0202: // SearchResponse
 		_parent, typeSwitchError = SearchResponseParse(io)
-
 	case msgType == 0x0203: // DescriptionRequest
 		_parent, typeSwitchError = DescriptionRequestParse(io)
-
 	case msgType == 0x0204: // DescriptionResponse
 		_parent, typeSwitchError = DescriptionResponseParse(io)
-
 	case msgType == 0x0205: // ConnectionRequest
 		_parent, typeSwitchError = ConnectionRequestParse(io)
-
 	case msgType == 0x0206: // ConnectionResponse
 		_parent, typeSwitchError = ConnectionResponseParse(io)
-
 	case msgType == 0x0207: // ConnectionStateRequest
 		_parent, typeSwitchError = ConnectionStateRequestParse(io)
-
 	case msgType == 0x0208: // ConnectionStateResponse
 		_parent, typeSwitchError = ConnectionStateResponseParse(io)
-
 	case msgType == 0x0209: // DisconnectRequest
 		_parent, typeSwitchError = DisconnectRequestParse(io)
-
 	case msgType == 0x020A: // DisconnectResponse
 		_parent, typeSwitchError = DisconnectResponseParse(io)
-
 	case msgType == 0x020B: // UnknownMessage
 		_parent, typeSwitchError = UnknownMessageParse(io, totalLength)
-
 	case msgType == 0x0310: // DeviceConfigurationRequest
 		_parent, typeSwitchError = DeviceConfigurationRequestParse(io, totalLength)
-
 	case msgType == 0x0311: // DeviceConfigurationAck
 		_parent, typeSwitchError = DeviceConfigurationAckParse(io)
-
 	case msgType == 0x0420: // TunnelingRequest
 		_parent, typeSwitchError = TunnelingRequestParse(io, totalLength)
-
 	case msgType == 0x0421: // TunnelingResponse
 		_parent, typeSwitchError = TunnelingResponseParse(io)
-
 	case msgType == 0x0530: // RoutingIndication
 		_parent, typeSwitchError = RoutingIndicationParse(io)
 	}

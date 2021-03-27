@@ -105,46 +105,32 @@ func BACnetServiceAckParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 	var _parent *BACnetServiceAck
 	var typeSwitchError error
 	switch {
-
 	case serviceChoice == 0x03: // BACnetServiceAckGetAlarmSummary
 		_parent, typeSwitchError = BACnetServiceAckGetAlarmSummaryParse(io)
-
 	case serviceChoice == 0x04: // BACnetServiceAckGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetServiceAckGetEnrollmentSummaryParse(io)
-
 	case serviceChoice == 0x1D: // BACnetServiceAckGetEventInformation
 		_parent, typeSwitchError = BACnetServiceAckGetEventInformationParse(io)
-
 	case serviceChoice == 0x06: // BACnetServiceAckAtomicReadFile
 		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileParse(io)
-
 	case serviceChoice == 0x07: // BACnetServiceAckAtomicWriteFile
 		_parent, typeSwitchError = BACnetServiceAckAtomicWriteFileParse(io)
-
 	case serviceChoice == 0x0A: // BACnetServiceAckCreateObject
 		_parent, typeSwitchError = BACnetServiceAckCreateObjectParse(io)
-
 	case serviceChoice == 0x0C: // BACnetServiceAckReadProperty
 		_parent, typeSwitchError = BACnetServiceAckReadPropertyParse(io)
-
 	case serviceChoice == 0x0E: // BACnetServiceAckReadPropertyMultiple
 		_parent, typeSwitchError = BACnetServiceAckReadPropertyMultipleParse(io)
-
 	case serviceChoice == 0x1A: // BACnetServiceAckReadRange
 		_parent, typeSwitchError = BACnetServiceAckReadRangeParse(io)
-
 	case serviceChoice == 0x12: // BACnetServiceAckConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetServiceAckConfirmedPrivateTransferParse(io)
-
 	case serviceChoice == 0x15: // BACnetServiceAckVTOpen
 		_parent, typeSwitchError = BACnetServiceAckVTOpenParse(io)
-
 	case serviceChoice == 0x17: // BACnetServiceAckVTData
 		_parent, typeSwitchError = BACnetServiceAckVTDataParse(io)
-
 	case serviceChoice == 0x18: // BACnetServiceAckRemovedAuthenticate
 		_parent, typeSwitchError = BACnetServiceAckRemovedAuthenticateParse(io)
-
 	case serviceChoice == 0x0D: // BACnetServiceAckRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetServiceAckRemovedReadPropertyConditionalParse(io)
 	}

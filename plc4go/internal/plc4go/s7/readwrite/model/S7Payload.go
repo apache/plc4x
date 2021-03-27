@@ -98,17 +98,13 @@ func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter *S7Parame
 	var _parent *S7Payload
 	var typeSwitchError error
 	switch {
-
-	case CastS7Parameter(parameter).ParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
 		_parent, typeSwitchError = S7PayloadReadVarResponseParse(io, parameter)
-
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
 		_parent, typeSwitchError = S7PayloadWriteVarRequestParse(io, parameter)
-
-	case CastS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
 		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(io, parameter)
-
-	case CastS7Parameter(parameter).ParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
+	case CastS7Parameter(parameter).Child.ParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
 		_parent, typeSwitchError = S7PayloadUserDataParse(io, parameter)
 	}
 	if typeSwitchError != nil {

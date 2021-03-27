@@ -105,7 +105,6 @@ func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (*S7ParameterUserDataIte
 	var _parent *S7ParameterUserDataItem
 	var typeSwitchError error
 	switch {
-
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
 		_parent, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(io)
 	}

@@ -333,7 +333,7 @@
             [array int 8 'value' length 'size']
         ]
         ['OCTET_STRING' STRING
-           [simple string 'size' 'UTF-8' 'value']
+           [simple string 'size' 'UTF-8' 'test']
         ]
         ['VISIBLE_STRING' STRING
             [simple string 'size' 'UTF-8' 'value']

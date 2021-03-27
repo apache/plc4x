@@ -122,6 +122,7 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength, _bvlcLengthErr := io.ReadUint16(16)
+	_ = bvlcLength
 	if _bvlcLengthErr != nil {
 		return nil, errors.New("Error parsing 'bvlcLength' field " + _bvlcLengthErr.Error())
 	}
@@ -130,43 +131,30 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 	var _parent *BVLC
 	var typeSwitchError error
 	switch {
-
 	case bvlcFunction == 0x00: // BVLCResult
 		_parent, typeSwitchError = BVLCResultParse(io)
-
 	case bvlcFunction == 0x01: // BVLCWideBroadcastDistributionTable
 		_parent, typeSwitchError = BVLCWideBroadcastDistributionTableParse(io)
-
 	case bvlcFunction == 0x02: // BVLCReadBroadcastDistributionTable
 		_parent, typeSwitchError = BVLCReadBroadcastDistributionTableParse(io)
-
 	case bvlcFunction == 0x03: // BVLCReadBroadcastDistributionTableAck
 		_parent, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(io)
-
 	case bvlcFunction == 0x04: // BVLCForwardedNPDU
 		_parent, typeSwitchError = BVLCForwardedNPDUParse(io, bvlcLength)
-
 	case bvlcFunction == 0x05: // BVLCRegisterForeignDevice
 		_parent, typeSwitchError = BVLCRegisterForeignDeviceParse(io)
-
 	case bvlcFunction == 0x06: // BVLCReadForeignDeviceTable
 		_parent, typeSwitchError = BVLCReadForeignDeviceTableParse(io)
-
 	case bvlcFunction == 0x07: // BVLCReadForeignDeviceTableAck
 		_parent, typeSwitchError = BVLCReadForeignDeviceTableAckParse(io)
-
 	case bvlcFunction == 0x08: // BVLCDeleteForeignDeviceTableEntry
 		_parent, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(io)
-
 	case bvlcFunction == 0x09: // BVLCDistributeBroadcastToNetwork
 		_parent, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(io)
-
 	case bvlcFunction == 0x0A: // BVLCOriginalUnicastNPDU
 		_parent, typeSwitchError = BVLCOriginalUnicastNPDUParse(io, bvlcLength)
-
 	case bvlcFunction == 0x0B: // BVLCOriginalBroadcastNPDU
 		_parent, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
-
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
 		_parent, typeSwitchError = BVLCSecureBVLLParse(io)
 	}
