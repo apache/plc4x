@@ -115,6 +115,7 @@ func TPKTPacketParse(io *utils.ReadBuffer) (*TPKTPacket, error) {
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len, _lenErr := io.ReadUint16(16)
+	_ = len
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}

@@ -103,7 +103,6 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 	var _parent *S7VarRequestParameterItem
 	var typeSwitchError error
 	switch {
-
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
 		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(io)
 	}

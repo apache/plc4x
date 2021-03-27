@@ -102,7 +102,8 @@ func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
 func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _itemLengthErr := io.ReadUint8(8)
+	itemLength, _itemLengthErr := io.ReadUint8(8)
+	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}

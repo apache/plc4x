@@ -123,7 +123,8 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _dataLengthErr := io.ReadUint16(16)
+	dataLength, _dataLengthErr := io.ReadUint16(16)
+	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
@@ -144,10 +145,8 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S
 	var _parent *S7PayloadUserDataItem
 	var typeSwitchError error
 	switch {
-
 	case cpuFunctionType == 0x04: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io)
-
 	case cpuFunctionType == 0x08: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io)
 	}

@@ -103,52 +103,36 @@ func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	var _parent *ApduData
 	var typeSwitchError error
 	switch {
-
 	case apciType == 0x0: // ApduDataGroupValueRead
 		_parent, typeSwitchError = ApduDataGroupValueReadParse(io)
-
 	case apciType == 0x1: // ApduDataGroupValueResponse
 		_parent, typeSwitchError = ApduDataGroupValueResponseParse(io, dataLength)
-
 	case apciType == 0x2: // ApduDataGroupValueWrite
 		_parent, typeSwitchError = ApduDataGroupValueWriteParse(io, dataLength)
-
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
 		_parent, typeSwitchError = ApduDataIndividualAddressWriteParse(io)
-
 	case apciType == 0x4: // ApduDataIndividualAddressRead
 		_parent, typeSwitchError = ApduDataIndividualAddressReadParse(io)
-
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
 		_parent, typeSwitchError = ApduDataIndividualAddressResponseParse(io)
-
 	case apciType == 0x6: // ApduDataAdcRead
 		_parent, typeSwitchError = ApduDataAdcReadParse(io)
-
 	case apciType == 0x7: // ApduDataAdcResponse
 		_parent, typeSwitchError = ApduDataAdcResponseParse(io)
-
 	case apciType == 0x8: // ApduDataMemoryRead
 		_parent, typeSwitchError = ApduDataMemoryReadParse(io)
-
 	case apciType == 0x9: // ApduDataMemoryResponse
 		_parent, typeSwitchError = ApduDataMemoryResponseParse(io)
-
 	case apciType == 0xA: // ApduDataMemoryWrite
 		_parent, typeSwitchError = ApduDataMemoryWriteParse(io)
-
 	case apciType == 0xB: // ApduDataUserMessage
 		_parent, typeSwitchError = ApduDataUserMessageParse(io)
-
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
 		_parent, typeSwitchError = ApduDataDeviceDescriptorReadParse(io)
-
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
 		_parent, typeSwitchError = ApduDataDeviceDescriptorResponseParse(io, dataLength)
-
 	case apciType == 0xE: // ApduDataRestart
 		_parent, typeSwitchError = ApduDataRestartParse(io)
-
 	case apciType == 0xF: // ApduDataOther
 		_parent, typeSwitchError = ApduDataOtherParse(io, dataLength)
 	}

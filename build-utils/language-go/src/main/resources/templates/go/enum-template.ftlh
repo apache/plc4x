@@ -153,7 +153,7 @@ func ${type.name}Parse(io *utils.ReadBuffer) (${type.name}, error) {
 }
 
 func (e ${type.name}) Serialize(io utils.WriteBuffer) error {
-	err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(type.typeReference), helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(type.typeReference)) + "(e)")}
+	err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(type.typeReference), helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(type.typeReference)) + "(e)", null)}
 	return err
 }
 	</#if>

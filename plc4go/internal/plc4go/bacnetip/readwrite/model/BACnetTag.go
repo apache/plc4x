@@ -155,46 +155,32 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	var _parent *BACnetTag
 	var typeSwitchError error
 	switch {
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x0: // BACnetTagApplicationNull
 		_parent, typeSwitchError = BACnetTagApplicationNullParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x1: // BACnetTagApplicationBoolean
 		_parent, typeSwitchError = BACnetTagApplicationBooleanParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x2: // BACnetTagApplicationUnsignedInteger
 		_parent, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x3: // BACnetTagApplicationSignedInteger
 		_parent, typeSwitchError = BACnetTagApplicationSignedIntegerParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x4: // BACnetTagApplicationReal
 		_parent, typeSwitchError = BACnetTagApplicationRealParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x5: // BACnetTagApplicationDouble
 		_parent, typeSwitchError = BACnetTagApplicationDoubleParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x6: // BACnetTagApplicationOctetString
 		_parent, typeSwitchError = BACnetTagApplicationOctetStringParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x7: // BACnetTagApplicationCharacterString
 		_parent, typeSwitchError = BACnetTagApplicationCharacterStringParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x8: // BACnetTagApplicationBitString
 		_parent, typeSwitchError = BACnetTagApplicationBitStringParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x9: // BACnetTagApplicationEnumerated
 		_parent, typeSwitchError = BACnetTagApplicationEnumeratedParse(io, lengthValueType, *extLength)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xA: // BACnetTagApplicationDate
 		_parent, typeSwitchError = BACnetTagApplicationDateParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xB: // BACnetTagApplicationTime
 		_parent, typeSwitchError = BACnetTagApplicationTimeParse(io)
-
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xC: // BACnetTagApplicationObjectIdentifier
 		_parent, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
-
 	case contextSpecificTag == 1: // BACnetTagContext
 		_parent, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
 	}

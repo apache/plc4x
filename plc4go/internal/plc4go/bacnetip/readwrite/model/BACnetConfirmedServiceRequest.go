@@ -103,97 +103,66 @@ func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BACn
 	var _parent *BACnetConfirmedServiceRequest
 	var typeSwitchError error
 	switch {
-
 	case serviceChoice == 0x00: // BACnetConfirmedServiceRequestAcknowledgeAlarm
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io)
-
 	case serviceChoice == 0x01: // BACnetConfirmedServiceRequestConfirmedCOVNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io, len)
-
 	case serviceChoice == 0x02: // BACnetConfirmedServiceRequestConfirmedEventNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io)
-
 	case serviceChoice == 0x04: // BACnetConfirmedServiceRequestGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io)
-
 	case serviceChoice == 0x05: // BACnetConfirmedServiceRequestSubscribeCOV
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParse(io)
-
 	case serviceChoice == 0x06: // BACnetConfirmedServiceRequestAtomicReadFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParse(io)
-
 	case serviceChoice == 0x07: // BACnetConfirmedServiceRequestAtomicWriteFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParse(io)
-
 	case serviceChoice == 0x08: // BACnetConfirmedServiceRequestAddListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParse(io)
-
 	case serviceChoice == 0x09: // BACnetConfirmedServiceRequestRemoveListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParse(io)
-
 	case serviceChoice == 0x0A: // BACnetConfirmedServiceRequestCreateObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParse(io)
-
 	case serviceChoice == 0x0B: // BACnetConfirmedServiceRequestDeleteObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParse(io)
-
 	case serviceChoice == 0x0C: // BACnetConfirmedServiceRequestReadProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParse(io)
-
 	case serviceChoice == 0x0E: // BACnetConfirmedServiceRequestReadPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(io)
-
 	case serviceChoice == 0x0F: // BACnetConfirmedServiceRequestWriteProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParse(io, len)
-
 	case serviceChoice == 0x10: // BACnetConfirmedServiceRequestWritePropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParse(io)
-
 	case serviceChoice == 0x11: // BACnetConfirmedServiceRequestDeviceCommunicationControl
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io)
-
 	case serviceChoice == 0x12: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io)
-
 	case serviceChoice == 0x13: // BACnetConfirmedServiceRequestConfirmedTextMessage
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParse(io)
-
 	case serviceChoice == 0x14: // BACnetConfirmedServiceRequestReinitializeDevice
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParse(io)
-
 	case serviceChoice == 0x15: // BACnetConfirmedServiceRequestVTOpen
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParse(io)
-
 	case serviceChoice == 0x16: // BACnetConfirmedServiceRequestVTClose
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParse(io)
-
 	case serviceChoice == 0x17: // BACnetConfirmedServiceRequestVTData
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTDataParse(io)
-
 	case serviceChoice == 0x18: // BACnetConfirmedServiceRequestRemovedAuthenticate
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedAuthenticateParse(io)
-
 	case serviceChoice == 0x19: // BACnetConfirmedServiceRequestRemovedRequestKey
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedRequestKeyParse(io)
-
 	case serviceChoice == 0x0D: // BACnetConfirmedServiceRequestRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io)
-
 	case serviceChoice == 0x1A: // BACnetConfirmedServiceRequestReadRange
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParse(io)
-
 	case serviceChoice == 0x1B: // BACnetConfirmedServiceRequestLifeSafetyOperation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParse(io)
-
 	case serviceChoice == 0x1C: // BACnetConfirmedServiceRequestSubscribeCOVProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io)
-
 	case serviceChoice == 0x1D: // BACnetConfirmedServiceRequestGetEventInformation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParse(io)
-
 	case serviceChoice == 0x1E: // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io)
-
 	case serviceChoice == 0x1F: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io)
 	}
