@@ -150,7 +150,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 	// Count array
 	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimit' field " + _err.Error())
@@ -177,7 +176,6 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 	// Count array
 	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimit' field " + _err.Error())

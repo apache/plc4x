@@ -626,7 +626,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcBOOL(value), nil
 	case datapointType == KnxDatapointType_DPT_Switch_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -649,7 +648,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(on)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Bool_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -672,7 +670,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(valueTrue)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Enable_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -695,7 +692,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(enable)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Ramp_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -718,7 +714,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(ramp)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Alarm_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -741,7 +736,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(alarm)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_BinaryValue_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -764,7 +758,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(high)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Step_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -787,7 +780,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(increase)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Direction1_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -810,7 +802,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(down)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Direction2_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -833,7 +824,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(close)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Start_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -856,7 +846,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(start)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_State_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -879,7 +868,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(active)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Invert_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -902,7 +890,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(inverted)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Control_Dimming: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -925,7 +912,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(stepcode)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Control_Blinds: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -1036,7 +1022,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (statusA)
@@ -1434,7 +1419,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (day)
@@ -1476,7 +1460,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(seconds)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Date: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -2316,7 +2299,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (hurz)
@@ -2421,7 +2403,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
@@ -2444,7 +2425,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(sceneNumber)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (year)
@@ -3033,7 +3013,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3077,7 +3056,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(correspondingDatapointValueIsOutOfService)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Device_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3107,7 +3085,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(theUserApplicationIsStopped)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomhmax)
@@ -3180,7 +3157,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcBOOL(value), nil
 	case datapointType == KnxDatapointType_DPT_StatusRHC: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (summermode)
@@ -3240,7 +3216,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_StatusSDHWC: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3270,7 +3245,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3313,7 +3287,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcBOOL(value), nil
 	case datapointType == KnxDatapointType_DPT_StatusAHU: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3350,7 +3323,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3394,7 +3366,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(effectiveValueOfTheWindowStatus)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3452,7 +3423,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(loaddetectionerror)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_RF_ModeInfo: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3482,7 +3452,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(asynchronous)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_RF_FilterInfo: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3512,7 +3481,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(doaAndKnxSn)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -3572,7 +3540,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(activationStateOfChannel8)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_StatusDHWC: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3637,7 +3604,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3751,7 +3717,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(fault)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_HVA: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3823,7 +3788,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(currentValvePosition)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3895,7 +3859,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(generalFailureInformation)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Media: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -3942,7 +3905,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -4110,7 +4072,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_DoubleNibble: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (busy)
@@ -4128,7 +4089,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(nak)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -4151,7 +4111,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(scenenumber)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (maskBitInfoOnOffOutput16)
@@ -4403,7 +4362,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcLINT(value), nil
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activationStateOfChannel1)
@@ -4575,7 +4533,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(activationStateOfChannel24)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_HVACModeNext: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4593,7 +4550,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(hvacMode)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4611,7 +4567,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(dhwMode)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_OccModeNext: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4629,7 +4584,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(occupancyMode)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_BuildingModeNext: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (delayTimeMin)
@@ -4647,7 +4601,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(buildingMode)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Version: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (magicNumber)
@@ -4672,7 +4625,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(revisionNumber)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (logNumber)
@@ -4763,7 +4715,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(inalarm)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_3: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpcomf)
@@ -4788,7 +4739,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcREAL(tempsetpeco)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (tempsetpshiftcomf)
@@ -4813,7 +4763,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcREAL(tempsetpshifteco)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (timePeriod)
@@ -4831,7 +4780,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(percent)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Scaling_Step_Time: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (timePeriod)
@@ -4849,7 +4797,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(percent)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (countval)
@@ -4907,7 +4854,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(outofservice)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_MBus_Address: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (manufactid)
@@ -4939,7 +4885,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(medium)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Colour_RGB: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (r)
@@ -4972,7 +4917,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcSTRING(value), nil
 	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (activeelectricalenergy)
@@ -5009,7 +4953,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(tariffvalidity)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Prioritised_Mode_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (deactivationOfPriority)
@@ -5034,7 +4977,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(modeLevel)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5085,7 +5027,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(daliDeviceAddressOrDaliGroupAddress)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_DALI_Diagnostics: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ballastFailure)
@@ -5110,7 +5051,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(deviceAddress)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (heightPosition)
@@ -5147,7 +5087,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(validitySlatsPosition)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (heightPosition)
@@ -5261,7 +5200,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(validitySlatsPos)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Colour_xyY: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (xAxis)
@@ -5305,7 +5243,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(validityBrightness)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
@@ -5363,7 +5300,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(converterFailure)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ltrf)
@@ -5433,7 +5369,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(lpdtr)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Battery_Info: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5470,7 +5405,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcUSINT(batteryChargeLevel)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (ms)
@@ -5521,7 +5455,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(validityOfTheAbsoluteBrightness)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -5582,7 +5515,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(cbAndStepCodeBrightnessValidity)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (colourLevelRed)
@@ -5652,7 +5584,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcBOOL(mw)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (maskcw)
@@ -5765,7 +5696,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (cb)
@@ -5826,7 +5756,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		}
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (longitude)
@@ -5844,7 +5773,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcREAL(latitude)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointComfort)
@@ -5876,7 +5804,6 @@ func KnxDatapointParse(io *utils.ReadBuffer, datapointType KnxDatapointType) (ap
 		_map["Struct"] = values.NewPlcREAL(roomTemperatureSetpointBuildingProtection)
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)

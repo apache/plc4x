@@ -163,7 +163,6 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0))))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0)))); curItem++ {
-
 		_item, _err := AdsMultiRequestItemParse(io, indexGroup)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())
@@ -175,7 +174,6 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())

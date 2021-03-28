@@ -137,7 +137,6 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 	// Count array
 	items := make([]*SzlDataTreeItem, szlItemCount)
 	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
-
 		_item, _err := SzlDataTreeItemParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())

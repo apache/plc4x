@@ -245,7 +245,6 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())

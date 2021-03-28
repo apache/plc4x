@@ -155,7 +155,6 @@ func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'device' field " + _err.Error())

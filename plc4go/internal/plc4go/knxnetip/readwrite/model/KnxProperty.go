@@ -91,7 +91,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		return values.NewPlcREAL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
@@ -131,7 +130,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		_map["Struct"] = values.NewPlcUSINT(year)
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (day)
@@ -217,7 +215,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Array Field (groupAddress)
@@ -262,7 +259,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (year)
@@ -643,7 +639,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		}
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (magicNumber)
@@ -668,7 +663,6 @@ func KnxPropertyParse(io *utils.ReadBuffer, propertyType KnxPropertyDataType, da
 		_map["Struct"] = values.NewPlcUSINT(revisionNumber)
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
-
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (logNumber)

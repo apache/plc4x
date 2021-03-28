@@ -18,36 +18,21 @@
     ~ under the License.
     -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-<artifactId>plc4j-go-mspec-test</artifactId>
-<name>PLC4J: Driver: Go Mpsec Test</name>
-<groupId>org.apache.plc4x</groupId>
-<version>0.9.0-SNAPSHOT</version>
-<description></description>
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-build-utils</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+    <relativePath>../../../..</relativePath>
+  </parent>
 
-<properties>
-  <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
-
-  <commons-lang3.version>3.11</commons-lang3.version>
-  <jackson.version>2.11.3</jackson.version>
-  <netty.version>4.1.54.Final</netty.version>
-
-  <!--
-    At least 3.3.3 required for camel-package-maven-plugin
-  -->
-  <maven.version>3.3.3</maven.version>
-  <java.version>1.8</java.version>
-  <maven.compiler.source>1.8</maven.compiler.source>
-  <maven.compiler.target>1.8</maven.compiler.target>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
-
-</properties>
+  <artifactId>plc4j-go-mspec-test</artifactId>
+  <name>PLC4J: Driver: Go Mpsec Test</name>
+  <description></description>
 
 <build>
   <plugins>
-
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-resources-plugin</artifactId>
@@ -73,7 +58,6 @@
         </execution>
       </executions>
     </plugin>
-
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-resources-plugin</artifactId>
@@ -102,13 +86,10 @@
         </execution>
       </executions>
     </plugin>
-
-
     <plugin>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-maven-plugin</artifactId>
       <version>${plc4x-code-generation.version}</version>
-
       <executions>
         <execution>
           <id>generate-driver</id>
@@ -244,8 +225,6 @@
         <!--argLine>@{failsafeArgLine}</argLine-->
       </configuration>
     </plugin>
-
-
   </plugins>
 </build>
 
@@ -253,66 +232,54 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-api</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-spi</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
-
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transport-tcp</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
-
   <dependency>
     <groupId>io.netty</groupId>
-    <version>${netty.version}</version>
     <artifactId>netty-buffer</artifactId>
   </dependency>
-
   <dependency>
     <groupId>org.apache.commons</groupId>
-    <version>${commons-lang3.version}</version>
     <artifactId>commons-lang3</artifactId>
   </dependency>
-
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
-    <version>${jackson.version}</version>
     <artifactId>jackson-annotations</artifactId>
   </dependency>
-
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils-test-utils</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <scope>test</scope>
   </dependency>
-
-
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-language-go</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>
   </dependency>
-
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-
+    <scope>provided</scope>
   </dependency>
-
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <classifier>tests</classifier>
     <type>test-jar</type>
     <scope>test</scope>

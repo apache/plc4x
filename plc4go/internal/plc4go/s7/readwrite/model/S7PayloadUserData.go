@@ -111,7 +111,6 @@ func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Pa
 	// Count array
 	items := make([]*S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {
-
 		_item, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())

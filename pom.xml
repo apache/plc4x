@@ -101,7 +101,7 @@
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
     <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
-
+    <plc4x.version>0.9.0-SNAPSHOT</plc4x.version>
     <antlr.version>4.9.1</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <assertj.version>3.18.1</assertj.version>
@@ -754,7 +754,7 @@
             <exclude>**/*.cmake</exclude>
             <exclude>**/*.internal</exclude>
             <exclude>**/link.txt</exclude>
-            <exclude>**/Makefile</exclude>
+            <exclude>**/plc4c/**/Makefile</exclude>
             <exclude>**/*.includecache</exclude>
             <exclude>**/CMakeFiles/**</exclude>
             <exclude>**/CMakeCache.txt</exclude>

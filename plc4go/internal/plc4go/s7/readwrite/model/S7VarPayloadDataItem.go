@@ -122,7 +122,6 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 	// Count array
 	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength)))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength))); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())

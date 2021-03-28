@@ -158,7 +158,6 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'events' field " + _err.Error())

@@ -218,7 +218,6 @@ func (m *${type.name}) LengthInBits() uint16 {
             <#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
         lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
             <#elseif helper.isSimpleTypeReference(arrayField.type)>
-                <#assign simpleTypeReference = arrayField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
             <#else>
 		for _, element := range m.${arrayField.name?cap_first} {
@@ -381,7 +380,6 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 					<#if (!helper.isSimpleTypeReference(arrayField.type)) && helper.requiresVariable(arrayField, "lastItem")>
 		lastItem := curItem == uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} - 1)
 					</#if>
-
 		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
@@ -630,7 +628,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign simpleField = field>
 
 	// Simple Field (${simpleField.name})
-	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type, field)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type, null, field)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 	if _${simpleField.name}Err != nil {
 			<#if helper.isEnumField(field)>
 		return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())

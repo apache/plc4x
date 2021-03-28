@@ -264,7 +264,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "optional".equals(field.getTypeName()) || (isComplexTypeReference(field.getType()) && !isEnumField(field));
     }
 
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, TypedField field) {
+    @Override
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.ReadBit()";
@@ -459,7 +460,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else {
                     return getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
                 }
-
             } else if (term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {

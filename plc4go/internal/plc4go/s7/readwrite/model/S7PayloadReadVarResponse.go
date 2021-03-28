@@ -112,7 +112,6 @@ func S7PayloadReadVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter)
 	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).NumItems); curItem++ {
 		lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).NumItems-1)
-
 		_item, _err := S7VarPayloadDataItemParse(io, lastItem)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())

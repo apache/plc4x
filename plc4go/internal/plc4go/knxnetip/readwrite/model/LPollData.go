@@ -136,7 +136,6 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	// Count array
 	targetAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'targetAddress' field " + _err.Error())
