@@ -97,7 +97,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         int itemCount = (int) ${helper.toParseExpression(type, field, field.loopExpression, type.parserArguments)};
         for(int curItem = 0; curItem < itemCount; curItem++) {
             ${helper.getLanguageTypeNameForTypeReference(field.type)}* _val = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(field.type)}) * 1);
-            _res = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "_val")}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            _res = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "_val", field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
             if(_res != OK) {
                 return _res;
             }
@@ -113,7 +113,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         List<${helper.getLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         int ${field.name}EndPos = io.getPos() + _${field.name}Length;
         while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+            _${field.name}List.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, null, field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(type, field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                         <#-- After parsing, update the current position, but only if it's needed -->
                             <#if field.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -194,7 +194,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
                     ${helper.getLanguageTypeNameForField(field)} _reserved = ${helper.getNullValueForTypeReference(field.type)};
-                    _res = ${helper.getReadBufferReadMethodCall(field.type, "&_reserved")};
+                    _res = ${helper.getReadBufferReadMethodCall(field.type, "&_reserved", field)};
                     if(_res != OK) {
                         return _res;
                     }
@@ -209,7 +209,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
                 <#if helper.isSimpleTypeReference(field.type)>
                 ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForTypeReference(field.type)};
-                _res = ${helper.getReadBufferReadMethodCall(field.type, "&" + field.name)};
+                _res = ${helper.getReadBufferReadMethodCall(field.type, "&" + field.name, field)};
                 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
                 ${helper.getLanguageTypeNameForField(field)}* ${field.name};

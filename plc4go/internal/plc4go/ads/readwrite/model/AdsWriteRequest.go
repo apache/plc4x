@@ -142,7 +142,6 @@ func AdsWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")

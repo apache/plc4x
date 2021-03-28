@@ -146,7 +146,6 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer) (*
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'value' field")

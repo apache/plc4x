@@ -76,7 +76,6 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	switch {
 	<#list type.switchField.cases as case>
         <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(type.parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(type.parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(type.parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default</#if>: // ${case.name}
-
 		<#assign valueDefined=false>
 		<#if case.name == "Struct">
 			_map := map[string]api.PlcValue{}

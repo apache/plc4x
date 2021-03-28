@@ -132,7 +132,6 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Count array
 	adsStampHeaders := make([]*AdsStampHeader, stamps)
 	for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
-
 		_item, _err := AdsStampHeaderParse(io)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")

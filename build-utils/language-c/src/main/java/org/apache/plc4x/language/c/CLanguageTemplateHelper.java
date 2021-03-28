@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -346,7 +347,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     @Override
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return "plc4c_spi_read_bit(io, (bool*) " + valueString + ")";
@@ -390,7 +391,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_read_string(io, " + stringTypeReference.getLength() + " * 8, \"" +
+                return "plc4c_spi_read_string(io, " + toParseExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -398,7 +399,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return "plc4c_spi_write_bit(io, " + fieldName + ")";
@@ -442,7 +443,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_write_string(io, " + stringTypeReference.getSizeInBits() + ", \"" +
+                return "plc4c_spi_write_string(io, " + toSerializationExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\", " + fieldName + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -487,10 +488,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
         }
     }
-
-
-
-
 
     public String toParseExpression(TypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         return toExpression(baseType, field, term, term1 -> toVariableParseExpression(baseType, field, term1, parserArguments));
@@ -580,6 +577,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     public String toVariableParseExpression(TypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
+
         if("CAST".equals(vl.getName())) {
 
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
@@ -876,8 +874,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        if (isVariableLiteralImplicitField(vl)) {
+            return toSerializationExpression(getThisTypeDefinition(), getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serialzerArguments);
+        }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName());
+        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName()) || "size".equals(vl.getName());
         boolean isTypeArg = "_type".equals(vl.getName());
         if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
             for (Argument serializerArgument : serialzerArguments) {
@@ -919,14 +921,13 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         } else {
             // If it wasn't an enum, treat it as a normal property.
-            System.out.println(camelCaseToSnakeCase(baseType.getName()));
-            System.out.println(vl.getName());
-            System.out.println(field.getTypeName());
-
             if (vl.getName().equals("lengthInBits")) {
                 StringBuilder sb = new StringBuilder(getCTypeName(baseType.getName()));
                 sb.append("_length_in_bits(_message)");
-                System.out.println(getCTypeName(baseType.getName()));
+                return sb.toString();
+            } else if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
+                StringBuilder sb = new StringBuilder("");
+                sb.append("sizeof(_message->" + camelCaseToSnakeCase(vl.getName()) + ")");
                 return sb.toString();
             } else {
                 StringBuilder sb = new StringBuilder("_message->");
@@ -955,8 +956,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 appendVariableExpressionRest(sb, baseType, vl);
                 return sb.toString();
             }
-
-
         }
     }
 

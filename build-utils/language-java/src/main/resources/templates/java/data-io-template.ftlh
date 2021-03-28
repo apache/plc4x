@@ -112,7 +112,7 @@ public class ${type.name}IO {
                 int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
                 ${field.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${field.name}.add(new ${helper.getPlcValueTypeForTypeReference(field.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(field)}) <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, field)})<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${field.name}.add(new ${helper.getPlcValueTypeForTypeReference(field.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(field)}) <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "", field)})<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -126,7 +126,7 @@ public class ${type.name}IO {
             while(io.getPos() < ${field.name}EndPos) {
                 value.add(
                 <#if helper.isSimpleTypeReference(field.type)>
-                    new ${helper.getPlcValueTypeForTypeReference(field.type)}(${helper.getReadBufferReadMethodCall(field.type, field)})
+                    new ${helper.getPlcValueTypeForTypeReference(field.type)}(${helper.getReadBufferReadMethodCall(field.type, "", field)})
                 <#else>${field.type.name}IO.staticParse(io
                     <#if field.params?has_content>,
                         <#list field.params as parserArgument>
@@ -143,7 +143,7 @@ public class ${type.name}IO {
             // Terminated array
             List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> ${field.name} = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}))) {
-                ${field.name}.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                ${field.name}.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "", field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if field.loopExpression.contains("curPos")>
@@ -159,7 +159,7 @@ public class ${type.name}IO {
                     <#case "const">
 
             // Const Field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type, field)};
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type, "", field)};
             if(${field.name} != ${type.name}.${field.name?upper_case}) {
                 throw new ParseException("Expected constant value " + ${type.name}.${field.name?upper_case} + " but got " + ${field.name});
             }
@@ -170,7 +170,7 @@ public class ${type.name}IO {
                     <#case "enum">
 
             // Enum field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type), field)});
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type), "", field)});
                         <#if field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -187,7 +187,7 @@ public class ${type.name}IO {
 
             // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             {
-                ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type, field)};
+                ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type, "", field)};
                 if(reserved != ${helper.getReservedValue(field)}) {
                     LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
                 }
@@ -197,10 +197,10 @@ public class ${type.name}IO {
 
                         <#if helper.isEnumField(field)>
             // Enum field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type), field)});
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type), "", field)});
                         <#else>
             // Simple Field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type, "", field)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) ||

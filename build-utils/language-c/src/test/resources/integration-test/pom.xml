@@ -18,38 +18,26 @@
     ~ under the License.
     -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-<artifactId>plc4j-c-mspec-test</artifactId>
-<name>PLC4J: Driver: C Mpsec Test</name>
-<groupId>org.apache.plc4x</groupId>
-<version>0.9.0-SNAPSHOT</version>
-<description></description>
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-build-utils</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+    <relativePath>../../../..</relativePath>
+  </parent>
 
-<properties>
-  <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
+  <artifactId>plc4j-c-mspec-test</artifactId>
 
-  <commons-lang3.version>3.11</commons-lang3.version>
-  <jackson.version>2.11.3</jackson.version>
-  <netty.version>4.1.54.Final</netty.version>
+  <name>PLC4J: Driver: C Mpsec Test</name>
+  <description></description>
 
-  <!--
-    At least 3.3.3 required for camel-package-maven-plugin
-  -->
-  <cmake-version>3.18.4</cmake-version>
-  <maven.version>3.3.3</maven.version>
-  <java.version>1.8</java.version>
-  <maven.compiler.source>1.8</maven.compiler.source>
-  <maven.compiler.target>1.8</maven.compiler.target>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
-  <unity.version>2.5.0</unity.version>
-  <!-- Tell Sonar where to find the c++ sources -->
-  <sonar.sources />
-  <option.with-proxies>OFF</option.with-proxies>
-
-</properties>
-
+  <properties>
+    <unity.version>2.5.0</unity.version>
+    <!-- Tell Sonar where to find the c++ sources -->
+    <sonar.sources />
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
 
 <!--
   Notes:
@@ -324,49 +312,47 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-api</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
+
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-spi</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transport-tcp</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
   </dependency>
 
   <dependency>
     <groupId>io.netty</groupId>
-    <version>${netty.version}</version>
     <artifactId>netty-buffer</artifactId>
   </dependency>
 
   <dependency>
     <groupId>org.apache.commons</groupId>
-    <version>${commons-lang3.version}</version>
     <artifactId>commons-lang3</artifactId>
   </dependency>
 
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
-    <version>${jackson.version}</version>
     <artifactId>jackson-annotations</artifactId>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils-test-utils</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <scope>test</scope>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-language-c</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>
   </dependency>
@@ -374,7 +360,7 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
 
   </dependency>
@@ -382,7 +368,7 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <classifier>tests</classifier>
     <type>test-jar</type>
     <scope>test</scope>
