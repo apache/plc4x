@@ -46,6 +46,54 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <name>Profinet: TaggedFrame with payload: DCP Identify Multicast Request</name>
+    <raw>010ecf0000005065f3b8cda3810000008892fefe05000000000100010004ffff00000000000000000000000000000000000000000000000000000000</raw>
+    <root-type>BaseEthernetFrame</root-type>
+    <xml>
+      <TaggedFrame className="org.apache.plc4x.java.profinet.dcp.readwrite.TaggedFrame">
+        <destination className="org.apache.plc4x.java.profinet.dcp.readwrite.MacAddress">
+          <octet1>1</octet1>
+          <octet2>14</octet2>
+          <octet3>207</octet3>
+          <octet4>0</octet4>
+          <octet5>0</octet5>
+          <octet6>0</octet6>
+        </destination>
+        <source className="org.apache.plc4x.java.profinet.dcp.readwrite.MacAddress">
+          <octet1>80</octet1>
+          <octet2>101</octet2>
+          <octet3>243</octet3>
+          <octet4>184</octet4>
+          <octet5>205</octet5>
+          <octet6>163</octet6>
+        </source>
+        <!--        HEX 0x8100 VLAN-->
+        <etherType>33024</etherType>
+        <payload className="org.apache.plc4x.java.profinet.dcp.readwrite.ProfinetFrame">
+          <frameType>IDENTIFY_MULTICAST_REQUEST</frameType>
+          <frame className="org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentRequestPDU">
+            <serviceId>IDENTIFY</serviceId>
+            <serviceType>REQUEST</serviceType>
+            <xid>1</xid>
+            <responseDelay>1</responseDelay>
+            <dcpDataLength>4</dcpDataLength>
+            <blocks>
+              <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector">
+                <blockType>ALL_SELECTOR</blockType>
+              </blocks>
+            </blocks>
+          </frame>
+        </payload>
+        <priority>0</priority>
+        <droppable>false</droppable>
+        <vlan>0</vlan>
+        <!--      HEX 0x8892 PN_DCP-->
+        <ethernetType>34962</ethernetType>
+      </TaggedFrame>
+    </xml>
+  </testcase>
+
 <!--  <testcase>-->
 <!--    <name>Profinet: DCP Identify Response</name>-->
 <!--    <raw>feff05010501000f00000052020500040000020702010009000053372d31323030000202000c0000706c6378623164306564020300060000002a010d020400040000020002070004000000640102000e0001c0a802f1ffffff00c0a80201</raw>-->
