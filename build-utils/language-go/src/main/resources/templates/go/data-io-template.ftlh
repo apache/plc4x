@@ -212,7 +212,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#assign simpleField = field>
 
 			// Simple Field (${field.name})
-			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()" field)}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
+			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()", field)}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.Wrap(_err, "Error serializing '${field.name}' field")
 			}
 					<#break>
