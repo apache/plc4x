@@ -121,13 +121,12 @@ func (m PlcDriverManger) ListTransportNames() []string {
 	return transportNames
 }
 
-func (m PlcDriverManger) GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error) {
-	// TODO: what are the parameters above for? If not needed we can blank ("_") them
+func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
 	if val, ok := m.transports[transportName]; ok {
-		log.Debug().Str("transportName", transportName).Msg("Returning transport name")
+		log.Debug().Str("transportName", transportName).Msg("Returning transport")
 		return val, nil
 	}
-	return nil, errors.New("couldn't find transport " + transportName)
+	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
 func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
@@ -213,8 +212,7 @@ func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent)) 
 		if driver.SupportsDiscovery() {
 			err := driver.Discover(callback)
 			if err != nil {
-				return errors.New("Error running Discover on driver " + driver.GetProtocolName() +
-					". Got error: " + err.Error())
+				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}
 		}
 	}
