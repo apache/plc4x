@@ -24,7 +24,9 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.profinet.dcp.configuration.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.dcp.field.ProfinetFieldHandler;
 import org.apache.plc4x.java.profinet.dcp.protocol.ProfinetDCPProtocolLogic;
+import org.apache.plc4x.java.profinet.dcp.readwrite.BaseEthernetFrame;
 import org.apache.plc4x.java.profinet.dcp.readwrite.EthernetFrame;
+import org.apache.plc4x.java.profinet.dcp.readwrite.io.BaseEthernetFrameIO;
 import org.apache.plc4x.java.profinet.dcp.readwrite.io.EthernetFrameIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -37,7 +39,7 @@ import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 /**
  * Proof of concept implementation of Profinet DCP driver.
  */
-public class ProfinetDCPPlcDriver extends GeneratedDriverBase<EthernetFrame> {
+public class ProfinetDCPPlcDriver extends GeneratedDriverBase<BaseEthernetFrame> {
 
     @Override
     public String getProtocolCode() {
@@ -70,8 +72,8 @@ public class ProfinetDCPPlcDriver extends GeneratedDriverBase<EthernetFrame> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<EthernetFrame> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EthernetFrame.class, EthernetFrameIO.class)
+    protected ProtocolStackConfigurer<BaseEthernetFrame> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(BaseEthernetFrame.class, BaseEthernetFrameIO.class)
             .withProtocol(ProfinetDCPProtocolLogic.class)
             .withPacketSizeEstimator(ProfinetPacketEstimator.class)
             .withCorruptPacketRemover(CorruptEthernetFrameRemover.class)

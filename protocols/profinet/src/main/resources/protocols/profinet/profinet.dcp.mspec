@@ -17,11 +17,22 @@
 // under the License.
 //
 
-[type 'EthernetFrame'
-    [simple MacAddress 'destination' ]
-    [simple MacAddress 'source'      ]
-    [simple uint 16    'ethernetType']
-    [simple ProfinetFrame 'payload'  ]
+[discriminatedType 'BaseEthernetFrame'
+    [simple        MacAddress    'destination' ]
+    [simple        MacAddress    'source'      ]
+    [simple        uint 16       'etherType']
+    [typeSwitch 'etherType'
+        ['0x8100' TaggedFrame
+            [simple uint 3       'priority']
+            [simple bit          'droppable']
+            [simple uint 12      'vlan']
+            [simple uint 16      'ethernetType']
+        ]
+        [EthernetFrame
+            [implicit uint 16    'ethernetType' 'etherType']
+        ]
+    ]
+    [simple        ProfinetFrame 'payload'     ]
 ]
 
 [type 'ProfinetFrame'
@@ -40,11 +51,19 @@
             [simple uint 16 'dcpDataLength'                ]
             [array DCPBlock 'blocks' length 'dcpDataLength']
         ]
+        ['FrameType.GET_SET' DcpGetSetPDU
+            [enum DCPServiceID 'serviceId'                 ]
+            [enum DCPServiceType 'serviceType'             ]
+            [simple uint 32 'xid'                          ]
+            [reserved uint 16 '0x00'                       ]
+            [simple uint 16 'dcpDataLength'                ]
+            [array DCPBlock 'blocks' length 'dcpDataLength']
+        ]
         ['FrameType.IDENTIFY_RESPONSE' DcpIdentResponsePDU
             [enum DCPServiceID 'serviceId'                 ]
             [enum DCPServiceType 'serviceType'             ]
             [simple uint 32 'xid'                          ]
-            [simple uint 16 'responseDelay'                ]
+            [reserved uint 16 '0x00'                       ]
             [simple uint 16 'dcpDataLength'                ]
             [array DCPBlock 'blocks' length 'dcpDataLength']
         ]
@@ -167,7 +186,6 @@
     ['0x04' SET                         ]
     ['0x05' IDENTIFY                    ]
     ['0x06' HELLO                       ]
-    ['0xFEFE' IDENTIFY_RESPONSE         ]
 ]
 
 [enum uint 8 'DCPServiceType'
@@ -177,6 +195,7 @@
 
 [enum uint 16 'FrameType'
     ['0xFEFE' IDENTIFY_MULTICAST_REQUEST]
+    ['0xFEFD' GET_SET                   ]
     ['0xFEFF' IDENTIFY_RESPONSE         ]
 ]
 

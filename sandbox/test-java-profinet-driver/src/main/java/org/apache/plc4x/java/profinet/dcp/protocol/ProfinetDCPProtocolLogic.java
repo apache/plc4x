@@ -19,18 +19,28 @@
 package org.apache.plc4x.java.profinet.dcp.protocol;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.dcp.configuration.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector;
-import org.apache.plc4x.java.profinet.dcp.readwrite.DCPBlock;
-import org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentRequestPDU;
-import org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentResponsePDU;
-import org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties;
-import org.apache.plc4x.java.profinet.dcp.readwrite.EthernetFrame;
-import org.apache.plc4x.java.profinet.dcp.readwrite.IP;
-import org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address;
-import org.apache.plc4x.java.profinet.dcp.readwrite.MacAddress;
-import org.apache.plc4x.java.profinet.dcp.readwrite.ProfinetFrame;
+import org.apache.plc4x.java.profinet.dcp.field.ProfinetDcpField;
+import org.apache.plc4x.java.profinet.dcp.readwrite.*;
 import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPBlockOption;
 import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPServiceID;
 import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPServiceType;
@@ -38,20 +48,33 @@ import org.apache.plc4x.java.profinet.dcp.readwrite.types.FrameType;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.values.PlcNull;
+import org.apache.plc4x.java.spi.values.PlcValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Driver logic for handling Profinet-DCP packets.
  */
-public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> implements
-    HasConfiguration<ProfinetConfiguration> {
+public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<BaseEthernetFrame> implements
+    HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
     public static MacAddress PROFINET_BROADCAST = createAddress(0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00);
     public static int PN_DCP = 0x8892;
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     private final Logger logger = LoggerFactory.getLogger(ProfinetDCPProtocolLogic.class);
+    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     private AtomicInteger invokeId = new AtomicInteger(0);
     private ProfinetConfiguration configuration;
@@ -62,7 +85,7 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> i
     }
 
     @Override
-    public void onConnect(ConversationContext<EthernetFrame> context) {
+    public void onConnect(ConversationContext<BaseEthernetFrame> context) {
         DCPServiceID serviceId = DCPServiceID.IDENTIFY;
         DCPServiceType serviceType = DCPServiceType.REQUEST;
         long xid = invokeId.incrementAndGet();
@@ -80,17 +103,48 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> i
     }
 
     @Override
-    public void onDisconnect(ConversationContext<EthernetFrame> context) {
+    public void onDisconnect(ConversationContext<BaseEthernetFrame> context) {
         context.fireDisconnected();
     }
 
     @Override
-    protected void decode(ConversationContext<EthernetFrame> context, EthernetFrame msg) throws Exception {
-        if (msg.getEthernetType() != PN_DCP) {
-            logger.trace("Discarding unwanted frame type {}", msg.getEthernetType());
+    protected void decode(ConversationContext<BaseEthernetFrame> context, BaseEthernetFrame msg) throws Exception {
+        if (msg instanceof TaggedFrame) {
+            TaggedFrame frame = (TaggedFrame) msg;
+            if (frame.getEthernetType() != PN_DCP) {
+                logger.trace("Discarding unwanted frame type {}", frame.getEthernetType());
+            }
+        } else if (msg.getEtherType() != PN_DCP) {
+            logger.trace("Discarding unwanted frame type {}", msg.getEtherType());
         }
 
         ProfinetFrame profinetFrame = msg.getPayload();
+
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            DefaultPlcConsumerRegistration registration = entry.getKey();
+            Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
+
+            for (PlcSubscriptionHandle handler : registration.getSubscriptionHandles()) {
+                ProfinetDCPSubscriptionHandle handle = (ProfinetDCPSubscriptionHandle) handler;
+
+                if (handle.matches(profinetFrame)) {
+                    logger.trace("Dispatching frame {} to {}", profinetFrame, handle);
+
+                    ProfinetDcpField field = handle.getField();
+                    // todo map actual DCP fields to PlcValues ?
+                    PlcValue value = PlcValues.of(profinetFrame);
+                    DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
+                        Instant.now(),
+                        Collections.singletonMap(
+                            handle.getName(),
+                            new ResponseItem<>(PlcResponseCode.OK, value)
+                        )
+                    );
+                    consumer.accept(event);
+                }
+            }
+        }
+
         if (profinetFrame.getFrameType() == FrameType.IDENTIFY_RESPONSE) {
             logger.info("Ident response from Profinet device:");
             if (profinetFrame.getFrame() instanceof DcpIdentResponsePDU) {
@@ -113,12 +167,48 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> i
         }
     }
 
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest request) {
+        DefaultPlcSubscriptionRequest rq = (DefaultPlcSubscriptionRequest) request;
+
+        Map<String, ResponseItem<PlcSubscriptionHandle>> answers = new LinkedHashMap<>();
+        DefaultPlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(rq, answers);
+
+        for (String key : rq.getFieldNames()) {
+            DefaultPlcSubscriptionField subscription = (DefaultPlcSubscriptionField) rq.getField(key);
+            if (subscription.getPlcSubscriptionType() != PlcSubscriptionType.EVENT) {
+                answers.put(key, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
+            } else if ((subscription.getPlcField() instanceof ProfinetDcpField)) {
+                answers.put(key, new ResponseItem<>(PlcResponseCode.OK,
+                    new ProfinetDCPSubscriptionHandle(this, key, (ProfinetDcpField) subscription.getPlcField())
+                ));
+            } else {
+                answers.put(key, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+            }
+        }
+
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
+        consumers.put(consumerRegistration, consumer);
+        return consumerRegistration;
+    }
+
+    @Override
+    public void unregister(PlcConsumerRegistration registration) {
+        consumers.remove(registration);
+    }
+
+
     private String addressString(IPv4Address address) {
         return address.getOctet1() + "." + address.getOctet2() + "." + address.getOctet3() + "." + address.getOctet4();
     }
 
     @Override
-    public void close(ConversationContext<EthernetFrame> context) {
+    public void close(ConversationContext<BaseEthernetFrame> context) {
 
     }
 
