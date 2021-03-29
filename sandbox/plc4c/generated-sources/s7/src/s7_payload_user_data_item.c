@@ -26,9 +26,10 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request */
-    .cpuFunctionType = 0x04   },
+   .cpuFunctionType = 0x04},
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response */
-    .cpuFunctionType = 0x08   }
+   .cpuFunctionType = 0x08}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -100,6 +101,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     return _res;
   }
   (*_message)->szl_index = szlIndex;
+
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(cpuFunctionType == 0x04) { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request;
@@ -195,6 +197,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
+
       // Const Field (szlItemLength)
       plc4c_spi_write_unsigned_short(io, 16, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH());
 

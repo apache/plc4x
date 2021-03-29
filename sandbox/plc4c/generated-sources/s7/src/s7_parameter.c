@@ -26,23 +26,18 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
   {/* plc4c_s7_read_write_s7_parameter_setup_communication */
-    .parameterType = 0xF0,
-       .messageType = -1   },
+   .parameterType = 0xF0, .messageType = -1},
   {/* plc4c_s7_read_write_s7_parameter_read_var_request */
-    .parameterType = 0x04,
-       .messageType = 0x01   },
+   .parameterType = 0x04, .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_parameter_read_var_response */
-    .parameterType = 0x04,
-       .messageType = 0x03   },
+   .parameterType = 0x04, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_parameter_write_var_request */
-    .parameterType = 0x05,
-       .messageType = 0x01   },
+   .parameterType = 0x05, .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_parameter_write_var_response */
-    .parameterType = 0x05,
-       .messageType = 0x03   },
+   .parameterType = 0x05, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_parameter_user_data */
-    .parameterType = 0x00,
-       .messageType = 0x07   }
+   .parameterType = 0x00, .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -70,12 +65,14 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     return NO_MEMORY;
   }
         // Discriminator Field (parameterType)
+
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &parameterType);
   if(_res != OK) {
     return _res;
   }
+
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xF0) { /* S7ParameterSetupCommunication */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication;
@@ -255,6 +252,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
 plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_parameter* _message) {
   plc4c_return_code _res = OK;
+
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_parameter_get_discriminator(_message->_type).parameterType);
 

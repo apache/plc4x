@@ -26,13 +26,14 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_discriminators[] = {
   {/* plc4c_s7_read_write_s7_message_request */
-    .messageType = 0x01   },
+   .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_message_response */
-    .messageType = 0x02   },
+   .messageType = 0x02},
   {/* plc4c_s7_read_write_s7_message_response_data */
-    .messageType = 0x03   },
+   .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_message_user_data */
-    .messageType = 0x07   }
+   .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -77,6 +78,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* io
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID + " but got " + protocolId);
   }
         // Discriminator Field (messageType)
+
   // Discriminator Field (messageType) (Used as input to a switch field)
   uint8_t messageType = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &messageType);
@@ -117,6 +119,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* io
   if(_res != OK) {
     return _res;
   }
+
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(messageType == 0x01) { /* S7MessageRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
@@ -206,8 +209,10 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* io
 
 plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_message* _message) {
   plc4c_return_code _res = OK;
+
   // Const Field (protocolId)
   plc4c_spi_write_unsigned_byte(io, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID());
+
   // Discriminator Field (messageType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_s7_message_get_discriminator(_message->_type).messageType);
 

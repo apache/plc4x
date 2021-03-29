@@ -56,6 +56,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_constants* _message) {
   plc4c_return_code _res = OK;
+
   // Const Field (modbusTcpDefaultPort)
   plc4c_spi_write_unsigned_short(io, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT());
 

@@ -93,6 +93,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
   if(_res != OK) {
     return _res;
   }
+
   // Const Field (protocolIdentifier)
   plc4c_spi_write_unsigned_short(io, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
 

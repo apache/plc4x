@@ -26,15 +26,16 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminators[] = {
   {/* plc4c_s7_read_write_cotp_parameter_tpdu_size */
-    .parameterType = 0xC0   },
+   .parameterType = 0xC0},
   {/* plc4c_s7_read_write_cotp_parameter_calling_tsap */
-    .parameterType = 0xC1   },
+   .parameterType = 0xC1},
   {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
-    .parameterType = 0xC2   },
+   .parameterType = 0xC2},
   {/* plc4c_s7_read_write_cotp_parameter_checksum */
-    .parameterType = 0xC3   },
+   .parameterType = 0xC3},
   {/* plc4c_s7_read_write_cotp_parameter_disconnect_additional_information */
-    .parameterType = 0xE0   }
+   .parameterType = 0xE0}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -62,6 +63,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     return NO_MEMORY;
   }
         // Discriminator Field (parameterType)
+
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &parameterType);
@@ -75,6 +77,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   if(_res != OK) {
     return _res;
   }
+
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
@@ -155,6 +158,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_cotp_parameter* _message) {
   plc4c_return_code _res = OK;
+
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
 
