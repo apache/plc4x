@@ -26,17 +26,14 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_discriminators[] = {
   {/* plc4c_s7_read_write_s7_payload_read_var_response */
-    .parameterParameterType = 0x04,
-       .messageType = 0x03   },
+   .parameterParameterType = 0x04, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_payload_write_var_request */
-    .parameterParameterType = 0x05,
-       .messageType = 0x01   },
+   .parameterParameterType = 0x05, .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_payload_write_var_response */
-    .parameterParameterType = 0x05,
-       .messageType = 0x03   },
+   .parameterParameterType = 0x05, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_payload_user_data */
-    .parameterParameterType = 0x00,
-       .messageType = 0x07   }
+   .parameterParameterType = 0x00, .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -63,6 +60,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* io
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response;

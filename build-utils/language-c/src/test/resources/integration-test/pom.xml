@@ -312,19 +312,19 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-api</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-spi</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transport-tcp</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
@@ -345,14 +345,14 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils-test-utils</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
     <scope>test</scope>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-language-c</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
     <!-- Scope is 'provided' as this way it's not shipped with the driver -->
     <scope>provided</scope>
   </dependency>
@@ -360,15 +360,13 @@
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>${project.version}</version>
-    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-
+    <version>0.9.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils-protocol-test</artifactId>
-    <version>${project.version}</version>
+    <version>0.9.0-SNAPSHOT</version>
     <classifier>tests</classifier>
     <type>test-jar</type>
     <scope>test</scope>
