@@ -41,10 +41,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.dcp.configuration.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.dcp.field.ProfinetDcpField;
 import org.apache.plc4x.java.profinet.dcp.readwrite.*;
-import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPBlockOption;
-import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPServiceID;
-import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPServiceType;
-import org.apache.plc4x.java.profinet.dcp.readwrite.types.FrameType;
+import org.apache.plc4x.java.profinet.dcp.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -94,9 +91,12 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<BaseEthernetFram
         int dcpDataLength = blocks[0].getLengthInBytes();
 
         DcpIdentRequestPDU requestPDU = new DcpIdentRequestPDU(serviceId, serviceType, xid, responseDelay, dcpDataLength, blocks);
+        ProfinetFrame profiFrame = new ProfinetFrame(FrameType.IDENTIFY_MULTICAST_REQUEST, requestPDU);
         EthernetFrame ethernetFrame = new EthernetFrame(PROFINET_BROADCAST, configuration.getSender(), PN_DCP,
-            new ProfinetFrame(FrameType.IDENTIFY_MULTICAST_REQUEST, requestPDU));
-
+            profiFrame);
+        /*TaggedFrame ethernetTaggedFrame = new TaggedFrame(PROFINET_BROADCAST, configuration.getSender(),
+            TypeLAN.VLAN.getValue(),profiFrame,(byte) 0,false,0,TypeLAN.PN_DCP.getValue());
+*/
         // this is broadcast thus reply might come from multiple participants
         context.sendToWire(ethernetFrame);
         context.fireConnected();

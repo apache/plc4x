@@ -28,8 +28,7 @@
             [simple uint 12      'vlan']
             [simple uint 16      'ethernetType']
         ]
-        [EthernetFrame
-            [implicit uint 16    'ethernetType' 'etherType']
+        ['0x8892' EthernetFrame
         ]
     ]
     [simple        ProfinetFrame 'payload'     ]
