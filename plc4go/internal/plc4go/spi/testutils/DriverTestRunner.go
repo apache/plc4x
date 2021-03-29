@@ -22,7 +22,8 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
@@ -33,6 +34,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"testing"
 	"time"
@@ -135,7 +137,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				}
 				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
 				if err != nil {
-					return errors.Wrap(err, "error parsing address: "+fieldAddress)
+					return errors.Wrapf(err, "error parsing address: %s", fieldAddress)
 				}
 				if field.GetQuantity() > 1 {
 					var fieldValue []string
@@ -203,9 +205,21 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
-		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-		if err != nil {
-			return errors.Wrap(err, "error parsing xml")
+		var message interface{}
+		var err error
+		switch m.driverName {
+		case "modbus":
+			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "ads":
+			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		default:
+			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
 		}
 
 		// Serialize the model into bytes
@@ -270,9 +284,21 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
-		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-		if err != nil {
-			return errors.Wrap(err, "error parsing xml")
+		var message interface{}
+		var err error
+		switch m.driverName {
+		case "modbus":
+			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "ads":
+			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		default:
+			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
 		}
 
 		// Serialize the model into bytes
@@ -395,6 +421,12 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 
 	for _, testcase := range testsuite.testcases {
 		t.Run(testcase.name, func(t *testing.T) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("\n\n-------------------------------------------------------\nFatal Failure\n%+v\n%s\n-------------------------------------------------------\n", err, debug.Stack())
+					t.FailNow()
+				}
+			}()
 			if skippedTestCasesMap[testcase.name] {
 				log.Warn().Msgf("Testcase %s skipped", testcase.name)
 				t.Skipf("Testcase %s skipped", testcase.name)
@@ -403,7 +435,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			log.Info().Msgf("Running testcase %s", testcase.name)
 			err := testsuite.Run(driverManager, testcase)
 			if err != nil {
-				log.Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
+				log.Error().Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n", err)
 				t.Fail()
 			}
 		})
