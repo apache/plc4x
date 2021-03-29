@@ -665,18 +665,18 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
             <#case "discriminator">
                 <#assign discriminatorField = field>
 
-        // Discriminator Field (${discriminatorField.name})
+<#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
         <#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type>
             <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-                lengthInBits +=  ${helper.toParseExpression(type, discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)};
+<#if indentContent>    </#if>  lengthInBits +=  ${helper.toParseExpression(type, discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)};
             <#else>
-                lengthInBits += ${simpleTypeReference.sizeInBits};
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
             </#if>
         <#elseif helper.isEnumField(field)>
-            lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+<#if indentContent>    </#if>  lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
         <#else>
-            lengthInBits += ${discriminatorField.name}.getLengthInBits();
+<#if indentContent>    </#if>  lengthInBits += ${discriminatorField.name}.getLengthInBits();
         </#if>
                 <#break>
             <#case "enum">

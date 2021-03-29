@@ -21,7 +21,6 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
