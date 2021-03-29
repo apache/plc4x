@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type LRawCon struct {
 	Parent *CEMI
-	ILRawCon
 }
 
 // The corresponding interface

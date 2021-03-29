@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtWriteRoutingTableRequest struct {
 	Parent *ApduDataExt
-	IApduDataExtWriteRoutingTableRequest
 }
 
 // The corresponding interface

@@ -24,6 +24,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -45,7 +46,6 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 	SegmentationSupported           uint8
 	VendorId                        uint8
 	Parent                          *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestIAm
 }
 
 // The corresponding interface
@@ -150,7 +150,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
 	if _objectIdentifierHeaderErr != nil {
-		return nil, errors.New("Error parsing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+		return nil, errors.Wrap(_objectIdentifierHeaderErr, "Error parsing 'objectIdentifierHeader' field")
 	}
 	if objectIdentifierHeader != BACnetUnconfirmedServiceRequestIAm_OBJECTIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestIAm_OBJECTIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", objectIdentifierHeader))
@@ -159,19 +159,19 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Simple Field (objectType)
 	objectType, _objectTypeErr := io.ReadUint16(10)
 	if _objectTypeErr != nil {
-		return nil, errors.New("Error parsing 'objectType' field " + _objectTypeErr.Error())
+		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
 
 	// Simple Field (objectInstanceNumber)
 	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
 	if _objectInstanceNumberErr != nil {
-		return nil, errors.New("Error parsing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
 
 	// Const Field (maximumApduLengthAcceptedHeader)
 	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8(5)
 	if _maximumApduLengthAcceptedHeaderErr != nil {
-		return nil, errors.New("Error parsing 'maximumApduLengthAcceptedHeader' field " + _maximumApduLengthAcceptedHeaderErr.Error())
+		return nil, errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error parsing 'maximumApduLengthAcceptedHeader' field")
 	}
 	if maximumApduLengthAcceptedHeader != BACnetUnconfirmedServiceRequestIAm_MAXIMUMAPDULENGTHACCEPTEDHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestIAm_MAXIMUMAPDULENGTHACCEPTEDHEADER) + " but got " + fmt.Sprintf("%d", maximumApduLengthAcceptedHeader))
@@ -180,7 +180,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Simple Field (maximumApduLengthAcceptedLength)
 	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8(3)
 	if _maximumApduLengthAcceptedLengthErr != nil {
-		return nil, errors.New("Error parsing 'maximumApduLengthAcceptedLength' field " + _maximumApduLengthAcceptedLengthErr.Error())
+		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
 
 	// Array field (maximumApduLengthAccepted)
@@ -189,7 +189,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'maximumApduLengthAccepted' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'maximumApduLengthAccepted' field")
 		}
 		maximumApduLengthAccepted[curItem] = _item
 	}
@@ -197,7 +197,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Const Field (segmentationSupportedHeader)
 	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8(8)
 	if _segmentationSupportedHeaderErr != nil {
-		return nil, errors.New("Error parsing 'segmentationSupportedHeader' field " + _segmentationSupportedHeaderErr.Error())
+		return nil, errors.Wrap(_segmentationSupportedHeaderErr, "Error parsing 'segmentationSupportedHeader' field")
 	}
 	if segmentationSupportedHeader != BACnetUnconfirmedServiceRequestIAm_SEGMENTATIONSUPPORTEDHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestIAm_SEGMENTATIONSUPPORTEDHEADER) + " but got " + fmt.Sprintf("%d", segmentationSupportedHeader))
@@ -206,13 +206,13 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Simple Field (segmentationSupported)
 	segmentationSupported, _segmentationSupportedErr := io.ReadUint8(8)
 	if _segmentationSupportedErr != nil {
-		return nil, errors.New("Error parsing 'segmentationSupported' field " + _segmentationSupportedErr.Error())
+		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
 
 	// Const Field (vendorIdHeader)
 	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
 	if _vendorIdHeaderErr != nil {
-		return nil, errors.New("Error parsing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
 	if vendorIdHeader != BACnetUnconfirmedServiceRequestIAm_VENDORIDHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestIAm_VENDORIDHEADER) + " but got " + fmt.Sprintf("%d", vendorIdHeader))
@@ -221,7 +221,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	// Simple Field (vendorId)
 	vendorId, _vendorIdErr := io.ReadUint8(8)
 	if _vendorIdErr != nil {
-		return nil, errors.New("Error parsing 'vendorId' field " + _vendorIdErr.Error())
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
 
 	// Create a partially initialized instance
@@ -244,34 +244,34 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8(8, 0xC4)
 		if _objectIdentifierHeaderErr != nil {
-			return errors.New("Error serializing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+			return errors.Wrap(_objectIdentifierHeaderErr, "Error serializing 'objectIdentifierHeader' field")
 		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
 		_objectTypeErr := io.WriteUint16(10, (objectType))
 		if _objectTypeErr != nil {
-			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
+			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
 		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
-			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+			return errors.Wrap(_objectInstanceNumberErr, "Error serializing 'objectInstanceNumber' field")
 		}
 
 		// Const Field (maximumApduLengthAcceptedHeader)
 		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8(5, 0x04)
 		if _maximumApduLengthAcceptedHeaderErr != nil {
-			return errors.New("Error serializing 'maximumApduLengthAcceptedHeader' field " + _maximumApduLengthAcceptedHeaderErr.Error())
+			return errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error serializing 'maximumApduLengthAcceptedHeader' field")
 		}
 
 		// Simple Field (maximumApduLengthAcceptedLength)
 		maximumApduLengthAcceptedLength := uint8(m.MaximumApduLengthAcceptedLength)
 		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, (maximumApduLengthAcceptedLength))
 		if _maximumApduLengthAcceptedLengthErr != nil {
-			return errors.New("Error serializing 'maximumApduLengthAcceptedLength' field " + _maximumApduLengthAcceptedLengthErr.Error())
+			return errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error serializing 'maximumApduLengthAcceptedLength' field")
 		}
 
 		// Array Field (maximumApduLengthAccepted)
@@ -279,7 +279,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 			for _, _element := range m.MaximumApduLengthAccepted {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'maximumApduLengthAccepted' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
 			}
 		}
@@ -287,27 +287,27 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 		// Const Field (segmentationSupportedHeader)
 		_segmentationSupportedHeaderErr := io.WriteUint8(8, 0x91)
 		if _segmentationSupportedHeaderErr != nil {
-			return errors.New("Error serializing 'segmentationSupportedHeader' field " + _segmentationSupportedHeaderErr.Error())
+			return errors.Wrap(_segmentationSupportedHeaderErr, "Error serializing 'segmentationSupportedHeader' field")
 		}
 
 		// Simple Field (segmentationSupported)
 		segmentationSupported := uint8(m.SegmentationSupported)
 		_segmentationSupportedErr := io.WriteUint8(8, (segmentationSupported))
 		if _segmentationSupportedErr != nil {
-			return errors.New("Error serializing 'segmentationSupported' field " + _segmentationSupportedErr.Error())
+			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
 		}
 
 		// Const Field (vendorIdHeader)
 		_vendorIdHeaderErr := io.WriteUint8(8, 0x21)
 		if _vendorIdHeaderErr != nil {
-			return errors.New("Error serializing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+			return errors.Wrap(_vendorIdHeaderErr, "Error serializing 'vendorIdHeader' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
 		_vendorIdErr := io.WriteUint8(8, (vendorId))
 		if _vendorIdErr != nil {
-			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
 		return nil

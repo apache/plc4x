@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -34,7 +34,6 @@ type AdsNotificationSample struct {
 	NotificationHandle uint32
 	SampleSize         uint32
 	Data               []int8
-	IAdsNotificationSample
 }
 
 // The corresponding interface
@@ -92,13 +91,13 @@ func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, e
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
 	if _notificationHandleErr != nil {
-		return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
+		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize, _sampleSizeErr := io.ReadUint32(32)
 	if _sampleSizeErr != nil {
-		return nil, errors.New("Error parsing 'sampleSize' field " + _sampleSizeErr.Error())
+		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
 
 	// Array field (data)
@@ -107,7 +106,7 @@ func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, e
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -122,14 +121,14 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 	notificationHandle := uint32(m.NotificationHandle)
 	_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
 	if _notificationHandleErr != nil {
-		return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
+		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize := uint32(m.SampleSize)
 	_sampleSizeErr := io.WriteUint32(32, (sampleSize))
 	if _sampleSizeErr != nil {
-		return errors.New("Error serializing 'sampleSize' field " + _sampleSizeErr.Error())
+		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
 	}
 
 	// Array Field (data)
@@ -137,7 +136,7 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
 	}

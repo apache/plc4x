@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type KnxGroupAddressFreeLevel struct {
 	SubGroup uint16
 	Parent   *KnxGroupAddress
-	IKnxGroupAddressFreeLevel
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func KnxGroupAddressFreeLevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, erro
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint16(16)
 	if _subGroupErr != nil {
-		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +120,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 		subGroup := uint16(m.SubGroup)
 		_subGroupErr := io.WriteUint16(16, (subGroup))
 		if _subGroupErr != nil {
-			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
 		return nil

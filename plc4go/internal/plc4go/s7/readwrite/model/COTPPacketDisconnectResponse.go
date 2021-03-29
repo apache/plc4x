@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type COTPPacketDisconnectResponse struct {
 	DestinationReference uint16
 	SourceReference      uint16
 	Parent               *COTPPacket
-	ICOTPPacketDisconnectResponse
 }
 
 // The corresponding interface
@@ -109,13 +108,13 @@ func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (*COTPPacket, error
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
 	if _destinationReferenceErr != nil {
-		return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
+		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (sourceReference)
 	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
 	if _sourceReferenceErr != nil {
-		return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
+		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
 	// Create a partially initialized instance
@@ -135,14 +134,14 @@ func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 		destinationReference := uint16(m.DestinationReference)
 		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
 		if _destinationReferenceErr != nil {
-			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
+			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.SourceReference)
 		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
 		if _sourceReferenceErr != nil {
-			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
+			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
 		return nil

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtDomainAddressSerialNumberWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtDomainAddressSerialNumberWrite
 }
 
 // The corresponding interface

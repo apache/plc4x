@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtIndividualAddressSerialNumberResponse struct {
 	Parent *ApduDataExt
-	IApduDataExtIndividualAddressSerialNumberResponse
 }
 
 // The corresponding interface

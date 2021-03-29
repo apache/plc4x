@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -34,7 +34,6 @@ type ConnectionResponse struct {
 	HpaiDataEndpoint            *HPAIDataEndpoint
 	ConnectionResponseDataBlock *ConnectionResponseDataBlock
 	Parent                      *KnxNetIpMessage
-	IConnectionResponse
 }
 
 // The corresponding interface
@@ -121,13 +120,13 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
-		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
@@ -135,7 +134,7 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if bool((status) == (Status_NO_ERROR)) {
 		_val, _err := HPAIDataEndpointParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
 		}
 		hpaiDataEndpoint = _val
 	}
@@ -145,7 +144,7 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if bool((status) == (Status_NO_ERROR)) {
 		_val, _err := ConnectionResponseDataBlockParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
 		}
 		connectionResponseDataBlock = _val
 	}
@@ -169,13 +168,13 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
-			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
 
 		// Simple Field (status)
 		_statusErr := m.Status.Serialize(io)
 		if _statusErr != nil {
-			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
@@ -184,7 +183,7 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			hpaiDataEndpoint = m.HpaiDataEndpoint
 			_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(io)
 			if _hpaiDataEndpointErr != nil {
-				return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
+				return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 			}
 		}
 
@@ -194,7 +193,7 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			connectionResponseDataBlock = m.ConnectionResponseDataBlock
 			_connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(io)
 			if _connectionResponseDataBlockErr != nil {
-				return errors.New("Error serializing 'connectionResponseDataBlock' field " + _connectionResponseDataBlockErr.Error())
+				return errors.Wrap(_connectionResponseDataBlockErr, "Error serializing 'connectionResponseDataBlock' field")
 			}
 		}
 

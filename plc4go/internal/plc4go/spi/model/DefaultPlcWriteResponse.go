@@ -26,7 +26,6 @@ import (
 type DefaultPlcWriteResponse struct {
 	request       model.PlcWriteRequest
 	responseCodes map[string]model.PlcResponseCode
-	model.PlcReadResponse
 }
 
 func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcWriteResponse {
@@ -38,7 +37,7 @@ func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map
 
 func (m DefaultPlcWriteResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.responseCodes {
+	for fieldName := range m.responseCodes {
 		fieldNames = append(fieldNames, fieldName)
 	}
 	return fieldNames

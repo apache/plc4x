@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type TDataIndividualInd struct {
 	Parent *CEMI
-	ITDataIndividualInd
 }
 
 // The corresponding interface

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -33,7 +33,6 @@ type APDUSimpleAck struct {
 	OriginalInvokeId uint8
 	ServiceChoice    uint8
 	Parent           *APDU
-	IAPDUSimpleAck
 }
 
 // The corresponding interface
@@ -112,7 +111,7 @@ func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -125,13 +124,13 @@ func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
 	// Simple Field (originalInvokeId)
 	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (serviceChoice)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
 	if _serviceChoiceErr != nil {
-		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
 	// Create a partially initialized instance
@@ -151,7 +150,7 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -159,14 +158,14 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
-			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (serviceChoice)
 		serviceChoice := uint8(m.ServiceChoice)
 		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
 		if _serviceChoiceErr != nil {
-			return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}
 
 		return nil

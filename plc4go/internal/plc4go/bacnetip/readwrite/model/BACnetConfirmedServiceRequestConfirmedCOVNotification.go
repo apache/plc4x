@@ -24,6 +24,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -49,7 +50,6 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	LifetimeSeconds                           []int8
 	Notifications                             []*BACnetTagWithContent
 	Parent                                    *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestConfirmedCOVNotification
 }
 
 // The corresponding interface
@@ -172,7 +172,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Const Field (subscriberProcessIdentifierHeader)
 	subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
 	if _subscriberProcessIdentifierHeaderErr != nil {
-		return nil, errors.New("Error parsing 'subscriberProcessIdentifierHeader' field " + _subscriberProcessIdentifierHeaderErr.Error())
+		return nil, errors.Wrap(_subscriberProcessIdentifierHeaderErr, "Error parsing 'subscriberProcessIdentifierHeader' field")
 	}
 	if subscriberProcessIdentifierHeader != BACnetConfirmedServiceRequestConfirmedCOVNotification_SUBSCRIBERPROCESSIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_SUBSCRIBERPROCESSIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", subscriberProcessIdentifierHeader))
@@ -181,13 +181,13 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Simple Field (subscriberProcessIdentifier)
 	subscriberProcessIdentifier, _subscriberProcessIdentifierErr := io.ReadUint8(8)
 	if _subscriberProcessIdentifierErr != nil {
-		return nil, errors.New("Error parsing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
+		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
 	}
 
 	// Const Field (monitoredObjectIdentifierHeader)
 	monitoredObjectIdentifierHeader, _monitoredObjectIdentifierHeaderErr := io.ReadUint8(8)
 	if _monitoredObjectIdentifierHeaderErr != nil {
-		return nil, errors.New("Error parsing 'monitoredObjectIdentifierHeader' field " + _monitoredObjectIdentifierHeaderErr.Error())
+		return nil, errors.Wrap(_monitoredObjectIdentifierHeaderErr, "Error parsing 'monitoredObjectIdentifierHeader' field")
 	}
 	if monitoredObjectIdentifierHeader != BACnetConfirmedServiceRequestConfirmedCOVNotification_MONITOREDOBJECTIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_MONITOREDOBJECTIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", monitoredObjectIdentifierHeader))
@@ -196,19 +196,19 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Simple Field (monitoredObjectType)
 	monitoredObjectType, _monitoredObjectTypeErr := io.ReadUint16(10)
 	if _monitoredObjectTypeErr != nil {
-		return nil, errors.New("Error parsing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
+		return nil, errors.Wrap(_monitoredObjectTypeErr, "Error parsing 'monitoredObjectType' field")
 	}
 
 	// Simple Field (monitoredObjectInstanceNumber)
 	monitoredObjectInstanceNumber, _monitoredObjectInstanceNumberErr := io.ReadUint32(22)
 	if _monitoredObjectInstanceNumberErr != nil {
-		return nil, errors.New("Error parsing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
+		return nil, errors.Wrap(_monitoredObjectInstanceNumberErr, "Error parsing 'monitoredObjectInstanceNumber' field")
 	}
 
 	// Const Field (issueConfirmedNotificationsHeader)
 	issueConfirmedNotificationsHeader, _issueConfirmedNotificationsHeaderErr := io.ReadUint8(8)
 	if _issueConfirmedNotificationsHeaderErr != nil {
-		return nil, errors.New("Error parsing 'issueConfirmedNotificationsHeader' field " + _issueConfirmedNotificationsHeaderErr.Error())
+		return nil, errors.Wrap(_issueConfirmedNotificationsHeaderErr, "Error parsing 'issueConfirmedNotificationsHeader' field")
 	}
 	if issueConfirmedNotificationsHeader != BACnetConfirmedServiceRequestConfirmedCOVNotification_ISSUECONFIRMEDNOTIFICATIONSHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_ISSUECONFIRMEDNOTIFICATIONSHEADER) + " but got " + fmt.Sprintf("%d", issueConfirmedNotificationsHeader))
@@ -217,19 +217,19 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Simple Field (issueConfirmedNotificationsType)
 	issueConfirmedNotificationsType, _issueConfirmedNotificationsTypeErr := io.ReadUint16(10)
 	if _issueConfirmedNotificationsTypeErr != nil {
-		return nil, errors.New("Error parsing 'issueConfirmedNotificationsType' field " + _issueConfirmedNotificationsTypeErr.Error())
+		return nil, errors.Wrap(_issueConfirmedNotificationsTypeErr, "Error parsing 'issueConfirmedNotificationsType' field")
 	}
 
 	// Simple Field (issueConfirmedNotificationsInstanceNumber)
 	issueConfirmedNotificationsInstanceNumber, _issueConfirmedNotificationsInstanceNumberErr := io.ReadUint32(22)
 	if _issueConfirmedNotificationsInstanceNumberErr != nil {
-		return nil, errors.New("Error parsing 'issueConfirmedNotificationsInstanceNumber' field " + _issueConfirmedNotificationsInstanceNumberErr.Error())
+		return nil, errors.Wrap(_issueConfirmedNotificationsInstanceNumberErr, "Error parsing 'issueConfirmedNotificationsInstanceNumber' field")
 	}
 
 	// Const Field (lifetimeHeader)
 	lifetimeHeader, _lifetimeHeaderErr := io.ReadUint8(5)
 	if _lifetimeHeaderErr != nil {
-		return nil, errors.New("Error parsing 'lifetimeHeader' field " + _lifetimeHeaderErr.Error())
+		return nil, errors.Wrap(_lifetimeHeaderErr, "Error parsing 'lifetimeHeader' field")
 	}
 	if lifetimeHeader != BACnetConfirmedServiceRequestConfirmedCOVNotification_LIFETIMEHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_LIFETIMEHEADER) + " but got " + fmt.Sprintf("%d", lifetimeHeader))
@@ -238,7 +238,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Simple Field (lifetimeLength)
 	lifetimeLength, _lifetimeLengthErr := io.ReadUint8(3)
 	if _lifetimeLengthErr != nil {
-		return nil, errors.New("Error parsing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
+		return nil, errors.Wrap(_lifetimeLengthErr, "Error parsing 'lifetimeLength' field")
 	}
 
 	// Array field (lifetimeSeconds)
@@ -247,7 +247,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'lifetimeSeconds' field")
 		}
 		lifetimeSeconds[curItem] = _item
 	}
@@ -255,7 +255,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8(8)
 	if _listOfValuesOpeningTagErr != nil {
-		return nil, errors.New("Error parsing 'listOfValuesOpeningTag' field " + _listOfValuesOpeningTagErr.Error())
+		return nil, errors.Wrap(_listOfValuesOpeningTagErr, "Error parsing 'listOfValuesOpeningTag' field")
 	}
 	if listOfValuesOpeningTag != BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESOPENINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
@@ -269,7 +269,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	for io.GetPos() < _notificationsEndPos {
 		_item, _err := BACnetTagWithContentParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'notifications' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'notifications' field")
 		}
 		notifications = append(notifications, _item)
 	}
@@ -277,7 +277,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8(8)
 	if _listOfValuesClosingTagErr != nil {
-		return nil, errors.New("Error parsing 'listOfValuesClosingTag' field " + _listOfValuesClosingTagErr.Error())
+		return nil, errors.Wrap(_listOfValuesClosingTagErr, "Error parsing 'listOfValuesClosingTag' field")
 	}
 	if listOfValuesClosingTag != BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESCLOSINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
@@ -305,67 +305,67 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 		// Const Field (subscriberProcessIdentifierHeader)
 		_subscriberProcessIdentifierHeaderErr := io.WriteUint8(8, 0x09)
 		if _subscriberProcessIdentifierHeaderErr != nil {
-			return errors.New("Error serializing 'subscriberProcessIdentifierHeader' field " + _subscriberProcessIdentifierHeaderErr.Error())
+			return errors.Wrap(_subscriberProcessIdentifierHeaderErr, "Error serializing 'subscriberProcessIdentifierHeader' field")
 		}
 
 		// Simple Field (subscriberProcessIdentifier)
 		subscriberProcessIdentifier := uint8(m.SubscriberProcessIdentifier)
 		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
 		if _subscriberProcessIdentifierErr != nil {
-			return errors.New("Error serializing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
+			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
 		// Const Field (monitoredObjectIdentifierHeader)
 		_monitoredObjectIdentifierHeaderErr := io.WriteUint8(8, 0x1C)
 		if _monitoredObjectIdentifierHeaderErr != nil {
-			return errors.New("Error serializing 'monitoredObjectIdentifierHeader' field " + _monitoredObjectIdentifierHeaderErr.Error())
+			return errors.Wrap(_monitoredObjectIdentifierHeaderErr, "Error serializing 'monitoredObjectIdentifierHeader' field")
 		}
 
 		// Simple Field (monitoredObjectType)
 		monitoredObjectType := uint16(m.MonitoredObjectType)
 		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
 		if _monitoredObjectTypeErr != nil {
-			return errors.New("Error serializing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
+			return errors.Wrap(_monitoredObjectTypeErr, "Error serializing 'monitoredObjectType' field")
 		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
 		monitoredObjectInstanceNumber := uint32(m.MonitoredObjectInstanceNumber)
 		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
 		if _monitoredObjectInstanceNumberErr != nil {
-			return errors.New("Error serializing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
+			return errors.Wrap(_monitoredObjectInstanceNumberErr, "Error serializing 'monitoredObjectInstanceNumber' field")
 		}
 
 		// Const Field (issueConfirmedNotificationsHeader)
 		_issueConfirmedNotificationsHeaderErr := io.WriteUint8(8, 0x2C)
 		if _issueConfirmedNotificationsHeaderErr != nil {
-			return errors.New("Error serializing 'issueConfirmedNotificationsHeader' field " + _issueConfirmedNotificationsHeaderErr.Error())
+			return errors.Wrap(_issueConfirmedNotificationsHeaderErr, "Error serializing 'issueConfirmedNotificationsHeader' field")
 		}
 
 		// Simple Field (issueConfirmedNotificationsType)
 		issueConfirmedNotificationsType := uint16(m.IssueConfirmedNotificationsType)
 		_issueConfirmedNotificationsTypeErr := io.WriteUint16(10, (issueConfirmedNotificationsType))
 		if _issueConfirmedNotificationsTypeErr != nil {
-			return errors.New("Error serializing 'issueConfirmedNotificationsType' field " + _issueConfirmedNotificationsTypeErr.Error())
+			return errors.Wrap(_issueConfirmedNotificationsTypeErr, "Error serializing 'issueConfirmedNotificationsType' field")
 		}
 
 		// Simple Field (issueConfirmedNotificationsInstanceNumber)
 		issueConfirmedNotificationsInstanceNumber := uint32(m.IssueConfirmedNotificationsInstanceNumber)
 		_issueConfirmedNotificationsInstanceNumberErr := io.WriteUint32(22, (issueConfirmedNotificationsInstanceNumber))
 		if _issueConfirmedNotificationsInstanceNumberErr != nil {
-			return errors.New("Error serializing 'issueConfirmedNotificationsInstanceNumber' field " + _issueConfirmedNotificationsInstanceNumberErr.Error())
+			return errors.Wrap(_issueConfirmedNotificationsInstanceNumberErr, "Error serializing 'issueConfirmedNotificationsInstanceNumber' field")
 		}
 
 		// Const Field (lifetimeHeader)
 		_lifetimeHeaderErr := io.WriteUint8(5, 0x07)
 		if _lifetimeHeaderErr != nil {
-			return errors.New("Error serializing 'lifetimeHeader' field " + _lifetimeHeaderErr.Error())
+			return errors.Wrap(_lifetimeHeaderErr, "Error serializing 'lifetimeHeader' field")
 		}
 
 		// Simple Field (lifetimeLength)
 		lifetimeLength := uint8(m.LifetimeLength)
 		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
 		if _lifetimeLengthErr != nil {
-			return errors.New("Error serializing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
+			return errors.Wrap(_lifetimeLengthErr, "Error serializing 'lifetimeLength' field")
 		}
 
 		// Array Field (lifetimeSeconds)
@@ -373,7 +373,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'lifetimeSeconds' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
 		}
@@ -381,7 +381,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 		// Const Field (listOfValuesOpeningTag)
 		_listOfValuesOpeningTagErr := io.WriteUint8(8, 0x4E)
 		if _listOfValuesOpeningTagErr != nil {
-			return errors.New("Error serializing 'listOfValuesOpeningTag' field " + _listOfValuesOpeningTagErr.Error())
+			return errors.Wrap(_listOfValuesOpeningTagErr, "Error serializing 'listOfValuesOpeningTag' field")
 		}
 
 		// Array Field (notifications)
@@ -389,7 +389,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 			for _, _element := range m.Notifications {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'notifications' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'notifications' field")
 				}
 			}
 		}
@@ -397,7 +397,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 		// Const Field (listOfValuesClosingTag)
 		_listOfValuesClosingTagErr := io.WriteUint8(8, 0x4F)
 		if _listOfValuesClosingTagErr != nil {
-			return errors.New("Error serializing 'listOfValuesClosingTag' field " + _listOfValuesClosingTagErr.Error())
+			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
 		return nil

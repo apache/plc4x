@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedAuthenticate struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestRemovedAuthenticate
 }
 
 // The corresponding interface

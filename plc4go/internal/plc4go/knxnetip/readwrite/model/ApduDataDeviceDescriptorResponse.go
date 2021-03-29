@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -34,7 +34,6 @@ type ApduDataDeviceDescriptorResponse struct {
 	DescriptorType uint8
 	Data           []int8
 	Parent         *ApduData
-	IApduDataDeviceDescriptorResponse
 }
 
 // The corresponding interface
@@ -111,7 +110,7 @@ func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint
 	// Simple Field (descriptorType)
 	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
 	if _descriptorTypeErr != nil {
-		return nil, errors.New("Error parsing 'descriptorType' field " + _descriptorTypeErr.Error())
+		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
 
 	// Array field (data)
@@ -120,7 +119,7 @@ func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1))))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -142,7 +141,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 		descriptorType := uint8(m.DescriptorType)
 		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
 		if _descriptorTypeErr != nil {
-			return errors.New("Error serializing 'descriptorType' field " + _descriptorTypeErr.Error())
+			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
 		// Array Field (data)
@@ -150,7 +149,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

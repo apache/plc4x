@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type AdsReadRequest struct {
 	IndexOffset uint32
 	Length      uint32
 	Parent      *AdsData
-	IAdsReadRequest
 }
 
 // The corresponding interface
@@ -116,19 +115,19 @@ func AdsReadRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32(32)
 	if _indexGroupErr != nil {
-		return nil, errors.New("Error parsing 'indexGroup' field " + _indexGroupErr.Error())
+		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
 	indexOffset, _indexOffsetErr := io.ReadUint32(32)
 	if _indexOffsetErr != nil {
-		return nil, errors.New("Error parsing 'indexOffset' field " + _indexOffsetErr.Error())
+		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Simple Field (length)
 	length, _lengthErr := io.ReadUint32(32)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Create a partially initialized instance
@@ -149,21 +148,21 @@ func (m *AdsReadRequest) Serialize(io utils.WriteBuffer) error {
 		indexGroup := uint32(m.IndexGroup)
 		_indexGroupErr := io.WriteUint32(32, (indexGroup))
 		if _indexGroupErr != nil {
-			return errors.New("Error serializing 'indexGroup' field " + _indexGroupErr.Error())
+			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.IndexOffset)
 		_indexOffsetErr := io.WriteUint32(32, (indexOffset))
 		if _indexOffsetErr != nil {
-			return errors.New("Error serializing 'indexOffset' field " + _indexOffsetErr.Error())
+			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (length)
 		length := uint32(m.Length)
 		_lengthErr := io.WriteUint32(32, (length))
 		if _lengthErr != nil {
-			return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		return nil

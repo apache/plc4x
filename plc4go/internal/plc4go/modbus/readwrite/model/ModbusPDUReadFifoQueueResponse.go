@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadFifoQueueResponse struct {
 	FifoValue []uint16
 	Parent    *ModbusPDU
-	IModbusPDUReadFifoQueueResponse
 }
 
 // The corresponding interface
@@ -119,14 +118,14 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 	byteCount, _byteCountErr := io.ReadUint16(16)
 	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := io.ReadUint16(16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
-		return nil, errors.New("Error parsing 'fifoCount' field " + _fifoCountErr.Error())
+		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
 	}
 
 	// Array field (fifoValue)
@@ -135,7 +134,7 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 		_item, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'fifoValue' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
 		}
 		fifoValue[curItem] = _item
 	}
@@ -156,14 +155,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
 		_byteCountErr := io.WriteUint16(16, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
 		_fifoCountErr := io.WriteUint16(16, (fifoCount))
 		if _fifoCountErr != nil {
-			return errors.New("Error serializing 'fifoCount' field " + _fifoCountErr.Error())
+			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
 
 		// Array Field (fifoValue)
@@ -171,7 +170,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.FifoValue {
 				_elementErr := io.WriteUint16(16, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'fifoValue' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
 		}

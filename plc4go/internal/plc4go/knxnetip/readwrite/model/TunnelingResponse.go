@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type TunnelingResponse struct {
 	TunnelingResponseDataBlock *TunnelingResponseDataBlock
 	Parent                     *KnxNetIpMessage
-	ITunnelingResponse
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +119,7 @@ func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (tunnelingResponseDataBlock)
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
 		if _tunnelingResponseDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
 		return nil

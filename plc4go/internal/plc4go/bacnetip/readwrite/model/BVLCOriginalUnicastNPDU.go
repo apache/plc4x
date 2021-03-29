@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type BVLCOriginalUnicastNPDU struct {
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCOriginalUnicastNPDU
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVL
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
-		return nil, errors.New("Error parsing 'npdu' field " + _npduErr.Error())
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +119,7 @@ func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
 		if _npduErr != nil {
-			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
 		return nil

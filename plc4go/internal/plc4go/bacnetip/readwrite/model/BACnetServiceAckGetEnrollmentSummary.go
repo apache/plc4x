@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckGetEnrollmentSummary struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckGetEnrollmentSummary
 }
 
 // The corresponding interface

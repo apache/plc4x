@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type BACnetTagApplicationEnumerated struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagApplicationEnumerated
 }
 
 // The corresponding interface
@@ -115,7 +114,7 @@ func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType u
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
@@ -137,7 +136,7 @@ func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

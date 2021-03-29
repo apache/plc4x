@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -38,7 +38,6 @@ type AmsPacket struct {
 	ErrorCode      uint32
 	InvokeId       uint32
 	Data           *AdsData
-	IAmsPacket
 }
 
 // The corresponding interface
@@ -115,62 +114,62 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)
 	if _targetAmsNetIdErr != nil {
-		return nil, errors.New("Error parsing 'targetAmsNetId' field " + _targetAmsNetIdErr.Error())
+		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
 	}
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort, _targetAmsPortErr := io.ReadUint16(16)
 	if _targetAmsPortErr != nil {
-		return nil, errors.New("Error parsing 'targetAmsPort' field " + _targetAmsPortErr.Error())
+		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
 
 	// Simple Field (sourceAmsNetId)
 	sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(io)
 	if _sourceAmsNetIdErr != nil {
-		return nil, errors.New("Error parsing 'sourceAmsNetId' field " + _sourceAmsNetIdErr.Error())
+		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
 	}
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16(16)
 	if _sourceAmsPortErr != nil {
-		return nil, errors.New("Error parsing 'sourceAmsPort' field " + _sourceAmsPortErr.Error())
+		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
 
 	// Simple Field (commandId)
 	commandId, _commandIdErr := CommandIdParse(io)
 	if _commandIdErr != nil {
-		return nil, errors.New("Error parsing 'commandId' field " + _commandIdErr.Error())
+		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
 	}
 
 	// Simple Field (state)
 	state, _stateErr := StateParse(io)
 	if _stateErr != nil {
-		return nil, errors.New("Error parsing 'state' field " + _stateErr.Error())
+		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := io.ReadUint32(32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode, _errorCodeErr := io.ReadUint32(32)
 	if _errorCodeErr != nil {
-		return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId, _invokeIdErr := io.ReadUint32(32)
 	if _invokeIdErr != nil {
-		return nil, errors.New("Error parsing 'invokeId' field " + _invokeIdErr.Error())
+		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
 
 	// Simple Field (data)
 	data, _dataErr := AdsDataParse(io, &commandId, state.Response)
 	if _dataErr != nil {
-		return nil, errors.New("Error parsing 'data' field " + _dataErr.Error())
+		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
 
 	// Create the instance
@@ -182,66 +181,66 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	// Simple Field (targetAmsNetId)
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(io)
 	if _targetAmsNetIdErr != nil {
-		return errors.New("Error serializing 'targetAmsNetId' field " + _targetAmsNetIdErr.Error())
+		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
 	}
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort := uint16(m.TargetAmsPort)
 	_targetAmsPortErr := io.WriteUint16(16, (targetAmsPort))
 	if _targetAmsPortErr != nil {
-		return errors.New("Error serializing 'targetAmsPort' field " + _targetAmsPortErr.Error())
+		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
 	}
 
 	// Simple Field (sourceAmsNetId)
 	_sourceAmsNetIdErr := m.SourceAmsNetId.Serialize(io)
 	if _sourceAmsNetIdErr != nil {
-		return errors.New("Error serializing 'sourceAmsNetId' field " + _sourceAmsNetIdErr.Error())
+		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
 	}
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort := uint16(m.SourceAmsPort)
 	_sourceAmsPortErr := io.WriteUint16(16, (sourceAmsPort))
 	if _sourceAmsPortErr != nil {
-		return errors.New("Error serializing 'sourceAmsPort' field " + _sourceAmsPortErr.Error())
+		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
 
 	// Simple Field (commandId)
 	_commandIdErr := m.CommandId.Serialize(io)
 	if _commandIdErr != nil {
-		return errors.New("Error serializing 'commandId' field " + _commandIdErr.Error())
+		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
 	}
 
 	// Simple Field (state)
 	_stateErr := m.State.Serialize(io)
 	if _stateErr != nil {
-		return errors.New("Error serializing 'state' field " + _stateErr.Error())
+		return errors.Wrap(_stateErr, "Error serializing 'state' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(m.Data.LengthInBytes())
 	_lengthErr := io.WriteUint32(32, (length))
 	if _lengthErr != nil {
-		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode := uint32(m.ErrorCode)
 	_errorCodeErr := io.WriteUint32(32, (errorCode))
 	if _errorCodeErr != nil {
-		return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId := uint32(m.InvokeId)
 	_invokeIdErr := io.WriteUint32(32, (invokeId))
 	if _invokeIdErr != nil {
-		return errors.New("Error serializing 'invokeId' field " + _invokeIdErr.Error())
+		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 	}
 
 	// Simple Field (data)
 	_dataErr := m.Data.Serialize(io)
 	if _dataErr != nil {
-		return errors.New("Error serializing 'data' field " + _dataErr.Error())
+		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
 	return nil

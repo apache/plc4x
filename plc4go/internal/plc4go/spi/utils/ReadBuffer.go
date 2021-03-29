@@ -102,7 +102,7 @@ func (rb *ReadBuffer) ReadUint32(bitLength uint8) (uint32, error) {
 
 func (rb *ReadBuffer) ReadUint64(bitLength uint8) (uint64, error) {
 	rb.pos += uint64(bitLength)
-	res := uint64(rb.reader.TryReadBits(bitLength))
+	res := rb.reader.TryReadBits(bitLength)
 	if rb.reader.TryError != nil {
 		return 0, rb.reader.TryError
 	}

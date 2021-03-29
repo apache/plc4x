@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 	Parent *S7PayloadUserDataItem
-	IS7PayloadUserDataItemCpuFunctionReadSzlRequest
 }
 
 // The corresponding interface

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtFileStreamInfoReport struct {
 	Parent *ApduDataExt
-	IApduDataExtFileStreamInfoReport
 }
 
 // The corresponding interface

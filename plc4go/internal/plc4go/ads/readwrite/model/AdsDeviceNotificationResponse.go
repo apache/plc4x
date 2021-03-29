@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type AdsDeviceNotificationResponse struct {
 	Parent *AdsData
-	IAdsDeviceNotificationResponse
 }
 
 // The corresponding interface

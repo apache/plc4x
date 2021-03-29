@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MPropInfoInd struct {
 	Parent *CEMI
-	IMPropInfoInd
 }
 
 // The corresponding interface

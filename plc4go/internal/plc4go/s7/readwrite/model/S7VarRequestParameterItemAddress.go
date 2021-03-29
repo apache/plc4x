@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7VarRequestParameterItemAddress struct {
 	Address *S7Address
 	Parent  *S7VarRequestParameterItem
-	IS7VarRequestParameterItemAddress
 }
 
 // The corresponding interface
@@ -106,13 +105,13 @@ func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestP
 	itemLength, _itemLengthErr := io.ReadUint8(8)
 	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemLength' field " + _itemLengthErr.Error())
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
 	// Simple Field (address)
 	address, _addressErr := S7AddressParse(io)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Create a partially initialized instance
@@ -131,13 +130,13 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 		itemLength := uint8(m.Address.LengthInBytes())
 		_itemLengthErr := io.WriteUint8(8, (itemLength))
 		if _itemLengthErr != nil {
-			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
+			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (address)
 		_addressErr := m.Address.Serialize(io)
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		return nil

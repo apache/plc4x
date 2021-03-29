@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -35,7 +36,6 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 // The data-structure of this message
 type TPKTPacket struct {
 	Payload *COTPPacket
-	ITPKTPacket
 }
 
 // The corresponding interface
@@ -94,7 +94,7 @@ func TPKTPacketParse(io *utils.ReadBuffer) (*TPKTPacket, error) {
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8(8)
 	if _protocolIdErr != nil {
-		return nil, errors.New("Error parsing 'protocolId' field " + _protocolIdErr.Error())
+		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
 	}
 	if protocolId != TPKTPacket_PROTOCOLID {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", TPKTPacket_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
@@ -104,7 +104,7 @@ func TPKTPacketParse(io *utils.ReadBuffer) (*TPKTPacket, error) {
 	{
 		reserved, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -118,13 +118,13 @@ func TPKTPacketParse(io *utils.ReadBuffer) (*TPKTPacket, error) {
 	len, _lenErr := io.ReadUint16(16)
 	_ = len
 	if _lenErr != nil {
-		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 
 	// Simple Field (payload)
 	payload, _payloadErr := COTPPacketParse(io, uint16(len)-uint16(uint16(4)))
 	if _payloadErr != nil {
-		return nil, errors.New("Error parsing 'payload' field " + _payloadErr.Error())
+		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
 
 	// Create the instance
@@ -136,14 +136,14 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8(8, 0x03)
 	if _protocolIdErr != nil {
-		return errors.New("Error serializing 'protocolId' field " + _protocolIdErr.Error())
+		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteUint8(8, uint8(0x00))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -151,13 +151,13 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
 	_lenErr := io.WriteUint16(16, (len))
 	if _lenErr != nil {
-		return errors.New("Error serializing 'len' field " + _lenErr.Error())
+		return errors.Wrap(_lenErr, "Error serializing 'len' field")
 	}
 
 	// Simple Field (payload)
 	_payloadErr := m.Payload.Serialize(io)
 	if _payloadErr != nil {
-		return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 
 	return nil

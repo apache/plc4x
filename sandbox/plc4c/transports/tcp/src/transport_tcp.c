@@ -29,7 +29,7 @@
 #include <arpa/inet.h>
 #else
 #include <winsock.h>
-
+# define strtok_r strtok_s
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0)
 #define MSG_DONTWAIT 0
 #endif

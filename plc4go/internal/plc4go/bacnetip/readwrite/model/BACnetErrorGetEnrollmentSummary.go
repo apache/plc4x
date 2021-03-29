@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorGetEnrollmentSummary struct {
 	Parent *BACnetError
-	IBACnetErrorGetEnrollmentSummary
 }
 
 // The corresponding interface

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -36,8 +36,6 @@ type BACnetTag struct {
 	ExtTagNumber    *uint8
 	ExtLength       *uint8
 	Child           IBACnetTagChild
-	IBACnetTag
-	IBACnetTagParent
 }
 
 // The corresponding interface
@@ -118,19 +116,19 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
 	if _typeOrTagNumberErr != nil {
-		return nil, errors.New("Error parsing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
 	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
 	if _contextSpecificTagErr != nil {
-		return nil, errors.New("Error parsing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
 	if _lengthValueTypeErr != nil {
-		return nil, errors.New("Error parsing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
@@ -138,7 +136,7 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	if bool((typeOrTagNumber) == (15)) {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'extTagNumber' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
 		extTagNumber = &_val
 	}
@@ -148,7 +146,7 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	if bool((lengthValueType) == (5)) {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'extLength' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
 		}
 		extLength = &_val
 	}
@@ -187,7 +185,7 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 		_parent, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -205,7 +203,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
 	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
 	if _typeOrTagNumberErr != nil {
-		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+		return errors.Wrap(_typeOrTagNumberErr, "Error serializing 'typeOrTagNumber' field")
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
@@ -213,14 +211,14 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
 
 	if _contextSpecificTagErr != nil {
-		return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+		return errors.Wrap(_contextSpecificTagErr, "Error serializing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
 	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
 	if _lengthValueTypeErr != nil {
-		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
@@ -229,7 +227,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 		extTagNumber = m.ExtTagNumber
 		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
 		if _extTagNumberErr != nil {
-			return errors.New("Error serializing 'extTagNumber' field " + _extTagNumberErr.Error())
+			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
 	}
 
@@ -239,14 +237,14 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 		extLength = m.ExtLength
 		_extLengthErr := io.WriteUint8(8, *(extLength))
 		if _extLengthErr != nil {
-			return errors.New("Error serializing 'extLength' field " + _extLengthErr.Error())
+			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -489,7 +487,7 @@ func (m *BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -35,7 +35,6 @@ type MPropReadReq struct {
 	NumberOfElements    uint8
 	StartIndex          uint16
 	Parent              *CEMI
-	IMPropReadReq
 }
 
 // The corresponding interface
@@ -122,31 +121,31 @@ func MPropReadReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
 	if _interfaceObjectTypeErr != nil {
-		return nil, errors.New("Error parsing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
 
 	// Simple Field (objectInstance)
 	objectInstance, _objectInstanceErr := io.ReadUint8(8)
 	if _objectInstanceErr != nil {
-		return nil, errors.New("Error parsing 'objectInstance' field " + _objectInstanceErr.Error())
+		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
 
 	// Simple Field (propertyId)
 	propertyId, _propertyIdErr := io.ReadUint8(8)
 	if _propertyIdErr != nil {
-		return nil, errors.New("Error parsing 'propertyId' field " + _propertyIdErr.Error())
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (numberOfElements)
 	numberOfElements, _numberOfElementsErr := io.ReadUint8(4)
 	if _numberOfElementsErr != nil {
-		return nil, errors.New("Error parsing 'numberOfElements' field " + _numberOfElementsErr.Error())
+		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (startIndex)
 	startIndex, _startIndexErr := io.ReadUint16(12)
 	if _startIndexErr != nil {
-		return nil, errors.New("Error parsing 'startIndex' field " + _startIndexErr.Error())
+		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
 
 	// Create a partially initialized instance
@@ -169,35 +168,35 @@ func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 		interfaceObjectType := uint16(m.InterfaceObjectType)
 		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
 		if _interfaceObjectTypeErr != nil {
-			return errors.New("Error serializing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.ObjectInstance)
 		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
 		if _objectInstanceErr != nil {
-			return errors.New("Error serializing 'objectInstance' field " + _objectInstanceErr.Error())
+			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
 		_propertyIdErr := io.WriteUint8(8, (propertyId))
 		if _propertyIdErr != nil {
-			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
+			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.NumberOfElements)
 		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
 		if _numberOfElementsErr != nil {
-			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
+			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.StartIndex)
 		_startIndexErr := io.WriteUint16(12, (startIndex))
 		if _startIndexErr != nil {
-			return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
+			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
 		return nil

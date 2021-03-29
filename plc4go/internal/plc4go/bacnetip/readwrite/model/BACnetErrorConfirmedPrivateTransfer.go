@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorConfirmedPrivateTransfer struct {
 	Parent *BACnetError
-	IBACnetErrorConfirmedPrivateTransfer
 }
 
 // The corresponding interface

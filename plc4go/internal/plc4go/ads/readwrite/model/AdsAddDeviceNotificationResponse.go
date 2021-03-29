@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type AdsAddDeviceNotificationResponse struct {
 	Result             ReturnCode
 	NotificationHandle uint32
 	Parent             *AdsData
-	IAdsAddDeviceNotificationResponse
 }
 
 // The corresponding interface
@@ -111,13 +110,13 @@ func AdsAddDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, erro
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
 	if _notificationHandleErr != nil {
-		return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
+		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Create a partially initialized instance
@@ -136,14 +135,14 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
 		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
 		if _notificationHandleErr != nil {
-			return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
+			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
 		return nil

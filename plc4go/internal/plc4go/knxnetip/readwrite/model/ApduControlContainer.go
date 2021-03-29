@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ApduControlContainer struct {
 	ControlApdu *ApduControl
 	Parent      *Apdu
-	IApduControlContainer
 }
 
 // The corresponding interface
@@ -104,7 +103,7 @@ func ApduControlContainerParse(io *utils.ReadBuffer) (*Apdu, error) {
 	// Simple Field (controlApdu)
 	controlApdu, _controlApduErr := ApduControlParse(io)
 	if _controlApduErr != nil {
-		return nil, errors.New("Error parsing 'controlApdu' field " + _controlApduErr.Error())
+		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -122,7 +121,7 @@ func (m *ApduControlContainer) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (controlApdu)
 		_controlApduErr := m.ControlApdu.Serialize(io)
 		if _controlApduErr != nil {
-			return errors.New("Error serializing 'controlApdu' field " + _controlApduErr.Error())
+			return errors.Wrap(_controlApduErr, "Error serializing 'controlApdu' field")
 		}
 
 		return nil

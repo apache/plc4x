@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ApduDataExt struct {
 	Child IApduDataExtChild
-	IApduDataExt
-	IApduDataExtParent
 }
 
 // The corresponding interface
@@ -98,7 +96,7 @@ func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType, _extApciTypeErr := io.ReadUint8(6)
 	if _extApciTypeErr != nil {
-		return nil, errors.New("Error parsing 'extApciType' field " + _extApciTypeErr.Error())
+		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -189,7 +187,7 @@ func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) 
 		_parent, typeSwitchError = ApduDataExtFileStreamInfoReportParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -208,13 +206,13 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 	_extApciTypeErr := io.WriteUint8(6, (extApciType))
 
 	if _extApciTypeErr != nil {
-		return errors.New("Error serializing 'extApciType' field " + _extApciTypeErr.Error())
+		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -745,7 +743,7 @@ func (m *ApduDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

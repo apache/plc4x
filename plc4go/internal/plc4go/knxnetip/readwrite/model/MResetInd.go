@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MResetInd struct {
 	Parent *CEMI
-	IMResetInd
 }
 
 // The corresponding interface

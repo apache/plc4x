@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type COTPParameterChecksum struct {
 	Crc    uint8
 	Parent *COTPParameter
-	ICOTPParameterChecksum
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func COTPParameterChecksumParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint8(8)
 	if _crcErr != nil {
-		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +120,7 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 		crc := uint8(m.Crc)
 		_crcErr := io.WriteUint8(8, (crc))
 		if _crcErr != nil {
-			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
 		return nil

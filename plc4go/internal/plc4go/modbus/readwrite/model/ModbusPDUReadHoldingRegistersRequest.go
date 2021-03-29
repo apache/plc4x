@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ModbusPDUReadHoldingRegistersRequest struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUReadHoldingRegistersRequest
 }
 
 // The corresponding interface
@@ -115,13 +114,13 @@ func ModbusPDUReadHoldingRegistersRequestParse(io *utils.ReadBuffer) (*ModbusPDU
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)
 	if _startingAddressErr != nil {
-		return nil, errors.New("Error parsing 'startingAddress' field " + _startingAddressErr.Error())
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
 
 	// Simple Field (quantity)
 	quantity, _quantityErr := io.ReadUint16(16)
 	if _quantityErr != nil {
-		return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
 	// Create a partially initialized instance
@@ -141,14 +140,14 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) e
 		startingAddress := uint16(m.StartingAddress)
 		_startingAddressErr := io.WriteUint16(16, (startingAddress))
 		if _startingAddressErr != nil {
-			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
+			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
 		_quantityErr := io.WriteUint16(16, (quantity))
 		if _quantityErr != nil {
-			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
+			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		return nil

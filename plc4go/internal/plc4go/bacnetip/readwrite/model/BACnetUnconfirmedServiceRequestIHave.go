@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIHave struct {
 	Parent *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestIHave
 }
 
 // The corresponding interface

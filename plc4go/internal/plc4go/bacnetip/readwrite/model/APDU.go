@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type APDU struct {
 	Child IAPDUChild
-	IAPDU
-	IAPDUParent
 }
 
 // The corresponding interface
@@ -98,7 +96,7 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType, _apduTypeErr := io.ReadUint8(4)
 	if _apduTypeErr != nil {
-		return nil, errors.New("Error parsing 'apduType' field " + _apduTypeErr.Error())
+		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -123,7 +121,7 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 		_parent, typeSwitchError = APDUAbortParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -142,13 +140,13 @@ func (m *APDU) SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChild
 	_apduTypeErr := io.WriteUint8(4, (apduType))
 
 	if _apduTypeErr != nil {
-		return errors.New("Error serializing 'apduType' field " + _apduTypeErr.Error())
+		return errors.Wrap(_apduTypeErr, "Error serializing 'apduType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -283,7 +281,7 @@ func (m *APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MFuncPropCon struct {
 	Parent *CEMI
-	IMFuncPropCon
 }
 
 // The corresponding interface

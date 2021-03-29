@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 }
 
 // The corresponding interface

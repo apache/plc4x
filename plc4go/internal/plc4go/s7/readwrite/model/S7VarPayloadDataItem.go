@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"math"
 	"strings"
@@ -35,7 +35,6 @@ type S7VarPayloadDataItem struct {
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
 	Data          []int8
-	IS7VarPayloadDataItem
 }
 
 // The corresponding interface
@@ -102,20 +101,20 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
-		return nil, errors.New("Error parsing 'returnCode' field " + _returnCodeErr.Error())
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
 
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := DataTransportSizeParse(io)
 	if _transportSizeErr != nil {
-		return nil, errors.New("Error parsing 'transportSize' field " + _transportSizeErr.Error())
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint16(16)
 	_ = dataLength
 	if _dataLengthErr != nil {
-		return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
 	// Array field (data)
@@ -124,7 +123,7 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -136,7 +135,7 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 			// Just read the padding data and ignore it
 			_, _err := io.ReadUint8(8)
 			if _err != nil {
-				return nil, errors.New("Error parsing 'padding' field " + _err.Error())
+				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
 			}
 		}
 	}
@@ -151,21 +150,21 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
-		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.TransportSize)
 	_transportSizeErr := transportSize.Serialize(io)
 	if _transportSizeErr != nil {
-		return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
+		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
 	_dataLengthErr := io.WriteUint16(16, (dataLength))
 	if _dataLengthErr != nil {
-		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Array Field (data)
@@ -173,7 +172,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
 	}
@@ -185,7 +184,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 			_paddingValue := uint8(uint8(0))
 			_paddingErr := io.WriteUint8(8, (_paddingValue))
 			if _paddingErr != nil {
-				return errors.New("Error serializing 'padding' field " + _paddingErr.Error())
+				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}
 		}
 	}

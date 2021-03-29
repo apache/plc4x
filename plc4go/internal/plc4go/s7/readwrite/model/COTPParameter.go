@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type COTPParameter struct {
 	Child ICOTPParameterChild
-	ICOTPParameter
-	ICOTPParameterParent
 }
 
 // The corresponding interface
@@ -101,14 +99,14 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8(8)
 	if _parameterTypeErr != nil {
-		return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
+		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := io.ReadUint8(8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
-		return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
+		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -127,7 +125,7 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -146,20 +144,20 @@ func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParamet
 	_parameterTypeErr := io.WriteUint8(8, (parameterType))
 
 	if _parameterTypeErr != nil {
-		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
+		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
 	_parameterLengthErr := io.WriteUint8(8, (parameterLength))
 	if _parameterLengthErr != nil {
-		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
+		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -258,7 +256,7 @@ func (m *COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err

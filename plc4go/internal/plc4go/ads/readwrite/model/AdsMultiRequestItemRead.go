@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type AdsMultiRequestItemRead struct {
 	ItemIndexOffset uint32
 	ItemReadLength  uint32
 	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemRead
 }
 
 // The corresponding interface
@@ -112,19 +111,19 @@ func AdsMultiRequestItemReadParse(io *utils.ReadBuffer) (*AdsMultiRequestItem, e
 	// Simple Field (itemIndexGroup)
 	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
 	if _itemIndexGroupErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
 
 	// Simple Field (itemIndexOffset)
 	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
 	if _itemIndexOffsetErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
 
 	// Simple Field (itemReadLength)
 	itemReadLength, _itemReadLengthErr := io.ReadUint32(32)
 	if _itemReadLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemReadLength' field " + _itemReadLengthErr.Error())
+		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field")
 	}
 
 	// Create a partially initialized instance
@@ -145,21 +144,21 @@ func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 		itemIndexGroup := uint32(m.ItemIndexGroup)
 		_itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
 		if _itemIndexGroupErr != nil {
-			return errors.New("Error serializing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
 		}
 
 		// Simple Field (itemIndexOffset)
 		itemIndexOffset := uint32(m.ItemIndexOffset)
 		_itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
 		if _itemIndexOffsetErr != nil {
-			return errors.New("Error serializing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
 		}
 
 		// Simple Field (itemReadLength)
 		itemReadLength := uint32(m.ItemReadLength)
 		_itemReadLengthErr := io.WriteUint32(32, (itemReadLength))
 		if _itemReadLengthErr != nil {
-			return errors.New("Error serializing 'itemReadLength' field " + _itemReadLengthErr.Error())
+			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
 		}
 
 		return nil

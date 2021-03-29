@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ConnectionResponseDataBlockTunnelConnection struct {
 	KnxAddress *KnxAddress
 	Parent     *ConnectionResponseDataBlock
-	IConnectionResponseDataBlockTunnelConnection
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*Co
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
-		return nil, errors.New("Error parsing 'knxAddress' field " + _knxAddressErr.Error())
+		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +119,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 		// Simple Field (knxAddress)
 		_knxAddressErr := m.KnxAddress.Serialize(io)
 		if _knxAddressErr != nil {
-			return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
+			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
 		return nil

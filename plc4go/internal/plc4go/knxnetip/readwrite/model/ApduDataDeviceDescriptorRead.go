@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ApduDataDeviceDescriptorRead struct {
 	DescriptorType uint8
 	Parent         *ApduData
-	IApduDataDeviceDescriptorRead
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func ApduDataDeviceDescriptorReadParse(io *utils.ReadBuffer) (*ApduData, error) 
 	// Simple Field (descriptorType)
 	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
 	if _descriptorTypeErr != nil {
-		return nil, errors.New("Error parsing 'descriptorType' field " + _descriptorTypeErr.Error())
+		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +120,7 @@ func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 		descriptorType := uint8(m.DescriptorType)
 		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
 		if _descriptorTypeErr != nil {
-			return errors.New("Error serializing 'descriptorType' field " + _descriptorTypeErr.Error())
+			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
 		return nil

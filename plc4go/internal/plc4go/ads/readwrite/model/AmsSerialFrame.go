@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -36,7 +36,6 @@ type AmsSerialFrame struct {
 	Length             int8
 	Userdata           *AmsPacket
 	Crc                uint16
-	IAmsSerialFrame
 }
 
 // The corresponding interface
@@ -104,43 +103,43 @@ func AmsSerialFrameParse(io *utils.ReadBuffer) (*AmsSerialFrame, error) {
 	// Simple Field (magicCookie)
 	magicCookie, _magicCookieErr := io.ReadUint16(16)
 	if _magicCookieErr != nil {
-		return nil, errors.New("Error parsing 'magicCookie' field " + _magicCookieErr.Error())
+		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress, _transmitterAddressErr := io.ReadInt8(8)
 	if _transmitterAddressErr != nil {
-		return nil, errors.New("Error parsing 'transmitterAddress' field " + _transmitterAddressErr.Error())
+		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress, _receiverAddressErr := io.ReadInt8(8)
 	if _receiverAddressErr != nil {
-		return nil, errors.New("Error parsing 'receiverAddress' field " + _receiverAddressErr.Error())
+		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber, _fragmentNumberErr := io.ReadInt8(8)
 	if _fragmentNumberErr != nil {
-		return nil, errors.New("Error parsing 'fragmentNumber' field " + _fragmentNumberErr.Error())
+		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length, _lengthErr := io.ReadInt8(8)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
-		return nil, errors.New("Error parsing 'userdata' field " + _userdataErr.Error())
+		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint16(16)
 	if _crcErr != nil {
-		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
 	// Create the instance
@@ -153,48 +152,48 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 	magicCookie := uint16(m.MagicCookie)
 	_magicCookieErr := io.WriteUint16(16, (magicCookie))
 	if _magicCookieErr != nil {
-		return errors.New("Error serializing 'magicCookie' field " + _magicCookieErr.Error())
+		return errors.Wrap(_magicCookieErr, "Error serializing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress := int8(m.TransmitterAddress)
 	_transmitterAddressErr := io.WriteInt8(8, (transmitterAddress))
 	if _transmitterAddressErr != nil {
-		return errors.New("Error serializing 'transmitterAddress' field " + _transmitterAddressErr.Error())
+		return errors.Wrap(_transmitterAddressErr, "Error serializing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress := int8(m.ReceiverAddress)
 	_receiverAddressErr := io.WriteInt8(8, (receiverAddress))
 	if _receiverAddressErr != nil {
-		return errors.New("Error serializing 'receiverAddress' field " + _receiverAddressErr.Error())
+		return errors.Wrap(_receiverAddressErr, "Error serializing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber := int8(m.FragmentNumber)
 	_fragmentNumberErr := io.WriteInt8(8, (fragmentNumber))
 	if _fragmentNumberErr != nil {
-		return errors.New("Error serializing 'fragmentNumber' field " + _fragmentNumberErr.Error())
+		return errors.Wrap(_fragmentNumberErr, "Error serializing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length := int8(m.Length)
 	_lengthErr := io.WriteInt8(8, (length))
 	if _lengthErr != nil {
-		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (userdata)
 	_userdataErr := m.Userdata.Serialize(io)
 	if _userdataErr != nil {
-		return errors.New("Error serializing 'userdata' field " + _userdataErr.Error())
+		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
 	// Simple Field (crc)
 	crc := uint16(m.Crc)
 	_crcErr := io.WriteUint16(16, (crc))
 	if _crcErr != nil {
-		return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
 	return nil

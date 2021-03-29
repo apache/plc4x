@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +34,6 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = 502
 
 // The data-structure of this message
 type ModbusConstants struct {
-	IModbusConstants
 }
 
 // The corresponding interface
@@ -83,7 +83,7 @@ func ModbusConstantsParse(io *utils.ReadBuffer) (*ModbusConstants, error) {
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
 	if _modbusTcpDefaultPortErr != nil {
-		return nil, errors.New("Error parsing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
+		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field")
 	}
 	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))
@@ -98,7 +98,7 @@ func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 	// Const Field (modbusTcpDefaultPort)
 	_modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
 	if _modbusTcpDefaultPortErr != nil {
-		return errors.New("Error serializing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
+		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}
 
 	return nil

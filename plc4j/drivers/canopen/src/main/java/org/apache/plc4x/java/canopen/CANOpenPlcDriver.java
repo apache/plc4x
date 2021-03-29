@@ -75,7 +75,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<CANOpenFrame> {
 
     @Override
     protected String getDefaultTransport() {
-        return "javacan";
+        return "socketcan";
     }
 
     @Override

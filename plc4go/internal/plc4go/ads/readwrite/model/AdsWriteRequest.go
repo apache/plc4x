@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -35,7 +35,6 @@ type AdsWriteRequest struct {
 	IndexOffset uint32
 	Data        []int8
 	Parent      *AdsData
-	IAdsWriteRequest
 }
 
 // The corresponding interface
@@ -123,20 +122,20 @@ func AdsWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32(32)
 	if _indexGroupErr != nil {
-		return nil, errors.New("Error parsing 'indexGroup' field " + _indexGroupErr.Error())
+		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
 	indexOffset, _indexOffsetErr := io.ReadUint32(32)
 	if _indexOffsetErr != nil {
-		return nil, errors.New("Error parsing 'indexOffset' field " + _indexOffsetErr.Error())
+		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := io.ReadUint32(32)
 	_ = length
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Array field (data)
@@ -145,7 +144,7 @@ func AdsWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -168,21 +167,21 @@ func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 		indexGroup := uint32(m.IndexGroup)
 		_indexGroupErr := io.WriteUint32(32, (indexGroup))
 		if _indexGroupErr != nil {
-			return errors.New("Error serializing 'indexGroup' field " + _indexGroupErr.Error())
+			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.IndexOffset)
 		_indexOffsetErr := io.WriteUint32(32, (indexOffset))
 		if _indexOffsetErr != nil {
-			return errors.New("Error serializing 'indexOffset' field " + _indexOffsetErr.Error())
+			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.Data)))
 		_lengthErr := io.WriteUint32(32, (length))
 		if _lengthErr != nil {
-			return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Array Field (data)
@@ -190,7 +189,7 @@ func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}

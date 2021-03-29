@@ -28,8 +28,6 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -37,8 +35,6 @@ import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JavaLanguageTemplateHelper.class);
 
     public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);

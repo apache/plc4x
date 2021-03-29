@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ComObjectTableRealisationType6 struct {
 	ComObjectDescriptors *GroupObjectDescriptorRealisationType6
 	Parent               *ComObjectTable
-	IComObjectTableRealisationType6
 }
 
 // The corresponding interface
@@ -102,7 +101,7 @@ func ComObjectTableRealisationType6Parse(io *utils.ReadBuffer) (*ComObjectTable,
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
-		return nil, errors.New("Error parsing 'comObjectDescriptors' field " + _comObjectDescriptorsErr.Error())
+		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +119,7 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (comObjectDescriptors)
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
 		if _comObjectDescriptorsErr != nil {
-			return errors.New("Error serializing 'comObjectDescriptors' field " + _comObjectDescriptorsErr.Error())
+			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		return nil

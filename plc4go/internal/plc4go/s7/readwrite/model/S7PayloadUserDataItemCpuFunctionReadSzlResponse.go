@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -35,7 +36,6 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = 28
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 	Items  []*SzlDataTreeItem
 	Parent *S7PayloadUserDataItem
-	IS7PayloadUserDataItemCpuFunctionReadSzlResponse
 }
 
 // The corresponding interface
@@ -120,7 +120,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 	// Const Field (szlItemLength)
 	szlItemLength, _szlItemLengthErr := io.ReadUint16(16)
 	if _szlItemLengthErr != nil {
-		return nil, errors.New("Error parsing 'szlItemLength' field " + _szlItemLengthErr.Error())
+		return nil, errors.Wrap(_szlItemLengthErr, "Error parsing 'szlItemLength' field")
 	}
 	if szlItemLength != S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH) + " but got " + fmt.Sprintf("%d", szlItemLength))
@@ -130,7 +130,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 	szlItemCount, _szlItemCountErr := io.ReadUint16(16)
 	_ = szlItemCount
 	if _szlItemCountErr != nil {
-		return nil, errors.New("Error parsing 'szlItemCount' field " + _szlItemCountErr.Error())
+		return nil, errors.Wrap(_szlItemCountErr, "Error parsing 'szlItemCount' field")
 	}
 
 	// Array field (items)
@@ -139,7 +139,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 		_item, _err := SzlDataTreeItemParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -159,14 +159,14 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 		// Const Field (szlItemLength)
 		_szlItemLengthErr := io.WriteUint16(16, 28)
 		if _szlItemLengthErr != nil {
-			return errors.New("Error serializing 'szlItemLength' field " + _szlItemLengthErr.Error())
+			return errors.Wrap(_szlItemLengthErr, "Error serializing 'szlItemLength' field")
 		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		szlItemCount := uint16(uint16(len(m.Items)))
 		_szlItemCountErr := io.WriteUint16(16, (szlItemCount))
 		if _szlItemCountErr != nil {
-			return errors.New("Error serializing 'szlItemCount' field " + _szlItemCountErr.Error())
+			return errors.Wrap(_szlItemCountErr, "Error serializing 'szlItemCount' field")
 		}
 
 		// Array Field (items)
@@ -174,7 +174,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}

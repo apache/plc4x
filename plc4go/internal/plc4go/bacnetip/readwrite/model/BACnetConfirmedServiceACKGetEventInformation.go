@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceACKGetEventInformation struct {
 	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKGetEventInformation
 }
 
 // The corresponding interface

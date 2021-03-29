@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type BVLCForwardedNPDU struct {
 	Port   uint16
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCForwardedNPDU
 }
 
 // The corresponding interface
@@ -117,7 +116,7 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'ip' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
 		}
 		ip[curItem] = _item
 	}
@@ -125,13 +124,13 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16(16)
 	if _portErr != nil {
-		return nil, errors.New("Error parsing 'port' field " + _portErr.Error())
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
-		return nil, errors.New("Error parsing 'npdu' field " + _npduErr.Error())
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -153,7 +152,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Ip {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'ip' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
 			}
 		}
@@ -162,13 +161,13 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 		port := uint16(m.Port)
 		_portErr := io.WriteUint16(16, (port))
 		if _portErr != nil {
-			return errors.New("Error serializing 'port' field " + _portErr.Error())
+			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
 		if _npduErr != nil {
-			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
 		return nil

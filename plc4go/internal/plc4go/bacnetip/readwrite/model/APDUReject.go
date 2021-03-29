@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -33,7 +33,6 @@ type APDUReject struct {
 	OriginalInvokeId uint8
 	RejectReason     uint8
 	Parent           *APDU
-	IAPDUReject
 }
 
 // The corresponding interface
@@ -112,7 +111,7 @@ func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -125,13 +124,13 @@ func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
 	// Simple Field (originalInvokeId)
 	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (rejectReason)
 	rejectReason, _rejectReasonErr := io.ReadUint8(8)
 	if _rejectReasonErr != nil {
-		return nil, errors.New("Error parsing 'rejectReason' field " + _rejectReasonErr.Error())
+		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
 
 	// Create a partially initialized instance
@@ -151,7 +150,7 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -159,14 +158,14 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
-			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (rejectReason)
 		rejectReason := uint8(m.RejectReason)
 		_rejectReasonErr := io.WriteUint8(8, (rejectReason))
 		if _rejectReasonErr != nil {
-			return errors.New("Error serializing 'rejectReason' field " + _rejectReasonErr.Error())
+			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}
 
 		return nil

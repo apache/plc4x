@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduControlConnect struct {
 	Parent *ApduControl
-	IApduControlConnect
 }
 
 // The corresponding interface

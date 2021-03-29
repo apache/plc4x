@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckReadRange struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckReadRange
 }
 
 // The corresponding interface

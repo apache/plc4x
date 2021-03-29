@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -38,7 +38,6 @@ type S7ParameterUserDataItemCPUFunctions struct {
 	LastDataUnit            *uint8
 	ErrorCode               *uint16
 	Parent                  *S7ParameterUserDataItem
-	IS7ParameterUserDataItemCPUFunctions
 }
 
 // The corresponding interface
@@ -147,37 +146,37 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
 	itemLength, _itemLengthErr := io.ReadUint8(8)
 	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemLength' field " + _itemLengthErr.Error())
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
 	// Simple Field (method)
 	method, _methodErr := io.ReadUint8(8)
 	if _methodErr != nil {
-		return nil, errors.New("Error parsing 'method' field " + _methodErr.Error())
+		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
 	}
 
 	// Simple Field (cpuFunctionType)
 	cpuFunctionType, _cpuFunctionTypeErr := io.ReadUint8(4)
 	if _cpuFunctionTypeErr != nil {
-		return nil, errors.New("Error parsing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
+		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
 	}
 
 	// Simple Field (cpuFunctionGroup)
 	cpuFunctionGroup, _cpuFunctionGroupErr := io.ReadUint8(4)
 	if _cpuFunctionGroupErr != nil {
-		return nil, errors.New("Error parsing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
+		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
 	}
 
 	// Simple Field (cpuSubfunction)
 	cpuSubfunction, _cpuSubfunctionErr := io.ReadUint8(8)
 	if _cpuSubfunctionErr != nil {
-		return nil, errors.New("Error parsing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
+		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field")
 	}
 
 	// Simple Field (sequenceNumber)
 	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
 	if _sequenceNumberErr != nil {
-		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
 
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
@@ -185,7 +184,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'dataUnitReferenceNumber' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'dataUnitReferenceNumber' field")
 		}
 		dataUnitReferenceNumber = &_val
 	}
@@ -195,7 +194,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'lastDataUnit' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'lastDataUnit' field")
 		}
 		lastDataUnit = &_val
 	}
@@ -205,7 +204,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (*S7Paramete
 	if bool((cpuFunctionType) == (8)) {
 		_val, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode = &_val
 	}
@@ -233,42 +232,42 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
 		_itemLengthErr := io.WriteUint8(8, (itemLength))
 		if _itemLengthErr != nil {
-			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
+			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (method)
 		method := uint8(m.Method)
 		_methodErr := io.WriteUint8(8, (method))
 		if _methodErr != nil {
-			return errors.New("Error serializing 'method' field " + _methodErr.Error())
+			return errors.Wrap(_methodErr, "Error serializing 'method' field")
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.CpuFunctionType)
 		_cpuFunctionTypeErr := io.WriteUint8(4, (cpuFunctionType))
 		if _cpuFunctionTypeErr != nil {
-			return errors.New("Error serializing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
+			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.CpuFunctionGroup)
 		_cpuFunctionGroupErr := io.WriteUint8(4, (cpuFunctionGroup))
 		if _cpuFunctionGroupErr != nil {
-			return errors.New("Error serializing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
+			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
 		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.CpuSubfunction)
 		_cpuSubfunctionErr := io.WriteUint8(8, (cpuSubfunction))
 		if _cpuSubfunctionErr != nil {
-			return errors.New("Error serializing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
+			return errors.Wrap(_cpuSubfunctionErr, "Error serializing 'cpuSubfunction' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
 		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
-			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
@@ -277,7 +276,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 			dataUnitReferenceNumber = m.DataUnitReferenceNumber
 			_dataUnitReferenceNumberErr := io.WriteUint8(8, *(dataUnitReferenceNumber))
 			if _dataUnitReferenceNumberErr != nil {
-				return errors.New("Error serializing 'dataUnitReferenceNumber' field " + _dataUnitReferenceNumberErr.Error())
+				return errors.Wrap(_dataUnitReferenceNumberErr, "Error serializing 'dataUnitReferenceNumber' field")
 			}
 		}
 
@@ -287,7 +286,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 			lastDataUnit = m.LastDataUnit
 			_lastDataUnitErr := io.WriteUint8(8, *(lastDataUnit))
 			if _lastDataUnitErr != nil {
-				return errors.New("Error serializing 'lastDataUnit' field " + _lastDataUnitErr.Error())
+				return errors.Wrap(_lastDataUnitErr, "Error serializing 'lastDataUnit' field")
 			}
 		}
 
@@ -297,7 +296,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 			errorCode = m.ErrorCode
 			_errorCodeErr := io.WriteUint16(16, *(errorCode))
 			if _errorCodeErr != nil {
-				return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+				return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 			}
 		}
 

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -34,7 +34,6 @@ type ModbusSerialADU struct {
 	Length        uint16
 	Address       uint8
 	Pdu           *ModbusPDU
-	IModbusSerialADU
 }
 
 // The corresponding interface
@@ -96,14 +95,14 @@ func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (*ModbusSerialADU
 	// Simple Field (transactionId)
 	transactionId, _transactionIdErr := io.ReadUint16(16)
 	if _transactionIdErr != nil {
-		return nil, errors.New("Error parsing 'transactionId' field " + _transactionIdErr.Error())
+		return nil, errors.Wrap(_transactionIdErr, "Error parsing 'transactionId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint16(0x0000) {
 			log.Info().Fields(map[string]interface{}{
@@ -116,19 +115,19 @@ func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (*ModbusSerialADU
 	// Simple Field (length)
 	length, _lengthErr := io.ReadUint16(16)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint8(8)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
-		return nil, errors.New("Error parsing 'pdu' field " + _pduErr.Error())
+		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
 
 	// Create the instance
@@ -141,14 +140,14 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 	transactionId := uint16(m.TransactionId)
 	_transactionIdErr := io.WriteUint16(16, (transactionId))
 	if _transactionIdErr != nil {
-		return errors.New("Error serializing 'transactionId' field " + _transactionIdErr.Error())
+		return errors.Wrap(_transactionIdErr, "Error serializing 'transactionId' field")
 	}
 
 	// Reserved Field (reserved)
 	{
 		_err := io.WriteUint16(16, uint16(0x0000))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -156,20 +155,20 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 	length := uint16(m.Length)
 	_lengthErr := io.WriteUint16(16, (length))
 	if _lengthErr != nil {
-		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (address)
 	address := uint8(m.Address)
 	_addressErr := io.WriteUint8(8, (address))
 	if _addressErr != nil {
-		return errors.New("Error serializing 'address' field " + _addressErr.Error())
+		return errors.Wrap(_addressErr, "Error serializing 'address' field")
 	}
 
 	// Simple Field (pdu)
 	_pduErr := m.Pdu.Serialize(io)
 	if _pduErr != nil {
-		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())
+		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
 	return nil

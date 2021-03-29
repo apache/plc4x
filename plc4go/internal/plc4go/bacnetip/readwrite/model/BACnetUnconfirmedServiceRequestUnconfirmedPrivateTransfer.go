@@ -24,6 +24,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -42,7 +43,6 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	ServiceNumber uint16
 	Values        []int8
 	Parent        *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 }
 
 // The corresponding interface
@@ -135,7 +135,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 	// Const Field (vendorIdHeader)
 	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
 	if _vendorIdHeaderErr != nil {
-		return nil, errors.New("Error parsing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
 	if vendorIdHeader != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_VENDORIDHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_VENDORIDHEADER) + " but got " + fmt.Sprintf("%d", vendorIdHeader))
@@ -144,13 +144,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 	// Simple Field (vendorId)
 	vendorId, _vendorIdErr := io.ReadUint8(8)
 	if _vendorIdErr != nil {
-		return nil, errors.New("Error parsing 'vendorId' field " + _vendorIdErr.Error())
+		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
 
 	// Const Field (serviceNumberHeader)
 	serviceNumberHeader, _serviceNumberHeaderErr := io.ReadUint8(8)
 	if _serviceNumberHeaderErr != nil {
-		return nil, errors.New("Error parsing 'serviceNumberHeader' field " + _serviceNumberHeaderErr.Error())
+		return nil, errors.Wrap(_serviceNumberHeaderErr, "Error parsing 'serviceNumberHeader' field")
 	}
 	if serviceNumberHeader != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_SERVICENUMBERHEADER {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_SERVICENUMBERHEADER) + " but got " + fmt.Sprintf("%d", serviceNumberHeader))
@@ -159,13 +159,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 	// Simple Field (serviceNumber)
 	serviceNumber, _serviceNumberErr := io.ReadUint16(16)
 	if _serviceNumberErr != nil {
-		return nil, errors.New("Error parsing 'serviceNumber' field " + _serviceNumberErr.Error())
+		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
 	}
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8(8)
 	if _listOfValuesOpeningTagErr != nil {
-		return nil, errors.New("Error parsing 'listOfValuesOpeningTag' field " + _listOfValuesOpeningTagErr.Error())
+		return nil, errors.Wrap(_listOfValuesOpeningTagErr, "Error parsing 'listOfValuesOpeningTag' field")
 	}
 	if listOfValuesOpeningTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
@@ -179,7 +179,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 	for io.GetPos() < _valuesEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'values' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'values' field")
 		}
 		values = append(values, _item)
 	}
@@ -187,7 +187,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8(8)
 	if _listOfValuesClosingTagErr != nil {
-		return nil, errors.New("Error parsing 'listOfValuesClosingTag' field " + _listOfValuesClosingTagErr.Error())
+		return nil, errors.Wrap(_listOfValuesClosingTagErr, "Error parsing 'listOfValuesClosingTag' field")
 	}
 	if listOfValuesClosingTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
@@ -210,33 +210,33 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 		// Const Field (vendorIdHeader)
 		_vendorIdHeaderErr := io.WriteUint8(8, 0x09)
 		if _vendorIdHeaderErr != nil {
-			return errors.New("Error serializing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+			return errors.Wrap(_vendorIdHeaderErr, "Error serializing 'vendorIdHeader' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
 		_vendorIdErr := io.WriteUint8(8, (vendorId))
 		if _vendorIdErr != nil {
-			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
 		// Const Field (serviceNumberHeader)
 		_serviceNumberHeaderErr := io.WriteUint8(8, 0x1A)
 		if _serviceNumberHeaderErr != nil {
-			return errors.New("Error serializing 'serviceNumberHeader' field " + _serviceNumberHeaderErr.Error())
+			return errors.Wrap(_serviceNumberHeaderErr, "Error serializing 'serviceNumberHeader' field")
 		}
 
 		// Simple Field (serviceNumber)
 		serviceNumber := uint16(m.ServiceNumber)
 		_serviceNumberErr := io.WriteUint16(16, (serviceNumber))
 		if _serviceNumberErr != nil {
-			return errors.New("Error serializing 'serviceNumber' field " + _serviceNumberErr.Error())
+			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
 		}
 
 		// Const Field (listOfValuesOpeningTag)
 		_listOfValuesOpeningTagErr := io.WriteUint8(8, 0x2E)
 		if _listOfValuesOpeningTagErr != nil {
-			return errors.New("Error serializing 'listOfValuesOpeningTag' field " + _listOfValuesOpeningTagErr.Error())
+			return errors.Wrap(_listOfValuesOpeningTagErr, "Error serializing 'listOfValuesOpeningTag' field")
 		}
 
 		// Array Field (values)
@@ -244,7 +244,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 			for _, _element := range m.Values {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'values' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'values' field")
 				}
 			}
 		}
@@ -252,7 +252,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 		// Const Field (listOfValuesClosingTag)
 		_listOfValuesClosingTagErr := io.WriteUint8(8, 0x2F)
 		if _listOfValuesClosingTagErr != nil {
-			return errors.New("Error serializing 'listOfValuesClosingTag' field " + _listOfValuesClosingTagErr.Error())
+			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
 		return nil

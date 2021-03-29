@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCReadForeignDeviceTableAck struct {
 	Parent *BVLC
-	IBVLCReadForeignDeviceTableAck
 }
 
 // The corresponding interface

@@ -23,6 +23,8 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -67,6 +69,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -88,6 +91,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -288,6 +292,17 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
         }
 
         return CompletableFuture.completedFuture(response);
+    }
+
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest request) {
+        List<PlcSubscriptionHandle> handles = request.getSubscriptionHandles();
+
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            entry.getKey().getSubscriptionHandles().removeAll(handles);
+        }
+
+        return CompletableFuture.completedFuture(new DefaultPlcUnsubscriptionResponse(request));
     }
 
     private void readInternally(PlcReadRequest readRequest, CANOpenSDOField field, CompletableFuture<PlcReadResponse> response) {

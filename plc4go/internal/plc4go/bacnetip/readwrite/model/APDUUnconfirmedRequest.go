@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -32,7 +32,6 @@ import (
 type APDUUnconfirmedRequest struct {
 	ServiceRequest *BACnetUnconfirmedServiceRequest
 	Parent         *APDU
-	IAPDUUnconfirmedRequest
 }
 
 // The corresponding interface
@@ -107,7 +106,7 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -120,7 +119,7 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
-		return nil, errors.New("Error parsing 'serviceRequest' field " + _serviceRequestErr.Error())
+		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
 
 	// Create a partially initialized instance
@@ -139,14 +138,14 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (serviceRequest)
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
 		if _serviceRequestErr != nil {
-			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
+			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
 		return nil
