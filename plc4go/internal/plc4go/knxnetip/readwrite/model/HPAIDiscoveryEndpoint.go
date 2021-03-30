@@ -168,11 +168,11 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 				}
 				m.HostProtocolCode = data
 			case "ipAddress":
-				var data *IPAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data IPAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.IpAddress = data
+				m.IpAddress = &data
 			case "ipPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {

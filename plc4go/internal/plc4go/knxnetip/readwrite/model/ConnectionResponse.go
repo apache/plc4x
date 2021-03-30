@@ -224,11 +224,11 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 				}
 				m.Status = data
 			case "hpaiDataEndpoint":
-				var data *HPAIDataEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDataEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDataEndpoint = data
+				m.HpaiDataEndpoint = &data
 			case "connectionResponseDataBlock":
 				var dt *ConnectionResponseDataBlock
 				if err := d.DecodeElement(&dt, &tok); err != nil {

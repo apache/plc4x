@@ -137,11 +137,11 @@ func (m *DeviceConfigurationAck) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "deviceConfigurationAckDataBlock":
-				var data *DeviceConfigurationAckDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DeviceConfigurationAckDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DeviceConfigurationAckDataBlock = data
+				m.DeviceConfigurationAckDataBlock = &data
 			}
 		}
 		token, err = d.Token()

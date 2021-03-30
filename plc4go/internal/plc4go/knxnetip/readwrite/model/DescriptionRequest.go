@@ -137,11 +137,11 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			}
 		}
 		token, err = d.Token()

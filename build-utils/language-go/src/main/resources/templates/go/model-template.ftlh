@@ -935,11 +935,11 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 				}
 				m.${field.name?cap_first} = data
 				<#elseif helper.needsPointerAccess(field)>
-				var data *${helper.getLanguageTypeNameForField(field)}
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ${helper.getLanguageTypeNameForField(field)}
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.${field.name?cap_first} = data
+				m.${field.name?cap_first} = &data
 				<#else>
 				var data ${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&data, &tok); err != nil {

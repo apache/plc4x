@@ -159,11 +159,11 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) UnmarshalXML(d *xml.Decoder
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "relativeTimestamp":
-				var data *RelativeTimestamp
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data RelativeTimestamp
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.RelativeTimestamp = data
+				m.RelativeTimestamp = &data
 			}
 		}
 		token, err = d.Token()

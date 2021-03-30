@@ -34,12 +34,20 @@ import (
 
 type Reader struct {
 	transactionIdentifier uint32
+	targetAmsNetId        readWriteModel.AmsNetId
+	targetAmsPort         uint16
+	sourceAmsNetId        readWriteModel.AmsNetId
+	sourceAmsPort         uint16
 	messageCodec          spi.MessageCodec
 }
 
-func NewReader(messageCodec spi.MessageCodec) *Reader {
+func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsNetId, targetAmsPort uint16, sourceAmsNetId readWriteModel.AmsNetId, sourceAmsPort uint16) *Reader {
 	return &Reader{
 		transactionIdentifier: 0,
+		targetAmsNetId:        targetAmsNetId,
+		targetAmsPort:         targetAmsPort,
+		sourceAmsNetId:        sourceAmsNetId,
+		sourceAmsPort:         sourceAmsPort,
 		messageCodec:          messageCodec,
 	}
 }
@@ -70,31 +78,16 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
-		// TODO: move TargetAmsNetId, TargetAmsPort, SourceAmsNetId, SourceAmsPort to Connection
 		userdata := readWriteModel.AmsPacket{
-			TargetAmsNetId: &readWriteModel.AmsNetId{
-				Octet1: 0,
-				Octet2: 0,
-				Octet3: 0,
-				Octet4: 0,
-				Octet5: 0,
-				Octet6: 0,
-			},
-			TargetAmsPort: 0,
-			SourceAmsNetId: &readWriteModel.AmsNetId{
-				Octet1: 0,
-				Octet2: 0,
-				Octet3: 0,
-				Octet4: 0,
-				Octet5: 0,
-				Octet6: 0,
-			},
-			SourceAmsPort: 0,
-			CommandId:     readWriteModel.CommandId_ADS_READ,
-			State:         readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-			ErrorCode:     0,
-			InvokeId:      0,
-			Data:          nil,
+			TargetAmsNetId: &m.targetAmsNetId,
+			TargetAmsPort:  m.targetAmsPort,
+			SourceAmsNetId: &m.sourceAmsNetId,
+			SourceAmsPort:  m.sourceAmsPort,
+			CommandId:      readWriteModel.CommandId_ADS_READ,
+			State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+			ErrorCode:      0,
+			InvokeId:       0,
+			Data:           nil,
 		}
 		switch adsField.FieldType {
 		case StringField:
@@ -141,8 +134,8 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 				return paket.Userdata.InvokeId == transactionIdentifier
 			},
 			func(message interface{}) error {
-				// Convert the response into an ADU
-				log.Trace().Msg("convert response to ADU")
+				// Convert the response into an amsTcpPaket
+				log.Trace().Msg("convert response to amsTcpPaket")
 				amsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
 				// Convert the ads response into a PLC4X response
 				log.Trace().Msg("convert response to PLC4X response")

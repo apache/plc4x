@@ -173,23 +173,23 @@ func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			case "dibDeviceInfo":
-				var data *DIBDeviceInfo
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBDeviceInfo
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibDeviceInfo = data
+				m.DibDeviceInfo = &data
 			case "dibSuppSvcFamilies":
-				var data *DIBSuppSvcFamilies
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBSuppSvcFamilies
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibSuppSvcFamilies = data
+				m.DibSuppSvcFamilies = &data
 			}
 		}
 		token, err = d.Token()

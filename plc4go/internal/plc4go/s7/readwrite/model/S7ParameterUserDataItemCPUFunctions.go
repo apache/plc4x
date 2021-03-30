@@ -344,23 +344,23 @@ func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start
 				}
 				m.SequenceNumber = data
 			case "dataUnitReferenceNumber":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DataUnitReferenceNumber = data
+				m.DataUnitReferenceNumber = &data
 			case "lastDataUnit":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.LastDataUnit = data
+				m.LastDataUnit = &data
 			case "errorCode":
-				var data *uint16
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ErrorCode = data
+				m.ErrorCode = &data
 			}
 		}
 		token, err = d.Token()

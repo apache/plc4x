@@ -261,11 +261,11 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "targetAmsNetId":
-				var data *AmsNetId
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsNetId
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TargetAmsNetId = data
+				m.TargetAmsNetId = &data
 			case "targetAmsPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -273,11 +273,11 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.TargetAmsPort = data
 			case "sourceAmsNetId":
-				var data *AmsNetId
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsNetId
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceAmsNetId = data
+				m.SourceAmsNetId = &data
 			case "sourceAmsPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -291,11 +291,11 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.CommandId = data
 			case "state":
-				var data *State
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data State
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.State = data
+				m.State = &data
 			case "errorCode":
 				var data uint32
 				if err := d.DecodeElement(&data, &tok); err != nil {

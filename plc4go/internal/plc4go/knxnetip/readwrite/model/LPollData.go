@@ -222,11 +222,11 @@ func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "sourceAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceAddress = data
+				m.SourceAddress = &data
 			case "targetAddress":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {

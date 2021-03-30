@@ -19,11 +19,11 @@
 package knxnetip
 
 import (
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
 	"net/url"
 )
 
@@ -59,7 +59,9 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't find transport for given transport url "+transportUrl.String()))
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		}()
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -68,7 +70,9 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't initialize transport configuration for given transport url %#v", transportUrl))
+		}()
 		return ch
 	}
 

@@ -155,11 +155,11 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "deviceConfigurationRequestDataBlock":
-				var data *DeviceConfigurationRequestDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DeviceConfigurationRequestDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DeviceConfigurationRequestDataBlock = data
+				m.DeviceConfigurationRequestDataBlock = &data
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {

@@ -182,11 +182,11 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "vendorId":
-				var data *uint16
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.VendorId = data
+				m.VendorId = &data
 			default:
 				switch start.Attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
