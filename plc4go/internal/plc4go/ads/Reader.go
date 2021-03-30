@@ -90,10 +90,10 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			Data:           nil,
 		}
 		switch adsField.FieldType {
-		case StringField:
+		case DirectAdsStringField:
 			// TODO: what is our read length?
 			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, 1)
-		case Field:
+		case DirectAdsField:
 			// TODO: what is our read length?
 			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, 1)
 		case SymbolicStringField:

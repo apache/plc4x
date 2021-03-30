@@ -21,7 +21,6 @@ package ads
 import (
 	"encoding/binary"
 	"encoding/hex"
-	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -35,14 +34,14 @@ type FieldType uint8
 
 //go:generate stringer -type FieldType
 const (
-	StringField         FieldType = 0x00
-	Field               FieldType = 0x01
-	SymbolicStringField FieldType = 0x03
-	SymbolicField       FieldType = 0x04
+	DirectAdsStringField FieldType = 0x00
+	DirectAdsField       FieldType = 0x01
+	SymbolicStringField  FieldType = 0x03
+	SymbolicField        FieldType = 0x04
 )
 
 func (i FieldType) GetName() string {
-	return fmt.Sprintf("AdsField%s", i.String())
+	return i.String()
 }
 
 type FieldHandler struct {
@@ -54,10 +53,10 @@ type FieldHandler struct {
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		directAdsStringField:   regexp.MustCompile("^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\\d+)):(?P<adsDataType>STRING|WSTRING)\\((?P<stringLength>\\d{1,3})\\)(\\[(?P<numberOfElements>\\d+)])?"),
-		directAdsField:         regexp.MustCompile("^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\\d+)):(?P<adsDataType>\\w+)(\\[(?P<numberOfElements>\\d+)])?"),
-		symbolicAdsStringField: regexp.MustCompile("^(?P<symbolicAddress>.+):(?P<adsDataType>'STRING'|'WSTRING')\\((?P<stringLength>\\d{1,3})\\)(\\[(?P<numberOfElements>\\d+)])?"),
-		symbolicAdsField:       regexp.MustCompile("^(?P<symbolicAddress>.+):(?P<adsDataType>\\w+)(\\[(?P<numberOfElements>\\d+)])?"),
+		directAdsStringField:   regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
+		directAdsField:         regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
+		symbolicAdsStringField: regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>'STRING'|'WSTRING')\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
+		symbolicAdsField:       regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
 	}
 }
 
@@ -101,7 +100,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			numberOfElements = 1
 		}
 
-		return NewAdsPlcField(StringField, indexGroup, indexOffset, model2.AdsDataTypeByName(match["datatype"]), int32(stringLength), int64(numberOfElements))
+		return NewAdsPlcField(DirectAdsStringField, indexGroup, indexOffset, model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.directAdsField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -132,13 +131,13 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			indexOffset = uint32(parsedIndexOffset)
 		}
 
-		adsDataType := model2.AdsDataTypeByName(match["datatype"])
+		adsDataType := model2.AdsDataTypeByName(match["adsDataType"])
 		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
 		if err != nil {
 			log.Trace().Msg("Falling back to number of elements 1")
 			numberOfElements = 1
 		}
-		return NewAdsPlcField(Field, indexGroup, indexOffset, adsDataType, int32(0), int64(numberOfElements))
+		return NewAdsPlcField(DirectAdsField, indexGroup, indexOffset, adsDataType, int32(0), int64(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
 		stringLength, err := strconv.Atoi(match["stringLength"])
 		if err != nil {
@@ -148,13 +147,13 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding number of elements")
 		}
-		return NewAdsSymbolicPlcField(SymbolicStringField, match["symbolicAddress"], model2.AdsDataTypeByName(match["datatype"]), int32(stringLength), int64(numberOfElements))
+		return NewAdsSymbolicPlcField(SymbolicStringField, match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
 		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding number of elements")
 		}
-		return NewAdsSymbolicPlcField(SymbolicField, match["symbolicAddress"], model2.AdsDataTypeByName(match["datatype"]), int32(0), int64(numberOfElements))
+		return NewAdsSymbolicPlcField(SymbolicField, match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(0), int64(numberOfElements))
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}

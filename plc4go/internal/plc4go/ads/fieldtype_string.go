@@ -25,19 +25,19 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[StringField-0]
-	_ = x[Field-1]
+	_ = x[DirectAdsStringField-0]
+	_ = x[DirectAdsField-1]
 	_ = x[SymbolicStringField-3]
 	_ = x[SymbolicField-4]
 }
 
 const (
-	_FieldType_name_0 = "StringFieldField"
+	_FieldType_name_0 = "DirectAdsStringFieldDirectAdsField"
 	_FieldType_name_1 = "SymbolicStringFieldSymbolicField"
 )
 
 var (
-	_FieldType_index_0 = [...]uint8{0, 11, 16}
+	_FieldType_index_0 = [...]uint8{0, 20, 34}
 	_FieldType_index_1 = [...]uint8{0, 19, 32}
 )
 
