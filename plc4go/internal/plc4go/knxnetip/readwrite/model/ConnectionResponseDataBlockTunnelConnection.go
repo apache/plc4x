@@ -137,11 +137,11 @@ func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decode
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxAddress = data
+				m.KnxAddress = &data
 			}
 		}
 		token, err = d.Token()

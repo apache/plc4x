@@ -137,11 +137,11 @@ func (m *ComObjectTableRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "comObjectDescriptors":
-				var data *GroupObjectDescriptorRealisationType6
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data GroupObjectDescriptorRealisationType6
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ComObjectDescriptors = data
+				m.ComObjectDescriptors = &data
 			}
 		}
 		token, err = d.Token()

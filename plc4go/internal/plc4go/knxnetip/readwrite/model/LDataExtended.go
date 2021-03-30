@@ -286,11 +286,11 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 				}
 				m.ExtendedFrameFormat = data
 			case "sourceAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceAddress = data
+				m.SourceAddress = &data
 			case "destinationAddress":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {

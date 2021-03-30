@@ -294,17 +294,17 @@ func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 				}
 				m.OriginalInvokeId = data
 			case "sequenceNumber":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SequenceNumber = data
+				m.SequenceNumber = &data
 			case "proposedWindowSize":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ProposedWindowSize = data
+				m.ProposedWindowSize = &data
 			case "serviceAck":
 				var dt *BACnetServiceAck
 				if err := d.DecodeElement(&dt, &tok); err != nil {

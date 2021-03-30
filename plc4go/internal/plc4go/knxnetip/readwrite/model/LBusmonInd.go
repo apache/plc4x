@@ -237,11 +237,11 @@ func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 				}
 				m.DataFrame = dt
 			case "crc":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Crc = data
+				m.Crc = &data
 			}
 		}
 		token, err = d.Token()

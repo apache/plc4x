@@ -299,29 +299,29 @@ func (m *DeviceDescriptorType2) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 				}
 				m.LogicalTagBase = data
 			case "channelInfo1":
-				var data *ChannelInformation
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ChannelInformation
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ChannelInfo1 = data
+				m.ChannelInfo1 = &data
 			case "channelInfo2":
-				var data *ChannelInformation
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ChannelInformation
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ChannelInfo2 = data
+				m.ChannelInfo2 = &data
 			case "channelInfo3":
-				var data *ChannelInformation
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ChannelInformation
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ChannelInfo3 = data
+				m.ChannelInfo3 = &data
 			case "channelInfo4":
-				var data *ChannelInformation
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ChannelInformation
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ChannelInfo4 = data
+				m.ChannelInfo4 = &data
 			}
 		}
 	}

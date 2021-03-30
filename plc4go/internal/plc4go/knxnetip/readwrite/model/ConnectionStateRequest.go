@@ -188,11 +188,11 @@ func (m *ConnectionStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 				}
 				m.CommunicationChannelId = data
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			}
 		}
 		token, err = d.Token()

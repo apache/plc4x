@@ -522,17 +522,17 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.NetworkPriority = data
 			case "destinationNetworkAddress":
-				var data *uint16
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DestinationNetworkAddress = data
+				m.DestinationNetworkAddress = &data
 			case "destinationLength":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DestinationLength = data
+				m.DestinationLength = &data
 			case "destinationAddress":
 				var data []uint8
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -540,17 +540,17 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.DestinationAddress = data
 			case "sourceNetworkAddress":
-				var data *uint16
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint16
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceNetworkAddress = data
+				m.SourceNetworkAddress = &data
 			case "sourceLength":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceLength = data
+				m.SourceLength = &data
 			case "sourceAddress":
 				var data []uint8
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -558,11 +558,11 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.SourceAddress = data
 			case "hopCount":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HopCount = data
+				m.HopCount = &data
 			case "nlm":
 				var dt *NLM
 				if err := d.DecodeElement(&dt, &tok); err != nil {

@@ -173,17 +173,17 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDiscoveryEndpoint = data
+				m.HpaiDiscoveryEndpoint = &data
 			case "hpaiDataEndpoint":
-				var data *HPAIDataEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDataEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDataEndpoint = data
+				m.HpaiDataEndpoint = &data
 			case "connectionRequestInformation":
 				var dt *ConnectionRequestInformation
 				if err := d.DecodeElement(&dt, &tok); err != nil {

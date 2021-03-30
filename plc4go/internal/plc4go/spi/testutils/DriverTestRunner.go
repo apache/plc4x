@@ -36,6 +36,7 @@ import (
 	"os"
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
@@ -50,8 +51,16 @@ type DriverTestsuite struct {
 }
 
 func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Testcase) error {
+	var options []string
+	for key, value := range m.driverParameters {
+		options = append(options, fmt.Sprintf("%s=%s", key, value))
+	}
+	optionsString := ""
+	if len(options) > 0 {
+		optionsString = "?" + strings.Join(options, "&")
+	}
 	// Get a connection
-	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz")
+	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
 	connectionResult := <-connectionChan
 
 	if connectionResult.Err != nil {

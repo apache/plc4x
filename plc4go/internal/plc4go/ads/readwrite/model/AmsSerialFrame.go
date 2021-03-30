@@ -245,11 +245,11 @@ func (m *AmsSerialFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 				}
 				m.Length = data
 			case "userdata":
-				var data *AmsPacket
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsPacket
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Userdata = data
+				m.Userdata = &data
 			case "crc":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {

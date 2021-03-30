@@ -155,11 +155,11 @@ func (m *AmsTCPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "userdata":
-				var data *AmsPacket
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsPacket
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Userdata = data
+				m.Userdata = &data
 			}
 		}
 	}

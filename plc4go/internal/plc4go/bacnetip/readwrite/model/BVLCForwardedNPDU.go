@@ -197,11 +197,11 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 				}
 				m.Port = data
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()

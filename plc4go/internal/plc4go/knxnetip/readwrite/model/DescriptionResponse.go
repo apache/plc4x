@@ -155,17 +155,17 @@ func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dibDeviceInfo":
-				var data *DIBDeviceInfo
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBDeviceInfo
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibDeviceInfo = data
+				m.DibDeviceInfo = &data
 			case "dibSuppSvcFamilies":
-				var data *DIBSuppSvcFamilies
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBSuppSvcFamilies
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibSuppSvcFamilies = data
+				m.DibSuppSvcFamilies = &data
 			}
 		}
 		token, err = d.Token()

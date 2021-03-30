@@ -137,11 +137,11 @@ func (m *BVLCOriginalBroadcastNPDU) UnmarshalXML(d *xml.Decoder, start xml.Start
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()

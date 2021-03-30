@@ -304,17 +304,17 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 				}
 				m.LengthValueType = data
 			case "extTagNumber":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ExtTagNumber = data
+				m.ExtTagNumber = &data
 			case "extLength":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ExtLength = data
+				m.ExtLength = &data
 			case "propertyIdentifier":
 				var data []uint8
 				if err := d.DecodeElement(&data, &tok); err != nil {

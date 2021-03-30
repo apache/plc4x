@@ -61,7 +61,9 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		}()
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -80,7 +82,14 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, options, m.fieldHandler)
+	connection, err := NewConnection(codec, options, m.fieldHandler)
+	if err != nil {
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
+		}()
+		return ch
+	}
 	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }

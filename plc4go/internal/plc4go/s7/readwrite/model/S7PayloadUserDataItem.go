@@ -235,11 +235,11 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 				}
 				m.TransportSize = data
 			case "szlId":
-				var data *SzlId
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data SzlId
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SzlId = data
+				m.SzlId = &data
 			case "szlIndex":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {

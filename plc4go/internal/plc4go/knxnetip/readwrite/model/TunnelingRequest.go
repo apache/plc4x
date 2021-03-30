@@ -155,11 +155,11 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingRequestDataBlock":
-				var data *TunnelingRequestDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingRequestDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingRequestDataBlock = data
+				m.TunnelingRequestDataBlock = &data
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {

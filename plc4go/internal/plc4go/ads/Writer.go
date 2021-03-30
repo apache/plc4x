@@ -33,12 +33,20 @@ import (
 
 type Writer struct {
 	transactionIdentifier uint32
+	targetAmsNetId        readWriteModel.AmsNetId
+	targetAmsPort         uint16
+	sourceAmsNetId        readWriteModel.AmsNetId
+	sourceAmsPort         uint16
 	messageCodec          spi.MessageCodec
 }
 
-func NewWriter(messageCodec spi.MessageCodec) Writer {
+func NewWriter(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsNetId, targetAmsPort uint16, sourceAmsNetId readWriteModel.AmsNetId, sourceAmsPort uint16) Writer {
 	return Writer{
 		transactionIdentifier: 0,
+		targetAmsNetId:        targetAmsNetId,
+		targetAmsPort:         targetAmsPort,
+		sourceAmsNetId:        sourceAmsNetId,
+		sourceAmsPort:         sourceAmsPort,
 		messageCodec:          messageCodec,
 	}
 }
@@ -82,31 +90,16 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		}
 		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
 
-		// TODO: move TargetAmsNetId, TargetAmsPort, SourceAmsNetId, SourceAmsPort to Connection
 		userdata := readWriteModel.AmsPacket{
-			TargetAmsNetId: &readWriteModel.AmsNetId{
-				Octet1: 0,
-				Octet2: 0,
-				Octet3: 0,
-				Octet4: 0,
-				Octet5: 0,
-				Octet6: 0,
-			},
-			TargetAmsPort: 0,
-			SourceAmsNetId: &readWriteModel.AmsNetId{
-				Octet1: 0,
-				Octet2: 0,
-				Octet3: 0,
-				Octet4: 0,
-				Octet5: 0,
-				Octet6: 0,
-			},
-			SourceAmsPort: 0,
-			CommandId:     readWriteModel.CommandId_ADS_READ,
-			State:         readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-			ErrorCode:     0,
-			InvokeId:      0,
-			Data:          nil,
+			TargetAmsNetId: &m.targetAmsNetId,
+			TargetAmsPort:  m.targetAmsPort,
+			SourceAmsNetId: &m.sourceAmsNetId,
+			SourceAmsPort:  m.sourceAmsPort,
+			CommandId:      readWriteModel.CommandId_ADS_READ,
+			State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+			ErrorCode:      0,
+			InvokeId:       0,
+			Data:           nil,
 		}
 		switch adsField.FieldType {
 		case StringField:
@@ -136,8 +129,8 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		}
 		userdata.InvokeId = transactionIdentifier
 
-		// Assemble the finished ADU
-		log.Trace().Msg("Assemble ADU")
+		// Assemble the finished amsTcpPaket
+		log.Trace().Msg("Assemble amsTcpPaket")
 		amsTcpPaket := readWriteModel.AmsTCPPacket{
 			Userdata: &userdata,
 		}
@@ -150,7 +143,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 				return paket.Userdata.InvokeId == transactionIdentifier
 			},
 			func(message interface{}) error {
-				// Convert the response into an ADU
+				// Convert the response into an responseAmsTcpPaket
 				responseAmsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
 				// Convert the ads response into a PLC4X response
 				readResponse, err := m.ToPlc4xWriteResponse(amsTcpPaket, *responseAmsTcpPaket, writeRequest)

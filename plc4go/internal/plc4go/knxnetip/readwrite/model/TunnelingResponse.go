@@ -137,11 +137,11 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingResponseDataBlock":
-				var data *TunnelingResponseDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingResponseDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingResponseDataBlock = data
+				m.TunnelingResponseDataBlock = &data
 			}
 		}
 		token, err = d.Token()

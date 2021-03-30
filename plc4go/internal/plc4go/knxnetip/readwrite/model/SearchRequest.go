@@ -137,11 +137,11 @@ func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiIDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiIDiscoveryEndpoint = data
+				m.HpaiIDiscoveryEndpoint = &data
 			}
 		}
 		token, err = d.Token()

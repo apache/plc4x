@@ -294,23 +294,23 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 				}
 				m.KnxMedium = data
 			case "deviceStatus":
-				var data *DeviceStatus
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DeviceStatus
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DeviceStatus = data
+				m.DeviceStatus = &data
 			case "knxAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxAddress = data
+				m.KnxAddress = &data
 			case "projectInstallationIdentifier":
-				var data *ProjectInstallationIdentifier
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data ProjectInstallationIdentifier
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ProjectInstallationIdentifier = data
+				m.ProjectInstallationIdentifier = &data
 			case "knxNetIpDeviceSerialNumber":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -323,17 +323,17 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 				}
 				m.KnxNetIpDeviceSerialNumber = utils.ByteArrayToInt8Array(_decoded[0:_len])
 			case "knxNetIpDeviceMulticastAddress":
-				var data *IPAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data IPAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxNetIpDeviceMulticastAddress = data
+				m.KnxNetIpDeviceMulticastAddress = &data
 			case "knxNetIpDeviceMacAddress":
-				var data *MACAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data MACAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxNetIpDeviceMacAddress = data
+				m.KnxNetIpDeviceMacAddress = &data
 			case "deviceFriendlyName":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {
