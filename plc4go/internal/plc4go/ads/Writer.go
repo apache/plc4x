@@ -103,7 +103,6 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		}
 		switch adsField.FieldType {
 		case DirectAdsStringField:
-			// TODO: what is our read length?
 			userdata.Data = readWriteModel.NewAdsWriteRequest(adsField.IndexGroup, adsField.IndexOffset, data)
 			panic("implement me")
 		case DirectAdsField:
