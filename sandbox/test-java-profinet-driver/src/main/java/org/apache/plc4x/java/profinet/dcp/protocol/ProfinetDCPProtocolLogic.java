@@ -67,7 +67,8 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<BaseEthernetFram
     HasConfiguration<ProfinetConfiguration>, PlcSubscriber {
 
     public static MacAddress PROFINET_BROADCAST = createAddress(0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00);
-    public static int PN_DCP = 0x8892;
+    public static short VLAN = (short) 0x8100;
+    public static short PN_DCP = (short) 0x8892;
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     private final Logger logger = LoggerFactory.getLogger(ProfinetDCPProtocolLogic.class);
