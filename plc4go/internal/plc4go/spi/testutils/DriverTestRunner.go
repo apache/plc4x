@@ -177,6 +177,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			log.Trace().Msg("Waiting for read request result")
 			readRequestResult := <-testcase.readRequestResultChannel
+			if readRequestResult.Err != nil {
+				return errors.Wrap(readRequestResult.Err, "error sending response")
+			}
 			// Serialize the response to XML
 			actualResponse, err := xml.Marshal(readRequestResult.Response)
 			if err != nil {
@@ -195,6 +198,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			log.Trace().Msg("Waiting for write request result")
 			writeResponseResult := <-testcase.writeRequestResultChannel
+			if writeResponseResult.Err != nil {
+				return errors.Wrap(writeResponseResult.Err, "error sending response")
+			}
 			// Serialize the response to XML
 			actualResponse, err := xml.Marshal(writeResponseResult.Response)
 			if err != nil {
@@ -442,8 +448,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 				return
 			}
 			log.Info().Msgf("Running testcase %s", testcase.name)
-			err := testsuite.Run(driverManager, testcase)
-			if err != nil {
+			if err := testsuite.Run(driverManager, testcase); err != nil {
 				log.Error().Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n", err)
 				t.Fail()
 			}

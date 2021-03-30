@@ -93,11 +93,15 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
-		return err
+	if m.SymbolicAddress != "" {
+		if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
+			return err
+		}
 	}
-	if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
-		return err
+	if m.StringLength > 0 {
+		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
 		return err

@@ -1981,7 +1981,7 @@ func (m *Connection) resetTimeout() {
 }
 
 func (m *Connection) resetConnection() {
-	fmt.Println("Bad connection detected")
+	log.Warn().Msg("Bad connection detected")
 }
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {

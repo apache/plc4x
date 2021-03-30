@@ -65,14 +65,16 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest apiModel.
 	log.Trace().Msg("Merging requests")
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
-	var err *utils.MultiError = nil
+	var err error = nil
 	for _, readResult := range readResults {
 		if readResult.Err != nil {
+			log.Debug().Err(readResult.Err).Msgf("Error during read")
 			if err == nil {
 				// Lazy initialization of multi error
-				err = &utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.Err}}
+				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.Err}}
 			} else {
-				err.Errors = append(err.Errors, readResult.Err)
+				multiError := err.(utils.MultiError)
+				multiError.Errors = append(multiError.Errors, readResult.Err)
 			}
 		} else if readResult.Response != nil {
 			if len(readResult.Response.GetRequest().GetFieldNames()) > 1 {
