@@ -870,7 +870,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->
             (typeCase.getName().equals("TIME_OF_DAY") && hasFieldsWithNames(typeCase.getFields(), "hour", "minutes", "seconds")) ||
                 (typeCase.getName().equals("DATE") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day")) ||
-                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day", "hour", "minutes", "seconds")))) {
+                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day", "hour", "minutes", "seconds")) ||
+                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "secondsSinceEpoch")))) {
             imports.add("\"time\"");
         }
         return imports;

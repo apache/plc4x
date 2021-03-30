@@ -57,19 +57,19 @@ public abstract class ManualTest {
                 final PlcReadResponse readResponse = readRequest.execute().get();
 
                 // Check the result
-                Assertions.assertEquals(1, readResponse.getFieldNames().size());
-                Assertions.assertEquals(fieldName, readResponse.getFieldNames().iterator().next());
-                Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName));
-                Assertions.assertNotNull(readResponse.getPlcValue(fieldName));
+                Assertions.assertEquals(1, readResponse.getFieldNames().size(), fieldName);
+                Assertions.assertEquals(fieldName, readResponse.getFieldNames().iterator().next(), fieldName);
+                Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(fieldName), fieldName);
+                Assertions.assertNotNull(readResponse.getPlcValue(fieldName), fieldName);
                 if(readResponse.getPlcValue(fieldName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(fieldName);
                     List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
                     for (int j = 0; j < expectedValues.size(); j++) {
-                        Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject());
+                        Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), fieldName + "[" + j + "]");
                     }
                 } else {
                     Assertions.assertEquals(
-                        testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString());
+                        testCase.expectedReadValue.toString(), readResponse.getPlcValue(fieldName).getObject().toString(), fieldName);
                 }
             }
             System.out.println("Success");
