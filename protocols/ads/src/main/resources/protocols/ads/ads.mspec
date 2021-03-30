@@ -490,10 +490,9 @@
             [simple uint 32 'value']
         ]
         // Interpreted as "seconds since epoch"
-        // TODO: Fix this
-        //['IEC61131_DATE_AND_TIME' DATE_AND_TIME
-        //    [simple uint 32 'value']
-        //]
+        ['IEC61131_DATE_AND_TIME' DATE_AND_TIME
+            [simple uint 32 'secondsSinceEpoch']
+        ]
     ]
 ]
 
