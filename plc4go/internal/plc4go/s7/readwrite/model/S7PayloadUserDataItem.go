@@ -247,7 +247,15 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 				}
 				m.SzlIndex = data
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of S7PayloadUserDataItem")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
 					var dt *S7PayloadUserDataItemCpuFunctionReadSzlRequest
 					if m.Child != nil {

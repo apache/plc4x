@@ -256,7 +256,15 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 				}
 				m.Payload = dt
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of COTPPacket")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
 					var dt *COTPPacketData
 					if m.Child != nil {

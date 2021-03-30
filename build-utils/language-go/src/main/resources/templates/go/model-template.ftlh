@@ -951,23 +951,31 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		</#list>
 		<#if hasSwitch>
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ${type.name}")
+				}
+				switch attr[0].Value {
 			<#list helper.getUniqueSwitchCases(helper.getSwitchField().cases) as subtype>
-					case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
-						var dt *${subtype.name}
-						if m.Child != nil {
-							dt = m.Child.(*${subtype.name})
-						}
-						if err := d.DecodeElement(&dt, &tok); err != nil {
-							return err
-						}
+				case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
+					var dt *${subtype.name}
+					if m.Child != nil {
+						dt = m.Child.(*${subtype.name})
+					}
+					if err := d.DecodeElement(&dt, &tok); err != nil {
+						return err
+					}
 				<#if helper.isArrayField(field)>
-						_values = append(_values, dt)
+					_values = append(_values, dt)
 				<#else>
-						if m.Child == nil {
-							dt.Parent = m
-							m.Child = dt
-						}
+					if m.Child == nil {
+						dt.Parent = m
+						m.Child = dt
+					}
 				</#if>
 			</#list>
 				}
