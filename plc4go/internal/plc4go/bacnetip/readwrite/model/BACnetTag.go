@@ -290,7 +290,15 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.ExtLength = &data
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetTag")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
 					var dt *BACnetTagApplicationNull
 					if m.Child != nil {
