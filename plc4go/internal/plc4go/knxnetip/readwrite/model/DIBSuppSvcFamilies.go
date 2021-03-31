@@ -168,13 +168,14 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 				}
 				m.DescriptionType = data
 			case "serviceIds":
-				var _values []*ServiceId
 				var dt *ServiceId
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-				_values = append(_values, dt)
-				m.ServiceIds = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.ServiceIds = append(m.ServiceIds, dt)
+				}
 			}
 		}
 	}

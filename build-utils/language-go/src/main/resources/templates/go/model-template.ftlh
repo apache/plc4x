@@ -946,16 +946,15 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 				}
 				m.${field.name?cap_first} = utils.ByteArrayToInt8Array(_decoded[0:_len])
 				<#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
-					<#if helper.isArrayField(field)>
-				var _values []<#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
-					</#if>
 				var dt *${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
 					<#if helper.isArrayField(field)>
-				_values = append(_values, dt)
-				m.${field.name?cap_first} = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.${field.name?cap_first} = append(m.${field.name?cap_first}, dt)
+				}
 					<#else>
 				m.${field.name?cap_first} = dt
 					</#if>
