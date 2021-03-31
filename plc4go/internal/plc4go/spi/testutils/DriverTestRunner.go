@@ -357,7 +357,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		// Sleep for that long
 		log.Debug().Int("delay", delay).Msg("Sleeping")
-		time.Sleep(time.Duration(delay))
+		time.Sleep(time.Millisecond * time.Duration(delay))
 	case StepTypeTerminate:
 		// Simply close the transport connection
 		log.Trace().Msg("closing transport")

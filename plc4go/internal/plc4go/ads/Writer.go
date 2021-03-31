@@ -79,7 +79,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBuffer()
+		io := utils.NewLittleEndianWriteBuffer()
 		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.DataFormatName(), adsField.StringLength); err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,

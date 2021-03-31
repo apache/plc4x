@@ -279,7 +279,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 	// Decode the data according to the information from the request
 	log.Trace().Msg("decode data")
-	rb := utils.NewReadBuffer(data)
+	rb := utils.NewLittleEndianReadBuffer(data)
 	// TODO: this is wrong as we need to read in little endian
 	value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
 	if err != nil {
