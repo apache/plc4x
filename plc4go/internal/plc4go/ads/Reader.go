@@ -28,6 +28,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
+	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -39,6 +40,8 @@ type Reader struct {
 	sourceAmsNetId        readWriteModel.AmsNetId
 	sourceAmsPort         uint16
 	messageCodec          spi.MessageCodec
+	fieldMapping          map[SymbolicPlcField]DirectPlcField
+	mappingLock           sync.Mutex
 }
 
 func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsNetId, targetAmsPort uint16, sourceAmsNetId readWriteModel.AmsNetId, sourceAmsPort uint16) *Reader {
@@ -49,6 +52,7 @@ func NewReader(messageCodec spi.MessageCodec, targetAmsNetId readWriteModel.AmsN
 		sourceAmsNetId:        sourceAmsNetId,
 		sourceAmsPort:         sourceAmsPort,
 		messageCodec:          messageCodec,
+		fieldMapping:          make(map[SymbolicPlcField]DirectPlcField),
 	}
 }
 
@@ -68,7 +72,30 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		// If we are requesting only one field, use a
 		fieldName := readRequest.GetFieldNames()[0]
 		field := readRequest.GetField(fieldName)
-		adsField, err := CastToAdsFieldFromPlcField(field)
+		if needsResolving(field) {
+			// TODO: resolve field
+			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
+			if err != nil {
+				result <- model.PlcReadRequestResult{
+					Request:  readRequest,
+					Response: nil,
+					Err:      errors.Wrap(err, "invalid field item type"),
+				}
+				log.Debug().Msgf("Invalid field item type %T", field)
+				return
+			}
+			field, err = m.resolveField(adsField)
+			if err != nil {
+				result <- model.PlcReadRequestResult{
+					Request:  readRequest,
+					Response: nil,
+					Err:      errors.Wrap(err, "invalid field item type"),
+				}
+				log.Debug().Msgf("Invalid field item type %T", field)
+				return
+			}
+		}
+		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
@@ -108,67 +135,118 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			return
 		}
 
-		// Calculate a new transaction identifier
-		transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
-		if transactionIdentifier > math.MaxUint8 {
-			transactionIdentifier = 1
-			atomic.StoreUint32(&m.transactionIdentifier, 1)
-		}
-		log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
-		userdata.InvokeId = transactionIdentifier
-
-		// Assemble the finished tcp paket
-		log.Trace().Msg("Assemble tcp paket")
-		amsTcpPaket := readWriteModel.AmsTCPPacket{
-			Userdata: &userdata,
-		}
-
-		// Send the TCP Paket over the wire
-		log.Trace().Msg("Send TCP Paket")
-		if err = m.messageCodec.SendRequest(
-			amsTcpPaket,
-			func(message interface{}) bool {
-				paket := readWriteModel.CastAmsTCPPacket(message)
-				return paket.Userdata.InvokeId == transactionIdentifier
-			},
-			func(message interface{}) error {
-				// Convert the response into an amsTcpPaket
-				log.Trace().Msg("convert response to amsTcpPaket")
-				amsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
-				// Convert the ads response into a PLC4X response
-				log.Trace().Msg("convert response to PLC4X response")
-				readResponse, err := m.ToPlc4xReadResponse(*amsTcpPaket, readRequest)
-
-				if err != nil {
-					result <- model.PlcReadRequestResult{
-						Request: readRequest,
-						Err:     errors.Wrap(err, "Error decoding response"),
-					}
-					// TODO: should we return the error here?
-					return nil
-				}
-				result <- model.PlcReadRequestResult{
-					Request:  readRequest,
-					Response: readResponse,
-				}
-				return nil
-			},
-			func(err error) error {
-				result <- model.PlcReadRequestResult{
-					Request: readRequest,
-					Err:     errors.Wrap(err, "got timeout while waiting for response"),
-				}
-				return nil
-			},
-			time.Second*1); err != nil {
-			result <- model.PlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error sending message"),
-			}
-		}
+		m.sendOverTheWire(userdata, readRequest, result)
 	}()
 	return result
+}
+
+func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+	// Calculate a new transaction identifier
+	transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
+	if transactionIdentifier > math.MaxUint8 {
+		transactionIdentifier = 1
+		atomic.StoreUint32(&m.transactionIdentifier, 1)
+	}
+	log.Debug().Msgf("Calculated transaction identifier %x", transactionIdentifier)
+	userdata.InvokeId = transactionIdentifier
+
+	// Assemble the finished tcp paket
+	log.Trace().Msg("Assemble tcp paket")
+	amsTcpPaket := readWriteModel.AmsTCPPacket{
+		Userdata: &userdata,
+	}
+
+	// Send the TCP Paket over the wire
+	log.Trace().Msg("Send TCP Paket")
+	if err := m.messageCodec.SendRequest(
+		amsTcpPaket,
+		func(message interface{}) bool {
+			paket := readWriteModel.CastAmsTCPPacket(message)
+			return paket.Userdata.InvokeId == transactionIdentifier
+		},
+		func(message interface{}) error {
+			// Convert the response into an amsTcpPaket
+			log.Trace().Msg("convert response to amsTcpPaket")
+			amsTcpPaket := readWriteModel.CastAmsTCPPacket(message)
+			// Convert the ads response into a PLC4X response
+			log.Trace().Msg("convert response to PLC4X response")
+			readResponse, err := m.ToPlc4xReadResponse(*amsTcpPaket, readRequest)
+
+			if err != nil {
+				result <- model.PlcReadRequestResult{
+					Request: readRequest,
+					Err:     errors.Wrap(err, "Error decoding response"),
+				}
+				// TODO: should we return the error here?
+				return nil
+			}
+			result <- model.PlcReadRequestResult{
+				Request:  readRequest,
+				Response: readResponse,
+			}
+			return nil
+		},
+		func(err error) error {
+			result <- model.PlcReadRequestResult{
+				Request: readRequest,
+				Err:     errors.Wrap(err, "got timeout while waiting for response"),
+			}
+			return nil
+		},
+		time.Second*1); err != nil {
+		result <- model.PlcReadRequestResult{
+			Request:  readRequest,
+			Response: nil,
+			Err:      errors.Wrap(err, "error sending message"),
+		}
+	}
+}
+
+func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, error) {
+	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
+		return directPlcField, nil
+	}
+	m.mappingLock.Lock()
+	defer m.mappingLock.Unlock()
+	// In case a previous one has already
+	if directPlcField, ok := m.fieldMapping[symbolicField]; ok {
+		return directPlcField, nil
+	}
+	userdata := readWriteModel.AmsPacket{
+		TargetAmsNetId: &m.targetAmsNetId,
+		TargetAmsPort:  m.targetAmsPort,
+		SourceAmsNetId: &m.sourceAmsNetId,
+		SourceAmsPort:  m.sourceAmsPort,
+		CommandId:      readWriteModel.CommandId_ADS_READ_WRITE,
+		State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+		ErrorCode:      0,
+		InvokeId:       0,
+		Data:           nil,
+	}
+	userdata.Data = readWriteModel.NewAdsReadWriteRequest(
+		uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME),
+		0,
+		4,
+		nil,
+		utils.ByteArrayToInt8Array([]byte(symbolicField.SymbolicAddress+"\000")),
+	)
+	result := make(chan model.PlcReadRequestResult)
+	go func() {
+		m.sendOverTheWire(userdata, nil, result)
+	}()
+	response := <-result
+	if response.Err != nil {
+		log.Debug().Err(response.Err).Msg("Error during resolve")
+		return DirectPlcField{}, response.Err
+	}
+	handle := response.Response.GetValue(response.Response.GetFieldNames()[0]).GetUint32()
+	directPlcField := DirectPlcField{
+		IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),
+		IndexOffset: handle,
+		PlcField:    symbolicField.PlcField,
+	}
+	m.fieldMapping[symbolicField] = directPlcField
+	return directPlcField, nil
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
@@ -185,7 +263,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	// Get the field from the request
 	log.Trace().Msg("get a field from request")
 	fieldName := readRequest.GetFieldNames()[0]
-	field, err := CastToAdsFieldFromPlcField(readRequest.GetField(fieldName))
+	field, err := castToDirectAdsFieldFromPlcField(readRequest.GetField(fieldName))
 	if err != nil {
 		return nil, errors.Wrap(err, "error casting to ads-field")
 	}

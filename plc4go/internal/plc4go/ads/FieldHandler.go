@@ -100,7 +100,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			numberOfElements = 1
 		}
 
-		return NewAdsPlcField(DirectAdsStringField, indexGroup, indexOffset, model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
+		return newDirectAdsPlcField(indexGroup, indexOffset, model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.directAdsField, query); match != nil {
 		var indexGroup uint32
 		if indexGroupHexString := match["indexGroupHex"]; indexGroupHexString != "" {
@@ -137,7 +137,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			log.Trace().Msg("Falling back to number of elements 1")
 			numberOfElements = 1
 		}
-		return NewAdsPlcField(DirectAdsField, indexGroup, indexOffset, adsDataType, int32(0), int64(numberOfElements))
+		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, int32(0), int64(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
 		stringLength, err := strconv.Atoi(match["stringLength"])
 		if err != nil {
@@ -147,13 +147,14 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding number of elements")
 		}
-		return NewAdsSymbolicPlcField(SymbolicStringField, match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
-	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
+		return newAdsSymbolicPlcField(match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), int64(numberOfElements))
+	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {
 		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
 		if err != nil {
-			return nil, errors.Wrap(err, "Error decoding number of elements")
+			log.Trace().Msg("Falling back to number of elements 1")
+			numberOfElements = 1
 		}
-		return NewAdsSymbolicPlcField(SymbolicField, match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(0), int64(numberOfElements))
+		return newAdsSymbolicPlcField(match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(0), int64(numberOfElements))
 	} else {
 		return nil, errors.Errorf("Invalid address format for address '%s'", query)
 	}

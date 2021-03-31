@@ -67,7 +67,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 
 		// Get the ads field instance from the request
 		field := writeRequest.GetField(fieldName)
-		adsField, err := CastToAdsFieldFromPlcField(field)
+		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,

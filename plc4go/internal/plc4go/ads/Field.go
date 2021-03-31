@@ -30,16 +30,9 @@ import (
 
 type PlcField struct {
 	FieldType        FieldType
-	IndexGroup       uint32
-	IndexOffset      uint32
-	SymbolicAddress  string
 	StringLength     int32
 	NumberOfElements int64
 	Datatype         model2.AdsDataType
-}
-
-func (m PlcField) GetAddressString() string {
-	return fmt.Sprintf("%dx%05d%05d%s%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
 }
 
 func (m PlcField) GetTypeName() string {
@@ -50,38 +43,41 @@ func (m PlcField) GetQuantity() uint16 {
 	return 1
 }
 
-func NewAdsPlcField(fieldType FieldType, indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements int64) (model.PlcField, error) {
-	return PlcField{
-		FieldType:        fieldType,
-		IndexGroup:       indexGroup,
-		IndexOffset:      indexOffset,
-		SymbolicAddress:  "",
-		StringLength:     stringLength,
-		NumberOfElements: numberOfElements,
-		Datatype:         adsDataType,
+type DirectPlcField struct {
+	IndexGroup  uint32
+	IndexOffset uint32
+	PlcField
+}
+
+func (m DirectPlcField) GetAddressString() string {
+	return fmt.Sprintf("%dx%05d%05d%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.StringLength, m.NumberOfElements, m.Datatype.String())
+}
+
+func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements int64) (model.PlcField, error) {
+	fieldType := DirectAdsField
+	if stringLength > 0 {
+		fieldType = DirectAdsStringField
+	}
+	return DirectPlcField{
+		IndexGroup:  indexGroup,
+		IndexOffset: indexOffset,
+		PlcField: PlcField{
+			FieldType:        fieldType,
+			StringLength:     stringLength,
+			NumberOfElements: numberOfElements,
+			Datatype:         adsDataType,
+		},
 	}, nil
 }
 
-func NewAdsSymbolicPlcField(fieldType FieldType, symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements int64) (model.PlcField, error) {
-	return PlcField{
-		FieldType:        fieldType,
-		IndexGroup:       0,
-		IndexOffset:      0,
-		SymbolicAddress:  symbolicAddress,
-		StringLength:     stringLength,
-		NumberOfElements: numberOfElements,
-		Datatype:         adsDataType,
-	}, nil
-}
-
-func CastToAdsFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
-	if adsField, ok := plcField.(PlcField); ok {
+func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, error) {
+	if adsField, ok := plcField.(DirectPlcField); ok {
 		return adsField, nil
 	}
-	return PlcField{}, errors.New("couldn't cast to AdsPlcField")
+	return DirectPlcField{}, errors.New("couldn't cast to AdsPlcField")
 }
 
-func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m DirectPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	log.Trace().Msg("MarshalXML")
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
 		return err
@@ -93,10 +89,75 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}}); err != nil {
 		return err
 	}
-	if m.SymbolicAddress != "" {
-		if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
+	if m.StringLength > 0 {
+		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
 			return err
 		}
+	}
+	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+	return nil
+}
+
+type SymbolicPlcField struct {
+	SymbolicAddress string
+	PlcField
+}
+
+func (m SymbolicPlcField) GetAddressString() string {
+	return fmt.Sprintf("%dx%s%05d%05d:%s", m.FieldType, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
+}
+
+func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements int64) (model.PlcField, error) {
+	fieldType := SymbolicField
+	if stringLength > 0 {
+		fieldType = SymbolicStringField
+	}
+	return SymbolicPlcField{
+		SymbolicAddress: symbolicAddress,
+		PlcField: PlcField{
+			FieldType:        fieldType,
+			StringLength:     stringLength,
+			NumberOfElements: numberOfElements,
+			Datatype:         adsDataType,
+		},
+	}, nil
+}
+
+func needsResolving(plcField model.PlcField) bool {
+	switch plcField.(type) {
+	case SymbolicPlcField:
+		return true
+	case DirectPlcField:
+		return false
+	default:
+		return false
+	}
+}
+
+func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcField, error) {
+	if adsField, ok := plcField.(SymbolicPlcField); ok {
+		return adsField, nil
+	}
+	return SymbolicPlcField{}, errors.New("couldn't cast to AdsPlcField")
+}
+
+func (m SymbolicPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	log.Trace().Msg("MarshalXML")
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
+		return err
 	}
 	if m.StringLength > 0 {
 		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
