@@ -42,26 +42,26 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/go/parser-factory-template.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/go/xml-parser-factory-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/go/parser-factory-template.go.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/go/xml-parser-factory-template.go.ftlh"));
     }
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/model-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/go/model-template.go.ftlh"));
     }
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/enum-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/go/enum-template.go.ftlh"));
     }
 
     @Override
     protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/data-io-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/go/data-io-template.go.ftlh"));
     }
 
     @Override
