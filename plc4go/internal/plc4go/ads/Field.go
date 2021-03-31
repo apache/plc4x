@@ -43,6 +43,30 @@ func (m PlcField) GetQuantity() uint16 {
 	return 1
 }
 
+func (m PlcField) GetDatatype() model2.AdsDataType {
+	return m.Datatype
+}
+
+func (m PlcField) GetStringLength() int32 {
+	return m.StringLength
+}
+
+func (m PlcField) GetAddressString() string {
+	return fmt.Sprintf("%dx%05d%05d:%s", m.FieldType, m.StringLength, m.NumberOfElements, m.Datatype.String())
+}
+
+type AdsPlcField interface {
+	GetDatatype() model2.AdsDataType
+	GetStringLength() int32
+}
+
+func castToAdsFieldFromPlcField(plcField model.PlcField) (AdsPlcField, error) {
+	if adsField, ok := plcField.(AdsPlcField); ok {
+		return adsField, nil
+	}
+	return nil, errors.Errorf("couldn't %T cast to AdsPlcField", plcField)
+}
+
 type DirectPlcField struct {
 	IndexGroup  uint32
 	IndexOffset uint32
@@ -74,7 +98,7 @@ func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, 
 	if adsField, ok := plcField.(DirectPlcField); ok {
 		return adsField, nil
 	}
-	return DirectPlcField{}, errors.New("couldn't cast to AdsPlcField")
+	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
 }
 
 func (m DirectPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -117,9 +141,9 @@ func (m SymbolicPlcField) GetAddressString() string {
 }
 
 func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements int64) (model.PlcField, error) {
-	fieldType := SymbolicField
+	fieldType := SymbolicAdsField
 	if stringLength > 0 {
-		fieldType = SymbolicStringField
+		fieldType = SymbolicAdsStringField
 	}
 	return SymbolicPlcField{
 		SymbolicAddress: symbolicAddress,
@@ -147,7 +171,7 @@ func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcFie
 	if adsField, ok := plcField.(SymbolicPlcField); ok {
 		return adsField, nil
 	}
-	return SymbolicPlcField{}, errors.New("couldn't cast to AdsPlcField")
+	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcField)
 }
 
 func (m SymbolicPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

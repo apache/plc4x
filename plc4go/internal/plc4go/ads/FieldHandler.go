@@ -34,10 +34,10 @@ type FieldType uint8
 
 //go:generate stringer -type FieldType
 const (
-	DirectAdsStringField FieldType = 0x00
-	DirectAdsField       FieldType = 0x01
-	SymbolicStringField  FieldType = 0x03
-	SymbolicField        FieldType = 0x04
+	DirectAdsStringField   FieldType = 0x00
+	DirectAdsField         FieldType = 0x01
+	SymbolicAdsStringField FieldType = 0x03
+	SymbolicAdsField       FieldType = 0x04
 )
 
 func (i FieldType) GetName() string {
