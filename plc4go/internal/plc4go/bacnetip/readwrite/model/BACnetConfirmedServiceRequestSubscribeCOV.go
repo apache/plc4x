@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -156,7 +156,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		return nil, errors.Wrap(_subscriberProcessIdentifierHeaderErr, "Error parsing 'subscriberProcessIdentifierHeader' field")
 	}
 	if subscriberProcessIdentifierHeader != BACnetConfirmedServiceRequestSubscribeCOV_SUBSCRIBERPROCESSIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestSubscribeCOV_SUBSCRIBERPROCESSIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(subscriberProcessIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestSubscribeCOV_SUBSCRIBERPROCESSIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", subscriberProcessIdentifierHeader))
 	}
 
 	// Simple Field (subscriberProcessIdentifier)
@@ -171,7 +171,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		return nil, errors.Wrap(_monitoredObjectIdentifierHeaderErr, "Error parsing 'monitoredObjectIdentifierHeader' field")
 	}
 	if monitoredObjectIdentifierHeader != BACnetConfirmedServiceRequestSubscribeCOV_MONITOREDOBJECTIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestSubscribeCOV_MONITOREDOBJECTIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(monitoredObjectIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestSubscribeCOV_MONITOREDOBJECTIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", monitoredObjectIdentifierHeader))
 	}
 
 	// Simple Field (monitoredObjectType)
@@ -192,7 +192,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		return nil, errors.Wrap(_issueConfirmedNotificationsHeaderErr, "Error parsing 'issueConfirmedNotificationsHeader' field")
 	}
 	if issueConfirmedNotificationsHeader != BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSHEADER)) + " but got " + strconv.Itoa(int(issueConfirmedNotificationsHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSHEADER) + " but got " + fmt.Sprintf("%d", issueConfirmedNotificationsHeader))
 	}
 
 	// Const Field (issueConfirmedNotificationsSkipBits)
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		return nil, errors.Wrap(_issueConfirmedNotificationsSkipBitsErr, "Error parsing 'issueConfirmedNotificationsSkipBits' field")
 	}
 	if issueConfirmedNotificationsSkipBits != BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSSKIPBITS {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSSKIPBITS)) + " but got " + strconv.Itoa(int(issueConfirmedNotificationsSkipBits)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestSubscribeCOV_ISSUECONFIRMEDNOTIFICATIONSSKIPBITS) + " but got " + fmt.Sprintf("%d", issueConfirmedNotificationsSkipBits))
 	}
 
 	// Simple Field (issueConfirmedNotifications)
@@ -216,7 +216,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		return nil, errors.Wrap(_lifetimeHeaderErr, "Error parsing 'lifetimeHeader' field")
 	}
 	if lifetimeHeader != BACnetConfirmedServiceRequestSubscribeCOV_LIFETIMEHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestSubscribeCOV_LIFETIMEHEADER)) + " but got " + strconv.Itoa(int(lifetimeHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestSubscribeCOV_LIFETIMEHEADER) + " but got " + fmt.Sprintf("%d", lifetimeHeader))
 	}
 
 	// Simple Field (lifetimeLength)

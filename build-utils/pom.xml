@@ -36,12 +36,29 @@
   <modules>
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
-
-    <module>language-c</module>
-    <module>language-go</module>
-    <module>language-java</module>
     <module>protocol-test</module>
+
+    <module>language-java</module>
+
   </modules>
+
+  <profiles>
+  <!-- Build PLC4X including the C modules -->
+  <profile>
+    <id>with-c</id>
+    <modules>
+      <module>language-c</module>
+    </modules>
+  </profile>
+
+  <profile>
+    <id>with-go</id>
+    <modules>
+      <module>language-go</module>
+    </modules>
+  </profile>
+
+</profiles>
 
   <dependencies>
     <!-- JUnit 5 Support -->

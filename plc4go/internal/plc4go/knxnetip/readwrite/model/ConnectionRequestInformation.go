@@ -81,7 +81,6 @@ func (m *ConnectionRequestInformation) LengthInBits() uint16 {
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
-
 	// Discriminator Field (connectionType)
 	lengthInBits += 8
 
@@ -98,7 +97,8 @@ func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
 func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8(8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
@@ -113,9 +113,9 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequest
 	var _parent *ConnectionRequestInformation
 	var typeSwitchError error
 	switch {
-	case connectionType == 0x03:
+	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
 		_parent, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(io)
-	case connectionType == 0x04:
+	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
 		_parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
 	}
 	if typeSwitchError != nil {
@@ -143,6 +143,7 @@ func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, chi
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(child.ConnectionType())
 	_connectionTypeErr := io.WriteUint8(8, (connectionType))
+
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}

@@ -95,7 +95,11 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
     @JsonIgnore
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
-        return <#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+            <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+                return <#if helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]) = "String"><#if discriminatorValue??>"${discriminatorValue}"<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if><#else><#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if></#if>;
+            <#else>
+                return <#if helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]) = "String"><#if discriminatorValue??>"${discriminatorValue}"<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if><#else><#if discriminatorValue??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${discriminatorValue}<#else>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if></#if>;
+            </#if>
     }
         </#if>
     </#list>
@@ -120,7 +124,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
     // Constant values.
 <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${field.referenceValue};
+    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = <#if helper.getLanguageTypeNameForField(field) = 'float'>${field.referenceValue}f<#else>${field.referenceValue}</#if>;
 </#list>
 </#if>
 <#-- Prpoerty fields are fields that require a property in the pojo -->
@@ -169,6 +173,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     @JsonIgnore
     public int getLengthInBits() {
         int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+        ${helper.getLanguageTypeNameForTypeReference(type.typeReference)} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -202,10 +207,20 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name})
-        lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
+            <#assign simpleTypeReference = discriminatorField.type>
+            <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+                lengthInBits += ${toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)};
+            <#else>
+                lengthInBits += ${simpleTypeReference.sizeInBits};
+            </#if>
+        <#elseif helper.isEnumField(field)>
+            lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+        <#else>
+            lengthInBits += ${discriminatorField.name}.getLengthInBits();
+        </#if>
         <#break>
     <#case "enum">
         <#assign enumField = field>
@@ -219,6 +234,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Implicit Field (${implicitField.name})
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        //${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)});
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field>
@@ -238,8 +254,13 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         // Optional Field (${optionalField.name})
         if(${optionalField.name} != null) {
         <#if helper.isSimpleTypeReference(optionalField.type)>
-            <#assign simpleTypeReference = optionalField.type>
-            lengthInBits += ${simpleTypeReference.sizeInBits};
+            <#if helper.getLanguageTypeNameForTypeReference(optionalField.type) = "String">
+                <#assign simpleTypeReference = optionalField.type>
+    lengthInBits += ${simpleTypeReference.getLength()};
+            <#else>
+                <#assign simpleTypeReference = optionalField.type>
+    lengthInBits += ${simpleTypeReference.sizeInBits};
+            </#if>
         <#elseif helper.isEnumField(field)>
             lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits};
         <#else>
@@ -270,8 +291,13 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Simple field (${simpleField.name})
         <#if helper.isSimpleTypeReference(simpleField.type)>
-            <#assign simpleTypeReference = simpleField.type>
+                <#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "String">
+                    <#assign simpleTypeReference = simpleField.type>
+        lengthInBits += ${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type.parserArguments)};
+                <#else>
+                    <#assign simpleTypeReference = simpleField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits};
+                </#if>
         <#elseif helper.isEnumField(field)>
         lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits};
         <#else>

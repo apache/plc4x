@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -137,7 +137,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
 	if vendorIdHeader != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_VENDORIDHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_VENDORIDHEADER)) + " but got " + strconv.Itoa(int(vendorIdHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_VENDORIDHEADER) + " but got " + fmt.Sprintf("%d", vendorIdHeader))
 	}
 
 	// Simple Field (vendorId)
@@ -152,7 +152,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 		return nil, errors.Wrap(_serviceNumberHeaderErr, "Error parsing 'serviceNumberHeader' field")
 	}
 	if serviceNumberHeader != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_SERVICENUMBERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_SERVICENUMBERHEADER)) + " but got " + strconv.Itoa(int(serviceNumberHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_SERVICENUMBERHEADER) + " but got " + fmt.Sprintf("%d", serviceNumberHeader))
 	}
 
 	// Simple Field (serviceNumber)
@@ -167,7 +167,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 		return nil, errors.Wrap(_listOfValuesOpeningTagErr, "Error parsing 'listOfValuesOpeningTag' field")
 	}
 	if listOfValuesOpeningTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG)) + " but got " + strconv.Itoa(int(listOfValuesOpeningTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
 	}
 
 	// Array field (values)
@@ -189,7 +189,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 		return nil, errors.Wrap(_listOfValuesClosingTagErr, "Error parsing 'listOfValuesClosingTag' field")
 	}
 	if listOfValuesClosingTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG)) + " but got " + strconv.Itoa(int(listOfValuesClosingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
 	}
 
 	// Create a partially initialized instance

@@ -27,6 +27,7 @@
 const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminators[] = {
   {/* plc4c_s7_read_write_s7_address_any */
    .addressType = 0x10}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -53,6 +54,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+        // Discriminator Field (addressType)
 
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = 0;
@@ -111,7 +113,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
-      unsigned int _reserved = 0;
+      uint8_t _reserved = 0;
       _res = plc4c_spi_read_unsigned_byte(io, 5, (uint8_t*) &_reserved);
       if(_res != OK) {
         return _res;
@@ -134,7 +136,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
 
                     
     // Simple Field (bitAddress)
-    unsigned int bitAddress = 0;
+    uint8_t bitAddress = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 3, (uint8_t*) &bitAddress);
     if(_res != OK) {
       return _res;
@@ -212,8 +214,8 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_a
 uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_address* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (addressType)
-  lengthInBits += 8;
+        // Discriminator Field (addressType)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

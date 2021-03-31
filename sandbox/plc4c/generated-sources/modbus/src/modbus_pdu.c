@@ -103,6 +103,7 @@ const plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_m
    .errorFlag = false, .functionFlag = 0x2B, .response = false},
   {/* plc4c_modbus_read_write_modbus_pdu_read_device_identification_response */
    .errorFlag = false, .functionFlag = 0x2B, .response = true}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -129,6 +130,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+        // Discriminator Field (errorFlag)
 
   // Discriminator Field (errorFlag) (Used as input to a switch field)
   bool errorFlag = false;
@@ -136,9 +138,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(_res != OK) {
     return _res;
   }
+        // Discriminator Field (functionFlag)
 
   // Discriminator Field (functionFlag) (Used as input to a switch field)
-  unsigned int functionFlag = 0;
+  uint8_t functionFlag = 0;
   _res = plc4c_spi_read_unsigned_byte(io, 7, (uint8_t*) &functionFlag);
   if(_res != OK) {
     return _res;
@@ -1895,11 +1898,11 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bytes(plc4c_modbus_read_wr
 uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_write_modbus_pdu* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (errorFlag)
-  lengthInBits += 1;
+        // Discriminator Field (errorFlag)
+                lengthInBits += 1;
 
-  // Discriminator Field (functionFlag)
-  lengthInBits += 7;
+        // Discriminator Field (functionFlag)
+                lengthInBits += 7;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

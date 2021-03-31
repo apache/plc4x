@@ -53,6 +53,45 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <debug>true</debug>
+          <projectsDirectory>src/test/resources</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
+          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <settingsFile>src/test/resources/settings.xml</settingsFile>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <goals>
+            <goal>test</goal>
+          </goals>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

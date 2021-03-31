@@ -74,8 +74,16 @@ const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type
     <#if helper.getDiscriminatorValues()?has_content>
         <#list helper.getDiscriminatorValues() as name, typeValues>
   {/* ${helper.getCTypeName(name)} */
-   <#list typeValues as key, value>.${key} = <#if value??>${value}<#else>-1</#if><#sep>, </#list>}<#sep >,
-</#list>
+<#if true>   </#if><@compress single_line=true>
+               <#list typeValues as key, value>
+                   <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[key])>
+                .${key} = <#if value??>${value}<#else>-1</#if><#sep>,
+                   <#else>
+                .${key} = <#if value??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${value}<#else>-1</#if><#sep>,
+                   </#if></#list>}<#sep >,
+            </@compress>
+
+        </#list>
     </#if>
 
 };
@@ -141,7 +149,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}));
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "_value")};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "_value", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -165,7 +173,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value")};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -191,7 +199,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value")};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -221,9 +229,9 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>  </#if>    byte[] checksumRawData = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>  </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getNullValueForTypeReference(checksumField.type)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(checksumField.type, "&_checksumRef")};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(checksumField.type, "&_checksumRef", field)};
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
@@ -240,7 +248,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Const Field (${constField.name})
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getNullValueForTypeReference(constField.type)};
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(constField.type, "&" + constField.name)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(constField.type, "&" + constField.name, field)};
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
@@ -251,11 +259,18 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
+        // Discriminator Field (${discriminatorField.name})
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type>
 
 <#if indentContent>  </#if>  // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getNullValueForTypeReference(discriminatorField.type)};
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(discriminatorField.type, "&" + discriminatorField.name)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(discriminatorField.type, "&" + discriminatorField.name, field)};
+        <#elseif helper.isEnumField(field)>
+            <#assign simpleTypeReference = discriminatorField.type>
+<#if indentContent>  </#if>  enum ${helper.getLanguageTypeNameForTypeReference(discriminatorField.type)} ${discriminatorField.name};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), "&${discriminatorField.name}", field)};
+        </#if>
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
@@ -268,14 +283,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#if enumField.fieldName?has_content>
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))} _constantValue = ${helper.getNullValueForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "&_constantValue")};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "&_constantValue", field)};
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
 <#if indentContent>  </#if>    ${enumField.name} = ${helper.getLanguageTypeNameForTypeReference(enumField.type)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(enumField.fieldName)}(_constantValue);
 <#if indentContent>  </#if>  }
             <#else>
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), "&" + enumField.name)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), "&" + enumField.name, field)};
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
@@ -288,7 +303,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getNullValueForTypeReference(implicitField.type)};
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(implicitField.type, "&" + implicitField.name)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(implicitField.type, "&" + implicitField.name, field)};
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
@@ -320,7 +335,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    }
         <#if helper.isSimpleTypeReference(optionalField.type)>
 <#if indentContent>  </#if>    *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name)};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name, field)};
         <#else>
 <#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(io<#if optionalField.params?has_content>, <#list optionalField.params as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
         </#if>
@@ -342,7 +357,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(paddingField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(paddingField.type, "&_paddingValue")};
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(paddingField.type, "&_paddingValue", field)};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -356,7 +371,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _reserved = ${helper.getNullValueForTypeReference(reservedField.type)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(reservedField.type, "&_reserved")};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(reservedField.type, "&_reserved", field)};
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
@@ -372,7 +387,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
             <#if helper.isSimpleTypeReference(simpleField.type)>
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getNullValueForTypeReference(simpleField.type)};
-<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(simpleField.type, "&" + simpleField.name)};
+<#if indentContent>  </#if>  _res = ${helper.getReadBufferReadMethodCall(simpleField.type, "&" + simpleField.name, field)};
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};
@@ -387,8 +402,19 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#assign switchField = field>
 
 <#if indentContent>  </#if>  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-            <#list switchField.cases as case>
+        <#list switchField.cases as case>
+            <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])>
 <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+            <#else>
+<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+           </#if>
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    <#assign discriminatedChildType = type>
+    // Accessors for discriminator values.
+    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+        ${discriminatorName}
+    </#list>
+</#if>
 <#if indentContent>  </#if>    (*_message)->_type = ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};
                 <#list case.fields as caseField>
 <#if indentContent>  </#if>                    <@fieldParser baseType=case field=caseField indentContent=true/>
@@ -428,7 +454,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if !helper.isSimpleTypeReference(arrayField.type)><#if indentContent>    </#if>      bool lastItem = curItem == (itemCount - 1);</#if>
 <#if indentContent>    </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = (${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message-><@fieldName baseType=baseType field=arrayField/>, curItem);
             <#if helper.isSimpleTypeReference(arrayField.type)>
-<#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(arrayField.type, "*_value")};
+<#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(arrayField.type, "*_value", field)};
             <#else>
 <#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(io, (void*) _value<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>);
 <#if indentContent>    </#if>      if(_res != OK) {
@@ -438,47 +464,53 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>    }
 <#if indentContent>    </#if>  }
             <#break>
-        <#--case "checksum">
+        <#case "checksum">
             <#assign checksumField = field>
             <#assign simpleTypeReference = checksumField.type>
 
 <#if indentContent>    </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>    </#if>  {
 <#if indentContent>    </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>    </#if>    byte[] checksumRawData = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
-<#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getReadBufferReadMethodCall(checksumField.type)};
+<#if indentContent>    </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getReadBufferReadMethodCall(checksumField.type, field)};
 <#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, checksumField, checksumField.checksumExpression, baseType.parserArguments)});
 <#if indentContent>    </#if>    if(_checksum != _checksumRef) {
 <#if indentContent>    </#if>      return PARSE_ERROR;
 <#if indentContent>    </#if>      // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_checksumRef & 0xFFFF, _checksum & 0xFFFF));
 <#if indentContent>    </#if>    }
 <#if indentContent>    </#if>  }
-            <#break-->
+            <#break>
         <#case "const">
             <#assign constField = field>
             <#assign simpleTypeReference = constField.type>
 
 <#if indentContent>    </#if>  // Const Field (${constField.name})
-<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()")};
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()", field)};
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
+        <#if helper.isEnumField(field)>
+
+<#if indentContent>    </#if>  // Enumerated Discriminator Field (${discriminatorField.name})
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(discriminatorField.type), helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, field)};
+        <#else>
             <#assign simpleTypeReference = discriminatorField.type>
 
 <#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
-<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name)};
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(discriminatorField.type, helper.getCTypeName(baseType.name) + "_get_discriminator(_message->_type)." + discriminatorField.name, field)};
+        </#if>
             <#break>
         <#case "enum">
             <#assign enumField = field>
 
 <#if indentContent>    </#if>  // Enum field (${enumField.name})
                 <#if enumField.fieldName?has_content>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), helper.getLanguageTypeNameForTypeReference(enumField.type) + "_get_" + helper.camelCaseToSnakeCase(enumField.fieldName) + "(_message->" + helper.getFieldName(baseType, enumField) + ")")};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), helper.getLanguageTypeNameForTypeReference(enumField.type) + "_get_" + helper.camelCaseToSnakeCase(enumField.fieldName) + "(_message->" + helper.getFieldName(baseType, enumField) + ")", field)};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }
                 <#else>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "_message->" + helper.getFieldName(baseType, enumField))};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "_message->" + helper.getFieldName(baseType, enumField), field)};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }
@@ -489,7 +521,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign simpleTypeReference = implicitField.type>
 
 <#if indentContent>    </#if>  // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(implicitField.type, helper.toSerializationExpression(baseType, implicitField, implicitField.serializeExpression, baseType.parserArguments))};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(implicitField.type, helper.toSerializationExpression(baseType, implicitField, implicitField.serializeExpression, baseType.parserArguments), field)};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }
@@ -504,7 +536,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 
 <#if indentContent>    </#if>  // Manual Field (${manualField.name})<#if indentContent>    </#if>  {
             <#if helper.isSimpleTypeReference(manualField.type)>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, arrayField))};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, arrayField), field)};
             <#else>
 <#if indentContent>    </#if>  _res = ${helper.getCTypeName(manualField.type.name)}_serialize(io, (void*) &_value);
             </#if>
@@ -518,7 +550,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>  // Optional Field (${optionalField.name})
 <#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=optionalField/> != NULL) {
             <#if helper.isSimpleTypeReference(optionalField.type)>
-<#if indentContent>    </#if>    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type, "*_message->" + helper.getFieldName(baseType, optionalField))};
+<#if indentContent>    </#if>    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type, "*_message->" + helper.getFieldName(baseType, optionalField), field)};
             <#else>
 <#if indentContent>    </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_serialize(io, _message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
@@ -537,7 +569,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>    int _timesPadding = (int) (${helper.toSerializationExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)});
 <#if indentContent>    </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>    </#if>      // Just output the default padding data
-<#if indentContent>    </#if>      _res = ${helper.getWriteBufferWriteMethodCall(paddingField.type, helper.toParseExpression(baseType, paddingField, paddingField.paddingValue, baseType.parserArguments))};
+<#if indentContent>    </#if>      _res = ${helper.getWriteBufferWriteMethodCall(paddingField.type, helper.toParseExpression(baseType, paddingField, paddingField.paddingValue, baseType.parserArguments), field)};
 <#if indentContent>    </#if>      if(_res != OK) {
 <#if indentContent>    </#if>        return _res;
 <#if indentContent>    </#if>      }
@@ -549,7 +581,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign simpleTypeReference = reservedField.type>
 
 <#if indentContent>    </#if>  // Reserved Field
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(reservedField.type, reservedField.referenceValue)};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(reservedField.type, reservedField.referenceValue, field)};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }
@@ -559,7 +591,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 
 <#if indentContent>    </#if>  // Simple Field (${simpleField.name})
             <#if helper.isSimpleTypeReference(simpleField.type)>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField))};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField), field)};
             <#else>
 <#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(io, _message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
@@ -632,10 +664,20 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                 <#break>
             <#case "discriminator">
                 <#assign discriminatorField = field>
-                <#assign simpleTypeReference = discriminatorField.type>
 
 <#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
+        <#if helper.isSimpleTypeReference(discriminatorField.type)>
+            <#assign simpleTypeReference = discriminatorField.type>
+            <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+<#if indentContent>    </#if>  lengthInBits +=  ${helper.toParseExpression(type, discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)};
+            <#else>
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+            </#if>
+        <#elseif helper.isEnumField(field)>
+<#if indentContent>    </#if>  lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+        <#else>
+<#if indentContent>    </#if>  lengthInBits += ${discriminatorField.name}.getLengthInBits();
+        </#if>
                 <#break>
             <#case "enum">
                 <#assign enumField = field>

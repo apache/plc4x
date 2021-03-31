@@ -682,7 +682,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' [string '-1' 'description',                                           bit 'knxSupport']
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -743,38 +743,38 @@
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
 [enum uint 16 'DeviceDescriptor'        [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
-    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
-    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
-    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
-    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_1'                  ]]
-    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
-    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
-    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_2'                  ]]
-    ['0x0300' TP1_SYSTEM_300            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_300'                ]]
-    ['0x0700' TP1_BIM_M112_0            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
-    ['0x0701' TP1_BIM_M112_1            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
-    ['0x0705' TP1_BIM_M112_5            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_7'                  ]]
-    ['0x07B0' TP1_SYSTEM_B              ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_B'                  ]]
-    ['0x0810' TP1_IR_DECODER_0          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
-    ['0x0811' TP1_IR_DECODER_1          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
-    ['0x0910' TP1_COUPLER_0             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0911' TP1_COUPLER_1             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0912' TP1_COUPLER_2             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x091A' TP1_KNXNETIP_ROUTER       ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0AFD' TP1_NONE_D                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
-    ['0x0AFE' TP1_NONE_E                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
-    ['0x1012' PL110_BCU_1_2             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_1'                  ]]
-    ['0x1013' PL110_BCU_1_3             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_1'                  ]]
-    ['0x17B0' PL110_SYSTEM_B            ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_B'                  ]]
-    ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['DeviceDescriptorMediumType.PL110',        'FirmwareType.MEDIA_COUPLER_PL_TP'       ]]
-    ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_BI_DIRECTIONAL_DEVICES' ]]
-    ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_UNI_DIRECTIONAL_DEVICES']]
-    ['0x3012' TP0_BCU_1                 ['DeviceDescriptorMediumType.TP0',          'FirmwareType.SYSTEM_1'                  ]]
-    ['0x4012' PL132_BCU_1               ['DeviceDescriptorMediumType.PL132',        'FirmwareType.SYSTEM_1'                  ]]
-    ['0x5705' KNX_IP_SYSTEM7            ['DeviceDescriptorMediumType.KNX_IP',       'FirmwareType.SYSTEM_7'                  ]]
+    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0300' TP1_SYSTEM_300            ['TP1',          'SYSTEM_300'                ]]
+    ['0x0700' TP1_BIM_M112_0            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x0701' TP1_BIM_M112_1            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x0705' TP1_BIM_M112_5            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x07B0' TP1_SYSTEM_B              ['TP1',          'SYSTEM_B'                  ]]
+    ['0x0810' TP1_IR_DECODER_0          ['TP1',          'IR_DECODER'                ]]
+    ['0x0811' TP1_IR_DECODER_1          ['TP1',          'IR_DECODER'                ]]
+    ['0x0910' TP1_COUPLER_0             ['TP1',          'COUPLER'                   ]]
+    ['0x0911' TP1_COUPLER_1             ['TP1',          'COUPLER'                   ]]
+    ['0x0912' TP1_COUPLER_2             ['TP1',          'COUPLER'                   ]]
+    ['0x091A' TP1_KNXNETIP_ROUTER       ['TP1',          'COUPLER'                   ]]
+    ['0x0AFD' TP1_NONE_D                ['TP1',          'NONE'                      ]]
+    ['0x0AFE' TP1_NONE_E                ['TP1',          'NONE'                      ]]
+    ['0x1012' PL110_BCU_1_2             ['PL110',        'SYSTEM_1'                  ]]
+    ['0x1013' PL110_BCU_1_3             ['PL110',        'SYSTEM_1'                  ]]
+    ['0x17B0' PL110_SYSTEM_B            ['PL110',        'SYSTEM_B'                  ]]
+    ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['PL110',        'MEDIA_COUPLER_PL_TP'       ]]
+    ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['RF',           'RF_BI_DIRECTIONAL_DEVICES' ]]
+    ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['RF',           'RF_UNI_DIRECTIONAL_DEVICES']]
+    ['0x3012' TP0_BCU_1                 ['TP0',          'SYSTEM_1'                  ]]
+    ['0x4012' PL132_BCU_1               ['PL132',        'SYSTEM_1'                  ]]
+    ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
 ]
 
-[enum uint 4 'AccessLevel' [string 'purpose',         bit 'needsAuthentication']
+[enum uint 4 'AccessLevel' [string '-1' 'purpose',         bit 'needsAuthentication']
     ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
     ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
     ['0x2' Level2          ['"configuration"',        'true'                   ]]
@@ -814,37 +814,37 @@
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
 [dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
     [typeSwitch 'propertyType','dataLengthInBytes'
-        ['KnxPropertyDataType.PDT_CONTROL' BOOL
+        ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           'value']
         ]
-        ['KnxPropertyDataType.PDT_CHAR' SINT
+        ['PDT_CHAR' SINT
             [simple   int 8         'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_CHAR' USINT
+        ['PDT_UNSIGNED_CHAR' USINT
             [simple   uint 8        'value']
         ]
-        ['KnxPropertyDataType.PDT_INT' INT
+        ['PDT_INT' INT
             [simple   int 16        'value']
         ]
         // On some systems this property is bigger
-        ['KnxPropertyDataType.PDT_UNSIGNED_INT','4' UDINT
+        ['PDT_UNSIGNED_INT','4' UDINT
             [simple   uint 32       'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_INT' UINT
+        ['PDT_UNSIGNED_INT' UINT
             [simple   uint 16       'value']
         ]
-        ['KnxPropertyDataType.PDT_KNX_FLOAT' REAL
+        ['PDT_KNX_FLOAT' REAL
             [simple   float 4.11    'value']
         ]
-        ['KnxPropertyDataType.PDT_DATE' Struct
+        ['PDT_DATE' Struct
             [reserved uint 3 '0x00']
             [simple uint 5 'dayOfMonth']
             [reserved uint 4 '0x00']
             [simple uint 4 'month']
             [reserved uint 1 '0x00']
             [simple uint 7 'year']        ]
-        ['KnxPropertyDataType.PDT_TIME' Struct
+        ['PDT_TIME' Struct
             [simple uint 3 'day']
             [simple uint 5 'hour']
             [reserved uint 2 '0x00']
@@ -852,31 +852,31 @@
             [reserved uint 2 '0x00']
             [simple uint 6 'seconds']
         ]
-        ['KnxPropertyDataType.PDT_LONG' DINT
+        ['PDT_LONG' DINT
             [simple   int 32        'value']
         ]
-        ['KnxPropertyDataType.PDT_UNSIGNED_LONG' UDINT
+        ['PDT_UNSIGNED_LONG' UDINT
             [simple   uint 32       'value']
         ]
-        ['KnxPropertyDataType.PDT_FLOAT' REAL
+        ['PDT_FLOAT' REAL
             [simple   float 8.23    'value']
         ]
-        ['KnxPropertyDataType.PDT_DOUBLE' LREAL
+        ['PDT_DOUBLE' LREAL
             [simple   float 11.52   'value']
         ]
-        ['KnxPropertyDataType.PDT_CHAR_BLOCK' List
+        ['PDT_CHAR_BLOCK' List
             [array uint 8           'value' count '10']
         ]
-        ['KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS' Struct
+        ['PDT_POLL_GROUP_SETTINGS' Struct
             [array    uint 8        'groupAddress' count '2']
             [simple   bit           'disable']
             [reserved uint 3        '0x0']
             [simple   uint 4        'pollingSoftNr']
         ]
-        ['KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK' List
+        ['PDT_SHORT_CHAR_BLOCK' List
             [array uint 8           'value' count '5']
         ]
-        ['KnxPropertyDataType.PDT_DATE_TIME' Struct
+        ['PDT_DATE_TIME' Struct
             [simple uint 8 'year']
             [reserved uint 4 '0x00']
             [simple uint 4 'month']
@@ -899,75 +899,75 @@
             [simple bit 'qualityOfClock']
             [reserved uint 7 '0x00']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_01' List
+        ['PDT_GENERIC_01' List
             [array uint 8           'value' count '1']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_02' List
+        ['PDT_GENERIC_02' List
             [array uint 8           'value' count '2']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_03' List
+        ['PDT_GENERIC_03' List
             [array uint 8           'value' count '3']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_04' List
+        ['PDT_GENERIC_04' List
             [array uint 8           'value' count '4']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_05' List
+        ['PDT_GENERIC_05' List
             [array uint 8           'value' count '5']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_06' List
+        ['PDT_GENERIC_06' List
             [array uint 8           'value' count '6']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_07' List
+        ['PDT_GENERIC_07' List
             [array uint 8           'value' count '7']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_08' List
+        ['PDT_GENERIC_08' List
             [array uint 8           'value' count '8']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_09' List
+        ['PDT_GENERIC_09' List
             [array uint 8           'value' count '9']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_10' List
+        ['PDT_GENERIC_10' List
             [array uint 8           'value' count '10']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_11' List
+        ['PDT_GENERIC_11' List
             [array uint 8           'value' count '11']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_12' List
+        ['PDT_GENERIC_12' List
             [array uint 8           'value' count '12']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_13' List
+        ['PDT_GENERIC_13' List
             [array uint 8           'value' count '13']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_14' List
+        ['PDT_GENERIC_14' List
             [array uint 8           'value' count '14']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_15' List
+        ['PDT_GENERIC_15' List
             [array uint 8           'value' count '15']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_16' List
+        ['PDT_GENERIC_16' List
             [array uint 8           'value' count '16']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_17' List
+        ['PDT_GENERIC_17' List
             [array uint 8           'value' count '17']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_18' List
+        ['PDT_GENERIC_18' List
             [array uint 8           'value' count '18']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_19' List
+        ['PDT_GENERIC_19' List
             [array uint 8           'value' count '19']
         ]
-        ['KnxPropertyDataType.PDT_GENERIC_20' List
+        ['PDT_GENERIC_20' List
             [array uint 8           'value' count '20']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_UTF_8'
+        //['PDT_UTF_8'
         //]
-        ['KnxPropertyDataType.PDT_VERSION' Struct
+        ['PDT_VERSION' Struct
             [simple uint 5 'magicNumber']
             [simple uint 5 'versionNumber']
             [simple uint 6 'revisionNumber']
         ]
-        ['KnxPropertyDataType.PDT_ALARM_INFO' Struct
+        ['PDT_ALARM_INFO' Struct
             [simple uint 8 'logNumber']
             [simple uint 8 'alarmPriority']
             [simple uint 8 'applicationArea']
@@ -982,33 +982,33 @@
             [simple bit 'alarmunack']
             [simple bit 'inalarm']
         ]
-        ['KnxPropertyDataType.PDT_BINARY_INFORMATION' BOOL
+        ['PDT_BINARY_INFORMATION' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           'value']
         ]
-        ['KnxPropertyDataType.PDT_BITSET8' List
+        ['PDT_BITSET8' List
             [array    bit           'value' count '8']
         ]
-        ['KnxPropertyDataType.PDT_BITSET16' List
+        ['PDT_BITSET16' List
             [array    bit           'value' count '16']
         ]
-        ['KnxPropertyDataType.PDT_ENUM8' USINT
+        ['PDT_ENUM8' USINT
             [simple uint 8 'value']
         ]
-        ['KnxPropertyDataType.PDT_SCALING' USINT
+        ['PDT_SCALING' USINT
             [simple uint 8 'value']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_NE_VL'
+        //['PDT_NE_VL'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_NE_FL'
+        //['PDT_NE_FL'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_FUNCTION'
+        //['PDT_FUNCTION'
         //]
         // Defaults to PDT_VARIABLE_LENGTH
-        //['KnxPropertyDataType.PDT_ESCAPE'
+        //['PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
         [ List [uint 8 'dataLengthInBytes']
@@ -1041,7 +1041,7 @@
         // The location of the Group Object Table - Realization Type 1 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
         // is a single byte located at memory address 0x112
-        ['FirmwareType.SYSTEM_1' ComObjectTableRealisationType1
+        ['SYSTEM_1' ComObjectTableRealisationType1
             [simple uint 8 'numEntries']
             [simple uint 8 'ramFlagsTablePointer']
             [array GroupObjectDescriptorRealisationType1 'comObjectDescriptors' count 'numEntries']
@@ -1049,18 +1049,18 @@
         // The location of the Group Object Table - Realization Type 2 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
         // is a single byte located at memory address 0x112
-        ['FirmwareType.SYSTEM_2' ComObjectTableRealisationType2
+        ['SYSTEM_2' ComObjectTableRealisationType2
             [simple uint 8 'numEntries']
             [simple uint 8 'ramFlagsTablePointer']
             [array GroupObjectDescriptorRealisationType2 'comObjectDescriptors' count 'numEntries']
         ]
         // The Group Object Table in Realization Type 6 is accessed via Properties instead of
         // reading memory.
-        ['FirmwareType.SYSTEM_300' ComObjectTableRealisationType6
+        ['SYSTEM_300' ComObjectTableRealisationType6
             // TODO: This probably needs to be changed to an array as soon as I know how to actually work with these types
             [simple GroupObjectDescriptorRealisationType6 'comObjectDescriptors']
         ]
-        //['FirmwareType.SYSTEM_7' ComObjectTableRealisationType7
+        //['SYSTEM_7' ComObjectTableRealisationType7
 
         //]
     ]

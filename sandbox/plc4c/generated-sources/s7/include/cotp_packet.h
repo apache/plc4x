@@ -60,7 +60,7 @@ struct plc4c_s7_read_write_cotp_packet {
   union {
     struct { /* COTPPacketData */
       bool cotp_packet_data_eot : 1;
-      unsigned int cotp_packet_data_tpdu_ref : 7;
+      uint8_t cotp_packet_data_tpdu_ref : 7;
     };
     struct { /* COTPPacketConnectionRequest */
       uint16_t cotp_packet_connection_request_destination_reference;

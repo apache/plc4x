@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -141,7 +141,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 		return nil, errors.Wrap(_deviceInstanceLowLimitHeaderErr, "Error parsing 'deviceInstanceLowLimitHeader' field")
 	}
 	if deviceInstanceLowLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceLowLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceLowLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceLowLimit)
@@ -156,7 +156,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 		return nil, errors.Wrap(_deviceInstanceHighLimitHeaderErr, "Error parsing 'deviceInstanceHighLimitHeader' field")
 	}
 	if deviceInstanceHighLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceHighLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceHighLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceHighLimit)
@@ -171,11 +171,12 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 		return nil, errors.Wrap(_objectNameHeaderErr, "Error parsing 'objectNameHeader' field")
 	}
 	if objectNameHeader != BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER)) + " but got " + strconv.Itoa(int(objectNameHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER) + " but got " + fmt.Sprintf("%d", objectNameHeader))
 	}
 
 	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	objectNameLength, _objectNameLengthErr := io.ReadUint8(8)
+	_ = objectNameLength
 	if _objectNameLengthErr != nil {
 		return nil, errors.Wrap(_objectNameLengthErr, "Error parsing 'objectNameLength' field")
 	}

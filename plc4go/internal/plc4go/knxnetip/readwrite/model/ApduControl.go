@@ -78,7 +78,6 @@ func (m *ApduControl) GetTypeName() string {
 
 func (m *ApduControl) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (controlType)
 	lengthInBits += 2
 
@@ -104,13 +103,13 @@ func ApduControlParse(io *utils.ReadBuffer) (*ApduControl, error) {
 	var _parent *ApduControl
 	var typeSwitchError error
 	switch {
-	case controlType == 0x0:
+	case controlType == 0x0: // ApduControlConnect
 		_parent, typeSwitchError = ApduControlConnectParse(io)
-	case controlType == 0x1:
+	case controlType == 0x1: // ApduControlDisconnect
 		_parent, typeSwitchError = ApduControlDisconnectParse(io)
-	case controlType == 0x2:
+	case controlType == 0x2: // ApduControlAck
 		_parent, typeSwitchError = ApduControlAckParse(io)
-	case controlType == 0x3:
+	case controlType == 0x3: // ApduControlNack
 		_parent, typeSwitchError = ApduControlNackParse(io)
 	}
 	if typeSwitchError != nil {
@@ -131,6 +130,7 @@ func (m *ApduControl) SerializeParent(io utils.WriteBuffer, child IApduControl, 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType := uint8(child.ControlType())
 	_controlTypeErr := io.WriteUint8(2, (controlType))
+
 	if _controlTypeErr != nil {
 		return errors.Wrap(_controlTypeErr, "Error serializing 'controlType' field")
 	}

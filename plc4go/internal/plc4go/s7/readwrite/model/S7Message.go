@@ -20,12 +20,12 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -89,7 +89,6 @@ func (m *S7Message) LengthInBits() uint16 {
 
 	// Const Field (protocolId)
 	lengthInBits += 8
-
 	// Discriminator Field (messageType)
 	lengthInBits += 8
 
@@ -133,7 +132,7 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
 	}
 	if protocolId != S7Message_PROTOCOLID {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(S7Message_PROTOCOLID)) + " but got " + strconv.Itoa(int(protocolId)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", S7Message_PROTOCOLID) + " but got " + fmt.Sprintf("%d", protocolId))
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
@@ -164,12 +163,14 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength, _parameterLengthErr := io.ReadUint16(16)
+	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength, _payloadLengthErr := io.ReadUint16(16)
+	_ = payloadLength
 	if _payloadLengthErr != nil {
 		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field")
 	}
@@ -178,13 +179,13 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 	var _parent *S7Message
 	var typeSwitchError error
 	switch {
-	case messageType == 0x01:
+	case messageType == 0x01: // S7MessageRequest
 		_parent, typeSwitchError = S7MessageRequestParse(io)
-	case messageType == 0x02:
+	case messageType == 0x02: // S7MessageResponse
 		_parent, typeSwitchError = S7MessageResponseParse(io)
-	case messageType == 0x03:
+	case messageType == 0x03: // S7MessageResponseData
 		_parent, typeSwitchError = S7MessageResponseDataParse(io)
-	case messageType == 0x07:
+	case messageType == 0x07: // S7MessageUserData
 		_parent, typeSwitchError = S7MessageUserDataParse(io)
 	}
 	if typeSwitchError != nil {
@@ -231,6 +232,7 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
 	_messageTypeErr := io.WriteUint8(8, (messageType))
+
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
 	}

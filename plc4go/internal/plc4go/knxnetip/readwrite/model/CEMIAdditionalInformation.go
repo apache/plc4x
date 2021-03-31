@@ -78,7 +78,6 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
 
@@ -104,9 +103,9 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 	var _parent *CEMIAdditionalInformation
 	var typeSwitchError error
 	switch {
-	case additionalInformationType == 0x03:
+	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
 		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
-	case additionalInformationType == 0x04:
+	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
 		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
 	}
 	if typeSwitchError != nil {
@@ -127,6 +126,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.AdditionalInformationType())
 	_additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
+
 	if _additionalInformationTypeErr != nil {
 		return errors.Wrap(_additionalInformationTypeErr, "Error serializing 'additionalInformationType' field")
 	}

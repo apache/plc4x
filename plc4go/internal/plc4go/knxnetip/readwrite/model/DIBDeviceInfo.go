@@ -118,7 +118,8 @@ func (m *DIBDeviceInfo) LengthInBytes() uint16 {
 func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8(8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}

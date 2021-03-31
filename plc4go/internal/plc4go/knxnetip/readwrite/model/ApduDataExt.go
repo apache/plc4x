@@ -78,7 +78,6 @@ func (m *ApduDataExt) GetTypeName() string {
 
 func (m *ApduDataExt) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (extApciType)
 	lengthInBits += 6
 
@@ -104,87 +103,87 @@ func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) 
 	var _parent *ApduDataExt
 	var typeSwitchError error
 	switch {
-	case extApciType == 0x00:
+	case extApciType == 0x00: // ApduDataExtOpenRoutingTableRequest
 		_parent, typeSwitchError = ApduDataExtOpenRoutingTableRequestParse(io)
-	case extApciType == 0x01:
+	case extApciType == 0x01: // ApduDataExtReadRoutingTableRequest
 		_parent, typeSwitchError = ApduDataExtReadRoutingTableRequestParse(io)
-	case extApciType == 0x02:
+	case extApciType == 0x02: // ApduDataExtReadRoutingTableResponse
 		_parent, typeSwitchError = ApduDataExtReadRoutingTableResponseParse(io)
-	case extApciType == 0x03:
+	case extApciType == 0x03: // ApduDataExtWriteRoutingTableRequest
 		_parent, typeSwitchError = ApduDataExtWriteRoutingTableRequestParse(io)
-	case extApciType == 0x08:
+	case extApciType == 0x08: // ApduDataExtReadRouterMemoryRequest
 		_parent, typeSwitchError = ApduDataExtReadRouterMemoryRequestParse(io)
-	case extApciType == 0x09:
+	case extApciType == 0x09: // ApduDataExtReadRouterMemoryResponse
 		_parent, typeSwitchError = ApduDataExtReadRouterMemoryResponseParse(io)
-	case extApciType == 0x0A:
+	case extApciType == 0x0A: // ApduDataExtWriteRouterMemoryRequest
 		_parent, typeSwitchError = ApduDataExtWriteRouterMemoryRequestParse(io)
-	case extApciType == 0x0D:
+	case extApciType == 0x0D: // ApduDataExtReadRouterStatusRequest
 		_parent, typeSwitchError = ApduDataExtReadRouterStatusRequestParse(io)
-	case extApciType == 0x0E:
+	case extApciType == 0x0E: // ApduDataExtReadRouterStatusResponse
 		_parent, typeSwitchError = ApduDataExtReadRouterStatusResponseParse(io)
-	case extApciType == 0x0F:
+	case extApciType == 0x0F: // ApduDataExtWriteRouterStatusRequest
 		_parent, typeSwitchError = ApduDataExtWriteRouterStatusRequestParse(io)
-	case extApciType == 0x10:
+	case extApciType == 0x10: // ApduDataExtMemoryBitWrite
 		_parent, typeSwitchError = ApduDataExtMemoryBitWriteParse(io)
-	case extApciType == 0x11:
+	case extApciType == 0x11: // ApduDataExtAuthorizeRequest
 		_parent, typeSwitchError = ApduDataExtAuthorizeRequestParse(io)
-	case extApciType == 0x12:
+	case extApciType == 0x12: // ApduDataExtAuthorizeResponse
 		_parent, typeSwitchError = ApduDataExtAuthorizeResponseParse(io)
-	case extApciType == 0x13:
+	case extApciType == 0x13: // ApduDataExtKeyWrite
 		_parent, typeSwitchError = ApduDataExtKeyWriteParse(io)
-	case extApciType == 0x14:
+	case extApciType == 0x14: // ApduDataExtKeyResponse
 		_parent, typeSwitchError = ApduDataExtKeyResponseParse(io)
-	case extApciType == 0x15:
+	case extApciType == 0x15: // ApduDataExtPropertyValueRead
 		_parent, typeSwitchError = ApduDataExtPropertyValueReadParse(io)
-	case extApciType == 0x16:
+	case extApciType == 0x16: // ApduDataExtPropertyValueResponse
 		_parent, typeSwitchError = ApduDataExtPropertyValueResponseParse(io, length)
-	case extApciType == 0x17:
+	case extApciType == 0x17: // ApduDataExtPropertyValueWrite
 		_parent, typeSwitchError = ApduDataExtPropertyValueWriteParse(io, length)
-	case extApciType == 0x18:
+	case extApciType == 0x18: // ApduDataExtPropertyDescriptionRead
 		_parent, typeSwitchError = ApduDataExtPropertyDescriptionReadParse(io)
-	case extApciType == 0x19:
+	case extApciType == 0x19: // ApduDataExtPropertyDescriptionResponse
 		_parent, typeSwitchError = ApduDataExtPropertyDescriptionResponseParse(io)
-	case extApciType == 0x1A:
+	case extApciType == 0x1A: // ApduDataExtNetworkParameterRead
 		_parent, typeSwitchError = ApduDataExtNetworkParameterReadParse(io)
-	case extApciType == 0x1B:
+	case extApciType == 0x1B: // ApduDataExtNetworkParameterResponse
 		_parent, typeSwitchError = ApduDataExtNetworkParameterResponseParse(io)
-	case extApciType == 0x1C:
+	case extApciType == 0x1C: // ApduDataExtIndividualAddressSerialNumberRead
 		_parent, typeSwitchError = ApduDataExtIndividualAddressSerialNumberReadParse(io)
-	case extApciType == 0x1D:
+	case extApciType == 0x1D: // ApduDataExtIndividualAddressSerialNumberResponse
 		_parent, typeSwitchError = ApduDataExtIndividualAddressSerialNumberResponseParse(io)
-	case extApciType == 0x1E:
+	case extApciType == 0x1E: // ApduDataExtIndividualAddressSerialNumberWrite
 		_parent, typeSwitchError = ApduDataExtIndividualAddressSerialNumberWriteParse(io)
-	case extApciType == 0x20:
+	case extApciType == 0x20: // ApduDataExtDomainAddressWrite
 		_parent, typeSwitchError = ApduDataExtDomainAddressWriteParse(io)
-	case extApciType == 0x21:
+	case extApciType == 0x21: // ApduDataExtDomainAddressRead
 		_parent, typeSwitchError = ApduDataExtDomainAddressReadParse(io)
-	case extApciType == 0x22:
+	case extApciType == 0x22: // ApduDataExtDomainAddressResponse
 		_parent, typeSwitchError = ApduDataExtDomainAddressResponseParse(io)
-	case extApciType == 0x23:
+	case extApciType == 0x23: // ApduDataExtDomainAddressSelectiveRead
 		_parent, typeSwitchError = ApduDataExtDomainAddressSelectiveReadParse(io)
-	case extApciType == 0x24:
+	case extApciType == 0x24: // ApduDataExtNetworkParameterWrite
 		_parent, typeSwitchError = ApduDataExtNetworkParameterWriteParse(io)
-	case extApciType == 0x25:
+	case extApciType == 0x25: // ApduDataExtLinkRead
 		_parent, typeSwitchError = ApduDataExtLinkReadParse(io)
-	case extApciType == 0x26:
+	case extApciType == 0x26: // ApduDataExtLinkResponse
 		_parent, typeSwitchError = ApduDataExtLinkResponseParse(io)
-	case extApciType == 0x27:
+	case extApciType == 0x27: // ApduDataExtLinkWrite
 		_parent, typeSwitchError = ApduDataExtLinkWriteParse(io)
-	case extApciType == 0x28:
+	case extApciType == 0x28: // ApduDataExtGroupPropertyValueRead
 		_parent, typeSwitchError = ApduDataExtGroupPropertyValueReadParse(io)
-	case extApciType == 0x29:
+	case extApciType == 0x29: // ApduDataExtGroupPropertyValueResponse
 		_parent, typeSwitchError = ApduDataExtGroupPropertyValueResponseParse(io)
-	case extApciType == 0x2A:
+	case extApciType == 0x2A: // ApduDataExtGroupPropertyValueWrite
 		_parent, typeSwitchError = ApduDataExtGroupPropertyValueWriteParse(io)
-	case extApciType == 0x2B:
+	case extApciType == 0x2B: // ApduDataExtGroupPropertyValueInfoReport
 		_parent, typeSwitchError = ApduDataExtGroupPropertyValueInfoReportParse(io)
-	case extApciType == 0x2C:
+	case extApciType == 0x2C: // ApduDataExtDomainAddressSerialNumberRead
 		_parent, typeSwitchError = ApduDataExtDomainAddressSerialNumberReadParse(io)
-	case extApciType == 0x2D:
+	case extApciType == 0x2D: // ApduDataExtDomainAddressSerialNumberResponse
 		_parent, typeSwitchError = ApduDataExtDomainAddressSerialNumberResponseParse(io)
-	case extApciType == 0x2E:
+	case extApciType == 0x2E: // ApduDataExtDomainAddressSerialNumberWrite
 		_parent, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParse(io)
-	case extApciType == 0x30:
+	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
 		_parent, typeSwitchError = ApduDataExtFileStreamInfoReportParse(io)
 	}
 	if typeSwitchError != nil {
@@ -205,6 +204,7 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.ExtApciType())
 	_extApciTypeErr := io.WriteUint8(6, (extApciType))
+
 	if _extApciTypeErr != nil {
 		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")
 	}

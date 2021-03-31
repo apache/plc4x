@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -156,7 +156,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
 		return nil, errors.Wrap(_objectIdentifierHeaderErr, "Error parsing 'objectIdentifierHeader' field")
 	}
 	if objectIdentifierHeader != BACnetConfirmedServiceRequestWriteProperty_OBJECTIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestWriteProperty_OBJECTIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(objectIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestWriteProperty_OBJECTIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", objectIdentifierHeader))
 	}
 
 	// Simple Field (objectType)
@@ -177,7 +177,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
 		return nil, errors.Wrap(_propertyIdentifierHeaderErr, "Error parsing 'propertyIdentifierHeader' field")
 	}
 	if propertyIdentifierHeader != BACnetConfirmedServiceRequestWriteProperty_PROPERTYIDENTIFIERHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestWriteProperty_PROPERTYIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(propertyIdentifierHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestWriteProperty_PROPERTYIDENTIFIERHEADER) + " but got " + fmt.Sprintf("%d", propertyIdentifierHeader))
 	}
 
 	// Simple Field (propertyIdentifierLength)
@@ -203,7 +203,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
 	if openingTag != BACnetConfirmedServiceRequestWriteProperty_OPENINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestWriteProperty_OPENINGTAG)) + " but got " + strconv.Itoa(int(openingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestWriteProperty_OPENINGTAG) + " but got " + fmt.Sprintf("%d", openingTag))
 	}
 
 	// Simple Field (value)
@@ -218,7 +218,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
 	if closingTag != BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
 
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)

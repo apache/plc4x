@@ -78,7 +78,6 @@ func (m *S7Address) GetTypeName() string {
 
 func (m *S7Address) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (addressType)
 	lengthInBits += 8
 
@@ -104,7 +103,7 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 	var _parent *S7Address
 	var typeSwitchError error
 	switch {
-	case addressType == 0x10:
+	case addressType == 0x10: // S7AddressAny
 		_parent, typeSwitchError = S7AddressAnyParse(io)
 	}
 	if typeSwitchError != nil {
@@ -125,6 +124,7 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.AddressType())
 	_addressTypeErr := io.WriteUint8(8, (addressType))
+
 	if _addressTypeErr != nil {
 		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")
 	}

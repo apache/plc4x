@@ -79,7 +79,6 @@ func (m *S7Parameter) GetTypeName() string {
 
 func (m *S7Parameter) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
@@ -105,17 +104,17 @@ func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (*S7Parameter, er
 	var _parent *S7Parameter
 	var typeSwitchError error
 	switch {
-	case parameterType == 0xF0:
+	case parameterType == 0xF0: // S7ParameterSetupCommunication
 		_parent, typeSwitchError = S7ParameterSetupCommunicationParse(io)
-	case parameterType == 0x04 && messageType == 0x01:
+	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
 		_parent, typeSwitchError = S7ParameterReadVarRequestParse(io)
-	case parameterType == 0x04 && messageType == 0x03:
+	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
 		_parent, typeSwitchError = S7ParameterReadVarResponseParse(io)
-	case parameterType == 0x05 && messageType == 0x01:
+	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
 		_parent, typeSwitchError = S7ParameterWriteVarRequestParse(io)
-	case parameterType == 0x05 && messageType == 0x03:
+	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
 		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(io)
-	case parameterType == 0x00 && messageType == 0x07:
+	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
 		_parent, typeSwitchError = S7ParameterUserDataParse(io)
 	}
 	if typeSwitchError != nil {
@@ -136,6 +135,7 @@ func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
 	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
 	}

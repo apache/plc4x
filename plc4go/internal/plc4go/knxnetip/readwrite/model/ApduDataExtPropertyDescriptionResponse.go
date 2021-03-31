@@ -117,7 +117,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
 	lengthInBits += 1
 
 	// Simple field (propertyDataType)
-	lengthInBits += 6
+	lengthInBits += 8
 
 	// Reserved Field (reserved)
 	lengthInBits += 4

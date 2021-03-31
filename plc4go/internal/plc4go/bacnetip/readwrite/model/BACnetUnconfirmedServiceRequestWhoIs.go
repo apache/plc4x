@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -136,7 +136,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 		return nil, errors.Wrap(_deviceInstanceRangeLowLimitHeaderErr, "Error parsing 'deviceInstanceRangeLowLimitHeader' field")
 	}
 	if deviceInstanceRangeLowLimitHeader != BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGELOWLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGELOWLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceRangeLowLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGELOWLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceRangeLowLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceRangeLowLimitLength)
@@ -162,7 +162,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 		return nil, errors.Wrap(_deviceInstanceRangeHighLimitHeaderErr, "Error parsing 'deviceInstanceRangeHighLimitHeader' field")
 	}
 	if deviceInstanceRangeHighLimitHeader != BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceRangeHighLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceRangeHighLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceRangeHighLimitLength)

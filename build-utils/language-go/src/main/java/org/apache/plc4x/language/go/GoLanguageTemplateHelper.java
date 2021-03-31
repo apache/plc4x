@@ -22,13 +22,17 @@ package org.apache.plc4x.language.go;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.language.go.utils.FieldUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -247,8 +251,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return floatTypeReference.getSizeInBits();
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return integerTypeReference.getSizeInBits();
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return stringTypeReference.getSizeInBits();
             }
             default: {
                 return 0;
@@ -260,7 +264,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "optional".equals(field.getTypeName()) || (isComplexTypeReference(field.getType()) && !isEnumField(field));
     }
 
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    @Override
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.ReadBit()";
@@ -309,14 +314,14 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ")";
+                return "io.ReadString(uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
             }
         }
         return "Hurz";
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.WriteBit(" + fieldName + ")";
@@ -368,7 +373,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.WriteString(uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), null) + "), \"" +
                     encoding + "\", " + fieldName + ")";
             }
         }
@@ -450,7 +455,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             } else if (term instanceof BooleanLiteral) {
                 return getCastExpressionForTypeReference(fieldType) + "(" + ((BooleanLiteral) term).getValue() + ")";
             } else if (term instanceof NumericLiteral) {
-                return getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                if (getCastExpressionForTypeReference(fieldType).equals("string")) {
+                    return "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                } else {
+                    return getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                }
             } else if (term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {
@@ -523,6 +532,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBytes()" + (serialize ? ")" : "");
         } else if ("lengthInBits".equals(vl.getName())) {
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBits()" + (serialize ? ")" : "");
+        } if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
+            return (serialize ? ("len(m." + StringUtils.capitalize(vl.getName()) + ")") : ("(" + vl.getName() + ")"));
         }
         // If this literal references an Enum type, then we have to output it differently.
         else if (getTypeDefinitions().get(vl.getName()) instanceof EnumTypeDefinition) {
@@ -542,6 +553,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 ((vl.getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess) : "");
         }
+        // If we are accessing implicit fields, we need to rely on local variable instead.
+        //else if (isVariableLiteralImplicitField(vl)) {
+        //    return (serialize ? vl.getName() : vl.getName()) + ((vl.getChild() != null) ?
+        //        "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
+        //}
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         else if ("CAST".equals(vl.getName())) {
             if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
@@ -676,10 +694,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return sb.toString() + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
+
         // If the current property references a discriminator value, we have to serialize it differently.
         else if ((getFieldForNameFromCurrentOrParent(vl.getName()) != null) && (getFieldForNameFromCurrentOrParent(vl.getName()) instanceof DiscriminatorField)) {
             final DiscriminatorField discriminatorField = (DiscriminatorField) getFieldForNameFromCurrentOrParent(vl.getName());
-            System.out.println(discriminatorField);
+            // TODO: Should this return something?
         }
         // If the current property references a parserArguments property and that is a discriminator property, we also have to serialize it differently..
         else if ((vl.getChild() != null) && (getTypeReferenceForProperty(((ComplexTypeDefinition) getThisTypeDefinition()), vl.getName()) != null)) {
@@ -695,6 +714,14 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         return "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ").Child." + StringUtils.capitalize(childProperty) + "()";
                     }
                 }
+            }
+        }
+        else if (isVariableLiteralImplicitField(vl)) {
+            if (serialize) {
+                return toSerializationExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
+            } else {
+                return vl.getName();
+                //return toParseExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
             }
         }
         // If the current term references a serialization argument, handle it differently (don't prefix it with "m.")
@@ -836,7 +863,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (complexTypeDefinition.getFields().stream().anyMatch(field ->
             (field instanceof ConstField))/* || complexTypeDefinition.getAllPropertyFields().stream().anyMatch(
                 propertyField -> isSimpleField(propertyField))*/) {
-            imports.add("\"strconv\"");
+            imports.add("\"fmt\"");
         }
 
         if (isDiscriminatedParentTypeDefinition()) {

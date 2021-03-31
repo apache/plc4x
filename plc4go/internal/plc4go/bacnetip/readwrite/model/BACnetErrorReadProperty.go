@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -136,7 +136,7 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 		return nil, errors.Wrap(_errorClassHeaderErr, "Error parsing 'errorClassHeader' field")
 	}
 	if errorClassHeader != BACnetErrorReadProperty_ERRORCLASSHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCLASSHEADER)) + " but got " + strconv.Itoa(int(errorClassHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetErrorReadProperty_ERRORCLASSHEADER) + " but got " + fmt.Sprintf("%d", errorClassHeader))
 	}
 
 	// Simple Field (errorClassLength)
@@ -162,7 +162,7 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 		return nil, errors.Wrap(_errorCodeHeaderErr, "Error parsing 'errorCodeHeader' field")
 	}
 	if errorCodeHeader != BACnetErrorReadProperty_ERRORCODEHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCODEHEADER)) + " but got " + strconv.Itoa(int(errorCodeHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetErrorReadProperty_ERRORCODEHEADER) + " but got " + fmt.Sprintf("%d", errorCodeHeader))
 	}
 
 	// Simple Field (errorCodeLength)

@@ -89,6 +89,7 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) 
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8(8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}

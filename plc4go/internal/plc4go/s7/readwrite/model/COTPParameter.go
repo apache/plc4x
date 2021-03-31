@@ -78,7 +78,6 @@ func (m *COTPParameter) GetTypeName() string {
 
 func (m *COTPParameter) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
@@ -104,7 +103,8 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _parameterLengthErr := io.ReadUint8(8)
+	parameterLength, _parameterLengthErr := io.ReadUint8(8)
+	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
 	}
@@ -113,15 +113,15 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 	var _parent *COTPParameter
 	var typeSwitchError error
 	switch {
-	case parameterType == 0xC0:
+	case parameterType == 0xC0: // COTPParameterTpduSize
 		_parent, typeSwitchError = COTPParameterTpduSizeParse(io)
-	case parameterType == 0xC1:
+	case parameterType == 0xC1: // COTPParameterCallingTsap
 		_parent, typeSwitchError = COTPParameterCallingTsapParse(io)
-	case parameterType == 0xC2:
+	case parameterType == 0xC2: // COTPParameterCalledTsap
 		_parent, typeSwitchError = COTPParameterCalledTsapParse(io)
-	case parameterType == 0xC3:
+	case parameterType == 0xC3: // COTPParameterChecksum
 		_parent, typeSwitchError = COTPParameterChecksumParse(io)
-	case parameterType == 0xE0:
+	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
 	}
 	if typeSwitchError != nil {
@@ -142,6 +142,7 @@ func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParamet
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
 	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
 	}

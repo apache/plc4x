@@ -159,6 +159,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
+	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}

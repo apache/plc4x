@@ -75,7 +75,7 @@ import (
 func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
 	switch {
 	<#list type.switchField.cases as case>
-		<#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else>default</#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(type.parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(type.parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(type.parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default</#if>: // ${case.name}
 		<#assign valueDefined=false>
 		<#if case.name == "Struct">
 			_map := map[string]api.PlcValue{}
@@ -176,7 +176,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 	switch {
 	<#assign defaultSet=false>
 	<#list type.switchField.cases as case>
-		<#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isEnumExpression(discriminatorValue)>${helper.getEnumExpression(discriminatorValue)}<#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else>default<#assign defaultSet=true></#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(type.parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(type.parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(type.parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default<#assign defaultSet=true></#if>: // ${case.name}
 		<#list case.fields as field>
 			<#switch field.typeName>
 				<#case "array">
@@ -187,7 +187,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#if case.name = "Struct">
 				${arrayField.name} := value.GetValue("${arrayField.name}")
 					</#if>
-				_itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()")}<#else>Complex type array in data-io serialization currently not implemented</#if>
+				_itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getWriteBufferWriteMethodCall(arrayField.type, arrayField.name + ".GetIndex(i).Get" + helper.getLanguageTypeNameForTypeReference(arrayField.type)?cap_first + "()", field)}<#else>Complex type array in data-io serialization currently not implemented</#if>
 				if _itemErr != nil {
 					return errors.Wrap(_itemErr, "Error serializing 'value' field")
 				}
@@ -206,7 +206,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#assign reservedField = field>
 
 			// Reserved Field (Just skip the bytes)
-			if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))}; _err != nil {
+			if _err := ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field), field)}; _err != nil {
 				return errors.Wrap(_err, "Error serializing reserved field")
 			}
 					<#break>
@@ -214,7 +214,7 @@ func ${type.name}Serialize(io *utils.WriteBuffer, value api.PlcValue<#if type.pa
 					<#assign simpleField = field>
 
 			// Simple Field (${field.name})
-			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()")}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
+			if _err := <#if helper.isSimpleTypeReference(field.type)>${helper.getWriteBufferWriteMethodCall(field.type, "value.Get" + helper.getLanguageTypeNameForTypeReference(field.type)?cap_first + "()", field)}<#else>${field.type.name}Serialize(io, <#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.Wrap(_err, "Error serializing '${field.name}' field")
 			}
 					<#break>

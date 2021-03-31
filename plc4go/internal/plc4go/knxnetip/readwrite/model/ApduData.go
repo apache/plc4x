@@ -78,7 +78,6 @@ func (m *ApduData) GetTypeName() string {
 
 func (m *ApduData) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (apciType)
 	lengthInBits += 4
 
@@ -104,37 +103,37 @@ func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	var _parent *ApduData
 	var typeSwitchError error
 	switch {
-	case apciType == 0x0:
+	case apciType == 0x0: // ApduDataGroupValueRead
 		_parent, typeSwitchError = ApduDataGroupValueReadParse(io)
-	case apciType == 0x1:
+	case apciType == 0x1: // ApduDataGroupValueResponse
 		_parent, typeSwitchError = ApduDataGroupValueResponseParse(io, dataLength)
-	case apciType == 0x2:
+	case apciType == 0x2: // ApduDataGroupValueWrite
 		_parent, typeSwitchError = ApduDataGroupValueWriteParse(io, dataLength)
-	case apciType == 0x3:
+	case apciType == 0x3: // ApduDataIndividualAddressWrite
 		_parent, typeSwitchError = ApduDataIndividualAddressWriteParse(io)
-	case apciType == 0x4:
+	case apciType == 0x4: // ApduDataIndividualAddressRead
 		_parent, typeSwitchError = ApduDataIndividualAddressReadParse(io)
-	case apciType == 0x5:
+	case apciType == 0x5: // ApduDataIndividualAddressResponse
 		_parent, typeSwitchError = ApduDataIndividualAddressResponseParse(io)
-	case apciType == 0x6:
+	case apciType == 0x6: // ApduDataAdcRead
 		_parent, typeSwitchError = ApduDataAdcReadParse(io)
-	case apciType == 0x7:
+	case apciType == 0x7: // ApduDataAdcResponse
 		_parent, typeSwitchError = ApduDataAdcResponseParse(io)
-	case apciType == 0x8:
+	case apciType == 0x8: // ApduDataMemoryRead
 		_parent, typeSwitchError = ApduDataMemoryReadParse(io)
-	case apciType == 0x9:
+	case apciType == 0x9: // ApduDataMemoryResponse
 		_parent, typeSwitchError = ApduDataMemoryResponseParse(io)
-	case apciType == 0xA:
+	case apciType == 0xA: // ApduDataMemoryWrite
 		_parent, typeSwitchError = ApduDataMemoryWriteParse(io)
-	case apciType == 0xB:
+	case apciType == 0xB: // ApduDataUserMessage
 		_parent, typeSwitchError = ApduDataUserMessageParse(io)
-	case apciType == 0xC:
+	case apciType == 0xC: // ApduDataDeviceDescriptorRead
 		_parent, typeSwitchError = ApduDataDeviceDescriptorReadParse(io)
-	case apciType == 0xD:
+	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
 		_parent, typeSwitchError = ApduDataDeviceDescriptorResponseParse(io, dataLength)
-	case apciType == 0xE:
+	case apciType == 0xE: // ApduDataRestart
 		_parent, typeSwitchError = ApduDataRestartParse(io)
-	case apciType == 0xF:
+	case apciType == 0xF: // ApduDataOther
 		_parent, typeSwitchError = ApduDataOtherParse(io, dataLength)
 	}
 	if typeSwitchError != nil {
@@ -155,6 +154,7 @@ func (m *ApduData) SerializeParent(io utils.WriteBuffer, child IApduData, serial
 	// Discriminator Field (apciType) (Used as input to a switch field)
 	apciType := uint8(child.ApciType())
 	_apciTypeErr := io.WriteUint8(4, (apciType))
+
 	if _apciTypeErr != nil {
 		return errors.Wrap(_apciTypeErr, "Error serializing 'apciType' field")
 	}

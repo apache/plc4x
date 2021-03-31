@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include <plc4c/types.h>
+#include <string.h>
 
 struct plc4c_transport_tcp_config {
   char* address;
@@ -31,6 +32,11 @@ struct plc4c_transport_tcp_config {
   int sockfd;
 };
 typedef struct plc4c_transport_tcp_config plc4c_transport_tcp_config;
+
+#if defined(_WIN32) || defined(_WIN64)
+/* We are on Windows */
+# define strtok_r strtok_s
+#endif
 
 plc4c_transport *plc4c_transport_tcp_create();
 

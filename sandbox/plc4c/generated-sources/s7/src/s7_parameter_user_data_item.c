@@ -27,6 +27,7 @@
 const plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions */
    .itemType = 0x12}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -53,6 +54,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+        // Discriminator Field (itemType)
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = 0;
@@ -85,7 +87,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
                     
     // Simple Field (cpuFunctionType)
-    unsigned int cpuFunctionType = 0;
+    uint8_t cpuFunctionType = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &cpuFunctionType);
     if(_res != OK) {
       return _res;
@@ -95,7 +97,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
                     
     // Simple Field (cpuFunctionGroup)
-    unsigned int cpuFunctionGroup = 0;
+    uint8_t cpuFunctionGroup = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &cpuFunctionGroup);
     if(_res != OK) {
       return _res;
@@ -268,8 +270,8 @@ uint16_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bytes(plc4c_s
 uint16_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits(plc4c_s7_read_write_s7_parameter_user_data_item* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (itemType)
-  lengthInBits += 8;
+        // Discriminator Field (itemType)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

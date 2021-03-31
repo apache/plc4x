@@ -92,7 +92,7 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
   switch(value) {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
     case ${helper.getCTypeName(type.name)}_${enumValue.name}: { /* '${enumValue.value}' */
-      return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc};
+      return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName)) == '-1'>-1<#elseif helper.isComplexTypeReference(type.getConstantType(constantName))><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}</#if>;
     }<#sep>
     </#sep></#list>
 

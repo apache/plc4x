@@ -61,6 +61,13 @@
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
+<#if helper.getDiscriminatorTypes()?has_content>
+    <#list helper.getDiscriminatorTypes()?values as discriminatorType>
+        <#if helper.isComplexTypeReference(discriminatorType)>
+#include "${helper.camelCaseToSnakeCase(discriminatorType.name)}.h"
+        </#if>
+    </#list>
+</#if>
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,7 +85,11 @@ extern "C" {
 struct ${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
+        <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
   ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+        <#else>
+  enum ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+        </#if>
     </#list>
 </#if>
 };
