@@ -24,7 +24,7 @@
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils</artifactId>
     <version>0.9.0-SNAPSHOT</version>
-    <relativePath>../../../..</relativePath>
+    <relativePath>../../../../pom.xml</relativePath>
   </parent>
 
   <artifactId>plc4j-c-mspec-test</artifactId>
@@ -49,6 +49,15 @@
 -->
 
 <profiles>
+  <!-- Profile for windows -->
+  <profile>
+    <id>os-windows</id>
+    <activation>
+      <os>
+        <family>unix</family>
+      </os>
+    </activation>
+  </profile>
   <!-- Profile for linux -->
   <profile>
     <id>os-unix</id>
@@ -110,7 +119,7 @@
             <goal>wget</goal>
           </goals>
           <configuration>
-            <url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</url>
+            <url>${cmake.url}</url>
             <unpack>true</unpack>
             <outputDirectory>${project.build.directory}</outputDirectory>
           </configuration>
