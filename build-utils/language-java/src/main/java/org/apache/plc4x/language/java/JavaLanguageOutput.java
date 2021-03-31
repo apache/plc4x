@@ -42,26 +42,26 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.java.ftlh"));
     }
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/java/pojo-template.java.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/java/io-template.java.ftlh"));
     }
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/java/enum-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/java/enum-template.java.ftlh"));
     }
 
     @Override
     protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/java/data-io-template.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/java/data-io-template.java.ftlh"));
     }
 
     @Override
