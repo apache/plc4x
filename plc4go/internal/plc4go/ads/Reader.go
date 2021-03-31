@@ -121,10 +121,8 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.Datatype.LengthInBytes()))
 		case DirectAdsField:
 			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.Datatype.LengthInBytes()))
-		case SymbolicStringField:
-			panic("implement me")
-		case SymbolicField:
-			panic("implement me")
+		case SymbolicAdsStringField, SymbolicAdsField:
+			panic("we should never reach this point as symbols are resolved before")
 		default:
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
@@ -232,7 +230,8 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 	)
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		m.sendOverTheWire(userdata, nil, result)
+		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
+		m.sendOverTheWire(userdata, dummyRequest, result)
 	}()
 	response := <-result
 	if response.Err != nil {
@@ -240,10 +239,17 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		return DirectPlcField{}, response.Err
 	}
 	handle := response.Response.GetValue(response.Response.GetFieldNames()[0]).GetUint32()
+	log.Debug().Uint32("handle", handle).Str("symbolicAddress", symbolicField.SymbolicAddress).Msg("Resolved symbolic address")
 	directPlcField := DirectPlcField{
 		IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),
 		IndexOffset: handle,
 		PlcField:    symbolicField.PlcField,
+	}
+	switch directPlcField.FieldType {
+	case SymbolicAdsField:
+		directPlcField.FieldType = DirectAdsField
+	case SymbolicAdsStringField:
+		directPlcField.FieldType = DirectAdsStringField
 	}
 	m.fieldMapping[symbolicField] = directPlcField
 	return directPlcField, nil
@@ -255,7 +261,10 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
 		data = utils.Int8ArrayToUint8Array(readResponse.Data)
-		// Pure Boolean ...
+	// Pure Boolean ...
+	case *readWriteModel.AdsReadWriteResponse:
+		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
+		data = utils.Int8ArrayToByteArray(readResponse.Data)
 	default:
 		return nil, errors.Errorf("unsupported response type %T", amsTcpPaket.Userdata.Data.Child)
 	}
@@ -263,7 +272,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	// Get the field from the request
 	log.Trace().Msg("get a field from request")
 	fieldName := readRequest.GetFieldNames()[0]
-	field, err := castToDirectAdsFieldFromPlcField(readRequest.GetField(fieldName))
+	field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 	if err != nil {
 		return nil, errors.Wrap(err, "error casting to ads-field")
 	}
@@ -271,7 +280,8 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	// Decode the data according to the information from the request
 	log.Trace().Msg("decode data")
 	rb := utils.NewReadBuffer(data)
-	value, err := readWriteModel.DataItemParse(rb, field.Datatype.DataFormatName(), field.StringLength)
+	// TODO: this is wrong as we need to read in little endian
+	value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

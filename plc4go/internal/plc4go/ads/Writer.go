@@ -107,10 +107,8 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			panic("implement me")
 		case DirectAdsField:
 			panic("implement me")
-		case SymbolicStringField:
-			panic("implement me")
-		case SymbolicField:
-			panic("implement me")
+		case SymbolicAdsStringField, SymbolicAdsField:
+			panic("we should never reach this point as symbols are resolved before")
 		default:
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
