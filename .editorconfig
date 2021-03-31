@@ -37,7 +37,7 @@ indent_style = tab
 indent_style = unset
 
 [*.go.ftlh]
-indent_style = space
+indent_style = tab
 
 [*.c.ftlh]
 indent_style = space
