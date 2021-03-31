@@ -46,4 +46,4 @@ indent_style = space
 indent_style = space
 
 [*.java.ftlh]
-indent_style = tab
+indent_style = space
