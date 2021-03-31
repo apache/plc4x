@@ -277,13 +277,14 @@ func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 				}
 				m.ReadLength = data
 			case "items":
-				var _values []*AdsMultiRequestItem
 				var dt *AdsMultiRequestItem
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-				_values = append(_values, dt)
-				m.Items = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.Items = append(m.Items, dt)
+				}
 			case "data":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {

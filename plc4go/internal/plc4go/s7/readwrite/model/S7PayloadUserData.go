@@ -154,13 +154,14 @@ func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
-				var _values []*S7PayloadUserDataItem
 				var dt *S7PayloadUserDataItem
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-				_values = append(_values, dt)
-				m.Items = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.Items = append(m.Items, dt)
+				}
 			}
 		}
 		token, err = d.Token()

@@ -243,13 +243,14 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
-				var _values []*COTPParameter
 				var dt *COTPParameter
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-				_values = append(_values, dt)
-				m.Parameters = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.Parameters = append(m.Parameters, dt)
+				}
 			case "payload":
 				var dt *S7Message
 				if err := d.DecodeElement(&dt, &tok); err != nil {

@@ -223,13 +223,14 @@ func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 				}
 				m.AdditionalInformationLength = data
 			case "additionalInformation":
-				var _values []*CEMIAdditionalInformation
 				var dt *CEMIAdditionalInformation
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-				_values = append(_values, dt)
-				m.AdditionalInformation = _values
+				// TODO: this is a workaround for empty tags which omit this strange structure
+				if dt.Child != nil {
+					m.AdditionalInformation = append(m.AdditionalInformation, dt)
+				}
 			case "dataFrame":
 				var dt *LDataFrame
 				if err := d.DecodeElement(&dt, &tok); err != nil {
