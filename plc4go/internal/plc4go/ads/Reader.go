@@ -73,7 +73,6 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		fieldName := readRequest.GetFieldNames()[0]
 		field := readRequest.GetField(fieldName)
 		if needsResolving(field) {
-			// TODO: resolve field
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
 				result <- model.PlcReadRequestResult{

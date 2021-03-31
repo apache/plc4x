@@ -69,6 +69,8 @@ type Connection struct {
 	sourceAmsPort  uint16
 	targetAmsNetId readWriteModel.AmsNetId
 	targetAmsPort  uint16
+	reader         *Reader
+	writer         *Writer
 }
 
 func NewConnection(messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) (*Connection, error) {
@@ -153,16 +155,20 @@ func NewConnection(messageCodec spi.MessageCodec, options map[string][]string, f
 	if err != nil {
 		return nil, errors.Wrap(err, "error prasing targetAmsPort")
 	}
+	reader := *NewReader(messageCodec, targetAmsNetId, uint16(targetAmsPort), sourceAmsNetId, uint16(sourceAmsPort))
+	writer := *NewWriter(messageCodec, targetAmsNetId, uint16(targetAmsPort), sourceAmsNetId, uint16(sourceAmsPort), &reader)
 	return &Connection{
 		messageCodec:       messageCodec,
 		options:            options,
 		fieldHandler:       fieldHandler,
 		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
-		sourceAmsNetId:     sourceAmsNetId,
-		sourceAmsPort:      uint16(sourceAmsPort),
 		targetAmsNetId:     targetAmsNetId,
 		targetAmsPort:      uint16(targetAmsPort),
+		sourceAmsNetId:     sourceAmsNetId,
+		sourceAmsPort:      uint16(sourceAmsPort),
+		reader:             &reader,
+		writer:             &writer,
 	}, nil
 }
 
@@ -220,13 +226,11 @@ func (m Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
-		NewReader(m.messageCodec, m.targetAmsNetId, m.targetAmsPort, m.sourceAmsNetId, m.sourceAmsPort), m.requestInterceptor)
+	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler, m.reader, m.requestInterceptor)
 }
 
 func (m Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewWriter(m.messageCodec, m.targetAmsNetId, m.targetAmsPort, m.sourceAmsNetId, m.sourceAmsPort))
+	return internalModel.NewDefaultPlcWriteRequestBuilder(m.fieldHandler, m.valueHandler, m.writer)
 }
 
 func (m Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
