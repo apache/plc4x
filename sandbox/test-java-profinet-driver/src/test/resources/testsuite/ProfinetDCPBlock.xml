@@ -32,23 +32,27 @@
     </xml>
   </testcase>
 
-<!--  <testcase>-->
-<!--    <name>Wireshark Block: Device/Device Options</name>-->
-<!--    <raw>0205000400000207</raw>-->
-<!--    <root-type>DCPBlock</root-type>-->
-<!--    <xml>-->
-<!--      <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">-->
-<!--        <blockType>DEVICE_PROPERTIES</blockType>-->
-<!--        <subOption>DEVICE_OPTIONS</subOption>-->
-<!--        <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">-->
-<!--          <dcpBlockSize>4</dcpBlockSize>-->
-<!--          <info>0</info>-->
-<!--          <blockType>DEVICE_PROPERTIES</blockType>-->
-<!--          <subOption>DEVICE_INSTANCE</subOption>-->
-<!--        </properties>-->
-<!--      </DeviceProperties>-->
-<!--    </xml>-->
-<!--  </testcase>-->
+  <testcase>
+    <name>Wireshark Block: Device/Device Options</name>
+    <raw>0205000400000207</raw>
+    <root-type>DCPBlock</root-type>
+    <xml>
+      <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+        <blockType>DEVICE_PROPERTIES</blockType>
+        <subOption>DEVICE_OPTIONS</subOption>
+        <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">
+          <dcpBlockSize>4</dcpBlockSize>
+          <info>0</info>
+          <options>
+            <options className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptionsEntry">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>DEVICE_INSTANCE</subOption>
+            </options>
+          </options>
+        </properties>
+      </DeviceProperties>
+    </xml>
+  </testcase>
 
   <testcase>
     <name>Wireshark Block: Device/Manufacturer specific (Station Type)</name>

@@ -110,7 +110,7 @@
             [reserved uint 8 '0x00'       ]
         ]
         ['DevicePropertiesSubOption.DEVICE_OPTIONS' DeviceOptions [uint 16 'dcpBlockSize']
-            [array DeviceOptionsEntry 'options' length 'dcpBlockSize']
+            [array DeviceOptionsEntry 'options' count '(dcpBlockSize - 2) / 2']
         ]
         ['DevicePropertiesSubOption.DEVICE_INSTANCE' DeviceInstance
             [simple uint 8 'instanceHigh'        ]
