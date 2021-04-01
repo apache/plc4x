@@ -132,3 +132,12 @@ func (m *MResetInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 func (m *MResetInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m MResetInd) String() string {
+	return string(m.Box("MResetInd", utils.DefaultWidth*2))
+}
+
+func (m MResetInd) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

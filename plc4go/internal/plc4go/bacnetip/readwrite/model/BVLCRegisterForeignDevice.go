@@ -132,3 +132,12 @@ func (m *BVLCRegisterForeignDevice) UnmarshalXML(d *xml.Decoder, start xml.Start
 func (m *BVLCRegisterForeignDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BVLCRegisterForeignDevice) String() string {
+	return string(m.Box("BVLCRegisterForeignDevice", utils.DefaultWidth*2))
+}
+
+func (m BVLCRegisterForeignDevice) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

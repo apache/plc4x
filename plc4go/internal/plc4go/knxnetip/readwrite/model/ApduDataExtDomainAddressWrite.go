@@ -132,3 +132,12 @@ func (m *ApduDataExtDomainAddressWrite) UnmarshalXML(d *xml.Decoder, start xml.S
 func (m *ApduDataExtDomainAddressWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataExtDomainAddressWrite) String() string {
+	return string(m.Box("ApduDataExtDomainAddressWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtDomainAddressWrite) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

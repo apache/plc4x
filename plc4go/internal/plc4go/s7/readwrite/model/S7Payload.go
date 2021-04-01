@@ -228,3 +228,12 @@ func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m S7Payload) String() string {
+	return string(m.Box("S7Payload", utils.DefaultWidth*2))
+}
+
+func (m S7Payload) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

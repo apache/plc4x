@@ -161,3 +161,13 @@ func (m *COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m COTPParameterTpduSize) String() string {
+	return string(m.Box("COTPParameterTpduSize", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterTpduSize) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TpduSize", m.TpduSize, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

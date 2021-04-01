@@ -139,3 +139,13 @@ func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	}
 	return nil
 }
+
+func (m S7VarPayloadStatusItem) String() string {
+	return string(m.Box("S7VarPayloadStatusItem", utils.DefaultWidth*2))
+}
+
+func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

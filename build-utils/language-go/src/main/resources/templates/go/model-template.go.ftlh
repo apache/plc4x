@@ -1084,4 +1084,20 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	return nil
 }
 
+func (m ${type.name}) String() string {
+	return string(m.Box("${type.name}", utils.DefaultWidth*2))
+}
+
+func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	<#if type.fields?has_content>
+		<#list type.fields as field>
+			<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
+	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
+			</#if>
+		</#list>
+	</#if>
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}
+
 </#outputformat>

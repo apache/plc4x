@@ -177,3 +177,13 @@ func (m *COTPParameterDisconnectAdditionalInformation) MarshalXML(e *xml.Encoder
 	}
 	return nil
 }
+
+func (m COTPParameterDisconnectAdditionalInformation) String() string {
+	return string(m.Box("COTPParameterDisconnectAdditionalInformation", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

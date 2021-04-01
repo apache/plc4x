@@ -269,3 +269,18 @@ func (m *AmsNetId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m AmsNetId) String() string {
+	return string(m.Box("AmsNetId", utils.DefaultWidth*2))
+}
+
+func (m AmsNetId) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Octet1", m.Octet1, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet2", m.Octet2, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet3", m.Octet3, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet4", m.Octet4, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet5", m.Octet5, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet6", m.Octet6, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -161,3 +161,13 @@ func (m *ApduDataExtAuthorizeResponse) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m ApduDataExtAuthorizeResponse) String() string {
+	return string(m.Box("ApduDataExtAuthorizeResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtAuthorizeResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Level", m.Level, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

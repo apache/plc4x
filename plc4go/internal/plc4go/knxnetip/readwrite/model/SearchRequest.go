@@ -160,3 +160,13 @@ func (m *SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	return nil
 }
+
+func (m SearchRequest) String() string {
+	return string(m.Box("SearchRequest", utils.DefaultWidth*2))
+}
+
+func (m SearchRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiIDiscoveryEndpoint", m.HpaiIDiscoveryEndpoint, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -383,3 +383,12 @@ func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	}
 	return nil
 }
+
+func (m BACnetServiceAck) String() string {
+	return string(m.Box("BACnetServiceAck", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAck) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

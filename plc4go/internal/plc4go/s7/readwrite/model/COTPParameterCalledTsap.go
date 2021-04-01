@@ -161,3 +161,13 @@ func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElem
 	}
 	return nil
 }
+
+func (m COTPParameterCalledTsap) String() string {
+	return string(m.Box("COTPParameterCalledTsap", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

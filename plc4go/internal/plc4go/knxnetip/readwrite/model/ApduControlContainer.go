@@ -162,3 +162,13 @@ func (m *ApduControlContainer) MarshalXML(e *xml.Encoder, start xml.StartElement
 	}
 	return nil
 }
+
+func (m ApduControlContainer) String() string {
+	return string(m.Box("ApduControlContainer", utils.DefaultWidth*2))
+}
+
+func (m ApduControlContainer) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ControlApdu", m.ControlApdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

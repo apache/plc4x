@@ -181,3 +181,13 @@ func (m *AmsTCPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 	return nil
 }
+
+func (m AmsTCPPacket) String() string {
+	return string(m.Box("AmsTCPPacket", utils.DefaultWidth*2))
+}
+
+func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

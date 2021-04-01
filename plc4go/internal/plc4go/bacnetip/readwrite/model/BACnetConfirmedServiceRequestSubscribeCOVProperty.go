@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) UnmarshalXML(d *xml.
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestSubscribeCOVProperty", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

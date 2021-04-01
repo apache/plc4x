@@ -621,3 +621,12 @@ func (m *BACnetConfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 	}
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequest) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequest", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

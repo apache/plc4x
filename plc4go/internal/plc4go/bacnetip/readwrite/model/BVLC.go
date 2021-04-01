@@ -408,3 +408,12 @@ func (m *BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m BVLC) String() string {
+	return string(m.Box("BVLC", utils.DefaultWidth*2))
+}
+
+func (m BVLC) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

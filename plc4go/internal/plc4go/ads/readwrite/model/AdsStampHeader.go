@@ -209,3 +209,15 @@ func (m *AdsStampHeader) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m AdsStampHeader) String() string {
+	return string(m.Box("AdsStampHeader", utils.DefaultWidth*2))
+}
+
+func (m AdsStampHeader) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
+	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdsNotificationSamples", m.AdsNotificationSamples, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

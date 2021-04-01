@@ -191,3 +191,14 @@ func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m COTPPacketData) String() string {
+	return string(m.Box("COTPPacketData", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketData) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Eot", m.Eot, width-2))
+	boxes = append(boxes, utils.BoxAnything("TpduRef", m.TpduRef, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

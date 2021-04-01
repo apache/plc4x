@@ -215,3 +215,14 @@ func (m *APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	return nil
 }
+
+func (m APDUSimpleAck) String() string {
+	return string(m.Box("APDUSimpleAck", utils.DefaultWidth*2))
+}
+
+func (m APDUSimpleAck) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceChoice", m.ServiceChoice, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

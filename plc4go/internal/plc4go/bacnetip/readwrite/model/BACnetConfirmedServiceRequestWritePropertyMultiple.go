@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) UnmarshalXML(d *xml
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestWritePropertyMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

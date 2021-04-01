@@ -160,3 +160,13 @@ func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	}
 	return nil
 }
+
+func (m DescriptionRequest) String() string {
+	return string(m.Box("DescriptionRequest", utils.DefaultWidth*2))
+}
+
+func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

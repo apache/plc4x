@@ -132,3 +132,12 @@ func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 func (m *BVLCResult) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BVLCResult) String() string {
+	return string(m.Box("BVLCResult", utils.DefaultWidth*2))
+}
+
+func (m BVLCResult) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -160,3 +160,13 @@ func (m *ComObjectTableRealisationType6) MarshalXML(e *xml.Encoder, start xml.St
 	}
 	return nil
 }
+
+func (m ComObjectTableRealisationType6) String() string {
+	return string(m.Box("ComObjectTableRealisationType6", utils.DefaultWidth*2))
+}
+
+func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

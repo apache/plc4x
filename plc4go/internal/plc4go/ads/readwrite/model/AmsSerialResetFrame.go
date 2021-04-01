@@ -269,3 +269,18 @@ func (m *AmsSerialResetFrame) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	}
 	return nil
 }
+
+func (m AmsSerialResetFrame) String() string {
+	return string(m.Box("AmsSerialResetFrame", utils.DefaultWidth*2))
+}
+
+func (m AmsSerialResetFrame) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

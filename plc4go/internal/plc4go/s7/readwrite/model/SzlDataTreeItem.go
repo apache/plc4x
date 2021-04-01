@@ -262,3 +262,17 @@ func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	return nil
 }
+
+func (m SzlDataTreeItem) String() string {
+	return string(m.Box("SzlDataTreeItem", utils.DefaultWidth*2))
+}
+
+func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("Mlfb", m.Mlfb, width-2))
+	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, width-2))
+	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

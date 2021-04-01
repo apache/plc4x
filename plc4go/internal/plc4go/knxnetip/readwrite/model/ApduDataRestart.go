@@ -132,3 +132,12 @@ func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 func (m *ApduDataRestart) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataRestart) String() string {
+	return string(m.Box("ApduDataRestart", utils.DefaultWidth*2))
+}
+
+func (m ApduDataRestart) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

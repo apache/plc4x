@@ -221,3 +221,15 @@ func (m *AdsReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m AdsReadRequest) String() string {
+	return string(m.Box("AdsReadRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsReadRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

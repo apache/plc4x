@@ -219,3 +219,15 @@ func (m *COTPPacketConnectionResponse) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m COTPPacketConnectionResponse) String() string {
+	return string(m.Box("COTPPacketConnectionResponse", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketConnectionResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProtocolClass", m.ProtocolClass, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

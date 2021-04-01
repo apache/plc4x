@@ -186,3 +186,13 @@ func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder
 	}
 	return nil
 }
+
+func (m ConnectionRequestInformationTunnelConnection) String() string {
+	return string(m.Box("ConnectionRequestInformationTunnelConnection", utils.DefaultWidth*2))
+}
+
+func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

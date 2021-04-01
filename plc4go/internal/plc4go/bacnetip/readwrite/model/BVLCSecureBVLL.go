@@ -132,3 +132,12 @@ func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 func (m *BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BVLCSecureBVLL) String() string {
+	return string(m.Box("BVLCSecureBVLL", utils.DefaultWidth*2))
+}
+
+func (m BVLCSecureBVLL) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

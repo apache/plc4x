@@ -161,3 +161,13 @@ func (m *KnxNetIpCore) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 	return nil
 }
+
+func (m KnxNetIpCore) String() string {
+	return string(m.Box("KnxNetIpCore", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpCore) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

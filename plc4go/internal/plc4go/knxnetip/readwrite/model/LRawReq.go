@@ -132,3 +132,12 @@ func (m *LRawReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 func (m *LRawReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m LRawReq) String() string {
+	return string(m.Box("LRawReq", utils.DefaultWidth*2))
+}
+
+func (m LRawReq) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -192,3 +192,14 @@ func (m *S7MessageResponseData) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m S7MessageResponseData) String() string {
+	return string(m.Box("S7MessageResponseData", utils.DefaultWidth*2))
+}
+
+func (m S7MessageResponseData) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

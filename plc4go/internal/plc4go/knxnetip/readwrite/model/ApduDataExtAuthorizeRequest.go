@@ -205,3 +205,14 @@ func (m *ApduDataExtAuthorizeRequest) MarshalXML(e *xml.Encoder, start xml.Start
 	}
 	return nil
 }
+
+func (m ApduDataExtAuthorizeRequest) String() string {
+	return string(m.Box("ApduDataExtAuthorizeRequest", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtAuthorizeRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Level", m.Level, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

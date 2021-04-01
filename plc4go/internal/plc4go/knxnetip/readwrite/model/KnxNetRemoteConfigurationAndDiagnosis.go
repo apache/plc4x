@@ -161,3 +161,13 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start
 	}
 	return nil
 }
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) String() string {
+	return string(m.Box("KnxNetRemoteConfigurationAndDiagnosis", utils.DefaultWidth*2))
+}
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -235,3 +235,15 @@ func (m *ComObjectTableRealisationType1) MarshalXML(e *xml.Encoder, start xml.St
 	}
 	return nil
 }
+
+func (m ComObjectTableRealisationType1) String() string {
+	return string(m.Box("ComObjectTableRealisationType1", utils.DefaultWidth*2))
+}
+
+func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
+	boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))
+	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

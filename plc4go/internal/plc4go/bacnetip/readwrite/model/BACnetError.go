@@ -383,3 +383,12 @@ func (m *BACnetError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m BACnetError) String() string {
+	return string(m.Box("BACnetError", utils.DefaultWidth*2))
+}
+
+func (m BACnetError) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -225,3 +225,15 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) MarshalXML(e *xml.Encoder, st
 	}
 	return nil
 }
+
+func (m ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
+	return string(m.Box("ModbusPDUMaskWriteHoldingRegisterRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUMaskWriteHoldingRegisterRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
+	boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

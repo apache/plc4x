@@ -399,3 +399,18 @@ func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xm
 	}
 	return nil
 }
+
+func (m BACnetUnconfirmedServiceRequestIAm) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestIAm", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
+	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

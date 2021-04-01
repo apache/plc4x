@@ -649,3 +649,27 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m NPDU) String() string {
+	return string(m.Box("NPDU", utils.DefaultWidth*2))
+}
+
+func (m NPDU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("MessageTypeFieldPresent", m.MessageTypeFieldPresent, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationSpecified", m.DestinationSpecified, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceSpecified", m.SourceSpecified, width-2))
+	boxes = append(boxes, utils.BoxAnything("ExpectingReply", m.ExpectingReply, width-2))
+	boxes = append(boxes, utils.BoxAnything("NetworkPriority", m.NetworkPriority, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationLength", m.DestinationLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceNetworkAddress", m.SourceNetworkAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceLength", m.SourceLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
+	boxes = append(boxes, utils.BoxAnything("Nlm", m.Nlm, width-2))
+	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

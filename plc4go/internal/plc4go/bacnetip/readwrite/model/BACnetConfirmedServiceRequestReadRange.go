@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestReadRange) UnmarshalXML(d *xml.Decoder, st
 func (m *BACnetConfirmedServiceRequestReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestReadRange) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestReadRange", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestReadRange) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

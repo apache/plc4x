@@ -140,3 +140,12 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) UnmarshalXML(d *xml.Decoder, 
 func (m *ModbusPDUReadDeviceIdentificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ModbusPDUReadDeviceIdentificationRequest) String() string {
+	return string(m.Box("ModbusPDUReadDeviceIdentificationRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadDeviceIdentificationRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

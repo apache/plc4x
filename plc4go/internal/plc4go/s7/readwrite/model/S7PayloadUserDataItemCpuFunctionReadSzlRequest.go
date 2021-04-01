@@ -136,3 +136,12 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Dec
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
+	return string(m.Box("S7PayloadUserDataItemCpuFunctionReadSzlRequest", utils.DefaultWidth*2))
+}
+
+func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

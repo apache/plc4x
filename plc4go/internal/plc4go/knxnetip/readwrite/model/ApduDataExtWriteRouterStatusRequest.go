@@ -132,3 +132,12 @@ func (m *ApduDataExtWriteRouterStatusRequest) UnmarshalXML(d *xml.Decoder, start
 func (m *ApduDataExtWriteRouterStatusRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataExtWriteRouterStatusRequest) String() string {
+	return string(m.Box("ApduDataExtWriteRouterStatusRequest", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtWriteRouterStatusRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

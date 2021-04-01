@@ -169,3 +169,13 @@ func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m ModbusPDUError) String() string {
+	return string(m.Box("ModbusPDUError", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ExceptionCode", m.ExceptionCode, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -344,3 +344,18 @@ func (m *APDUComplexAck) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m APDUComplexAck) String() string {
+	return string(m.Box("APDUComplexAck", utils.DefaultWidth*2))
+}
+
+func (m APDUComplexAck) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
+	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceAck", m.ServiceAck, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -228,3 +228,14 @@ func (m *AdsReadWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement
 	}
 	return nil
 }
+
+func (m AdsReadWriteResponse) String() string {
+	return string(m.Box("AdsReadWriteResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsReadWriteResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

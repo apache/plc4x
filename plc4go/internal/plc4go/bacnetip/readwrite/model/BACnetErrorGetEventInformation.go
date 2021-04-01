@@ -132,3 +132,12 @@ func (m *BACnetErrorGetEventInformation) UnmarshalXML(d *xml.Decoder, start xml.
 func (m *BACnetErrorGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetErrorGetEventInformation) String() string {
+	return string(m.Box("BACnetErrorGetEventInformation", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorGetEventInformation) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

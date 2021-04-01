@@ -214,3 +214,15 @@ func (m *SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	return nil
 }
+
+func (m SearchResponse) String() string {
+	return string(m.Box("SearchResponse", utils.DefaultWidth*2))
+}
+
+func (m SearchResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
+	boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

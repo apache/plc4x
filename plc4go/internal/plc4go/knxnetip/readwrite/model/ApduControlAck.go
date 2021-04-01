@@ -132,3 +132,12 @@ func (m *ApduControlAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 func (m *ApduControlAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduControlAck) String() string {
+	return string(m.Box("ApduControlAck", utils.DefaultWidth*2))
+}
+
+func (m ApduControlAck) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

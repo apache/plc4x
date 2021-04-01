@@ -370,3 +370,17 @@ func (m *BACnetServiceAckReadProperty) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m BACnetServiceAckReadProperty) String() string {
+	return string(m.Box("BACnetServiceAckReadProperty", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckReadProperty) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

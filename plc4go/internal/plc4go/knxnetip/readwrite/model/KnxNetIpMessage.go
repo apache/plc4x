@@ -467,3 +467,12 @@ func (m *KnxNetIpMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	return nil
 }
+
+func (m KnxNetIpMessage) String() string {
+	return string(m.Box("KnxNetIpMessage", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpMessage) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

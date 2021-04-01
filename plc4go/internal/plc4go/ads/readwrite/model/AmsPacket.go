@@ -359,3 +359,21 @@ func (m *AmsPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m AmsPacket) String() string {
+	return string(m.Box("AmsPacket", utils.DefaultWidth*2))
+}
+
+func (m AmsPacket) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TargetAmsNetId", m.TargetAmsNetId, width-2))
+	boxes = append(boxes, utils.BoxAnything("TargetAmsPort", m.TargetAmsPort, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceAmsNetId", m.SourceAmsNetId, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceAmsPort", m.SourceAmsPort, width-2))
+	boxes = append(boxes, utils.BoxAnything("CommandId", m.CommandId, width-2))
+	boxes = append(boxes, utils.BoxAnything("State", m.State, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -299,3 +299,12 @@ func (m *APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m APDU) String() string {
+	return string(m.Box("APDU", utils.DefaultWidth*2))
+}
+
+func (m APDU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

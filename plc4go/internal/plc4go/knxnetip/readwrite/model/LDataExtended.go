@@ -344,3 +344,18 @@ func (m *LDataExtended) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	return nil
 }
+
+func (m LDataExtended) String() string {
+	return string(m.Box("LDataExtended", utils.DefaultWidth*2))
+}
+
+func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
+	boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

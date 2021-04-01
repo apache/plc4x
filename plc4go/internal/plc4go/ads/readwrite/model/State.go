@@ -373,3 +373,21 @@ func (m *State) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m State) String() string {
+	return string(m.Box("State", utils.DefaultWidth*2))
+}
+
+func (m State) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, width-2))
+	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, width-2))
+	boxes = append(boxes, utils.BoxAnything("TimestampAdded", m.TimestampAdded, width-2))
+	boxes = append(boxes, utils.BoxAnything("HighPriorityCommand", m.HighPriorityCommand, width-2))
+	boxes = append(boxes, utils.BoxAnything("SystemCommand", m.SystemCommand, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdsCommand", m.AdsCommand, width-2))
+	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, width-2))
+	boxes = append(boxes, utils.BoxAnything("Response", m.Response, width-2))
+	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

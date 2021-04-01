@@ -140,3 +140,12 @@ func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start 
 func (m *ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ModbusPDUGetComEventCounterRequest) String() string {
+	return string(m.Box("ModbusPDUGetComEventCounterRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUGetComEventCounterRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

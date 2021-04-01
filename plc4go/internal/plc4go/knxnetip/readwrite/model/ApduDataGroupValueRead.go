@@ -159,3 +159,12 @@ func (m *ApduDataGroupValueRead) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 func (m *ApduDataGroupValueRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataGroupValueRead) String() string {
+	return string(m.Box("ApduDataGroupValueRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataGroupValueRead) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

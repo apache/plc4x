@@ -197,3 +197,14 @@ func (m *ModbusPDUReadInputRegistersRequest) MarshalXML(e *xml.Encoder, start xm
 	}
 	return nil
 }
+
+func (m ModbusPDUReadInputRegistersRequest) String() string {
+	return string(m.Box("ModbusPDUReadInputRegistersRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadInputRegistersRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -191,3 +191,14 @@ func (m *COTPPacketDisconnectResponse) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m COTPPacketDisconnectResponse) String() string {
+	return string(m.Box("COTPPacketDisconnectResponse", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketDisconnectResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

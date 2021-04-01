@@ -232,3 +232,15 @@ func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	}
 	return nil
 }
+
+func (m BVLCForwardedNPDU) String() string {
+	return string(m.Box("BVLCForwardedNPDU", utils.DefaultWidth*2))
+}
+
+func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Ip", m.Ip, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

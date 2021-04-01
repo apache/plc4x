@@ -191,3 +191,15 @@ func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m KnxAddress) String() string {
+	return string(m.Box("KnxAddress", utils.DefaultWidth*2))
+}
+
+func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

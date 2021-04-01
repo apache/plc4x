@@ -187,3 +187,14 @@ func (m *DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 	}
 	return nil
 }
+
+func (m DeviceConfigurationRequest) String() string {
+	return string(m.Box("DeviceConfigurationRequest", utils.DefaultWidth*2))
+}
+
+func (m DeviceConfigurationRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationRequestDataBlock", m.DeviceConfigurationRequestDataBlock, width-2))
+	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -132,3 +132,12 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) UnmarshalXML(d *xml
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestTimeSynchronization", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestTimeSynchronization) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

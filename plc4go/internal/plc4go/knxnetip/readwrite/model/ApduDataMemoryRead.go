@@ -189,3 +189,14 @@ func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	}
 	return nil
 }
+
+func (m ApduDataMemoryRead) String() string {
+	return string(m.Box("ApduDataMemoryRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, width-2))
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

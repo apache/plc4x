@@ -132,3 +132,12 @@ func (m *ApduControlDisconnect) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 func (m *ApduControlDisconnect) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduControlDisconnect) String() string {
+	return string(m.Box("ApduControlDisconnect", utils.DefaultWidth*2))
+}
+
+func (m ApduControlDisconnect) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

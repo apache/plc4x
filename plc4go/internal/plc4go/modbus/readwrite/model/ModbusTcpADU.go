@@ -229,3 +229,15 @@ func (m *ModbusTcpADU) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 	return nil
 }
+
+func (m ModbusTcpADU) String() string {
+	return string(m.Box("ModbusTcpADU", utils.DefaultWidth*2))
+}
+
+func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

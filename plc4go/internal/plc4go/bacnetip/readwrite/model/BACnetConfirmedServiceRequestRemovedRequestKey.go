@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) UnmarshalXML(d *xml.Dec
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestRemovedRequestKey) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestRemovedRequestKey", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestRemovedRequestKey) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

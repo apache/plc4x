@@ -132,3 +132,12 @@ func (m *MPropWriteCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 func (m *MPropWriteCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m MPropWriteCon) String() string {
+	return string(m.Box("MPropWriteCon", utils.DefaultWidth*2))
+}
+
+func (m MPropWriteCon) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

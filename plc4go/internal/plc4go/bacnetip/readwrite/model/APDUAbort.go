@@ -243,3 +243,15 @@ func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m APDUAbort) String() string {
+	return string(m.Box("APDUAbort", utils.DefaultWidth*2))
+}
+
+func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("AbortReason", m.AbortReason, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

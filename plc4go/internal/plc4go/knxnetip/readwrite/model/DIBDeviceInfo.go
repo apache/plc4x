@@ -394,3 +394,21 @@ func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	return nil
 }
+
+func (m DIBDeviceInfo) String() string {
+	return string(m.Box("DIBDeviceInfo", utils.DefaultWidth*2))
+}
+
+func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxMedium", m.KnxMedium, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceStatus", m.DeviceStatus, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProjectInstallationIdentifier", m.ProjectInstallationIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMulticastAddress", m.KnxNetIpDeviceMulticastAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMacAddress", m.KnxNetIpDeviceMacAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceFriendlyName", m.DeviceFriendlyName, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

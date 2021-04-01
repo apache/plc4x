@@ -383,3 +383,12 @@ func (m *BACnetConfirmedServiceACK) MarshalXML(e *xml.Encoder, start xml.StartEl
 	}
 	return nil
 }
+
+func (m BACnetConfirmedServiceACK) String() string {
+	return string(m.Box("BACnetConfirmedServiceACK", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACK) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}
