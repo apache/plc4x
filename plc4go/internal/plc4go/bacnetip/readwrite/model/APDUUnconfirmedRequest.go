@@ -186,3 +186,13 @@ func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	}
 	return nil
 }
+
+func (m APDUUnconfirmedRequest) String() string {
+	return string(m.Box("APDUUnconfirmedRequest", utils.DefaultWidth*2))
+}
+
+func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

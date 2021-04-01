@@ -161,3 +161,13 @@ func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartEle
 	}
 	return nil
 }
+
+func (m KnxGroupAddressFreeLevel) String() string {
+	return string(m.Box("KnxGroupAddressFreeLevel", utils.DefaultWidth*2))
+}
+
+func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

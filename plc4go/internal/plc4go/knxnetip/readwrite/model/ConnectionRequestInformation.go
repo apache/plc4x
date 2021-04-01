@@ -232,3 +232,12 @@ func (m *ConnectionRequestInformation) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m ConnectionRequestInformation) String() string {
+	return string(m.Box("ConnectionRequestInformation", utils.DefaultWidth*2))
+}
+
+func (m ConnectionRequestInformation) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

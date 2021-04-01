@@ -239,3 +239,15 @@ func (m *LDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m LDataInd) String() string {
+	return string(m.Box("LDataInd", utils.DefaultWidth*2))
+}
+
+func (m LDataInd) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformation", m.AdditionalInformation, width-2))
+	boxes = append(boxes, utils.BoxAnything("DataFrame", m.DataFrame, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -222,3 +222,14 @@ func (m *ApduDataMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	}
 	return nil
 }
+
+func (m ApduDataMemoryResponse) String() string {
+	return string(m.Box("ApduDataMemoryResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

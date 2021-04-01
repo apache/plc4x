@@ -751,3 +751,12 @@ func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m ModbusPDU) String() string {
+	return string(m.Box("ModbusPDU", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

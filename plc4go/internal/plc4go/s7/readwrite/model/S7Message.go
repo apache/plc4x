@@ -418,3 +418,15 @@ func (m *S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m S7Message) String() string {
+	return string(m.Box("S7Message", utils.DefaultWidth*2))
+}
+
+func (m S7Message) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TpduReference", m.TpduReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("Parameter", m.Parameter, width-2))
+	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -205,3 +205,14 @@ func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	}
 	return nil
 }
+
+func (m DIBSuppSvcFamilies) String() string {
+	return string(m.Box("DIBSuppSvcFamilies", utils.DefaultWidth*2))
+}
+
+func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceIds", m.ServiceIds, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

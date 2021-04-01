@@ -210,3 +210,15 @@ func (m *AdsNotificationSample) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m AdsNotificationSample) String() string {
+	return string(m.Box("AdsNotificationSample", utils.DefaultWidth*2))
+}
+
+func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

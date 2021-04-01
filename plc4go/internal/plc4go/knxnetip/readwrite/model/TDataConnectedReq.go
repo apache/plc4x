@@ -132,3 +132,12 @@ func (m *TDataConnectedReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 func (m *TDataConnectedReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m TDataConnectedReq) String() string {
+	return string(m.Box("TDataConnectedReq", utils.DefaultWidth*2))
+}
+
+func (m TDataConnectedReq) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

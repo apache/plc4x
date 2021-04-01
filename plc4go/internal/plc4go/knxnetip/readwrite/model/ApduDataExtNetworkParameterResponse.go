@@ -132,3 +132,12 @@ func (m *ApduDataExtNetworkParameterResponse) UnmarshalXML(d *xml.Decoder, start
 func (m *ApduDataExtNetworkParameterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataExtNetworkParameterResponse) String() string {
+	return string(m.Box("ApduDataExtNetworkParameterResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtNetworkParameterResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

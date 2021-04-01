@@ -161,3 +161,13 @@ func (m *KnxNetIpRouting) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	return nil
 }
+
+func (m KnxNetIpRouting) String() string {
+	return string(m.Box("KnxNetIpRouting", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpRouting) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -213,3 +213,12 @@ func (m *AdsMultiRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	}
 	return nil
 }
+
+func (m AdsMultiRequestItem) String() string {
+	return string(m.Box("AdsMultiRequestItem", utils.DefaultWidth*2))
+}
+
+func (m AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

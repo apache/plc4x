@@ -319,3 +319,16 @@ func (m *S7PayloadUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m S7PayloadUserDataItem) String() string {
+	return string(m.Box("S7PayloadUserDataItem", utils.DefaultWidth*2))
+}
+
+func (m S7PayloadUserDataItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("SzlId", m.SzlId, width-2))
+	boxes = append(boxes, utils.BoxAnything("SzlIndex", m.SzlIndex, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

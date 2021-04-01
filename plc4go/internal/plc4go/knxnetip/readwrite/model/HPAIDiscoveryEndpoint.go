@@ -206,3 +206,15 @@ func (m *HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m HPAIDiscoveryEndpoint) String() string {
+	return string(m.Box("HPAIDiscoveryEndpoint", utils.DefaultWidth*2))
+}
+
+func (m HPAIDiscoveryEndpoint) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
+	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

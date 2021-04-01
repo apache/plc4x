@@ -177,3 +177,13 @@ func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.
 	}
 	return nil
 }
+
+func (m S7VarRequestParameterItemAddress) String() string {
+	return string(m.Box("S7VarRequestParameterItemAddress", utils.DefaultWidth*2))
+}
+
+func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

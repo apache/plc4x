@@ -247,3 +247,15 @@ func (m *S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.Sta
 	}
 	return nil
 }
+
+func (m S7ParameterSetupCommunication) String() string {
+	return string(m.Box("S7ParameterSetupCommunication", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, width-2))
+	boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

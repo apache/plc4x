@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) UnmarshalXML(d *
 func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedPrivateTransfer", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

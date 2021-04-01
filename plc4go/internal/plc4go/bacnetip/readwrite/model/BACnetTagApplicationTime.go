@@ -136,3 +136,12 @@ func (m *BACnetTagApplicationTime) UnmarshalXML(d *xml.Decoder, start xml.StartE
 func (m *BACnetTagApplicationTime) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetTagApplicationTime) String() string {
+	return string(m.Box("BACnetTagApplicationTime", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationTime) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

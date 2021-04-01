@@ -132,3 +132,12 @@ func (m *BACnetServiceAckGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml
 func (m *BACnetServiceAckGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetServiceAckGetAlarmSummary) String() string {
+	return string(m.Box("BACnetServiceAckGetAlarmSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckGetAlarmSummary) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

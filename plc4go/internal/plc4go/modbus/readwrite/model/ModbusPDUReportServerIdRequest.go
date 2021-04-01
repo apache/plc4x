@@ -140,3 +140,12 @@ func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.
 func (m *ModbusPDUReportServerIdRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ModbusPDUReportServerIdRequest) String() string {
+	return string(m.Box("ModbusPDUReportServerIdRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReportServerIdRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

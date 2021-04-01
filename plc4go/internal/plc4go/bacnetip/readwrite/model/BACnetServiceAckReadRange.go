@@ -132,3 +132,12 @@ func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.Start
 func (m *BACnetServiceAckReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetServiceAckReadRange) String() string {
+	return string(m.Box("BACnetServiceAckReadRange", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckReadRange) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

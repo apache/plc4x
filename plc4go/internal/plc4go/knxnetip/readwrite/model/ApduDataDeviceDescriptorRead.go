@@ -161,3 +161,13 @@ func (m *ApduDataDeviceDescriptorRead) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m ApduDataDeviceDescriptorRead) String() string {
+	return string(m.Box("ApduDataDeviceDescriptorRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataDeviceDescriptorRead) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

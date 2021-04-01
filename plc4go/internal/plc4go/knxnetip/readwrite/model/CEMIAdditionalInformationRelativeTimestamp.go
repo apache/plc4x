@@ -182,3 +182,13 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) MarshalXML(e *xml.Encoder, 
 	}
 	return nil
 }
+
+func (m CEMIAdditionalInformationRelativeTimestamp) String() string {
+	return string(m.Box("CEMIAdditionalInformationRelativeTimestamp", utils.DefaultWidth*2))
+}
+
+func (m CEMIAdditionalInformationRelativeTimestamp) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("RelativeTimestamp", m.RelativeTimestamp, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

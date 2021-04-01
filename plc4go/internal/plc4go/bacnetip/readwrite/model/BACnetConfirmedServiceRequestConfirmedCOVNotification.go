@@ -513,3 +513,20 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xm
 	}
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedCOVNotification", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("MonitoredObjectInstanceNumber", m.MonitoredObjectInstanceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsType", m.IssueConfirmedNotificationsType, width-2))
+	boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsInstanceNumber", m.IssueConfirmedNotificationsInstanceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("LifetimeSeconds", m.LifetimeSeconds, width-2))
+	boxes = append(boxes, utils.BoxAnything("Notifications", m.Notifications, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

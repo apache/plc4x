@@ -132,3 +132,12 @@ func (m *BVLCDeleteForeignDeviceTableEntry) UnmarshalXML(d *xml.Decoder, start x
 func (m *BVLCDeleteForeignDeviceTableEntry) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BVLCDeleteForeignDeviceTableEntry) String() string {
+	return string(m.Box("BVLCDeleteForeignDeviceTableEntry", utils.DefaultWidth*2))
+}
+
+func (m BVLCDeleteForeignDeviceTableEntry) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -132,3 +132,12 @@ func (m *ApduDataMemoryWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 func (m *ApduDataMemoryWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataMemoryWrite) String() string {
+	return string(m.Box("ApduDataMemoryWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryWrite) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

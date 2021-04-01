@@ -245,3 +245,16 @@ func (m *AdsMultiRequestItemReadWrite) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m AdsMultiRequestItemReadWrite) String() string {
+	return string(m.Box("AdsMultiRequestItemReadWrite", utils.DefaultWidth*2))
+}
+
+func (m AdsMultiRequestItemReadWrite) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))
+	boxes = append(boxes, utils.BoxAnything("ItemReadLength", m.ItemReadLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -161,3 +161,13 @@ func (m *KnxNetRemoteLogging) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	}
 	return nil
 }
+
+func (m KnxNetRemoteLogging) String() string {
+	return string(m.Box("KnxNetRemoteLogging", utils.DefaultWidth*2))
+}
+
+func (m KnxNetRemoteLogging) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

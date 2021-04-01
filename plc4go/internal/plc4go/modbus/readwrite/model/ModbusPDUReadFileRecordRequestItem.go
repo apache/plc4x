@@ -217,3 +217,16 @@ func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xm
 	}
 	return nil
 }
+
+func (m ModbusPDUReadFileRecordRequestItem) String() string {
+	return string(m.Box("ModbusPDUReadFileRecordRequestItem", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

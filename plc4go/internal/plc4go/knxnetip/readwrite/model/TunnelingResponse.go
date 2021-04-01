@@ -160,3 +160,13 @@ func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	}
 	return nil
 }
+
+func (m TunnelingResponse) String() string {
+	return string(m.Box("TunnelingResponse", utils.DefaultWidth*2))
+}
+
+func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

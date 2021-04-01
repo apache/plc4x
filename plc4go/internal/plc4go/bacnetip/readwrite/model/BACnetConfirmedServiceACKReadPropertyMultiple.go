@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) UnmarshalXML(d *xml.Deco
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceACKReadPropertyMultiple) String() string {
+	return string(m.Box("BACnetConfirmedServiceACKReadPropertyMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACKReadPropertyMultiple) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

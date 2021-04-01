@@ -245,3 +245,16 @@ func (m *ApduDataExtPropertyValueRead) MarshalXML(e *xml.Encoder, start xml.Star
 	}
 	return nil
 }
+
+func (m ApduDataExtPropertyValueRead) String() string {
+	return string(m.Box("ApduDataExtPropertyValueRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtPropertyValueRead) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Count", m.Count, width-2))
+	boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

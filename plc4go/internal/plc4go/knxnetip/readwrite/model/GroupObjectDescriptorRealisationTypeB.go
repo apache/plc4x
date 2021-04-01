@@ -319,3 +319,20 @@ func (m *GroupObjectDescriptorRealisationTypeB) MarshalXML(e *xml.Encoder, start
 	}
 	return nil
 }
+
+func (m GroupObjectDescriptorRealisationTypeB) String() string {
+	return string(m.Box("GroupObjectDescriptorRealisationTypeB", utils.DefaultWidth*2))
+}
+
+func (m GroupObjectDescriptorRealisationTypeB) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransmitEnable", m.TransmitEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("SegmentSelectorEnable", m.SegmentSelectorEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteEnable", m.WriteEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReadEnable", m.ReadEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
+	boxes = append(boxes, utils.BoxAnything("ValueType", m.ValueType, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

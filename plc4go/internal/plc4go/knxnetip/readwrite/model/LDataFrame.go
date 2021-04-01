@@ -376,3 +376,17 @@ func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m LDataFrame) String() string {
+	return string(m.Box("LDataFrame", utils.DefaultWidth*2))
+}
+
+func (m LDataFrame) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, width-2))
+	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, width-2))
+	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
+	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

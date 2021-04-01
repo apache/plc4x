@@ -203,3 +203,13 @@ func (m *S7ParameterWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 	}
 	return nil
 }
+
+func (m S7ParameterWriteVarRequest) String() string {
+	return string(m.Box("S7ParameterWriteVarRequest", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterWriteVarRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -201,3 +201,12 @@ func (m *S7VarRequestParameterItem) MarshalXML(e *xml.Encoder, start xml.StartEl
 	}
 	return nil
 }
+
+func (m S7VarRequestParameterItem) String() string {
+	return string(m.Box("S7VarRequestParameterItem", utils.DefaultWidth*2))
+}
+
+func (m S7VarRequestParameterItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -369,3 +369,22 @@ func (m *DeviceDescriptorType2) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m DeviceDescriptorType2) String() string {
+	return string(m.Box("DeviceDescriptorType2", utils.DefaultWidth*2))
+}
+
+func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ManufacturerId", m.ManufacturerId, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceType", m.DeviceType, width-2))
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReadSupported", m.ReadSupported, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteSupported", m.WriteSupported, width-2))
+	boxes = append(boxes, utils.BoxAnything("LogicalTagBase", m.LogicalTagBase, width-2))
+	boxes = append(boxes, utils.BoxAnything("ChannelInfo1", m.ChannelInfo1, width-2))
+	boxes = append(boxes, utils.BoxAnything("ChannelInfo2", m.ChannelInfo2, width-2))
+	boxes = append(boxes, utils.BoxAnything("ChannelInfo3", m.ChannelInfo3, width-2))
+	boxes = append(boxes, utils.BoxAnything("ChannelInfo4", m.ChannelInfo4, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

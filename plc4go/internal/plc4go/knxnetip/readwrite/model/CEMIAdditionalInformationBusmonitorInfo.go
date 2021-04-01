@@ -323,3 +323,18 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, sta
 	}
 	return nil
 }
+
+func (m CEMIAdditionalInformationBusmonitorInfo) String() string {
+	return string(m.Box("CEMIAdditionalInformationBusmonitorInfo", utils.DefaultWidth*2))
+}
+
+func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, width-2))
+	boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, width-2))
+	boxes = append(boxes, utils.BoxAnything("ParityErrorFlag", m.ParityErrorFlag, width-2))
+	boxes = append(boxes, utils.BoxAnything("UnknownFlag", m.UnknownFlag, width-2))
+	boxes = append(boxes, utils.BoxAnything("LostFlag", m.LostFlag, width-2))
+	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

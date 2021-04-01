@@ -165,3 +165,13 @@ func (m *BACnetTagApplicationReal) MarshalXML(e *xml.Encoder, start xml.StartEle
 	}
 	return nil
 }
+
+func (m BACnetTagApplicationReal) String() string {
+	return string(m.Box("BACnetTagApplicationReal", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationReal) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -197,3 +197,14 @@ func (m *ModbusPDUWriteSingleCoilResponse) MarshalXML(e *xml.Encoder, start xml.
 	}
 	return nil
 }
+
+func (m ModbusPDUWriteSingleCoilResponse) String() string {
+	return string(m.Box("ModbusPDUWriteSingleCoilResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteSingleCoilResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

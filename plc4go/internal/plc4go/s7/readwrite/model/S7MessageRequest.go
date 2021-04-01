@@ -135,3 +135,12 @@ func (m *S7MessageRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 func (m *S7MessageRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m S7MessageRequest) String() string {
+	return string(m.Box("S7MessageRequest", utils.DefaultWidth*2))
+}
+
+func (m S7MessageRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

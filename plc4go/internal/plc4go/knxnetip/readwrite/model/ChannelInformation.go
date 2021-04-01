@@ -165,3 +165,14 @@ func (m *ChannelInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	}
 	return nil
 }
+
+func (m ChannelInformation) String() string {
+	return string(m.Box("ChannelInformation", utils.DefaultWidth*2))
+}
+
+func (m ChannelInformation) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumChannels", m.NumChannels, width-2))
+	boxes = append(boxes, utils.BoxAnything("ChannelCode", m.ChannelCode, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

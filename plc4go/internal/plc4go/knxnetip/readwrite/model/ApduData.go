@@ -411,3 +411,12 @@ func (m *ApduData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m ApduData) String() string {
+	return string(m.Box("ApduData", utils.DefaultWidth*2))
+}
+
+func (m ApduData) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

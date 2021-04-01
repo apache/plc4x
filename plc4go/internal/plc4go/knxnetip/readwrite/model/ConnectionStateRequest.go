@@ -214,3 +214,14 @@ func (m *ConnectionStateRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	}
 	return nil
 }
+
+func (m ConnectionStateRequest) String() string {
+	return string(m.Box("ConnectionStateRequest", utils.DefaultWidth*2))
+}
+
+func (m ConnectionStateRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

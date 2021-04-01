@@ -160,3 +160,13 @@ func (m *DeviceConfigurationAck) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	}
 	return nil
 }
+
+func (m DeviceConfigurationAck) String() string {
+	return string(m.Box("DeviceConfigurationAck", utils.DefaultWidth*2))
+}
+
+func (m DeviceConfigurationAck) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationAckDataBlock", m.DeviceConfigurationAckDataBlock, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

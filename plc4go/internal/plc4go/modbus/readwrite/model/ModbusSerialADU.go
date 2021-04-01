@@ -242,3 +242,16 @@ func (m *ModbusSerialADU) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	return nil
 }
+
+func (m ModbusSerialADU) String() string {
+	return string(m.Box("ModbusSerialADU", utils.DefaultWidth*2))
+}
+
+func (m ModbusSerialADU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TransactionId", m.TransactionId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

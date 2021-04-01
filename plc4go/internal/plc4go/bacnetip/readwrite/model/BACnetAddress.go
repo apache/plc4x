@@ -181,3 +181,14 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}
 	return nil
 }
+
+func (m BACnetAddress) String() string {
+	return string(m.Box("BACnetAddress", utils.DefaultWidth*2))
+}
+
+func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

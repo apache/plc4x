@@ -164,3 +164,13 @@ func (m *AdsWriteControlResponse) MarshalXML(e *xml.Encoder, start xml.StartElem
 	}
 	return nil
 }
+
+func (m AdsWriteControlResponse) String() string {
+	return string(m.Box("AdsWriteControlResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsWriteControlResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

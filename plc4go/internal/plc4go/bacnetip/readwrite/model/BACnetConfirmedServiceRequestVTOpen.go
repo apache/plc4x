@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestVTOpen) UnmarshalXML(d *xml.Decoder, start
 func (m *BACnetConfirmedServiceRequestVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestVTOpen) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestVTOpen", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestVTOpen) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

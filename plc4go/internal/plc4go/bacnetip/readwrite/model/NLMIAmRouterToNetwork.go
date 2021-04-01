@@ -180,3 +180,13 @@ func (m *NLMIAmRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	}
 	return nil
 }
+
+func (m NLMIAmRouterToNetwork) String() string {
+	return string(m.Box("NLMIAmRouterToNetwork", utils.DefaultWidth*2))
+}
+
+func (m NLMIAmRouterToNetwork) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

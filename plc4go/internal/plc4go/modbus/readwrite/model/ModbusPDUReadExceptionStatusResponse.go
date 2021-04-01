@@ -169,3 +169,13 @@ func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start 
 	}
 	return nil
 }
+
+func (m ModbusPDUReadExceptionStatusResponse) String() string {
+	return string(m.Box("ModbusPDUReadExceptionStatusResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

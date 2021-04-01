@@ -160,3 +160,13 @@ func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder,
 	}
 	return nil
 }
+
+func (m ConnectionResponseDataBlockTunnelConnection) String() string {
+	return string(m.Box("ConnectionResponseDataBlockTunnelConnection", utils.DefaultWidth*2))
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

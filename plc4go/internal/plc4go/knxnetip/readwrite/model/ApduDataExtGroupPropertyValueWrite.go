@@ -132,3 +132,12 @@ func (m *ApduDataExtGroupPropertyValueWrite) UnmarshalXML(d *xml.Decoder, start 
 func (m *ApduDataExtGroupPropertyValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m ApduDataExtGroupPropertyValueWrite) String() string {
+	return string(m.Box("ApduDataExtGroupPropertyValueWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtGroupPropertyValueWrite) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

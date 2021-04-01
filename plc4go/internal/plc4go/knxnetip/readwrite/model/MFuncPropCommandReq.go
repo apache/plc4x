@@ -132,3 +132,12 @@ func (m *MFuncPropCommandReq) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 func (m *MFuncPropCommandReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m MFuncPropCommandReq) String() string {
+	return string(m.Box("MFuncPropCommandReq", utils.DefaultWidth*2))
+}
+
+func (m MFuncPropCommandReq) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

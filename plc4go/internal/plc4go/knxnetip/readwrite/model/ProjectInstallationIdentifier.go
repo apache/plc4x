@@ -165,3 +165,14 @@ func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.Sta
 	}
 	return nil
 }
+
+func (m ProjectInstallationIdentifier) String() string {
+	return string(m.Box("ProjectInstallationIdentifier", utils.DefaultWidth*2))
+}
+
+func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

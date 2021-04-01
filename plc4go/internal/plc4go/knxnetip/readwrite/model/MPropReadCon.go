@@ -301,3 +301,18 @@ func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 	return nil
 }
+
+func (m MPropReadCon) String() string {
+	return string(m.Box("MPropReadCon", utils.DefaultWidth*2))
+}
+
+func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
+	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
+	boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

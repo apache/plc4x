@@ -160,3 +160,13 @@ func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElem
 	}
 	return nil
 }
+
+func (m BVLCOriginalUnicastNPDU) String() string {
+	return string(m.Box("BVLCOriginalUnicastNPDU", utils.DefaultWidth*2))
+}
+
+func (m BVLCOriginalUnicastNPDU) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

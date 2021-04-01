@@ -255,3 +255,16 @@ func (m *ModbusPDUWriteFileRecordRequestItem) MarshalXML(e *xml.Encoder, start x
 	}
 	return nil
 }
+
+func (m ModbusPDUWriteFileRecordRequestItem) String() string {
+	return string(m.Box("ModbusPDUWriteFileRecordRequestItem", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordData", m.RecordData, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

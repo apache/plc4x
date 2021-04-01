@@ -197,3 +197,14 @@ func (m *ModbusPDUDiagnosticRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 	}
 	return nil
 }
+
+func (m ModbusPDUDiagnosticRequest) String() string {
+	return string(m.Box("ModbusPDUDiagnosticRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUDiagnosticRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

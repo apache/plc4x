@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) UnmarshalXML(d *xml.Decod
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestAtomicWriteFile) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestAtomicWriteFile", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestAtomicWriteFile) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -188,3 +188,14 @@ func (m *DisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	}
 	return nil
 }
+
+func (m DisconnectResponse) String() string {
+	return string(m.Box("DisconnectResponse", utils.DefaultWidth*2))
+}
+
+func (m DisconnectResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Unmarsha
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

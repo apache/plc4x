@@ -452,3 +452,12 @@ func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m AdsData) String() string {
+	return string(m.Box("AdsData", utils.DefaultWidth*2))
+}
+
+func (m AdsData) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

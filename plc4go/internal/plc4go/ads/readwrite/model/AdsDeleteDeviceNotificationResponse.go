@@ -164,3 +164,13 @@ func (m *AdsDeleteDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start x
 	}
 	return nil
 }
+
+func (m AdsDeleteDeviceNotificationResponse) String() string {
+	return string(m.Box("AdsDeleteDeviceNotificationResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsDeleteDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

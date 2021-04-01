@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) UnmarshalXML(d
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceACKRemovedReadPropertyConditional) String() string {
+	return string(m.Box("BACnetConfirmedServiceACKRemovedReadPropertyConditional", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACKRemovedReadPropertyConditional) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

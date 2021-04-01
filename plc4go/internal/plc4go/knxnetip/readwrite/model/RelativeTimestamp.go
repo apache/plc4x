@@ -139,3 +139,13 @@ func (m *RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	}
 	return nil
 }
+
+func (m RelativeTimestamp) String() string {
+	return string(m.Box("RelativeTimestamp", utils.DefaultWidth*2))
+}
+
+func (m RelativeTimestamp) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

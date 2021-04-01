@@ -132,3 +132,12 @@ func (m *RoutingIndication) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 func (m *RoutingIndication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m RoutingIndication) String() string {
+	return string(m.Box("RoutingIndication", utils.DefaultWidth*2))
+}
+
+func (m RoutingIndication) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -274,10 +274,17 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
 			if expectedRawOutput[i] != rawOutput[i] {
-				dasHierWollenWir := ser
-				dasKommt, err := readWriteModel.AmsTCPPacketParse(utils.NewReadBuffer(rawOutput))
-				println(dasHierWollenWir, dasKommt, err)
-				log.Error().Err(err).Msg("Omg")
+				switch m.driverName {
+				case "modbus":
+					message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+					if err != nil {
+						return errors.Wrap(err, "error parsing xml")
+					}
+				case "ads":
+					expectationAmsTCPPacket := ser.(*readWriteModel.AmsTCPPacket)
+					actualAmsTcpPacket, err := readWriteModel.AmsTCPPacketParse(utils.NewReadBuffer(rawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectationAmsTCPPacket, actualAmsTcpPacket)
+				}
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
 			}
 		}

@@ -219,3 +219,13 @@ func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.St
 	}
 	return nil
 }
+
+func (m ModbusPDUReadFifoQueueResponse) String() string {
+	return string(m.Box("ModbusPDUReadFifoQueueResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FifoValue", m.FifoValue, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

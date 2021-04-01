@@ -205,3 +205,13 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.E
 	}
 	return nil
 }
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) String() string {
+	return string(m.Box("ModbusPDUReadWriteMultipleHoldingRegistersResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

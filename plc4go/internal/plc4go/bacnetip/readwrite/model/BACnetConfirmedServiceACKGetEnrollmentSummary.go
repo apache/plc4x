@@ -132,3 +132,12 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) UnmarshalXML(d *xml.Deco
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) String() string {
+	return string(m.Box("BACnetConfirmedServiceACKGetEnrollmentSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

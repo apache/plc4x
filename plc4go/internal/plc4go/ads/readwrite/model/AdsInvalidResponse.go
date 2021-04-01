@@ -136,3 +136,12 @@ func (m *AdsInvalidResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 func (m *AdsInvalidResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
+
+func (m AdsInvalidResponse) String() string {
+	return string(m.Box("AdsInvalidResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsInvalidResponse) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

@@ -250,3 +250,13 @@ func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m NLM) String() string {
+	return string(m.Box("NLM", utils.DefaultWidth*2))
+}
+
+func (m NLM) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

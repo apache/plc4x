@@ -509,3 +509,12 @@ func (m *CEMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+func (m CEMI) String() string {
+	return string(m.Box("CEMI", utils.DefaultWidth*2))
+}
+
+func (m CEMI) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}

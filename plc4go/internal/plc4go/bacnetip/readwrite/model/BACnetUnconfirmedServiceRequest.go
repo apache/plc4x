@@ -355,3 +355,12 @@ func (m *BACnetUnconfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.S
 	}
 	return nil
 }
+
+func (m BACnetUnconfirmedServiceRequest) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequest", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+}
