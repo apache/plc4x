@@ -92,14 +92,14 @@
 ]
 
 [discriminatedType 'DCPDeviceProperties' [DevicePropertiesSubOption 'subOptionType']
-    [simple uint 16 'length' ]
+    [simple uint 16 'dcpBlockSize' ]
     [simple uint 16 'info'   ]
     [typeSwitch 'subOptionType'
-        ['DevicePropertiesSubOption.STATION_TYPE' StationType [uint 16 'length']
-            [simple Text 'vendorNameForDevice' ['length - 2']]
+        ['DevicePropertiesSubOption.STATION_TYPE' StationType [uint 16 'dcpBlockSize']
+            [simple Text 'vendorNameForDevice' ['dcpBlockSize - 2']]
         ]
-        ['DevicePropertiesSubOption.STATION_NAME' StationName [uint 16 'length']
-            [simple Text 'name' ['length - 2']]
+        ['DevicePropertiesSubOption.STATION_NAME' StationName [uint 16 'dcpBlockSize']
+            [simple Text 'name' ['dcpBlockSize - 2']]
         ]
         ['DevicePropertiesSubOption.DEVICE_ID' DeviceId
             [simple uint 16 'vendorId'         ]
@@ -109,9 +109,8 @@
             [simple uint 8   'role'       ]
             [reserved uint 8 '0x00'       ]
         ]
-        ['DevicePropertiesSubOption.DEVICE_OPTIONS' DeviceOptions
-            [enum DCPBlockOption            'blockType'         ]
-            [enum DevicePropertiesSubOption 'subOption'         ]
+        ['DevicePropertiesSubOption.DEVICE_OPTIONS' DeviceOptions [uint 16 'dcpBlockSize']
+            [array DeviceOptionsEntry 'options' length 'dcpBlockSize']
         ]
         ['DevicePropertiesSubOption.DEVICE_INSTANCE' DeviceInstance
             [simple uint 8 'instanceHigh'        ]
@@ -119,9 +118,14 @@
         ]
     ]
     // Padding using 0..1 old format
-    //[padding uint 8                 'pad' '0x00' '(length % 2 == 0 ? 0 : 1)']
+    //[padding uint 8                 'pad' '0x00' '(dcpBlockSize % 2 == 0 ? 0 : 1)']
     // Padding using 0..N new format
-    [padding uint 8                 'pad' '0x00' 'length % 2']
+    [padding uint 8                 'pad' '0x00' 'dcpBlockSize % 2']
+]
+
+[type 'DeviceOptionsEntry'
+    [enum DCPBlockOption            'blockType'         ]
+    [enum DevicePropertiesSubOption 'subOption'         ]
 ]
 
 [enum uint 8 'DCPBlockOption'

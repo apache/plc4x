@@ -32,23 +32,23 @@
     </xml>
   </testcase>
 
-  <testcase>
-    <name>Wireshark Block: Device/Device Options</name>
-    <raw>0205000400000207</raw>
-    <root-type>DCPBlock</root-type>
-    <xml>
-      <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
-        <blockType>DEVICE_PROPERTIES</blockType>
-        <subOption>DEVICE_OPTIONS</subOption>
-        <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">
-          <length>4</length>
-          <info>0</info>
-          <blockType>DEVICE_PROPERTIES</blockType>
-          <subOption>DEVICE_INSTANCE</subOption>
-        </properties>
-      </DeviceProperties>
-    </xml>
-  </testcase>
+<!--  <testcase>-->
+<!--    <name>Wireshark Block: Device/Device Options</name>-->
+<!--    <raw>0205000400000207</raw>-->
+<!--    <root-type>DCPBlock</root-type>-->
+<!--    <xml>-->
+<!--      <DeviceProperties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">-->
+<!--        <blockType>DEVICE_PROPERTIES</blockType>-->
+<!--        <subOption>DEVICE_OPTIONS</subOption>-->
+<!--        <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">-->
+<!--          <dcpBlockSize>4</dcpBlockSize>-->
+<!--          <info>0</info>-->
+<!--          <blockType>DEVICE_PROPERTIES</blockType>-->
+<!--          <subOption>DEVICE_INSTANCE</subOption>-->
+<!--        </properties>-->
+<!--      </DeviceProperties>-->
+<!--    </xml>-->
+<!--  </testcase>-->
 
   <testcase>
     <name>Wireshark Block: Device/Manufacturer specific (Station Type)</name>
@@ -59,7 +59,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>STATION_TYPE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationType">
-          <length>12</length>
+          <dcpBlockSize>12</dcpBlockSize>
           <info>0</info>
           <vendorNameForDevice className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
             <text>AXC F 2152</text>
@@ -78,7 +78,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>STATION_NAME</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationName">
-          <length>14</length>
+          <dcpBlockSize>14</dcpBlockSize>
           <info>0</info>
           <name className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
             <text>axc-f-2152-1</text>
@@ -97,7 +97,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>STATION_NAME</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationName">
-          <length>35</length>
+          <dcpBlockSize>35</dcpBlockSize>
           <info>0</info>
           <name className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
             <text>m1850.xd01-455u1-exxhaust.fand545</text>
@@ -116,7 +116,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_ID</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceId">
-          <length>6</length>
+          <dcpBlockSize>6</dcpBlockSize>
           <info>0</info>
           <vendorId>176</vendorId>
           <deviceId>322</deviceId>
@@ -134,7 +134,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_ROLE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceRole">
-          <length>4</length>
+          <dcpBlockSize>4</dcpBlockSize>
           <info>0</info>
           <role>3</role>
         </properties>
@@ -151,7 +151,7 @@
         <blockType>DEVICE_PROPERTIES</blockType>
         <subOption>DEVICE_INSTANCE</subOption>
         <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceInstance">
-          <length>4</length>
+          <dcpBlockSize>4</dcpBlockSize>
           <info>0</info>
           <instanceHigh>0</instanceHigh>
           <instanceLow>100</instanceLow>
