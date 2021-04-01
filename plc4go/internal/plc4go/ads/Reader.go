@@ -60,17 +60,147 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	log.Trace().Msg("Reading")
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
-		if len(readRequest.GetFieldNames()) != 1 {
+		if len(readRequest.GetFieldNames()) <= 1 {
+			m.singleRead(readRequest, result)
+		} else {
+			m.multiRead(readRequest, result)
+		}
+	}()
+	return result
+}
+
+func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+	if len(readRequest.GetFieldNames()) != 1 {
+		result <- model.PlcReadRequestResult{
+			Request:  readRequest,
+			Response: nil,
+			Err:      errors.New("ads only supports single-item requests"),
+		}
+		log.Debug().Msgf("ads only supports single-item requests. Got %d fields", len(readRequest.GetFieldNames()))
+		return
+	}
+	// If we are requesting only one field, use a
+	fieldName := readRequest.GetFieldNames()[0]
+	field := readRequest.GetField(fieldName)
+	if needsResolving(field) {
+		adsField, err := castToSymbolicPlcFieldFromPlcField(field)
+		if err != nil {
 			result <- model.PlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
-				Err:      errors.New("ads only supports single-item requests"),
+				Err:      errors.Wrap(err, "invalid field item type"),
 			}
-			log.Debug().Msgf("ads only supports single-item requests. Got %d fields", len(readRequest.GetFieldNames()))
+			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
-		// If we are requesting only one field, use a
-		fieldName := readRequest.GetFieldNames()[0]
+		field, err = m.resolveField(adsField)
+		if err != nil {
+			result <- model.PlcReadRequestResult{
+				Request:  readRequest,
+				Response: nil,
+				Err:      errors.Wrap(err, "invalid field item type"),
+			}
+			log.Debug().Msgf("Invalid field item type %T", field)
+			return
+		}
+	}
+	adsField, err := castToDirectAdsFieldFromPlcField(field)
+	if err != nil {
+		result <- model.PlcReadRequestResult{
+			Request:  readRequest,
+			Response: nil,
+			Err:      errors.Wrap(err, "invalid field item type"),
+		}
+		log.Debug().Msgf("Invalid field item type %T", field)
+		return
+	}
+	userdata := readWriteModel.AmsPacket{
+		TargetAmsNetId: &m.targetAmsNetId,
+		TargetAmsPort:  m.targetAmsPort,
+		SourceAmsNetId: &m.sourceAmsNetId,
+		SourceAmsPort:  m.sourceAmsPort,
+		CommandId:      readWriteModel.CommandId_ADS_READ,
+		State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+		ErrorCode:      0,
+		InvokeId:       0,
+		Data:           nil,
+	}
+
+	readLength := uint32(adsField.Datatype.NumBytes())
+	switch {
+	case adsField.GetDatatype() == readWriteModel.AdsDataType_STRING:
+		// If an explicit size is given with the string, use this, if not use 256
+		if adsField.GetStringLength() != 0 {
+			readLength = uint32(adsField.GetStringLength())
+		} else {
+			readLength = 256
+		}
+	case adsField.GetDatatype() == readWriteModel.AdsDataType_WSTRING:
+		// If an explicit size is given with the string, use this, if not use 512
+		if adsField.GetStringLength() != 0 {
+			readLength = uint32(adsField.GetStringLength() * 2)
+		} else {
+			readLength = 512
+		}
+	default:
+		readLength = uint32(adsField.Datatype.NumBytes())
+	}
+	userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, readLength)
+
+	m.sendOverTheWire(userdata, readRequest, result)
+}
+
+func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
+	// Calculate the size of all fields together.
+	// Calculate the expected size of the response data.
+	expectedResponseDataSize := uint32(0)
+	for _, fieldName := range readRequest.GetFieldNames() {
+		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
+		if err != nil {
+			result <- model.PlcReadRequestResult{
+				Request:  readRequest,
+				Response: nil,
+				Err:      errors.Wrap(err, "error casting field"),
+			}
+			return
+		}
+		size := uint32(0)
+		switch field.GetDatatype() {
+		case readWriteModel.AdsDataType_STRING:
+			// If an explicit size is given with the string, use this, if not use 256
+			if field.GetStringLength() != 0 {
+				size = uint32(field.GetStringLength())
+			} else {
+				size = 256
+			}
+		case readWriteModel.AdsDataType_WSTRING:
+			// If an explicit size is given with the string, use this, if not use 512
+			if field.GetStringLength() != 0 {
+				size = uint32(field.GetStringLength() * 2)
+			} else {
+				size = 512
+			}
+		default:
+			size = uint32(field.GetDatatype().NumBytes())
+		}
+		// Status code + payload size
+		expectedResponseDataSize += 4 + (size * field.GetNumberOfElements())
+	}
+
+	userdata := readWriteModel.AmsPacket{
+		TargetAmsNetId: &m.targetAmsNetId,
+		TargetAmsPort:  m.targetAmsPort,
+		SourceAmsNetId: &m.sourceAmsNetId,
+		SourceAmsPort:  m.sourceAmsPort,
+		CommandId:      readWriteModel.CommandId_ADS_READ_WRITE,
+		State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
+		ErrorCode:      0,
+		InvokeId:       0,
+		Data:           nil,
+	}
+
+	items := make([]*readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
+	for i, fieldName := range readRequest.GetFieldNames() {
 		field := readRequest.GetField(fieldName)
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
@@ -104,37 +234,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
-		userdata := readWriteModel.AmsPacket{
-			TargetAmsNetId: &m.targetAmsNetId,
-			TargetAmsPort:  m.targetAmsPort,
-			SourceAmsNetId: &m.sourceAmsNetId,
-			SourceAmsPort:  m.sourceAmsPort,
-			CommandId:      readWriteModel.CommandId_ADS_READ,
-			State:          readWriteModel.NewState(false, false, false, false, false, true, false, false, false),
-			ErrorCode:      0,
-			InvokeId:       0,
-			Data:           nil,
-		}
-		switch adsField.FieldType {
-		case DirectAdsStringField:
-			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.Datatype.LengthInBytes()))
-		case DirectAdsField:
-			userdata.Data = readWriteModel.NewAdsReadRequest(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.Datatype.LengthInBytes()))
-		case SymbolicAdsStringField, SymbolicAdsField:
-			panic("we should never reach this point as symbols are resolved before")
-		default:
-			result <- model.PlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Errorf("unsupported field type %x", adsField.FieldType),
-			}
-			log.Debug().Msgf("Unsupported field type %x", adsField.FieldType)
-			return
-		}
+		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
+		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements)
+	}
+	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)
 
-		m.sendOverTheWire(userdata, readRequest, result)
-	}()
-	return result
+	m.sendOverTheWire(userdata, readRequest, result)
 }
 
 func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
