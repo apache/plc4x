@@ -226,6 +226,8 @@ func (m Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	// TODO: currently there seems to be issues with the generated code
+	//return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, m.reader)
 	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler, m.reader, m.requestInterceptor)
 }
 
