@@ -881,6 +881,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"math/big\"");
         }
 
+        Collections.sort(imports);
         return imports;
     }
 
@@ -901,6 +902,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "secondsSinceEpoch")))) {
             imports.add("\"time\"");
         }
+
+        Collections.sort(imports);
         return imports;
     }
 
