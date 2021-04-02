@@ -20,12 +20,15 @@
 package tests
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"testing"
 )
 
 func TestManualAds(t *testing.T) {
-	t.Skip()
+	//t.Skip()
 
 	/*
 		     * Test program code on the PLC with the test-data.
@@ -66,7 +69,10 @@ func TestManualAds(t *testing.T) {
 		     *
 	*/
 
-	test := testutils.NewManualTestSuite("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851")
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(ads.NewDriver())
+	driverManager.RegisterTransport(tcp.NewTransport())
+	test := testutils.NewManualTestSuite("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851", driverManager)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})
 	test.AddTestCase("main.hurz_WORD:WORD", []bool{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false})

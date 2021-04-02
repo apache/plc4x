@@ -37,12 +37,14 @@ type ManualTestCase struct {
 
 type ManualTestSuite struct {
 	ConnectionString string
+	DriverManager    plc4go.PlcDriverManager
 	TestCases        []ManualTestCase
 }
 
-func NewManualTestSuite(connectionString string) *ManualTestSuite {
+func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverManager) *ManualTestSuite {
 	return &ManualTestSuite{
 		ConnectionString: connectionString,
+		DriverManager:    driverManager,
 	}
 }
 
@@ -51,7 +53,7 @@ func (m ManualTestSuite) AddTestCase(address string, expectedReadValue interface
 }
 
 func (m ManualTestSuite) Run() {
-	connectionResult := <-plc4go.NewPlcDriverManager().GetConnection(m.ConnectionString)
+	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if connectionResult.Err != nil {
 		panic(connectionResult.Err)
 	}
