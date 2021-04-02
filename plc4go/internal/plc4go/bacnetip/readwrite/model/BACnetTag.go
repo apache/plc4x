@@ -511,10 +511,14 @@ func (m BACnetTag) String() string {
 }
 
 func (m BACnetTag) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTag"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

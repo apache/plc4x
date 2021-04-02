@@ -167,6 +167,9 @@ func (m KnxGroupAddressFreeLevel) String() string {
 }
 
 func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddressFreeLevel"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

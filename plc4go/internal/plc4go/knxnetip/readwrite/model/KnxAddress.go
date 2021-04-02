@@ -197,6 +197,9 @@ func (m KnxAddress) String() string {
 }
 
 func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxAddress"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))

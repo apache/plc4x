@@ -171,6 +171,9 @@ func (m DeviceStatus) String() string {
 }
 
 func (m DeviceStatus) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceStatus"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

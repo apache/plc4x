@@ -187,6 +187,9 @@ func (m BACnetAddress) String() string {
 }
 
 func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetAddress"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
 	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))

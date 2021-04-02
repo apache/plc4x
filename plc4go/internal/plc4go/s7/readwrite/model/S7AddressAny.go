@@ -333,6 +333,9 @@ func (m S7AddressAny) String() string {
 }
 
 func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7AddressAny"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
 	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))

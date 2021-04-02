@@ -138,6 +138,9 @@ func (m MResetReq) String() string {
 }
 
 func (m MResetReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MResetReq"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

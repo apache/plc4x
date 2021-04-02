@@ -376,6 +376,9 @@ func (m BACnetServiceAckReadProperty) String() string {
 }
 
 func (m BACnetServiceAckReadProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckReadProperty"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))

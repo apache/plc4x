@@ -212,6 +212,9 @@ func (m HPAIDiscoveryEndpoint) String() string {
 }
 
 func (m HPAIDiscoveryEndpoint) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "HPAIDiscoveryEndpoint"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
 	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))

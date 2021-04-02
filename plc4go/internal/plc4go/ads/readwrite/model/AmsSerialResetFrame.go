@@ -275,6 +275,9 @@ func (m AmsSerialResetFrame) String() string {
 }
 
 func (m AmsSerialResetFrame) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsSerialResetFrame"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
 	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))

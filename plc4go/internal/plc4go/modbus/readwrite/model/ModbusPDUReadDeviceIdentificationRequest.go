@@ -146,6 +146,9 @@ func (m ModbusPDUReadDeviceIdentificationRequest) String() string {
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadDeviceIdentificationRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

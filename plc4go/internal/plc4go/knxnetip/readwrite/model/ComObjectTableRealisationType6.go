@@ -166,6 +166,9 @@ func (m ComObjectTableRealisationType6) String() string {
 }
 
 func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ComObjectTableRealisationType6"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

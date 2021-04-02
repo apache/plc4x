@@ -138,6 +138,9 @@ func (m ApduDataExtKeyWrite) String() string {
 }
 
 func (m ApduDataExtKeyWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtKeyWrite"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

@@ -138,6 +138,9 @@ func (m BVLCWideBroadcastDistributionTable) String() string {
 }
 
 func (m BVLCWideBroadcastDistributionTable) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCWideBroadcastDistributionTable"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

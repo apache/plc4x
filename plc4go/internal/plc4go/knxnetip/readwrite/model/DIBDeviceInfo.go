@@ -400,6 +400,9 @@ func (m DIBDeviceInfo) String() string {
 }
 
 func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DIBDeviceInfo"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
 	boxes = append(boxes, utils.BoxAnything("KnxMedium", m.KnxMedium, width-2))

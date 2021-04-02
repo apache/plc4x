@@ -166,6 +166,9 @@ func (m ConnectionResponseDataBlockTunnelConnection) String() string {
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionResponseDataBlockTunnelConnection"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

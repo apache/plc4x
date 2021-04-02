@@ -138,6 +138,9 @@ func (m ApduDataExtLinkWrite) String() string {
 }
 
 func (m ApduDataExtLinkWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtLinkWrite"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

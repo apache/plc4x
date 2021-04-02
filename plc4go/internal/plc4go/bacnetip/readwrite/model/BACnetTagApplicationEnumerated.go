@@ -192,6 +192,9 @@ func (m BACnetTagApplicationEnumerated) String() string {
 }
 
 func (m BACnetTagApplicationEnumerated) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationEnumerated"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

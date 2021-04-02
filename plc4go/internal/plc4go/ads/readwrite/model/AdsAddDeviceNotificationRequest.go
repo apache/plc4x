@@ -338,6 +338,9 @@ func (m AdsAddDeviceNotificationRequest) String() string {
 }
 
 func (m AdsAddDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsAddDeviceNotificationRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))

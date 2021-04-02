@@ -138,6 +138,9 @@ func (m BACnetServiceAckVTOpen) String() string {
 }
 
 func (m BACnetServiceAckVTOpen) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckVTOpen"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

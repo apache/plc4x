@@ -138,6 +138,9 @@ func (m LRawInd) String() string {
 }
 
 func (m LRawInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LRawInd"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

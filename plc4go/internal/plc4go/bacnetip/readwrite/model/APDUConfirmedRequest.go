@@ -434,6 +434,9 @@ func (m APDUConfirmedRequest) String() string {
 }
 
 func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUConfirmedRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
 	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))

@@ -225,6 +225,9 @@ func (m COTPPacketDisconnectRequest) String() string {
 }
 
 func (m COTPPacketDisconnectRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacketDisconnectRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
 	boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))

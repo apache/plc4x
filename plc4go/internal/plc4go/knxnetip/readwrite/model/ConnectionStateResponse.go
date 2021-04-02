@@ -194,6 +194,9 @@ func (m ConnectionStateResponse) String() string {
 }
 
 func (m ConnectionStateResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionStateResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))

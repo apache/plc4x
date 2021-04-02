@@ -146,6 +146,9 @@ func (m ModbusPDUReportServerIdRequest) String() string {
 }
 
 func (m ModbusPDUReportServerIdRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReportServerIdRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

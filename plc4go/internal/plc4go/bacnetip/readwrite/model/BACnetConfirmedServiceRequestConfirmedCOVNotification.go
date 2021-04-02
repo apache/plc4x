@@ -519,6 +519,9 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string {
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestConfirmedCOVNotification"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, width-2))
 	boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, width-2))

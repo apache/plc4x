@@ -142,6 +142,9 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

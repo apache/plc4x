@@ -351,6 +351,9 @@ func (m GroupObjectDescriptorRealisationType7) String() string {
 }
 
 func (m GroupObjectDescriptorRealisationType7) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "GroupObjectDescriptorRealisationType7"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DataAddress", m.DataAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, width-2))

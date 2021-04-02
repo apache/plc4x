@@ -301,6 +301,9 @@ func (m AdsReadDeviceInfoResponse) String() string {
 }
 
 func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadDeviceInfoResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 	boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, width-2))

@@ -175,6 +175,9 @@ func (m ModbusPDUReadFifoQueueRequest) String() string {
 }
 
 func (m ModbusPDUReadFifoQueueRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFifoQueueRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("FifoPointerAddress", m.FifoPointerAddress, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

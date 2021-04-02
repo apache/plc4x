@@ -220,6 +220,9 @@ func (m APDUError) String() string {
 }
 
 func (m APDUError) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUError"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 	boxes = append(boxes, utils.BoxAnything("Error", m.Error, width-2))

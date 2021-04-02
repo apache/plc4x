@@ -375,6 +375,9 @@ func (m DeviceDescriptorType2) String() string {
 }
 
 func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceDescriptorType2"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ManufacturerId", m.ManufacturerId, width-2))
 	boxes = append(boxes, utils.BoxAnything("DeviceType", m.DeviceType, width-2))

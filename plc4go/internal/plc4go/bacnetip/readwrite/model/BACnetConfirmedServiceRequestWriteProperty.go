@@ -416,6 +416,9 @@ func (m BACnetConfirmedServiceRequestWriteProperty) String() string {
 }
 
 func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestWriteProperty"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))

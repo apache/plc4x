@@ -349,6 +349,9 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) String() string {
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestWhoHas"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimit", m.DeviceInstanceLowLimit, width-2))
 	boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimit", m.DeviceInstanceHighLimit, width-2))

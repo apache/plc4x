@@ -300,6 +300,9 @@ func (m AmsSerialFrame) String() string {
 }
 
 func (m AmsSerialFrame) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsSerialFrame"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
 	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))

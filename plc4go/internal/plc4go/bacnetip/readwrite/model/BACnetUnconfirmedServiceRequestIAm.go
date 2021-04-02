@@ -405,6 +405,9 @@ func (m BACnetUnconfirmedServiceRequestIAm) String() string {
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestIAm"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))

@@ -138,6 +138,9 @@ func (m TDataIndividualReq) String() string {
 }
 
 func (m TDataIndividualReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TDataIndividualReq"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

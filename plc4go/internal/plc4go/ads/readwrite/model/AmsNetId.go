@@ -275,6 +275,9 @@ func (m AmsNetId) String() string {
 }
 
 func (m AmsNetId) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsNetId"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Octet1", m.Octet1, width-2))
 	boxes = append(boxes, utils.BoxAnything("Octet2", m.Octet2, width-2))

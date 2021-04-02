@@ -329,6 +329,9 @@ func (m CEMIAdditionalInformationBusmonitorInfo) String() string {
 }
 
 func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "CEMIAdditionalInformationBusmonitorInfo"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, width-2))
 	boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, width-2))

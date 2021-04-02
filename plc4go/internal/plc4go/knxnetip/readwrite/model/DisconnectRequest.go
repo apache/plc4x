@@ -220,6 +220,9 @@ func (m DisconnectRequest) String() string {
 }
 
 func (m DisconnectRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DisconnectRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))

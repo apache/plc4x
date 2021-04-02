@@ -268,6 +268,9 @@ func (m SzlDataTreeItem) String() string {
 }
 
 func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SzlDataTreeItem"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, width-2))
 	boxes = append(boxes, utils.BoxAnything("Mlfb", m.Mlfb, width-2))

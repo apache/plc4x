@@ -248,6 +248,9 @@ func (m ModbusSerialADU) String() string {
 }
 
 func (m ModbusSerialADU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusSerialADU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TransactionId", m.TransactionId, width-2))
 	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))

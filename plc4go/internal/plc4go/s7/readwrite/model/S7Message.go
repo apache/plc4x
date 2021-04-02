@@ -424,9 +424,13 @@ func (m S7Message) String() string {
 }
 
 func (m S7Message) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7Message"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TpduReference", m.TpduReference, width-2))
 	boxes = append(boxes, utils.BoxAnything("Parameter", m.Parameter, width-2))
 	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

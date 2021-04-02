@@ -220,6 +220,9 @@ func (m SearchResponse) String() string {
 }
 
 func (m SearchResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SearchResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
 	boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))

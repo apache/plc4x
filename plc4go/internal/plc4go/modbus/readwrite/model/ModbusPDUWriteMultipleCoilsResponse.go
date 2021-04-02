@@ -203,6 +203,9 @@ func (m ModbusPDUWriteMultipleCoilsResponse) String() string {
 }
 
 func (m ModbusPDUWriteMultipleCoilsResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteMultipleCoilsResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))

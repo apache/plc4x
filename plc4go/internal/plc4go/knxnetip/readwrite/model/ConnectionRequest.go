@@ -220,6 +220,9 @@ func (m ConnectionRequest) String() string {
 }
 
 func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
 	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))

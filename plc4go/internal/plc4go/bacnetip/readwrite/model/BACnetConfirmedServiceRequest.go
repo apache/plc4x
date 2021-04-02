@@ -627,6 +627,10 @@ func (m BACnetConfirmedServiceRequest) String() string {
 }
 
 func (m BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

@@ -655,6 +655,9 @@ func (m NPDU) String() string {
 }
 
 func (m NPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "NPDU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("MessageTypeFieldPresent", m.MessageTypeFieldPresent, width-2))

@@ -167,6 +167,9 @@ func (m KnxNetIpCore) String() string {
 }
 
 func (m KnxNetIpCore) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetIpCore"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

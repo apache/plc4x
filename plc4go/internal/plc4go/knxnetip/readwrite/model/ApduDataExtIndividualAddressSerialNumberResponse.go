@@ -138,6 +138,9 @@ func (m ApduDataExtIndividualAddressSerialNumberResponse) String() string {
 }
 
 func (m ApduDataExtIndividualAddressSerialNumberResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtIndividualAddressSerialNumberResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

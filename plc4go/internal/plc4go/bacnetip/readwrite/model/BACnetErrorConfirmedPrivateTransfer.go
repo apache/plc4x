@@ -138,6 +138,9 @@ func (m BACnetErrorConfirmedPrivateTransfer) String() string {
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorConfirmedPrivateTransfer"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

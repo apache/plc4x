@@ -305,6 +305,10 @@ func (m APDU) String() string {
 }
 
 func (m APDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

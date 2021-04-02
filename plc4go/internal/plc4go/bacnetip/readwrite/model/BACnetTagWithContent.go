@@ -377,6 +377,9 @@ func (m BACnetTagWithContent) String() string {
 }
 
 func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagWithContent"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", m.ContextSpecificTag, width-2))

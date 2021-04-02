@@ -197,6 +197,9 @@ func (m SzlId) String() string {
 }
 
 func (m SzlId) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SzlId"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeClass", m.TypeClass, width-2))
 	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, width-2))

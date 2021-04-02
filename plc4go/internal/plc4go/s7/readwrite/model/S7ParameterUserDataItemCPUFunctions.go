@@ -407,6 +407,9 @@ func (m S7ParameterUserDataItemCPUFunctions) String() string {
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterUserDataItemCPUFunctions"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
 	boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))

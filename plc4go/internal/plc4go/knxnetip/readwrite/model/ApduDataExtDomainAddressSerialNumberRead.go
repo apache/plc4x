@@ -138,6 +138,9 @@ func (m ApduDataExtDomainAddressSerialNumberRead) String() string {
 }
 
 func (m ApduDataExtDomainAddressSerialNumberRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtDomainAddressSerialNumberRead"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

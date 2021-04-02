@@ -138,6 +138,9 @@ func (m MFuncPropStateReadReq) String() string {
 }
 
 func (m MFuncPropStateReadReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MFuncPropStateReadReq"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

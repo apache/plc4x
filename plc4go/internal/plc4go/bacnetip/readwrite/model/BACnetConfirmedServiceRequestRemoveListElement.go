@@ -138,6 +138,9 @@ func (m BACnetConfirmedServiceRequestRemoveListElement) String() string {
 }
 
 func (m BACnetConfirmedServiceRequestRemoveListElement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestRemoveListElement"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

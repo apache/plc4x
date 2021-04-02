@@ -221,6 +221,9 @@ func (m APDUReject) String() string {
 }
 
 func (m APDUReject) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUReject"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 	boxes = append(boxes, utils.BoxAnything("RejectReason", m.RejectReason, width-2))

@@ -166,6 +166,9 @@ func (m DescriptionRequest) String() string {
 }
 
 func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DescriptionRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

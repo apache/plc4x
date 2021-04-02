@@ -211,6 +211,9 @@ func (m DIBSuppSvcFamilies) String() string {
 }
 
 func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DIBSuppSvcFamilies"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ServiceIds", m.ServiceIds, width-2))

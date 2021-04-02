@@ -175,6 +175,9 @@ func (m ModbusPDUReadExceptionStatusResponse) String() string {
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadExceptionStatusResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

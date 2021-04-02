@@ -515,6 +515,10 @@ func (m CEMI) String() string {
 }
 
 func (m CEMI) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "CEMI"
+	}
 	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

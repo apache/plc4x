@@ -171,6 +171,9 @@ func (m S7ParameterReadVarResponse) String() string {
 }
 
 func (m S7ParameterReadVarResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterReadVarResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NumItems", m.NumItems, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

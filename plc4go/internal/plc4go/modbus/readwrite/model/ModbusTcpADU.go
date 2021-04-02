@@ -235,6 +235,9 @@ func (m ModbusTcpADU) String() string {
 }
 
 func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusTcpADU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
 	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))

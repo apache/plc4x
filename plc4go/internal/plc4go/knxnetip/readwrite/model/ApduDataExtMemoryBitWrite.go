@@ -138,6 +138,9 @@ func (m ApduDataExtMemoryBitWrite) String() string {
 }
 
 func (m ApduDataExtMemoryBitWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtMemoryBitWrite"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

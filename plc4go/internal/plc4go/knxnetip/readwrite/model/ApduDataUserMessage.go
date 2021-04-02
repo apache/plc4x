@@ -138,6 +138,9 @@ func (m ApduDataUserMessage) String() string {
 }
 
 func (m ApduDataUserMessage) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataUserMessage"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

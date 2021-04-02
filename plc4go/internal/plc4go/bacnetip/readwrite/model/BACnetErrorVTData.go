@@ -138,6 +138,9 @@ func (m BACnetErrorVTData) String() string {
 }
 
 func (m BACnetErrorVTData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorVTData"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

@@ -138,6 +138,9 @@ func (m BVLCRegisterForeignDevice) String() string {
 }
 
 func (m BVLCRegisterForeignDevice) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCRegisterForeignDevice"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

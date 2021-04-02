@@ -167,6 +167,9 @@ func (m KnxNetIpDeviceManagement) String() string {
 }
 
 func (m KnxNetIpDeviceManagement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetIpDeviceManagement"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

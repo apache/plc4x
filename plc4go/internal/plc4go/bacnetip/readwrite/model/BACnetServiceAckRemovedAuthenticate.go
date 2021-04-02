@@ -138,6 +138,9 @@ func (m BACnetServiceAckRemovedAuthenticate) String() string {
 }
 
 func (m BACnetServiceAckRemovedAuthenticate) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckRemovedAuthenticate"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

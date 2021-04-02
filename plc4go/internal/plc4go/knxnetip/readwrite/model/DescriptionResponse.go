@@ -193,6 +193,9 @@ func (m DescriptionResponse) String() string {
 }
 
 func (m DescriptionResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DescriptionResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
 	boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))

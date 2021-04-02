@@ -203,6 +203,9 @@ func (m ModbusPDUWriteSingleRegisterResponse) String() string {
 }
 
 func (m ModbusPDUWriteSingleRegisterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteSingleRegisterResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
 	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))

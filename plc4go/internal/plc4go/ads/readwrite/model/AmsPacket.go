@@ -365,6 +365,9 @@ func (m AmsPacket) String() string {
 }
 
 func (m AmsPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsPacket"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TargetAmsNetId", m.TargetAmsNetId, width-2))
 	boxes = append(boxes, utils.BoxAnything("TargetAmsPort", m.TargetAmsPort, width-2))
