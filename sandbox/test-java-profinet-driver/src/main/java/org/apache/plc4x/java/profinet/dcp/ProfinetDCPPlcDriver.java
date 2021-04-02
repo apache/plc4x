@@ -34,6 +34,8 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -42,6 +44,7 @@ import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
  * Proof of concept implementation of Profinet DCP driver.
  */
 public class ProfinetDCPPlcDriver extends GeneratedDriverBase<BaseEthernetFrame> {
+    static private final Logger LOG = LoggerFactory.getLogger(ProfinetDCPPlcDriver.class);
 
     @Override
     public String getProtocolCode() {
@@ -86,26 +89,35 @@ public class ProfinetDCPPlcDriver extends GeneratedDriverBase<BaseEthernetFrame>
         @Override
         public int applyAsInt(ByteBuf buffer) {
             // When frame uses vlan tag then getShort(12) will return different type, actual ethernet type is shifted by
-            // 2 bytes, after vlan tag information.
-            if (buffer.getShort(12) == ProfinetDCPProtocolLogic.VLAN && buffer.readableBytes() >= 26) {
-                return size(2, buffer);
+            // 4 bytes, after type & vlan tag information.
+            short protocol = buffer.getShort(12);
+            int bufferSize = buffer.readableBytes();
+            if (protocol == ProfinetDCPProtocolLogic.VLAN && bufferSize >= 26) {
+                return size(4, buffer);
             }
 
-            if (buffer.getShort(12) == ProfinetDCPProtocolLogic.PN_DCP && buffer.readableBytes() >= 24) {
+            if (protocol == ProfinetDCPProtocolLogic.PN_DCP && bufferSize >= 24) {
                 return size(0, buffer);
             }
+            LOG.debug("SIZE NOT CALLED; buffer.getShort(12)= {} and size= {}",protocol,bufferSize);
             return -1;
         }
 
         private int size(int offset, ByteBuf buffer) {
+            int DCPDataLeng =  buffer.getUnsignedShort(24 + offset);
+            int val = DCPDataLeng + 26 + offset;
             // profinet frames have fixed overhead of 26 bytes. First 16 is ethernet header, another 10 bytes are
             // needed to reach DCP block length field which gives an base for frame size calculation.
-            if (buffer.getByte(16 + offset) == DCPServiceID.IDENTIFY.getValue() &&
+            /*if (buffer.getByte(16 + offset) == DCPServiceID.IDENTIFY.getValue() &&
                 buffer.getByte(17 + offset) == DCPServiceType.REQUEST.getValue()) {
                 // identify request has fixed size
                 return 1024;
-            }
-            return buffer.getUnsignedShort(24 + offset) + 26 + offset;
+            }*/
+            // Noticed that all pn_dcp packages (DCPServiceID.IDENTIFY + DCPServiceType.REQUEST) that have size
+            // less than 60 will contain 0x00 padding to match min 60 length
+            if (val < 60) val=60;
+            LOG.info("DCPDataLen= {} and total len(+26)= {}",DCPDataLeng,val);
+            return val;
         }
     }
 

@@ -33,7 +33,9 @@
     ]
     [simple        ProfinetFrame 'payload'     ]
 ]
-
+// 60 is considered minimum length size for any profinet dcp frame
+// 26 bytes fixed size = 10 profinet overhead + 16 ethernet header
+// 40 is only valid for when Vlan Tagged
 [type 'ProfinetFrame'
     [enum FrameType 'frameType'                ]
     [simple ProfinetData 'frame'  ['frameType']]
