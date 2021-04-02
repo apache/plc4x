@@ -28,7 +28,7 @@ import (
 )
 
 func TestManualAds(t *testing.T) {
-	//t.Skip()
+	t.Skip()
 
 	/*
 		     * Test program code on the PLC with the test-data.
