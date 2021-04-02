@@ -170,6 +170,9 @@ func (m AdsWriteControlResponse) String() string {
 }
 
 func (m AdsWriteControlResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsWriteControlResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

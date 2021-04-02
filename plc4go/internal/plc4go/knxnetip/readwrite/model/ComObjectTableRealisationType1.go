@@ -241,6 +241,9 @@ func (m ComObjectTableRealisationType1) String() string {
 }
 
 func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ComObjectTableRealisationType1"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
 	boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))

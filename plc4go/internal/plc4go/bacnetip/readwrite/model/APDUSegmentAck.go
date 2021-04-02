@@ -305,6 +305,9 @@ func (m APDUSegmentAck) String() string {
 }
 
 func (m APDUSegmentAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUSegmentAck"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NegativeAck", m.NegativeAck, width-2))
 	boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))

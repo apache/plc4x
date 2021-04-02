@@ -379,6 +379,9 @@ func (m State) String() string {
 }
 
 func (m State) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "State"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, width-2))
 	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, width-2))

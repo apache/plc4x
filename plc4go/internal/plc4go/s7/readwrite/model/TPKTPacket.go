@@ -209,6 +209,9 @@ func (m TPKTPacket) String() string {
 }
 
 func (m TPKTPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TPKTPacket"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

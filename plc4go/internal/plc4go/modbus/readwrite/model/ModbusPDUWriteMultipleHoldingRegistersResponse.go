@@ -203,6 +203,9 @@ func (m ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {
 }
 
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteMultipleHoldingRegistersResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))

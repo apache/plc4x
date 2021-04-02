@@ -1089,6 +1089,9 @@ func (m ${type.name}) String() string {
 }
 
 func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "${type.name}"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	<#if type.fields?has_content>
 		<#list type.fields as field>
@@ -1096,6 +1099,9 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
 			</#if>
 		</#list>
+	</#if>
+	<#if helper.isDiscriminatedParentTypeDefinition()>
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	</#if>
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

@@ -138,6 +138,9 @@ func (m BACnetErrorReadRange) String() string {
 }
 
 func (m BACnetErrorReadRange) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorReadRange"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

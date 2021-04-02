@@ -213,6 +213,9 @@ func (m DeviceConfigurationAckDataBlock) String() string {
 }
 
 func (m DeviceConfigurationAckDataBlock) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceConfigurationAckDataBlock"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("SequenceCounter", m.SequenceCounter, width-2))

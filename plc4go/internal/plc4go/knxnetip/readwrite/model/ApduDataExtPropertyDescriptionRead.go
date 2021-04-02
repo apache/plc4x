@@ -223,6 +223,9 @@ func (m ApduDataExtPropertyDescriptionRead) String() string {
 }
 
 func (m ApduDataExtPropertyDescriptionRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtPropertyDescriptionRead"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
 	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))

@@ -245,6 +245,9 @@ func (m AdsDeviceNotificationRequest) String() string {
 }
 
 func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeviceNotificationRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
 	boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, width-2))

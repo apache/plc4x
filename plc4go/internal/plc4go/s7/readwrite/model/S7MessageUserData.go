@@ -141,6 +141,9 @@ func (m S7MessageUserData) String() string {
 }
 
 func (m S7MessageUserData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7MessageUserData"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

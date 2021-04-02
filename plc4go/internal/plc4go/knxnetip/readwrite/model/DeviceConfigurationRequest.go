@@ -193,6 +193,9 @@ func (m DeviceConfigurationRequest) String() string {
 }
 
 func (m DeviceConfigurationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceConfigurationRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationRequestDataBlock", m.DeviceConfigurationRequestDataBlock, width-2))
 	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))

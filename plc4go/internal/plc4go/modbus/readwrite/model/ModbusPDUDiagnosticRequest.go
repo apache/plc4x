@@ -203,6 +203,9 @@ func (m ModbusPDUDiagnosticRequest) String() string {
 }
 
 func (m ModbusPDUDiagnosticRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUDiagnosticRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))

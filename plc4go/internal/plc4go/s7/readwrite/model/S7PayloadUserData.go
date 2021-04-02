@@ -192,6 +192,9 @@ func (m S7PayloadUserData) String() string {
 }
 
 func (m S7PayloadUserData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7PayloadUserData"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

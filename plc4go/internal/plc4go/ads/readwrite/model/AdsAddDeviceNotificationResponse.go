@@ -198,6 +198,9 @@ func (m AdsAddDeviceNotificationResponse) String() string {
 }
 
 func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsAddDeviceNotificationResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))

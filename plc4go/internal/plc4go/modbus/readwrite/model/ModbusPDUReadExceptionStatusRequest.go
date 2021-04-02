@@ -146,6 +146,9 @@ func (m ModbusPDUReadExceptionStatusRequest) String() string {
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadExceptionStatusRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

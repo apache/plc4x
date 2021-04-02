@@ -361,6 +361,10 @@ func (m BACnetUnconfirmedServiceRequest) String() string {
 }
 
 func (m BACnetUnconfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

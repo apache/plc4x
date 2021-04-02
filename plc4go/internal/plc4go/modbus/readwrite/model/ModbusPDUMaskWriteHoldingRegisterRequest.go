@@ -231,6 +231,9 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUMaskWriteHoldingRegisterRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))

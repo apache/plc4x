@@ -223,6 +223,9 @@ func (m AdsMultiRequestItemWrite) String() string {
 }
 
 func (m AdsMultiRequestItemWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsMultiRequestItemWrite"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))

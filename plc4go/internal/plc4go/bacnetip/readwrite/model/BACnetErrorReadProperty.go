@@ -328,6 +328,9 @@ func (m BACnetErrorReadProperty) String() string {
 }
 
 func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorReadProperty"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, width-2))
 	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))

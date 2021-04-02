@@ -220,6 +220,9 @@ func (m ConnectionStateRequest) String() string {
 }
 
 func (m ConnectionStateRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionStateRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))

@@ -145,6 +145,9 @@ func (m S7VarPayloadStatusItem) String() string {
 }
 
 func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarPayloadStatusItem"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

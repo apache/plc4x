@@ -192,6 +192,9 @@ func (m BACnetTagContext) String() string {
 }
 
 func (m BACnetTagContext) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagContext"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

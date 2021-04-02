@@ -264,6 +264,9 @@ func (m S7VarPayloadDataItem) String() string {
 }
 
 func (m S7VarPayloadDataItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarPayloadDataItem"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
 	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))

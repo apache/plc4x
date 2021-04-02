@@ -138,6 +138,9 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() stri
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

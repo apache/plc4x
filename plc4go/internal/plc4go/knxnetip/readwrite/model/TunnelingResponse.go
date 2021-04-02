@@ -166,6 +166,9 @@ func (m TunnelingResponse) String() string {
 }
 
 func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TunnelingResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

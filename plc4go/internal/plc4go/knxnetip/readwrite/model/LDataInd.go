@@ -245,6 +245,9 @@ func (m LDataInd) String() string {
 }
 
 func (m LDataInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LDataInd"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, width-2))
 	boxes = append(boxes, utils.BoxAnything("AdditionalInformation", m.AdditionalInformation, width-2))

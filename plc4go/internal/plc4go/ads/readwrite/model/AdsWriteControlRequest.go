@@ -263,6 +263,9 @@ func (m AdsWriteControlRequest) String() string {
 }
 
 func (m AdsWriteControlRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsWriteControlRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
 	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))

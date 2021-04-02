@@ -307,6 +307,9 @@ func (m MPropReadCon) String() string {
 }
 
 func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropReadCon"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))

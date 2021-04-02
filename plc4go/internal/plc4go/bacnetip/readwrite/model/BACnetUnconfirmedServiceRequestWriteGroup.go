@@ -138,6 +138,9 @@ func (m BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestWriteGroup"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

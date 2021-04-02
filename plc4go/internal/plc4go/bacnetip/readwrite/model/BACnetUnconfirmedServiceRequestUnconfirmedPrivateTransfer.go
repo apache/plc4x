@@ -323,6 +323,9 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() stri
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
 	boxes = append(boxes, utils.BoxAnything("ServiceNumber", m.ServiceNumber, width-2))

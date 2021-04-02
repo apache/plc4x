@@ -209,6 +209,9 @@ func (m ModbusPDUReadFileRecordResponseItem) String() string {
 }
 
 func (m ModbusPDUReadFileRecordResponseItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFileRecordResponseItem"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))

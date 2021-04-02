@@ -215,6 +215,9 @@ func (m AdsStampHeader) String() string {
 }
 
 func (m AdsStampHeader) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsStampHeader"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
 	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, width-2))

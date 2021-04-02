@@ -142,6 +142,9 @@ func (m AdsDeviceNotificationResponse) String() string {
 }
 
 func (m AdsDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeviceNotificationResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

@@ -138,6 +138,9 @@ func (m ApduDataExtNetworkParameterResponse) String() string {
 }
 
 func (m ApduDataExtNetworkParameterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtNetworkParameterResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

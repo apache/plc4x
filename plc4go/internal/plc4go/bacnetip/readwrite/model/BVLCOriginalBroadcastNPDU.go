@@ -166,6 +166,9 @@ func (m BVLCOriginalBroadcastNPDU) String() string {
 }
 
 func (m BVLCOriginalBroadcastNPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCOriginalBroadcastNPDU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

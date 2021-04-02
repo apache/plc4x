@@ -167,6 +167,9 @@ func (m COTPParameterTpduSize) String() string {
 }
 
 func (m COTPParameterTpduSize) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterTpduSize"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TpduSize", m.TpduSize, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

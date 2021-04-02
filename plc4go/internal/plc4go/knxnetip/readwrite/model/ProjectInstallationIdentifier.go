@@ -171,6 +171,9 @@ func (m ProjectInstallationIdentifier) String() string {
 }
 
 func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ProjectInstallationIdentifier"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))

@@ -138,6 +138,9 @@ func (m BACnetServiceAckAtomicWriteFile) String() string {
 }
 
 func (m BACnetServiceAckAtomicWriteFile) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckAtomicWriteFile"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

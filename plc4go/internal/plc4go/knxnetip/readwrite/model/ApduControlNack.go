@@ -138,6 +138,9 @@ func (m ApduControlNack) String() string {
 }
 
 func (m ApduControlNack) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduControlNack"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

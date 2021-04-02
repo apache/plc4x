@@ -171,6 +171,9 @@ func (m ChannelInformation) String() string {
 }
 
 func (m ChannelInformation) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ChannelInformation"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NumChannels", m.NumChannels, width-2))
 	boxes = append(boxes, utils.BoxAnything("ChannelCode", m.ChannelCode, width-2))

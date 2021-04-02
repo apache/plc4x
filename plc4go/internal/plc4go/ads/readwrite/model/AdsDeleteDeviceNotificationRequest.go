@@ -171,6 +171,9 @@ func (m AdsDeleteDeviceNotificationRequest) String() string {
 }
 
 func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeleteDeviceNotificationRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

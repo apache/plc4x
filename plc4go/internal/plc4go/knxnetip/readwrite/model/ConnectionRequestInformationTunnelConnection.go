@@ -192,6 +192,9 @@ func (m ConnectionRequestInformationTunnelConnection) String() string {
 }
 
 func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionRequestInformationTunnelConnection"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

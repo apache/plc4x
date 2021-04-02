@@ -164,6 +164,9 @@ func (m IPAddress) String() string {
 }
 
 func (m IPAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "IPAddress"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

@@ -234,6 +234,9 @@ func (m AdsReadWriteResponse) String() string {
 }
 
 func (m AdsReadWriteResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadWriteResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))

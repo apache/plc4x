@@ -138,6 +138,9 @@ func (m BACnetServiceAckGetEnrollmentSummary) String() string {
 }
 
 func (m BACnetServiceAckGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckGetEnrollmentSummary"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

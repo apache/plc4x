@@ -219,6 +219,10 @@ func (m AdsMultiRequestItem) String() string {
 }
 
 func (m AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsMultiRequestItem"
+	}
 	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

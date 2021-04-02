@@ -253,6 +253,9 @@ func (m S7ParameterSetupCommunication) String() string {
 }
 
 func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterSetupCommunication"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, width-2))
 	boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, width-2))

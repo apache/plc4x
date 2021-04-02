@@ -227,6 +227,9 @@ func (m AdsReadRequest) String() string {
 }
 
 func (m AdsReadRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))

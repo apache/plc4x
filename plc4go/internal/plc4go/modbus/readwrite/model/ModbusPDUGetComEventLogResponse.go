@@ -295,6 +295,9 @@ func (m ModbusPDUGetComEventLogResponse) String() string {
 }
 
 func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUGetComEventLogResponse"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
 	boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))

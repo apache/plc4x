@@ -249,6 +249,9 @@ func (m APDUAbort) String() string {
 }
 
 func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUAbort"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))
 	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))

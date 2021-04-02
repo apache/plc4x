@@ -211,6 +211,9 @@ func (m ApduDataExtAuthorizeRequest) String() string {
 }
 
 func (m ApduDataExtAuthorizeRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtAuthorizeRequest"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Level", m.Level, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))

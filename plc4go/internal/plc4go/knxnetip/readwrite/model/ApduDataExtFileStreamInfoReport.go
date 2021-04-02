@@ -138,6 +138,9 @@ func (m ApduDataExtFileStreamInfoReport) String() string {
 }
 
 func (m ApduDataExtFileStreamInfoReport) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtFileStreamInfoReport"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

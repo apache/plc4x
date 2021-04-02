@@ -216,6 +216,9 @@ func (m AdsNotificationSample) String() string {
 }
 
 func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsNotificationSample"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
 	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, width-2))

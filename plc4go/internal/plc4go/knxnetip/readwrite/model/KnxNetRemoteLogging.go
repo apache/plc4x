@@ -167,6 +167,9 @@ func (m KnxNetRemoteLogging) String() string {
 }
 
 func (m KnxNetRemoteLogging) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetRemoteLogging"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

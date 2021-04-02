@@ -256,7 +256,11 @@ func (m NLM) String() string {
 }
 
 func (m NLM) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "NLM"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

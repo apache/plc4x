@@ -138,6 +138,9 @@ func (m MPropInfoInd) String() string {
 }
 
 func (m MPropInfoInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropInfoInd"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

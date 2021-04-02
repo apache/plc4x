@@ -275,6 +275,9 @@ func (m AmsSerialAcknowledgeFrame) String() string {
 }
 
 func (m AmsSerialAcknowledgeFrame) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsSerialAcknowledgeFrame"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
 	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))

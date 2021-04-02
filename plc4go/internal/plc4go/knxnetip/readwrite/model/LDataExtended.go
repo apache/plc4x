@@ -350,6 +350,9 @@ func (m LDataExtended) String() string {
 }
 
 func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LDataExtended"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))

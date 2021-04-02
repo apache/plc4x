@@ -183,6 +183,9 @@ func (m S7VarRequestParameterItemAddress) String() string {
 }
 
 func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarRequestParameterItemAddress"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

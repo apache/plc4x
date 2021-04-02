@@ -238,6 +238,9 @@ func (m BVLCForwardedNPDU) String() string {
 }
 
 func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCForwardedNPDU"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Ip", m.Ip, width-2))
 	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))

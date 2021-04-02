@@ -187,6 +187,9 @@ func (m AmsTCPPacket) String() string {
 }
 
 func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsTCPPacket"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)

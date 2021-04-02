@@ -195,6 +195,9 @@ func (m ApduDataMemoryRead) String() string {
 }
 
 func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataMemoryRead"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, width-2))
 	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))

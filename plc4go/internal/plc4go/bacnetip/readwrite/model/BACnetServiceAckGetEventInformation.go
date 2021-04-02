@@ -138,6 +138,9 @@ func (m BACnetServiceAckGetEventInformation) String() string {
 }
 
 func (m BACnetServiceAckGetEventInformation) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckGetEventInformation"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
 }

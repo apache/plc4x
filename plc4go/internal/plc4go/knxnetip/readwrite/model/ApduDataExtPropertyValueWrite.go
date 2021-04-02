@@ -295,6 +295,9 @@ func (m ApduDataExtPropertyValueWrite) String() string {
 }
 
 func (m ApduDataExtPropertyValueWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtPropertyValueWrite"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
 	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))

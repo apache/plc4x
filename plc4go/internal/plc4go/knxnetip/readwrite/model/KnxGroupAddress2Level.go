@@ -195,6 +195,9 @@ func (m KnxGroupAddress2Level) String() string {
 }
 
 func (m KnxGroupAddress2Level) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddress2Level"
+	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
