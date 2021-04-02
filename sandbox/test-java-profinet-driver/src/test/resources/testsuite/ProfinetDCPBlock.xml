@@ -33,7 +33,19 @@
   </testcase>
 
   <testcase>
-    <name>Wireshark Block: Device/Device Options</name>
+    <name>Device/Device Options: DeviceOptionsEntry (object used for array)</name>
+    <raw>0207</raw>
+    <root-type>DeviceOptionsEntry</root-type>
+    <xml>
+      <DeviceProp className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProp">
+        <optionType>DEVICE_PROPERTIES</optionType>
+        <entrySubOption>DEVICE_INSTANCE</entrySubOption>
+      </DeviceProp>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Wireshark Block: Device/Device Options (incl array)</name>
     <raw>0205000400000207</raw>
     <root-type>DCPBlock</root-type>
     <xml>
@@ -44,9 +56,9 @@
           <dcpBlockSize>4</dcpBlockSize>
           <info>0</info>
           <options>
-            <options className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptionsEntry">
-              <blockType>DEVICE_PROPERTIES</blockType>
-              <subOption>DEVICE_INSTANCE</subOption>
+            <options className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProp">
+              <optionType>DEVICE_PROPERTIES</optionType>
+              <entrySubOption>DEVICE_INSTANCE</entrySubOption>
             </options>
           </options>
         </properties>

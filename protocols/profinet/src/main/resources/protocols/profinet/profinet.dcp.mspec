@@ -69,8 +69,7 @@
     ]
 ]
 
-[discriminatedType 'DCPBlock'
-    [enum DCPBlockOption 'blockType']
+[discriminatedType 'DCPBlock' [enum DCPBlockOption 'blockType']
     [typeSwitch 'blockType'
         ['DCPBlockOption.IP' IP
             [enum   IpSubOption 'subOption']
@@ -117,15 +116,28 @@
             [simple uint 8 'instanceLow'         ]
         ]
     ]
-    // Padding using 0..1 old format
-    //[padding uint 8                 'pad' '0x00' '(dcpBlockSize % 2 == 0 ? 0 : 1)']
-    // Padding using 0..N new format
     [padding uint 8                 'pad' '0x00' 'dcpBlockSize % 2']
 ]
 
-[type 'DeviceOptionsEntry'
-    [enum DCPBlockOption            'blockType'         ]
-    [enum DevicePropertiesSubOption 'subOption'         ]
+
+[discriminatedType 'DeviceOptionsEntry' [simple DCPBlockOption 'optionType']
+    [typeSwitch 'optionType'
+        ['DCPBlockOption.IP' DeviceIpProp
+            [simple IpSubOption 'entrySubOption'                       ]
+        ]
+        ['DCPBlockOption.DEVICE_PROPERTIES' DeviceProp
+            [simple DevicePropertiesSubOption 'entrySubOption'         ]
+        ]
+        ['DCPBlockOption.DHCP' DeviceDHCPProp
+            [simple DHCPOptions 'entrySubOption'         ]
+        ]
+        ['DCPBlockOption.CONTROL' DeviceControlProp
+            [simple ControlOption 'entrySubOption'         ]
+        ]
+        ['DCPBlockOption.DEVICE_INITIATIVE' DeviceInitProp
+            [simple DeviceInitiativeOption 'entrySubOption'         ]
+        ]
+    ]
 ]
 
 [enum uint 8 'DCPBlockOption'
@@ -134,7 +146,7 @@
     ['0x03' DHCP                        ]
     // TODO implement DCPBlockOption case
     ['0x05' CONTROL                     ]
-    ['0x06' DEVICE_INACTIVE             ]
+    ['0x06' DEVICE_INITIATIVE           ]
     ['0xFF' ALL_SELECTOR                ]
 ]
 // TODO implement DCPBlockOption case
@@ -149,7 +161,7 @@
     ['0x06' RESET_TO_FACTORY            ]
 ]
 // TODO implement DCPBlockOption case
-[enum uint 8 'DeviceInactiveOption'
+[enum uint 8 'DeviceInitiativeOption'
     ['0x00' RESERVED                    ]
     ['0x01' DEVICE_INITIATIVE           ]
 ]
