@@ -260,5 +260,5 @@ func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBo
 	boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, width-2))
 	boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, width-2))
 	boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

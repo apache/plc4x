@@ -336,5 +336,5 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
 	boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, width-2))
 	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

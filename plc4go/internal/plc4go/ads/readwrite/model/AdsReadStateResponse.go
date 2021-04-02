@@ -233,5 +233,5 @@ func (m AdsReadStateResponse) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
 	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -219,5 +219,5 @@ func (m HPAIDataEndpoint) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
 	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

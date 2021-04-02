@@ -390,5 +390,5 @@ func (m COTPPacket) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
 	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
 	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

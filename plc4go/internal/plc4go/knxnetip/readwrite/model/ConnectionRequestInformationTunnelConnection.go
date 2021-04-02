@@ -197,5 +197,5 @@ func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

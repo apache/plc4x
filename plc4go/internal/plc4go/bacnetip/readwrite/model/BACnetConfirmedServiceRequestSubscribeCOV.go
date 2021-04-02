@@ -434,5 +434,5 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) u
 	boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotifications", m.IssueConfirmedNotifications, width-2))
 	boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, width-2))
 	boxes = append(boxes, utils.BoxAnything("LifetimeSeconds", m.LifetimeSeconds, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

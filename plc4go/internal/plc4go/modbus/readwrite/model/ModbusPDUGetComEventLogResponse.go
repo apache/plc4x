@@ -303,5 +303,5 @@ func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.Ascii
 	boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
 	boxes = append(boxes, utils.BoxAnything("MessageCount", m.MessageCount, width-2))
 	boxes = append(boxes, utils.BoxAnything("Events", m.Events, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

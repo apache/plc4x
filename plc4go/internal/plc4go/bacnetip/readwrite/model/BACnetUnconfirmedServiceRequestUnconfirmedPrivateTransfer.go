@@ -330,5 +330,5 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name stri
 	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
 	boxes = append(boxes, utils.BoxAnything("ServiceNumber", m.ServiceNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("Values", m.Values, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

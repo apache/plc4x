@@ -310,5 +310,5 @@ func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("MinorVersion", m.MinorVersion, width-2))
 	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 	boxes = append(boxes, utils.BoxAnything("Device", m.Device, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

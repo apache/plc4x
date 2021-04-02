@@ -270,5 +270,5 @@ func (m AdsWriteControlRequest) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
 	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }
