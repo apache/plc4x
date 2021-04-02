@@ -248,5 +248,5 @@ func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiB
 	boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
 	boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))
 	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

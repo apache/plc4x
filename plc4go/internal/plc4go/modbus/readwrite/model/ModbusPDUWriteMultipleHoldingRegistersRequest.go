@@ -274,5 +274,5 @@ func (m ModbusPDUWriteMultipleHoldingRegistersRequest) Box(name string, width in
 	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))
 	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

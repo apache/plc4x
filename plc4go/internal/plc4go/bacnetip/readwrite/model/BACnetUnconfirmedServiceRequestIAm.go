@@ -415,5 +415,5 @@ func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.As
 	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
 	boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
 	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

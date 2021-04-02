@@ -238,5 +238,5 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) u
 	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
 	boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

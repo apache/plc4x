@@ -277,5 +277,5 @@ func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, width-2))
 	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, width-2))
 	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

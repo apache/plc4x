@@ -360,5 +360,5 @@ func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
 	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

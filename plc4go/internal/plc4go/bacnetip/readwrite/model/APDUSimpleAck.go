@@ -227,5 +227,5 @@ func (m APDUSimpleAck) Box(name string, width int) utils.AsciiBox {
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 	boxes = append(boxes, utils.BoxAnything("ServiceChoice", m.ServiceChoice, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

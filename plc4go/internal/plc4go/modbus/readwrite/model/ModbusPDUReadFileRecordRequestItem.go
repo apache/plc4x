@@ -231,5 +231,5 @@ func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.As
 	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

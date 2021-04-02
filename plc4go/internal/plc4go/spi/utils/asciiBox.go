@@ -55,23 +55,38 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 	case bool:
 		return BoxString(name, fmt.Sprintf("%t", anything), 0)
 	case uint, uint8, uint16, uint32, uint64, int, int8, int16, int32, int64, float32, float64:
+		// TODO: include hex later with this line
+		//return BoxString(name, fmt.Sprintf("%#0*x %d", unsafe.Sizeof(anything)/2, anything, anything), 0)
 		return BoxString(name, fmt.Sprintf("%d", anything), 0)
 	case []byte:
 		return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
+	case string:
+		return BoxString(name, anything.(string), charWidth)
 	default:
-		switch reflect.ValueOf(anything).Kind() {
+		valueOf := reflect.ValueOf(anything)
+		switch valueOf.Kind() {
 		case reflect.Bool:
 			return BoxString(name, fmt.Sprintf("%t", anything), 0)
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Int,
 			reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Float32, reflect.Float64:
+			// TODO: include hex here somehow. Seems that %x does print strange hex values here
 			return BoxString(name, fmt.Sprintf("%d", anything), 0)
-		// TODO: this case needs some more works as we can't imply byte[] so we might to recursively box it
-		//case reflect.Array:
-		//	return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
+		case reflect.Slice, reflect.Array:
+			boxes := make([]AsciiBox, valueOf.Len())
+			for i := 0; i < valueOf.Len(); i++ {
+				index := valueOf.Index(i)
+				boxes[i] = BoxAnything("", index.Interface(), charWidth-2)
+			}
+			return BoxBox(name, AlignBoxes(boxes, charWidth), 0)
 		default:
 			return BoxString(name, fmt.Sprintf("0x%x", anything.(interface{})), charWidth)
 		}
 	}
+}
+
+// BoxString boxes a box
+func BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
+	return BoxString(name, string(box), charWidth)
 }
 
 // BoxString boxes a newline separated string into a beautiful box

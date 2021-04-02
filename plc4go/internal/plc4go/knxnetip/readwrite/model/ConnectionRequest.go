@@ -227,5 +227,5 @@ func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
 	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
 	boxes = append(boxes, utils.BoxAnything("ConnectionRequestInformation", m.ConnectionRequestInformation, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

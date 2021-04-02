@@ -357,5 +357,5 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils
 	boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimit", m.DeviceInstanceHighLimit, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectNameCharacterSet", m.ObjectNameCharacterSet, width-2))
 	boxes = append(boxes, utils.BoxAnything("ObjectName", m.ObjectName, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

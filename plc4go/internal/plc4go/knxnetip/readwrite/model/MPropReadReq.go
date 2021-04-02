@@ -288,5 +288,5 @@ func (m MPropReadReq) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
 	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
 	boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

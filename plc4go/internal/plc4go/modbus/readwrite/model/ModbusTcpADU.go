@@ -242,5 +242,5 @@ func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
 	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))
 	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -392,5 +392,5 @@ func (m State) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, width-2))
 	boxes = append(boxes, utils.BoxAnything("Response", m.Response, width-2))
 	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

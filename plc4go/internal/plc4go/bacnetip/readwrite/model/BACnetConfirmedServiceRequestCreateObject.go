@@ -142,5 +142,5 @@ func (m BACnetConfirmedServiceRequestCreateObject) Box(name string, width int) u
 		name = "BACnetConfirmedServiceRequestCreateObject"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -204,5 +204,5 @@ func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
 	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
-	return utils.BoxString(name, string(utils.AlignBoxes(boxes, width-2)), width)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }
