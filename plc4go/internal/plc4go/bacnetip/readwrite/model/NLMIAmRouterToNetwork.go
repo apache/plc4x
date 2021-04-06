@@ -170,16 +170,8 @@ func (m *NLMIAmRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 }
 
 func (m *NLMIAmRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	for _, arrayElement := range m.DestinationNetworkAddress {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.DestinationNetworkAddress, xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
+		return err
 	}
 	return nil
 }

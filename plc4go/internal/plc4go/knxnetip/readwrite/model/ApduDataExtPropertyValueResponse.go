@@ -279,16 +279,8 @@ func (m *ApduDataExtPropertyValueResponse) MarshalXML(e *xml.Encoder, start xml.
 	if err := e.EncodeElement(m.Index, xml.StartElement{Name: xml.Name{Local: "index"}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.Data {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+		return err
 	}
 	return nil
 }

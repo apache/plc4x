@@ -165,16 +165,8 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.Address {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "address"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
+		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
 		return err

@@ -167,16 +167,8 @@ func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decod
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	for _, arrayElement := range m.Data {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+		return err
 	}
 	return nil
 }

@@ -612,16 +612,8 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DestinationLength, xml.StartElement{Name: xml.Name{Local: "destinationLength"}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.DestinationAddress {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.DestinationAddress, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
+		return err
 	}
 	if err := e.EncodeElement(m.SourceNetworkAddress, xml.StartElement{Name: xml.Name{Local: "sourceNetworkAddress"}}); err != nil {
 		return err
@@ -629,16 +621,8 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SourceLength, xml.StartElement{Name: xml.Name{Local: "sourceLength"}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.SourceAddress {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
+		return err
 	}
 	if err := e.EncodeElement(m.HopCount, xml.StartElement{Name: xml.Name{Local: "hopCount"}}); err != nil {
 		return err
