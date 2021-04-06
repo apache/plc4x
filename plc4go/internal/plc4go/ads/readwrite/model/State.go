@@ -47,6 +47,7 @@ type IState interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewState(initCommand bool, updCommand bool, timestampAdded bool, highPriorityCommand bool, systemCommand bool, adsCommand bool, noReturn bool, response bool, broadcast bool) *State {

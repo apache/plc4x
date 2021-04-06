@@ -37,6 +37,7 @@ type IBACnetServiceAckGetAlarmSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////

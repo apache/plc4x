@@ -40,6 +40,7 @@ type IIPAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewIPAddress(addr []int8) *IPAddress {

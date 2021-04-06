@@ -44,6 +44,7 @@ type IAmsSerialFrame interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata *AmsPacket, crc uint16) *AmsSerialFrame {

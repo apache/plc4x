@@ -42,6 +42,7 @@ type IAdsNotificationSample interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []int8) *AdsNotificationSample {

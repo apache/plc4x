@@ -45,6 +45,7 @@ type IAdsReadWriteRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -277,13 +278,20 @@ func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 				}
 				m.ReadLength = data
 			case "items":
-				var dt *AdsMultiRequestItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
-				}
-				// TODO: this is a workaround for empty tags which omit this strange structure
-				if dt.Child != nil {
-					m.Items = append(m.Items, dt)
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *AdsMultiRequestItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
 			case "data":
 				var _encoded string
@@ -318,14 +326,16 @@ func (m *AdsReadWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	if err := e.EncodeElement(m.ReadLength, xml.StartElement{Name: xml.Name{Local: "readLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	_encodedData := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Data))
 	_encodedData = strings.ToUpper(_encodedData)

@@ -39,6 +39,7 @@ type IDIBSuppSvcFamilies interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
@@ -168,13 +169,20 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 				}
 				m.DescriptionType = data
 			case "serviceIds":
-				var dt *ServiceId
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
-				}
-				// TODO: this is a workaround for empty tags which omit this strange structure
-				if dt.Child != nil {
-					m.ServiceIds = append(m.ServiceIds, dt)
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *ServiceId
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.ServiceIds = append(m.ServiceIds, dt)
+					default:
+						break arrayLoop
+					}
 				}
 			}
 		}
@@ -191,14 +199,16 @@ func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	if err := e.EncodeElement(m.DescriptionType, xml.StartElement{Name: xml.Name{Local: "descriptionType"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ServiceIds, xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
+	for _, arrayElement := range m.ServiceIds {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
 		return err

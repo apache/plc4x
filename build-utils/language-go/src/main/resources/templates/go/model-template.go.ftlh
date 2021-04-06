@@ -114,6 +114,7 @@ type I${type.name} interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 <#if helper.isDiscriminatedChildTypeDefinition()>
 	<#assign discriminatedChildType = type>
@@ -946,16 +947,26 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 				}
 				m.${field.name?cap_first} = utils.ByteArrayToInt8Array(_decoded[0:_len])
 				<#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
+					<#if helper.isArrayField(field)>
+				arrayLoop: for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *${helper.getLanguageTypeNameForField(field)}
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.${field.name?cap_first} = append(m.${field.name?cap_first}, dt)
+					default:
+						break arrayLoop
+					}
+				}
+					<#else>
 				var dt *${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&dt, &tok); err != nil {
 					return err
 				}
-					<#if helper.isArrayField(field)>
-				// TODO: this is a workaround for empty tags which omit this strange structure
-				if dt.Child != nil {
-					m.${field.name?cap_first} = append(m.${field.name?cap_first}, dt)
-				}
-					<#else>
 				m.${field.name?cap_first} = dt
 					</#if>
 				<#elseif helper.isArrayField(field)>
@@ -1051,14 +1062,16 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 				<#-- normal arrays have one element with the same name wrapping them -->
 				<#elseif helper.isArrayField(field)>
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
-		return err
+	for _, arrayElement := range m.${field.name?cap_first} {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+			return err
+		}
 	}
 				<#else>
 	if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {

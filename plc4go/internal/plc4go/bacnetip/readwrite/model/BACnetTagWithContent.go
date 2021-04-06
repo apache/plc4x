@@ -49,6 +49,7 @@ type IBACnetTagWithContent interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
@@ -354,14 +355,16 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 	if err := e.EncodeElement(m.ExtLength, xml.StartElement{Name: xml.Name{Local: "extLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.PropertyIdentifier, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
+	for _, arrayElement := range m.PropertyIdentifier {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
 		return err

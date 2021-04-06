@@ -43,6 +43,7 @@ type IModbusPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IModbusPDUParent interface {

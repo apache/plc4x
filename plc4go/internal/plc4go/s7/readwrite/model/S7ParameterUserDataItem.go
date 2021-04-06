@@ -41,6 +41,7 @@ type IS7ParameterUserDataItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7ParameterUserDataItemParent interface {
