@@ -326,6 +326,7 @@
               <goal>custom</goal>
             </goals>
             <configuration>
+              <skip>${skipTests}</skip>
               <exec>go2xunit</exec>
               <customCommand>-fail</customCommand>
               <buildFlags>
