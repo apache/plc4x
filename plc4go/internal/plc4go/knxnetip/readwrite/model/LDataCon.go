@@ -41,6 +41,7 @@ type ILDataCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -195,13 +196,20 @@ func (m *LDataCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.AdditionalInformationLength = data
 			case "additionalInformation":
-				var dt *CEMIAdditionalInformation
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
-				}
-				// TODO: this is a workaround for empty tags which omit this strange structure
-				if dt.Child != nil {
-					m.AdditionalInformation = append(m.AdditionalInformation, dt)
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *CEMIAdditionalInformation
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.AdditionalInformation = append(m.AdditionalInformation, dt)
+					default:
+						break arrayLoop
+					}
 				}
 			case "dataFrame":
 				var dt *LDataFrame
@@ -225,14 +233,16 @@ func (m *LDataCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.AdditionalInformation, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdditionalInformation {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
 		return err

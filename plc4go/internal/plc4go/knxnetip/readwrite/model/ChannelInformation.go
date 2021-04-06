@@ -39,6 +39,7 @@ type IChannelInformation interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewChannelInformation(numChannels uint8, channelCode uint16) *ChannelInformation {

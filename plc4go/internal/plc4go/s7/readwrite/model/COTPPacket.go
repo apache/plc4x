@@ -43,6 +43,7 @@ type ICOTPPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICOTPPacketParent interface {
@@ -243,13 +244,20 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
-				var dt *COTPParameter
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
-				}
-				// TODO: this is a workaround for empty tags which omit this strange structure
-				if dt.Child != nil {
-					m.Parameters = append(m.Parameters, dt)
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *COTPParameter
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Parameters = append(m.Parameters, dt)
+					default:
+						break arrayLoop
+					}
 				}
 			case "payload":
 				var dt *S7Message
@@ -360,14 +368,16 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Parameters, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Parameters {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
 		return err

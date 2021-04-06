@@ -365,7 +365,6 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
 		data = utils.Int8ArrayToUint8Array(readResponse.Data)
-	// Pure Boolean ...
 	case *readWriteModel.AdsReadWriteResponse:
 		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
 		data = utils.Int8ArrayToByteArray(readResponse.Data)
@@ -373,26 +372,26 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 		return nil, errors.Errorf("unsupported response type %T", amsTcpPaket.Userdata.Data.Child)
 	}
 
-	// Get the field from the request
-	log.Trace().Msg("get a field from request")
-	fieldName := readRequest.GetFieldNames()[0]
-	field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
-	if err != nil {
-		return nil, errors.Wrap(err, "error casting to ads-field")
-	}
-
-	// Decode the data according to the information from the request
-	log.Trace().Msg("decode data")
-	rb := utils.NewLittleEndianReadBuffer(data)
-	// TODO: this is wrong as we need to read in little endian
-	value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
-	if err != nil {
-		return nil, errors.Wrap(err, "Error parsing data item")
-	}
 	responseCodes := map[string]model.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
-	plcValues[fieldName] = value
-	responseCodes[fieldName] = model.PlcResponseCode_OK
+	// Get the field from the request
+	for _, fieldName := range readRequest.GetFieldNames() {
+		log.Trace().Msg("get a field from request")
+		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
+		if err != nil {
+			return nil, errors.Wrap(err, "error casting to ads-field")
+		}
+
+		// Decode the data according to the information from the request
+		log.Trace().Msg("decode data")
+		rb := utils.NewLittleEndianReadBuffer(data)
+		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing data item")
+		}
+		plcValues[fieldName] = value
+		responseCodes[fieldName] = model.PlcResponseCode_OK
+	}
 
 	// Return the response
 	log.Trace().Msg("Returning the response")

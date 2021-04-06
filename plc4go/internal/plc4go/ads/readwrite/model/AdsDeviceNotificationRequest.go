@@ -41,6 +41,7 @@ type IAdsDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -228,14 +229,16 @@ func (m *AdsDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.Star
 	if err := e.EncodeElement(m.Stamps, xml.StartElement{Name: xml.Name{Local: "stamps"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.AdsStampHeaders, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdsStampHeaders {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
 	}
 	return nil
 }

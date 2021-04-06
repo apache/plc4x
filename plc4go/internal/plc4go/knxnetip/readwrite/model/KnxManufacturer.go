@@ -580,8 +580,9 @@ const (
 	KnxManufacturer_M_NVC_INTERNATIONAL                                  KnxManufacturer = 542
 	KnxManufacturer_M_BA                                                 KnxManufacturer = 543
 	KnxManufacturer_M_IRIS_CERAMICA_GROUP                                KnxManufacturer = 544
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 545
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 546
+	KnxManufacturer_M_WIREEO                                             KnxManufacturer = 545
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 546
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 547
 )
 
 func (e KnxManufacturer) Number() uint16 {
@@ -2572,10 +2573,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 545:
 		{ /* '545' */
-			return 43954
+			return 602
 		}
 	case 546:
 		{ /* '546' */
+			return 43954
+		}
+	case 547:
+		{ /* '547' */
 			return 43959
 		}
 	case 55:
@@ -4769,10 +4774,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 545:
 		{ /* '545' */
-			return "ABB - reserved"
+			return "Wireeo"
 		}
 	case 546:
 		{ /* '546' */
+			return "ABB - reserved"
+		}
+	case 547:
+		{ /* '547' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 55:
@@ -5972,8 +5981,10 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 544:
 		return KnxManufacturer_M_IRIS_CERAMICA_GROUP
 	case 545:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_WIREEO
 	case 546:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 547:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 55:
 		return KnxManufacturer_M_WINDOWMASTER_AS
@@ -7071,6 +7082,8 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_BA
 	case "M_IRIS_CERAMICA_GROUP":
 		return KnxManufacturer_M_IRIS_CERAMICA_GROUP
+	case "M_WIREEO":
+		return KnxManufacturer_M_WIREEO
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -8221,6 +8234,8 @@ func (e KnxManufacturer) String() string {
 		return "M_BA"
 	case KnxManufacturer_M_IRIS_CERAMICA_GROUP:
 		return "M_IRIS_CERAMICA_GROUP"
+	case KnxManufacturer_M_WIREEO:
+		return "M_WIREEO"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

@@ -41,6 +41,7 @@ type IModbusPDUReadFileRecordResponseItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) *ModbusPDUReadFileRecordResponseItem {
