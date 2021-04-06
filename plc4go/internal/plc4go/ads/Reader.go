@@ -342,7 +342,10 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		log.Debug().Err(response.Err).Msg("Error during resolve")
 		return DirectPlcField{}, response.Err
 	}
-	handle := response.Response.GetValue(response.Response.GetFieldNames()[0]).GetUint32()
+	if response.Response.GetResponseCode("dummy") != model.PlcResponseCode_OK {
+		return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.Response.GetResponseCode("dummy"))
+	}
+	handle := response.Response.GetValue("dummy").GetUint32()
 	log.Debug().Uint32("handle", handle).Str("symbolicAddress", symbolicField.SymbolicAddress).Msg("Resolved symbolic address")
 	directPlcField := DirectPlcField{
 		IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),
@@ -360,19 +363,46 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
-	var data []uint8
+	var rb *utils.ReadBuffer
+	responseCodes := map[string]model.PlcResponseCode{}
 	switch amsTcpPaket.Userdata.Data.Child.(type) {
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
-		data = utils.Int8ArrayToUint8Array(readResponse.Data)
+		data := utils.Int8ArrayToUint8Array(readResponse.Data)
+		rb = utils.NewLittleEndianReadBuffer(data)
+		for _, fieldName := range readRequest.GetFieldNames() {
+			responseCodes[fieldName] = model.PlcResponseCode_OK
+		}
 	case *readWriteModel.AdsReadWriteResponse:
 		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
-		data = utils.Int8ArrayToByteArray(readResponse.Data)
+		data := utils.Int8ArrayToUint8Array(readResponse.Data)
+		rb = utils.NewLittleEndianReadBuffer(data)
+		// When parsing a multi-item response, the error codes of each items come
+		// in sequence and then come the values.
+		for _, fieldName := range readRequest.GetFieldNames() {
+			if len(readRequest.GetFieldNames()) <= 1 {
+				// TODO: the comment above seems strange as there is no such spec for response codes per field so maybe this is a speciality
+				break
+			}
+			responseCode, err := rb.ReadUint32(32)
+			if err != nil {
+				log.Error().Err(err).Str("fieldName", fieldName).Msgf("Error parsing field %s", fieldName)
+				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+				continue
+			}
+			switch readWriteModel.ReturnCodeByValue(responseCode) {
+			case readWriteModel.ReturnCode_OK:
+				responseCodes[fieldName] = model.PlcResponseCode_OK
+			default:
+				// TODO: Implement this a little more ...
+				log.Error().Stringer("adsReturnCode", readWriteModel.ReturnCodeByValue(responseCode)).Msgf("Unmapped return code for %s", fieldName)
+				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+			}
+		}
 	default:
 		return nil, errors.Errorf("unsupported response type %T", amsTcpPaket.Userdata.Data.Child)
 	}
 
-	responseCodes := map[string]model.PlcResponseCode{}
 	plcValues := map[string]values.PlcValue{}
 	// Get the field from the request
 	for _, fieldName := range readRequest.GetFieldNames() {
@@ -384,10 +414,11 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		rb := utils.NewLittleEndianReadBuffer(data)
 		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().DataFormatName(), field.GetStringLength())
 		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing data item")
+			log.Error().Err(err).Msg("Error parsing data item")
+			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
+			continue
 		}
 		plcValues[fieldName] = value
 		responseCodes[fieldName] = model.PlcResponseCode_OK
