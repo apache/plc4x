@@ -26,8 +26,5 @@ import (
 )
 
 func TestAdsDriver(t *testing.T) {
-	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml",
-		// TODO: the xml of the response has the wrong order
-		"Multi-element direct read request",
-	)
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }
