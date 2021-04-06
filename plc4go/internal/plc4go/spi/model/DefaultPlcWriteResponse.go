@@ -37,8 +37,11 @@ func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map
 
 func (m DefaultPlcWriteResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName := range m.responseCodes {
-		fieldNames = append(fieldNames, fieldName)
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range m.request.GetFieldNames() {
+		if _, ok := m.responseCodes[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
 	}
 	return fieldNames
 }
