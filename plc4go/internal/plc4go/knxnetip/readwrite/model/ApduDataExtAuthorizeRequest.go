@@ -195,16 +195,8 @@ func (m *ApduDataExtAuthorizeRequest) MarshalXML(e *xml.Encoder, start xml.Start
 	if err := e.EncodeElement(m.Level, xml.StartElement{Name: xml.Name{Local: "level"}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.Data {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+		return err
 	}
 	return nil
 }

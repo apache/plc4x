@@ -212,16 +212,8 @@ func (m *ApduDataMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.Data {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+		return err
 	}
 	return nil
 }

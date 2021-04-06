@@ -1030,7 +1030,7 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 				<#-- normal arrays have one element with the same name wrapping them -->
-				<#elseif helper.isArrayField(field)>
+				<#elseif helper.isArrayField(field) && helper.isComplexTypeReference(field.type)>
 	for _, arrayElement := range m.${field.name?cap_first} {
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
 			return err

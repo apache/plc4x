@@ -209,16 +209,8 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	for _, arrayElement := range m.FifoValue {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeElement(m.FifoValue, xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
+		return err
 	}
 	return nil
 }
