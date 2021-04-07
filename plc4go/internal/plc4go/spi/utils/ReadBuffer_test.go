@@ -394,7 +394,128 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 		want    float64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "+20 × 1 = 1",
+			fields: func() fields {
+				rawData := make([]byte, 8)
+				binary.BigEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000000)
+				buffer := NewReadBuffer(rawData)
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    1.0,
+			wantErr: false,
+		},
+		{
+			name: "+20 × 1 = 1 LE",
+			fields: func() fields {
+				rawData := make([]byte, 8)
+				binary.LittleEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000000)
+				buffer := NewLittleEndianReadBuffer(rawData)
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    1.0,
+			wantErr: false,
+		},
+		{
+			name: "+20 × (1 + 2−52) ≈ 1.0000000000000002, the smallest number > 1",
+			fields: func() fields {
+				rawData := make([]byte, 8)
+				binary.BigEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000001)
+				buffer := NewReadBuffer(rawData)
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    1.0000000000000002,
+			wantErr: false,
+		},
+		{
+			name: "+20 × (1 + 2−52) ≈ 1.0000000000000002, the smallest number > 1 LE",
+			fields: func() fields {
+				rawData := make([]byte, 8)
+				binary.LittleEndian.PutUint64(rawData, 0b0_01111111111_0000000000000000000000000000000000000000000000000001)
+				buffer := NewLittleEndianReadBuffer(rawData)
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    1.0000000000000002,
+			wantErr: false,
+		},
+		{
+			name: "−21 × 1 = −2",
+			fields: func() fields {
+				buffer := NewReadBuffer([]byte{0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    -2,
+			wantErr: false,
+		},
+		{
+			name: "−21 × 1 = −2 LE",
+			fields: func() fields {
+				buffer := NewLittleEndianReadBuffer([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0})
+				return fields{
+					data:      buffer.data,
+					reader:    buffer.reader,
+					pos:       buffer.pos,
+					byteOrder: buffer.byteOrder,
+				}
+			}(),
+			args: args{
+				signed:            true,
+				exponentBitLength: 11,
+				mantissaBitLength: 52,
+			},
+			want:    -2,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
