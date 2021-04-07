@@ -46,9 +46,14 @@ func InfoLevel() {
 	log.Logger = log.Logger.Level(zerolog.InfoLevel)
 }
 
-// DebugLevel configures zerolog to InfoLevel
+// DebugLevel configures zerolog to DebugLevel
 func DebugLevel() {
 	log.Logger = log.Logger.Level(zerolog.DebugLevel)
+}
+
+// TraceLevel configures zerolog to TraceLevel
+func TraceLevel() {
+	log.Logger = log.Logger.Level(zerolog.TraceLevel)
 }
 
 // ResetLogging can be used to reset to the old log settings
