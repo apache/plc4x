@@ -53,6 +53,19 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
   numOpenConnections--;
 }
 
+void plc4c_create_uint8_t_data_array(plc4c_data **data, uint8_t *values, int numItems) {
+  plc4c_list* list;
+  plc4c_data* elem;
+  int i;
+  plc4c_utils_list_create(&list);
+  for (i = 0; i < numItems; i++) {
+      elem = plc4c_data_create_uint8_t_data(*(values + i));
+      plc4c_utils_list_insert_head_value(list, elem);
+  }
+  *data = plc4c_data_create_list_data(*list);
+}
+      
+
 enum plc4c_connection_state_t {
   CONNECTING,
   WRITE_REQUEST_CREATE,
@@ -170,12 +183,18 @@ int main(int argc, char** argv) {
         break;
       }
 
+      
       case WRITE_REQUEST_CREATE: {
 
         result = plc4c_connection_create_write_request(connection, &write_request);
         CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
-        
 
+        uint8_t valuestowrite[] = {1,2};
+        printf("Writing %d %d to %%DB2:4.0:USINT[2] ...\n", valuestowrite[0], valuestowrite[1]);
+        plc4c_create_uint8_t_data_array(&loopback_data, valuestowrite, 2);
+        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:USINT[2]", loopback_data);
+        
+        /*
         printf("Writing %d to %%DB2:0.0:BOOL ...\n", (bool) loopback_value[0]);
         loopback_data = plc4c_data_create_bool_data((bool) loopback_value[0]);
         result = plc4c_write_request_add_item(write_request, "%DB2:0.0:BOOL", loopback_data);
@@ -196,7 +215,6 @@ int main(int argc, char** argv) {
         loopback_data = plc4c_data_create_int16_t_data((int16_t) loopback_value[4]);
         result = plc4c_write_request_add_item(write_request, "%DB2:16.0:INT", loopback_data);
                
-#ifdef TEST_DOUBLE_INT
         printf("Writing %d to %%DB2:20.0:UDINT ...\n", (uint32_t) loopback_value[5]);
         loopback_data = plc4c_data_create_uint32_t_data((uint32_t) loopback_value[5]);
         result = plc4c_write_request_add_item(write_request, "%DB2:20.0:UDINT", loopback_data);
@@ -204,8 +222,23 @@ int main(int argc, char** argv) {
         printf("Writing %d to %%DB2:24.0:DINT ...\n", (int32_t) loopback_value[6]);
         loopback_data = plc4c_data_create_int32_t_data((int32_t) loopback_value[6]);
         result = plc4c_write_request_add_item(write_request, "%DB2:24.0:DINT", loopback_data);
-#endif
 
+        printf("Writing %d to %%DB2:28.0:BYTE ...\n", (uint8_t) loopback_value[1]);
+        loopback_data = plc4c_data_create_uint8_t_data((uint8_t) loopback_value[1]);
+        result = plc4c_write_request_add_item(write_request, "%DB2:28.0:BYTE", loopback_data);
+        
+        printf("Writing %d to %%DB2:32.0:WORD ...\n", (uint16_t) loopback_value[3]);
+        loopback_data = plc4c_data_create_uint16_t_data((uint16_t) loopback_value[3]);
+        result = plc4c_write_request_add_item(write_request, "%DB2:32.0:WORD", loopback_data);
+
+        printf("Writing %d to %%DB2:36.0:DWORD ...\n", (uint32_t) loopback_value[5]);
+        loopback_data = plc4c_data_create_uint32_t_data((uint32_t) loopback_value[5]);
+        result = plc4c_write_request_add_item(write_request, "%DB2:36.0:DWORD", loopback_data);
+
+        printf("Writing %f to %%DB2:40.0:REAL ...\n", (float) loopback_value[5]/3.14);
+        loopback_data = plc4c_data_create_float_data((float) loopback_value[5]/3.14);
+        result = plc4c_write_request_add_item(write_request, "%DB2:40.0:REAL", loopback_data);
+        */
 #ifdef S7_LOOPBACK_TIME_IO
         clock_gettime(CLOCK_MONOTONIC,&start);
 #endif
@@ -254,7 +287,9 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_read_request(connection, &read_request);
         CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
         
-        
+        result = plc4c_read_request_add_item(read_request, "USINT", "%DB2:4.0:USINT[2]");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        /*
         result = plc4c_read_request_add_item(read_request, "BOOL", "%DB2:0.0:BOOL");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
         
@@ -270,16 +305,27 @@ int main(int argc, char** argv) {
         result = plc4c_read_request_add_item(read_request, "INT", "%DB2:16.0:INT");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
         
-#ifdef TEST_DOUBLE_INT
         result = plc4c_read_request_add_item(read_request, "UDINT", "%DB2:20.0:UDINT");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
         
         result = plc4c_read_request_add_item(read_request, "DINT", "%DB2:24.0:DINT");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-#endif
 
+        result = plc4c_read_request_add_item(read_request,"BYTE", "%DB2:28.0:BYTE");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+
+        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:32.0:WORD");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+
+        result = plc4c_read_request_add_item(read_request, "DWORD", "%DB2:36.0:DWORD");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+ 
+        result = plc4c_read_request_add_item(read_request, "REAL", "%DB2:40.0:REAL");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        */
         result = plc4c_read_request_execute(read_request, &read_request_execution);
         CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");
+        
         state = READ_REQUEST_SENT;
 
 #ifdef S7_LOOPBACK_TIME_IO

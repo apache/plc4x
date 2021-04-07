@@ -77,8 +77,8 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
       break;
     }
     case PLC4C_DRIVER_S7_WRITE_FINISHED: {
-      
-      plc4c_s7_read_write_s7_parameter* parameter;
+
+      plc4c_s7_read_write_s7_message* s7_packet;
       plc4c_write_response* write_response;
 
       // Read a response packet.
@@ -92,13 +92,13 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
       }
 
       // Check the response
-      parameter = write_packet->payload->payload->parameter;
-      if (parameter->_type != plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response) {
+      s7_packet = write_packet->payload->payload;
+      if (s7_packet->parameter->_type != plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response) {
         return INTERNAL_ERROR;
       }
       // Check if the number of items matches that of the request
       // (Otherwise we won't know how to interpret the items)
-      if (parameter->s7_parameter_read_var_response_num_items != plc4c_utils_list_size(write_request->items)) {
+      if (s7_packet->parameter->s7_parameter_read_var_response_num_items != plc4c_utils_list_size(write_request->items)) {
         return INTERNAL_ERROR;
       }
 
@@ -163,24 +163,20 @@ plc4c_return_code plc4c_driver_s7_parse_write_responce(
                                 plc4c_s7_read_write_tpkt_packet* packet) {
   
   // Locals
-  plc4c_s7_read_write_s7_payload* s7_payload;
+  plc4c_s7_read_write_s7_message* s7_packet;
   plc4c_list_element* request_list_element;
   plc4c_list_element* response_list_element;
   
   plc4c_request_value_item* request_item;
-  plc4c_s7_read_write_s7_var_request_parameter_item* s7_parameter;
   plc4c_s7_read_write_s7_var_payload_status_item* s7_payload_status;
-
-  plc4c_spi_read_buffer* read_buffer;
   plc4c_response_item* response_item;
-
-  enum plc4c_return_code result;
+  plc4c_return_code result;
   
 	// Iterate over the request items and use the types to decode the
 	// response items. TODO: Decode the return codes in the response ...
-	s7_payload = packet->payload->payload->payload;
+  s7_packet = packet->payload->payload;
 	request_list_element = plc4c_utils_list_tail(request->items);
-	response_list_element = plc4c_utils_list_tail(s7_payload->s7_payload_write_var_response_items);
+	response_list_element = plc4c_utils_list_tail(s7_packet->payload->s7_payload_write_var_response_items);
 
 	while ((request_list_element != NULL) && (response_list_element != NULL)) {
 		

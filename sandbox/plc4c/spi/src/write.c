@@ -45,7 +45,7 @@ plc4c_return_code plc4c_write_request_add_item(
     return NO_MEMORY;
   
   result = write_request->connection->driver->parse_address_function(
-          address, &address_item->address );
+          address, &address_item->address);
   
   if(result != OK) 
     return result;

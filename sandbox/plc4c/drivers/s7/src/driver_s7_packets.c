@@ -545,7 +545,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     plc4c_data *parsed_value;
     plc4c_s7_read_write_s7_var_payload_data_item *request_value;
     plc4c_return_code return_code;
-
+    int8_t* data_array;
     
     // Set things off to a good start 
     return_code = OK;
@@ -577,35 +577,33 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     // Make a copy of the value 
     request_value = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
     
-    // TODO: there is a function? various size/code/data_size/transport_size
-    // items are quite confusing
-    switch (parsed_param->s7_var_request_parameter_item_address_address->s7_address_any_transport_size) {
-      case plc4c_s7_read_write_transport_size_BOOL:
-        request_value->transport_size = plc4c_s7_read_write_data_transport_size_BIT;
-        break;
-      case plc4c_s7_read_write_transport_size_BYTE:
-      case plc4c_s7_read_write_transport_size_WORD:
-      case plc4c_s7_read_write_transport_size_DWORD:
-      case plc4c_s7_read_write_transport_size_LWORD:
-      case plc4c_s7_read_write_transport_size_SINT:
-      case plc4c_s7_read_write_transport_size_USINT:
-        request_value->transport_size = plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
-        break;
-      case plc4c_s7_read_write_transport_size_INT:
-      case plc4c_s7_read_write_transport_size_UINT:
-        request_value->transport_size = plc4c_s7_read_write_data_transport_size_INTEGER;
-        break;
-      case plc4c_s7_read_write_transport_size_DINT:
-      case plc4c_s7_read_write_transport_size_UDINT:
-        request_value->transport_size = plc4c_s7_read_write_data_transport_size_INTEGER;
-        break;
-    }
+    // get transport data size (defined via transport size)
+    request_value->transport_size = 
+        plc4c_s7_read_write_transport_size_get_data_transport_size(
+          parsed_param->s7_var_request_parameter_item_address_address->s7_address_any_transport_size);
 
     plc4c_utils_list_create(&request_value->data);
-    //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
-    for (int i  = 0 ; i < parsed_value->size ; i++)
-      plc4c_utils_list_insert_tail_value(request_value->data, &((int8_t*)&parsed_value->data)[i]);
     
+    //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
+    plc4c_list_element* list_array;
+    int count = parsed_value->size;
+
+    if (parsed_value->data_type == PLC4C_LIST) 
+      count *= plc4c_utils_list_size(&parsed_value->data.list_value);
+    
+    for (int i  = 0 ; i < count ; i++) {
+      if (parsed_value->data_type == PLC4C_LIST) {
+        list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
+        data_array = (int8_t*) &( ((plc4c_data*) list_array->value)->data);
+      } else {
+        data_array = &((int8_t*)&parsed_value->data)[i];
+      }
+      // Now add the bytes to a list
+      for (int i  = 0 ; i < parsed_value->size ; i++) 
+        plc4c_utils_list_insert_tail_value(request_value->data, data_array);
+      
+    }
+
     // Add the new parameter to the request
     plc4c_utils_list_insert_head_value(s7_parameters->s7_parameter_write_var_request_items, request_param);
     
