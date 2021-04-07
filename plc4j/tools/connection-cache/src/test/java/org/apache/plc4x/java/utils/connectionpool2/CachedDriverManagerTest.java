@@ -66,7 +66,7 @@ class CachedDriverManagerTest implements WithAssertions {
 
         driverManager.getConnection("").close();
 
-        verify(mock, timeout(1_000).times(1)).create();
+        verify(mock, timeout(2_000).times(1)).create();
     }
 
     @Test
