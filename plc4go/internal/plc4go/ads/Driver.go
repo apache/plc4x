@@ -78,7 +78,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
-	codec := NewMessageCodec(transportInstance, nil)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection

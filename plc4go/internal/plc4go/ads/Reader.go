@@ -337,6 +337,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
 		m.sendOverTheWire(userdata, dummyRequest, result)
 	}()
+	// We wait synchronous for the resolution response before we can continue
 	response := <-result
 	if response.Err != nil {
 		log.Debug().Err(response.Err).Msg("Error during resolve")

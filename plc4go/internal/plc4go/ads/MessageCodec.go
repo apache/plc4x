@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -48,11 +49,11 @@ type MessageCodec struct {
 	running                       bool
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance, defaultIncomingMessageChannel chan interface{}) *MessageCodec {
+func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{
 		expectationCounter:            1,
 		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: defaultIncomingMessageChannel,
+		defaultIncomingMessageChannel: make(chan interface{}),
 		expectations:                  []Expectation{},
 		running:                       true,
 	}
@@ -66,6 +67,9 @@ func (m *MessageCodec) Connect() error {
 	log.Info().Msg("Connecting")
 	err := m.transportInstance.Connect()
 	if err == nil {
+		if !m.running {
+			go work(m)
+		}
 		m.running = true
 	}
 	return err
@@ -135,21 +139,26 @@ func (m *MessageCodec) receive() (interface{}, error) {
 		// Get the size of the entire packet
 		// TODO: pretty sure this is wrong for ADS CP from modbus
 		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
-		if num >= packetSize {
-			data, err = m.transportInstance.Read(packetSize)
-			if err != nil {
-				// TODO: Possibly clean up ...
-				return nil, nil
-			}
-			rb := utils.NewReadBuffer(data)
-			tcpPacket, err := model.AmsTCPPacketParse(rb)
-			if err != nil {
-				log.Warn().Err(err).Msg("error parsing")
-				// TODO: Possibly clean up ...
-				return nil, nil
-			}
-			return tcpPacket, nil
+		if num < packetSize {
+			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			return nil, nil
 		}
+		data, err = m.transportInstance.Read(packetSize)
+		if err != nil {
+			// TODO: Possibly clean up ...
+			return nil, nil
+		}
+		rb := utils.NewReadBuffer(data)
+		tcpPacket, err := model.AmsTCPPacketParse(rb)
+		if err != nil {
+			log.Warn().Err(err).Msg("error parsing")
+			// TODO: Possibly clean up ...
+			return nil, nil
+		}
+		return tcpPacket, nil
+	} else if err != nil {
+		log.Warn().Err(err).Msg("Got error reading")
+		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
@@ -157,34 +166,51 @@ func (m *MessageCodec) receive() (interface{}, error) {
 
 func work(m *MessageCodec) {
 	// Start an endless loop
+mainLoop:
 	for m.running {
-		log.Trace().Msg("working")
+		// Check for any expired expectations.
+		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
+		now := time.Now()
+
+		// Guard against empty expectations
 		if len(m.expectations) <= 0 {
+			log.Trace().Msg("we got no expectation")
 			// Sleep for 10ms
 			time.Sleep(time.Millisecond * 10)
-			continue
+			continue mainLoop
 		}
-		message, err := m.receive()
-		if err != nil {
-			log.Error().Err(err).Msg("got an error reading from transport")
-			continue
-		}
-		if message == nil {
-			time.Sleep(time.Millisecond * 10)
-			continue
-		}
-		now := time.Now()
-		messageHandled := false
-		// Go through all expectations
+	expectationLoop:
 		for index, expectation := range m.expectations {
 			// Check if this expectation has expired.
 			if now.After(expectation.expiration) {
-				log.Debug().Stringer("expectation", expectation).Msg("expired")
 				// Remove this expectation from the list.
 				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-				break
+				// Call the error handler.
+				err := expectation.handleError(plcerrors.NewTimeoutError(now.Sub(expectation.expiration)))
+				if err != nil {
+					log.Error().Err(err).Msg("Got an error handling error on expectation")
+				}
+				continue expectationLoop
 			}
+		}
 
+		// Check for incoming messages.
+		message, err := m.receive()
+		if err != nil {
+			log.Error().Err(err).Msg("got an error reading from transport")
+			time.Sleep(time.Millisecond * 10)
+			continue mainLoop
+		}
+		if message == nil {
+			// Sleep for 10ms before checking again, in order to not
+			// consume 100% CPU Power.
+			time.Sleep(time.Millisecond * 10)
+			continue mainLoop
+		}
+
+		// Go through all expectations
+		messageHandled := false
+		for index, expectation := range m.expectations {
 			// Check if the current message matches the expectations
 			// If it does, let it handle the message.
 			if accepts := expectation.acceptsMessage(message); accepts {
@@ -192,22 +218,26 @@ func work(m *MessageCodec) {
 				err = expectation.handleMessage(message)
 				if err == nil {
 					messageHandled = true
-					// Remove this expectation from the list.
-					m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+					// If this is the last element of the list remove it differently than if it's before that
+					if (index + 1) == len(m.expectations) {
+						m.expectations = m.expectations[:index]
+					} else if (index + 1) < len(m.expectations) {
+						m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+					}
 				} else {
-					log.Error().Err(err).Msg("Error handling message")
+					// Pass the error to the error handler.
+					err := expectation.handleError(err)
+					if err != nil {
+						log.Error().Err(err).Msg("Got an error handling error on expectation")
+					}
 				}
-				break
 			}
 		}
 
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
-			if m.defaultIncomingMessageChannel != nil {
-				m.defaultIncomingMessageChannel <- message
-			} else {
-				log.Warn().Msgf("No handler registered for handling message %s", message)
-			}
+			// TODO: how do we prevent endless blocking if there is no reader on this channel?
+			m.defaultIncomingMessageChannel <- message
 		}
 	}
 }
