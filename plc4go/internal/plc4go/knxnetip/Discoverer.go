@@ -103,6 +103,8 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 		for _, transportInstance := range tranportInstances {
 			// Create a codec for sending and receiving messages.
 			codec := NewMessageCodec(transportInstance, nil)
+			// Explicitly start the worker
+			codec.Connect()
 
 			// Cast to the UDP transport instance so we can access information on the local port.
 			udpTransportInstance, ok := transportInstance.(*udp.TransportInstance)
