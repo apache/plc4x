@@ -48,11 +48,11 @@ func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverM
 	}
 }
 
-func (m ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}) {
+func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}) {
 	m.TestCases = append(m.TestCases, ManualTestCase{address, expectedReadValue, nil})
 }
 
-func (m ManualTestSuite) Run() {
+func (m *ManualTestSuite) Run() {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if connectionResult.Err != nil {
 		panic(connectionResult.Err)
