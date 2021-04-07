@@ -21,6 +21,6 @@ module github.com/apache/plc4x
 go 1.15
 
 require (
-	github.com/apache/plc4x/plc4go v0.0.0-20210406172937-bf1f1ba4b6fa // indirect
+	github.com/apache/plc4x/plc4go v0.0.0-20210406233720-5c051470a868 // indirect
 	github.com/sirupsen/logrus v1.7.0 // indirect
 )

@@ -34,11 +34,11 @@
     [simple         uint 8 'simpleField']
     [abstract       unit 8  'abstractField']
     [array          uint 8  'arrayField'        count      '5']
-    //Checksums fields are not supported in C
+    //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
     [const          uint 8  'constField'        '5']
 
-    //Discriminated Field can't be used in simple type
+    //TODO: Discriminated Field can't be used in simple type
     //[discriminator  uint 8  'discriminatorField']
 
     [enum           EnumType  'enumField']
@@ -47,29 +47,29 @@
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
     [reserved       uint 8  '0x00']
 
-    //TypeSwitch field can't be used in non disriminatedTypes
+    //TODO: TypeSwitch field can't be used in non disriminatedTypes
     //[typeSwitch 'simpleField' ]
 ]
 
 //The following data types are not yet implemented but have a reference
 //Not Implemented Yet In
-//-Java
+//TODO: -Java
 //[simple ufloat 8.23 'ufloatField']
 
 //Not Implemented Yet In
-//-Java
+//TODO: -Java
 //[simple ufloat 11.52 'udoubleField']
 
 //Not Implemented Yet In
-//-Java
+//TODO: -Java
 //[simple time 8 'timeField']
 
 //Not Implemented Yet In
-//-Java
+//TODO: -Java
 //[simple date 8 'dateField']
 
 //Not Implemented Yet In
-//-Java
+//TODO: -Java
 //[simple dateTime 8 'dateTimeField']
 
 [type 'SimpleTypeTest'
@@ -81,16 +81,14 @@
     [simple string '8' 'UTF-8' 'stringField']
 ]
 
-
-//Abstract fields don't require the 'errors' module in Go, this causes an unused import error.
-//[type 'AbstractTypeTest'
-//    [abstract bit 'bitField']
-//    [abstract int 8 'intField']
-//    [abstract uint 8 'uintField']
-//    [abstract float 8.23 'floatField']
-//    [abstract float 11.52 'doubleField']
-//    [abstract string '8' 'UTF-8' 'stringField']
-//]
+[type 'AbstractTypeTest'
+    [abstract bit 'bitField']
+    [abstract int 8 'intField']
+    [abstract uint 8 'uintField']
+    [abstract float 8.23 'floatField']
+    [abstract float 11.52 'doubleField']
+    [abstract string '8' 'UTF-8' 'stringField']
+]
 
 [type 'ArrayTypeTest'
     [array bit 'bitField' count      '5']
@@ -101,7 +99,7 @@
     [array string '8' 'UTF-8' 'stringField' count      '5']
 ]
 
-//Checksums fields are not supported in C
+//TODO: Checksums fields are not supported in C
 //[type 'CheckSumTypeTest'
     //Bit field cannot be used for a checksum
     //[checksum bit 'bitField' true]
@@ -139,7 +137,7 @@
 
 [type 'ImplicitTypeTest'
     //Implicit types have the requirement that the expression is of a similar type to the field
-    //i.e Integers can't be cast to Booleans
+    //TODO: i.e Integers can't be cast to Booleans
     [simple   uint 8 'simpleField']
 
     [implicit bit 'bitField' 'simpleField > 0']
@@ -147,7 +145,7 @@
     [implicit uint 8 'uintField' 'simpleField']
     [implicit float 8.23 'floatField' 'simpleField']
     [implicit float 11.52 'doubleField' 'simpleField']
-    //String literals can't be used in the expression
+    //TODO: String literals can't be used in the expression
     //[implicit string '8' 'UTF-8' 'stringField' 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
 ]
 
@@ -279,11 +277,10 @@
 
 ]
 
-// Go doesn't support Enumerated Bits
-//[enum bit 'EnumTypeBit'
-//    ['true' TRUE]
-//    ['false' FALSE]
-//]
+[enum bit 'EnumTypeBit'
+    ['true' TRUE]
+    ['false' FALSE]
+]
 
 [enum int 8 'EnumTypeInt'
     ['0x01' BOOLINT]
@@ -297,14 +294,14 @@
     ['0x03' INT]
 ]
 
-// C doesn't support non integer switch fields
+//TODO:  C doesn't support non integer switch fields
 //[enum float 8.23 'EnumTypeFloat'
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
 //]
 
-// C doesn't support non integer switch fields
+//TODO:  C doesn't support non integer switch fields
 //[enum float 11.52 'EnumTypeDouble'
 //    ['100.0' LOW]
 //    ['101.0' MID]
@@ -316,20 +313,20 @@
     ['Toddy1' TODDY]
 ]
 
-// Fails to import the base Enum in C, need to find it in getComplexTypeReferences
+//TODO:  Fails to import the base Enum in C, need to find it in getComplexTypeReferences
 //[enum EnumType 'EnumTypeEnum'
 //    ['BOOL' BOOL]
 //    ['UINT' UINT]
 //    ['INT' INT]
 //]
 
-// Float parameters aren't implemented for constants in enums in C
+//TODO:  Float parameters aren't implemented for constants in enums in C
 //[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
 //    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'IEC61131_BOOL'         , 'BOOL']]
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'IEC61131_BYTE'         , 'UINT']]
 //]
 
-// Keyword named parameters aren't allowed
+//TODO:  Keyword named parameters aren't allowed
 //[enum int 8 'EnumTypeIntTest'  [int 8 'int']
 //    ['0x01' BOOL             ['1']]
 //    ['0x02' BYTE             ['2']]
