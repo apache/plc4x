@@ -51,26 +51,15 @@
     //[typeSwitch 'simpleField' ]
 ]
 
-//The following data types are not yet implemented but have a reference
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 8.23 'ufloatField']
+[simple ufloat 8.23 'ufloatField']
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 11.52 'udoubleField']
+[simple ufloat 11.52 'udoubleField']
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple time 8 'timeField']
+[simple time 8 'timeField']
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple date 8 'dateField']
+[simple date 8 'dateField']
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple dateTime 8 'dateTimeField']
+[simple dateTime 8 'dateTimeField']
 
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
