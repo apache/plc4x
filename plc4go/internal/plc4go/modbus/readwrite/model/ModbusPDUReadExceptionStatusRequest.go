@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusRequest struct {
 	Parent *ModbusPDU
-	IModbusPDUReadExceptionStatusRequest
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IModbusPDUReadExceptionStatusRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -140,4 +140,16 @@ func (m *ModbusPDUReadExceptionStatusRequest) UnmarshalXML(d *xml.Decoder, start
 
 func (m *ModbusPDUReadExceptionStatusRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUReadExceptionStatusRequest) String() string {
+	return string(m.Box("ModbusPDUReadExceptionStatusRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadExceptionStatusRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadExceptionStatusRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemoveListElement struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestRemoveListElement
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestRemoveListElement interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) UnmarshalXML(d *xml.Dec
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestRemoveListElement) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestRemoveListElement", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestRemoveListElement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestRemoveListElement"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -19,14 +19,17 @@
 
 package org.apache.plc4x.language.java;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -311,7 +314,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    @Override
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.readBit()";
@@ -363,7 +367,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.readString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.readString(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
             }
         }
@@ -371,7 +375,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.writeBit((boolean) " + fieldName + ")";
@@ -411,7 +415,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
@@ -422,7 +425,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.writeString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.writeString(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
             }
         }
@@ -637,6 +640,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             sb.append(")");
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        else if (isVariableLiteralImplicitField(vl)) {
+            return vl.getName();
+        }
         // All uppercase names are not fields, but utility methods.
         else if (vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder(vl.getName());
@@ -769,8 +776,13 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        else if (isVariableLiteralImplicitField(vl)) {
+            return toSerializationExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serialzerArguments);
+        }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName());
+        // TODO: Expand this to any argument
+        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName()) || "size".equals(vl.getName());
         boolean isTypeArg = "_type".equals(vl.getName());
         if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
             for (Argument serializerArgument : serialzerArguments) {
@@ -803,8 +815,15 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     private String toVariableExpressionRest(VariableLiteral vl) {
-        return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
-            ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        // length is kind of a keyword in mspec, so we shouldn't be naming variables length. if we ask for the length of a object we can just return length().
+        // This way we can get the length of a string when serializing
+        if (vl.getName().equals("length")) {
+            return vl.getName() + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+                ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        } else {
+            return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+                ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        }
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, Argument[] parserArguments) {

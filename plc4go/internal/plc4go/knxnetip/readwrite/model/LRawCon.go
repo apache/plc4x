@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type LRawCon struct {
 	Parent *CEMI
-	ILRawCon
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type ILRawCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *LRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 func (m *LRawCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m LRawCon) String() string {
+	return string(m.Box("LRawCon", utils.DefaultWidth*2))
+}
+
+func (m LRawCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LRawCon"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

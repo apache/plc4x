@@ -21,16 +21,20 @@ package org.apache.plc4x.java.opcua.protocol;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.opcua.readwrite.types.OpcuaIdentifierType;
 import org.apache.plc4x.java.opcua.readwrite.types.OpcuaDataType;
 
+import java.time.Duration;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  */
-public class OpcuaField implements PlcField {
+public class OpcuaField implements PlcSubscriptionField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[^:]+))?(:(?<datatype>[a-zA-Z_]+))?");
 
@@ -134,5 +138,15 @@ public class OpcuaField implements PlcField {
             "identifierType=" + identifierType.getValue() +
             "identifier=" + identifier +
             '}';
+    }
+
+    @Override
+    public PlcSubscriptionType getPlcSubscriptionType() {
+        return null;
+    }
+
+    @Override
+    public Optional<Duration> getDuration() {
+        return Optional.empty();
     }
 }

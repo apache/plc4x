@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorConfirmedPrivateTransfer struct {
 	Parent *BACnetError
-	IBACnetErrorConfirmedPrivateTransfer
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetErrorConfirmedPrivateTransfer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetErrorConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start
 
 func (m *BACnetErrorConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorConfirmedPrivateTransfer) String() string {
+	return string(m.Box("BACnetErrorConfirmedPrivateTransfer", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorConfirmedPrivateTransfer"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckCreateObject struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckCreateObject
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetServiceAckCreateObject interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetServiceAckCreateObject) UnmarshalXML(d *xml.Decoder, start xml.St
 
 func (m *BACnetServiceAckCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckCreateObject) String() string {
+	return string(m.Box("BACnetServiceAckCreateObject", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckCreateObject) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckCreateObject"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

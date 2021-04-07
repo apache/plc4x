@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUWriteFileRecordRequest struct {
 	Items  []*ModbusPDUWriteFileRecordRequestItem
 	Parent *ModbusPDU
-	IModbusPDUWriteFileRecordRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IModbusPDUWriteFileRecordRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,8 +116,9 @@ func ModbusPDUWriteFileRecordRequestParse(io *utils.ReadBuffer) (*ModbusPDU, err
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
+	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (items)
@@ -128,7 +129,7 @@ func ModbusPDUWriteFileRecordRequestParse(io *utils.ReadBuffer) (*ModbusPDU, err
 	for io.GetPos() < _itemsEndPos {
 		_item, _err := ModbusPDUWriteFileRecordRequestItemParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items = append(items, _item)
 	}
@@ -156,7 +157,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (items)
@@ -164,7 +165,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}
@@ -202,14 +203,29 @@ func (m *ModbusPDUWriteFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml
 }
 
 func (m *ModbusPDUWriteFileRecordRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m ModbusPDUWriteFileRecordRequest) String() string {
+	return string(m.Box("ModbusPDUWriteFileRecordRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteFileRecordRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteFileRecordRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

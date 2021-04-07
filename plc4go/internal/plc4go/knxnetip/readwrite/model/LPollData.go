@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 	"strings"
@@ -36,7 +36,6 @@ type LPollData struct {
 	TargetAddress          []int8
 	NumberExpectedPollData uint8
 	Parent                 *LDataFrame
-	ILPollData
 }
 
 // The corresponding interface
@@ -45,6 +44,7 @@ type ILPollData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
-		return nil, errors.New("Error parsing 'sourceAddress' field " + _sourceAddressErr.Error())
+		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
 
 	// Array field (targetAddress)
@@ -138,7 +138,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'targetAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'targetAddress' field")
 		}
 		targetAddress[curItem] = _item
 	}
@@ -147,7 +147,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -160,7 +160,7 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	// Simple Field (numberExpectedPollData)
 	numberExpectedPollData, _numberExpectedPollDataErr := io.ReadUint8(6)
 	if _numberExpectedPollDataErr != nil {
-		return nil, errors.New("Error parsing 'numberExpectedPollData' field " + _numberExpectedPollDataErr.Error())
+		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field")
 	}
 
 	// Create a partially initialized instance
@@ -180,7 +180,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (sourceAddress)
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
 		if _sourceAddressErr != nil {
-			return errors.New("Error serializing 'sourceAddress' field " + _sourceAddressErr.Error())
+			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
 		// Array Field (targetAddress)
@@ -188,7 +188,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.TargetAddress {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'targetAddress' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
 			}
 		}
@@ -197,7 +197,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -205,7 +205,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		numberExpectedPollData := uint8(m.NumberExpectedPollData)
 		_numberExpectedPollDataErr := io.WriteUint8(6, (numberExpectedPollData))
 		if _numberExpectedPollDataErr != nil {
-			return errors.New("Error serializing 'numberExpectedPollData' field " + _numberExpectedPollDataErr.Error())
+			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}
 
 		return nil
@@ -223,11 +223,11 @@ func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "sourceAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceAddress = data
+				m.SourceAddress = &data
 			case "targetAddress":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -270,4 +270,19 @@ func (m *LPollData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m LPollData) String() string {
+	return string(m.Box("LPollData", utils.DefaultWidth*2))
+}
+
+func (m LPollData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LPollData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("TargetAddress", m.TargetAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

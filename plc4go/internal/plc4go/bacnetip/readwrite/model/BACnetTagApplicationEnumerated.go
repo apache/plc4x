@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type BACnetTagApplicationEnumerated struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagApplicationEnumerated
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IBACnetTagApplicationEnumerated interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType u
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
@@ -137,7 +137,7 @@ func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}
@@ -186,4 +186,17 @@ func (m *BACnetTagApplicationEnumerated) MarshalXML(e *xml.Encoder, start xml.St
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationEnumerated) String() string {
+	return string(m.Box("BACnetTagApplicationEnumerated", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationEnumerated) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationEnumerated"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

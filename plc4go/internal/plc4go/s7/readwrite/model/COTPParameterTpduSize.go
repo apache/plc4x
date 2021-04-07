@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type COTPParameterTpduSize struct {
 	TpduSize COTPTpduSize
 	Parent   *COTPParameter
-	ICOTPParameterTpduSize
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type ICOTPParameterTpduSize interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
-		return nil, errors.New("Error parsing 'tpduSize' field " + _tpduSizeErr.Error())
+		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +121,7 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
 		_tpduSizeErr := tpduSize.Serialize(io)
 		if _tpduSizeErr != nil {
-			return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())
+			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
 		return nil
@@ -161,4 +161,17 @@ func (m *COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterTpduSize) String() string {
+	return string(m.Box("COTPParameterTpduSize", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterTpduSize) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterTpduSize"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TpduSize", m.TpduSize, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

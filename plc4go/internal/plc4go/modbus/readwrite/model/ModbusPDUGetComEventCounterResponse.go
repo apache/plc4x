@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ModbusPDUGetComEventCounterResponse struct {
 	Status     uint16
 	EventCount uint16
 	Parent     *ModbusPDU
-	IModbusPDUGetComEventCounterResponse
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IModbusPDUGetComEventCounterResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,13 +115,13 @@ func ModbusPDUGetComEventCounterResponseParse(io *utils.ReadBuffer) (*ModbusPDU,
 	// Simple Field (status)
 	status, _statusErr := io.ReadUint16(16)
 	if _statusErr != nil {
-		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Simple Field (eventCount)
 	eventCount, _eventCountErr := io.ReadUint16(16)
 	if _eventCountErr != nil {
-		return nil, errors.New("Error parsing 'eventCount' field " + _eventCountErr.Error())
+		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
 
 	// Create a partially initialized instance
@@ -141,14 +141,14 @@ func (m *ModbusPDUGetComEventCounterResponse) Serialize(io utils.WriteBuffer) er
 		status := uint16(m.Status)
 		_statusErr := io.WriteUint16(16, (status))
 		if _statusErr != nil {
-			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.EventCount)
 		_eventCountErr := io.WriteUint16(16, (eventCount))
 		if _eventCountErr != nil {
-			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
+			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
 		return nil
@@ -197,4 +197,18 @@ func (m *ModbusPDUGetComEventCounterResponse) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUGetComEventCounterResponse) String() string {
+	return string(m.Box("ModbusPDUGetComEventCounterResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUGetComEventCounterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUGetComEventCounterResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
+	boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

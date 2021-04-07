@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type COTPParameterCalledTsap struct {
 	TsapId uint16
 	Parent *COTPParameter
-	ICOTPParameterCalledTsap
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type ICOTPParameterCalledTsap interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func COTPParameterCalledTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) 
 	// Simple Field (tsapId)
 	tsapId, _tsapIdErr := io.ReadUint16(16)
 	if _tsapIdErr != nil {
-		return nil, errors.New("Error parsing 'tsapId' field " + _tsapIdErr.Error())
+		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +121,7 @@ func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 		tsapId := uint16(m.TsapId)
 		_tsapIdErr := io.WriteUint16(16, (tsapId))
 		if _tsapIdErr != nil {
-			return errors.New("Error serializing 'tsapId' field " + _tsapIdErr.Error())
+			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
 		return nil
@@ -161,4 +161,17 @@ func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterCalledTsap) String() string {
+	return string(m.Box("COTPParameterCalledTsap", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterCalledTsap"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

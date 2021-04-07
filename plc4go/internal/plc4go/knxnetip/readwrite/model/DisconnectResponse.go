@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type DisconnectResponse struct {
 	CommunicationChannelId uint8
 	Status                 Status
 	Parent                 *KnxNetIpMessage
-	IDisconnectResponse
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IDisconnectResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,13 +107,13 @@ func DisconnectResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
 	if _communicationChannelIdErr != nil {
-		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
-		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Create a partially initialized instance
@@ -133,13 +133,13 @@ func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
 		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
-			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
 
 		// Simple Field (status)
 		_statusErr := m.Status.Serialize(io)
 		if _statusErr != nil {
-			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		return nil
@@ -188,4 +188,18 @@ func (m *DisconnectResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m DisconnectResponse) String() string {
+	return string(m.Box("DisconnectResponse", utils.DefaultWidth*2))
+}
+
+func (m DisconnectResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DisconnectResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

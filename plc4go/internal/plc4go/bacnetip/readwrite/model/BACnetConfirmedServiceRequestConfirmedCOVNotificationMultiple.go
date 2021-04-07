@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Unmarsha
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

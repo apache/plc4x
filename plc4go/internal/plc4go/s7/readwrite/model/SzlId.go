@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type SzlId struct {
 	TypeClass      SzlModuleTypeClass
 	SublistExtract uint8
 	SublistList    SzlSublist
-	ISzlId
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type ISzlId interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *SzlId {
@@ -88,19 +88,19 @@ func SzlIdParse(io *utils.ReadBuffer) (*SzlId, error) {
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
 	if _typeClassErr != nil {
-		return nil, errors.New("Error parsing 'typeClass' field " + _typeClassErr.Error())
+		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field")
 	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract, _sublistExtractErr := io.ReadUint8(4)
 	if _sublistExtractErr != nil {
-		return nil, errors.New("Error parsing 'sublistExtract' field " + _sublistExtractErr.Error())
+		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field")
 	}
 
 	// Enum field (sublistList)
 	sublistList, _sublistListErr := SzlSublistParse(io)
 	if _sublistListErr != nil {
-		return nil, errors.New("Error parsing 'sublistList' field " + _sublistListErr.Error())
+		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field")
 	}
 
 	// Create the instance
@@ -113,21 +113,21 @@ func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 	typeClass := CastSzlModuleTypeClass(m.TypeClass)
 	_typeClassErr := typeClass.Serialize(io)
 	if _typeClassErr != nil {
-		return errors.New("Error serializing 'typeClass' field " + _typeClassErr.Error())
+		return errors.Wrap(_typeClassErr, "Error serializing 'typeClass' field")
 	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.SublistExtract)
 	_sublistExtractErr := io.WriteUint8(4, (sublistExtract))
 	if _sublistExtractErr != nil {
-		return errors.New("Error serializing 'sublistExtract' field " + _sublistExtractErr.Error())
+		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
 	}
 
 	// Enum field (sublistList)
 	sublistList := CastSzlSublist(m.SublistList)
 	_sublistListErr := sublistList.Serialize(io)
 	if _sublistListErr != nil {
-		return errors.New("Error serializing 'sublistList' field " + _sublistListErr.Error())
+		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
 	}
 
 	return nil
@@ -191,4 +191,19 @@ func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m SzlId) String() string {
+	return string(m.Box("SzlId", utils.DefaultWidth*2))
+}
+
+func (m SzlId) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SzlId"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TypeClass", m.TypeClass, width-2))
+	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, width-2))
+	boxes = append(boxes, utils.BoxAnything("SublistList", m.SublistList, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ModbusPDUWriteSingleCoilResponse struct {
 	Address uint16
 	Value   uint16
 	Parent  *ModbusPDU
-	IModbusPDUWriteSingleCoilResponse
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IModbusPDUWriteSingleCoilResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,13 +115,13 @@ func ModbusPDUWriteSingleCoilResponseParse(io *utils.ReadBuffer) (*ModbusPDU, er
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16(16)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint16(16)
 	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
 	// Create a partially initialized instance
@@ -141,14 +141,14 @@ func (m *ModbusPDUWriteSingleCoilResponse) Serialize(io utils.WriteBuffer) error
 		address := uint16(m.Address)
 		_addressErr := io.WriteUint16(16, (address))
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
 		_valueErr := io.WriteUint16(16, (value))
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		return nil
@@ -197,4 +197,18 @@ func (m *ModbusPDUWriteSingleCoilResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUWriteSingleCoilResponse) String() string {
+	return string(m.Box("ModbusPDUWriteSingleCoilResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteSingleCoilResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteSingleCoilResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type AdsWriteResponse struct {
 	Result ReturnCode
 	Parent *AdsData
-	IAdsWriteResponse
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IAdsWriteResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ func AdsWriteResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Create a partially initialized instance
@@ -124,7 +124,7 @@ func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		return nil
@@ -164,4 +164,17 @@ func (m *AdsWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m AdsWriteResponse) String() string {
+	return string(m.Box("AdsWriteResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsWriteResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsWriteResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

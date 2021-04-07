@@ -181,3 +181,14 @@ build-iPhoneSimulator/
 /sandbox/plc4go/temp/
 /plc4go/.idea/
 plc4j/examples/hello-storage-elasticsearch/.factorypath
+
+
+*.make
+*.cmake
+*.internal
+link.txt*/
+**/plc4c/**/Makefile
+*.includecache
+CMakeFiles/
+CMakeCache.txt
+DartConfiguration.tcl

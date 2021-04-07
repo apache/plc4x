@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ConnectionResponseDataBlockTunnelConnection struct {
 	KnxAddress *KnxAddress
 	Parent     *ConnectionResponseDataBlock
-	IConnectionResponseDataBlockTunnelConnection
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IConnectionResponseDataBlockTunnelConnection interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*Co
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
-		return nil, errors.New("Error parsing 'knxAddress' field " + _knxAddressErr.Error())
+		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 		// Simple Field (knxAddress)
 		_knxAddressErr := m.KnxAddress.Serialize(io)
 		if _knxAddressErr != nil {
-			return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
+			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decode
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxAddress = data
+				m.KnxAddress = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder,
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) String() string {
+	return string(m.Box("ConnectionResponseDataBlockTunnelConnection", utils.DefaultWidth*2))
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionResponseDataBlockTunnelConnection"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

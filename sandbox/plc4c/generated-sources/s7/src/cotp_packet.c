@@ -37,6 +37,7 @@ const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_pac
    .tpduCode = 0xC0},
   {/* plc4c_s7_read_write_cotp_packet_tpdu_error */
    .tpduCode = 0x70}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -70,6 +71,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* i
   if(_res != OK) {
     return _res;
   }
+        // Discriminator Field (tpduCode)
 
   // Discriminator Field (tpduCode) (Used as input to a switch field)
   uint8_t tpduCode = 0;
@@ -93,7 +95,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* i
 
                     
     // Simple Field (tpduRef)
-    unsigned int tpduRef = 0;
+    uint8_t tpduRef = 0;
     _res = plc4c_spi_read_unsigned_byte(io, 7, (uint8_t*) &tpduRef);
     if(_res != OK) {
       return _res;
@@ -449,8 +451,8 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
   // Implicit Field (headerLength)
   lengthInBits += 8;
 
-  // Discriminator Field (tpduCode)
-  lengthInBits += 8;
+        // Discriminator Field (tpduCode)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

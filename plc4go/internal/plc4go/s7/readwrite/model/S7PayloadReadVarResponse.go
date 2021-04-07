@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7PayloadReadVarResponse struct {
 	Items  []*S7VarPayloadDataItem
 	Parent *S7Payload
-	IS7PayloadReadVarResponse
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IS7PayloadReadVarResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ func S7PayloadReadVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter)
 		lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).NumItems-1)
 		_item, _err := S7VarPayloadDataItemParse(io, lastItem)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -139,7 +139,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 				var lastItem bool = curItem == (itemCount - 1)
 				_elementErr := _element.Serialize(io, lastItem)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 				curItem++
 			}
@@ -178,14 +178,29 @@ func (m *S7PayloadReadVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartE
 }
 
 func (m *S7PayloadReadVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m S7PayloadReadVarResponse) String() string {
+	return string(m.Box("S7PayloadReadVarResponse", utils.DefaultWidth*2))
+}
+
+func (m S7PayloadReadVarResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7PayloadReadVarResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

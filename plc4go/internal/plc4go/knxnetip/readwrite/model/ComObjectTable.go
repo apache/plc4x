@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ComObjectTable struct {
 	Child IComObjectTableChild
-	IComObjectTable
-	IComObjectTableParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IComObjectTable interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IComObjectTableParent interface {
@@ -97,15 +96,15 @@ func ComObjectTableParse(io *utils.ReadBuffer, firmwareType *FirmwareType) (*Com
 	var _parent *ComObjectTable
 	var typeSwitchError error
 	switch {
-	case *firmwareType == FirmwareType_SYSTEM_1:
+	case *firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
 		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_2:
+	case *firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
 		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_300:
+	case *firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -122,7 +121,7 @@ func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectT
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -144,7 +143,15 @@ func (m *ComObjectTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ComObjectTable")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.ComObjectTableRealisationType1":
 					var dt *ComObjectTableRealisationType1
 					if m.Child != nil {
@@ -197,7 +204,7 @@ func (m *ComObjectTable) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -206,4 +213,17 @@ func (m *ComObjectTable) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m ComObjectTable) String() string {
+	return string(m.Box("ComObjectTable", utils.DefaultWidth*2))
+}
+
+func (m ComObjectTable) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ComObjectTable"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

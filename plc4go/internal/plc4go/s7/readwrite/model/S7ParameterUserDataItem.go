@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7ParameterUserDataItem struct {
 	Child IS7ParameterUserDataItemChild
-	IS7ParameterUserDataItem
-	IS7ParameterUserDataItemParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IS7ParameterUserDataItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7ParameterUserDataItemParent interface {
@@ -80,7 +79,6 @@ func (m *S7ParameterUserDataItem) GetTypeName() string {
 
 func (m *S7ParameterUserDataItem) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (itemType)
 	lengthInBits += 8
 
@@ -99,18 +97,18 @@ func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (*S7ParameterUserDataIte
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8(8)
 	if _itemTypeErr != nil {
-		return nil, errors.New("Error parsing 'itemType' field " + _itemTypeErr.Error())
+		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *S7ParameterUserDataItem
 	var typeSwitchError error
 	switch {
-	case itemType == 0x12:
+	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
 		_parent, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -127,14 +125,15 @@ func (m *S7ParameterUserDataItem) SerializeParent(io utils.WriteBuffer, child IS
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
 	_itemTypeErr := io.WriteUint8(8, (itemType))
+
 	if _itemTypeErr != nil {
-		return errors.New("Error serializing 'itemType' field " + _itemTypeErr.Error())
+		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -156,7 +155,15 @@ func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of S7ParameterUserDataItem")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions":
 					var dt *S7ParameterUserDataItemCPUFunctions
 					if m.Child != nil {
@@ -185,7 +192,7 @@ func (m *S7ParameterUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElem
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -194,4 +201,17 @@ func (m *S7ParameterUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterUserDataItem) String() string {
+	return string(m.Box("S7ParameterUserDataItem", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterUserDataItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterUserDataItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

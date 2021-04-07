@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -34,8 +34,6 @@ type COTPPacket struct {
 	Parameters []*COTPParameter
 	Payload    *S7Message
 	Child      ICOTPPacketChild
-	ICOTPPacket
-	ICOTPPacketParent
 }
 
 // The corresponding interface
@@ -45,6 +43,7 @@ type ICOTPPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICOTPPacketParent interface {
@@ -85,7 +84,6 @@ func (m *COTPPacket) LengthInBits() uint16 {
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
-
 	// Discriminator Field (tpduCode)
 	lengthInBits += 8
 
@@ -117,35 +115,36 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := io.ReadUint8(8)
+	_ = headerLength
 	if _headerLengthErr != nil {
-		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode, _tpduCodeErr := io.ReadUint8(8)
 	if _tpduCodeErr != nil {
-		return nil, errors.New("Error parsing 'tpduCode' field " + _tpduCodeErr.Error())
+		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *COTPPacket
 	var typeSwitchError error
 	switch {
-	case tpduCode == 0xF0:
+	case tpduCode == 0xF0: // COTPPacketData
 		_parent, typeSwitchError = COTPPacketDataParse(io)
-	case tpduCode == 0xE0:
+	case tpduCode == 0xE0: // COTPPacketConnectionRequest
 		_parent, typeSwitchError = COTPPacketConnectionRequestParse(io)
-	case tpduCode == 0xD0:
+	case tpduCode == 0xD0: // COTPPacketConnectionResponse
 		_parent, typeSwitchError = COTPPacketConnectionResponseParse(io)
-	case tpduCode == 0x80:
+	case tpduCode == 0x80: // COTPPacketDisconnectRequest
 		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(io)
-	case tpduCode == 0xC0:
+	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
 		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(io)
-	case tpduCode == 0x70:
+	case tpduCode == 0x70: // COTPPacketTpduError
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Array field (parameters)
@@ -157,7 +156,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	for io.GetPos() < _parametersEndPos {
 		_item, _err := COTPParameterParse(io, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 		if _err != nil {
-			return nil, errors.New("Error parsing 'parameters' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'parameters' field")
 		}
 		parameters = append(parameters, _item)
 		curPos = io.GetPos() - startPos
@@ -169,7 +168,7 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 	if bool((curPos) < (cotpLen)) {
 		_val, _err := S7MessageParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'payload' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		}
 		payload = _val
 	}
@@ -189,20 +188,21 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), uint16(m.Payload.LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
 	_headerLengthErr := io.WriteUint8(8, (headerLength))
 	if _headerLengthErr != nil {
-		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
+		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(child.TpduCode())
 	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
+
 	if _tpduCodeErr != nil {
-		return errors.New("Error serializing 'tpduCode' field " + _tpduCodeErr.Error())
+		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	// Array Field (parameters)
@@ -210,7 +210,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'parameters' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
 		}
 	}
@@ -221,7 +221,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		payload = m.Payload
 		_payloadErr := payload.Serialize(io)
 		if _payloadErr != nil {
-			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 	}
 
@@ -244,13 +244,21 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
-				var _values []*COTPParameter
-				var dt *COTPParameter
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *COTPParameter
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Parameters = append(m.Parameters, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Parameters = _values
 			case "payload":
 				var dt *S7Message
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -258,7 +266,15 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 				}
 				m.Payload = dt
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of COTPPacket")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.COTPPacketData":
 					var dt *COTPPacketData
 					if m.Child != nil {
@@ -347,19 +363,21 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Parameters, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Parameters {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
 		return err
@@ -368,4 +386,19 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m COTPPacket) String() string {
+	return string(m.Box("COTPPacket", utils.DefaultWidth*2))
+}
+
+func (m COTPPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacket"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
+	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

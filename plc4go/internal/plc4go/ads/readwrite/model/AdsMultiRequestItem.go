@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type AdsMultiRequestItem struct {
 	Child IAdsMultiRequestItemChild
-	IAdsMultiRequestItem
-	IAdsMultiRequestItemParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IAdsMultiRequestItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IAdsMultiRequestItemParent interface {
@@ -97,15 +96,15 @@ func AdsMultiRequestItemParse(io *utils.ReadBuffer, indexGroup uint32) (*AdsMult
 	var _parent *AdsMultiRequestItem
 	var typeSwitchError error
 	switch {
-	case indexGroup == 61568:
+	case indexGroup == 61568: // AdsMultiRequestItemRead
 		_parent, typeSwitchError = AdsMultiRequestItemReadParse(io)
-	case indexGroup == 61569:
+	case indexGroup == 61569: // AdsMultiRequestItemWrite
 		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(io)
-	case indexGroup == 61570:
+	case indexGroup == 61570: // AdsMultiRequestItemReadWrite
 		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -122,7 +121,7 @@ func (m *AdsMultiRequestItem) SerializeParent(io utils.WriteBuffer, child IAdsMu
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -144,7 +143,15 @@ func (m *AdsMultiRequestItem) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of AdsMultiRequestItem")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.ads.readwrite.AdsMultiRequestItemRead":
 					var dt *AdsMultiRequestItemRead
 					if m.Child != nil {
@@ -197,7 +204,7 @@ func (m *AdsMultiRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -206,4 +213,17 @@ func (m *AdsMultiRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m AdsMultiRequestItem) String() string {
+	return string(m.Box("AdsMultiRequestItem", utils.DefaultWidth*2))
+}
+
+func (m AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsMultiRequestItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

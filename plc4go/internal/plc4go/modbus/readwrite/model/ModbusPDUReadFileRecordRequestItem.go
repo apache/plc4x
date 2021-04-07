@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type ModbusPDUReadFileRecordRequestItem struct {
 	FileNumber    uint16
 	RecordNumber  uint16
 	RecordLength  uint16
-	IModbusPDUReadFileRecordRequestItem
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IModbusPDUReadFileRecordRequestItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *ModbusPDUReadFileRecordRequestItem {
@@ -92,25 +92,25 @@ func ModbusPDUReadFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDURe
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)
 	if _referenceTypeErr != nil {
-		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber, _fileNumberErr := io.ReadUint16(16)
 	if _fileNumberErr != nil {
-		return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
+		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber, _recordNumberErr := io.ReadUint16(16)
 	if _recordNumberErr != nil {
-		return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
+		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
 	recordLength, _recordLengthErr := io.ReadUint16(16)
 	if _recordLengthErr != nil {
-		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
+		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
 
 	// Create the instance
@@ -123,28 +123,28 @@ func (m *ModbusPDUReadFileRecordRequestItem) Serialize(io utils.WriteBuffer) err
 	referenceType := uint8(m.ReferenceType)
 	_referenceTypeErr := io.WriteUint8(8, (referenceType))
 	if _referenceTypeErr != nil {
-		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.FileNumber)
 	_fileNumberErr := io.WriteUint16(16, (fileNumber))
 	if _fileNumberErr != nil {
-		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
+		return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.RecordNumber)
 	_recordNumberErr := io.WriteUint16(16, (recordNumber))
 	if _recordNumberErr != nil {
-		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
+		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
 	recordLength := uint16(m.RecordLength)
 	_recordLengthErr := io.WriteUint16(16, (recordLength))
 	if _recordLengthErr != nil {
-		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
+		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}
 
 	return nil
@@ -217,4 +217,20 @@ func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xm
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadFileRecordRequestItem) String() string {
+	return string(m.Box("ModbusPDUReadFileRecordRequestItem", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFileRecordRequestItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

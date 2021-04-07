@@ -29,6 +29,7 @@ const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_
    .cpuFunctionType = 0x04},
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response */
    .cpuFunctionType = 0x08}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -51,7 +52,7 @@ uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RES
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* io, unsigned int cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* io, uint8_t cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;

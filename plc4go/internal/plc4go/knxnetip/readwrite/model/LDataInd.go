@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type LDataInd struct {
 	AdditionalInformation       []*CEMIAdditionalInformation
 	DataFrame                   *LDataFrame
 	Parent                      *CEMI
-	ILDataInd
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type ILDataInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
 	if _additionalInformationLengthErr != nil {
-		return nil, errors.New("Error parsing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
 
 	// Array field (additionalInformation)
@@ -127,7 +127,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	for io.GetPos() < _additionalInformationEndPos {
 		_item, _err := CEMIAdditionalInformationParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'additionalInformation' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field")
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
@@ -135,7 +135,7 @@ func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
-		return nil, errors.New("Error parsing 'dataFrame' field " + _dataFrameErr.Error())
+		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
 
 	// Create a partially initialized instance
@@ -156,7 +156,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
 		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
 		if _additionalInformationLengthErr != nil {
-			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
 
 		// Array Field (additionalInformation)
@@ -164,7 +164,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'additionalInformation' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
 		}
@@ -172,7 +172,7 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (dataFrame)
 		_dataFrameErr := m.DataFrame.Serialize(io)
 		if _dataFrameErr != nil {
-			return errors.New("Error serializing 'dataFrame' field " + _dataFrameErr.Error())
+			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
 		return nil
@@ -196,13 +196,21 @@ func (m *LDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.AdditionalInformationLength = data
 			case "additionalInformation":
-				var _values []*CEMIAdditionalInformation
-				var dt *CEMIAdditionalInformation
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *CEMIAdditionalInformation
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.AdditionalInformation = append(m.AdditionalInformation, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.AdditionalInformation = _values
 			case "dataFrame":
 				var dt *LDataFrame
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -225,17 +233,34 @@ func (m *LDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.AdditionalInformation, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdditionalInformation {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m LDataInd) String() string {
+	return string(m.Box("LDataInd", utils.DefaultWidth*2))
+}
+
+func (m LDataInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LDataInd"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformation", m.AdditionalInformation, width-2))
+	boxes = append(boxes, utils.BoxAnything("DataFrame", m.DataFrame, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

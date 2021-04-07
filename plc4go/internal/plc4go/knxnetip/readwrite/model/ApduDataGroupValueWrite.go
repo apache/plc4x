@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -34,7 +34,6 @@ type ApduDataGroupValueWrite struct {
 	DataFirstByte int8
 	Data          []int8
 	Parent        *ApduData
-	IApduDataGroupValueWrite
 }
 
 // The corresponding interface
@@ -43,6 +42,7 @@ type IApduDataGroupValueWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu
 	// Simple Field (dataFirstByte)
 	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
 	if _dataFirstByteErr != nil {
-		return nil, errors.New("Error parsing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field")
 	}
 
 	// Array field (data)
@@ -120,7 +120,7 @@ func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1))))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
@@ -142,7 +142,7 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 		dataFirstByte := int8(m.DataFirstByte)
 		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
 		if _dataFirstByteErr != nil {
-			return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
 		}
 
 		// Array Field (data)
@@ -150,7 +150,7 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}
@@ -208,4 +208,18 @@ func (m *ApduDataGroupValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataGroupValueWrite) String() string {
+	return string(m.Box("ApduDataGroupValueWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataGroupValueWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataGroupValueWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DataFirstByte", m.DataFirstByte, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

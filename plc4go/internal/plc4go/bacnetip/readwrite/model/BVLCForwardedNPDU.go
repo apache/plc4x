@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type BVLCForwardedNPDU struct {
 	Port   uint16
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCForwardedNPDU
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IBVLCForwardedNPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'ip' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
 		}
 		ip[curItem] = _item
 	}
@@ -125,13 +125,13 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16(16)
 	if _portErr != nil {
-		return nil, errors.New("Error parsing 'port' field " + _portErr.Error())
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
-		return nil, errors.New("Error parsing 'npdu' field " + _npduErr.Error())
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -153,7 +153,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Ip {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'ip' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
 			}
 		}
@@ -162,13 +162,13 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 		port := uint16(m.Port)
 		_portErr := io.WriteUint16(16, (port))
 		if _portErr != nil {
-			return errors.New("Error serializing 'port' field " + _portErr.Error())
+			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
 		if _npduErr != nil {
-			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
 		return nil
@@ -198,11 +198,11 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 				}
 				m.Port = data
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()
@@ -216,13 +216,7 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Ip, xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "ip"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
@@ -232,4 +226,19 @@ func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m BVLCForwardedNPDU) String() string {
+	return string(m.Box("BVLCForwardedNPDU", utils.DefaultWidth*2))
+}
+
+func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCForwardedNPDU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Ip", m.Ip, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

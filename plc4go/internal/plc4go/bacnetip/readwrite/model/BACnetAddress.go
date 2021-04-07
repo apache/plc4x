@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type BACnetAddress struct {
 	Address []uint8
 	Port    uint16
-	IBACnetAddress
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IBACnetAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
@@ -89,7 +89,7 @@ func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 		_item, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'address' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'address' field")
 		}
 		address[curItem] = _item
 	}
@@ -97,7 +97,7 @@ func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16(16)
 	if _portErr != nil {
-		return nil, errors.New("Error parsing 'port' field " + _portErr.Error())
+		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
 	// Create the instance
@@ -111,7 +111,7 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.Address {
 			_elementErr := io.WriteUint8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'address' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'address' field")
 			}
 		}
 	}
@@ -120,7 +120,7 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 	port := uint16(m.Port)
 	_portErr := io.WriteUint16(16, (port))
 	if _portErr != nil {
-		return errors.New("Error serializing 'port' field " + _portErr.Error())
+		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
 	return nil
@@ -165,13 +165,7 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
@@ -181,4 +175,18 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m BACnetAddress) String() string {
+	return string(m.Box("BACnetAddress", utils.DefaultWidth*2))
+}
+
+func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUError struct {
 	ExceptionCode ModbusErrorCode
 	Parent        *ModbusPDU
-	IModbusPDUError
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IModbusPDUError interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
-		return nil, errors.New("Error parsing 'exceptionCode' field " + _exceptionCodeErr.Error())
+		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
 
 	// Create a partially initialized instance
@@ -129,7 +129,7 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
 		_exceptionCodeErr := exceptionCode.Serialize(io)
 		if _exceptionCodeErr != nil {
-			return errors.New("Error serializing 'exceptionCode' field " + _exceptionCodeErr.Error())
+			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
 		return nil
@@ -169,4 +169,17 @@ func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUError) String() string {
+	return string(m.Box("ModbusPDUError", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUError"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ExceptionCode", m.ExceptionCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

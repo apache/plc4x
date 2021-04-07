@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedPrivateTransfer struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestConfirmedPrivateTransfer
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) UnmarshalXML(d *
 
 func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedPrivateTransfer", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestConfirmedPrivateTransfer"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

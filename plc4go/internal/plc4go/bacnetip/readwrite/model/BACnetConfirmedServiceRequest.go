@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequest struct {
 	Child IBACnetConfirmedServiceRequestChild
-	IBACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IBACnetConfirmedServiceRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetConfirmedServiceRequestParent interface {
@@ -80,7 +79,6 @@ func (m *BACnetConfirmedServiceRequest) GetTypeName() string {
 
 func (m *BACnetConfirmedServiceRequest) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
@@ -99,78 +97,78 @@ func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BACn
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
 	if _serviceChoiceErr != nil {
-		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetConfirmedServiceRequest
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x00:
+	case serviceChoice == 0x00: // BACnetConfirmedServiceRequestAcknowledgeAlarm
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io)
-	case serviceChoice == 0x01:
+	case serviceChoice == 0x01: // BACnetConfirmedServiceRequestConfirmedCOVNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io, len)
-	case serviceChoice == 0x02:
+	case serviceChoice == 0x02: // BACnetConfirmedServiceRequestConfirmedEventNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io)
-	case serviceChoice == 0x04:
+	case serviceChoice == 0x04: // BACnetConfirmedServiceRequestGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io)
-	case serviceChoice == 0x05:
+	case serviceChoice == 0x05: // BACnetConfirmedServiceRequestSubscribeCOV
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParse(io)
-	case serviceChoice == 0x06:
+	case serviceChoice == 0x06: // BACnetConfirmedServiceRequestAtomicReadFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParse(io)
-	case serviceChoice == 0x07:
+	case serviceChoice == 0x07: // BACnetConfirmedServiceRequestAtomicWriteFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParse(io)
-	case serviceChoice == 0x08:
+	case serviceChoice == 0x08: // BACnetConfirmedServiceRequestAddListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParse(io)
-	case serviceChoice == 0x09:
+	case serviceChoice == 0x09: // BACnetConfirmedServiceRequestRemoveListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParse(io)
-	case serviceChoice == 0x0A:
+	case serviceChoice == 0x0A: // BACnetConfirmedServiceRequestCreateObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParse(io)
-	case serviceChoice == 0x0B:
+	case serviceChoice == 0x0B: // BACnetConfirmedServiceRequestDeleteObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParse(io)
-	case serviceChoice == 0x0C:
+	case serviceChoice == 0x0C: // BACnetConfirmedServiceRequestReadProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParse(io)
-	case serviceChoice == 0x0E:
+	case serviceChoice == 0x0E: // BACnetConfirmedServiceRequestReadPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(io)
-	case serviceChoice == 0x0F:
+	case serviceChoice == 0x0F: // BACnetConfirmedServiceRequestWriteProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParse(io, len)
-	case serviceChoice == 0x10:
+	case serviceChoice == 0x10: // BACnetConfirmedServiceRequestWritePropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParse(io)
-	case serviceChoice == 0x11:
+	case serviceChoice == 0x11: // BACnetConfirmedServiceRequestDeviceCommunicationControl
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io)
-	case serviceChoice == 0x12:
+	case serviceChoice == 0x12: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io)
-	case serviceChoice == 0x13:
+	case serviceChoice == 0x13: // BACnetConfirmedServiceRequestConfirmedTextMessage
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParse(io)
-	case serviceChoice == 0x14:
+	case serviceChoice == 0x14: // BACnetConfirmedServiceRequestReinitializeDevice
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParse(io)
-	case serviceChoice == 0x15:
+	case serviceChoice == 0x15: // BACnetConfirmedServiceRequestVTOpen
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParse(io)
-	case serviceChoice == 0x16:
+	case serviceChoice == 0x16: // BACnetConfirmedServiceRequestVTClose
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParse(io)
-	case serviceChoice == 0x17:
+	case serviceChoice == 0x17: // BACnetConfirmedServiceRequestVTData
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTDataParse(io)
-	case serviceChoice == 0x18:
+	case serviceChoice == 0x18: // BACnetConfirmedServiceRequestRemovedAuthenticate
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedAuthenticateParse(io)
-	case serviceChoice == 0x19:
+	case serviceChoice == 0x19: // BACnetConfirmedServiceRequestRemovedRequestKey
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedRequestKeyParse(io)
-	case serviceChoice == 0x0D:
+	case serviceChoice == 0x0D: // BACnetConfirmedServiceRequestRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io)
-	case serviceChoice == 0x1A:
+	case serviceChoice == 0x1A: // BACnetConfirmedServiceRequestReadRange
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParse(io)
-	case serviceChoice == 0x1B:
+	case serviceChoice == 0x1B: // BACnetConfirmedServiceRequestLifeSafetyOperation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParse(io)
-	case serviceChoice == 0x1C:
+	case serviceChoice == 0x1C: // BACnetConfirmedServiceRequestSubscribeCOVProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io)
-	case serviceChoice == 0x1D:
+	case serviceChoice == 0x1D: // BACnetConfirmedServiceRequestGetEventInformation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParse(io)
-	case serviceChoice == 0x1E:
+	case serviceChoice == 0x1E: // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io)
-	case serviceChoice == 0x1F:
+	case serviceChoice == 0x1F: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -187,14 +185,15 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, ch
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
 	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
-		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -216,7 +215,15 @@ func (m *BACnetConfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml.S
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetConfirmedServiceRequest")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
 					var dt *BACnetConfirmedServiceRequestAcknowledgeAlarm
 					if m.Child != nil {
@@ -605,7 +612,7 @@ func (m *BACnetConfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -614,4 +621,17 @@ func (m *BACnetConfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequest) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequest", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

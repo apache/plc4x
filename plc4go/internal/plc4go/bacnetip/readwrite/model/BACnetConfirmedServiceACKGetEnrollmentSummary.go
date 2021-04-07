@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceACKGetEnrollmentSummary struct {
 	Parent *BACnetConfirmedServiceACK
-	IBACnetConfirmedServiceACKGetEnrollmentSummary
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceACKGetEnrollmentSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) UnmarshalXML(d *xml.Deco
 
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) String() string {
+	return string(m.Box("BACnetConfirmedServiceACKGetEnrollmentSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceACKGetEnrollmentSummary"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

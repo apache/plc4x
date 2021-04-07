@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type SearchResponse struct {
 	DibDeviceInfo       *DIBDeviceInfo
 	DibSuppSvcFamilies  *DIBSuppSvcFamilies
 	Parent              *KnxNetIpMessage
-	ISearchResponse
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type ISearchResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,19 +112,19 @@ func SearchResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
-		return nil, errors.New("Error parsing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.New("Error parsing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
 
 	// Create a partially initialized instance
@@ -144,19 +144,19 @@ func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		// Simple Field (dibDeviceInfo)
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
 		if _dibDeviceInfoErr != nil {
-			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
 		if _dibSuppSvcFamiliesErr != nil {
-			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		return nil
@@ -174,23 +174,23 @@ func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			case "dibDeviceInfo":
-				var data *DIBDeviceInfo
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBDeviceInfo
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibDeviceInfo = data
+				m.DibDeviceInfo = &data
 			case "dibSuppSvcFamilies":
-				var data *DIBSuppSvcFamilies
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBSuppSvcFamilies
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibSuppSvcFamilies = data
+				m.DibSuppSvcFamilies = &data
 			}
 		}
 		token, err = d.Token()
@@ -214,4 +214,19 @@ func (m *SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m SearchResponse) String() string {
+	return string(m.Box("SearchResponse", utils.DefaultWidth*2))
+}
+
+func (m SearchResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SearchResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
+	boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

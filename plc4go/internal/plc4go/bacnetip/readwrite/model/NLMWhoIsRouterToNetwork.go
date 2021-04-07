@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type NLMWhoIsRouterToNetwork struct {
 	DestinationNetworkAddress []uint16
 	Parent                    *NLM
-	INLMWhoIsRouterToNetwork
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type INLMWhoIsRouterToNetwork interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messa
 	for io.GetPos() < _destinationNetworkAddressEndPos {
 		_item, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
@@ -132,7 +132,7 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := io.WriteUint16(16, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'destinationNetworkAddress' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 				}
 			}
 		}
@@ -170,14 +170,21 @@ func (m *NLMWhoIsRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 }
 
 func (m *NLMWhoIsRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.DestinationNetworkAddress, xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
-		return err
-	}
 	return nil
+}
+
+func (m NLMWhoIsRouterToNetwork) String() string {
+	return string(m.Box("NLMWhoIsRouterToNetwork", utils.DefaultWidth*2))
+}
+
+func (m NLMWhoIsRouterToNetwork) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "NLMWhoIsRouterToNetwork"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

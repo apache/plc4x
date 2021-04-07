@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressWrite struct {
 	Parent *ApduData
-	IApduDataIndividualAddressWrite
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataIndividualAddressWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataIndividualAddressWrite) UnmarshalXML(d *xml.Decoder, start xml.
 
 func (m *ApduDataIndividualAddressWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataIndividualAddressWrite) String() string {
+	return string(m.Box("ApduDataIndividualAddressWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataIndividualAddressWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataIndividualAddressWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

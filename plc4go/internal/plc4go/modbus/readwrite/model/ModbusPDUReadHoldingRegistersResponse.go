@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type ModbusPDUReadHoldingRegistersResponse struct {
 	Value  []int8
 	Parent *ModbusPDU
-	IModbusPDUReadHoldingRegistersResponse
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IModbusPDUReadHoldingRegistersResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,8 +116,9 @@ func ModbusPDUReadHoldingRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPD
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
+	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (value)
@@ -126,7 +127,7 @@ func ModbusPDUReadHoldingRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPD
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
@@ -147,7 +148,7 @@ func (m *ModbusPDUReadHoldingRegistersResponse) Serialize(io utils.WriteBuffer) 
 		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (value)
@@ -155,7 +156,7 @@ func (m *ModbusPDUReadHoldingRegistersResponse) Serialize(io utils.WriteBuffer) 
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
 		}
@@ -204,4 +205,17 @@ func (m *ModbusPDUReadHoldingRegistersResponse) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadHoldingRegistersResponse) String() string {
+	return string(m.Box("ModbusPDUReadHoldingRegistersResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadHoldingRegistersResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadHoldingRegistersResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

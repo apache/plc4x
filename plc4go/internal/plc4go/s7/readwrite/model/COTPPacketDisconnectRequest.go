@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type COTPPacketDisconnectRequest struct {
 	SourceReference      uint16
 	ProtocolClass        COTPProtocolClass
 	Parent               *COTPPacket
-	ICOTPPacketDisconnectRequest
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type ICOTPPacketDisconnectRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -114,19 +114,19 @@ func COTPPacketDisconnectRequestParse(io *utils.ReadBuffer) (*COTPPacket, error)
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
 	if _destinationReferenceErr != nil {
-		return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
+		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (sourceReference)
 	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
 	if _sourceReferenceErr != nil {
-		return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
+		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
 	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
 	if _protocolClassErr != nil {
-		return nil, errors.New("Error parsing 'protocolClass' field " + _protocolClassErr.Error())
+		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
 
 	// Create a partially initialized instance
@@ -147,21 +147,21 @@ func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 		destinationReference := uint16(m.DestinationReference)
 		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
 		if _destinationReferenceErr != nil {
-			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
+			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.SourceReference)
 		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
 		if _sourceReferenceErr != nil {
-			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
+			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
 		// Enum field (protocolClass)
 		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
 		_protocolClassErr := protocolClass.Serialize(io)
 		if _protocolClassErr != nil {
-			return errors.New("Error serializing 'protocolClass' field " + _protocolClassErr.Error())
+			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
 		return nil
@@ -219,4 +219,19 @@ func (m *COTPPacketDisconnectRequest) MarshalXML(e *xml.Encoder, start xml.Start
 		return err
 	}
 	return nil
+}
+
+func (m COTPPacketDisconnectRequest) String() string {
+	return string(m.Box("COTPPacketDisconnectRequest", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketDisconnectRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacketDisconnectRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProtocolClass", m.ProtocolClass, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

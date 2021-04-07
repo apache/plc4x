@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type TunnelingResponse struct {
 	TunnelingResponseDataBlock *TunnelingResponseDataBlock
 	Parent                     *KnxNetIpMessage
-	ITunnelingResponse
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type ITunnelingResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (tunnelingResponseDataBlock)
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
 		if _tunnelingResponseDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingResponseDataBlock":
-				var data *TunnelingResponseDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingResponseDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingResponseDataBlock = data
+				m.TunnelingResponseDataBlock = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m TunnelingResponse) String() string {
+	return string(m.Box("TunnelingResponse", utils.DefaultWidth*2))
+}
+
+func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TunnelingResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

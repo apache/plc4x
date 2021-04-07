@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type UnknownMessage struct {
 	UnknownData []int8
 	Parent      *KnxNetIpMessage
-	IUnknownMessage
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IUnknownMessage interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMes
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
 		}
 		unknownData[curItem] = _item
 	}
@@ -131,7 +131,7 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
 		}
@@ -180,4 +180,17 @@ func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m UnknownMessage) String() string {
+	return string(m.Box("UnknownMessage", utils.DefaultWidth*2))
+}
+
+func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "UnknownMessage"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("UnknownData", m.UnknownData, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

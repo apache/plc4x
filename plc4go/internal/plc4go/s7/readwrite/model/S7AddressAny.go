@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -37,7 +37,6 @@ type S7AddressAny struct {
 	ByteAddress      uint16
 	BitAddress       uint8
 	Parent           *S7Address
-	IS7AddressAny
 }
 
 // The corresponding interface
@@ -46,6 +45,7 @@ type IS7AddressAny interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,32 +131,32 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := TransportSizeParse(io)
 	if _transportSizeErr != nil {
-		return nil, errors.New("Error parsing 'transportSize' field " + _transportSizeErr.Error())
+		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
 
 	// Simple Field (numberOfElements)
 	numberOfElements, _numberOfElementsErr := io.ReadUint16(16)
 	if _numberOfElementsErr != nil {
-		return nil, errors.New("Error parsing 'numberOfElements' field " + _numberOfElementsErr.Error())
+		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (dbNumber)
 	dbNumber, _dbNumberErr := io.ReadUint16(16)
 	if _dbNumberErr != nil {
-		return nil, errors.New("Error parsing 'dbNumber' field " + _dbNumberErr.Error())
+		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
 
 	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(io)
 	if _areaErr != nil {
-		return nil, errors.New("Error parsing 'area' field " + _areaErr.Error())
+		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(5)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -169,13 +169,13 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 	// Simple Field (byteAddress)
 	byteAddress, _byteAddressErr := io.ReadUint16(16)
 	if _byteAddressErr != nil {
-		return nil, errors.New("Error parsing 'byteAddress' field " + _byteAddressErr.Error())
+		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
 	}
 
 	// Simple Field (bitAddress)
 	bitAddress, _bitAddressErr := io.ReadUint8(3)
 	if _bitAddressErr != nil {
-		return nil, errors.New("Error parsing 'bitAddress' field " + _bitAddressErr.Error())
+		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
 
 	// Create a partially initialized instance
@@ -199,35 +199,35 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 		transportSize := CastTransportSize(m.TransportSize)
 		_transportSizeErr := transportSize.Serialize(io)
 		if _transportSizeErr != nil {
-			return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
+			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.NumberOfElements)
 		_numberOfElementsErr := io.WriteUint16(16, (numberOfElements))
 		if _numberOfElementsErr != nil {
-			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
+			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.DbNumber)
 		_dbNumberErr := io.WriteUint16(16, (dbNumber))
 		if _dbNumberErr != nil {
-			return errors.New("Error serializing 'dbNumber' field " + _dbNumberErr.Error())
+			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
 		// Enum field (area)
 		area := CastMemoryArea(m.Area)
 		_areaErr := area.Serialize(io)
 		if _areaErr != nil {
-			return errors.New("Error serializing 'area' field " + _areaErr.Error())
+			return errors.Wrap(_areaErr, "Error serializing 'area' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(5, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -235,14 +235,14 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 		byteAddress := uint16(m.ByteAddress)
 		_byteAddressErr := io.WriteUint16(16, (byteAddress))
 		if _byteAddressErr != nil {
-			return errors.New("Error serializing 'byteAddress' field " + _byteAddressErr.Error())
+			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
 		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.BitAddress)
 		_bitAddressErr := io.WriteUint8(3, (bitAddress))
 		if _bitAddressErr != nil {
-			return errors.New("Error serializing 'bitAddress' field " + _bitAddressErr.Error())
+			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}
 
 		return nil
@@ -327,4 +327,22 @@ func (m *S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m S7AddressAny) String() string {
+	return string(m.Box("S7AddressAny", utils.DefaultWidth*2))
+}
+
+func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7AddressAny"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
+	boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("Area", m.Area, width-2))
+	boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataIndividualAddressResponse struct {
 	Parent *ApduData
-	IApduDataIndividualAddressResponse
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataIndividualAddressResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataIndividualAddressResponse) UnmarshalXML(d *xml.Decoder, start x
 
 func (m *ApduDataIndividualAddressResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataIndividualAddressResponse) String() string {
+	return string(m.Box("ApduDataIndividualAddressResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataIndividualAddressResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataIndividualAddressResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

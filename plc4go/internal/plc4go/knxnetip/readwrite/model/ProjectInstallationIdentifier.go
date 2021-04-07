@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ProjectInstallationIdentifier struct {
 	ProjectNumber      uint8
 	InstallationNumber uint8
-	IProjectInstallationIdentifier
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IProjectInstallationIdentifier interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
@@ -84,13 +84,13 @@ func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallat
 	// Simple Field (projectNumber)
 	projectNumber, _projectNumberErr := io.ReadUint8(8)
 	if _projectNumberErr != nil {
-		return nil, errors.New("Error parsing 'projectNumber' field " + _projectNumberErr.Error())
+		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber, _installationNumberErr := io.ReadUint8(8)
 	if _installationNumberErr != nil {
-		return nil, errors.New("Error parsing 'installationNumber' field " + _installationNumberErr.Error())
+		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
 	}
 
 	// Create the instance
@@ -103,14 +103,14 @@ func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 	projectNumber := uint8(m.ProjectNumber)
 	_projectNumberErr := io.WriteUint8(8, (projectNumber))
 	if _projectNumberErr != nil {
-		return errors.New("Error serializing 'projectNumber' field " + _projectNumberErr.Error())
+		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.InstallationNumber)
 	_installationNumberErr := io.WriteUint8(8, (installationNumber))
 	if _installationNumberErr != nil {
-		return errors.New("Error serializing 'installationNumber' field " + _installationNumberErr.Error())
+		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}
 
 	return nil
@@ -165,4 +165,18 @@ func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m ProjectInstallationIdentifier) String() string {
+	return string(m.Box("ProjectInstallationIdentifier", utils.DefaultWidth*2))
+}
+
+func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ProjectInstallationIdentifier"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

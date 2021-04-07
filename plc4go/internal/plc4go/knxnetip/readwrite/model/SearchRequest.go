@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type SearchRequest struct {
 	HpaiIDiscoveryEndpoint *HPAIDiscoveryEndpoint
 	Parent                 *KnxNetIpMessage
-	ISearchRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type ISearchRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func SearchRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
 		if _hpaiIDiscoveryEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
+			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiIDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiIDiscoveryEndpoint = data
+				m.HpaiIDiscoveryEndpoint = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m SearchRequest) String() string {
+	return string(m.Box("SearchRequest", utils.DefaultWidth*2))
+}
+
+func (m SearchRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SearchRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiIDiscoveryEndpoint", m.HpaiIDiscoveryEndpoint, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

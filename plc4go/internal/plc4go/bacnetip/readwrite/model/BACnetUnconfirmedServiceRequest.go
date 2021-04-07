@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequest struct {
 	Child IBACnetUnconfirmedServiceRequestChild
-	IBACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IBACnetUnconfirmedServiceRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetUnconfirmedServiceRequestParent interface {
@@ -80,7 +79,6 @@ func (m *BACnetUnconfirmedServiceRequest) GetTypeName() string {
 
 func (m *BACnetUnconfirmedServiceRequest) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
@@ -99,40 +97,40 @@ func BACnetUnconfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BA
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
 	if _serviceChoiceErr != nil {
-		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetUnconfirmedServiceRequest
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x00:
+	case serviceChoice == 0x00: // BACnetUnconfirmedServiceRequestIAm
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIAmParse(io)
-	case serviceChoice == 0x01:
+	case serviceChoice == 0x01: // BACnetUnconfirmedServiceRequestIHave
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestIHaveParse(io)
-	case serviceChoice == 0x02:
+	case serviceChoice == 0x02: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io)
-	case serviceChoice == 0x03:
+	case serviceChoice == 0x03: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io)
-	case serviceChoice == 0x04:
+	case serviceChoice == 0x04: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io, len)
-	case serviceChoice == 0x05:
+	case serviceChoice == 0x05: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io)
-	case serviceChoice == 0x06:
+	case serviceChoice == 0x06: // BACnetUnconfirmedServiceRequestTimeSynchronization
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io)
-	case serviceChoice == 0x07:
+	case serviceChoice == 0x07: // BACnetUnconfirmedServiceRequestWhoHas
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoHasParse(io)
-	case serviceChoice == 0x08:
+	case serviceChoice == 0x08: // BACnetUnconfirmedServiceRequestWhoIs
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWhoIsParse(io)
-	case serviceChoice == 0x09:
+	case serviceChoice == 0x09: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io)
-	case serviceChoice == 0x0A:
+	case serviceChoice == 0x0A: // BACnetUnconfirmedServiceRequestWriteGroup
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(io)
-	case serviceChoice == 0x0B:
+	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -149,14 +147,15 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
 	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
-		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -178,7 +177,15 @@ func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetUnconfirmedServiceRequest")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm":
 					var dt *BACnetUnconfirmedServiceRequestIAm
 					if m.Child != nil {
@@ -339,7 +346,7 @@ func (m *BACnetUnconfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.S
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -348,4 +355,17 @@ func (m *BACnetUnconfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.S
 		return err
 	}
 	return nil
+}
+
+func (m BACnetUnconfirmedServiceRequest) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequest", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

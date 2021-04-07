@@ -26,7 +26,6 @@ import (
 type DefaultPlcSubscriptionResponse struct {
 	request       model.PlcSubscriptionRequest
 	responseCodes map[string]model.PlcResponseCode
-	model.PlcReadResponse
 }
 
 func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcSubscriptionResponse {
@@ -42,14 +41,21 @@ func (m DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionReques
 
 func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName, _ := range m.responseCodes {
-		fieldNames = append(fieldNames, fieldName)
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range m.request.GetFieldNames() {
+		if _, ok := m.responseCodes[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
 	}
 	return fieldNames
 }
 
 func (m DefaultPlcSubscriptionResponse) GetResponseCode(name string) model.PlcResponseCode {
 	return m.responseCodes[name]
+}
+
+func (m DefaultPlcSubscriptionResponse) GetValue(name string) interface{} {
+	panic("not implemented: implement me")
 }
 
 func (m DefaultPlcSubscriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

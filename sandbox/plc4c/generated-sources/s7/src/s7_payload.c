@@ -33,6 +33,7 @@ const plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payloa
    .parameterParameterType = 0x05, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_payload_user_data */
    .parameterParameterType = 0x00, .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.

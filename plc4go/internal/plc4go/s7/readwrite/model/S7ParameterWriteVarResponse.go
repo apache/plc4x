@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7ParameterWriteVarResponse struct {
 	NumItems uint8
 	Parent   *S7Parameter
-	IS7ParameterWriteVarResponse
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IS7ParameterWriteVarResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ func S7ParameterWriteVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error
 	// Simple Field (numItems)
 	numItems, _numItemsErr := io.ReadUint8(8)
 	if _numItemsErr != nil {
-		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
 	// Create a partially initialized instance
@@ -125,7 +125,7 @@ func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 		numItems := uint8(m.NumItems)
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
-			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
 		return nil
@@ -165,4 +165,17 @@ func (m *S7ParameterWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.Start
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterWriteVarResponse) String() string {
+	return string(m.Box("S7ParameterWriteVarResponse", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterWriteVarResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterWriteVarResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumItems", m.NumItems, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

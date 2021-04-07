@@ -19,20 +19,27 @@ under the License.
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
 public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
 
     private final SwitchField switchField;
+    private final TypeReference type;
 
     public DefaultDataIoTypeDefinition(String name, Argument[] parserArguments, String[] tags, SwitchField switchField) {
         super(name, parserArguments, tags);
         this.switchField = switchField;
+        this.type = parserArguments[0].getType();
     }
 
     public SwitchField getSwitchField() {
         return switchField;
     }
+
+    public TypeReference getType() { return this.type; }
 
 }

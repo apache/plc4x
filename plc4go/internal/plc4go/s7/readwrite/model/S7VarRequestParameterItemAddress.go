@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7VarRequestParameterItemAddress struct {
 	Address *S7Address
 	Parent  *S7VarRequestParameterItem
-	IS7VarRequestParameterItemAddress
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IS7VarRequestParameterItemAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -103,15 +103,16 @@ func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
 func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _itemLengthErr := io.ReadUint8(8)
+	itemLength, _itemLengthErr := io.ReadUint8(8)
+	_ = itemLength
 	if _itemLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemLength' field " + _itemLengthErr.Error())
+		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
 	// Simple Field (address)
 	address, _addressErr := S7AddressParse(io)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Create a partially initialized instance
@@ -130,13 +131,13 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 		itemLength := uint8(m.Address.LengthInBytes())
 		_itemLengthErr := io.WriteUint8(8, (itemLength))
 		if _itemLengthErr != nil {
-			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
+			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (address)
 		_addressErr := m.Address.Serialize(io)
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		return nil
@@ -176,4 +177,17 @@ func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m S7VarRequestParameterItemAddress) String() string {
+	return string(m.Box("S7VarRequestParameterItemAddress", utils.DefaultWidth*2))
+}
+
+func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarRequestParameterItemAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

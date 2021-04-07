@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type DescriptionRequest struct {
 	HpaiControlEndpoint *HPAIControlEndpoint
 	Parent              *KnxNetIpMessage
-	IDescriptionRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IDescriptionRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func DescriptionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m DescriptionRequest) String() string {
+	return string(m.Box("DescriptionRequest", utils.DefaultWidth*2))
+}
+
+func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DescriptionRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type S7Parameter struct {
 	Child IS7ParameterChild
-	IS7Parameter
-	IS7ParameterParent
 }
 
 // The corresponding interface
@@ -44,6 +42,7 @@ type IS7Parameter interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7ParameterParent interface {
@@ -81,7 +80,6 @@ func (m *S7Parameter) GetTypeName() string {
 
 func (m *S7Parameter) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
@@ -100,28 +98,28 @@ func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (*S7Parameter, er
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8(8)
 	if _parameterTypeErr != nil {
-		return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
+		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *S7Parameter
 	var typeSwitchError error
 	switch {
-	case parameterType == 0xF0:
+	case parameterType == 0xF0: // S7ParameterSetupCommunication
 		_parent, typeSwitchError = S7ParameterSetupCommunicationParse(io)
-	case parameterType == 0x04 && messageType == 0x01:
+	case parameterType == 0x04 && messageType == 0x01: // S7ParameterReadVarRequest
 		_parent, typeSwitchError = S7ParameterReadVarRequestParse(io)
-	case parameterType == 0x04 && messageType == 0x03:
+	case parameterType == 0x04 && messageType == 0x03: // S7ParameterReadVarResponse
 		_parent, typeSwitchError = S7ParameterReadVarResponseParse(io)
-	case parameterType == 0x05 && messageType == 0x01:
+	case parameterType == 0x05 && messageType == 0x01: // S7ParameterWriteVarRequest
 		_parent, typeSwitchError = S7ParameterWriteVarRequestParse(io)
-	case parameterType == 0x05 && messageType == 0x03:
+	case parameterType == 0x05 && messageType == 0x03: // S7ParameterWriteVarResponse
 		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(io)
-	case parameterType == 0x00 && messageType == 0x07:
+	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
 		_parent, typeSwitchError = S7ParameterUserDataParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -138,14 +136,15 @@ func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
 	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+
 	if _parameterTypeErr != nil {
-		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
+		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -167,7 +166,15 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of S7Parameter")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
 					var dt *S7ParameterSetupCommunication
 					if m.Child != nil {
@@ -256,7 +263,7 @@ func (m *S7Parameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -265,4 +272,17 @@ func (m *S7Parameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m S7Parameter) String() string {
+	return string(m.Box("S7Parameter", utils.DefaultWidth*2))
+}
+
+func (m S7Parameter) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7Parameter"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

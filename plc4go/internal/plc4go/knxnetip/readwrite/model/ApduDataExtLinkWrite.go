@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtLinkWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtLinkWrite
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataExtLinkWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataExtLinkWrite) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 
 func (m *ApduDataExtLinkWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtLinkWrite) String() string {
+	return string(m.Box("ApduDataExtLinkWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtLinkWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtLinkWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

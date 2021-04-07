@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtNetworkParameterWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtNetworkParameterWrite
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataExtNetworkParameterWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataExtNetworkParameterWrite) UnmarshalXML(d *xml.Decoder, start xm
 
 func (m *ApduDataExtNetworkParameterWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtNetworkParameterWrite) String() string {
+	return string(m.Box("ApduDataExtNetworkParameterWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtNetworkParameterWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtNetworkParameterWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

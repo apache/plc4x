@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -33,7 +33,6 @@ import (
 type BACnetTagContext struct {
 	Data   []int8
 	Parent *BACnetTag
-	IBACnetTagContext
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IBACnetTagContext interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNu
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
@@ -137,7 +137,7 @@ func (m *BACnetTagContext) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
 		}
@@ -186,4 +186,17 @@ func (m *BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagContext) String() string {
+	return string(m.Box("BACnetTagContext", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagContext) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagContext"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

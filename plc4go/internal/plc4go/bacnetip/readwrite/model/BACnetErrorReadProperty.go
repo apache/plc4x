@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -41,7 +41,6 @@ type BACnetErrorReadProperty struct {
 	ErrorCodeLength  uint8
 	ErrorCode        []int8
 	Parent           *BACnetError
-	IBACnetErrorReadProperty
 }
 
 // The corresponding interface
@@ -50,6 +49,7 @@ type IBACnetErrorReadProperty interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -134,16 +134,16 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	// Const Field (errorClassHeader)
 	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
 	if _errorClassHeaderErr != nil {
-		return nil, errors.New("Error parsing 'errorClassHeader' field " + _errorClassHeaderErr.Error())
+		return nil, errors.Wrap(_errorClassHeaderErr, "Error parsing 'errorClassHeader' field")
 	}
 	if errorClassHeader != BACnetErrorReadProperty_ERRORCLASSHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCLASSHEADER)) + " but got " + strconv.Itoa(int(errorClassHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetErrorReadProperty_ERRORCLASSHEADER) + " but got " + fmt.Sprintf("%d", errorClassHeader))
 	}
 
 	// Simple Field (errorClassLength)
 	errorClassLength, _errorClassLengthErr := io.ReadUint8(3)
 	if _errorClassLengthErr != nil {
-		return nil, errors.New("Error parsing 'errorClassLength' field " + _errorClassLengthErr.Error())
+		return nil, errors.Wrap(_errorClassLengthErr, "Error parsing 'errorClassLength' field")
 	}
 
 	// Array field (errorClass)
@@ -152,7 +152,7 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'errorClass' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'errorClass' field")
 		}
 		errorClass[curItem] = _item
 	}
@@ -160,16 +160,16 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	// Const Field (errorCodeHeader)
 	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8(5)
 	if _errorCodeHeaderErr != nil {
-		return nil, errors.New("Error parsing 'errorCodeHeader' field " + _errorCodeHeaderErr.Error())
+		return nil, errors.Wrap(_errorCodeHeaderErr, "Error parsing 'errorCodeHeader' field")
 	}
 	if errorCodeHeader != BACnetErrorReadProperty_ERRORCODEHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCODEHEADER)) + " but got " + strconv.Itoa(int(errorCodeHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetErrorReadProperty_ERRORCODEHEADER) + " but got " + fmt.Sprintf("%d", errorCodeHeader))
 	}
 
 	// Simple Field (errorCodeLength)
 	errorCodeLength, _errorCodeLengthErr := io.ReadUint8(3)
 	if _errorCodeLengthErr != nil {
-		return nil, errors.New("Error parsing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
+		return nil, errors.Wrap(_errorCodeLengthErr, "Error parsing 'errorCodeLength' field")
 	}
 
 	// Array field (errorCode)
@@ -178,7 +178,7 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode[curItem] = _item
 	}
@@ -201,14 +201,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 		// Const Field (errorClassHeader)
 		_errorClassHeaderErr := io.WriteUint8(5, 0x12)
 		if _errorClassHeaderErr != nil {
-			return errors.New("Error serializing 'errorClassHeader' field " + _errorClassHeaderErr.Error())
+			return errors.Wrap(_errorClassHeaderErr, "Error serializing 'errorClassHeader' field")
 		}
 
 		// Simple Field (errorClassLength)
 		errorClassLength := uint8(m.ErrorClassLength)
 		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
 		if _errorClassLengthErr != nil {
-			return errors.New("Error serializing 'errorClassLength' field " + _errorClassLengthErr.Error())
+			return errors.Wrap(_errorClassLengthErr, "Error serializing 'errorClassLength' field")
 		}
 
 		// Array Field (errorClass)
@@ -216,7 +216,7 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.ErrorClass {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'errorClass' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
 			}
 		}
@@ -224,14 +224,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 		// Const Field (errorCodeHeader)
 		_errorCodeHeaderErr := io.WriteUint8(5, 0x12)
 		if _errorCodeHeaderErr != nil {
-			return errors.New("Error serializing 'errorCodeHeader' field " + _errorCodeHeaderErr.Error())
+			return errors.Wrap(_errorCodeHeaderErr, "Error serializing 'errorCodeHeader' field")
 		}
 
 		// Simple Field (errorCodeLength)
 		errorCodeLength := uint8(m.ErrorCodeLength)
 		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
 		if _errorCodeLengthErr != nil {
-			return errors.New("Error serializing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
+			return errors.Wrap(_errorCodeLengthErr, "Error serializing 'errorCodeLength' field")
 		}
 
 		// Array Field (errorCode)
@@ -239,7 +239,7 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.ErrorCode {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'errorCode' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}
 			}
 		}
@@ -322,4 +322,20 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m BACnetErrorReadProperty) String() string {
+	return string(m.Box("BACnetErrorReadProperty", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorReadProperty"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

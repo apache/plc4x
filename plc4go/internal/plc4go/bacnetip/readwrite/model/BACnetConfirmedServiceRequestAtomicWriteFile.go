@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestAtomicWriteFile
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) UnmarshalXML(d *xml.Decod
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestAtomicWriteFile) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestAtomicWriteFile", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestAtomicWriteFile) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestAtomicWriteFile"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type KnxGroupAddress3Level struct {
 	MiddleGroup uint8
 	SubGroup    uint8
 	Parent      *KnxGroupAddress
-	IKnxGroupAddress3Level
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IKnxGroupAddress3Level interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,19 +112,19 @@ func KnxGroupAddress3LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8(5)
 	if _mainGroupErr != nil {
-		return nil, errors.New("Error parsing 'mainGroup' field " + _mainGroupErr.Error())
+		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
 	middleGroup, _middleGroupErr := io.ReadUint8(3)
 	if _middleGroupErr != nil {
-		return nil, errors.New("Error parsing 'middleGroup' field " + _middleGroupErr.Error())
+		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint8(8)
 	if _subGroupErr != nil {
-		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
 	// Create a partially initialized instance
@@ -145,21 +145,21 @@ func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 		mainGroup := uint8(m.MainGroup)
 		_mainGroupErr := io.WriteUint8(5, (mainGroup))
 		if _mainGroupErr != nil {
-			return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
+			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (middleGroup)
 		middleGroup := uint8(m.MiddleGroup)
 		_middleGroupErr := io.WriteUint8(3, (middleGroup))
 		if _middleGroupErr != nil {
-			return errors.New("Error serializing 'middleGroup' field " + _middleGroupErr.Error())
+			return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint8(m.SubGroup)
 		_subGroupErr := io.WriteUint8(8, (subGroup))
 		if _subGroupErr != nil {
-			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
 		return nil
@@ -217,4 +217,19 @@ func (m *KnxGroupAddress3Level) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddress3Level) String() string {
+	return string(m.Box("KnxGroupAddress3Level", utils.DefaultWidth*2))
+}
+
+func (m KnxGroupAddress3Level) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddress3Level"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

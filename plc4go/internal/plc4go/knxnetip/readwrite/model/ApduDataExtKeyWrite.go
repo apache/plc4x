@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtKeyWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtKeyWrite
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataExtKeyWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataExtKeyWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 
 func (m *ApduDataExtKeyWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtKeyWrite) String() string {
+	return string(m.Box("ApduDataExtKeyWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtKeyWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtKeyWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

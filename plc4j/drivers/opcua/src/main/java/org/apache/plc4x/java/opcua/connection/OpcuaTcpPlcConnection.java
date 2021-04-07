@@ -32,6 +32,7 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.*;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
@@ -384,14 +385,30 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> responseItems = new HashMap<>();
             for (String fieldName : subscriptionRequest.getFieldNames()) {
-                final PlcSubscriptionField subscriptionField = subscriptionRequest.getField(fieldName);
-                final OpcuaField field = (OpcuaField) Objects.requireNonNull(subscriptionField);
+                final DefaultPlcSubscriptionField subscriptionField = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
+                final OpcuaField field = (OpcuaField) Objects.requireNonNull(subscriptionField.getPlcField());
                 long cycleTime = subscriptionField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
                 NodeId idNode = generateNodeId(field);
                 ReadValueId readValueId = new ReadValueId(
                     idNode,
                     AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
                 UInteger clientHandle = uint(clientHandles.getAndIncrement());
+
+                MonitoringMode monitoringMode;
+                switch (subscriptionField.getPlcSubscriptionType()) {
+                    case CYCLIC:
+                        monitoringMode = MonitoringMode.Sampling;
+                        break;
+                    case CHANGE_OF_STATE:
+                        monitoringMode = MonitoringMode.Reporting;
+                        cycleTime = subscriptionField.getDuration().orElse(Duration.ofSeconds(0)).toMillis();
+                        break;
+                    case EVENT:
+                        monitoringMode = MonitoringMode.Reporting;
+                        break;
+                    default:
+                        monitoringMode = MonitoringMode.Reporting;
+                }
 
                 MonitoringParameters parameters = new MonitoringParameters(
                     clientHandle,
@@ -400,20 +417,6 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     uint(1),   // queue size
                     true        // discard oldest
                 );
-                MonitoringMode monitoringMode;
-                switch (subscriptionField.getPlcSubscriptionType()) {
-                    case CYCLIC:
-                        monitoringMode = MonitoringMode.Sampling;
-                        break;
-                    case CHANGE_OF_STATE:
-                        monitoringMode = MonitoringMode.Reporting;
-                        break;
-                    case EVENT:
-                        monitoringMode = MonitoringMode.Reporting;
-                        break;
-                    default:
-                        monitoringMode = MonitoringMode.Reporting;
-                }
 
                 PlcSubscriptionHandle subHandle = null;
                 PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
@@ -793,7 +796,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                             logger.warn("Unsupported data type : {}, {}", plcValue.getClass(), dataType);
                     }
                 }
-                DataValue value = new DataValue(var);
+                DataValue value = new DataValue(var, StatusCode.GOOD, null, null);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);

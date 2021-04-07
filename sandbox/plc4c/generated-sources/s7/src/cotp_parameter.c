@@ -35,6 +35,7 @@ const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_
    .parameterType = 0xC3},
   {/* plc4c_s7_read_write_cotp_parameter_disconnect_additional_information */
    .parameterType = 0xE0}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -61,6 +62,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+        // Discriminator Field (parameterType)
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
@@ -234,8 +236,8 @@ uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_
 uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (parameterType)
-  lengthInBits += 8;
+        // Discriminator Field (parameterType)
+                lengthInBits += 8;
 
   // Implicit Field (parameterLength)
   lengthInBits += 8;

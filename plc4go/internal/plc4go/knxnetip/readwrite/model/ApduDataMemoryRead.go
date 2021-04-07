@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ApduDataMemoryRead struct {
 	NumBytes uint8
 	Address  uint16
 	Parent   *ApduData
-	IApduDataMemoryRead
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IApduDataMemoryRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,13 +107,13 @@ func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 	// Simple Field (numBytes)
 	numBytes, _numBytesErr := io.ReadUint8(6)
 	if _numBytesErr != nil {
-		return nil, errors.New("Error parsing 'numBytes' field " + _numBytesErr.Error())
+		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16(16)
 	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Create a partially initialized instance
@@ -133,14 +133,14 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 		numBytes := uint8(m.NumBytes)
 		_numBytesErr := io.WriteUint8(6, (numBytes))
 		if _numBytesErr != nil {
-			return errors.New("Error serializing 'numBytes' field " + _numBytesErr.Error())
+			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
 		_addressErr := io.WriteUint16(16, (address))
 		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		return nil
@@ -189,4 +189,18 @@ func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataMemoryRead) String() string {
+	return string(m.Box("ApduDataMemoryRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataMemoryRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, width-2))
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

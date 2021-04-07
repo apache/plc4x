@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ServiceId struct {
 	Child IServiceIdChild
-	IServiceId
-	IServiceIdParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IServiceId interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IServiceIdParent interface {
@@ -80,7 +79,6 @@ func (m *ServiceId) GetTypeName() string {
 
 func (m *ServiceId) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
 
@@ -99,30 +97,30 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := io.ReadUint8(8)
 	if _serviceTypeErr != nil {
-		return nil, errors.New("Error parsing 'serviceType' field " + _serviceTypeErr.Error())
+		return nil, errors.Wrap(_serviceTypeErr, "Error parsing 'serviceType' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ServiceId
 	var typeSwitchError error
 	switch {
-	case serviceType == 0x02:
+	case serviceType == 0x02: // KnxNetIpCore
 		_parent, typeSwitchError = KnxNetIpCoreParse(io)
-	case serviceType == 0x03:
+	case serviceType == 0x03: // KnxNetIpDeviceManagement
 		_parent, typeSwitchError = KnxNetIpDeviceManagementParse(io)
-	case serviceType == 0x04:
+	case serviceType == 0x04: // KnxNetIpTunneling
 		_parent, typeSwitchError = KnxNetIpTunnelingParse(io)
-	case serviceType == 0x05:
+	case serviceType == 0x05: // KnxNetIpRouting
 		_parent, typeSwitchError = KnxNetIpRoutingParse(io)
-	case serviceType == 0x06:
+	case serviceType == 0x06: // KnxNetRemoteLogging
 		_parent, typeSwitchError = KnxNetRemoteLoggingParse(io)
-	case serviceType == 0x07:
+	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
 		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(io)
-	case serviceType == 0x08:
+	case serviceType == 0x08: // KnxNetObjectServer
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -139,14 +137,15 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
 	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+
 	if _serviceTypeErr != nil {
-		return errors.New("Error serializing 'serviceType' field " + _serviceTypeErr.Error())
+		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -168,7 +167,15 @@ func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ServiceId")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
 					var dt *KnxNetIpCore
 					if m.Child != nil {
@@ -269,7 +276,7 @@ func (m *ServiceId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -278,4 +285,17 @@ func (m *ServiceId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m ServiceId) String() string {
+	return string(m.Box("ServiceId", utils.DefaultWidth*2))
+}
+
+func (m ServiceId) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ServiceId"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

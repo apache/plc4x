@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckGetEventInformation struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckGetEventInformation
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetServiceAckGetEventInformation interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetServiceAckGetEventInformation) UnmarshalXML(d *xml.Decoder, start
 
 func (m *BACnetServiceAckGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckGetEventInformation) String() string {
+	return string(m.Box("BACnetServiceAckGetEventInformation", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckGetEventInformation) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckGetEventInformation"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

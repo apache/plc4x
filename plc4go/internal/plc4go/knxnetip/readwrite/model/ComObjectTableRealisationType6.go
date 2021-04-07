@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ComObjectTableRealisationType6 struct {
 	ComObjectDescriptors *GroupObjectDescriptorRealisationType6
 	Parent               *ComObjectTable
-	IComObjectTableRealisationType6
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IComObjectTableRealisationType6 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func ComObjectTableRealisationType6Parse(io *utils.ReadBuffer) (*ComObjectTable,
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
-		return nil, errors.New("Error parsing 'comObjectDescriptors' field " + _comObjectDescriptorsErr.Error())
+		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (comObjectDescriptors)
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
 		if _comObjectDescriptorsErr != nil {
-			return errors.New("Error serializing 'comObjectDescriptors' field " + _comObjectDescriptorsErr.Error())
+			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *ComObjectTableRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "comObjectDescriptors":
-				var data *GroupObjectDescriptorRealisationType6
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data GroupObjectDescriptorRealisationType6
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ComObjectDescriptors = data
+				m.ComObjectDescriptors = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *ComObjectTableRealisationType6) MarshalXML(e *xml.Encoder, start xml.St
 		return err
 	}
 	return nil
+}
+
+func (m ComObjectTableRealisationType6) String() string {
+	return string(m.Box("ComObjectTableRealisationType6", utils.DefaultWidth*2))
+}
+
+func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ComObjectTableRealisationType6"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

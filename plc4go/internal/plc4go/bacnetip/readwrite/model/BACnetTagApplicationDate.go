@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetTagApplicationDate struct {
 	Parent *BACnetTag
-	IBACnetTagApplicationDate
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetTagApplicationDate interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -136,4 +136,16 @@ func (m *BACnetTagApplicationDate) UnmarshalXML(d *xml.Decoder, start xml.StartE
 
 func (m *BACnetTagApplicationDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetTagApplicationDate) String() string {
+	return string(m.Box("BACnetTagApplicationDate", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationDate) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationDate"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

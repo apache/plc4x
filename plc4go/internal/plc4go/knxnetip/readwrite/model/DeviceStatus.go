@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type DeviceStatus struct {
 	ProgramMode bool
-	IDeviceStatus
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IDeviceStatus interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewDeviceStatus(programMode bool) *DeviceStatus {
@@ -85,7 +85,7 @@ func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
 	{
 		reserved, _err := io.ReadUint8(7)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -98,7 +98,7 @@ func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
 	// Simple Field (programMode)
 	programMode, _programModeErr := io.ReadBit()
 	if _programModeErr != nil {
-		return nil, errors.New("Error parsing 'programMode' field " + _programModeErr.Error())
+		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
 	}
 
 	// Create the instance
@@ -111,7 +111,7 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 	{
 		_err := io.WriteUint8(7, uint8(0x00))
 		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
+			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
@@ -119,7 +119,7 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 	programMode := bool(m.ProgramMode)
 	_programModeErr := io.WriteBit((programMode))
 	if _programModeErr != nil {
-		return errors.New("Error serializing 'programMode' field " + _programModeErr.Error())
+		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}
 
 	return nil
@@ -165,4 +165,17 @@ func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m DeviceStatus) String() string {
+	return string(m.Box("DeviceStatus", utils.DefaultWidth*2))
+}
+
+func (m DeviceStatus) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceStatus"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

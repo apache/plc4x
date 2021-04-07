@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type ConnectionRequest struct {
 	HpaiDataEndpoint             *HPAIDataEndpoint
 	ConnectionRequestInformation *ConnectionRequestInformation
 	Parent                       *KnxNetIpMessage
-	IConnectionRequest
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IConnectionRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,19 +112,19 @@ func ConnectionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiDiscoveryEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
 	}
 
 	// Simple Field (hpaiDataEndpoint)
 	hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(io)
 	if _hpaiDataEndpointErr != nil {
-		return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
+		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
 	}
 
 	// Simple Field (connectionRequestInformation)
 	connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(io)
 	if _connectionRequestInformationErr != nil {
-		return nil, errors.New("Error parsing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())
+		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
 
 	// Create a partially initialized instance
@@ -144,19 +144,19 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (hpaiDiscoveryEndpoint)
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
 		if _hpaiDiscoveryEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
+			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
 		// Simple Field (hpaiDataEndpoint)
 		_hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(io)
 		if _hpaiDataEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
+			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
 		// Simple Field (connectionRequestInformation)
 		_connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(io)
 		if _connectionRequestInformationErr != nil {
-			return errors.New("Error serializing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())
+			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}
 
 		return nil
@@ -174,17 +174,17 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDiscoveryEndpoint = data
+				m.HpaiDiscoveryEndpoint = &data
 			case "hpaiDataEndpoint":
-				var data *HPAIDataEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDataEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDataEndpoint = data
+				m.HpaiDataEndpoint = &data
 			case "connectionRequestInformation":
 				var dt *ConnectionRequestInformation
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -214,4 +214,19 @@ func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionRequest) String() string {
+	return string(m.Box("ConnectionRequest", utils.DefaultWidth*2))
+}
+
+func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
+	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
+	boxes = append(boxes, utils.BoxAnything("ConnectionRequestInformation", m.ConnectionRequestInformation, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

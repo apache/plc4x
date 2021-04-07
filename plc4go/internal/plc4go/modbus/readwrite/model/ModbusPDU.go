@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type ModbusPDU struct {
 	Child IModbusPDUChild
-	IModbusPDU
-	IModbusPDUParent
 }
 
 // The corresponding interface
@@ -45,6 +43,7 @@ type IModbusPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IModbusPDUParent interface {
@@ -82,10 +81,8 @@ func (m *ModbusPDU) GetTypeName() string {
 
 func (m *ModbusPDU) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
-
 	// Discriminator Field (functionFlag)
 	lengthInBits += 7
 
@@ -104,100 +101,100 @@ func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := io.ReadBit()
 	if _errorFlagErr != nil {
-		return nil, errors.New("Error parsing 'errorFlag' field " + _errorFlagErr.Error())
+		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag, _functionFlagErr := io.ReadUint8(7)
 	if _functionFlagErr != nil {
-		return nil, errors.New("Error parsing 'functionFlag' field " + _functionFlagErr.Error())
+		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ModbusPDU
 	var typeSwitchError error
 	switch {
-	case errorFlag == true:
+	case errorFlag == true: // ModbusPDUError
 		_parent, typeSwitchError = ModbusPDUErrorParse(io)
-	case errorFlag == false && functionFlag == 0x02 && response == false:
+	case errorFlag == false && functionFlag == 0x02 && response == false: // ModbusPDUReadDiscreteInputsRequest
 		_parent, typeSwitchError = ModbusPDUReadDiscreteInputsRequestParse(io)
-	case errorFlag == false && functionFlag == 0x02 && response == true:
+	case errorFlag == false && functionFlag == 0x02 && response == true: // ModbusPDUReadDiscreteInputsResponse
 		_parent, typeSwitchError = ModbusPDUReadDiscreteInputsResponseParse(io)
-	case errorFlag == false && functionFlag == 0x01 && response == false:
+	case errorFlag == false && functionFlag == 0x01 && response == false: // ModbusPDUReadCoilsRequest
 		_parent, typeSwitchError = ModbusPDUReadCoilsRequestParse(io)
-	case errorFlag == false && functionFlag == 0x01 && response == true:
+	case errorFlag == false && functionFlag == 0x01 && response == true: // ModbusPDUReadCoilsResponse
 		_parent, typeSwitchError = ModbusPDUReadCoilsResponseParse(io)
-	case errorFlag == false && functionFlag == 0x05 && response == false:
+	case errorFlag == false && functionFlag == 0x05 && response == false: // ModbusPDUWriteSingleCoilRequest
 		_parent, typeSwitchError = ModbusPDUWriteSingleCoilRequestParse(io)
-	case errorFlag == false && functionFlag == 0x05 && response == true:
+	case errorFlag == false && functionFlag == 0x05 && response == true: // ModbusPDUWriteSingleCoilResponse
 		_parent, typeSwitchError = ModbusPDUWriteSingleCoilResponseParse(io)
-	case errorFlag == false && functionFlag == 0x0F && response == false:
+	case errorFlag == false && functionFlag == 0x0F && response == false: // ModbusPDUWriteMultipleCoilsRequest
 		_parent, typeSwitchError = ModbusPDUWriteMultipleCoilsRequestParse(io)
-	case errorFlag == false && functionFlag == 0x0F && response == true:
+	case errorFlag == false && functionFlag == 0x0F && response == true: // ModbusPDUWriteMultipleCoilsResponse
 		_parent, typeSwitchError = ModbusPDUWriteMultipleCoilsResponseParse(io)
-	case errorFlag == false && functionFlag == 0x04 && response == false:
+	case errorFlag == false && functionFlag == 0x04 && response == false: // ModbusPDUReadInputRegistersRequest
 		_parent, typeSwitchError = ModbusPDUReadInputRegistersRequestParse(io)
-	case errorFlag == false && functionFlag == 0x04 && response == true:
+	case errorFlag == false && functionFlag == 0x04 && response == true: // ModbusPDUReadInputRegistersResponse
 		_parent, typeSwitchError = ModbusPDUReadInputRegistersResponseParse(io)
-	case errorFlag == false && functionFlag == 0x03 && response == false:
+	case errorFlag == false && functionFlag == 0x03 && response == false: // ModbusPDUReadHoldingRegistersRequest
 		_parent, typeSwitchError = ModbusPDUReadHoldingRegistersRequestParse(io)
-	case errorFlag == false && functionFlag == 0x03 && response == true:
+	case errorFlag == false && functionFlag == 0x03 && response == true: // ModbusPDUReadHoldingRegistersResponse
 		_parent, typeSwitchError = ModbusPDUReadHoldingRegistersResponseParse(io)
-	case errorFlag == false && functionFlag == 0x06 && response == false:
+	case errorFlag == false && functionFlag == 0x06 && response == false: // ModbusPDUWriteSingleRegisterRequest
 		_parent, typeSwitchError = ModbusPDUWriteSingleRegisterRequestParse(io)
-	case errorFlag == false && functionFlag == 0x06 && response == true:
+	case errorFlag == false && functionFlag == 0x06 && response == true: // ModbusPDUWriteSingleRegisterResponse
 		_parent, typeSwitchError = ModbusPDUWriteSingleRegisterResponseParse(io)
-	case errorFlag == false && functionFlag == 0x10 && response == false:
+	case errorFlag == false && functionFlag == 0x10 && response == false: // ModbusPDUWriteMultipleHoldingRegistersRequest
 		_parent, typeSwitchError = ModbusPDUWriteMultipleHoldingRegistersRequestParse(io)
-	case errorFlag == false && functionFlag == 0x10 && response == true:
+	case errorFlag == false && functionFlag == 0x10 && response == true: // ModbusPDUWriteMultipleHoldingRegistersResponse
 		_parent, typeSwitchError = ModbusPDUWriteMultipleHoldingRegistersResponseParse(io)
-	case errorFlag == false && functionFlag == 0x17 && response == false:
+	case errorFlag == false && functionFlag == 0x17 && response == false: // ModbusPDUReadWriteMultipleHoldingRegistersRequest
 		_parent, typeSwitchError = ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io)
-	case errorFlag == false && functionFlag == 0x17 && response == true:
+	case errorFlag == false && functionFlag == 0x17 && response == true: // ModbusPDUReadWriteMultipleHoldingRegistersResponse
 		_parent, typeSwitchError = ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io)
-	case errorFlag == false && functionFlag == 0x16 && response == false:
+	case errorFlag == false && functionFlag == 0x16 && response == false: // ModbusPDUMaskWriteHoldingRegisterRequest
 		_parent, typeSwitchError = ModbusPDUMaskWriteHoldingRegisterRequestParse(io)
-	case errorFlag == false && functionFlag == 0x16 && response == true:
+	case errorFlag == false && functionFlag == 0x16 && response == true: // ModbusPDUMaskWriteHoldingRegisterResponse
 		_parent, typeSwitchError = ModbusPDUMaskWriteHoldingRegisterResponseParse(io)
-	case errorFlag == false && functionFlag == 0x18 && response == false:
+	case errorFlag == false && functionFlag == 0x18 && response == false: // ModbusPDUReadFifoQueueRequest
 		_parent, typeSwitchError = ModbusPDUReadFifoQueueRequestParse(io)
-	case errorFlag == false && functionFlag == 0x18 && response == true:
+	case errorFlag == false && functionFlag == 0x18 && response == true: // ModbusPDUReadFifoQueueResponse
 		_parent, typeSwitchError = ModbusPDUReadFifoQueueResponseParse(io)
-	case errorFlag == false && functionFlag == 0x14 && response == false:
+	case errorFlag == false && functionFlag == 0x14 && response == false: // ModbusPDUReadFileRecordRequest
 		_parent, typeSwitchError = ModbusPDUReadFileRecordRequestParse(io)
-	case errorFlag == false && functionFlag == 0x14 && response == true:
+	case errorFlag == false && functionFlag == 0x14 && response == true: // ModbusPDUReadFileRecordResponse
 		_parent, typeSwitchError = ModbusPDUReadFileRecordResponseParse(io)
-	case errorFlag == false && functionFlag == 0x15 && response == false:
+	case errorFlag == false && functionFlag == 0x15 && response == false: // ModbusPDUWriteFileRecordRequest
 		_parent, typeSwitchError = ModbusPDUWriteFileRecordRequestParse(io)
-	case errorFlag == false && functionFlag == 0x15 && response == true:
+	case errorFlag == false && functionFlag == 0x15 && response == true: // ModbusPDUWriteFileRecordResponse
 		_parent, typeSwitchError = ModbusPDUWriteFileRecordResponseParse(io)
-	case errorFlag == false && functionFlag == 0x07 && response == false:
+	case errorFlag == false && functionFlag == 0x07 && response == false: // ModbusPDUReadExceptionStatusRequest
 		_parent, typeSwitchError = ModbusPDUReadExceptionStatusRequestParse(io)
-	case errorFlag == false && functionFlag == 0x07 && response == true:
+	case errorFlag == false && functionFlag == 0x07 && response == true: // ModbusPDUReadExceptionStatusResponse
 		_parent, typeSwitchError = ModbusPDUReadExceptionStatusResponseParse(io)
-	case errorFlag == false && functionFlag == 0x08 && response == false:
+	case errorFlag == false && functionFlag == 0x08 && response == false: // ModbusPDUDiagnosticRequest
 		_parent, typeSwitchError = ModbusPDUDiagnosticRequestParse(io)
-	case errorFlag == false && functionFlag == 0x08 && response == true:
+	case errorFlag == false && functionFlag == 0x08 && response == true: // ModbusPDUDiagnosticResponse
 		_parent, typeSwitchError = ModbusPDUDiagnosticResponseParse(io)
-	case errorFlag == false && functionFlag == 0x0B && response == false:
+	case errorFlag == false && functionFlag == 0x0B && response == false: // ModbusPDUGetComEventCounterRequest
 		_parent, typeSwitchError = ModbusPDUGetComEventCounterRequestParse(io)
-	case errorFlag == false && functionFlag == 0x0B && response == true:
+	case errorFlag == false && functionFlag == 0x0B && response == true: // ModbusPDUGetComEventCounterResponse
 		_parent, typeSwitchError = ModbusPDUGetComEventCounterResponseParse(io)
-	case errorFlag == false && functionFlag == 0x0C && response == false:
+	case errorFlag == false && functionFlag == 0x0C && response == false: // ModbusPDUGetComEventLogRequest
 		_parent, typeSwitchError = ModbusPDUGetComEventLogRequestParse(io)
-	case errorFlag == false && functionFlag == 0x0C && response == true:
+	case errorFlag == false && functionFlag == 0x0C && response == true: // ModbusPDUGetComEventLogResponse
 		_parent, typeSwitchError = ModbusPDUGetComEventLogResponseParse(io)
-	case errorFlag == false && functionFlag == 0x11 && response == false:
+	case errorFlag == false && functionFlag == 0x11 && response == false: // ModbusPDUReportServerIdRequest
 		_parent, typeSwitchError = ModbusPDUReportServerIdRequestParse(io)
-	case errorFlag == false && functionFlag == 0x11 && response == true:
+	case errorFlag == false && functionFlag == 0x11 && response == true: // ModbusPDUReportServerIdResponse
 		_parent, typeSwitchError = ModbusPDUReportServerIdResponseParse(io)
-	case errorFlag == false && functionFlag == 0x2B && response == false:
+	case errorFlag == false && functionFlag == 0x2B && response == false: // ModbusPDUReadDeviceIdentificationRequest
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationRequestParse(io)
-	case errorFlag == false && functionFlag == 0x2B && response == true:
+	case errorFlag == false && functionFlag == 0x2B && response == true: // ModbusPDUReadDeviceIdentificationResponse
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -214,21 +211,23 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
 	_errorFlagErr := io.WriteBit((errorFlag))
+
 	if _errorFlagErr != nil {
-		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())
+		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.FunctionFlag())
 	_functionFlagErr := io.WriteUint8(7, (functionFlag))
+
 	if _functionFlagErr != nil {
-		return errors.New("Error serializing 'functionFlag' field " + _functionFlagErr.Error())
+		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -250,7 +249,15 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ModbusPDU")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUError":
 					var dt *ModbusPDUError
 					if m.Child != nil {
@@ -735,7 +742,7 @@ func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -744,4 +751,17 @@ func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDU) String() string {
+	return string(m.Box("ModbusPDU", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

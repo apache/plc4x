@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type TDataIndividualReq struct {
 	Parent *CEMI
-	ITDataIndividualReq
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type ITDataIndividualReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *TDataIndividualReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 
 func (m *TDataIndividualReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataIndividualReq) String() string {
+	return string(m.Box("TDataIndividualReq", utils.DefaultWidth*2))
+}
+
+func (m TDataIndividualReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TDataIndividualReq"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

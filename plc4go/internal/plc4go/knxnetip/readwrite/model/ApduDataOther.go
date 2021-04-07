@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ApduDataOther struct {
 	ExtendedApdu *ApduDataExt
 	Parent       *ApduData
-	IApduDataOther
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IApduDataOther interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func ApduDataOtherParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, erro
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
-		return nil, errors.New("Error parsing 'extendedApdu' field " + _extendedApduErr.Error())
+		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (extendedApdu)
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
 		if _extendedApduErr != nil {
-			return errors.New("Error serializing 'extendedApdu' field " + _extendedApduErr.Error())
+			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
 		return nil
@@ -160,4 +160,17 @@ func (m *ApduDataOther) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataOther) String() string {
+	return string(m.Box("ApduDataOther", utils.DefaultWidth*2))
+}
+
+func (m ApduDataOther) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataOther"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ExtendedApdu", m.ExtendedApdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

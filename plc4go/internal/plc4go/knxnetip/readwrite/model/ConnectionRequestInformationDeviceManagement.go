@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ConnectionRequestInformationDeviceManagement struct {
 	Parent *ConnectionRequestInformation
-	IConnectionRequestInformationDeviceManagement
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IConnectionRequestInformationDeviceManagement interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decod
 
 func (m *ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ConnectionRequestInformationDeviceManagement) String() string {
+	return string(m.Box("ConnectionRequestInformationDeviceManagement", utils.DefaultWidth*2))
+}
+
+func (m ConnectionRequestInformationDeviceManagement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionRequestInformationDeviceManagement"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

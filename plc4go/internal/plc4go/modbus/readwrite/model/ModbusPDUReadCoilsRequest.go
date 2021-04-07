@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type ModbusPDUReadCoilsRequest struct {
 	StartingAddress uint16
 	Quantity        uint16
 	Parent          *ModbusPDU
-	IModbusPDUReadCoilsRequest
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IModbusPDUReadCoilsRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -115,13 +115,13 @@ func ModbusPDUReadCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)
 	if _startingAddressErr != nil {
-		return nil, errors.New("Error parsing 'startingAddress' field " + _startingAddressErr.Error())
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
 
 	// Simple Field (quantity)
 	quantity, _quantityErr := io.ReadUint16(16)
 	if _quantityErr != nil {
-		return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
 	// Create a partially initialized instance
@@ -141,14 +141,14 @@ func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 		startingAddress := uint16(m.StartingAddress)
 		_startingAddressErr := io.WriteUint16(16, (startingAddress))
 		if _startingAddressErr != nil {
-			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
+			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
 		_quantityErr := io.WriteUint16(16, (quantity))
 		if _quantityErr != nil {
-			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
+			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		return nil
@@ -197,4 +197,18 @@ func (m *ModbusPDUReadCoilsRequest) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadCoilsRequest) String() string {
+	return string(m.Box("ModbusPDUReadCoilsRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadCoilsRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadCoilsRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

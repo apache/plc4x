@@ -19,12 +19,12 @@
 package tests
 
 import (
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"testing"
 )
 
 func TestAdsDriver(t *testing.T) {
-	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, ads.NewAdsDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }

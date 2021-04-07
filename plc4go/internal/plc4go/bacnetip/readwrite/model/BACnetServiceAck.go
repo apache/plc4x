@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
 	"strings"
@@ -32,8 +32,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAck struct {
 	Child IBACnetServiceAckChild
-	IBACnetServiceAck
-	IBACnetServiceAckParent
 }
 
 // The corresponding interface
@@ -43,6 +41,7 @@ type IBACnetServiceAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetServiceAckParent interface {
@@ -80,7 +79,6 @@ func (m *BACnetServiceAck) GetTypeName() string {
 
 func (m *BACnetServiceAck) LengthInBits() uint16 {
 	lengthInBits := uint16(0)
-
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
 
@@ -99,44 +97,44 @@ func BACnetServiceAckParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
 	if _serviceChoiceErr != nil {
-		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *BACnetServiceAck
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x03:
+	case serviceChoice == 0x03: // BACnetServiceAckGetAlarmSummary
 		_parent, typeSwitchError = BACnetServiceAckGetAlarmSummaryParse(io)
-	case serviceChoice == 0x04:
+	case serviceChoice == 0x04: // BACnetServiceAckGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetServiceAckGetEnrollmentSummaryParse(io)
-	case serviceChoice == 0x1D:
+	case serviceChoice == 0x1D: // BACnetServiceAckGetEventInformation
 		_parent, typeSwitchError = BACnetServiceAckGetEventInformationParse(io)
-	case serviceChoice == 0x06:
+	case serviceChoice == 0x06: // BACnetServiceAckAtomicReadFile
 		_parent, typeSwitchError = BACnetServiceAckAtomicReadFileParse(io)
-	case serviceChoice == 0x07:
+	case serviceChoice == 0x07: // BACnetServiceAckAtomicWriteFile
 		_parent, typeSwitchError = BACnetServiceAckAtomicWriteFileParse(io)
-	case serviceChoice == 0x0A:
+	case serviceChoice == 0x0A: // BACnetServiceAckCreateObject
 		_parent, typeSwitchError = BACnetServiceAckCreateObjectParse(io)
-	case serviceChoice == 0x0C:
+	case serviceChoice == 0x0C: // BACnetServiceAckReadProperty
 		_parent, typeSwitchError = BACnetServiceAckReadPropertyParse(io)
-	case serviceChoice == 0x0E:
+	case serviceChoice == 0x0E: // BACnetServiceAckReadPropertyMultiple
 		_parent, typeSwitchError = BACnetServiceAckReadPropertyMultipleParse(io)
-	case serviceChoice == 0x1A:
+	case serviceChoice == 0x1A: // BACnetServiceAckReadRange
 		_parent, typeSwitchError = BACnetServiceAckReadRangeParse(io)
-	case serviceChoice == 0x12:
+	case serviceChoice == 0x12: // BACnetServiceAckConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetServiceAckConfirmedPrivateTransferParse(io)
-	case serviceChoice == 0x15:
+	case serviceChoice == 0x15: // BACnetServiceAckVTOpen
 		_parent, typeSwitchError = BACnetServiceAckVTOpenParse(io)
-	case serviceChoice == 0x17:
+	case serviceChoice == 0x17: // BACnetServiceAckVTData
 		_parent, typeSwitchError = BACnetServiceAckVTDataParse(io)
-	case serviceChoice == 0x18:
+	case serviceChoice == 0x18: // BACnetServiceAckRemovedAuthenticate
 		_parent, typeSwitchError = BACnetServiceAckRemovedAuthenticateParse(io)
-	case serviceChoice == 0x0D:
+	case serviceChoice == 0x0D: // BACnetServiceAckRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetServiceAckRemovedReadPropertyConditionalParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -153,14 +151,15 @@ func (m *BACnetServiceAck) SerializeParent(io utils.WriteBuffer, child IBACnetSe
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
 	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
-		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -182,7 +181,15 @@ func (m *BACnetServiceAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetServiceAck")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetAlarmSummary":
 					var dt *BACnetServiceAckGetAlarmSummary
 					if m.Child != nil {
@@ -367,7 +374,7 @@ func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -376,4 +383,17 @@ func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m BACnetServiceAck) String() string {
+	return string(m.Box("BACnetServiceAck", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

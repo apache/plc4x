@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCDistributeBroadcastToNetwork struct {
 	Parent *BVLC
-	IBVLCDistributeBroadcastToNetwork
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBVLCDistributeBroadcastToNetwork interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BVLCDistributeBroadcastToNetwork) UnmarshalXML(d *xml.Decoder, start xm
 
 func (m *BVLCDistributeBroadcastToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCDistributeBroadcastToNetwork) String() string {
+	return string(m.Box("BVLCDistributeBroadcastToNetwork", utils.DefaultWidth*2))
+}
+
+func (m BVLCDistributeBroadcastToNetwork) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCDistributeBroadcastToNetwork"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -21,10 +21,10 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -42,7 +42,6 @@ type BACnetUnconfirmedServiceRequestWhoHas struct {
 	ObjectNameCharacterSet  uint8
 	ObjectName              []int8
 	Parent                  *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestWhoHas
 }
 
 // The corresponding interface
@@ -51,6 +50,7 @@ type IBACnetUnconfirmedServiceRequestWhoHas interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -139,52 +139,53 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 	// Const Field (deviceInstanceLowLimitHeader)
 	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)
 	if _deviceInstanceLowLimitHeaderErr != nil {
-		return nil, errors.New("Error parsing 'deviceInstanceLowLimitHeader' field " + _deviceInstanceLowLimitHeaderErr.Error())
+		return nil, errors.Wrap(_deviceInstanceLowLimitHeaderErr, "Error parsing 'deviceInstanceLowLimitHeader' field")
 	}
 	if deviceInstanceLowLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceLowLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceLowLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceLowLimit)
 	deviceInstanceLowLimit, _deviceInstanceLowLimitErr := io.ReadUint32(24)
 	if _deviceInstanceLowLimitErr != nil {
-		return nil, errors.New("Error parsing 'deviceInstanceLowLimit' field " + _deviceInstanceLowLimitErr.Error())
+		return nil, errors.Wrap(_deviceInstanceLowLimitErr, "Error parsing 'deviceInstanceLowLimit' field")
 	}
 
 	// Const Field (deviceInstanceHighLimitHeader)
 	deviceInstanceHighLimitHeader, _deviceInstanceHighLimitHeaderErr := io.ReadUint8(8)
 	if _deviceInstanceHighLimitHeaderErr != nil {
-		return nil, errors.New("Error parsing 'deviceInstanceHighLimitHeader' field " + _deviceInstanceHighLimitHeaderErr.Error())
+		return nil, errors.Wrap(_deviceInstanceHighLimitHeaderErr, "Error parsing 'deviceInstanceHighLimitHeader' field")
 	}
 	if deviceInstanceHighLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceHighLimitHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER) + " but got " + fmt.Sprintf("%d", deviceInstanceHighLimitHeader))
 	}
 
 	// Simple Field (deviceInstanceHighLimit)
 	deviceInstanceHighLimit, _deviceInstanceHighLimitErr := io.ReadUint32(24)
 	if _deviceInstanceHighLimitErr != nil {
-		return nil, errors.New("Error parsing 'deviceInstanceHighLimit' field " + _deviceInstanceHighLimitErr.Error())
+		return nil, errors.Wrap(_deviceInstanceHighLimitErr, "Error parsing 'deviceInstanceHighLimit' field")
 	}
 
 	// Const Field (objectNameHeader)
 	objectNameHeader, _objectNameHeaderErr := io.ReadUint8(8)
 	if _objectNameHeaderErr != nil {
-		return nil, errors.New("Error parsing 'objectNameHeader' field " + _objectNameHeaderErr.Error())
+		return nil, errors.Wrap(_objectNameHeaderErr, "Error parsing 'objectNameHeader' field")
 	}
 	if objectNameHeader != BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER)) + " but got " + strconv.Itoa(int(objectNameHeader)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER) + " but got " + fmt.Sprintf("%d", objectNameHeader))
 	}
 
 	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	objectNameLength, _objectNameLengthErr := io.ReadUint8(8)
+	_ = objectNameLength
 	if _objectNameLengthErr != nil {
-		return nil, errors.New("Error parsing 'objectNameLength' field " + _objectNameLengthErr.Error())
+		return nil, errors.Wrap(_objectNameLengthErr, "Error parsing 'objectNameLength' field")
 	}
 
 	// Simple Field (objectNameCharacterSet)
 	objectNameCharacterSet, _objectNameCharacterSetErr := io.ReadUint8(8)
 	if _objectNameCharacterSetErr != nil {
-		return nil, errors.New("Error parsing 'objectNameCharacterSet' field " + _objectNameCharacterSetErr.Error())
+		return nil, errors.Wrap(_objectNameCharacterSetErr, "Error parsing 'objectNameCharacterSet' field")
 	}
 
 	// Array field (objectName)
@@ -195,7 +196,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 	for io.GetPos() < _objectNameEndPos {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'objectName' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
 		}
 		objectName = append(objectName, _item)
 	}
@@ -218,47 +219,47 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 		// Const Field (deviceInstanceLowLimitHeader)
 		_deviceInstanceLowLimitHeaderErr := io.WriteUint8(8, 0x0B)
 		if _deviceInstanceLowLimitHeaderErr != nil {
-			return errors.New("Error serializing 'deviceInstanceLowLimitHeader' field " + _deviceInstanceLowLimitHeaderErr.Error())
+			return errors.Wrap(_deviceInstanceLowLimitHeaderErr, "Error serializing 'deviceInstanceLowLimitHeader' field")
 		}
 
 		// Simple Field (deviceInstanceLowLimit)
 		deviceInstanceLowLimit := uint32(m.DeviceInstanceLowLimit)
 		_deviceInstanceLowLimitErr := io.WriteUint32(24, (deviceInstanceLowLimit))
 		if _deviceInstanceLowLimitErr != nil {
-			return errors.New("Error serializing 'deviceInstanceLowLimit' field " + _deviceInstanceLowLimitErr.Error())
+			return errors.Wrap(_deviceInstanceLowLimitErr, "Error serializing 'deviceInstanceLowLimit' field")
 		}
 
 		// Const Field (deviceInstanceHighLimitHeader)
 		_deviceInstanceHighLimitHeaderErr := io.WriteUint8(8, 0x1B)
 		if _deviceInstanceHighLimitHeaderErr != nil {
-			return errors.New("Error serializing 'deviceInstanceHighLimitHeader' field " + _deviceInstanceHighLimitHeaderErr.Error())
+			return errors.Wrap(_deviceInstanceHighLimitHeaderErr, "Error serializing 'deviceInstanceHighLimitHeader' field")
 		}
 
 		// Simple Field (deviceInstanceHighLimit)
 		deviceInstanceHighLimit := uint32(m.DeviceInstanceHighLimit)
 		_deviceInstanceHighLimitErr := io.WriteUint32(24, (deviceInstanceHighLimit))
 		if _deviceInstanceHighLimitErr != nil {
-			return errors.New("Error serializing 'deviceInstanceHighLimit' field " + _deviceInstanceHighLimitErr.Error())
+			return errors.Wrap(_deviceInstanceHighLimitErr, "Error serializing 'deviceInstanceHighLimit' field")
 		}
 
 		// Const Field (objectNameHeader)
 		_objectNameHeaderErr := io.WriteUint8(8, 0x3D)
 		if _objectNameHeaderErr != nil {
-			return errors.New("Error serializing 'objectNameHeader' field " + _objectNameHeaderErr.Error())
+			return errors.Wrap(_objectNameHeaderErr, "Error serializing 'objectNameHeader' field")
 		}
 
 		// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		objectNameLength := uint8(uint8(uint8(len(m.ObjectName))) + uint8(uint8(1)))
 		_objectNameLengthErr := io.WriteUint8(8, (objectNameLength))
 		if _objectNameLengthErr != nil {
-			return errors.New("Error serializing 'objectNameLength' field " + _objectNameLengthErr.Error())
+			return errors.Wrap(_objectNameLengthErr, "Error serializing 'objectNameLength' field")
 		}
 
 		// Simple Field (objectNameCharacterSet)
 		objectNameCharacterSet := uint8(m.ObjectNameCharacterSet)
 		_objectNameCharacterSetErr := io.WriteUint8(8, (objectNameCharacterSet))
 		if _objectNameCharacterSetErr != nil {
-			return errors.New("Error serializing 'objectNameCharacterSet' field " + _objectNameCharacterSetErr.Error())
+			return errors.Wrap(_objectNameCharacterSetErr, "Error serializing 'objectNameCharacterSet' field")
 		}
 
 		// Array Field (objectName)
@@ -266,7 +267,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 			for _, _element := range m.ObjectName {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'objectName' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'objectName' field")
 				}
 			}
 		}
@@ -342,4 +343,20 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m BACnetUnconfirmedServiceRequestWhoHas) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestWhoHas", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestWhoHas"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimit", m.DeviceInstanceLowLimit, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimit", m.DeviceInstanceHighLimit, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectNameCharacterSet", m.ObjectNameCharacterSet, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectName", m.ObjectName, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

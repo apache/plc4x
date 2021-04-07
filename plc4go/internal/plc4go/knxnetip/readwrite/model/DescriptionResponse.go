@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type DescriptionResponse struct {
 	DibDeviceInfo      *DIBDeviceInfo
 	DibSuppSvcFamilies *DIBSuppSvcFamilies
 	Parent             *KnxNetIpMessage
-	IDescriptionResponse
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IDescriptionResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,13 +107,13 @@ func DescriptionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
-		return nil, errors.New("Error parsing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.New("Error parsing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
 
 	// Create a partially initialized instance
@@ -132,13 +132,13 @@ func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (dibDeviceInfo)
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
 		if _dibDeviceInfoErr != nil {
-			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
 		if _dibSuppSvcFamiliesErr != nil {
-			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		return nil
@@ -156,17 +156,17 @@ func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dibDeviceInfo":
-				var data *DIBDeviceInfo
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBDeviceInfo
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibDeviceInfo = data
+				m.DibDeviceInfo = &data
 			case "dibSuppSvcFamilies":
-				var data *DIBSuppSvcFamilies
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DIBSuppSvcFamilies
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DibSuppSvcFamilies = data
+				m.DibSuppSvcFamilies = &data
 			}
 		}
 		token, err = d.Token()
@@ -187,4 +187,18 @@ func (m *DescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m DescriptionResponse) String() string {
+	return string(m.Box("DescriptionResponse", utils.DefaultWidth*2))
+}
+
+func (m DescriptionResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DescriptionResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
+	boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

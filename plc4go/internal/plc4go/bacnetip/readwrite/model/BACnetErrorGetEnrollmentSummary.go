@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorGetEnrollmentSummary struct {
 	Parent *BACnetError
-	IBACnetErrorGetEnrollmentSummary
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetErrorGetEnrollmentSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetErrorGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *BACnetErrorGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorGetEnrollmentSummary) String() string {
+	return string(m.Box("BACnetErrorGetEnrollmentSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorGetEnrollmentSummary"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

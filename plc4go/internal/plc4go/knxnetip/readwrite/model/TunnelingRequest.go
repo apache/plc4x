@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type TunnelingRequest struct {
 	TunnelingRequestDataBlock *TunnelingRequestDataBlock
 	Cemi                      *CEMI
 	Parent                    *KnxNetIpMessage
-	ITunnelingRequest
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type ITunnelingRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,13 +107,13 @@ func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpM
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
 	if _tunnelingRequestDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field")
 	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
-		return nil, errors.New("Error parsing 'cemi' field " + _cemiErr.Error())
+		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
 
 	// Create a partially initialized instance
@@ -132,13 +132,13 @@ func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (tunnelingRequestDataBlock)
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
 		if _tunnelingRequestDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
 		_cemiErr := m.Cemi.Serialize(io)
 		if _cemiErr != nil {
-			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
 		return nil
@@ -156,11 +156,11 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingRequestDataBlock":
-				var data *TunnelingRequestDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingRequestDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingRequestDataBlock = data
+				m.TunnelingRequestDataBlock = &data
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -187,4 +187,18 @@ func (m *TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m TunnelingRequest) String() string {
+	return string(m.Box("TunnelingRequest", utils.DefaultWidth*2))
+}
+
+func (m TunnelingRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TunnelingRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TunnelingRequestDataBlock", m.TunnelingRequestDataBlock, width-2))
+	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

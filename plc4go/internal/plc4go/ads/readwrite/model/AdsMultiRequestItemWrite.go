@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type AdsMultiRequestItemWrite struct {
 	ItemIndexOffset uint32
 	ItemWriteLength uint32
 	Parent          *AdsMultiRequestItem
-	IAdsMultiRequestItemWrite
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IAdsMultiRequestItemWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,19 +112,19 @@ func AdsMultiRequestItemWriteParse(io *utils.ReadBuffer) (*AdsMultiRequestItem, 
 	// Simple Field (itemIndexGroup)
 	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
 	if _itemIndexGroupErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
 
 	// Simple Field (itemIndexOffset)
 	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
 	if _itemIndexOffsetErr != nil {
-		return nil, errors.New("Error parsing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
 
 	// Simple Field (itemWriteLength)
 	itemWriteLength, _itemWriteLengthErr := io.ReadUint32(32)
 	if _itemWriteLengthErr != nil {
-		return nil, errors.New("Error parsing 'itemWriteLength' field " + _itemWriteLengthErr.Error())
+		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
 	}
 
 	// Create a partially initialized instance
@@ -145,21 +145,21 @@ func (m *AdsMultiRequestItemWrite) Serialize(io utils.WriteBuffer) error {
 		itemIndexGroup := uint32(m.ItemIndexGroup)
 		_itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
 		if _itemIndexGroupErr != nil {
-			return errors.New("Error serializing 'itemIndexGroup' field " + _itemIndexGroupErr.Error())
+			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
 		}
 
 		// Simple Field (itemIndexOffset)
 		itemIndexOffset := uint32(m.ItemIndexOffset)
 		_itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
 		if _itemIndexOffsetErr != nil {
-			return errors.New("Error serializing 'itemIndexOffset' field " + _itemIndexOffsetErr.Error())
+			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
 		}
 
 		// Simple Field (itemWriteLength)
 		itemWriteLength := uint32(m.ItemWriteLength)
 		_itemWriteLengthErr := io.WriteUint32(32, (itemWriteLength))
 		if _itemWriteLengthErr != nil {
-			return errors.New("Error serializing 'itemWriteLength' field " + _itemWriteLengthErr.Error())
+			return errors.Wrap(_itemWriteLengthErr, "Error serializing 'itemWriteLength' field")
 		}
 
 		return nil
@@ -217,4 +217,19 @@ func (m *AdsMultiRequestItemWrite) MarshalXML(e *xml.Encoder, start xml.StartEle
 		return err
 	}
 	return nil
+}
+
+func (m AdsMultiRequestItemWrite) String() string {
+	return string(m.Box("AdsMultiRequestItemWrite", utils.DefaultWidth*2))
+}
+
+func (m AdsMultiRequestItemWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsMultiRequestItemWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))
+	boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

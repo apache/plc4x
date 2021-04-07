@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -34,7 +34,6 @@ type APDUAbort struct {
 	OriginalInvokeId uint8
 	AbortReason      uint8
 	Parent           *APDU
-	IAPDUAbort
 }
 
 // The corresponding interface
@@ -43,6 +42,7 @@ type IAPDUAbort interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
 	{
 		reserved, _err := io.ReadUint8(3)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -130,19 +130,19 @@ func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
 	// Simple Field (server)
 	server, _serverErr := io.ReadBit()
 	if _serverErr != nil {
-		return nil, errors.New("Error parsing 'server' field " + _serverErr.Error())
+		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
 
 	// Simple Field (originalInvokeId)
 	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
 	if _originalInvokeIdErr != nil {
-		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (abortReason)
 	abortReason, _abortReasonErr := io.ReadUint8(8)
 	if _abortReasonErr != nil {
-		return nil, errors.New("Error parsing 'abortReason' field " + _abortReasonErr.Error())
+		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
 
 	// Create a partially initialized instance
@@ -163,7 +163,7 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(3, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -171,21 +171,21 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 		server := bool(m.Server)
 		_serverErr := io.WriteBit((server))
 		if _serverErr != nil {
-			return errors.New("Error serializing 'server' field " + _serverErr.Error())
+			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
-			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (abortReason)
 		abortReason := uint8(m.AbortReason)
 		_abortReasonErr := io.WriteUint8(8, (abortReason))
 		if _abortReasonErr != nil {
-			return errors.New("Error serializing 'abortReason' field " + _abortReasonErr.Error())
+			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}
 
 		return nil
@@ -243,4 +243,19 @@ func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDUAbort) String() string {
+	return string(m.Box("APDUAbort", utils.DefaultWidth*2))
+}
+
+func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUAbort"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("AbortReason", m.AbortReason, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

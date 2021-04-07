@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type AdsReadStateRequest struct {
 	Parent *AdsData
-	IAdsReadStateRequest
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IAdsReadStateRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -136,4 +136,16 @@ func (m *AdsReadStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 
 func (m *AdsReadStateRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m AdsReadStateRequest) String() string {
+	return string(m.Box("AdsReadStateRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsReadStateRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadStateRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

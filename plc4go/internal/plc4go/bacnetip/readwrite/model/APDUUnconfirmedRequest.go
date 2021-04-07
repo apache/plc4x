@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -32,7 +32,6 @@ import (
 type APDUUnconfirmedRequest struct {
 	ServiceRequest *BACnetUnconfirmedServiceRequest
 	Parent         *APDU
-	IAPDUUnconfirmedRequest
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IAPDUUnconfirmedRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 	{
 		reserved, _err := io.ReadUint8(4)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -120,7 +120,7 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
-		return nil, errors.New("Error parsing 'serviceRequest' field " + _serviceRequestErr.Error())
+		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
 
 	// Create a partially initialized instance
@@ -139,14 +139,14 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(4, uint8(0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (serviceRequest)
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
 		if _serviceRequestErr != nil {
-			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
+			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
 		return nil
@@ -186,4 +186,17 @@ func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m APDUUnconfirmedRequest) String() string {
+	return string(m.Box("APDUUnconfirmedRequest", utils.DefaultWidth*2))
+}
+
+func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUUnconfirmedRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

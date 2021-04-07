@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type S7VarPayloadStatusItem struct {
 	ReturnCode DataTransportErrorCode
-	IS7VarPayloadStatusItem
 }
 
 // The corresponding interface
@@ -39,6 +38,7 @@ type IS7VarPayloadStatusItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadStatusItem {
@@ -80,7 +80,7 @@ func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem,
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
-		return nil, errors.New("Error parsing 'returnCode' field " + _returnCodeErr.Error())
+		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
 
 	// Create the instance
@@ -93,7 +93,7 @@ func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
-		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
 	return nil
@@ -139,4 +139,17 @@ func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m S7VarPayloadStatusItem) String() string {
+	return string(m.Box("S7VarPayloadStatusItem", utils.DefaultWidth*2))
+}
+
+func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarPayloadStatusItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

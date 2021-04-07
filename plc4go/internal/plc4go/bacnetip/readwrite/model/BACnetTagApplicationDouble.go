@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type BACnetTagApplicationDouble struct {
 	Value  float64
 	Parent *BACnetTag
-	IBACnetTagApplicationDouble
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IBACnetTagApplicationDouble interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8
 	// Simple Field (value)
 	value, _valueErr := io.ReadFloat64(true, 11, 52)
 	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
 	// Create a partially initialized instance
@@ -125,7 +125,7 @@ func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 		value := float64(m.Value)
 		_valueErr := io.WriteFloat64(64, (value))
 		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
 		return nil
@@ -165,4 +165,17 @@ func (m *BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartE
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationDouble) String() string {
+	return string(m.Box("BACnetTagApplicationDouble", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationDouble) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationDouble"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

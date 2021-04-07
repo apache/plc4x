@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -31,7 +31,6 @@ import (
 // The data-structure of this message
 type ApduDataGroupValueRead struct {
 	Parent *ApduData
-	IApduDataGroupValueRead
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IApduDataGroupValueRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func ApduDataGroupValueReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 	{
 		reserved, _err := io.ReadUint8(6)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -127,7 +127,7 @@ func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(6, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -159,4 +159,16 @@ func (m *ApduDataGroupValueRead) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 
 func (m *ApduDataGroupValueRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataGroupValueRead) String() string {
+	return string(m.Box("ApduDataGroupValueRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataGroupValueRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataGroupValueRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

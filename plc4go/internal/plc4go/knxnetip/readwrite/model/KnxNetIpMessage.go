@@ -20,11 +20,11 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -36,8 +36,6 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 // The data-structure of this message
 type KnxNetIpMessage struct {
 	Child IKnxNetIpMessageChild
-	IKnxNetIpMessage
-	IKnxNetIpMessageParent
 }
 
 // The corresponding interface
@@ -47,6 +45,7 @@ type IKnxNetIpMessage interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IKnxNetIpMessageParent interface {
@@ -90,7 +89,6 @@ func (m *KnxNetIpMessage) LengthInBits() uint16 {
 
 	// Const Field (protocolVersion)
 	lengthInBits += 8
-
 	// Discriminator Field (msgType)
 	lengthInBits += 16
 
@@ -110,71 +108,73 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8(8)
+	_ = headerLength
 	if _headerLengthErr != nil {
-		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
+		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
 	protocolVersion, _protocolVersionErr := io.ReadUint8(8)
 	if _protocolVersionErr != nil {
-		return nil, errors.New("Error parsing 'protocolVersion' field " + _protocolVersionErr.Error())
+		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
 	}
 	if protocolVersion != KnxNetIpMessage_PROTOCOLVERSION {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(KnxNetIpMessage_PROTOCOLVERSION)) + " but got " + strconv.Itoa(int(protocolVersion)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", KnxNetIpMessage_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType, _msgTypeErr := io.ReadUint16(16)
 	if _msgTypeErr != nil {
-		return nil, errors.New("Error parsing 'msgType' field " + _msgTypeErr.Error())
+		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength, _totalLengthErr := io.ReadUint16(16)
+	_ = totalLength
 	if _totalLengthErr != nil {
-		return nil, errors.New("Error parsing 'totalLength' field " + _totalLengthErr.Error())
+		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxNetIpMessage
 	var typeSwitchError error
 	switch {
-	case msgType == 0x0201:
+	case msgType == 0x0201: // SearchRequest
 		_parent, typeSwitchError = SearchRequestParse(io)
-	case msgType == 0x0202:
+	case msgType == 0x0202: // SearchResponse
 		_parent, typeSwitchError = SearchResponseParse(io)
-	case msgType == 0x0203:
+	case msgType == 0x0203: // DescriptionRequest
 		_parent, typeSwitchError = DescriptionRequestParse(io)
-	case msgType == 0x0204:
+	case msgType == 0x0204: // DescriptionResponse
 		_parent, typeSwitchError = DescriptionResponseParse(io)
-	case msgType == 0x0205:
+	case msgType == 0x0205: // ConnectionRequest
 		_parent, typeSwitchError = ConnectionRequestParse(io)
-	case msgType == 0x0206:
+	case msgType == 0x0206: // ConnectionResponse
 		_parent, typeSwitchError = ConnectionResponseParse(io)
-	case msgType == 0x0207:
+	case msgType == 0x0207: // ConnectionStateRequest
 		_parent, typeSwitchError = ConnectionStateRequestParse(io)
-	case msgType == 0x0208:
+	case msgType == 0x0208: // ConnectionStateResponse
 		_parent, typeSwitchError = ConnectionStateResponseParse(io)
-	case msgType == 0x0209:
+	case msgType == 0x0209: // DisconnectRequest
 		_parent, typeSwitchError = DisconnectRequestParse(io)
-	case msgType == 0x020A:
+	case msgType == 0x020A: // DisconnectResponse
 		_parent, typeSwitchError = DisconnectResponseParse(io)
-	case msgType == 0x020B:
+	case msgType == 0x020B: // UnknownMessage
 		_parent, typeSwitchError = UnknownMessageParse(io, totalLength)
-	case msgType == 0x0310:
+	case msgType == 0x0310: // DeviceConfigurationRequest
 		_parent, typeSwitchError = DeviceConfigurationRequestParse(io, totalLength)
-	case msgType == 0x0311:
+	case msgType == 0x0311: // DeviceConfigurationAck
 		_parent, typeSwitchError = DeviceConfigurationAckParse(io)
-	case msgType == 0x0420:
+	case msgType == 0x0420: // TunnelingRequest
 		_parent, typeSwitchError = TunnelingRequestParse(io, totalLength)
-	case msgType == 0x0421:
+	case msgType == 0x0421: // TunnelingResponse
 		_parent, typeSwitchError = TunnelingResponseParse(io)
-	case msgType == 0x0530:
+	case msgType == 0x0530: // RoutingIndication
 		_parent, typeSwitchError = RoutingIndicationParse(io)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Finish initializing
@@ -192,33 +192,34 @@ func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpM
 	headerLength := uint8(uint8(6))
 	_headerLengthErr := io.WriteUint8(8, (headerLength))
 	if _headerLengthErr != nil {
-		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
+		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
 	_protocolVersionErr := io.WriteUint8(8, 0x10)
 	if _protocolVersionErr != nil {
-		return errors.New("Error serializing 'protocolVersion' field " + _protocolVersionErr.Error())
+		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType := uint16(child.MsgType())
 	_msgTypeErr := io.WriteUint16(16, (msgType))
+
 	if _msgTypeErr != nil {
-		return errors.New("Error serializing 'msgType' field " + _msgTypeErr.Error())
+		return errors.Wrap(_msgTypeErr, "Error serializing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.LengthInBytes()))
 	_totalLengthErr := io.WriteUint16(16, (totalLength))
 	if _totalLengthErr != nil {
-		return errors.New("Error serializing 'totalLength' field " + _totalLengthErr.Error())
+		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
 	return nil
@@ -240,7 +241,15 @@ func (m *KnxNetIpMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of KnxNetIpMessage")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.SearchRequest":
 					var dt *SearchRequest
 					if m.Child != nil {
@@ -449,7 +458,7 @@ func (m *KnxNetIpMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
 	if !ok {
-		return errors.New("child is not castable to Marshaler")
+		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)
 	}
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
@@ -458,4 +467,17 @@ func (m *KnxNetIpMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetIpMessage) String() string {
+	return string(m.Box("KnxNetIpMessage", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpMessage) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetIpMessage"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

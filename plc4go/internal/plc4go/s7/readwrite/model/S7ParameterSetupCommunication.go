@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -34,7 +34,6 @@ type S7ParameterSetupCommunication struct {
 	MaxAmqCallee uint16
 	PduLength    uint16
 	Parent       *S7Parameter
-	IS7ParameterSetupCommunication
 }
 
 // The corresponding interface
@@ -43,6 +42,7 @@ type IS7ParameterSetupCommunication interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, err
 	{
 		reserved, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0x00) {
 			log.Info().Fields(map[string]interface{}{
@@ -134,19 +134,19 @@ func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, err
 	// Simple Field (maxAmqCaller)
 	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16(16)
 	if _maxAmqCallerErr != nil {
-		return nil, errors.New("Error parsing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
+		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
 	}
 
 	// Simple Field (maxAmqCallee)
 	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16(16)
 	if _maxAmqCalleeErr != nil {
-		return nil, errors.New("Error parsing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
+		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
 	}
 
 	// Simple Field (pduLength)
 	pduLength, _pduLengthErr := io.ReadUint16(16)
 	if _pduLengthErr != nil {
-		return nil, errors.New("Error parsing 'pduLength' field " + _pduLengthErr.Error())
+		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
 
 	// Create a partially initialized instance
@@ -167,7 +167,7 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 		{
 			_err := io.WriteUint8(8, uint8(0x00))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -175,21 +175,21 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 		maxAmqCaller := uint16(m.MaxAmqCaller)
 		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
 		if _maxAmqCallerErr != nil {
-			return errors.New("Error serializing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
+			return errors.Wrap(_maxAmqCallerErr, "Error serializing 'maxAmqCaller' field")
 		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.MaxAmqCallee)
 		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
 		if _maxAmqCalleeErr != nil {
-			return errors.New("Error serializing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
+			return errors.Wrap(_maxAmqCalleeErr, "Error serializing 'maxAmqCallee' field")
 		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.PduLength)
 		_pduLengthErr := io.WriteUint16(16, (pduLength))
 		if _pduLengthErr != nil {
-			return errors.New("Error serializing 'pduLength' field " + _pduLengthErr.Error())
+			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}
 
 		return nil
@@ -247,4 +247,19 @@ func (m *S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterSetupCommunication) String() string {
+	return string(m.Box("S7ParameterSetupCommunication", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterSetupCommunication"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, width-2))
+	boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

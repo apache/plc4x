@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type AdsDeleteDeviceNotificationRequest struct {
 	NotificationHandle uint32
 	Parent             *AdsData
-	IAdsDeleteDeviceNotificationRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IAdsDeleteDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ func AdsDeleteDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, er
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
 	if _notificationHandleErr != nil {
-		return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
+		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Create a partially initialized instance
@@ -125,7 +125,7 @@ func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) err
 		notificationHandle := uint32(m.NotificationHandle)
 		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
 		if _notificationHandleErr != nil {
-			return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
+			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
 		return nil
@@ -165,4 +165,17 @@ func (m *AdsDeleteDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xm
 		return err
 	}
 	return nil
+}
+
+func (m AdsDeleteDeviceNotificationRequest) String() string {
+	return string(m.Box("AdsDeleteDeviceNotificationRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeleteDeviceNotificationRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

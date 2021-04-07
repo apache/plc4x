@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type COTPParameterChecksum struct {
 	Crc    uint8
 	Parent *COTPParameter
-	ICOTPParameterChecksum
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type ICOTPParameterChecksum interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func COTPParameterChecksumParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint8(8)
 	if _crcErr != nil {
-		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +121,7 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 		crc := uint8(m.Crc)
 		_crcErr := io.WriteUint8(8, (crc))
 		if _crcErr != nil {
-			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
 		return nil
@@ -161,4 +161,17 @@ func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterChecksum) String() string {
+	return string(m.Box("COTPParameterChecksum", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterChecksum) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterChecksum"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

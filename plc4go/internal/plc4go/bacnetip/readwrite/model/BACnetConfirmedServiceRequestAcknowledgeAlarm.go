@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestAcknowledgeAlarm
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) UnmarshalXML(d *xml.Deco
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestAcknowledgeAlarm", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestAcknowledgeAlarm"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

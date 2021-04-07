@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type TDataConnectedReq struct {
 	Parent *CEMI
-	ITDataConnectedReq
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type ITDataConnectedReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *TDataConnectedReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *TDataConnectedReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataConnectedReq) String() string {
+	return string(m.Box("TDataConnectedReq", utils.DefaultWidth*2))
+}
+
+func (m TDataConnectedReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TDataConnectedReq"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

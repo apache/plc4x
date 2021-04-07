@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type KnxNetRemoteConfigurationAndDiagnosis struct {
 	Version uint8
 	Parent  *ServiceId
-	IKnxNetRemoteConfigurationAndDiagnosis
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IKnxNetRemoteConfigurationAndDiagnosis interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (*ServiceI
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)
 	if _versionErr != nil {
-		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
 	// Create a partially initialized instance
@@ -121,7 +121,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) 
 		version := uint8(m.Version)
 		_versionErr := io.WriteUint8(8, (version))
 		if _versionErr != nil {
-			return errors.New("Error serializing 'version' field " + _versionErr.Error())
+			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
 		return nil
@@ -161,4 +161,17 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) String() string {
+	return string(m.Box("KnxNetRemoteConfigurationAndDiagnosis", utils.DefaultWidth*2))
+}
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetRemoteConfigurationAndDiagnosis"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

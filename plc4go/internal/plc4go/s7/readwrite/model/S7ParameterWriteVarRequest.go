@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7ParameterWriteVarRequest struct {
 	Items  []*S7VarRequestParameterItem
 	Parent *S7Parameter
-	IS7ParameterWriteVarRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IS7ParameterWriteVarRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -112,8 +112,9 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8(8)
+	_ = numItems
 	if _numItemsErr != nil {
-		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
 	// Array field (items)
@@ -122,7 +123,7 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 		_item, _err := S7VarRequestParameterItemParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -143,7 +144,7 @@ func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 		numItems := uint8(uint8(len(m.Items)))
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
-			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
 		// Array Field (items)
@@ -151,7 +152,7 @@ func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}
@@ -171,13 +172,21 @@ func (m *S7ParameterWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
-				var _values []*S7VarRequestParameterItem
-				var dt *S7VarRequestParameterItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *S7VarRequestParameterItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Items = _values
 			}
 		}
 		token, err = d.Token()
@@ -191,14 +200,29 @@ func (m *S7ParameterWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 }
 
 func (m *S7ParameterWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m S7ParameterWriteVarRequest) String() string {
+	return string(m.Box("S7ParameterWriteVarRequest", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterWriteVarRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterWriteVarRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

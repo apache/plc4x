@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type ApduDataExtMemoryBitWrite struct {
 	Parent *ApduDataExt
-	IApduDataExtMemoryBitWrite
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IApduDataExtMemoryBitWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *ApduDataExtMemoryBitWrite) UnmarshalXML(d *xml.Decoder, start xml.Start
 
 func (m *ApduDataExtMemoryBitWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtMemoryBitWrite) String() string {
+	return string(m.Box("ApduDataExtMemoryBitWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtMemoryBitWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtMemoryBitWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

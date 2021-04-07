@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -30,7 +30,6 @@ import (
 // The data-structure of this message
 type RelativeTimestamp struct {
 	Timestamp uint16
-	IRelativeTimestamp
 }
 
 // The corresponding interface
@@ -39,6 +38,7 @@ type IRelativeTimestamp interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewRelativeTimestamp(timestamp uint16) *RelativeTimestamp {
@@ -80,7 +80,7 @@ func RelativeTimestampParse(io *utils.ReadBuffer) (*RelativeTimestamp, error) {
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint16(16)
 	if _timestampErr != nil {
-		return nil, errors.New("Error parsing 'timestamp' field " + _timestampErr.Error())
+		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
 	// Create the instance
@@ -93,7 +93,7 @@ func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 	timestamp := uint16(m.Timestamp)
 	_timestampErr := io.WriteUint16(16, (timestamp))
 	if _timestampErr != nil {
-		return errors.New("Error serializing 'timestamp' field " + _timestampErr.Error())
+		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	return nil
@@ -139,4 +139,17 @@ func (m *RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m RelativeTimestamp) String() string {
+	return string(m.Box("RelativeTimestamp", utils.DefaultWidth*2))
+}
+
+func (m RelativeTimestamp) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "RelativeTimestamp"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

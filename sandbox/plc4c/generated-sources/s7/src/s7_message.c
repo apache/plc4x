@@ -33,6 +33,7 @@ const plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_messag
    .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_message_user_data */
    .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -76,6 +77,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* io
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID + " but got " + protocolId);
   }
+        // Discriminator Field (messageType)
 
   // Discriminator Field (messageType) (Used as input to a switch field)
   uint8_t messageType = 0;
@@ -311,8 +313,8 @@ uint16_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_me
   // Const Field (protocolId)
   lengthInBits += 8;
 
-  // Discriminator Field (messageType)
-  lengthInBits += 8;
+        // Discriminator Field (messageType)
+                lengthInBits += 8;
 
   // Reserved Field (reserved)
   lengthInBits += 16;

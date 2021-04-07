@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MPropWriteReq struct {
 	Parent *CEMI
-	IMPropWriteReq
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IMPropWriteReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *MPropWriteReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 func (m *MPropWriteReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MPropWriteReq) String() string {
+	return string(m.Box("MPropWriteReq", utils.DefaultWidth*2))
+}
+
+func (m MPropWriteReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropWriteReq"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

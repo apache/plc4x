@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -35,7 +35,6 @@ type ModbusPDUWriteMultipleCoilsRequest struct {
 	Quantity        uint16
 	Value           []int8
 	Parent          *ModbusPDU
-	IModbusPDUWriteMultipleCoilsRequest
 }
 
 // The corresponding interface
@@ -44,6 +43,7 @@ type IModbusPDUWriteMultipleCoilsRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -127,19 +127,20 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)
 	if _startingAddressErr != nil {
-		return nil, errors.New("Error parsing 'startingAddress' field " + _startingAddressErr.Error())
+		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
 
 	// Simple Field (quantity)
 	quantity, _quantityErr := io.ReadUint16(16)
 	if _quantityErr != nil {
-		return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
+		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
+	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (value)
@@ -148,7 +149,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *utils.ReadBuffer) (*ModbusPDU, 
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
@@ -171,21 +172,21 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) err
 		startingAddress := uint16(m.StartingAddress)
 		_startingAddressErr := io.WriteUint16(16, (startingAddress))
 		if _startingAddressErr != nil {
-			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
+			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
 		_quantityErr := io.WriteUint16(16, (quantity))
 		if _quantityErr != nil {
-			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
+			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (value)
@@ -193,7 +194,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) err
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
 		}
@@ -260,4 +261,19 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) MarshalXML(e *xml.Encoder, start xm
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUWriteMultipleCoilsRequest) String() string {
+	return string(m.Box("ModbusPDUWriteMultipleCoilsRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteMultipleCoilsRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteMultipleCoilsRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

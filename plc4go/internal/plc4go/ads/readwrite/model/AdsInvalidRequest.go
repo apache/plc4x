@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type AdsInvalidRequest struct {
 	Parent *AdsData
-	IAdsInvalidRequest
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IAdsInvalidRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -136,4 +136,16 @@ func (m *AdsInvalidRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *AdsInvalidRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m AdsInvalidRequest) String() string {
+	return string(m.Box("AdsInvalidRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsInvalidRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsInvalidRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

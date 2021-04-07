@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type BVLCOriginalUnicastNPDU struct {
 	Npdu   *NPDU
 	Parent *BVLC
-	IBVLCOriginalUnicastNPDU
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IBVLCOriginalUnicastNPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVL
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
-		return nil, errors.New("Error parsing 'npdu' field " + _npduErr.Error())
+		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
 		if _npduErr != nil {
-			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m BVLCOriginalUnicastNPDU) String() string {
+	return string(m.Box("BVLCOriginalUnicastNPDU", utils.DefaultWidth*2))
+}
+
+func (m BVLCOriginalUnicastNPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCOriginalUnicastNPDU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

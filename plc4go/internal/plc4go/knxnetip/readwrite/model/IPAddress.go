@@ -21,8 +21,8 @@ package model
 import (
 	"encoding/hex"
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 	"strings"
 )
@@ -32,7 +32,6 @@ import (
 // The data-structure of this message
 type IPAddress struct {
 	Addr []int8
-	IIPAddress
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IIPAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewIPAddress(addr []int8) *IPAddress {
@@ -87,7 +87,7 @@ func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'addr' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'addr' field")
 		}
 		addr[curItem] = _item
 	}
@@ -103,7 +103,7 @@ func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
 		for _, _element := range m.Addr {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
-				return errors.New("Error serializing 'addr' field " + _elementErr.Error())
+				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
 	}
@@ -158,4 +158,17 @@ func (m *IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m IPAddress) String() string {
+	return string(m.Box("IPAddress", utils.DefaultWidth*2))
+}
+
+func (m IPAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "IPAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

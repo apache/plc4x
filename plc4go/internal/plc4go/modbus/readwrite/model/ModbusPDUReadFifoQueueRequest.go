@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadFifoQueueRequest struct {
 	FifoPointerAddress uint16
 	Parent             *ModbusPDU
-	IModbusPDUReadFifoQueueRequest
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IModbusPDUReadFifoQueueRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ func ModbusPDUReadFifoQueueRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error
 	// Simple Field (fifoPointerAddress)
 	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
 	if _fifoPointerAddressErr != nil {
-		return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
 
 	// Create a partially initialized instance
@@ -129,7 +129,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
 		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
 		if _fifoPointerAddressErr != nil {
-			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}
 
 		return nil
@@ -169,4 +169,17 @@ func (m *ModbusPDUReadFifoQueueRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadFifoQueueRequest) String() string {
+	return string(m.Box("ModbusPDUReadFifoQueueRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFifoQueueRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFifoQueueRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FifoPointerAddress", m.FifoPointerAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

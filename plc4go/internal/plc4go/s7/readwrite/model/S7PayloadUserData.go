@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type S7PayloadUserData struct {
 	Items  []*S7PayloadUserDataItem
 	Parent *S7Payload
-	IS7PayloadUserData
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IS7PayloadUserData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Pa
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {
 		_item, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
@@ -135,7 +135,7 @@ func (m *S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
 		}
@@ -155,13 +155,21 @@ func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
-				var _values []*S7PayloadUserDataItem
-				var dt *S7PayloadUserDataItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *S7PayloadUserDataItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Items = _values
 			}
 		}
 		token, err = d.Token()
@@ -175,14 +183,29 @@ func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func (m *S7PayloadUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m S7PayloadUserData) String() string {
+	return string(m.Box("S7PayloadUserData", utils.DefaultWidth*2))
+}
+
+func (m S7PayloadUserData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7PayloadUserData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

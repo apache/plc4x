@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCReadForeignDeviceTableAck struct {
 	Parent *BVLC
-	IBVLCReadForeignDeviceTableAck
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBVLCReadForeignDeviceTableAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BVLCReadForeignDeviceTableAck) UnmarshalXML(d *xml.Decoder, start xml.S
 
 func (m *BVLCReadForeignDeviceTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCReadForeignDeviceTableAck) String() string {
+	return string(m.Box("BVLCReadForeignDeviceTableAck", utils.DefaultWidth*2))
+}
+
+func (m BVLCReadForeignDeviceTableAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCReadForeignDeviceTableAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

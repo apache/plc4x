@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"io"
 )
@@ -40,7 +40,6 @@ type APDUConfirmedRequest struct {
 	ProposedWindowSize        *uint8
 	ServiceRequest            *BACnetConfirmedServiceRequest
 	Parent                    *APDU
-	IAPDUConfirmedRequest
 }
 
 // The corresponding interface
@@ -49,6 +48,7 @@ type IAPDUConfirmedRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -150,26 +150,26 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
 	// Simple Field (segmentedMessage)
 	segmentedMessage, _segmentedMessageErr := io.ReadBit()
 	if _segmentedMessageErr != nil {
-		return nil, errors.New("Error parsing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
 
 	// Simple Field (moreFollows)
 	moreFollows, _moreFollowsErr := io.ReadBit()
 	if _moreFollowsErr != nil {
-		return nil, errors.New("Error parsing 'moreFollows' field " + _moreFollowsErr.Error())
+		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
 
 	// Simple Field (segmentedResponseAccepted)
 	segmentedResponseAccepted, _segmentedResponseAcceptedErr := io.ReadBit()
 	if _segmentedResponseAcceptedErr != nil {
-		return nil, errors.New("Error parsing 'segmentedResponseAccepted' field " + _segmentedResponseAcceptedErr.Error())
+		return nil, errors.Wrap(_segmentedResponseAcceptedErr, "Error parsing 'segmentedResponseAccepted' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := io.ReadUint8(2)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
 		if reserved != uint8(0) {
 			log.Info().Fields(map[string]interface{}{
@@ -182,19 +182,19 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
 	// Simple Field (maxSegmentsAccepted)
 	maxSegmentsAccepted, _maxSegmentsAcceptedErr := io.ReadUint8(3)
 	if _maxSegmentsAcceptedErr != nil {
-		return nil, errors.New("Error parsing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
+		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field")
 	}
 
 	// Simple Field (maxApduLengthAccepted)
 	maxApduLengthAccepted, _maxApduLengthAcceptedErr := io.ReadUint8(4)
 	if _maxApduLengthAcceptedErr != nil {
-		return nil, errors.New("Error parsing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
+		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId, _invokeIdErr := io.ReadUint8(8)
 	if _invokeIdErr != nil {
-		return nil, errors.New("Error parsing 'invokeId' field " + _invokeIdErr.Error())
+		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
@@ -202,7 +202,7 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
 	if segmentedMessage {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'sequenceNumber' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field")
 		}
 		sequenceNumber = &_val
 	}
@@ -212,7 +212,7 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
 	if segmentedMessage {
 		_val, _err := io.ReadUint8(8)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'proposedWindowSize' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field")
 		}
 		proposedWindowSize = &_val
 	}
@@ -220,7 +220,7 @@ func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, 
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
 	if _serviceRequestErr != nil {
-		return nil, errors.New("Error parsing 'serviceRequest' field " + _serviceRequestErr.Error())
+		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
 
 	// Create a partially initialized instance
@@ -247,28 +247,28 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		segmentedMessage := bool(m.SegmentedMessage)
 		_segmentedMessageErr := io.WriteBit((segmentedMessage))
 		if _segmentedMessageErr != nil {
-			return errors.New("Error serializing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
 		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.MoreFollows)
 		_moreFollowsErr := io.WriteBit((moreFollows))
 		if _moreFollowsErr != nil {
-			return errors.New("Error serializing 'moreFollows' field " + _moreFollowsErr.Error())
+			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
 		}
 
 		// Simple Field (segmentedResponseAccepted)
 		segmentedResponseAccepted := bool(m.SegmentedResponseAccepted)
 		_segmentedResponseAcceptedErr := io.WriteBit((segmentedResponseAccepted))
 		if _segmentedResponseAcceptedErr != nil {
-			return errors.New("Error serializing 'segmentedResponseAccepted' field " + _segmentedResponseAcceptedErr.Error())
+			return errors.Wrap(_segmentedResponseAcceptedErr, "Error serializing 'segmentedResponseAccepted' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			_err := io.WriteUint8(2, uint8(0))
 			if _err != nil {
-				return errors.New("Error serializing 'reserved' field " + _err.Error())
+				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
@@ -276,21 +276,21 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		maxSegmentsAccepted := uint8(m.MaxSegmentsAccepted)
 		_maxSegmentsAcceptedErr := io.WriteUint8(3, (maxSegmentsAccepted))
 		if _maxSegmentsAcceptedErr != nil {
-			return errors.New("Error serializing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
+			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
 		}
 
 		// Simple Field (maxApduLengthAccepted)
 		maxApduLengthAccepted := uint8(m.MaxApduLengthAccepted)
 		_maxApduLengthAcceptedErr := io.WriteUint8(4, (maxApduLengthAccepted))
 		if _maxApduLengthAcceptedErr != nil {
-			return errors.New("Error serializing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
+			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
 		}
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.InvokeId)
 		_invokeIdErr := io.WriteUint8(8, (invokeId))
 		if _invokeIdErr != nil {
-			return errors.New("Error serializing 'invokeId' field " + _invokeIdErr.Error())
+			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 		}
 
 		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
@@ -299,7 +299,7 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 			sequenceNumber = m.SequenceNumber
 			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
 			if _sequenceNumberErr != nil {
-				return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
 		}
 
@@ -309,14 +309,14 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 			proposedWindowSize = m.ProposedWindowSize
 			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
 			if _proposedWindowSizeErr != nil {
-				return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}
 		}
 
 		// Simple Field (serviceRequest)
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
 		if _serviceRequestErr != nil {
-			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
+			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
 		return nil
@@ -370,17 +370,17 @@ func (m *APDUConfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 				}
 				m.InvokeId = data
 			case "sequenceNumber":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SequenceNumber = data
+				m.SequenceNumber = &data
 			case "proposedWindowSize":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data uint8
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ProposedWindowSize = data
+				m.ProposedWindowSize = &data
 			case "serviceRequest":
 				var dt *BACnetConfirmedServiceRequest
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -428,4 +428,25 @@ func (m *APDUConfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m APDUConfirmedRequest) String() string {
+	return string(m.Box("APDUConfirmedRequest", utils.DefaultWidth*2))
+}
+
+func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUConfirmedRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
+	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
+	boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

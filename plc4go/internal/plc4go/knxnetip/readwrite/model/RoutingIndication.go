@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type RoutingIndication struct {
 	Parent *KnxNetIpMessage
-	IRoutingIndication
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IRoutingIndication interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *RoutingIndication) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *RoutingIndication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m RoutingIndication) String() string {
+	return string(m.Box("RoutingIndication", utils.DefaultWidth*2))
+}
+
+func (m RoutingIndication) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "RoutingIndication"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

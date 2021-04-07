@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type TDataConnectedInd struct {
 	Parent *CEMI
-	ITDataConnectedInd
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type ITDataConnectedInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *TDataConnectedInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *TDataConnectedInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataConnectedInd) String() string {
+	return string(m.Box("TDataConnectedInd", utils.DefaultWidth*2))
+}
+
+func (m TDataConnectedInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TDataConnectedInd"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

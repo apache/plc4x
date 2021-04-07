@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type DeviceConfigurationAck struct {
 	DeviceConfigurationAckDataBlock *DeviceConfigurationAckDataBlock
 	Parent                          *KnxNetIpMessage
-	IDeviceConfigurationAck
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IDeviceConfigurationAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ func DeviceConfigurationAckParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error)
 	// Simple Field (deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(io)
 	if _deviceConfigurationAckDataBlockErr != nil {
-		return nil, errors.New("Error parsing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
 	}
 
 	// Create a partially initialized instance
@@ -120,7 +120,7 @@ func (m *DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (deviceConfigurationAckDataBlock)
 		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(io)
 		if _deviceConfigurationAckDataBlockErr != nil {
-			return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 
 		return nil
@@ -138,11 +138,11 @@ func (m *DeviceConfigurationAck) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "deviceConfigurationAckDataBlock":
-				var data *DeviceConfigurationAckDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data DeviceConfigurationAckDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.DeviceConfigurationAckDataBlock = data
+				m.DeviceConfigurationAckDataBlock = &data
 			}
 		}
 		token, err = d.Token()
@@ -160,4 +160,17 @@ func (m *DeviceConfigurationAck) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m DeviceConfigurationAck) String() string {
+	return string(m.Box("DeviceConfigurationAck", utils.DefaultWidth*2))
+}
+
+func (m DeviceConfigurationAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceConfigurationAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationAckDataBlock", m.DeviceConfigurationAckDataBlock, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

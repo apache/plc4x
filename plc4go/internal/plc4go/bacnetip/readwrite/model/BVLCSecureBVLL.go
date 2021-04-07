@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BVLCSecureBVLL struct {
 	Parent *BVLC
-	IBVLCSecureBVLL
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBVLCSecureBVLL interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 
 func (m *BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCSecureBVLL) String() string {
+	return string(m.Box("BVLCSecureBVLL", utils.DefaultWidth*2))
+}
+
+func (m BVLCSecureBVLL) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCSecureBVLL"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

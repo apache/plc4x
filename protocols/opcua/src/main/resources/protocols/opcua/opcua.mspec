@@ -19,7 +19,7 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[enum string 'OpcuaDataType'
+[enum string '-1' 'OpcuaDataType'
     ['IEC61131_NULL' NULL ]
     ['IEC61131_BOOL' BOOL ]
     ['IEC61131_BYTE' BYTE ]
@@ -51,7 +51,7 @@
 ]
 
 
-[enum string 'OpcuaIdentifierType'
+[enum string '-1' 'OpcuaIdentifierType'
     ['s' STRING_IDENTIFIER]
     ['i' NUMBER_IDENTIFIER]
     ['g' GUID_IDENTIFIER]

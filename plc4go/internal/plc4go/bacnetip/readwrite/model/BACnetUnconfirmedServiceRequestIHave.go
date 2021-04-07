@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIHave struct {
 	Parent *BACnetUnconfirmedServiceRequest
-	IBACnetUnconfirmedServiceRequestIHave
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetUnconfirmedServiceRequestIHave interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetUnconfirmedServiceRequestIHave) UnmarshalXML(d *xml.Decoder, star
 
 func (m *BACnetUnconfirmedServiceRequestIHave) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetUnconfirmedServiceRequestIHave) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestIHave", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestIHave) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestIHave"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

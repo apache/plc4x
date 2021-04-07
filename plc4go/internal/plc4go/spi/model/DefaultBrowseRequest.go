@@ -26,7 +26,6 @@ import (
 type DefaultPlcBrowseRequestBuilder struct {
 	browser spi.PlcBrowser
 	queries map[string]string
-	model.PlcBrowseRequestBuilder
 }
 
 func NewDefaultPlcBrowseRequestBuilder(browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
@@ -55,7 +54,7 @@ type DefaultPlcBrowseRequest struct {
 
 func (d DefaultPlcBrowseRequest) GetQueryNames() []string {
 	var queryNames []string
-	for queryName, _ := range d.queries {
+	for queryName := range d.queries {
 		queryNames = append(queryNames, queryName)
 	}
 	return queryNames

@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type MFuncPropCon struct {
 	Parent *CEMI
-	IMFuncPropCon
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IMFuncPropCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *MFuncPropCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 
 func (m *MFuncPropCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MFuncPropCon) String() string {
+	return string(m.Box("MFuncPropCon", utils.DefaultWidth*2))
+}
+
+func (m MFuncPropCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MFuncPropCon"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

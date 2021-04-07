@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type AdsAddDeviceNotificationResponse struct {
 	Result             ReturnCode
 	NotificationHandle uint32
 	Parent             *AdsData
-	IAdsAddDeviceNotificationResponse
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IAdsAddDeviceNotificationResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -111,13 +111,13 @@ func AdsAddDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, erro
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
 	if _notificationHandleErr != nil {
-		return nil, errors.New("Error parsing 'notificationHandle' field " + _notificationHandleErr.Error())
+		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Create a partially initialized instance
@@ -136,14 +136,14 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
 		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
 		if _notificationHandleErr != nil {
-			return errors.New("Error serializing 'notificationHandle' field " + _notificationHandleErr.Error())
+			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
 		return nil
@@ -192,4 +192,18 @@ func (m *AdsAddDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m AdsAddDeviceNotificationResponse) String() string {
+	return string(m.Box("AdsAddDeviceNotificationResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsAddDeviceNotificationResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

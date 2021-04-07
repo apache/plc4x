@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetErrorRemovedAuthenticate struct {
 	Parent *BACnetError
-	IBACnetErrorRemovedAuthenticate
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetErrorRemovedAuthenticate interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetErrorRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.
 
 func (m *BACnetErrorRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorRemovedAuthenticate) String() string {
+	return string(m.Box("BACnetErrorRemovedAuthenticate", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorRemovedAuthenticate) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorRemovedAuthenticate"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

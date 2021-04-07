@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type AdsReadStateResponse struct {
 	AdsState    uint16
 	DeviceState uint16
 	Parent      *AdsData
-	IAdsReadStateResponse
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IAdsReadStateResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,19 +116,19 @@ func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
-		return nil, errors.New("Error parsing 'result' field " + _resultErr.Error())
+		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
 
 	// Simple Field (adsState)
 	adsState, _adsStateErr := io.ReadUint16(16)
 	if _adsStateErr != nil {
-		return nil, errors.New("Error parsing 'adsState' field " + _adsStateErr.Error())
+		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
 	deviceState, _deviceStateErr := io.ReadUint16(16)
 	if _deviceStateErr != nil {
-		return nil, errors.New("Error parsing 'deviceState' field " + _deviceStateErr.Error())
+		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
 	// Create a partially initialized instance
@@ -148,21 +148,21 @@ func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
 		if _resultErr != nil {
-			return errors.New("Error serializing 'result' field " + _resultErr.Error())
+			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
 		_adsStateErr := io.WriteUint16(16, (adsState))
 		if _adsStateErr != nil {
-			return errors.New("Error serializing 'adsState' field " + _adsStateErr.Error())
+			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
 		_deviceStateErr := io.WriteUint16(16, (deviceState))
 		if _deviceStateErr != nil {
-			return errors.New("Error serializing 'deviceState' field " + _deviceStateErr.Error())
+			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		return nil
@@ -220,4 +220,19 @@ func (m *AdsReadStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m AdsReadStateResponse) String() string {
+	return string(m.Box("AdsReadStateResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsReadStateResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadStateResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

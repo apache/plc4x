@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedRequestKey struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestRemovedRequestKey
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestRemovedRequestKey interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) UnmarshalXML(d *xml.Dec
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestRemovedRequestKey) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestRemovedRequestKey", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestRemovedRequestKey) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestRemovedRequestKey"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

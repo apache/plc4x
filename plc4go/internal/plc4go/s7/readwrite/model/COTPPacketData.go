@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type COTPPacketData struct {
 	Eot     bool
 	TpduRef uint8
 	Parent  *COTPPacket
-	ICOTPPacketData
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type ICOTPPacketData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -109,13 +109,13 @@ func COTPPacketDataParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 	// Simple Field (eot)
 	eot, _eotErr := io.ReadBit()
 	if _eotErr != nil {
-		return nil, errors.New("Error parsing 'eot' field " + _eotErr.Error())
+		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field")
 	}
 
 	// Simple Field (tpduRef)
 	tpduRef, _tpduRefErr := io.ReadUint8(7)
 	if _tpduRefErr != nil {
-		return nil, errors.New("Error parsing 'tpduRef' field " + _tpduRefErr.Error())
+		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field")
 	}
 
 	// Create a partially initialized instance
@@ -135,14 +135,14 @@ func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 		eot := bool(m.Eot)
 		_eotErr := io.WriteBit((eot))
 		if _eotErr != nil {
-			return errors.New("Error serializing 'eot' field " + _eotErr.Error())
+			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
 		}
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.TpduRef)
 		_tpduRefErr := io.WriteUint8(7, (tpduRef))
 		if _tpduRefErr != nil {
-			return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())
+			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}
 
 		return nil
@@ -191,4 +191,18 @@ func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m COTPPacketData) String() string {
+	return string(m.Box("COTPPacketData", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacketData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Eot", m.Eot, width-2))
+	boxes = append(boxes, utils.BoxAnything("TpduRef", m.TpduRef, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

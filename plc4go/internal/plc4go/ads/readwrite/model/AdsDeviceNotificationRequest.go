@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -33,7 +33,6 @@ type AdsDeviceNotificationRequest struct {
 	Stamps          uint32
 	AdsStampHeaders []*AdsStampHeader
 	Parent          *AdsData
-	IAdsDeviceNotificationRequest
 }
 
 // The corresponding interface
@@ -42,6 +41,7 @@ type IAdsDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -120,13 +120,13 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	// Simple Field (length)
 	length, _lengthErr := io.ReadUint32(32)
 	if _lengthErr != nil {
-		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (stamps)
 	stamps, _stampsErr := io.ReadUint32(32)
 	if _stampsErr != nil {
-		return nil, errors.New("Error parsing 'stamps' field " + _stampsErr.Error())
+		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
 	}
 
 	// Array field (adsStampHeaders)
@@ -135,7 +135,7 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 	for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
 		_item, _err := AdsStampHeaderParse(io)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'adsStampHeaders' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'adsStampHeaders' field")
 		}
 		adsStampHeaders[curItem] = _item
 	}
@@ -158,14 +158,14 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 		length := uint32(m.Length)
 		_lengthErr := io.WriteUint32(32, (length))
 		if _lengthErr != nil {
-			return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.Stamps)
 		_stampsErr := io.WriteUint32(32, (stamps))
 		if _stampsErr != nil {
-			return errors.New("Error serializing 'stamps' field " + _stampsErr.Error())
+			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}
 
 		// Array Field (adsStampHeaders)
@@ -173,7 +173,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.AdsStampHeaders {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'adsStampHeaders' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
 				}
 			}
 		}
@@ -229,14 +229,31 @@ func (m *AdsDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.Star
 	if err := e.EncodeElement(m.Stamps, xml.StartElement{Name: xml.Name{Local: "stamps"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.AdsStampHeaders, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdsStampHeaders {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m AdsDeviceNotificationRequest) String() string {
+	return string(m.Box("AdsDeviceNotificationRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeviceNotificationRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdsStampHeaders", m.AdsStampHeaders, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

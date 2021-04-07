@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetServiceAckReadPropertyMultiple struct {
 	Parent *BACnetServiceAck
-	IBACnetServiceAckReadPropertyMultiple
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetServiceAckReadPropertyMultiple interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetServiceAckReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, star
 
 func (m *BACnetServiceAckReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckReadPropertyMultiple) String() string {
+	return string(m.Box("BACnetServiceAckReadPropertyMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckReadPropertyMultiple) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckReadPropertyMultiple"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -31,7 +31,6 @@ import (
 type ModbusPDUReadFifoQueueResponse struct {
 	FifoValue []uint16
 	Parent    *ModbusPDU
-	IModbusPDUReadFifoQueueResponse
 }
 
 // The corresponding interface
@@ -40,6 +39,7 @@ type IModbusPDUReadFifoQueueResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -116,15 +116,17 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _byteCountErr := io.ReadUint16(16)
+	byteCount, _byteCountErr := io.ReadUint16(16)
+	_ = byteCount
 	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	fifoCount, _fifoCountErr := io.ReadUint16(16)
+	_ = fifoCount
 	if _fifoCountErr != nil {
-		return nil, errors.New("Error parsing 'fifoCount' field " + _fifoCountErr.Error())
+		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
 	}
 
 	// Array field (fifoValue)
@@ -133,7 +135,7 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 		_item, _err := io.ReadUint16(16)
 		if _err != nil {
-			return nil, errors.New("Error parsing 'fifoValue' field " + _err.Error())
+			return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
 		}
 		fifoValue[curItem] = _item
 	}
@@ -154,14 +156,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
 		_byteCountErr := io.WriteUint16(16, (byteCount))
 		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
 		_fifoCountErr := io.WriteUint16(16, (fifoCount))
 		if _fifoCountErr != nil {
-			return errors.New("Error serializing 'fifoCount' field " + _fifoCountErr.Error())
+			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
 
 		// Array Field (fifoValue)
@@ -169,7 +171,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 			for _, _element := range m.FifoValue {
 				_elementErr := io.WriteUint16(16, _element)
 				if _elementErr != nil {
-					return errors.New("Error serializing 'fifoValue' field " + _elementErr.Error())
+					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
 		}
@@ -207,14 +209,21 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.FifoValue, xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
-		return err
-	}
 	return nil
+}
+
+func (m ModbusPDUReadFifoQueueResponse) String() string {
+	return string(m.Box("ModbusPDUReadFifoQueueResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFifoQueueResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FifoValue", m.FifoValue, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

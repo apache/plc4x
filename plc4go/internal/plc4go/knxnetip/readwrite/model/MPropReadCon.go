@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -36,7 +36,6 @@ type MPropReadCon struct {
 	StartIndex          uint16
 	Unknown             uint16
 	Parent              *CEMI
-	IMPropReadCon
 }
 
 // The corresponding interface
@@ -45,6 +44,7 @@ type IMPropReadCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -127,37 +127,37 @@ func MPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
 	if _interfaceObjectTypeErr != nil {
-		return nil, errors.New("Error parsing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
 
 	// Simple Field (objectInstance)
 	objectInstance, _objectInstanceErr := io.ReadUint8(8)
 	if _objectInstanceErr != nil {
-		return nil, errors.New("Error parsing 'objectInstance' field " + _objectInstanceErr.Error())
+		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
 
 	// Simple Field (propertyId)
 	propertyId, _propertyIdErr := io.ReadUint8(8)
 	if _propertyIdErr != nil {
-		return nil, errors.New("Error parsing 'propertyId' field " + _propertyIdErr.Error())
+		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (numberOfElements)
 	numberOfElements, _numberOfElementsErr := io.ReadUint8(4)
 	if _numberOfElementsErr != nil {
-		return nil, errors.New("Error parsing 'numberOfElements' field " + _numberOfElementsErr.Error())
+		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (startIndex)
 	startIndex, _startIndexErr := io.ReadUint16(12)
 	if _startIndexErr != nil {
-		return nil, errors.New("Error parsing 'startIndex' field " + _startIndexErr.Error())
+		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
 
 	// Simple Field (unknown)
 	unknown, _unknownErr := io.ReadUint16(16)
 	if _unknownErr != nil {
-		return nil, errors.New("Error parsing 'unknown' field " + _unknownErr.Error())
+		return nil, errors.Wrap(_unknownErr, "Error parsing 'unknown' field")
 	}
 
 	// Create a partially initialized instance
@@ -181,42 +181,42 @@ func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 		interfaceObjectType := uint16(m.InterfaceObjectType)
 		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
 		if _interfaceObjectTypeErr != nil {
-			return errors.New("Error serializing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.ObjectInstance)
 		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
 		if _objectInstanceErr != nil {
-			return errors.New("Error serializing 'objectInstance' field " + _objectInstanceErr.Error())
+			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
 		_propertyIdErr := io.WriteUint8(8, (propertyId))
 		if _propertyIdErr != nil {
-			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
+			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.NumberOfElements)
 		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
 		if _numberOfElementsErr != nil {
-			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
+			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.StartIndex)
 		_startIndexErr := io.WriteUint16(12, (startIndex))
 		if _startIndexErr != nil {
-			return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
+			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
 		// Simple Field (unknown)
 		unknown := uint16(m.Unknown)
 		_unknownErr := io.WriteUint16(16, (unknown))
 		if _unknownErr != nil {
-			return errors.New("Error serializing 'unknown' field " + _unknownErr.Error())
+			return errors.Wrap(_unknownErr, "Error serializing 'unknown' field")
 		}
 
 		return nil
@@ -301,4 +301,22 @@ func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m MPropReadCon) String() string {
+	return string(m.Box("MPropReadCon", utils.DefaultWidth*2))
+}
+
+func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropReadCon"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
+	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
+	boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

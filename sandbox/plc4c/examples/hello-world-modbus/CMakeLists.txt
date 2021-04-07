@@ -37,5 +37,6 @@ ELSE()
             plc4c-spi
             plc4c-driver-modbus
             plc4c-transport-tcp
+            unity
     )
 ENDIF()

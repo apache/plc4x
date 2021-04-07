@@ -29,7 +29,6 @@ import (
 // The data-structure of this message
 type BACnetConfirmedServiceRequestVTClose struct {
 	Parent *BACnetConfirmedServiceRequest
-	IBACnetConfirmedServiceRequestVTClose
 }
 
 // The corresponding interface
@@ -38,6 +37,7 @@ type IBACnetConfirmedServiceRequestVTClose interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -132,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, star
 
 func (m *BACnetConfirmedServiceRequestVTClose) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestVTClose) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestVTClose", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestVTClose) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestVTClose"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

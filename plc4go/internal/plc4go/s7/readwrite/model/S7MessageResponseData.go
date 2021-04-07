@@ -20,8 +20,8 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"io"
 )
 
@@ -32,7 +32,6 @@ type S7MessageResponseData struct {
 	ErrorClass uint8
 	ErrorCode  uint8
 	Parent     *S7Message
-	IS7MessageResponseData
 }
 
 // The corresponding interface
@@ -41,6 +40,7 @@ type IS7MessageResponseData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -110,13 +110,13 @@ func S7MessageResponseDataParse(io *utils.ReadBuffer) (*S7Message, error) {
 	// Simple Field (errorClass)
 	errorClass, _errorClassErr := io.ReadUint8(8)
 	if _errorClassErr != nil {
-		return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
+		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode, _errorCodeErr := io.ReadUint8(8)
 	if _errorCodeErr != nil {
-		return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
+		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
 	// Create a partially initialized instance
@@ -136,14 +136,14 @@ func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 		errorClass := uint8(m.ErrorClass)
 		_errorClassErr := io.WriteUint8(8, (errorClass))
 		if _errorClassErr != nil {
-			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
+			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
 		_errorCodeErr := io.WriteUint8(8, (errorCode))
 		if _errorCodeErr != nil {
-			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
 		return nil
@@ -192,4 +192,18 @@ func (m *S7MessageResponseData) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m S7MessageResponseData) String() string {
+	return string(m.Box("S7MessageResponseData", utils.DefaultWidth*2))
+}
+
+func (m S7MessageResponseData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7MessageResponseData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }
