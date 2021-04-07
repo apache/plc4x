@@ -19,66 +19,24 @@
 package ads
 
 import (
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
-type Expectation struct {
-	expiration     time.Time
-	acceptsMessage spi.AcceptsMessage
-	handleMessage  spi.HandleMessage
-	handleError    spi.HandleError
-}
-
-func (m Expectation) String() string {
-	return fmt.Sprintf("Expectation(expires at %v)", m.expiration)
-}
-
 type MessageCodec struct {
-	expectationCounter            int32
-	transportInstance             transports.TransportInstance
-	defaultIncomingMessageChannel chan interface{}
-	expectations                  []Expectation
-	running                       bool
+	*spi.DefaultCodec
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
 	codec := &MessageCodec{
-		expectationCounter:            1,
-		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: make(chan interface{}),
-		expectations:                  []Expectation{},
-		running:                       true,
+		DefaultCodec: spi.NewDefaultCodec(transportInstance),
 	}
-	// TODO: should we better move this go func into Connect(). If not a better explanation why we start the worker so early
-	// Start a worker that handles processing of responses
-	go work(codec)
+	codec.DefaultCodecRequiredInterface = codec
 	return codec
-}
-
-func (m *MessageCodec) Connect() error {
-	log.Info().Msg("Connecting")
-	err := m.transportInstance.Connect()
-	if err == nil {
-		if !m.running {
-			go work(m)
-		}
-		m.running = true
-	}
-	return err
-}
-
-func (m *MessageCodec) Disconnect() error {
-	log.Info().Msg("Disconnecting")
-	m.running = false
-	return m.transportInstance.Close()
 }
 
 func (m *MessageCodec) Send(message interface{}) error {
@@ -93,44 +51,19 @@ func (m *MessageCodec) Send(message interface{}) error {
 	}
 
 	// Send it to the PLC
-	err = m.transportInstance.Write(wb.GetBytes())
+	err = m.TransportInstance.Write(wb.GetBytes())
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
 	return nil
 }
 
-func (m *MessageCodec) Expect(acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	expectation := Expectation{
-		expiration:     time.Now().Add(ttl),
-		acceptsMessage: acceptsMessage,
-		handleMessage:  handleMessage,
-		handleError:    handleError,
-	}
-	m.expectations = append(m.expectations, expectation)
-	return nil
-}
-
-func (m *MessageCodec) SendRequest(message interface{}, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	log.Trace().Msg("Sending request")
-	// Send the actual message
-	err := m.Send(message)
-	if err != nil {
-		return errors.Wrap(err, "Error sending the request")
-	}
-	return m.Expect(acceptsMessage, handleMessage, handleError, ttl)
-}
-
-func (m *MessageCodec) GetDefaultIncomingMessageChannel() chan interface{} {
-	return m.defaultIncomingMessageChannel
-}
-
-func (m *MessageCodec) receive() (interface{}, error) {
+func (m *MessageCodec) Receive() (interface{}, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.transportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
+	if num, err := m.TransportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.transportInstance.PeekReadableBytes(6)
+		data, err := m.TransportInstance.PeekReadableBytes(6)
 		if err != nil {
 			log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -143,7 +76,7 @@ func (m *MessageCodec) receive() (interface{}, error) {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
-		data, err = m.transportInstance.Read(packetSize)
+		data, err = m.TransportInstance.Read(packetSize)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil
@@ -162,86 +95,4 @@ func (m *MessageCodec) receive() (interface{}, error) {
 	}
 	// TODO: maybe we return here a not enough error error
 	return nil, nil
-}
-
-func work(m *MessageCodec) {
-	// Start an endless loop
-mainLoop:
-	for m.running {
-		// Check for any expired expectations.
-		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
-		now := time.Now()
-
-		// Guard against empty expectations
-		if len(m.expectations) <= 0 {
-			log.Trace().Msg("we got no expectation")
-			// Sleep for 10ms
-			time.Sleep(time.Millisecond * 10)
-			continue mainLoop
-		}
-	expectationLoop:
-		for index, expectation := range m.expectations {
-			// Check if this expectation has expired.
-			if now.After(expectation.expiration) {
-				// Remove this expectation from the list.
-				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-				// Call the error handler.
-				err := expectation.handleError(plcerrors.NewTimeoutError(now.Sub(expectation.expiration)))
-				if err != nil {
-					log.Error().Err(err).Msg("Got an error handling error on expectation")
-				}
-				continue expectationLoop
-			}
-		}
-
-		// Check for incoming messages.
-		message, err := m.receive()
-		if err != nil {
-			log.Error().Err(err).Msg("got an error reading from transport")
-			time.Sleep(time.Millisecond * 10)
-			continue mainLoop
-		}
-		if message == nil {
-			// Sleep for 10ms before checking again, in order to not
-			// consume 100% CPU Power.
-			time.Sleep(time.Millisecond * 10)
-			continue mainLoop
-		}
-
-		// Go through all expectations
-		messageHandled := false
-		for index, expectation := range m.expectations {
-			// Check if the current message matches the expectations
-			// If it does, let it handle the message.
-			if accepts := expectation.acceptsMessage(message); accepts {
-				log.Debug().Stringer("expectation", expectation).Msg("accepts message")
-				err = expectation.handleMessage(message)
-				if err == nil {
-					messageHandled = true
-					// If this is the last element of the list remove it differently than if it's before that
-					if (index + 1) == len(m.expectations) {
-						m.expectations = m.expectations[:index]
-					} else if (index + 1) < len(m.expectations) {
-						m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
-					}
-				} else {
-					// Pass the error to the error handler.
-					err := expectation.handleError(err)
-					if err != nil {
-						log.Error().Err(err).Msg("Got an error handling error on expectation")
-					}
-				}
-			}
-		}
-
-		// If the message has not been handled and a default handler is provided, call this ...
-		if !messageHandled {
-			// TODO: how do we prevent endless blocking if there is no reader on this channel?
-			m.defaultIncomingMessageChannel <- message
-		}
-	}
-}
-
-func (m MessageCodec) GetTransportInstance() transports.TransportInstance {
-	return m.transportInstance
 }
