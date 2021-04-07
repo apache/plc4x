@@ -69,9 +69,8 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		// Get the size of the entire packet
-		// TODO: pretty sure this is wrong for ADS CP from modbus
-		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
+		// Get the size of the entire packet little endian plus size of header
+		packetSize := (uint32(data[5]) << 24) + (uint32(data[4]) << 16) + (uint32(data[3]) << 8) + (uint32(data[2])) + 6
 		if num < packetSize {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
