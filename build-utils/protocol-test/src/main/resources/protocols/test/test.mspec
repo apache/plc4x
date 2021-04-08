@@ -51,11 +51,22 @@
     //[typeSwitch 'simpleField' ]
 ]
 
-//[simple time 'timeField']
+/*
+ * TODO: doesn't compile in java
+[type 'UFloatTypeTest'
+    [simple ufloat 8.23 'ufloatField']
+    [simple ufloat 11.52 'udoubleField']
+]
+*/
 
-//[simple date 'dateField']
-
-//[simple dateTime 'dateTimeField']
+/*
+ * TODO: doesn't compile in java
+[type 'TimeTypeTest'
+    [simple time 8 'timeField']
+    [simple date 8 'dateField']
+    [simple dateTime 8 'dateTimeField']
+]
+*/
 
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
