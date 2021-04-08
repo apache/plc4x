@@ -42,6 +42,7 @@ type IAdsData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IAdsDataParent interface {
@@ -451,4 +452,17 @@ func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m AdsData) String() string {
+	return string(m.Box("AdsData", utils.DefaultWidth*2))
+}
+
+func (m AdsData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

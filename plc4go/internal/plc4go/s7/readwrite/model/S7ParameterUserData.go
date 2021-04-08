@@ -39,6 +39,7 @@ type IS7ParameterUserData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -171,13 +172,21 @@ func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
-				var _values []*S7ParameterUserDataItem
-				var dt *S7ParameterUserDataItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *S7ParameterUserDataItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Items = _values
 			}
 		}
 		token, err = d.Token()
@@ -191,14 +200,29 @@ func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 }
 
 func (m *S7ParameterUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m S7ParameterUserData) String() string {
+	return string(m.Box("S7ParameterUserData", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterUserData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterUserData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

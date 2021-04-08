@@ -46,6 +46,7 @@ type IAdsAddDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -331,4 +332,22 @@ func (m *AdsAddDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.S
 		return err
 	}
 	return nil
+}
+
+func (m AdsAddDeviceNotificationRequest) String() string {
+	return string(m.Box("AdsAddDeviceNotificationRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsAddDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsAddDeviceNotificationRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransmissionMode", m.TransmissionMode, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxDelay", m.MaxDelay, width-2))
+	boxes = append(boxes, utils.BoxAnything("CycleTime", m.CycleTime, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

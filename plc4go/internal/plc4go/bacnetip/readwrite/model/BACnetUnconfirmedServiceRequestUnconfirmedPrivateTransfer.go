@@ -50,6 +50,7 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -316,4 +317,19 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e
 		return err
 	}
 	return nil
+}
+
+func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceNumber", m.ServiceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("Values", m.Values, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

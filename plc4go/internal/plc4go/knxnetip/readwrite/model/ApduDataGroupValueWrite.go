@@ -42,6 +42,7 @@ type IApduDataGroupValueWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -207,4 +208,18 @@ func (m *ApduDataGroupValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataGroupValueWrite) String() string {
+	return string(m.Box("ApduDataGroupValueWrite", utils.DefaultWidth*2))
+}
+
+func (m ApduDataGroupValueWrite) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataGroupValueWrite"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DataFirstByte", m.DataFirstByte, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

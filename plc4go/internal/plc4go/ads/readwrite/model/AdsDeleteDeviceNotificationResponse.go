@@ -39,6 +39,7 @@ type IAdsDeleteDeviceNotificationResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -163,4 +164,17 @@ func (m *AdsDeleteDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m AdsDeleteDeviceNotificationResponse) String() string {
+	return string(m.Box("AdsDeleteDeviceNotificationResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsDeleteDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeleteDeviceNotificationResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

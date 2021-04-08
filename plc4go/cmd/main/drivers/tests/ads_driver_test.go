@@ -26,13 +26,5 @@ import (
 )
 
 func TestAdsDriver(t *testing.T) {
-	//t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml",
-		// TODO: tests assumes proper multi requests which is currently not implemented yet
-		"Multi-element direct read request",
-		// TODO: symbolic addressing not implemented yet
-		"Single element symbolic read request",
-		// TODO: symbolic addressing not implemented yet
-		"Single element symbolic read request (Address previously resolved)",
-	)
+	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }

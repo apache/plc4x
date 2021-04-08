@@ -39,6 +39,7 @@ type IApduDataDeviceDescriptorRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *ApduDataDeviceDescriptorRead) MarshalXML(e *xml.Encoder, start xml.Star
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataDeviceDescriptorRead) String() string {
+	return string(m.Box("ApduDataDeviceDescriptorRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataDeviceDescriptorRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataDeviceDescriptorRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

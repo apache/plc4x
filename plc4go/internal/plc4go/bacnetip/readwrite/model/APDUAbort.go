@@ -42,6 +42,7 @@ type IAPDUAbort interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -242,4 +243,19 @@ func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDUAbort) String() string {
+	return string(m.Box("APDUAbort", utils.DefaultWidth*2))
+}
+
+func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUAbort"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("AbortReason", m.AbortReason, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IBACnetServiceAckConfirmedPrivateTransfer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, 
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckConfirmedPrivateTransfer) String() string {
+	return string(m.Box("BACnetServiceAckConfirmedPrivateTransfer", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckConfirmedPrivateTransfer"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

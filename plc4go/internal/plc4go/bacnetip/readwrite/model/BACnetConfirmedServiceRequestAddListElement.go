@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestAddListElement interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestAddListElement) UnmarshalXML(d *xml.Decode
 
 func (m *BACnetConfirmedServiceRequestAddListElement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestAddListElement) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestAddListElement", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestAddListElement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestAddListElement"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

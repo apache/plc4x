@@ -37,6 +37,7 @@ type IApduDataExtGroupPropertyValueResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtGroupPropertyValueResponse) UnmarshalXML(d *xml.Decoder, sta
 
 func (m *ApduDataExtGroupPropertyValueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtGroupPropertyValueResponse) String() string {
+	return string(m.Box("ApduDataExtGroupPropertyValueResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtGroupPropertyValueResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtGroupPropertyValueResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

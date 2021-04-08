@@ -21,22 +21,27 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.plc4x.language.go.utils.FieldUtils;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
+
+    // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
+
+    public SortedSet<String> requiredImports = new TreeSet<>();
+
+    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);
@@ -90,6 +95,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "uint64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Int";
                 }
                 case INT: {
@@ -106,6 +112,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "int64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Int";
                 }
                 case FLOAT:
@@ -119,6 +126,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (sizeInBits <= 64) {
                         return "float64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Float";
                 }
                 case STRING: {
@@ -384,8 +392,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
         switch (languageTypeName) {
             case "*big.Int":
+                emitRequiredImport("math/big");
                 return "big.NewInt(" + reservedField.getReferenceValue() + ")";
             case "*big.Float":
+                emitRequiredImport("math/big");
                 return "*big.Float(" + reservedField.getReferenceValue() + ")";
             default:
                 return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
@@ -397,6 +407,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (languageTypeName) {
             case "*big.Int":
             case "*big.Float":
+                emitRequiredImport("math/big");
                 return "reserved.Cmp(" + getReservedValue(reservedField) + ") != 0";
             default:
                 return "reserved != " + getReservedValue(reservedField);
@@ -487,6 +498,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String operation = bt.getOperation();
             switch (operation) {
                 case "^":
+                    emitRequiredImport("math");
                     return "Math.pow(" +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) + "), " +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + "))";
@@ -532,7 +544,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBytes()" + (serialize ? ")" : "");
         } else if ("lengthInBits".equals(vl.getName())) {
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBits()" + (serialize ? ")" : "");
-        } if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
+        }
+        if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
             return (serialize ? ("len(m." + StringUtils.capitalize(vl.getName()) + ")") : ("(" + vl.getName() + ")"));
         }
         // If this literal references an Enum type, then we have to output it differently.
@@ -671,6 +684,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term va = vl.getArgs().get(0);
             // The Ceil function expects 64 bit floating point values.
             TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 11, 52);
+            emitRequiredImport("math");
             return "math.Ceil(" + toExpression(tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
         }
         // All uppercase names are not fields, but utility methods.
@@ -715,8 +729,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                 }
             }
-        }
-        else if (isVariableLiteralImplicitField(vl)) {
+        } else if (isVariableLiteralImplicitField(vl)) {
             if (serialize) {
                 return toSerializationExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
             } else {
@@ -827,81 +840,32 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return new ArrayList<>(switchCases.values());
     }
 
-    public List<String> getRequiredImports() {
-        ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) getThisTypeDefinition();
-        List<String> imports = new ArrayList<>();
-
-        if (complexTypeDefinition.getAllPropertyFields().stream().anyMatch(field -> isArrayField(field) && getLanguageTypeNameForField(field).equals("int8"))) {
-            imports.add("\"encoding/hex\"");
-            imports.add("\"strings\"");
-        }
-
-        imports.add("\"encoding/xml\"");
-
-        // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
-        if (!complexTypeDefinition.getFields().isEmpty()) {
-            imports.add("\"github.com/pkg/errors\"");
-        }
-
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
-
-        // At least one reserved field or simple field with complex type
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            (field instanceof ReservedField))) {
-            imports.add("\"github.com/rs/zerolog/log\"");
-        }
-
-        imports.add("\"io\"");
-
-        // For CEIL functions: "math"
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            FieldUtils.contains(field, "CEIL"))) {
-            imports.add("\"math\"");
-        }
-
-        // For Constant field: "strconv"
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            (field instanceof ConstField))/* || complexTypeDefinition.getAllPropertyFields().stream().anyMatch(
-                propertyField -> isSimpleField(propertyField))*/) {
-            imports.add("\"fmt\"");
-        }
-
-        if (isDiscriminatedParentTypeDefinition()) {
-            imports.add("\"reflect\"");
-            imports.add("\"strings\"");
-        }
-
-        if (complexTypeDefinition.getFields().stream()
-            .filter(field -> field instanceof TypedField)
-            .map(TypedField.class::cast)
-            .map(TypedField::getType)
-            .filter(type -> type instanceof SimpleTypeReference)
-            .map(SimpleTypeReference.class::cast)
-            .anyMatch((simpleTypeReference) -> simpleTypeReference.getSizeInBits() > 64)) {
-            imports.add("\"math/big\"");
-        }
-
-        return imports;
+    public void emitRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting import '\"{}\"'", requiredImport);
+        requiredImports.add('"' + requiredImport + '"');
     }
 
-    public List<String> getRequiredImportsForDataIo() {
-        DataIoTypeDefinition dataIo = (DataIoTypeDefinition) getThisTypeDefinition();
+    public void emitRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting import '{} \"{}'\"", alias, requiredImport);
+        requiredImports.add(alias + ' ' + '"' + requiredImport + '"');
+    }
 
-        List<String> imports = new ArrayList<>();
+    public Set<String> getRequiredImports() {
+        return requiredImports;
+    }
 
-        imports.add("\"github.com/pkg/errors\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
-        imports.add("api \"github.com/apache/plc4x/plc4go/pkg/plc4go/values\"");
+    public void emitDataIoRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting io import '\"{}\"'", requiredImport);
+        requiredImportsForDataIo.add('"' + requiredImport + '"');
+    }
 
-        if (dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->
-            (typeCase.getName().equals("TIME_OF_DAY") && hasFieldsWithNames(typeCase.getFields(), "hour", "minutes", "seconds")) ||
-                (typeCase.getName().equals("DATE") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day")) ||
-                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day", "hour", "minutes", "seconds")) ||
-                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "secondsSinceEpoch")))) {
-            imports.add("\"time\"");
-        }
-        return imports;
+    public void emitDataIoRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting data io import '{} \"{}'\"", alias, requiredImport);
+        requiredImportsForDataIo.add(alias + ' ' + '"' + requiredImport + '"');
+    }
+
+    public Set<String> getRequiredImportsForDataIo() {
+        return requiredImportsForDataIo;
     }
 
     public String getVariableName(Field field) {
@@ -1136,7 +1100,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public boolean needsReferenceForParserArgument(String propertyName, TypeReference argumentType) {
         // Check if this is a local field.
-        if(argumentType instanceof ComplexTypeReference) {
+        if (argumentType instanceof ComplexTypeReference) {
             Field field = getFieldForNameFromCurrent(propertyName);
             if (field instanceof TypedField) {
                 TypedField typedField = (TypedField) field;

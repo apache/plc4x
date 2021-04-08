@@ -40,6 +40,7 @@ type IIPAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewIPAddress(addr []int8) *IPAddress {
@@ -157,4 +158,17 @@ func (m *IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m IPAddress) String() string {
+	return string(m.Box("IPAddress", utils.DefaultWidth*2))
+}
+
+func (m IPAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "IPAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IApduDataExtDomainAddressSerialNumberResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtDomainAddressSerialNumberResponse) UnmarshalXML(d *xml.Decod
 
 func (m *ApduDataExtDomainAddressSerialNumberResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtDomainAddressSerialNumberResponse) String() string {
+	return string(m.Box("ApduDataExtDomainAddressSerialNumberResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtDomainAddressSerialNumberResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtDomainAddressSerialNumberResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

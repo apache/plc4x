@@ -39,6 +39,7 @@ type IKnxNetRemoteConfigurationAndDiagnosis interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) String() string {
+	return string(m.Box("KnxNetRemoteConfigurationAndDiagnosis", utils.DefaultWidth*2))
+}
+
+func (m KnxNetRemoteConfigurationAndDiagnosis) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetRemoteConfigurationAndDiagnosis"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

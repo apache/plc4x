@@ -41,6 +41,7 @@ type IAdsMultiRequestItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IAdsMultiRequestItemParent interface {
@@ -212,4 +213,17 @@ func (m *AdsMultiRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m AdsMultiRequestItem) String() string {
+	return string(m.Box("AdsMultiRequestItem", utils.DefaultWidth*2))
+}
+
+func (m AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsMultiRequestItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

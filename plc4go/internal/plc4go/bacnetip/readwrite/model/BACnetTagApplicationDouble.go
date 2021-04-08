@@ -39,6 +39,7 @@ type IBACnetTagApplicationDouble interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,4 +165,17 @@ func (m *BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartE
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationDouble) String() string {
+	return string(m.Box("BACnetTagApplicationDouble", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationDouble) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationDouble"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

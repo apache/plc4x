@@ -53,6 +53,7 @@ type IBACnetConfirmedServiceRequestWriteProperty interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -409,4 +410,22 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) MarshalXML(e *xml.Encoder, 
 		return err
 	}
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestWriteProperty) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestWriteProperty", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestWriteProperty"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

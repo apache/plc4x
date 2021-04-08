@@ -44,6 +44,7 @@ type IMPropReadCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -300,4 +301,22 @@ func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m MPropReadCon) String() string {
+	return string(m.Box("MPropReadCon", utils.DefaultWidth*2))
+}
+
+func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropReadCon"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
+	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
+	boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IApduControlDisconnect interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduControlDisconnect) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 
 func (m *ApduControlDisconnect) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduControlDisconnect) String() string {
+	return string(m.Box("ApduControlDisconnect", utils.DefaultWidth*2))
+}
+
+func (m ApduControlDisconnect) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduControlDisconnect"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

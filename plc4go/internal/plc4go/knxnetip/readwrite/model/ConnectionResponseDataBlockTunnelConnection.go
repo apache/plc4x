@@ -39,6 +39,7 @@ type IConnectionResponseDataBlockTunnelConnection interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,4 +160,17 @@ func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder,
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) String() string {
+	return string(m.Box("ConnectionResponseDataBlockTunnelConnection", utils.DefaultWidth*2))
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionResponseDataBlockTunnelConnection"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

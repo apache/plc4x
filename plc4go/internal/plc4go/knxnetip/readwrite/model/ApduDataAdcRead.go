@@ -37,6 +37,7 @@ type IApduDataAdcRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataAdcRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 
 func (m *ApduDataAdcRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataAdcRead) String() string {
+	return string(m.Box("ApduDataAdcRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataAdcRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataAdcRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

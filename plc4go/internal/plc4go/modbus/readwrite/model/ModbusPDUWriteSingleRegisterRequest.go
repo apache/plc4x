@@ -40,6 +40,7 @@ type IModbusPDUWriteSingleRegisterRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -196,4 +197,18 @@ func (m *ModbusPDUWriteSingleRegisterRequest) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUWriteSingleRegisterRequest) String() string {
+	return string(m.Box("ModbusPDUWriteSingleRegisterRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUWriteSingleRegisterRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUWriteSingleRegisterRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) UnmarshalXML(d
 
 func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedEventNotification) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestConfirmedEventNotification", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestConfirmedEventNotification"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

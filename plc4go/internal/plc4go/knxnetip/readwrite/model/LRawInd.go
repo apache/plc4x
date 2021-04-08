@@ -37,6 +37,7 @@ type ILRawInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *LRawInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 func (m *LRawInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m LRawInd) String() string {
+	return string(m.Box("LRawInd", utils.DefaultWidth*2))
+}
+
+func (m LRawInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LRawInd"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

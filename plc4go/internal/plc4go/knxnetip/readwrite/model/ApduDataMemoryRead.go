@@ -40,6 +40,7 @@ type IApduDataMemoryRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,4 +189,18 @@ func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataMemoryRead) String() string {
+	return string(m.Box("ApduDataMemoryRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataMemoryRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, width-2))
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

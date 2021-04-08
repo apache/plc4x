@@ -39,6 +39,7 @@ type IBACnetTagApplicationReal interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,4 +165,17 @@ func (m *BACnetTagApplicationReal) MarshalXML(e *xml.Encoder, start xml.StartEle
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationReal) String() string {
+	return string(m.Box("BACnetTagApplicationReal", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationReal) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationReal"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

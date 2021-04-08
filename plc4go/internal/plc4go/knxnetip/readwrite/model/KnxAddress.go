@@ -40,6 +40,7 @@ type IKnxAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxAddress {
@@ -190,4 +191,19 @@ func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m KnxAddress) String() string {
+	return string(m.Box("KnxAddress", utils.DefaultWidth*2))
+}
+
+func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

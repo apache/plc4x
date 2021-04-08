@@ -42,6 +42,7 @@ type IConnectionResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -261,4 +262,20 @@ func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionResponse) String() string {
+	return string(m.Box("ConnectionResponse", utils.DefaultWidth*2))
+}
+
+func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
+	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
+	boxes = append(boxes, utils.BoxAnything("ConnectionResponseDataBlock", m.ConnectionResponseDataBlock, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

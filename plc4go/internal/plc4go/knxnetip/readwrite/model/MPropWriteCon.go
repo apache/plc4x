@@ -37,6 +37,7 @@ type IMPropWriteCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *MPropWriteCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 func (m *MPropWriteCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MPropWriteCon) String() string {
+	return string(m.Box("MPropWriteCon", utils.DefaultWidth*2))
+}
+
+func (m MPropWriteCon) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MPropWriteCon"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -39,6 +39,7 @@ type ICOTPParameterCalledTsap interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterCalledTsap) String() string {
+	return string(m.Box("COTPParameterCalledTsap", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterCalledTsap"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

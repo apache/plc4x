@@ -42,6 +42,7 @@ type IS7Payload interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7PayloadParent interface {
@@ -227,4 +228,17 @@ func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m S7Payload) String() string {
+	return string(m.Box("S7Payload", utils.DefaultWidth*2))
+}
+
+func (m S7Payload) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7Payload"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

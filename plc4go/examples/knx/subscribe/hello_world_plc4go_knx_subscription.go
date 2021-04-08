@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strings"
@@ -29,6 +30,9 @@ import (
 )
 
 func main() {
+	// Set logging to INFO
+	logging.InfoLevel()
+
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 

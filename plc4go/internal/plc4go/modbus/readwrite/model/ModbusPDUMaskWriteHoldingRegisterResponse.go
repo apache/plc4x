@@ -41,6 +41,7 @@ type IModbusPDUMaskWriteHoldingRegisterResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -224,4 +225,19 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) MarshalXML(e *xml.Encoder, s
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) String() string {
+	return string(m.Box("ModbusPDUMaskWriteHoldingRegisterResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUMaskWriteHoldingRegisterResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
+	boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -53,6 +53,7 @@ type INPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU) *NPDU {
@@ -611,13 +612,7 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DestinationLength, xml.StartElement{Name: xml.Name{Local: "destinationLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.DestinationAddress, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.SourceNetworkAddress, xml.StartElement{Name: xml.Name{Local: "sourceNetworkAddress"}}); err != nil {
@@ -626,13 +621,7 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SourceLength, xml.StartElement{Name: xml.Name{Local: "sourceLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.HopCount, xml.StartElement{Name: xml.Name{Local: "hopCount"}}); err != nil {
@@ -648,4 +637,31 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m NPDU) String() string {
+	return string(m.Box("NPDU", utils.DefaultWidth*2))
+}
+
+func (m NPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "NPDU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("MessageTypeFieldPresent", m.MessageTypeFieldPresent, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationSpecified", m.DestinationSpecified, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceSpecified", m.SourceSpecified, width-2))
+	boxes = append(boxes, utils.BoxAnything("ExpectingReply", m.ExpectingReply, width-2))
+	boxes = append(boxes, utils.BoxAnything("NetworkPriority", m.NetworkPriority, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationLength", m.DestinationLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceNetworkAddress", m.SourceNetworkAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceLength", m.SourceLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
+	boxes = append(boxes, utils.BoxAnything("Nlm", m.Nlm, width-2))
+	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

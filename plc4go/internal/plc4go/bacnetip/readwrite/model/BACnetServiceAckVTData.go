@@ -37,6 +37,7 @@ type IBACnetServiceAckVTData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetServiceAckVTData) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 
 func (m *BACnetServiceAckVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckVTData) String() string {
+	return string(m.Box("BACnetServiceAckVTData", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckVTData) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckVTData"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

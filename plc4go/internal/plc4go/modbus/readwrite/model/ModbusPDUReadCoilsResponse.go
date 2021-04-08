@@ -41,6 +41,7 @@ type IModbusPDUReadCoilsResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -204,4 +205,17 @@ func (m *ModbusPDUReadCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartE
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadCoilsResponse) String() string {
+	return string(m.Box("ModbusPDUReadCoilsResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadCoilsResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadCoilsResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

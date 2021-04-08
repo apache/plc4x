@@ -39,6 +39,7 @@ type IDescriptionRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,4 +160,17 @@ func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m DescriptionRequest) String() string {
+	return string(m.Box("DescriptionRequest", utils.DefaultWidth*2))
+}
+
+func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DescriptionRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

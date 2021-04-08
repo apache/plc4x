@@ -48,6 +48,7 @@ type IDIBDeviceInfo interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus *DeviceStatus, knxAddress *KnxAddress, projectInstallationIdentifier *ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress *IPAddress, knxNetIpDeviceMacAddress *MACAddress, deviceFriendlyName []int8) *DIBDeviceInfo {
@@ -393,4 +394,25 @@ func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m DIBDeviceInfo) String() string {
+	return string(m.Box("DIBDeviceInfo", utils.DefaultWidth*2))
+}
+
+func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DIBDeviceInfo"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxMedium", m.KnxMedium, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceStatus", m.DeviceStatus, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProjectInstallationIdentifier", m.ProjectInstallationIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMulticastAddress", m.KnxNetIpDeviceMulticastAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMacAddress", m.KnxNetIpDeviceMacAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceFriendlyName", m.DeviceFriendlyName, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

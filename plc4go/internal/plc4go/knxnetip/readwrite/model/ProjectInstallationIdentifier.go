@@ -39,6 +39,7 @@ type IProjectInstallationIdentifier interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *ProjectInstallationIdentifier {
@@ -164,4 +165,18 @@ func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m ProjectInstallationIdentifier) String() string {
+	return string(m.Box("ProjectInstallationIdentifier", utils.DefaultWidth*2))
+}
+
+func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ProjectInstallationIdentifier"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

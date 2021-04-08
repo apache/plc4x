@@ -41,6 +41,7 @@ type IModbusPDUReadFileRecordRequestItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *ModbusPDUReadFileRecordRequestItem {
@@ -216,4 +217,20 @@ func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xm
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadFileRecordRequestItem) String() string {
+	return string(m.Box("ModbusPDUReadFileRecordRequestItem", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFileRecordRequestItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -40,6 +40,7 @@ type IAdsAddDeviceNotificationResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -191,4 +192,18 @@ func (m *AdsAddDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m AdsAddDeviceNotificationResponse) String() string {
+	return string(m.Box("AdsAddDeviceNotificationResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsAddDeviceNotificationResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

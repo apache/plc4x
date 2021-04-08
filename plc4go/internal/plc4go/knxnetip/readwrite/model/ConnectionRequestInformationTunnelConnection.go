@@ -40,6 +40,7 @@ type IConnectionRequestInformationTunnelConnection interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -185,4 +186,17 @@ func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionRequestInformationTunnelConnection) String() string {
+	return string(m.Box("ConnectionRequestInformationTunnelConnection", utils.DefaultWidth*2))
+}
+
+func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionRequestInformationTunnelConnection"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IBVLCResult interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 
 func (m *BVLCResult) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCResult) String() string {
+	return string(m.Box("BVLCResult", utils.DefaultWidth*2))
+}
+
+func (m BVLCResult) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCResult"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

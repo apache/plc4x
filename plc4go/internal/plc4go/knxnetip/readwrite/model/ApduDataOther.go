@@ -39,6 +39,7 @@ type IApduDataOther interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,4 +160,17 @@ func (m *ApduDataOther) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataOther) String() string {
+	return string(m.Box("ApduDataOther", utils.DefaultWidth*2))
+}
+
+func (m ApduDataOther) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataOther"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ExtendedApdu", m.ExtendedApdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

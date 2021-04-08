@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestVTOpen interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestVTOpen) UnmarshalXML(d *xml.Decoder, start
 
 func (m *BACnetConfirmedServiceRequestVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestVTOpen) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestVTOpen", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestVTOpen) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestVTOpen"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

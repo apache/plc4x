@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) UnmarshalXML(d *xml.
 
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestGetEnrollmentSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestGetEnrollmentSummary"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IApduControlNack interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduControlNack) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 
 func (m *ApduControlNack) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduControlNack) String() string {
+	return string(m.Box("ApduControlNack", utils.DefaultWidth*2))
+}
+
+func (m ApduControlNack) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduControlNack"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

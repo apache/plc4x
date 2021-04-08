@@ -42,6 +42,7 @@ type IBACnetTagApplicationBitString interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -213,4 +214,18 @@ func (m *BACnetTagApplicationBitString) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationBitString) String() string {
+	return string(m.Box("BACnetTagApplicationBitString", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationBitString) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationBitString"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("UnusedBits", m.UnusedBits, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

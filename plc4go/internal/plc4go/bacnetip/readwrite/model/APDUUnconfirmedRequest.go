@@ -40,6 +40,7 @@ type IAPDUUnconfirmedRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -185,4 +186,17 @@ func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m APDUUnconfirmedRequest) String() string {
+	return string(m.Box("APDUUnconfirmedRequest", utils.DefaultWidth*2))
+}
+
+func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUUnconfirmedRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

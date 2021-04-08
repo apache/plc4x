@@ -41,6 +41,7 @@ type ILDataInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -195,13 +196,21 @@ func (m *LDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.AdditionalInformationLength = data
 			case "additionalInformation":
-				var _values []*CEMIAdditionalInformation
-				var dt *CEMIAdditionalInformation
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *CEMIAdditionalInformation
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.AdditionalInformation = append(m.AdditionalInformation, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.AdditionalInformation = _values
 			case "dataFrame":
 				var dt *LDataFrame
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -224,17 +233,34 @@ func (m *LDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.AdditionalInformation, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdditionalInformation {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.DataFrame, xml.StartElement{Name: xml.Name{Local: "dataFrame"}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m LDataInd) String() string {
+	return string(m.Box("LDataInd", utils.DefaultWidth*2))
+}
+
+func (m LDataInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LDataInd"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformation", m.AdditionalInformation, width-2))
+	boxes = append(boxes, utils.BoxAnything("DataFrame", m.DataFrame, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

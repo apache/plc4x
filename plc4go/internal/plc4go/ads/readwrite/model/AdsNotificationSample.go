@@ -42,6 +42,7 @@ type IAdsNotificationSample interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []int8) *AdsNotificationSample {
@@ -209,4 +210,19 @@ func (m *AdsNotificationSample) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m AdsNotificationSample) String() string {
+	return string(m.Box("AdsNotificationSample", utils.DefaultWidth*2))
+}
+
+func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsNotificationSample"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

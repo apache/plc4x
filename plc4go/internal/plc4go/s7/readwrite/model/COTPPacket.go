@@ -43,6 +43,7 @@ type ICOTPPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICOTPPacketParent interface {
@@ -243,13 +244,21 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
-				var _values []*COTPParameter
-				var dt *COTPParameter
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *COTPParameter
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Parameters = append(m.Parameters, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Parameters = _values
 			case "payload":
 				var dt *S7Message
 				if err := d.DecodeElement(&dt, &tok); err != nil {
@@ -359,14 +368,16 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Parameters, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Parameters {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
 		return err
@@ -375,4 +386,19 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m COTPPacket) String() string {
+	return string(m.Box("COTPPacket", utils.DefaultWidth*2))
+}
+
+func (m COTPPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacket"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
+	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

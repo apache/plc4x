@@ -43,6 +43,7 @@ type ITPKTPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewTPKTPacket(payload *COTPPacket) *TPKTPacket {
@@ -202,4 +203,17 @@ func (m *TPKTPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m TPKTPacket) String() string {
+	return string(m.Box("TPKTPacket", utils.DefaultWidth*2))
+}
+
+func (m TPKTPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TPKTPacket"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

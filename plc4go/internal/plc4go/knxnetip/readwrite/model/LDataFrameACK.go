@@ -37,6 +37,7 @@ type ILDataFrameACK interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -140,4 +141,16 @@ func (m *LDataFrameACK) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 func (m *LDataFrameACK) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m LDataFrameACK) String() string {
+	return string(m.Box("LDataFrameACK", utils.DefaultWidth*2))
+}
+
+func (m LDataFrameACK) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "LDataFrameACK"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

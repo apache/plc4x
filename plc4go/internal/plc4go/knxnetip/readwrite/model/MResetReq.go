@@ -37,6 +37,7 @@ type IMResetReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *MResetReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 func (m *MResetReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MResetReq) String() string {
+	return string(m.Box("MResetReq", utils.DefaultWidth*2))
+}
+
+func (m MResetReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MResetReq"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

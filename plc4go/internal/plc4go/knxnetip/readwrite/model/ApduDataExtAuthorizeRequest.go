@@ -40,6 +40,7 @@ type IApduDataExtAuthorizeRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -194,14 +195,22 @@ func (m *ApduDataExtAuthorizeRequest) MarshalXML(e *xml.Encoder, start xml.Start
 	if err := e.EncodeElement(m.Level, xml.StartElement{Name: xml.Name{Local: "level"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	return nil
+}
+
+func (m ApduDataExtAuthorizeRequest) String() string {
+	return string(m.Box("ApduDataExtAuthorizeRequest", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtAuthorizeRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtAuthorizeRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Level", m.Level, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

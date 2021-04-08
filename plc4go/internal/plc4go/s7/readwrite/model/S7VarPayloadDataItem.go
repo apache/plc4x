@@ -43,6 +43,7 @@ type IS7VarPayloadDataItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []int8) *S7VarPayloadDataItem {
@@ -257,4 +258,19 @@ func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m S7VarPayloadDataItem) String() string {
+	return string(m.Box("S7VarPayloadDataItem", utils.DefaultWidth*2))
+}
+
+func (m S7VarPayloadDataItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarPayloadDataItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

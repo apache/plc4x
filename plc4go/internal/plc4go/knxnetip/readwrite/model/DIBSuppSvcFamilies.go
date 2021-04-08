@@ -39,6 +39,7 @@ type IDIBSuppSvcFamilies interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []*ServiceId) *DIBSuppSvcFamilies {
@@ -168,13 +169,21 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 				}
 				m.DescriptionType = data
 			case "serviceIds":
-				var _values []*ServiceId
-				var dt *ServiceId
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *ServiceId
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.ServiceIds = append(m.ServiceIds, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.ServiceIds = _values
 			}
 		}
 	}
@@ -190,17 +199,33 @@ func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	if err := e.EncodeElement(m.DescriptionType, xml.StartElement{Name: xml.Name{Local: "descriptionType"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ServiceIds, xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
-		return err
+	for _, arrayElement := range m.ServiceIds {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "serviceIds"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m DIBSuppSvcFamilies) String() string {
+	return string(m.Box("DIBSuppSvcFamilies", utils.DefaultWidth*2))
+}
+
+func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DIBSuppSvcFamilies"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceIds", m.ServiceIds, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

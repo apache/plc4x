@@ -39,6 +39,7 @@ type IAdsWriteResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -163,4 +164,17 @@ func (m *AdsWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m AdsWriteResponse) String() string {
+	return string(m.Box("AdsWriteResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsWriteResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsWriteResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

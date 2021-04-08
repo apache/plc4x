@@ -42,6 +42,7 @@ type IApduDataDeviceDescriptorResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -207,4 +208,18 @@ func (m *ApduDataDeviceDescriptorResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataDeviceDescriptorResponse) String() string {
+	return string(m.Box("ApduDataDeviceDescriptorResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataDeviceDescriptorResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataDeviceDescriptorResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

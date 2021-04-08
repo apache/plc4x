@@ -46,6 +46,7 @@ type IS7ParameterUserDataItemCPUFunctions interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -400,4 +401,24 @@ func (m *S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterUserDataItemCPUFunctions) String() string {
+	return string(m.Box("S7ParameterUserDataItemCPUFunctions", utils.DefaultWidth*2))
+}
+
+func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7ParameterUserDataItemCPUFunctions"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
+	boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))
+	boxes = append(boxes, utils.BoxAnything("CpuFunctionGroup", m.CpuFunctionGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("CpuSubfunction", m.CpuSubfunction, width-2))
+	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("DataUnitReferenceNumber", m.DataUnitReferenceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("LastDataUnit", m.LastDataUnit, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

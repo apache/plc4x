@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) UnmarshalXML
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

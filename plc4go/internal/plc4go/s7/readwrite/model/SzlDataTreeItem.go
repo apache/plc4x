@@ -44,6 +44,7 @@ type ISzlDataTreeItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
@@ -261,4 +262,21 @@ func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m SzlDataTreeItem) String() string {
+	return string(m.Box("SzlDataTreeItem", utils.DefaultWidth*2))
+}
+
+func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "SzlDataTreeItem"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("Mlfb", m.Mlfb, width-2))
+	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, width-2))
+	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

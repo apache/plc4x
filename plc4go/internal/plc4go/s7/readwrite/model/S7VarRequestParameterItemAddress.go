@@ -39,6 +39,7 @@ type IS7VarRequestParameterItemAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -176,4 +177,17 @@ func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m S7VarRequestParameterItemAddress) String() string {
+	return string(m.Box("S7VarRequestParameterItemAddress", utils.DefaultWidth*2))
+}
+
+func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7VarRequestParameterItemAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

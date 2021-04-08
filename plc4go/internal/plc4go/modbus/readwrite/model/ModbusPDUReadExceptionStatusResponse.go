@@ -39,6 +39,7 @@ type IModbusPDUReadExceptionStatusResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -168,4 +169,17 @@ func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start 
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadExceptionStatusResponse) String() string {
+	return string(m.Box("ModbusPDUReadExceptionStatusResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadExceptionStatusResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IBACnetTagApplicationNull interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -135,4 +136,16 @@ func (m *BACnetTagApplicationNull) UnmarshalXML(d *xml.Decoder, start xml.StartE
 
 func (m *BACnetTagApplicationNull) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetTagApplicationNull) String() string {
+	return string(m.Box("BACnetTagApplicationNull", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationNull) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationNull"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

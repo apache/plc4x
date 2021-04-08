@@ -45,6 +45,7 @@ type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -316,4 +317,21 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) MarshalXML(e *xml.En
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
+	return string(m.Box("ModbusPDUReadWriteMultipleHoldingRegistersRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ReadStartingAddress", m.ReadStartingAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReadQuantity", m.ReadQuantity, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteStartingAddress", m.WriteStartingAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteQuantity", m.WriteQuantity, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

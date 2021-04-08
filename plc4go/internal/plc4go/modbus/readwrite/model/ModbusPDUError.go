@@ -39,6 +39,7 @@ type IModbusPDUError interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -168,4 +169,17 @@ func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUError) String() string {
+	return string(m.Box("ModbusPDUError", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUError"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ExceptionCode", m.ExceptionCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

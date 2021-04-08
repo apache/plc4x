@@ -41,6 +41,7 @@ type IModbusConstants interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusConstants() *ModbusConstants {
@@ -134,4 +135,16 @@ func (m *ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m ModbusConstants) String() string {
+	return string(m.Box("ModbusConstants", utils.DefaultWidth*2))
+}
+
+func (m ModbusConstants) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusConstants"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

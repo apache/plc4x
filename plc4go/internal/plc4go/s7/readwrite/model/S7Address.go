@@ -41,6 +41,7 @@ type IS7Address interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7AddressParent interface {
@@ -200,4 +201,17 @@ func (m *S7Address) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m S7Address) String() string {
+	return string(m.Box("S7Address", utils.DefaultWidth*2))
+}
+
+func (m S7Address) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "S7Address"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

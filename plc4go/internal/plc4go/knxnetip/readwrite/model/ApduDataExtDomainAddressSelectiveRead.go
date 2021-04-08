@@ -37,6 +37,7 @@ type IApduDataExtDomainAddressSelectiveRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtDomainAddressSelectiveRead) UnmarshalXML(d *xml.Decoder, sta
 
 func (m *ApduDataExtDomainAddressSelectiveRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtDomainAddressSelectiveRead) String() string {
+	return string(m.Box("ApduDataExtDomainAddressSelectiveRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtDomainAddressSelectiveRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtDomainAddressSelectiveRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

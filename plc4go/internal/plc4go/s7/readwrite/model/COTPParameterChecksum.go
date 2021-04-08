@@ -39,6 +39,7 @@ type ICOTPParameterChecksum interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterChecksum) String() string {
+	return string(m.Box("COTPParameterChecksum", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterChecksum) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterChecksum"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

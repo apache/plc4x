@@ -39,6 +39,7 @@ type IKnxNetIpDeviceManagement interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *KnxNetIpDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartEle
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetIpDeviceManagement) String() string {
+	return string(m.Box("KnxNetIpDeviceManagement", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpDeviceManagement) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetIpDeviceManagement"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

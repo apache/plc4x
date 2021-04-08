@@ -41,6 +41,7 @@ type IConnectionResponseDataBlock interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IConnectionResponseDataBlockParent interface {
@@ -231,4 +232,17 @@ func (m *ConnectionResponseDataBlock) MarshalXML(e *xml.Encoder, start xml.Start
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionResponseDataBlock) String() string {
+	return string(m.Box("ConnectionResponseDataBlock", utils.DefaultWidth*2))
+}
+
+func (m ConnectionResponseDataBlock) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ConnectionResponseDataBlock"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

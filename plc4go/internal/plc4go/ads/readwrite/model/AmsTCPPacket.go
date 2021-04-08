@@ -39,6 +39,7 @@ type IAmsTCPPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAmsTCPPacket(userdata *AmsPacket) *AmsTCPPacket {
@@ -180,4 +181,17 @@ func (m *AmsTCPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m AmsTCPPacket) String() string {
+	return string(m.Box("AmsTCPPacket", utils.DefaultWidth*2))
+}
+
+func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsTCPPacket"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -37,6 +37,7 @@ type IBACnetConfirmedServiceRequestReadRange interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetConfirmedServiceRequestReadRange) UnmarshalXML(d *xml.Decoder, st
 
 func (m *BACnetConfirmedServiceRequestReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestReadRange) String() string {
+	return string(m.Box("BACnetConfirmedServiceRequestReadRange", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceRequestReadRange) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceRequestReadRange"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

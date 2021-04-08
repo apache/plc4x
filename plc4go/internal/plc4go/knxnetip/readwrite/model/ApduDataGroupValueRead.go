@@ -39,6 +39,7 @@ type IApduDataGroupValueRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -158,4 +159,16 @@ func (m *ApduDataGroupValueRead) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 
 func (m *ApduDataGroupValueRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataGroupValueRead) String() string {
+	return string(m.Box("ApduDataGroupValueRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataGroupValueRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataGroupValueRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

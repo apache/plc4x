@@ -37,6 +37,7 @@ type IApduControlAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduControlAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 
 func (m *ApduControlAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduControlAck) String() string {
+	return string(m.Box("ApduControlAck", utils.DefaultWidth*2))
+}
+
+func (m ApduControlAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduControlAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

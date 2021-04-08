@@ -48,6 +48,7 @@ type IAPDUConfirmedRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -427,4 +428,25 @@ func (m *APDUConfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m APDUConfirmedRequest) String() string {
+	return string(m.Box("APDUConfirmedRequest", utils.DefaultWidth*2))
+}
+
+func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUConfirmedRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
+	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
+	boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, width-2))
+	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
+	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

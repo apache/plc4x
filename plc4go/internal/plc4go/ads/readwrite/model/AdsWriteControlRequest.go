@@ -43,6 +43,7 @@ type IAdsWriteControlRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -256,4 +257,19 @@ func (m *AdsWriteControlRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m AdsWriteControlRequest) String() string {
+	return string(m.Box("AdsWriteControlRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsWriteControlRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsWriteControlRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
+	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

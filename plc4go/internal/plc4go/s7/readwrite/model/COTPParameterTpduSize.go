@@ -39,6 +39,7 @@ type ICOTPParameterTpduSize interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterTpduSize) String() string {
+	return string(m.Box("COTPParameterTpduSize", utils.DefaultWidth*2))
+}
+
+func (m COTPParameterTpduSize) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameterTpduSize"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TpduSize", m.TpduSize, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

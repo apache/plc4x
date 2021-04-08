@@ -41,6 +41,7 @@ type ICOTPParameter interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICOTPParameterParent interface {
@@ -273,4 +274,17 @@ func (m *COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameter) String() string {
+	return string(m.Box("COTPParameter", utils.DefaultWidth*2))
+}
+
+func (m COTPParameter) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPParameter"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

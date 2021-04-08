@@ -37,6 +37,7 @@ type ITDataIndividualInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *TDataIndividualInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 
 func (m *TDataIndividualInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataIndividualInd) String() string {
+	return string(m.Box("TDataIndividualInd", utils.DefaultWidth*2))
+}
+
+func (m TDataIndividualInd) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TDataIndividualInd"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

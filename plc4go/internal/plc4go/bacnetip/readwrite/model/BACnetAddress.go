@@ -39,6 +39,7 @@ type IBACnetAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewBACnetAddress(address []uint8, port uint16) *BACnetAddress {
@@ -164,13 +165,7 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
@@ -180,4 +175,18 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m BACnetAddress) String() string {
+	return string(m.Box("BACnetAddress", utils.DefaultWidth*2))
+}
+
+func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

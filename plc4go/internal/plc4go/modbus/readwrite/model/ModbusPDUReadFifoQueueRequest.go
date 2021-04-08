@@ -39,6 +39,7 @@ type IModbusPDUReadFifoQueueRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -168,4 +169,17 @@ func (m *ModbusPDUReadFifoQueueRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadFifoQueueRequest) String() string {
+	return string(m.Box("ModbusPDUReadFifoQueueRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUReadFifoQueueRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUReadFifoQueueRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("FifoPointerAddress", m.FifoPointerAddress, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

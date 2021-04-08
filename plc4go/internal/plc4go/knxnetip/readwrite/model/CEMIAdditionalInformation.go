@@ -41,6 +41,7 @@ type ICEMIAdditionalInformation interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICEMIAdditionalInformationParent interface {
@@ -214,4 +215,17 @@ func (m *CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m CEMIAdditionalInformation) String() string {
+	return string(m.Box("CEMIAdditionalInformation", utils.DefaultWidth*2))
+}
+
+func (m CEMIAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "CEMIAdditionalInformation"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

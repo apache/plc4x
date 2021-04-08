@@ -40,6 +40,7 @@ type IHPAIDataEndpoint interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIDataEndpoint {
@@ -205,4 +206,19 @@ func (m *HPAIDataEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m HPAIDataEndpoint) String() string {
+	return string(m.Box("HPAIDataEndpoint", utils.DefaultWidth*2))
+}
+
+func (m HPAIDataEndpoint) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "HPAIDataEndpoint"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
+	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

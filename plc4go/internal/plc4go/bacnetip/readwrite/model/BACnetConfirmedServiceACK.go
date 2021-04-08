@@ -41,6 +41,7 @@ type IBACnetConfirmedServiceACK interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetConfirmedServiceACKParent interface {
@@ -382,4 +383,17 @@ func (m *BACnetConfirmedServiceACK) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m BACnetConfirmedServiceACK) String() string {
+	return string(m.Box("BACnetConfirmedServiceACK", utils.DefaultWidth*2))
+}
+
+func (m BACnetConfirmedServiceACK) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetConfirmedServiceACK"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

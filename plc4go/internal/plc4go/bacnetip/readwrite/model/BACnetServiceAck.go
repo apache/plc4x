@@ -41,6 +41,7 @@ type IBACnetServiceAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetServiceAckParent interface {
@@ -382,4 +383,17 @@ func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m BACnetServiceAck) String() string {
+	return string(m.Box("BACnetServiceAck", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

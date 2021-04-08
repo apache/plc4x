@@ -43,6 +43,7 @@ type IAmsSerialAcknowledgeFrame interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *AmsSerialAcknowledgeFrame {
@@ -268,4 +269,22 @@ func (m *AmsSerialAcknowledgeFrame) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m AmsSerialAcknowledgeFrame) String() string {
+	return string(m.Box("AmsSerialAcknowledgeFrame", utils.DefaultWidth*2))
+}
+
+func (m AmsSerialAcknowledgeFrame) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsSerialAcknowledgeFrame"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, width-2))
+	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

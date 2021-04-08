@@ -37,6 +37,7 @@ type IBACnetServiceAckGetEnrollmentSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetServiceAckGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, star
 
 func (m *BACnetServiceAckGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckGetEnrollmentSummary) String() string {
+	return string(m.Box("BACnetServiceAckGetEnrollmentSummary", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckGetEnrollmentSummary"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -41,6 +41,7 @@ type IBACnetTagApplicationUnsignedInteger interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -185,4 +186,17 @@ func (m *BACnetTagApplicationUnsignedInteger) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagApplicationUnsignedInteger) String() string {
+	return string(m.Box("BACnetTagApplicationUnsignedInteger", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagApplicationUnsignedInteger) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagApplicationUnsignedInteger"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

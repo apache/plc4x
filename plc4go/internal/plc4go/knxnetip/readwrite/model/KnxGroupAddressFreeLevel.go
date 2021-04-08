@@ -39,6 +39,7 @@ type IKnxGroupAddressFreeLevel interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartEle
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddressFreeLevel) String() string {
+	return string(m.Box("KnxGroupAddressFreeLevel", utils.DefaultWidth*2))
+}
+
+func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddressFreeLevel"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

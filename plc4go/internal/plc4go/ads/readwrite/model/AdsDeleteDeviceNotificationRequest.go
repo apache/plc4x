@@ -39,6 +39,7 @@ type IAdsDeleteDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -164,4 +165,17 @@ func (m *AdsDeleteDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xm
 		return err
 	}
 	return nil
+}
+
+func (m AdsDeleteDeviceNotificationRequest) String() string {
+	return string(m.Box("AdsDeleteDeviceNotificationRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsDeleteDeviceNotificationRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

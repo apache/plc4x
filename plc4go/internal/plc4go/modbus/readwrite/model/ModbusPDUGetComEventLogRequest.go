@@ -37,6 +37,7 @@ type IModbusPDUGetComEventLogRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -139,4 +140,16 @@ func (m *ModbusPDUGetComEventLogRequest) UnmarshalXML(d *xml.Decoder, start xml.
 
 func (m *ModbusPDUGetComEventLogRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUGetComEventLogRequest) String() string {
+	return string(m.Box("ModbusPDUGetComEventLogRequest", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUGetComEventLogRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUGetComEventLogRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

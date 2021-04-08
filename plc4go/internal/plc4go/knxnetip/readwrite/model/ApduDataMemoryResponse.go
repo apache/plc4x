@@ -40,6 +40,7 @@ type IApduDataMemoryResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -211,14 +212,22 @@ func (m *ApduDataMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	return nil
+}
+
+func (m ApduDataMemoryResponse) String() string {
+	return string(m.Box("ApduDataMemoryResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataMemoryResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataMemoryResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

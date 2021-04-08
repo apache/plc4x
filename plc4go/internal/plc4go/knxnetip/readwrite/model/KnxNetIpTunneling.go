@@ -39,6 +39,7 @@ type IKnxNetIpTunneling interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *KnxNetIpTunneling) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetIpTunneling) String() string {
+	return string(m.Box("KnxNetIpTunneling", utils.DefaultWidth*2))
+}
+
+func (m KnxNetIpTunneling) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetIpTunneling"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

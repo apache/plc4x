@@ -37,6 +37,7 @@ type IApduDataExtNetworkParameterResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtNetworkParameterResponse) UnmarshalXML(d *xml.Decoder, start
 
 func (m *ApduDataExtNetworkParameterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtNetworkParameterResponse) String() string {
+	return string(m.Box("ApduDataExtNetworkParameterResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtNetworkParameterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtNetworkParameterResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

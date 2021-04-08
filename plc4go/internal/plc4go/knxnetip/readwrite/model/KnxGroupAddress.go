@@ -41,6 +41,7 @@ type IKnxGroupAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IKnxGroupAddressParent interface {
@@ -212,4 +213,17 @@ func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddress) String() string {
+	return string(m.Box("KnxGroupAddress", utils.DefaultWidth*2))
+}
+
+func (m KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddress"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

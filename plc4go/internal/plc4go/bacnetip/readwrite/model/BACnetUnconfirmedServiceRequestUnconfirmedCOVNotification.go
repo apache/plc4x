@@ -37,6 +37,7 @@ type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) UnmarshalXML
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() string {
+	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification", utils.DefaultWidth*2))
+}
+
+func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

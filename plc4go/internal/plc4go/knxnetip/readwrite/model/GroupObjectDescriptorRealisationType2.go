@@ -46,6 +46,7 @@ type IGroupObjectDescriptorRealisationType2 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewGroupObjectDescriptorRealisationType2(dataPointer uint8, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationType2 {
@@ -344,4 +345,25 @@ func (m *GroupObjectDescriptorRealisationType2) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m GroupObjectDescriptorRealisationType2) String() string {
+	return string(m.Box("GroupObjectDescriptorRealisationType2", utils.DefaultWidth*2))
+}
+
+func (m GroupObjectDescriptorRealisationType2) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "GroupObjectDescriptorRealisationType2"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DataPointer", m.DataPointer, width-2))
+	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("TransmitEnable", m.TransmitEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("SegmentSelectorEnable", m.SegmentSelectorEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteEnable", m.WriteEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReadEnable", m.ReadEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, width-2))
+	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
+	boxes = append(boxes, utils.BoxAnything("ValueType", m.ValueType, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

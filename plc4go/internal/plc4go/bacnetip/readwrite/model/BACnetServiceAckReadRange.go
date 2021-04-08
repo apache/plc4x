@@ -37,6 +37,7 @@ type IBACnetServiceAckReadRange interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.Start
 
 func (m *BACnetServiceAckReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckReadRange) String() string {
+	return string(m.Box("BACnetServiceAckReadRange", utils.DefaultWidth*2))
+}
+
+func (m BACnetServiceAckReadRange) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetServiceAckReadRange"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -39,6 +39,7 @@ type ITunnelingResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,4 +160,17 @@ func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m TunnelingResponse) String() string {
+	return string(m.Box("TunnelingResponse", utils.DefaultWidth*2))
+}
+
+func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "TunnelingResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

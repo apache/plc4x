@@ -37,6 +37,7 @@ type IAdsReadDeviceInfoRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -135,4 +136,16 @@ func (m *AdsReadDeviceInfoRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
 
 func (m *AdsReadDeviceInfoRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m AdsReadDeviceInfoRequest) String() string {
+	return string(m.Box("AdsReadDeviceInfoRequest", utils.DefaultWidth*2))
+}
+
+func (m AdsReadDeviceInfoRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadDeviceInfoRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

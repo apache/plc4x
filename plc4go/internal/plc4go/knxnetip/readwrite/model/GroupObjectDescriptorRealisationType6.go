@@ -36,6 +36,7 @@ type IGroupObjectDescriptorRealisationType6 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewGroupObjectDescriptorRealisationType6() *GroupObjectDescriptorRealisationType6 {
@@ -111,4 +112,16 @@ func (m *GroupObjectDescriptorRealisationType6) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m GroupObjectDescriptorRealisationType6) String() string {
+	return string(m.Box("GroupObjectDescriptorRealisationType6", utils.DefaultWidth*2))
+}
+
+func (m GroupObjectDescriptorRealisationType6) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "GroupObjectDescriptorRealisationType6"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

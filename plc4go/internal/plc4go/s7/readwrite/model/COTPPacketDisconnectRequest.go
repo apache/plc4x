@@ -41,6 +41,7 @@ type ICOTPPacketDisconnectRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -218,4 +219,19 @@ func (m *COTPPacketDisconnectRequest) MarshalXML(e *xml.Encoder, start xml.Start
 		return err
 	}
 	return nil
+}
+
+func (m COTPPacketDisconnectRequest) String() string {
+	return string(m.Box("COTPPacketDisconnectRequest", utils.DefaultWidth*2))
+}
+
+func (m COTPPacketDisconnectRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "COTPPacketDisconnectRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
+	boxes = append(boxes, utils.BoxAnything("ProtocolClass", m.ProtocolClass, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

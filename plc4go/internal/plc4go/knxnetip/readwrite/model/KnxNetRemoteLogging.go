@@ -39,6 +39,7 @@ type IKnxNetRemoteLogging interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -160,4 +161,17 @@ func (m *KnxNetRemoteLogging) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetRemoteLogging) String() string {
+	return string(m.Box("KnxNetRemoteLogging", utils.DefaultWidth*2))
+}
+
+func (m KnxNetRemoteLogging) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxNetRemoteLogging"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

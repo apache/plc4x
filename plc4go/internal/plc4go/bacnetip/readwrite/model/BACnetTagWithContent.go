@@ -49,6 +49,7 @@ type IBACnetTagWithContent interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
@@ -354,13 +355,7 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 	if err := e.EncodeElement(m.ExtLength, xml.StartElement{Name: xml.Name{Local: "extLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.PropertyIdentifier, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
@@ -370,4 +365,23 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagWithContent) String() string {
+	return string(m.Box("BACnetTagWithContent", utils.DefaultWidth*2))
+}
+
+func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetTagWithContent"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", m.ContextSpecificTag, width-2))
+	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
+	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
+	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

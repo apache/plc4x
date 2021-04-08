@@ -37,6 +37,7 @@ type IApduDataExtReadRoutingTableRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtReadRoutingTableRequest) UnmarshalXML(d *xml.Decoder, start 
 
 func (m *ApduDataExtReadRoutingTableRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtReadRoutingTableRequest) String() string {
+	return string(m.Box("ApduDataExtReadRoutingTableRequest", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtReadRoutingTableRequest) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtReadRoutingTableRequest"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

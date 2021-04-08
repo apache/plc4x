@@ -40,6 +40,7 @@ type IKnxGroupAddress2Level interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -188,4 +189,18 @@ func (m *KnxGroupAddress2Level) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddress2Level) String() string {
+	return string(m.Box("KnxGroupAddress2Level", utils.DefaultWidth*2))
+}
+
+func (m KnxGroupAddress2Level) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "KnxGroupAddress2Level"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -41,6 +41,7 @@ type IComObjectTableRealisationType2 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -224,14 +225,31 @@ func (m *ComObjectTableRealisationType2) MarshalXML(e *xml.Encoder, start xml.St
 	if err := e.EncodeElement(m.RamFlagsTablePointer, xml.StartElement{Name: xml.Name{Local: "ramFlagsTablePointer"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ComObjectDescriptors, xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
-		return err
+	for _, arrayElement := range m.ComObjectDescriptors {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func (m ComObjectTableRealisationType2) String() string {
+	return string(m.Box("ComObjectTableRealisationType2", utils.DefaultWidth*2))
+}
+
+func (m ComObjectTableRealisationType2) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ComObjectTableRealisationType2"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
+	boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))
+	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

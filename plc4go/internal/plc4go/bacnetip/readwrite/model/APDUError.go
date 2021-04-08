@@ -41,6 +41,7 @@ type IAPDUError interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -213,4 +214,18 @@ func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDUError) String() string {
+	return string(m.Box("APDUError", utils.DefaultWidth*2))
+}
+
+func (m APDUError) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "APDUError"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Error", m.Error, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

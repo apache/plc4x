@@ -41,6 +41,7 @@ type IBVLCForwardedNPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -215,13 +216,7 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Ip, xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "ip"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
@@ -231,4 +226,19 @@ func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m BVLCForwardedNPDU) String() string {
+	return string(m.Box("BVLCForwardedNPDU", utils.DefaultWidth*2))
+}
+
+func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BVLCForwardedNPDU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Ip", m.Ip, width-2))
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

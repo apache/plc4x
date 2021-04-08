@@ -68,7 +68,18 @@ public class ManualAdsDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        ManualAdsDriverTest test = new ManualAdsDriverTest("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851");
+        String spsIp = "192.168.23.20";
+        /////
+        // TODO: adjust this to your ip address
+        String clientIp = "192.168.24.1";
+        //
+        ////
+        String sourceAmsNetId = clientIp + ".1.1";
+        int sourceAmsPort = 65534;
+        String targetAmsNetId = spsIp + ".1.1";
+        int targetAmsPort = 851;
+        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("main.hurz_BOOL:BOOL", true);
         test.addTestCase("main.hurz_BYTE:BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
         test.addTestCase("main.hurz_WORD:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));

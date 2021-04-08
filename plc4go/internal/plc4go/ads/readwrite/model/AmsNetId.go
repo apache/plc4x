@@ -43,6 +43,7 @@ type IAmsNetId interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *AmsNetId {
@@ -268,4 +269,22 @@ func (m *AmsNetId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m AmsNetId) String() string {
+	return string(m.Box("AmsNetId", utils.DefaultWidth*2))
+}
+
+func (m AmsNetId) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AmsNetId"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Octet1", m.Octet1, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet2", m.Octet2, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet3", m.Octet3, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet4", m.Octet4, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet5", m.Octet5, width-2))
+	boxes = append(boxes, utils.BoxAnything("Octet6", m.Octet6, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -47,6 +47,7 @@ type IApduDataExtPropertyDescriptionResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -404,4 +405,24 @@ func (m *ApduDataExtPropertyDescriptionResponse) MarshalXML(e *xml.Encoder, star
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataExtPropertyDescriptionResponse) String() string {
+	return string(m.Box("ApduDataExtPropertyDescriptionResponse", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtPropertyDescriptionResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
+	boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteEnabled", m.WriteEnabled, width-2))
+	boxes = append(boxes, utils.BoxAnything("PropertyDataType", m.PropertyDataType, width-2))
+	boxes = append(boxes, utils.BoxAnything("MaxNrOfElements", m.MaxNrOfElements, width-2))
+	boxes = append(boxes, utils.BoxAnything("ReadLevel", m.ReadLevel, width-2))
+	boxes = append(boxes, utils.BoxAnything("WriteLevel", m.WriteLevel, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

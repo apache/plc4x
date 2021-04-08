@@ -37,6 +37,7 @@ type IBACnetErrorVTOpen interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *BACnetErrorVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *BACnetErrorVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorVTOpen) String() string {
+	return string(m.Box("BACnetErrorVTOpen", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorVTOpen) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorVTOpen"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

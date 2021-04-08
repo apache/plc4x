@@ -37,6 +37,7 @@ type IApduDataIndividualAddressRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataIndividualAddressRead) UnmarshalXML(d *xml.Decoder, start xml.S
 
 func (m *ApduDataIndividualAddressRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataIndividualAddressRead) String() string {
+	return string(m.Box("ApduDataIndividualAddressRead", utils.DefaultWidth*2))
+}
+
+func (m ApduDataIndividualAddressRead) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataIndividualAddressRead"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

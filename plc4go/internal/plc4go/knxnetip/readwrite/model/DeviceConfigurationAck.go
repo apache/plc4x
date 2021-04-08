@@ -39,6 +39,7 @@ type IDeviceConfigurationAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -159,4 +160,17 @@ func (m *DeviceConfigurationAck) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m DeviceConfigurationAck) String() string {
+	return string(m.Box("DeviceConfigurationAck", utils.DefaultWidth*2))
+}
+
+func (m DeviceConfigurationAck) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "DeviceConfigurationAck"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationAckDataBlock", m.DeviceConfigurationAckDataBlock, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

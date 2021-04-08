@@ -49,6 +49,7 @@ type IBACnetErrorReadProperty interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -321,4 +322,20 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m BACnetErrorReadProperty) String() string {
+	return string(m.Box("BACnetErrorReadProperty", utils.DefaultWidth*2))
+}
+
+func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "BACnetErrorReadProperty"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, width-2))
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

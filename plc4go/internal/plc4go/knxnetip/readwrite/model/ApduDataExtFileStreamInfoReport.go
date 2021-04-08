@@ -37,6 +37,7 @@ type IApduDataExtFileStreamInfoReport interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *ApduDataExtFileStreamInfoReport) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *ApduDataExtFileStreamInfoReport) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtFileStreamInfoReport) String() string {
+	return string(m.Box("ApduDataExtFileStreamInfoReport", utils.DefaultWidth*2))
+}
+
+func (m ApduDataExtFileStreamInfoReport) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataExtFileStreamInfoReport"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

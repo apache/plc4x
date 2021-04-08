@@ -27,18 +27,18 @@ func _() {
 	var x [1]struct{}
 	_ = x[DirectAdsStringField-0]
 	_ = x[DirectAdsField-1]
-	_ = x[SymbolicStringField-3]
-	_ = x[SymbolicField-4]
+	_ = x[SymbolicAdsStringField-3]
+	_ = x[SymbolicAdsField-4]
 }
 
 const (
 	_FieldType_name_0 = "DirectAdsStringFieldDirectAdsField"
-	_FieldType_name_1 = "SymbolicStringFieldSymbolicField"
+	_FieldType_name_1 = "SymbolicAdsStringFieldSymbolicAdsField"
 )
 
 var (
 	_FieldType_index_0 = [...]uint8{0, 20, 34}
-	_FieldType_index_1 = [...]uint8{0, 19, 32}
+	_FieldType_index_1 = [...]uint8{0, 22, 38}
 )
 
 func (i FieldType) String() string {

@@ -42,6 +42,7 @@ type IAdsReadResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -227,4 +228,18 @@ func (m *AdsReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m AdsReadResponse) String() string {
+	return string(m.Box("AdsReadResponse", utils.DefaultWidth*2))
+}
+
+func (m AdsReadResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "AdsReadResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

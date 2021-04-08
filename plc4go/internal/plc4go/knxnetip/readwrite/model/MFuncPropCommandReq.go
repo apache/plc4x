@@ -37,6 +37,7 @@ type IMFuncPropCommandReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -131,4 +132,16 @@ func (m *MFuncPropCommandReq) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 
 func (m *MFuncPropCommandReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MFuncPropCommandReq) String() string {
+	return string(m.Box("MFuncPropCommandReq", utils.DefaultWidth*2))
+}
+
+func (m MFuncPropCommandReq) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "MFuncPropCommandReq"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

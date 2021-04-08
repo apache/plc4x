@@ -44,6 +44,7 @@ type IModbusTcpADU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu *ModbusPDU) *ModbusTcpADU {
@@ -228,4 +229,19 @@ func (m *ModbusTcpADU) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m ModbusTcpADU) String() string {
+	return string(m.Box("ModbusTcpADU", utils.DefaultWidth*2))
+}
+
+func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusTcpADU"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))
+	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

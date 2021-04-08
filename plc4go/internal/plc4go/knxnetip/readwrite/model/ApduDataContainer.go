@@ -39,6 +39,7 @@ type IApduDataContainer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -161,4 +162,17 @@ func (m *ApduDataContainer) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataContainer) String() string {
+	return string(m.Box("ApduDataContainer", utils.DefaultWidth*2))
+}
+
+func (m ApduDataContainer) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ApduDataContainer"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("DataApdu", m.DataApdu, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

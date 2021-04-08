@@ -23,6 +23,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -192,6 +193,8 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
+			// Reset read channel
+			testcase.readRequestResultChannel = nil
 		case "PlcWriteResponse":
 			if testcase.writeRequestResultChannel == nil {
 				return errors.New("no write response expected")
@@ -213,6 +216,8 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
+			// Reset write channel
+			testcase.writeRequestResultChannel = nil
 		}
 	case StepTypeOutgoingPlcMessage:
 		typeName := step.payload.Name
@@ -243,7 +248,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
+		var wb *utils.WriteBuffer
+		switch m.driverName {
+		case "ads":
+			wb = utils.NewLittleEndianWriteBuffer()
+		default:
+			wb = utils.NewWriteBuffer()
+		}
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing message")
@@ -269,6 +280,17 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
 			if expectedRawOutput[i] != rawOutput[i] {
+				switch m.driverName {
+				case "modbus":
+					message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+					if err != nil {
+						return errors.Wrap(err, "error parsing xml")
+					}
+				case "ads":
+					expectationAmsTCPPacket := ser.(*readWriteModel.AmsTCPPacket)
+					actualAmsTcpPacket, err := readWriteModel.AmsTCPPacketParse(utils.NewReadBuffer(rawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectationAmsTCPPacket, actualAmsTcpPacket)
+				}
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
 			}
 		}
@@ -322,7 +344,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
+		var wb *utils.WriteBuffer
+		switch m.driverName {
+		case "ads":
+			wb = utils.NewLittleEndianWriteBuffer()
+		default:
+			wb = utils.NewWriteBuffer()
+		}
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing message")
@@ -357,7 +385,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		// Sleep for that long
 		log.Debug().Int("delay", delay).Msg("Sleeping")
-		time.Sleep(time.Duration(delay))
+		time.Sleep(time.Millisecond * time.Duration(delay))
 	case StepTypeTerminate:
 		// Simply close the transport connection
 		log.Trace().Msg("closing transport")

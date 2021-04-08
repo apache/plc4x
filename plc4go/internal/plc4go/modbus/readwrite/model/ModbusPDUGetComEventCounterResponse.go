@@ -40,6 +40,7 @@ type IModbusPDUGetComEventCounterResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -196,4 +197,18 @@ func (m *ModbusPDUGetComEventCounterResponse) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUGetComEventCounterResponse) String() string {
+	return string(m.Box("ModbusPDUGetComEventCounterResponse", utils.DefaultWidth*2))
+}
+
+func (m ModbusPDUGetComEventCounterResponse) Box(name string, width int) utils.AsciiBox {
+	if name == "" {
+		name = "ModbusPDUGetComEventCounterResponse"
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
+	boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
+	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }
