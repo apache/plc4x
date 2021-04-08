@@ -27,6 +27,41 @@
 
 #include "plc4c/driver_s7_encode_decode.h"
 
+// forward delcaration for helper function todo: move to header or reloacte
+    //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
+void plc4c_add_data_to_request(plc4c_data* parsed_value, 
+    plc4c_s7_read_write_s7_var_payload_data_item* request_value) {
+
+  uint8_t* data_array;
+  plc4c_list_element* list_array;
+  plc4c_data* the_data;
+  int i, j;
+  int items;
+  int item_size;
+
+  // If its a list size donst really mean anything we care about list len
+  if (parsed_value->data_type == PLC4C_LIST) 
+    items = plc4c_utils_list_size(&parsed_value->data.list_value);
+  else
+    items = 1; 
+
+  for (i = 0 ; i < items ; i++) {
+    if (parsed_value->data_type == PLC4C_LIST) {
+      list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
+      the_data = list_array->value;
+      item_size = the_data->size;
+      data_array = (int8_t*) &the_data->data;
+    } else {
+      item_size = parsed_value->size;
+      data_array = (int8_t*) &parsed_value->data;
+    }
+    // Now add the bytes to a list
+    for (j = 0 ; j < item_size ; j++) 
+      plc4c_utils_list_insert_tail_value(request_value->data, data_array + j);
+    
+  }
+}
+
 // forward declaration of helper function, TODO: move somewhere, or re-inline
 void plc4c_driver_s7_time_transport_size(
     plc4c_s7_read_write_transport_size *transport_size);
@@ -585,7 +620,8 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     plc4c_utils_list_create(&request_value->data);
     
     //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
-    plc4c_list_element* list_array;
+    /*plc4c_list_element* list_array;
+    plc4c_data* the_data;
     int count = parsed_value->size;
 
     if (parsed_value->data_type == PLC4C_LIST) 
@@ -594,15 +630,18 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     for (int i  = 0 ; i < count ; i++) {
       if (parsed_value->data_type == PLC4C_LIST) {
         list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
+        the_data = list_array->value;
         data_array = (int8_t*) &( ((plc4c_data*) list_array->value)->data);
       } else {
+        the_data = parsed_value->data;
         data_array = &((int8_t*)&parsed_value->data)[i];
       }
       // Now add the bytes to a list
       for (int i  = 0 ; i < parsed_value->size ; i++) 
         plc4c_utils_list_insert_tail_value(request_value->data, data_array);
       
-    }
+    }*/
+    plc4c_add_data_to_request( parsed_value, request_value);
 
     // Add the new parameter to the request
     plc4c_utils_list_insert_head_value(s7_parameters->s7_parameter_write_var_request_items, request_param);
