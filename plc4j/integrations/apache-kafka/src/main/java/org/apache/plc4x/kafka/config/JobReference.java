@@ -18,14 +18,27 @@ under the License.
 */
 package org.apache.plc4x.kafka.config;
 
-public class JobReference {
+import org.apache.kafka.common.config.AbstractConfig;
+import org.apache.kafka.common.config.ConfigDef;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class JobReference extends AbstractConfig{
+
+    private static final Logger log = LoggerFactory.getLogger(JobReference.class);
 
     private final String name;
     private final String topic;
 
-    public JobReference(String name, String topic) {
+    public JobReference(String name, String defaultTopic, Map originals) {
+        super(configDef(), originals);
         this.name = name;
-        this.topic = topic;
+        this.topic = getString(Constants.TOPIC_CONFIG) == null ? defaultTopic : getString(Constants.TOPIC_CONFIG);
+    }
+
+    public void validate() {
+        return;
     }
 
     public String getName() {
@@ -36,4 +49,19 @@ public class JobReference {
         return topic;
     }
 
+    protected static ConfigDef configDef() {
+        return new ConfigDef()
+            .define(Constants.TOPIC_CONFIG,
+                    ConfigDef.Type.STRING,
+                    Constants.TOPIC_DEFAULT,
+                    ConfigDef.Importance.LOW,
+                    Constants.TOPIC_DOC);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder query = new StringBuilder();
+        query.append("\t\t" + name + "." + Constants.TOPIC_CONFIG + "=" + topic + ",\n");
+        return query.toString();
+    }
 }

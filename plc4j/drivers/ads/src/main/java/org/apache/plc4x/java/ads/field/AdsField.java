@@ -20,11 +20,10 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
 
-public interface AdsField extends PlcField {
+public interface AdsField extends PlcField, XmlSerializable {
 
     AdsDataType getAdsDataType();
-
-    int getNumberOfElements();
 
 }

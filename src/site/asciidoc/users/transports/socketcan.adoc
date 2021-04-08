@@ -1,0 +1,66 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+== SocketCAN
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`socketcan`
+
+|Name
+2+|SocketCAN (software bridge to CAN).
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-socketcan</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Transport Syntax:
+|
+----
+{name of the socketcan interface}
+----
+|Can differ depending on the OS:
+
+- can0
+- vcan0
+
+|Options:
+2+|*none*
+|===
+
+SocketCAN is linux specific way to access CAN bus.
+It has its own representation of CAN frames, buffers and so on.
+This means that you have to program your application against socketcan and not raw can interfaces.
+
+Primary difference is fixed length of socketcan frames (CAN 2.0A always takes 16 bytes) and extended size of CAN identifier.
+Standard CAN frame uses 11 bits while socketcan uses 29 and appends flags to remaining 3 bits.
+
+Use of socketcan means that Apache PLC4X does not handle low level bus access, arbitration, coordination and so on.
+This is done by socketcan and layer below it.
+
+This transport have been successfully tested with `vcan` as well as `gs_usb` drivers.

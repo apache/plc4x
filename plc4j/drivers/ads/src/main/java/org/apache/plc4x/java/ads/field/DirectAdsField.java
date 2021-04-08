@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -31,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsField implements AdsField {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
 
     private final long indexGroup;
 
@@ -109,6 +111,12 @@ public class DirectAdsField implements AdsField {
         return adsDataType;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return adsDataType.toString();
+    }
+
+    @Override
     public int getNumberOfElements() {
         return numberOfElements;
     }
@@ -138,4 +146,27 @@ public class DirectAdsField implements AdsField {
             ", indexOffset=" + indexOffset +
             '}';
     }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+        Element indexGroupElement = doc.createElement("indexGroup");
+        indexGroupElement.appendChild(doc.createTextNode(Long.toString(getIndexGroup())));
+        messageElement.appendChild(indexGroupElement);
+
+        Element indexOffsetElement = doc.createElement("indexOffset");
+        indexOffsetElement.appendChild(doc.createTextNode(Long.toString(getIndexOffset())));
+        messageElement.appendChild(indexOffsetElement);
+
+        Element numberOfElementsElement = doc.createElement("numberOfElements");
+        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(numberOfElementsElement);
+
+        Element datatypeElement = doc.createElement("dataType");
+        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
+        messageElement.appendChild(datatypeElement);
+    }
+
 }

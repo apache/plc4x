@@ -38,8 +38,8 @@
         <!--xs:element name="TpktMessage" type="s7:TpktMessageType"/-->
     </tdml:defineSchema>
 
-    <tdml:parserTestCase name="KNXNetIP-Search-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Search-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Search-Request">
         <tdml:document>
@@ -48,7 +48,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -63,13 +63,13 @@
                             <ipPort>61326</ipPort>
                         </HPAIDiscoveryEndpoint>
                     </SearchRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Search-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Search-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Search-Response">
         <tdml:document>
@@ -80,7 +80,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -141,13 +141,13 @@
                             </serviceIds>
                         </DIBSuppSvcFamilies>
                     </SearchResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Description-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Description-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Description-Request">
         <tdml:document>
@@ -156,7 +156,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -171,13 +171,13 @@
                             <ipPort>0</ipPort>
                         </HPAIControlEndpoint>
                     </DescriptionRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Description-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Description-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Description-Response">
         <tdml:document>
@@ -188,7 +188,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -243,13 +243,13 @@
                             </serviceIds>
                         </DIBSuppSvcFamilies>
                     </DescriptionResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Connect-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Connect-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Connect-Request">
         <tdml:document>
@@ -258,7 +258,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -285,13 +285,13 @@
                             <reserved>0</reserved>
                         </ConnectionRequestInformation>
                     </ConnectionRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Connect-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Connect-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Connect-Response">
         <tdml:document>
@@ -300,7 +300,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -326,13 +326,13 @@
                             </knxAddress>
                         </ConnectionResponseDataBlock>
                     </ConnectionResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Connection-State-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Connection-State-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Connection-State-Request">
         <tdml:document>
@@ -341,7 +341,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -358,13 +358,13 @@
                             <ipPort>62513</ipPort>
                         </HPAIControlEndpoint>
                     </ConnectionStateRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Connection-State-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Connection-State-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Connection-State-Response">
         <tdml:document>
@@ -373,7 +373,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -384,13 +384,13 @@
                         <communicationChannelId>102</communicationChannelId>
                         <status>0</status>
                     </ConnectionStateResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Device-Configuration-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Device-Configuration-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Device-Configuration-Request">
         <tdml:document>
@@ -399,7 +399,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -422,13 +422,13 @@
                             </MPropRead>
                         </cEMI>
                     </DeviceConfigurationRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Device-Configuration-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Device-Configuration-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Device-Configuration-Response">
         <tdml:document>
@@ -437,7 +437,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -450,13 +450,13 @@
                         <sequenceCounter>0</sequenceCounter>
                         <status>0</status>
                     </DeviceConfigurationResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Disconnect-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Disconnect-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Disconnect-Request">
         <tdml:document>
@@ -465,7 +465,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -482,13 +482,13 @@
                             <ipPort>62513</ipPort>
                         </HPAIControlEndpoint>
                     </DisconnectRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Disconnect-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Disconnect-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Disconnect-Response">
         <tdml:document>
@@ -497,7 +497,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -508,13 +508,13 @@
                         <communicationChannelId>103</communicationChannelId>
                         <status>0</status>
                     </DisconnectResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Tunneling-Request"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Tunneling-Request"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Tunneling-Request">
         <tdml:document>
@@ -523,7 +523,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -566,13 +566,13 @@
                             </LBusmonInd>
                         </cEMI>
                     </TunnelingRequest>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>
 
-    <tdml:parserTestCase name="KNXNetIP-Tunneling-Response"
-                         root="KNXNetIPMessage"
+    <tdml:parserTestCase name="KnxNetIp-Tunneling-Response"
+                         root="KnxNetIpMessage"
                          model="knxNetIpSchema"
                          description="KNXNet/IP Tunneling-Response">
         <tdml:document>
@@ -581,7 +581,7 @@
 
         <tdml:infoset>
             <tdml:dfdlInfoset>
-                <knx:KNXNetIPMessage>
+                <knx:KnxNetIpMessage>
                     <header>
                         <headerLength>6</headerLength>
                         <protocolVersion>16</protocolVersion>
@@ -594,7 +594,7 @@
                         <sequenceCounter>0</sequenceCounter>
                         <status>0</status>
                     </TunnelingResponse>
-                </knx:KNXNetIPMessage>
+                </knx:KnxNetIpMessage>
             </tdml:dfdlInfoset>
         </tdml:infoset>
     </tdml:parserTestCase>

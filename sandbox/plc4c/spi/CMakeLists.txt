@@ -34,8 +34,14 @@ add_library(plc4c-spi
         src/write_buffer.c
         )
 
-target_link_libraries(plc4c-spi
-    m)
+IF (NOT WIN32)
+    target_link_libraries(plc4c-spi
+            m
+            )
+ELSE()
+    target_link_libraries(plc4c-spi
+            )
+ENDIF()
 
 if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-spi-test
@@ -47,7 +53,7 @@ if (BUILD_PHASE STREQUAL test-compile)
     target_link_libraries(plc4c-spi-test
             plc4c-spi
             unity
-            m
+
             )
     add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
 endif ()

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.modbus.readwrite.types.ModbusDataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +30,10 @@ public class ModbusFieldDiscreteInput extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("1" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("1x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    public ModbusFieldDiscreteInput(int address, Integer quantity) {
-        super(address, quantity);
+    protected static final int REGISTER_MAX_ADDRESS = 65535;
+
+    public ModbusFieldDiscreteInput(int address, Integer quantity, ModbusDataType dataType) {
+        super(address, quantity, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -39,7 +42,7 @@ public class ModbusFieldDiscreteInput extends ModbusField {
             ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
     }
 
-    public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
+    public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (matcher.matches()) {
           return matcher;
@@ -59,9 +62,18 @@ public class ModbusFieldDiscreteInput extends ModbusField {
     public static ModbusFieldDiscreteInput of(String addressString) {
         Matcher matcher = getMatcher(addressString);
         int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
+        if (address > REGISTER_MAX_ADDRESS) {
+            throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
+        }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldDiscreteInput(address, quantity);
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        if ((address + quantity) > REGISTER_MAX_ADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
+        }
+
+        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
+
+        return new ModbusFieldDiscreteInput(address, quantity, dataType);
     }
 }

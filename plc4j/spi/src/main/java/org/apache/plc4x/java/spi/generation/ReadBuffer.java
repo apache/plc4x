@@ -61,7 +61,7 @@ public class ReadBuffer {
     }
 
     public boolean hasMore(int numBits) {
-        return (numBits / 8) < (totalBytes - getPos());
+        return (numBits / 8) <= (totalBytes - getPos());
     }
 
     public byte peekByte(int offset) throws ParseException {
@@ -126,7 +126,8 @@ public class ReadBuffer {
         }
         try {
             if (littleEndian) {
-                return (Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16) & 0xFFFF;
+                int intValue = bi.readInt(true, bitLength);
+                return Integer.reverseBytes(intValue) >>> 16;
             }
             return bi.readInt(true, bitLength);
         } catch (IOException e) {
@@ -143,7 +144,8 @@ public class ReadBuffer {
         }
         try {
             if (littleEndian) {
-                return Long.reverseBytes(bi.readLong(true, bitLength)) >> 32;
+                final long longValue = bi.readLong(true, bitLength);
+                return Long.reverseBytes(longValue) >>> 32;
             }
             return bi.readLong(true, bitLength);
         } catch (IOException e) {
@@ -152,7 +154,28 @@ public class ReadBuffer {
     }
 
     public BigInteger readUnsignedBigInteger(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        //Support specific case where value less than 64 bits and big endian.
+        if (bitLength <= 0) {
+            throw new ParseException("unsigned long must contain at least 1 bit");
+        }
+        if (bitLength > 64) {
+            throw new ParseException("unsigned long can only contain max 64 bits");
+        }
+        try {
+            // Read as signed value
+            Long val = bi.readLong(false, bitLength);
+            if (littleEndian) {
+                val = Long.reverseBytes(val);
+            }
+            if (val >= 0) {
+                return BigInteger.valueOf(val);
+            } else {
+                BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
+                return BigInteger.valueOf(val).add(constant);
+            }
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public byte readByte(int bitLength) throws ParseException {
@@ -249,12 +272,8 @@ public class ReadBuffer {
                     throw new NumberFormatException();
                 }
             } else if (bitLength == 32) {
-                byte[] buffer = new byte[4];
-                buffer[0] = bi.readByte(true, 8);
-                buffer[1] = bi.readByte(true, 8);
-                buffer[2] = bi.readByte(true, 8);
-                buffer[3] = bi.readByte(true, 8);
-                return Float.intBitsToFloat((buffer[0] & 0xff) ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
+                int intValue = readInt(32);
+                return Float.intBitsToFloat(intValue);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
             }
@@ -264,7 +283,12 @@ public class ReadBuffer {
     }
 
     public double readDouble(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        if(bitLength == 64) {
+            long longValue = readLong(64);
+            return Double.longBitsToDouble(longValue);
+        } else {
+            throw new UnsupportedOperationException("unsupported bit length (only 64 supported)");
+        }
     }
 
     public BigDecimal readBigDecimal(int bitLength) throws ParseException {
@@ -280,7 +304,8 @@ public class ReadBuffer {
                 throw new PlcRuntimeException(e);
             }
         }
-        return new String(strBytes, Charset.forName(encoding));
+        //replaceAll function removes and leading ' char or hypens.
+        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
     }
 
 }

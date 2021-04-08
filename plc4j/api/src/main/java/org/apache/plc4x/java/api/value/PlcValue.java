@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,6 +75,8 @@ public interface PlcValue {
 
     int getInteger();
 
+    int getInt();
+
     boolean isLong();
 
     long getLong();
@@ -103,6 +106,10 @@ public interface PlcValue {
     String getString();
 
     // Time
+
+    boolean isDuration();
+
+    Duration getDuration();
 
     boolean isTime();
 

@@ -17,5 +17,6 @@
   under the License.
 ]]
 
-add_subdirectory(hello-subsciptions)
-add_subdirectory(hello-world)
+add_subdirectory(hello-subscriptions)
+add_subdirectory(hello-world-modbus)
+add_subdirectory(hello-world-s7)

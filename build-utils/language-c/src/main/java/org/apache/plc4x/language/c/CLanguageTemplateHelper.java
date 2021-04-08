@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -41,7 +42,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     public String getIncludesDirectory() {
-        return String.join("", getProtocolName().split("-")) + ".includes";
+        return String.join("", getProtocolName().split("-")) + ".include";
     }
 
     /**
@@ -183,28 +184,37 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
                     return "bool";
-                case UINT:
+                case UINT: {
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "uint8_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "uint16_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "uint32_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "uint64_t";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
+                }
                 case INT: {
-                    StringBuilder sb = new StringBuilder();
-                    if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
-                        sb.append("u");
+                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                    if (integerTypeReference.getSizeInBits() <= 8) {
+                        return "int8_t";
                     }
-                    if (simpleTypeReference.getSizeInBits() % 64 == 0) {
-                        sb.append("int64_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 32 == 0) {
-                        sb.append("int32_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 16 == 0) {
-                        sb.append("int16_t");
-                    } else if (simpleTypeReference.getSizeInBits() % 8 == 0) {
-                        sb.append("int8_t");
-                    } else {
-                        if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
-                            // We already have the "u" in there ...
-                            sb.append("nsigned ");
-                        }
-                        sb.append("int");
+                    if (integerTypeReference.getSizeInBits() <= 16) {
+                        return "int16_t";
                     }
-                    return sb.toString();
+                    if (integerTypeReference.getSizeInBits() <= 32) {
+                        return "int32_t";
+                    }
+                    if (integerTypeReference.getSizeInBits() <= 64) {
+                        return "int64_t";
+                    }
+                    throw new RuntimeException("Unsupported simple type");
                 }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -222,11 +232,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 case STRING:
                     return "char*";
                 case TIME:
-                    throw new FreemarkerException("Unsupported time type.");
+                    return "time_t";//throw new FreemarkerException("Unsupported time type.");
                 case DATE:
-                    throw new FreemarkerException("Unsupported date type.");
+                    return "time_t";//throw new FreemarkerException("Unsupported date type.");
                 case DATETIME:
-                    throw new FreemarkerException("Unsupported date-time type.");
+                    return "time_t";//throw new FreemarkerException("Unsupported date-time type.");
             }
             throw new FreemarkerException("Unsupported simple type. " + simpleTypeReference.getBaseType());
         } else {
@@ -288,7 +298,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     public String escapeValue(TypeReference typeReference, String valueString) {
         if (valueString == null) {
-            return null;
+            return "NULL";
         }
         if ("null".equals(valueString)) {
             // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
@@ -327,70 +337,59 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             if ("null".equals(valueString)) {
                 return "-1";
             }
-            String typeName = valueString.substring(0, valueString.indexOf('.'));
-            String constantName = valueString.substring(valueString.indexOf('.') + 1);
-            return getCTypeName(typeName) + "_" + constantName;
+            String typeName = getLanguageTypeNameForTypeReference(typeReference);
+            return typeName + "_" + valueString;
         } else {
             return escapeValue(typeReference, valueString);
         }
     }
 
-    public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
-        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
-        for (EnumValue enumValue : enumValues) {
-            if (!filteredEnumValues.containsKey(enumValue.getValue())) {
-                filteredEnumValues.put(enumValue.getValue(), enumValue);
-            }
-        }
-        return filteredEnumValues.values();
-    }
-
     @Override
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "plc4c_spi_read_bit(buf, (bool*) " + valueString + ")";
+                return "plc4c_spi_read_bit(io, (bool*) " + valueString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_read_unsigned_byte(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint8_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_byte(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint8_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_read_unsigned_short(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint16_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_short(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint16_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_unsigned_int(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint32_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_int(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint32_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_unsigned_long(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint64_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_long(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint64_t*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported unsigned integer type with " + unsignedIntegerTypeReference.getSizeInBits() + " bits");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_read_signed_byte(buf, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_byte(io, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_read_signed_short(buf, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_short(io, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_signed_int(buf, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_int(io, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_signed_long(buf, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_long(io, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_float(buf, " + floatTypeReference.getSizeInBits() + ", (float*) " + valueString + ")";
+                    return "plc4c_spi_read_float(io, " + floatTypeReference.getSizeInBits() + ", (float*) " + valueString + ")";
                 } else if(floatTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_double(buf, " + floatTypeReference.getSizeInBits() + ", (double*) " + valueString + ")";
+                    return "plc4c_spi_read_double(io, " + floatTypeReference.getSizeInBits() + ", (double*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_read_string(buf, " + stringTypeReference.getSizeInBits() + ", \"" +
+                return "plc4c_spi_read_string(io, " + toParseExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -398,51 +397,51 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "plc4c_spi_write_bit(buf, " + fieldName + ")";
+                return "plc4c_spi_write_bit(io, " + fieldName + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_write_unsigned_byte(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_byte(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_unsigned_short(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_short(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_unsigned_int(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_int(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_unsigned_long(buf, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_long(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported unsigned integer type with " + unsignedIntegerTypeReference.getSizeInBits() + " bits");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_write_signed_byte(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_byte(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_signed_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_short(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_signed_int(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_int(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_signed_long(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_long(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_float(buf, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_float(io, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 } else if(floatTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_double(buf, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_double(io, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_write_string(buf, " + stringTypeReference.getSizeInBits() + ", \"" +
+                return "plc4c_spi_write_string(io, " + toSerializationExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\", " + fieldName + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -461,7 +460,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "0";
                 case FLOAT:
                 case UFLOAT:
-                    return "0.0";
+                    return "0.0f";
                 case STRING:
                     return "\"\"";
                 case TIME:
@@ -479,20 +478,24 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    public String getReservedValue(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
+        if("BigInteger".equals(languageTypeName)) {
+            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
+        } else {
+            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
+        }
+    }
 
-
-
-
-
-    public String toParseExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
+    public String toParseExpression(TypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         return toExpression(baseType, field, term, term1 -> toVariableParseExpression(baseType, field, term1, parserArguments));
     }
 
-    public String toSerializationExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
+    public String toSerializationExpression(TypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         return toExpression(baseType, field, term, term1 -> toVariableSerializationExpression(baseType, field, term1, parserArguments));
     }
 
-    private String toExpression(ComplexTypeDefinition baseType, Field field, Term term, Function<Term, String> variableExpressionGenerator) {
+    private String toExpression(TypeDefinition baseType, Field field, Term term, Function<Term, String> variableExpressionGenerator) {
         if (term == null) {
             return "";
         }
@@ -508,17 +511,17 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             } else if (term instanceof VariableLiteral) {
                 VariableLiteral variableLiteral = (VariableLiteral) term;
                 if(variableLiteral.contains("lengthInBytes")) {
-                    ComplexTypeDefinition lengthType;
+                    TypeDefinition lengthType;
                     String lengthExpression;
                     if(variableLiteral.getName().equals("lengthInBytes")) {
                         lengthType = (baseType.getParentType() == null) ? baseType : (ComplexTypeDefinition) baseType.getParentType();
                         lengthExpression = "_message";
                     } else {
-                        final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty(baseType, variableLiteral.getName());
+                        final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty( (ComplexTypeDefinition) baseType, variableLiteral.getName());
                         if(!typeReferenceForProperty.isPresent()) {
                             throw new FreemarkerException("Unknown type for property " + variableLiteral.getName());
                         }
-                        lengthType = (ComplexTypeDefinition) getTypeDefinitionForTypeReference(typeReferenceForProperty.get());
+                        lengthType = getTypeDefinitionForTypeReference(typeReferenceForProperty.get());
                         lengthExpression = variableExpressionGenerator.apply(term);
                     }
                     return getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
@@ -570,7 +573,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
-    public String toVariableParseExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
+    public String toVariableParseExpression(TypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if("CAST".equals(vl.getName())) {
 
@@ -600,15 +603,37 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     appendVariableExpressionRest(sb, baseType, vl.getChild());
                 } else {
                     sb.append("->");
-                    appendVariableExpressionRest(sb, (ComplexTypeDefinition) castType, vl.getChild());
+                    appendVariableExpressionRest(sb, castType, vl.getChild());
                 }
+            }
+            return sb.toString();
+        }
+        // STATIC_CALL implies that driver specific static logic should be called
+        if ("STATIC_CALL".equals(vl.getName())) {
+            String functionName = ((StringLiteral) vl.getArgs().get(0)).getValue();
+            // We'll cut off the java package structure and just take the segment after the last "."
+            functionName = functionName.substring(functionName.lastIndexOf('.') + 1, functionName.length() -1);
+            // But to make the function name unique, well add the driver prefix to it.
+            StringBuilder sb = new StringBuilder(getCTypeName(functionName));
+            if (vl.getArgs().size() > 1) {
+                sb.append("(");
+                boolean firstArg = true;
+                for (int i = 1; i < vl.getArgs().size(); i++) {
+                    Term arg = vl.getArgs().get(i);
+                    if (!firstArg) {
+                        sb.append(", ");
+                    }
+                    sb.append(toParseExpression(baseType, field, arg, parserArguments));
+                    firstArg = false;
+                }
+                sb.append(")");
             }
             return sb.toString();
         }
         // Any name that is full upper-case is considered a function call.
         // These are generally defined in the spi file evaluation_helper.c.
         // All should have a name prefix "plc4c_spi_evaluation_helper_".
-        if (vl.getName().equals(vl.getName().toUpperCase())) {
+        else if (vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder("plc4c_spi_evaluation_helper_" + vl.getName().toLowerCase());
             if (vl.getArgs() != null) {
                 sb.append("(");
@@ -630,13 +655,39 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 appendVariableExpressionRest(sb, baseType, vl.getChild());
             }
             return sb.toString();
+        } else if("io".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder("io");
+            if(vl.getChild() != null) {
+                sb.append(".");
+                appendVariableExpressionRest(sb, baseType, vl.getChild());
+            }
+            return sb.toString();
+        } else if("_type".equals(vl.getName())) {
+            if((vl.getChild() != null) && "encoding".equals(vl.getChild().getName()) && (field instanceof TypedField) && (((TypedField) field).getType() instanceof StringTypeReference)) {
+                TypedField typedField = (TypedField) field;
+                StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
+                return "\"" + stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) + "\"";
+            } else {
+                throw new FreemarkerException("_type is currently pretty much hard-coded for some usecases, please check CLanguageTemplateHelper.toVariableParseExpression");
+            }
         }
 
         final String name = vl.getName();
 
+        // In case of DataIo types, we'll just check the arguments.
+        if(baseType instanceof DataIoTypeDefinition) {
+            if(baseType.getParserArguments() != null) {
+                for (Argument parserArgument : baseType.getParserArguments()) {
+                    if(parserArgument.getName().equals(name)) {
+                        return name;
+                    }
+                }
+            }
+        }
+
         // Try to find the type of the addressed property.
         final Optional<TypeReference> propertyTypeOptional =
-            getTypeReferenceForProperty(baseType, name);
+            getTypeReferenceForProperty((ComplexTypeDefinition) baseType, name);
 
         // If we couldn't find the type, we didn't find the property.
         if(!propertyTypeOptional.isPresent()) {
@@ -687,7 +738,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return sb.toString();
     }
 
-    private String toVariableSerializationExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] serialzerArguments) {
+    private String toVariableSerializationExpression(TypeDefinition baseType, Field field, Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
@@ -820,8 +871,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        if (isVariableLiteralImplicitField(vl)) {
+            return toSerializationExpression(getThisTypeDefinition(), getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serialzerArguments);
+        }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName());
+        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName()) || "size".equals(vl.getName());
         boolean isTypeArg = "_type".equals(vl.getName());
         if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
             for (Argument serializerArgument : serialzerArguments) {
@@ -862,35 +917,46 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "";
             }
         } else {
-            StringBuilder sb = new StringBuilder("_message->");
-            // If this is a property of a sub-type, add the sub-type name to the property.
-            if(baseType != getThisTypeDefinition()) {
-                sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
-            }
+            // If it wasn't an enum, treat it as a normal property.
+            if (vl.getName().equals("lengthInBits")) {
+                StringBuilder sb = new StringBuilder(getCTypeName(baseType.getName()));
+                sb.append("_length_in_bits(_message)");
+                return sb.toString();
+            } else if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
+                StringBuilder sb = new StringBuilder("");
+                sb.append("sizeof(_message->" + camelCaseToSnakeCase(vl.getName()) + ")");
+                return sb.toString();
+            } else {
+                StringBuilder sb = new StringBuilder("_message->");
+                // If this is a property of a sub-type, add the sub-type name to the property.
+                if(baseType != getThisTypeDefinition()) {
+                    sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
+                }
 
-            // If this expression references enum constants we need to do things differently
-            final Optional<TypeReference> typeReferenceForProperty =
-                getTypeReferenceForProperty(baseType, vl.getName());
-            if(typeReferenceForProperty.isPresent()) {
-                final TypeReference typeReference = typeReferenceForProperty.get();
-                if(typeReference instanceof ComplexTypeReference) {
-                    final TypeDefinition typeDefinitionForTypeReference =
-                        getTypeDefinitionForTypeReference(typeReference);
-                    if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (vl.getChild() != null)){
-                        sb.append(camelCaseToSnakeCase(vl.getName()));
-                        return getCTypeName(typeDefinitionForTypeReference.getName()) +
-                            "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
-                            "(" + sb.toString() + ")";
+                // If this expression references enum constants we need to do things differently
+                final Optional<TypeReference> typeReferenceForProperty =
+                    getTypeReferenceForProperty((ComplexTypeDefinition) baseType, vl.getName());
+                if(typeReferenceForProperty.isPresent()) {
+                    final TypeReference typeReference = typeReferenceForProperty.get();
+                    if(typeReference instanceof ComplexTypeReference) {
+                        final TypeDefinition typeDefinitionForTypeReference =
+                            getTypeDefinitionForTypeReference(typeReference);
+                        if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (vl.getChild() != null)){
+                            sb.append(camelCaseToSnakeCase(vl.getName()));
+                            return getCTypeName(typeDefinitionForTypeReference.getName()) +
+                                "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
+                                "(" + sb.toString() + ")";
+                        }
                     }
                 }
+                // If it wasn't an enum, treat it as a normal property.
+                appendVariableExpressionRest(sb, baseType, vl);
+                return sb.toString();
             }
-            // If it wasn't an enum, treat it as a normal property.
-            appendVariableExpressionRest(sb, baseType, vl);
-            return sb.toString();
         }
     }
 
-    private void appendVariableExpressionRest(StringBuilder sb, ComplexTypeDefinition baseType, VariableLiteral vl) {
+    private void appendVariableExpressionRest(StringBuilder sb, TypeDefinition baseType, VariableLiteral vl) {
         if(vl.isIndexed()) {
             sb.insert(0, "plc4c_utils_list_get_value(");
             sb.append(camelCaseToSnakeCase(vl.getName()));
@@ -920,8 +986,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 return floatTypeReference.getSizeInBits();
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return integerTypeReference.getSizeInBits();
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return stringTypeReference.getSizeInBits();
             }
             default: {
                 return 0;
@@ -942,6 +1008,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         } else {
             throw new FreemarkerException("lengthInBits functions only exist for TypedFields");
         }
+    }
+
+    public String getEnumExpression(String expression) {
+        String enumName = expression.substring(0, expression.indexOf('.'));
+        String enumConstant = expression.substring(expression.indexOf('.') + 1);
+        return getCTypeName(enumName) + "_" + enumConstant;
     }
 
 }

@@ -19,12 +19,23 @@
 package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.simulated.field.SimulatedField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -35,6 +46,8 @@ import java.util.function.Consumer;
  * Values are stored in a HashMap.
  */
 public class SimulatedDevice {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimulatedDevice.class);
 
     private final Random random = new Random();
 
@@ -62,7 +75,7 @@ public class SimulatedDevice {
             case STATE:
                 return Optional.ofNullable(state.get(field));
             case RANDOM:
-                return Optional.of(randomValue(field.getDataType()));
+                return Optional.of(randomValue(field));
             case STDOUT:
                 return Optional.empty();
         }
@@ -80,58 +93,42 @@ public class SimulatedDevice {
                 state.put(field, value);
                 return;
             case STDOUT:
-                System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), value.getString());
+                logger.info("TEST PLC STDOUT [{}]: {}", field.getName(), value.getString());
                 return;
             case RANDOM:
-                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.getString());
+                switch (field.getPlcDataType()) {
+                    case "IEC61131_STRING":
+                    case "IEC61131_WSTRING":
+                        break;
+                    default:
+                        try {
+                            DataItemIO.staticSerialize(value, field.getPlcDataType(), field.getNumberOfElements(), false);
+                        } catch (ParseException e) {
+                            logger.info("Write failed");
+                        }
+                }
+                logger.info("TEST PLC RANDOM [{}]: {}", field.getName(), value.toString());
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
     @SuppressWarnings("unchecked")
-    private PlcValue randomValue(Class<?> type) {
+    private PlcValue randomValue(SimulatedField field) {
         Object result = null;
 
-        if (type.equals(Byte.class)) {
-            return PlcValues.of((byte) random.nextInt(1 << 8));
+        Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
+
+        byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
+        new Random().nextBytes(b);
+
+        ReadBuffer io = new ReadBuffer(b);
+        try {
+            return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
+        } catch (ParseException e) {
+            return null;
         }
 
-        if (type.equals(Short.class)) {
-            return PlcValues.of((short) random.nextInt(1 << 16));
-        }
-
-        if (type.equals(Integer.class)) {
-            return PlcValues.of(random.nextInt());
-        }
-
-        if (type.equals(Long.class)) {
-            return PlcValues.of(random.nextLong());
-        }
-
-        if (type.equals(Float.class)) {
-            return PlcValues.of(random.nextFloat());
-        }
-
-        if (type.equals(Double.class)) {
-            return PlcValues.of(random.nextDouble());
-        }
-
-        if (type.equals(Boolean.class)) {
-            return PlcValues.of(random.nextBoolean());
-        }
-
-        if (type.equals(String.class)) {
-            int length = random.nextInt(100);
-            StringBuilder sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                char c = (char) ('a' + random.nextInt(26));
-                sb.append(c);
-            }
-            return PlcValues.of(sb.toString());
-        }
-
-        return null;
     }
 
     @Override
@@ -139,9 +136,9 @@ public class SimulatedDevice {
         return name;
     }
 
-    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField, Duration duration) {
+    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField, Duration duration) {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            PlcValue baseDefaultPlcValue = state.get(plcField);
+            PlcValue baseDefaultPlcValue = state.get(((DefaultPlcSubscriptionField) plcField).getPlcField());
             if (baseDefaultPlcValue == null) {
                 return;
             }
@@ -150,14 +147,14 @@ public class SimulatedDevice {
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
 
-    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField) {
-        changeOfStateSubscriptions.put(handle, Pair.of(plcField, consumer));
+    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
+        changeOfStateSubscriptions.put(handle, Pair.of((SimulatedField) ((DefaultPlcSubscriptionField) plcField).getPlcField(), consumer));
     }
 
-    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, SimulatedField plcField) {
+    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, PlcSubscriptionField plcField) {
         Future<?> submit = pool.submit(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                PlcValue baseDefaultPlcValue = state.get(plcField);
+                PlcValue baseDefaultPlcValue = state.get(((DefaultPlcSubscriptionField) plcField).getPlcField());
                 if (baseDefaultPlcValue == null) {
                     continue;
                 }
@@ -174,7 +171,7 @@ public class SimulatedDevice {
         eventSubscriptions.put(handle, submit);
     }
 
-    public void removeHandles(Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+    public void removeHandles(Collection<? extends PlcSubscriptionHandle> internalPlcSubscriptionHandles) {
         internalPlcSubscriptionHandles.forEach(handle -> {
             ScheduledFuture<?> remove = cyclicSubscriptions.remove(handle);
             if (remove == null) {

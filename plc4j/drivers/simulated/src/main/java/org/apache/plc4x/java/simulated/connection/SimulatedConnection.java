@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -43,26 +44,19 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcUnsubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -79,7 +73,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     private boolean connected = false;
 
-    private Map<InternalPlcSubscriptionHandle, InternalPlcConsumerRegistration> registrations = new ConcurrentHashMap<>();
+    private Map<PlcSubscriptionHandle, PlcConsumerRegistration> registrations = new ConcurrentHashMap<>();
 
     private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
@@ -124,7 +118,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new SimulatedFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new SimulatedFieldHandler(), new IEC61131ValueHandler());
     }
 
     @Override
@@ -139,10 +133,9 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        InternalPlcReadRequest request = checkInternal(readRequest, InternalPlcReadRequest.class);
         Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
-        for (String fieldName : request.getFieldNames()) {
-            SimulatedField field = (SimulatedField) request.getField(fieldName);
+        for (String fieldName : readRequest.getFieldNames()) {
+            SimulatedField field = (SimulatedField) readRequest.getField(fieldName);
             Optional<PlcValue> valueOptional = device.get(field);
             ResponseItem<PlcValue> fieldPair;
             boolean present = valueOptional.isPresent();
@@ -151,21 +144,20 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
                 : new ResponseItem<>(PlcResponseCode.NOT_FOUND, null);
             fields.put(fieldName, fieldPair);
         }
-        PlcReadResponse response = new DefaultPlcReadResponse(request, fields);
+        PlcReadResponse response = new DefaultPlcReadResponse(readRequest, fields);
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        InternalPlcWriteRequest request = checkInternal(writeRequest, InternalPlcWriteRequest.class);
         Map<String, PlcResponseCode> fields = new HashMap<>();
-        for (String fieldName : request.getFieldNames()) {
-            SimulatedField field = (SimulatedField) request.getField(fieldName);
-            PlcValue value = request.getPlcValue(fieldName);
+        for (String fieldName : writeRequest.getFieldNames()) {
+            SimulatedField field = (SimulatedField) writeRequest.getField(fieldName);
+            PlcValue value = writeRequest.getPlcValue(fieldName);
             device.set(field, value);
             fields.put(fieldName, PlcResponseCode.OK);
         }
-        PlcWriteResponse response = new DefaultPlcWriteResponse(request, fields);
+        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, fields);
         return CompletableFuture.completedFuture(response);
     }
 
@@ -176,38 +168,36 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        InternalPlcSubscriptionRequest request = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
-        Map<String, SubscriptionPlcField> subscriptionPlcFieldMap = request.getSubscriptionPlcFieldMap();
-
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-        subscriptionPlcFieldMap.forEach((name, subscriptionPlcField) -> {
-            InternalPlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
+        subscriptionRequest.getFieldNames().forEach(name -> {
+            PlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
+            final PlcSubscriptionField subscriptionPlcField = subscriptionRequest.getField(name);
             switch (subscriptionPlcField.getPlcSubscriptionType()) {
                 case CYCLIC:
-                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, (SimulatedField) subscriptionPlcField.getPlcField(), subscriptionPlcField.getDuration().orElseThrow(RuntimeException::new));
+                    device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField, subscriptionPlcField.getDuration().orElseThrow(RuntimeException::new));
                     break;
                 case CHANGE_OF_STATE:
-                    device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, (SimulatedField) subscriptionPlcField.getPlcField());
+                    device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
                     break;
                 case EVENT:
-                    device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, (SimulatedField) subscriptionPlcField.getPlcField());
+                    device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
                     break;
             }
             values.put(name, new ResponseItem<>(PlcResponseCode.OK, handle));
         });
 
-        PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(request, values);
+        PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
         return CompletableFuture.completedFuture(response);
     }
 
-    private Consumer<PlcValue> dispatchSubscriptionEvent(String name, InternalPlcSubscriptionHandle handle) {
+    private Consumer<PlcValue> dispatchSubscriptionEvent(String name, PlcSubscriptionHandle handle) {
         return plcValue -> {
-            InternalPlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
+            PlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
             if (plcConsumerRegistration == null) {
                 return;
             }
-            int consumerHash = plcConsumerRegistration.getConsumerHash();
-            Consumer<PlcSubscriptionEvent> consumer = consumerIdMap.get(consumerHash);
+            int consumerId = ((DefaultPlcConsumerRegistration) plcConsumerRegistration).getConsumerId();
+            Consumer<PlcSubscriptionEvent> consumer = consumerIdMap.get(consumerId);
             if (consumer == null) {
                 return;
             }
@@ -218,36 +208,34 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
-        InternalPlcUnsubscriptionRequest request = checkInternal(unsubscriptionRequest, InternalPlcUnsubscriptionRequest.class);
+        device.removeHandles(unsubscriptionRequest.getSubscriptionHandles());
 
-        device.removeHandles(request.getInternalPlcSubscriptionHandles());
-
-        PlcUnsubscriptionResponse response = new DefaultPlcUnsubscriptionResponse(request);
+        PlcUnsubscriptionResponse response = new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest);
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        InternalPlcConsumerRegistration plcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new InternalPlcSubscriptionHandle[0]));
+        PlcConsumerRegistration plcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
         handles.stream()
-            .map(InternalPlcSubscriptionHandle.class::cast)
+            .map(PlcSubscriptionHandle.class::cast)
             .forEach(handle -> registrations.put(handle, plcConsumerRegistration));
-        consumerIdMap.put(plcConsumerRegistration.getConsumerHash(), consumer);
+        consumerIdMap.put(plcConsumerRegistration.getConsumerId(), consumer);
         return plcConsumerRegistration;
     }
 
     @Override
     public void unregister(PlcConsumerRegistration registration) {
-        Iterator<Map.Entry<InternalPlcSubscriptionHandle, InternalPlcConsumerRegistration>> entryIterator = registrations.entrySet().iterator();
+        Iterator<Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration>> entryIterator = registrations.entrySet().iterator();
         while (entryIterator.hasNext()) {
-            Map.Entry<InternalPlcSubscriptionHandle, InternalPlcConsumerRegistration> entry = entryIterator.next();
+            Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration> entry = entryIterator.next();
             if (!entry.getValue().equals(registration)) {
                 continue;
             }
-            InternalPlcConsumerRegistration value = entry.getValue();
-            int consumerHash = value.getConsumerHash();
-            consumerIdMap.remove(consumerHash);
-            device.removeHandles(value.getAssociatedHandles());
+            PlcConsumerRegistration consumerRegistration = entry.getValue();
+            int consumerId = consumerRegistration.getConsumerId();
+            consumerIdMap.remove(consumerId);
+            device.removeHandles(consumerRegistration.getSubscriptionHandles());
             entryIterator.remove();
         }
     }

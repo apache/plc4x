@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
+                       bigEndian="false">
+
+  <name>EIP</name>
+
+  <driver-name>eip</driver-name>
+
+  <setup>
+    <!-- First the driver is expected to send a RegisterSession connection request -->
+    <outgoing-plc-message name="Send connection request">
+      <EipConnectionRequest className="org.apache.plc4x.java.eip.readwrite.EipConnectionRequest">
+        <sessionHandle>0</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+        </senderContext>
+        <options>0</options>
+      </EipConnectionRequest>
+    </outgoing-plc-message>
+    <!-- The PLC will send the connection response with a sender context and session handle-->
+    <incoming-plc-message name="Receive connection response">
+      <EipConnectionRequest className="org.apache.plc4x.java.eip.readwrite.EipConnectionRequest">
+        <sessionHandle>1</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>2</senderContext>
+        </senderContext>
+        <options>0</options>
+      </EipConnectionRequest>
+    </incoming-plc-message>
+  </setup>
+  <testcase>
+    <name>Single element read request</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz</name>
+              <address>%rate</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send CipReadRequest to PLC">
+        <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+          <sessionHandle>1</sessionHandle>
+          <status>0</status>
+          <senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+          </senderContext>
+          <options>0</options>
+          <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+            <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
+              <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
+                <tag>910472617465</tag>
+                <elementNb>1</elementNb>
+                <requestPathSize>3</requestPathSize>
+              </unconnectedService>
+              <backPlane>0</backPlane>
+              <slot>0</slot>
+            </service>
+          </exchange>
+        </CipRRData>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Get CipReadResponse from PLC">
+        <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+          <sessionHandle>1</sessionHandle>
+          <status>0</status>
+          <senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>2</senderContext>
+          </senderContext>
+          <options>0</options>
+          <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+            <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
+              <status>0</status>
+              <extStatus>0</extStatus>
+              <dataType>DINT</dataType> <!--0xC4-->
+              <data>00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
+            </service>
+          </exchange>
+        </CipRRData>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <EipField>
+                  <node>rate</node>
+                  <type/>
+                  <elementNb>0</elementNb>
+                  <defaultJavaType>java.lang.Object</defaultJavaType>
+                </EipField>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcDINT>-751546925</PlcDINT>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+</test:driver-testsuite>

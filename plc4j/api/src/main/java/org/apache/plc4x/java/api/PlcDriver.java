@@ -21,6 +21,9 @@ package org.apache.plc4x.java.api;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
 /**
@@ -44,6 +47,7 @@ public interface PlcDriver {
 
     /**
      * Connects to a PLC using the given plc connection string.
+     *
      * @param url plc connection string.
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
@@ -52,14 +56,24 @@ public interface PlcDriver {
 
     /**
      * Connects to a PLC using the given plc connection string using given authentication credentials.
-     * @param url plc connection string.
+     *
+     * @param url            plc connection string.
      * @param authentication authentication credentials.
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
 
-    default PlcField prepareField(String query){
-        throw new PlcNotImplementedException("Not implemented for "+getProtocolName());
+    default PlcField prepareField(String query) {
+        throw new PlcNotImplementedException("Not implemented for " + getProtocolName());
     }
+
+    /**
+     * @return discovery request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support subscription
+     */
+    default PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        throw new PlcNotImplementedException("Not implemented for " + getProtocolName());
+    }
+
 }

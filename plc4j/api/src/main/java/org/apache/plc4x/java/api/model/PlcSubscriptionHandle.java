@@ -29,10 +29,16 @@ import java.util.function.Consumer;
  * all information needed to pull or unsubscribe any form of subscription.
  * <p>
  * For every subscribed item, a separate {@link PlcSubscriptionHandle} object is
- * returned in order to allow fine granular unsubscriptions.
+ * returned in order to allow fine granular un-subscriptions.
  */
 public interface PlcSubscriptionHandle {
 
+    /**
+     * Registers a given consumer for the events emitted by the current subscription handle.
+     *
+     * @param consumer consumer
+     * @return consumer registration
+     */
     PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer);
 
 }

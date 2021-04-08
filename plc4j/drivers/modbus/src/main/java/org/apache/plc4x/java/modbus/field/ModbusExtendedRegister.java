@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.modbus.readwrite.types.ModbusDataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +30,10 @@ public class ModbusExtendedRegister extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("6" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("6x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    protected ModbusExtendedRegister(int address, Integer quantity) {
-        super(address, quantity);
+    protected static final int REGISTER_MAXADDRESS = 655359999;
+
+    protected ModbusExtendedRegister(int address, Integer quantity, ModbusDataType dataType) {
+        super(address, quantity, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -39,7 +42,7 @@ public class ModbusExtendedRegister extends ModbusField {
             ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
     }
 
-    public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
+    public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (matcher.matches()) {
           return matcher;
@@ -59,9 +62,18 @@ public class ModbusExtendedRegister extends ModbusField {
         Matcher matcher = getMatcher(addressString);
         //Addresses for extended memory start at address 0 instead of 1
         int address = Integer.parseInt(matcher.group("address"));
+        if (address > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + address);
+        }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusExtendedRegister(address, quantity);
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        if ((address + quantity) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between 0 and " + REGISTER_MAXADDRESS + ". Was " + (address + (quantity - 1)));
+        }
+
+        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
+
+        return new ModbusExtendedRegister(address, quantity, dataType);
     }
 }

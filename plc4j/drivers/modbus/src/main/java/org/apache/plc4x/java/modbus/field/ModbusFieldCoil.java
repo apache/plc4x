@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.modbus.readwrite.types.ModbusDataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +30,10 @@ public class ModbusFieldCoil extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("0" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("0x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    public ModbusFieldCoil(int address, Integer quantity) {
-        super(address, quantity);
+    protected static final int REGISTER_MAXADDRESS = 65535;
+
+    public ModbusFieldCoil(int address, Integer quantity, ModbusDataType dataType) {
+        super(address, quantity, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -39,7 +42,7 @@ public class ModbusFieldCoil extends ModbusField {
             ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
     }
 
-    public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
+    public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (matcher.matches()) {
           return matcher;
@@ -59,10 +62,19 @@ public class ModbusFieldCoil extends ModbusField {
     public static ModbusFieldCoil of(String addressString) {
         Matcher matcher = getMatcher(addressString);
         int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
+        if (address > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
+        }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldCoil(address, quantity);
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
+        if ((address + quantity) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
+        }
+
+        ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
+
+        return new ModbusFieldCoil(address, quantity, dataType);
     }
 
 }

@@ -20,12 +20,9 @@ package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcBoolean;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
+public class KnxNetIpFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -33,86 +30,6 @@ public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
             return KnxNetIpField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
-    }
-
-    @Override
-    public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeByte(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeShort(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeInteger(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeLong(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeFloat(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeDouble(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
-    }
-
-    @Override
-    public PlcValue encodeString(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of(values[0]);
-        }
-        return PlcValues.of(values);
     }
 
 }

@@ -30,6 +30,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -38,6 +39,8 @@ import java.util.regex.Pattern;
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE = "PLC4X_FORCE_AWAIT_SETUP_COMPLETE";
+
+    public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE = "PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE";
 
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
@@ -60,11 +63,17 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return true;
     }
 
+    protected boolean awaitDisconnectComplete() {
+        return false;
+    }
+
     protected BaseOptimizer getOptimizer() {
         return null;
     }
 
     protected abstract PlcFieldHandler getFieldHandler();
+
+    protected abstract PlcValueHandler getValueHandler();
 
     protected abstract String getDefaultTransport();
 
@@ -135,12 +144,20 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
 
+        // Make the "await disconnect complete" overridable via system property.
+        boolean awaitDisconnectComplete = awaitDisconnectComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
+            awaitDisconnectComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE));
+        }
+
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
+            getValueHandler(),
             configuration,
             channelFactory,
             awaitSetupComplete,
+            awaitDisconnectComplete,
             getStackConfigurer(),
             getOptimizer());
     }

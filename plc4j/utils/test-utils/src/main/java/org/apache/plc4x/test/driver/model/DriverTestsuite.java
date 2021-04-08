@@ -18,9 +18,6 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model;
 
-import org.apache.plc4x.java.api.PlcConnection;
-
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 

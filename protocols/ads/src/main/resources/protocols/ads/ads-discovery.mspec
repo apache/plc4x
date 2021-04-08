@@ -21,29 +21,74 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsTCPDiscoveryPacket'
-    [const uint 32 'header' '0x03661471']
-    [reserved   uint 32  '0x00000000']
-    [simple     uint 16  'something']
+[enum uint 8 'Operation'
+    ['0x01' DISCOVERY]
+    ['0x06' ROUTE    ]
+]
+
+[enum uint 8 'Direction'
+    ['0x00' REQUEST ]
+    ['0x80' RESPONSE]
+]
+
+[discriminatedType 'AdsDiscovery'
+    [const uint 32 'header' '0x03661471L']
+    [reserved   uint 32  '0x00000000L']
+    [enum Operation 'operation']
     [reserved   uint 16  '0x0000']
-    [simple     AmsNetId 'amsNetId']
-    [reserved   uint 16  '0x1027']
-    [simple     uint 16  'something2']
-    [reserved   uint 32  '0x0000']
-    [simple     uint 16  'something3']
-    [implicit   uint 16  'hostnameLength' 'COUNT(hostname)']
-    [array      int 8    'hostname' COUNT 'hostnameLength']
-    [reserved   uint 16  '0x4000']
-    [simple     uint 16  'something4']
-    [simple     uint 16  'something5']
-    [reserved   uint 32  '0x0000']
-    [simple     uint 16  'something6']
-    [reserved   uint 32  '0x0000']
-    [reserved   uint 32  '0x00000000']
-    [reserved   uint 32  '0x00000000']
-    [reserved   uint 16  '0x0000']
-    [implicit   uint 16  'ipLength' 'COUNT(ip)']
-    [array      int 8    'ip' COUNT 'ipLength']
+    [enum Direction 'direction']
+    [typeSwitch 'operation', 'direction'
+        ['DISCOVERY', 'REQUEST' DiscoveryRequest
+            [simple AmsNetId 'amsNetId']
+            [reserved uint 16 '0x1027']
+            [reserved uint 32 '0x00000000L']
+        ]
+        ['DISCOVERY', 'RESPONSE' DiscoveryResponse
+            [simple AmsNetId 'amsNetId']
+            [reserved uint 16 '0x1027']
+            [reserved uint 16 '0x0400']
+            [reserved uint 24 '0x000005L']
+            [simple AmsMagicString 'name']
+        ]
+        ['ROUTE', 'REQUEST' RouteRequest
+            [simple     AmsNetId 'sender']
+            [reserved   uint 16  '0x1027']
+            [reserved   uint 16  '0x0500']
+            [reserved   uint 24  '0x000C']
+            [simple AmsMagicString 'routeName' ]
+            [reserved   uint 16 '0x0700']
+            [implicit   uint 8 'amsSize' 'target.lengthInBytes']
+            [const uint 8 'targetPrefix' '0x00']
+            [simple AmsNetId 'target']
+            [const uint 8 'usernamePrefix' '0x0D']
+            [simple AmsMagicString 'username']
+            [const uint 8 'passwordPrefix' '0x02']
+            [simple AmsMagicString 'password']
+            [const uint 8 'routePrefix' '0x05']
+            [simple AmsMagicString 'address']
+
+        ]
+        ['ROUTE', 'RESPONSE' RouteResponse
+            [simple AmsNetId 'amsNetId']
+            [reserved uint 16 '0x1027']
+            [reserved uint 16 '0x0100']
+            [reserved uint 32 '0x00000100']
+            [enum RouteStatus 'status']
+            [reserved uint 24 '0x000000']
+        ]
+    ]
+]
+
+[enum uint 24 'RouteStatus'
+    ['0x040000' SUCCESS]
+    ['0x000407' FAILURE]
+]
+
+[type 'AmsMagicString'
+    [implicit uint 16 'len' 'COUNT(text) + 1']
+    [reserved uint 8 '0x00']
+    [array int 8 'text' count 'len - 1']
+    [reserved uint 8 '0x00']
 ]
 
 [type 'AmsNetId'

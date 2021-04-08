@@ -20,6 +20,7 @@ package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
@@ -29,12 +30,11 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.osgi.service.component.annotations.Component;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     public static final int BACNET_IP_PORT = 47808;
@@ -77,6 +77,11 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     @Override
     protected BacNetIpFieldHandler getFieldHandler() {
         return new BacNetIpFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.types.KnxDatapointType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,6 +73,13 @@ public class Ets5Parser {
                 Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
                 NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
+
+                // Build an index of the internal data-types.
+                Map<String, KnxDatapointType> knxDatapointTypeMap = new HashMap<>();
+                for (KnxDatapointType value : KnxDatapointType.values()) {
+                    knxDatapointTypeMap.put(value.getDatapointMainType().getValue() + "#" + value.getValue(), value);
+                }
+
                 Map<String, AddressType> addressTypes = new HashMap<>();
                 for (int i = 0; i < datapointSubtypeNodes.getLength(); i++) {
                     final Element datapointSubtypeNode = (Element) datapointSubtypeNodes.item(i);
@@ -143,8 +151,14 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, addressType, function);
-                    groupAddresses.put(knxGroupAddress, groupAddress);
+                    if(addressType != null) {
+                        // Lookup the driver internal data-type.
+                        final KnxDatapointType datapointType = knxDatapointTypeMap.get(
+                            addressType.getMainType() + "#" + addressType.getSubType());
+
+                        GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, datapointType, function);
+                        groupAddresses.put(knxGroupAddress, groupAddress);
+                    }
                 }
                 return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }

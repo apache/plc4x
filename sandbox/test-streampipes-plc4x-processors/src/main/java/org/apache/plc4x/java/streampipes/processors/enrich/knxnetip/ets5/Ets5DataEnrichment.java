@@ -66,10 +66,10 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
 
             if (groupAddress != null) {
                 // Decode the raw data.
-                final PlcValue plcValue = KnxDatapointIO.staticParse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+                /*final PlcValue plcValue = KnxDatapointIO.staticParse(rawDataReader, groupAddress.getType().getFormatName());
 
                 // Serialize the decoded object to json
-                /*final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
+                final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
 
                 // Add the additional properties.
                 event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_GROUP_ADDRESS,
@@ -92,9 +92,9 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
             } else {
                 System.out.println("Couldn't decode group address " + destinationAddress);
             }
-        } catch (ParseException e) {
+        /*} catch (ParseException e) {
             // Driver Decoding
-            e.printStackTrace();
+            e.printStackTrace();*/
         } catch (DecoderException e) {
             // Hex Decoding
             e.printStackTrace();

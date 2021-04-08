@@ -23,7 +23,7 @@ import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.readwrite.IPAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
@@ -33,12 +33,12 @@ import java.io.File;
 public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<KnxNetIpConfiguration> {
 
     private boolean passiveMode = false;
-    private KNXAddress gatewayAddress;
+    private KnxAddress gatewayAddress;
     private String gatewayName;
     private IPAddress localIPAddress;
     private int localPort;
     private short communicationChannelId;
-    private KNXAddress clientKnxAddress;
+    private KnxAddress clientKnxAddress;
     private byte groupAddressType;
     private KnxLayer tunnelConnectionType;
     private Ets5Model ets5Model;
@@ -56,7 +56,7 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
                     configuration.knxprojFilePath));
             }
         } else {
-            groupAddressType = (byte) configuration.groupAddressType;
+            groupAddressType = (byte) configuration.groupAddressNumLevels;
         }
         tunnelConnectionType = KnxLayer.valueOf("TUNNEL_" + configuration.getConnectionType());
     }
@@ -69,11 +69,11 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
         this.passiveMode = passiveMode;
     }
 
-    public KNXAddress getGatewayAddress() {
+    public KnxAddress getGatewayAddress() {
         return gatewayAddress;
     }
 
-    public void setGatewayAddress(KNXAddress gatewayAddress) {
+    public void setGatewayAddress(KnxAddress gatewayAddress) {
         this.gatewayAddress = gatewayAddress;
     }
 
@@ -109,11 +109,11 @@ public class KnxNetIpDriverContext implements DriverContext, HasConfiguration<Kn
         this.communicationChannelId = communicationChannelId;
     }
 
-    public KNXAddress getClientKnxAddress() {
+    public KnxAddress getClientKnxAddress() {
         return clientKnxAddress;
     }
 
-    public void setClientKnxAddress(KNXAddress clientKnxAddress) {
+    public void setClientKnxAddress(KnxAddress clientKnxAddress) {
         this.clientKnxAddress = clientKnxAddress;
     }
 

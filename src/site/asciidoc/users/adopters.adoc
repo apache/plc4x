@@ -28,15 +28,22 @@ The companies in the following list are actively using Apache PLC4X.
 
 a|image::users/companies/logo-codecentric.png[cc, 200, 200] |https://www.codecentric.de[codecentric AG^,opts=nofollow] |IT Consulting |We develop software that solves real problems - and PLC4X solves the problem of IoT connectivity in a highly performant and open source way
 
+a|image::users/companies/logo-connectorio.png[cc, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow] |IoT / Software / Cloud|We developed an open source gateway runtime and compatible cloud service to manage installations and collected information. We utilize PLC4X to gain access to data provided by industrial hardware.
+
 a|image::users/companies/logo-industryfusion.png[if, 200, 200] |https://www.industry-fusion.com[IndustryFusion^,opts=nofollow] |IIoT / Industry 4.0 |In the End-2-End Industry 4.0 solution IndustryFusion we use PLC4X for brownfield-connectivity, i.e. the connectivity to existing machines on the shop floor.
 
 a|image::users/companies/logo_unistuttgart_isw.png[isw, 200, 200] |https://www.isw.uni-stuttgart.de/en/[ISW University of Stuttgart^,opts=nofollow] |IIoT / Industry 4.0 / Research |We use PLC4X for our research projects because of its great potential for retrofitting scenarios, the simplicity of the API, an active community for broad platform support and the open source flexibility.
+
+a|image::users/companies/logo-lebbing-automation-drives.png[re, 200, 200]|https://www.lebbing.com/[Lebbing engineering & consulting GmbH^,opts=nofollow] https://in2lutions.com/in2lutions/[In2Lutions]| Automation / Drives / Industry 4.0 |We used PLC4X to developed a solution to synchronize data between PLCs and customers systems. Our Solution is used for new products as well as for industry 4.0 upgrades to older machines.
 
 a|image::users/companies/logo-pietrorimoldi.jpg[pietrorimoldi, 200, 200] |https://www.rimoldi.it[PIETRORIMOLDI&C s.r.l.^,opts=nofollow] |IIoT / Analytics |We started a project which deals with long term data analysis; the data are gathered from machines controlled in real time by PLC. Failure prediction and behavioral working condition monitoring are the main goals. PLC4x library is a fundamental part of the process.
 
 a|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200] |https://www.pragmaticindustries.de[pragmatic industries GmbH^,opts=nofollow] |(I)IoT / Industry 4.0 |PLC4X is an important part of our platform _Digital Cockpit_ which we develop in-house.
 
 a|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200] |https://www.pragmaticminds.de[pragmatic minds GmbH^,opts=nofollow] |Big Data / Analytics |We use PLC4X to collect data from different types of PLCs as preliminary step for data analytics and visualization.
+
+a|image::users/companies/logo_record_evolution_single_dark_bgfont.png[re, 200, 200]|https://www.record-evolution.de/en/home-en/[Record Evolution GmbH^,opts=nofollow] | Iot / Industry 4.0 / Data Science |We developed a platform for IoT development and Data Science. We are using PLC4X to enable IoT devices in our platform to extract data from PLCs of different vendors, using different protocols.
+
 
 // TODO: Add your company in alphabetical order ...
 

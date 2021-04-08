@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class KnxNetIpProtocol implements Protocol {
@@ -36,11 +37,29 @@ public class KnxNetIpProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream("/protocols/knxnetip/knxnetip.mspec");
+        InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream(
+            "/protocols/knxnetip/knxnetip.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        return new MessageFormatParser().parse(schemaInputStream);
+        Map<String, TypeDefinition> typeDefinitionMap =
+            new LinkedHashMap<>(new MessageFormatParser().parse(schemaInputStream));
+
+        InputStream masterDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
+            "/protocols/knxnetip/knx-master-data.mspec");
+        if(masterDataInputStream == null) {
+            throw new GenerationException("Error loading knx-master-data schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(masterDataInputStream));
+
+        InputStream deviceDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
+            "/protocols/knxnetip/device-info.mspec");
+        if(deviceDataInputStream == null) {
+            throw new GenerationException("Error loading device-info schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(deviceDataInputStream));
+
+        return typeDefinitionMap;
     }
 
 }

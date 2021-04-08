@@ -24,6 +24,8 @@ import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
@@ -53,6 +55,20 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected PlcFieldHandler getFieldHandler() {
         return new EipFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    /**
+     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitDisconnectComplete() {
+        return false;
     }
 
     @Override

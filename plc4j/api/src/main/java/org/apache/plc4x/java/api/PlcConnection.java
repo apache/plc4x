@@ -18,14 +18,8 @@
  */
 package org.apache.plc4x.java.api;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.exceptions.*;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcField;
 
@@ -80,27 +74,35 @@ public interface PlcConnection extends AutoCloseable {
     CompletableFuture<Void> ping();
 
     /**
-     * Obtain read request builder.
+     * @return read request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support reading
      */
     PlcReadRequest.Builder readRequestBuilder();
 
     /**
-     * Obtain write request builder.
+     * @return write request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support writing
      */
     PlcWriteRequest.Builder writeRequestBuilder();
 
     /**
-     * Obtain subscription request builder.
+     * @return subscription request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support subscription
      */
     PlcSubscriptionRequest.Builder subscriptionRequestBuilder();
 
     /**
-     * Obtain unsubscription request builder.
+     * @return unsubscription request builder.
      * @throws PlcUnsupportedOperationException if the connection does not support subscription
      */
     PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder();
+
+    /**
+     * @return browse request builder.
+     * @throws PlcUnsupportedOperationException if the connection does not support browsing
+     */
+    default PlcBrowseRequest.Builder browseRequestBuilder() {
+        throw new PlcNotImplementedException("Not implemented for this connection / driver");
+    }
 
 }

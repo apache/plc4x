@@ -18,8 +18,10 @@
  */
 
 #include <plc4c/utils/list.h>
+#include <stdint.h>
 
 void plc4c_utils_list_create(plc4c_list **list) {
+  // TODO: Add a NULL-Check ...
   plc4c_list *new_list = malloc(sizeof(plc4c_list));
   new_list->head = NULL;
   new_list->tail = NULL;
@@ -27,7 +29,7 @@ void plc4c_utils_list_create(plc4c_list **list) {
 }
 
 size_t plc4c_utils_list_size(plc4c_list *list) {
-  if (list->tail == NULL) {
+  if ((list == NULL) || (list->tail == NULL)) {
     return 0;
   }
   plc4c_list_element *cur_element = list->tail;
@@ -198,4 +200,20 @@ plc4c_list_element *plc4c_utils_list_find_element_by_item(plc4c_list *list,
     head = head->next;
   }
   return head;
+}
+
+uint8_t* plc4c_list_to_byte_array(plc4c_list* list) {
+  size_t array_size = plc4c_utils_list_size(list);
+  uint8_t* byte_array = malloc(sizeof(uint8_t) * array_size);
+  if(byte_array == NULL) {
+    return NULL;
+  }
+  uint8_t* cur_byte = byte_array;
+  plc4c_list_element* cur_element = list->tail;
+  for(int i = 0; i < array_size; i++) {
+    *cur_byte = *((uint8_t*) (cur_element->value));
+    cur_byte++;
+    cur_element = cur_element->next;
+  }
+  return byte_array;
 }

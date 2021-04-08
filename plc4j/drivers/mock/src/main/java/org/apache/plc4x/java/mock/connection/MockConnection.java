@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.field.MockField;
 import org.apache.plc4x.java.mock.field.MockFieldHandler;
+import org.apache.plc4x.java.mock.field.MockValueHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
@@ -187,7 +188,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new MockFieldHandler(), new MockValueHandler());
     }
 
     @Override

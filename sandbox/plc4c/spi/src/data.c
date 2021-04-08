@@ -24,83 +24,93 @@
 #include <stdint.h>
 #include <stdio.h>
 
-plc4c_data *plc4c_data_create_boolean_data(bool b) {
+plc4c_data *plc4c_data_create_bool_data(bool b) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_BOOL;
   data->size = sizeof(bool);
   data->data.boolean_value = b;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_char_data(char c) {
+plc4c_data *plc4c_data_create_int8_t_data(int8_t c) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_CHAR;
   data->size = sizeof(char);
   data->data.char_value = c;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_uchar_data(unsigned char uc) {
+plc4c_data *plc4c_data_create_uint8_t_data(uint8_t uc) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_UCHAR;
   data->size = sizeof(unsigned char);
   data->data.uchar_value = uc;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_short_data(short s) {
+plc4c_data *plc4c_data_create_int16_t_data(int16_t s) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_SHORT;
   data->size = sizeof(short);
   data->data.short_value = s;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_ushort_data(unsigned short us) {
+plc4c_data *plc4c_data_create_uint16_t_data(uint16_t us) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_USHORT;
   data->size = sizeof(unsigned short);
   data->data.ushort_value = us;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_int_data(int i) {
+plc4c_data *plc4c_data_create_int32_t_data(int32_t i) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_INT;
   data->size = sizeof(int);
   data->data.int_value = i;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_uint_data(unsigned int ui) {
+plc4c_data *plc4c_data_create_uint32_t_data(uint32_t ui) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
   data->data_type = PLC4C_UINT;
   data->size = sizeof(unsigned int);
   data->data.uint_value = ui;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s) {
+plc4c_data *plc4c_data_create_int64_t_data(int64_t i) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
-  data->data_type = PLC4C_STRING_POINTER;
-  data->size = size;
-  data->data.pstring_value = s;
+  data->data_type = PLC4C_LINT;
+  data->size = sizeof(int);
+  data->data.lint_value = i;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
-plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s) {
+plc4c_data *plc4c_data_create_uint64_t_data(uint64_t ui) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
-  data->data_type = PLC4C_CONSTANT_STRING;
-  data->size = size;
-  data->data.const_string_value = s;
-  return data;
-}
-
-plc4c_data *plc4c_data_create_void_pointer_data(void *v) {
-  plc4c_data *data = malloc(sizeof(plc4c_data));
-  data->data_type = PLC4C_VOID_POINTER;
-  data->size = 0;
-  data->data.pvoid_value = v;
+  data->data_type = PLC4C_ULINT;
+  data->size = sizeof(unsigned int);
+  data->data.ulint_value = ui;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
@@ -109,37 +119,180 @@ plc4c_data *plc4c_data_create_float_data(float f) {
   data->data_type = PLC4C_FLOAT;
   data->size = sizeof(float);
   data->data.float_value = f;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_double_data(double d) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_DOUBLE;
+  data->size = sizeof(float);
+  data->data.double_value = d;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_STRING_POINTER;
+  data->size = size;
+  data->data.pstring_value = s;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_CONSTANT_STRING;
+  data->size = size;
+  data->data.const_string_value = s;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_char_data(char* s) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_CONSTANT_STRING;
+  data->size = 1;
+  data->data.const_string_value = s;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_list_data(plc4c_list list) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_LIST;
+  // TODO: Perhaps the list size makes more sense here
+  data->size = 1;
+  data->data.list_value = list;
+  // TODO: Add a destroy function for lists
+  data->custom_destroy = NULL;
+  // TODO: Add a print function for lists
+  data->custom_printf = NULL;
+  return data;
+}
+
+plc4c_data *plc4c_data_create_uint8_t_bit_string_data(uint8_t uc) {
+  uint8_t cur_bit = ((uint8_t) 1) << 7;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 8; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((uc & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint16_t_bit_string_data(uint16_t us) {
+  uint16_t cur_bit = ((uint16_t) 1) << 15;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 16; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((us & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint32_t_bit_string_data(uint32_t ui) {
+  uint32_t cur_bit = ((uint32_t) 1) << 31;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 32; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_uint64_t_bit_string_data(uint64_t ui) {
+  uint64_t cur_bit = ((uint64_t) 1) << 63;
+  plc4c_list* list = NULL;
+  plc4c_utils_list_create(&list);
+  for(int i = 0; i < 64; i++) {
+    plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
+    plc4c_utils_list_insert_head_value(list, item);
+    cur_bit = cur_bit >> 1;
+  }
+  return plc4c_data_create_list_data(*list);
+}
+
+plc4c_data *plc4c_data_create_void_pointer_data(void *v) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_VOID_POINTER;
+  data->size = 0;
+  data->data.pvoid_value = v;
+  data->custom_destroy = NULL;
+  data->custom_printf = NULL;
   return data;
 }
 
 void plc4c_data_printf(plc4c_data *data) {
+  if (data == NULL) {
+    printf("NULL");
+    return;
+  }
   switch (data->data_type) {
+    case PLC4C_BOOL:
+      printf("%s", data->data.boolean_value ? "true" : "false");
+      break;
     case PLC4C_CHAR:
-      printf("%c", data->data.char_value);
+      printf("%d", data->data.char_value);
       break;
     case PLC4C_UCHAR:
-      printf("%c", data->data.uchar_value);
+      printf("%u", data->data.uchar_value);
       break;
     case PLC4C_SHORT:
       printf("%d", data->data.short_value);
       break;
     case PLC4C_USHORT:
-      printf("%d", data->data.ushort_value);
+      printf("%u", data->data.ushort_value);
       break;
     case PLC4C_INT:
       printf("%d", data->data.int_value);
       break;
     case PLC4C_UINT:
-      printf("%iu", data->data.uint_value);
+      printf("%u", data->data.uint_value);
+      break;
+    case PLC4C_LINT:
+      printf("%I64d", data->data.lint_value);
+      break;
+    case PLC4C_ULINT:
+      printf("%I64u", data->data.ulint_value);
       break;
     case PLC4C_FLOAT:
       printf("%f", data->data.float_value);
+      break;
+    case PLC4C_DOUBLE:
+      printf("%.20f", data->data.double_value);
       break;
     case PLC4C_STRING_POINTER:
       printf("%s", data->data.pstring_value);
       break;
     case PLC4C_CONSTANT_STRING:
       printf("%s", data->data.const_string_value);
+      break;
+    case PLC4C_LIST:
+      printf("[");
+      plc4c_list_element *cur_element =
+          plc4c_utils_list_tail(&data->data.list_value);
+      while (cur_element != NULL) {
+        plc4c_data *data_item = cur_element->value;
+        plc4c_data_printf(data_item);
+        cur_element = cur_element->next;
+        if (cur_element != NULL) {
+          printf(", ");
+        }
+      }
+      printf("]");
       break;
     case PLC4C_VOID_POINTER:
       if (data->custom_printf != NULL) {
@@ -149,6 +302,8 @@ void plc4c_data_printf(plc4c_data *data) {
       }
       break;
     default:
+      printf("unknown");
+
       break;
   }
 }

@@ -18,27 +18,22 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
-import org.apache.plc4x.java.spi.events.ConnectEvent;
-import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection {
 
@@ -47,24 +42,29 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
+    protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
+    protected final boolean awaitSessionDisconnectComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
+    protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
     protected Channel channel;
     protected boolean connected;
 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
-                                     PlcFieldHandler fieldHandler, Configuration configuration,
+                                     PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
-        super(canRead, canWrite, canSubscribe, fieldHandler, optimizer);
+                                     boolean awaitSessionDisconnectComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+        super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
+        //Used to signal that a disconnect has completed while closing a connection.
+        this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
         this.stackConfigurer = stackConfigurer;
 
         this.connected = false;
@@ -86,7 +86,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
-            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
+            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
@@ -111,27 +111,32 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         }
     }
 
-    /*@Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        try {
-            // Relay the actual pinging to the channel factory ...
-            channelFactory.ping();
-            // If we got here, the ping was successful.
-            future.complete(null);
-        } catch (PlcException e) {
-            // If we got here, something went wrong.
-            future.completeExceptionally(e);
-        }
-        return future;
-    }*/
-
+    /**
+     * Close the connection by firstly calling disconnect and waiting for a DisconnectedEvent occurs and then calling
+     * Close() to finish up any other clean up.
+     * @throws PlcConnectionException
+     */
     @Override
     public void close() throws PlcConnectionException {
-        // TODO call protocols close method
+
+        logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
+
+        channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
+        try {
+            if (awaitSessionDisconnectComplete) {
+                sessionDisconnectCompleteFuture.get(DEFAULT_DISCONNECT_WAIT_TIME, TimeUnit.MILLISECONDS);
+            }
+        } catch (Exception e) {
+            logger.error("Timeout while trying to close connection");
+        }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-        // Close channel
+
         channel.close().awaitUninterruptibly();
+
+        if (!sessionDisconnectCompleteFuture.isDone()) {
+            sessionDisconnectCompleteFuture.complete(null );
+        }
+
         channel = null;
         connected = false;
     }
@@ -150,7 +155,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         return channel;
     }
 
-    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture) {
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
@@ -167,6 +172,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                         if (evt instanceof ConnectedEvent) {
                             sessionSetupCompleteFuture.complete(null);
+                        } else if (evt instanceof DisconnectedEvent) {
+                            sessionDisconnectCompleteFuture.complete(null);
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }

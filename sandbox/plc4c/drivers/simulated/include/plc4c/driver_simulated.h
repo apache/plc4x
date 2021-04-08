@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_DRIVER_S7_H_
-#define PLC4C_DRIVER_S7_H_
+#ifndef PLC4C_DRIVER_SIMULATED_H_
+#define PLC4C_DRIVER_SIMULATED_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -29,4 +29,4 @@ plc4c_driver *plc4c_driver_simulated_create();
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_DRIVER_S7_H_
+#endif  // PLC4C_DRIVER_SIMULATED_H_

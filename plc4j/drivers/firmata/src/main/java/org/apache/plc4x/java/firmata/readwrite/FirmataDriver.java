@@ -26,6 +26,8 @@ import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
 import org.apache.plc4x.java.firmata.readwrite.io.FirmataMessageIO;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
@@ -70,6 +72,20 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     @Override
     protected PlcFieldHandler getFieldHandler() {
         return new FirmataFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    /**
+     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitDisconnectComplete() {
+        return false;
     }
 
     @Override

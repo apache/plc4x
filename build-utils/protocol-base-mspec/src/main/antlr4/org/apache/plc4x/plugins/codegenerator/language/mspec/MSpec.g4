@@ -23,7 +23,7 @@ file
  ;
 
 complexTypeDefinition
- : (COMMENT.*?)? LBRACKET complexType RBRACKET (COMMENT.*?)?
+ : LBRACKET complexType RBRACKET
  ;
 
 complexType
@@ -34,11 +34,11 @@ complexType
  ;
 
 fieldDefinition
- : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
+ : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 dataIoDefinition
- : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
+ : LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 field
@@ -64,7 +64,7 @@ abstractField
  ;
 
 arrayField
- : 'array' type=typeReference name=idExpression loopType=arrayType loopExpression=expression
+ : 'array' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression
  ;
 
 checksumField
@@ -76,11 +76,11 @@ constField
  ;
 
 discriminatorField
- : 'discriminator' type=dataType name=idExpression
+ : 'discriminator' type=typeReference name=idExpression
  ;
 
 enumField
- : 'enum' type=typeReference name=idExpression
+ : 'enum' type=typeReference name=idExpression (fieldName=idExpression)?
  ;
 
 implicitField
@@ -88,7 +88,7 @@ implicitField
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
+ : 'manualArray' type=typeReference name=idExpression loopType=ARRAY_LOOP_TYPE loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 manualField
@@ -120,20 +120,16 @@ virtualField
  ;
 
 enumValueDefinition
- : (COMMENT.*?)? LBRACKET (valueExpression=expression)? name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
- ;
-
-bitmaskValueDefinition
- : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ : LBRACKET (valueExpression=expression)? name=IDENTIFIER_LITERAL (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 typeReference
- : complexTypeReference=IDENTIFIER
+ : complexTypeReference=IDENTIFIER_LITERAL
  | simpleTypeReference=dataType
  ;
 
 caseStatement
- : (COMMENT.*?)? LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType
@@ -142,11 +138,7 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
-/* For the following types the parsing/serialization has to be handled manually */
- /* Fixed length string parsing */
- | base='string' size=INTEGER_LITERAL encoding=idExpression
- /* Variable length string parsing */
- | base='string' encoding=idExpression
+ | base='string' length=expression (encoding=idExpression)?
  | base='time'
  | base='date'
  | base='dateTime'
@@ -169,10 +161,10 @@ multipleExpressions
  ;
 
 innerExpression
- : 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
- | HEX_LITERAL
- | INTEGER_LITERAL
- | (IDENTIFIER | arrayType) ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
+ : BOOLEAN_LITERAL
+ // Explicitly allow the loop type keywords in expressions
+ | ARRAY_LOOP_TYPE
+ | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
  | innerExpression '.' innerExpression // Field Reference or method call
  | innerExpression '[' + INTEGER_LITERAL + ']' // Array index
  | innerExpression BinaryOperator innerExpression  // Addition
@@ -180,61 +172,22 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
- ;
-
-COMMENT
- : K_COMMENT [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t\r\n\u000C-]*
- | '//' [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t-]*
- | '/*' .*? '*/'
- ;
-
-INTEGER_LITERAL
- : [0-9]+
- ;
-
-HEX_LITERAL
- : HexNumeral
- ;
-
-fragment HexNumeral
- : '0' [xX] HexDigit HexDigit?;
-
-fragment HexDigit
- : [0-9a-fA-F]
-;
-
-arrayType
- : K_COUNT
- | K_LENGTH
- | K_TERMINATE
+ | HEX_LITERAL
+ | INTEGER_LITERAL
+ | STRING_LITERAL
  ;
 
 idExpression
- : TICK id=idString TICK
+ : TICK id=IDENTIFIER_LITERAL TICK
+ // Explicitly allow the loop type keywords in id-expressions
+ | TICK id=ARRAY_LOOP_TYPE TICK
  ;
-
-idString
- : IDENTIFIER
- | keywords
- ;
-
-keywords
- : K_TERMINATE
- | K_LENGTH
- ;
-
-fragment K_COMMENT : '<--';
 
 TICK : '\'';
-TIMES : 'x';
 LBRACKET : '[';
 RBRACKET : ']';
 LCBRACKET : '{';
 RCBRACKET : '}';
-
-K_COUNT : C O U N T;
-K_LENGTH : L E N G T H;
-K_TERMINATE : T E R M I N A T E D;
 
 BinaryOperator
  : '+'
@@ -257,39 +210,84 @@ BinaryOperator
  | '%'
  ;
 
-ZERO : '0';
-HEX_VALUE : [0-9A-F];
+ARRAY_LOOP_TYPE
+ : 'count'
+ | 'length'
+ | 'terminated'
+ ;
 
-IDENTIFIER
+// Integer literals
+
+INTEGER_LITERAL
+ : INTEGER_CHARACTERS
+ ;
+
+fragment
+INTEGER_CHARACTERS
+ : INTEGER_CHARACTER+
+ ;
+
+fragment
+INTEGER_CHARACTER
+ : [0-9]
+ ;
+
+// Hexadecimal literals
+
+HEX_LITERAL
+ : '0' [xX] HEX_CHARACTERS
+ ;
+
+fragment
+HEX_CHARACTERS
+ : HEX_CHARACTER+
+ ;
+
+fragment
+HEX_CHARACTER
+ : [0-9a-fA-F]
+ ;
+
+// Boolean literals
+
+BOOLEAN_LITERAL
+ : 'true'
+ | 'false'
+ ;
+
+// String literals
+
+STRING_LITERAL
+ : '"' STRING_CHARACTERS? '"'
+ ;
+
+// As we're generating property names and class names from these,
+// we have to put more restrictions on them.
+
+IDENTIFIER_LITERAL
  : [A-Za-z0-9_-]+
  ;
 
-fragment A : [aA];
-fragment B : [bB];
-fragment C : [cC];
-fragment D : [dD];
-fragment E : [eE];
-fragment F : [fF];
-fragment G : [gG];
-fragment H : [hH];
-fragment I : [iI];
-fragment J : [jJ];
-fragment K : [kK];
-fragment L : [lL];
-fragment M : [mM];
-fragment N : [nN];
-fragment O : [oO];
-fragment P : [pP];
-fragment Q : [qQ];
-fragment R : [rR];
-fragment S : [sS];
-fragment T : [tT];
-fragment U : [uU];
-fragment V : [vV];
-fragment W : [wW];
-fragment X : [xX];
-fragment Y : [yY];
-fragment Z : [zZ];
+fragment
+STRING_CHARACTERS
+ : STRING_CHARACTER+
+ ;
 
-WS  :  [ \t\r\n\u000C]+ -> skip
-;
+fragment
+STRING_CHARACTER
+ : ~["\\\r\n]
+ ;
+
+// Stuff we just want to ignore
+
+LINE_COMMENT
+ : '//' ~[\r\n]* -> skip
+ ;
+
+BLOCK_COMMENT
+ : '/*' .*? '*/' -> skip
+ ;
+
+WS
+ : [ \t\r\n\u000C]+ -> skip
+ ;

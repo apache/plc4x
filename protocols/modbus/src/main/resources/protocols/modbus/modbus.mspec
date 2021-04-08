@@ -56,11 +56,11 @@
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']
-    [discriminator bit         'error']
-    [discriminator uint 7      'function']
-    [typeSwitch 'error','function','response'
+    [discriminator bit         'errorFlag']
+    [discriminator uint 7      'functionFlag']
+    [typeSwitch 'errorFlag','functionFlag','response'
         ['true'                     ModbusPDUError
-            [simple     uint 8      'exceptionCode']
+            [enum ModbusErrorCode  'exceptionCode']
         ]
 
         // Bit Access
@@ -201,10 +201,12 @@
         ]
 
         ['false','0x08','false'     ModbusPDUDiagnosticRequest
-            // TODO: Implement the sub-request discriminated type
+            [simple     uint 16     'subFunction']
+            [simple     uint 16     'data']
         ]
         ['false','0x08','true'      ModbusPDUDiagnosticResponse
-            // TODO: Implement the sub-request discriminated type
+            [simple     uint 16     'subFunction']
+            [simple     uint 16     'data']
         ]
 
         ['false','0x0B','false'     ModbusPDUGetComEventCounterRequest
@@ -249,39 +251,172 @@
 [type 'ModbusPDUReadFileRecordResponseItem'
     [implicit   uint 8     'dataLength'     'COUNT(data) + 1']
     [simple     uint 8     'referenceType']
-    [array      int 8    'data'             length  'dataLength - 1']
+    [array      int 8      'data'           length  'dataLength - 1']
 ]
 
 [type 'ModbusPDUWriteFileRecordRequestItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
-    [implicit   uint 16    'recordLength'   '(COUNT(recordData) * 2) / 2']
-    [array      uint 16    'recordData'     length  'recordLength * 2']
+    [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
+    [array      int 8      'recordData'     length  'recordLength * 2']
 ]
 
 [type 'ModbusPDUWriteFileRecordResponseItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
-    [implicit   uint 16    'recordLength'   '(COUNT(recordData) * 2) / 2']
-    [array      uint 16    'recordData'     length  'recordLength * 2']
+    [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
+    [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [uint 8 'dataType', uint 8 'numberOfValues']
+[dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
-        ['1','1' Boolean
+        ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['1' List
+        ['BOOL' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['2','1' Integer
+        ['BYTE','1' BitString
+            [simple uint 8 'value']
+        ]
+        ['BYTE' List
+            [array uint 8 'value' count 'numberOfValues']
+        ]
+        ['WORD','1' BitString
+            [simple uint 16 'value']
+        ]
+        ['WORD' List
+            [array uint 16 'value' count 'numberOfValues']
+        ]
+        ['DWORD','1' BitString
+            [simple uint 32 'value']
+        ]
+        ['DWORD' List
+            [array uint 32 'value' count 'numberOfValues']
+        ]
+        ['LWORD','1' BitString
+            [simple uint 64 'value']
+        ]
+        ['LWORD' List
+            [array uint 64 'value' count 'numberOfValues']
+        ]
+        ['SINT','1' SINT
+            [simple int 8 'value']
+        ]
+        ['SINT' List
+            [array int 8 'value' count 'numberOfValues']
+        ]
+        ['INT','1' INT
             [simple int 16 'value']
         ]
-        ['2' List
+        ['INT' List
             [array int 16 'value' count 'numberOfValues']
         ]
+        ['DINT','1' DINT
+            [simple int 32 'value']
+        ]
+        ['DINT' List
+            [array int 32 'value' count 'numberOfValues']
+        ]
+        ['LINT','1' LINT
+            [simple int 64 'value']
+        ]
+        ['LINT' List
+            [array int 64 'value' count 'numberOfValues']
+        ]
+        ['USINT','1' USINT
+            [simple uint 8 'value']
+        ]
+        ['USINT' List
+            [array uint 8 'value' count 'numberOfValues']
+        ]
+        ['UINT','1' UINT
+            [simple uint 16 'value']
+        ]
+        ['UINT' List
+            [array uint 16 'value' count 'numberOfValues']
+        ]
+        ['UDINT','1' UDINT
+            [simple uint 32 'value']
+        ]
+        ['UDINT' List
+            [array uint 32 'value' count 'numberOfValues']
+        ]
+        ['ULINT','1' ULINT
+            [simple uint 64 'value']
+        ]
+        ['ULINT' List
+            [array uint 64 'value' count 'numberOfValues']
+        ]
+        ['REAL','1' REAL
+            [simple float 8.23  'value']
+        ]
+        ['REAL' List
+            [array float 8.23 'value' count 'numberOfValues']
+        ]
+        ['LREAL','1' LREAL
+            [simple float 11.52  'value']
+        ]
+        ['LREAL' List
+            [array float 11.52 'value' count 'numberOfValues']
+        ]
+        ['CHAR','1' CHAR
+            [simple uint 8 'value']
+        ]
+        ['CHAR' List
+            [array uint 8 'value' count 'numberOfValues']
+        ]
+        ['WCHAR','1' WCHAR
+            [simple uint 16 'value']
+        ]
+        ['WCHAR' List
+            [array uint 16 'value' count 'numberOfValues']
+        ]
     ]
+]
+
+[enum uint 8 'ModbusDataType' [uint 8 'dataTypeSize']
+    ['1' BOOL ['1']]
+    ['2' BYTE ['1']]
+    ['3' WORD ['2']]
+    ['4' DWORD ['4']]
+    ['5' LWORD ['8']]
+    ['6' SINT ['1']]
+    ['7' INT ['2']]
+    ['8' DINT ['4']]
+    ['9' LINT ['8']]
+    ['10' USINT ['1']]
+    ['11' UINT ['2']]
+    ['12' UDINT ['4']]
+    ['13' ULINT ['8']]
+    ['14' REAL ['4']]
+    ['15' LREAL ['8']]
+    ['16' TIME ['8']]
+    ['17' LTIME ['8']]
+    ['18' DATE ['8']]
+    ['19' LDATE ['8']]
+    ['20' TIME_OF_DAY ['8']]
+    ['21' LTIME_OF_DAY ['8']]
+    ['22' DATE_AND_TIME ['8']]
+    ['23' LDATE_AND_TIME ['8']]
+    ['24' CHAR ['1']]
+    ['25' WCHAR ['2']]
+    ['26' STRING ['1']]
+    ['27' WSTRING ['2']]
+]
+
+[enum uint 8 'ModbusErrorCode'
+    ['1'    ILLEGAL_FUNCTION]
+    ['2'    ILLEGAL_DATA_ADDRESS]
+    ['3'    ILLEGAL_DATA_VALUE]
+    ['4'    SLAVE_DEVICE_FAILURE]
+    ['5'    ACKNOWLEDGE]
+    ['6'    SLAVE_DEVICE_BUSY]
+    ['7'    NEGATIVE_ACKNOWLEDGE]
+    ['8'    MEMORY_PARITY_ERROR]
+    ['10'   GATEWAY_PATH_UNAVAILABLE]
+    ['11'   GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND]
 ]

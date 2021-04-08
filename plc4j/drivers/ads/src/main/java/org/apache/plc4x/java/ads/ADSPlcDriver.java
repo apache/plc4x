@@ -18,15 +18,20 @@
  */
 package org.apache.plc4x.java.ads;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.field.AdsFieldHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.ads.readwrite.io.AmsTCPPacketIO;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+
+import java.util.function.ToIntFunction;
 
 /**
  * Implementation of the ADS protocol, based on:
@@ -74,11 +79,37 @@ public class ADSPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    /**
+     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitDisconnectComplete() {
+        return false;
+    }
+
+    @Override
     protected ProtocolStackConfigurer<AmsTCPPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(AmsTCPPacket.class, AmsTCPPacketIO.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withProtocol(AdsProtocolLogic.class)
             .littleEndian()
             .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 6) {
+                return (int) byteBuf.getUnsignedIntLE(byteBuf.readerIndex() + 2) + 6;
+            }
+            return -1;
+        }
     }
 
 }

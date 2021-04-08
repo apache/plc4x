@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-opcua</artifactId>
@@ -33,6 +33,24 @@
 
   <build>
     <plugins>
+        <plugin>
+          <groupId>org.apache.plc4x.plugins</groupId>
+          <artifactId>plc4x-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>generate-driver</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>generate-driver</goal>
+              </goals>
+              <configuration>
+                <protocolName>opcua</protocolName>
+                <languageName>java</languageName>
+                <outputFlavor>read-write</outputFlavor>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -73,7 +91,21 @@
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.opcua.OpcuaPlcDriver</Export-Service>
+            <Import-Package>
+              com.fasterxml.jackson.annotation;resolution:=optional,
+              *
+            </Import-Package>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-protocols-opcua</usedDependency>
+          </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
@@ -83,28 +115,25 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
-      <version>0.3.7</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
-      <version>0.3.7</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
-      <version>0.3.7</version>
     </dependency>
 
     <dependency>
@@ -119,9 +148,62 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>server-examples</artifactId>
-      <version>0.3.7</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-build-utils-language-java</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+    <scope>provided</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-protocols-opcua</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+    <scope>provided</scope>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-protocols-opcua</artifactId>
+    <version>0.9.0-SNAPSHOT</version>
+    <classifier>tests</classifier>
+    <type>test-jar</type>
+    <scope>test</scope>
+  </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>sdk-client</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-core</artifactId>
+        <version>${milo.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>stack-client</artifactId>
+        <version>${milo.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.milo</groupId>
+        <artifactId>server-examples</artifactId>
+        <version>${milo.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+
+    </dependencies>
+  </dependencyManagement>
 
 </project>

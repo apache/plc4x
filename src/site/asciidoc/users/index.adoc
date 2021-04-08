@@ -74,6 +74,19 @@ Currently we support the following protocols:
     <div class="carousel-item">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/canopen.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/canopen.gif" alt="CANopen logo">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>CANopen</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='protocols/deltav.html';" style="cursor:pointer;">
           <!--div class="d-flex align-items-center justify-content-center h-100">
             <img src="images/protocols/deltav-logo.png" alt="Card image cap">
@@ -259,7 +272,7 @@ Besides providing access to devices using one of above protocols, Apache PLC4X a
                                             <img src="../images/integrations/apache_iotdb_logo.png" alt="Card image cap">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title"><b>Apache IoTDB™ (incubating)</b></h5>
+                                            <h5 class="card-title"><b>Apache IoTDB™</b></h5>
                                         </div>
                                     </div>
                                 </div>

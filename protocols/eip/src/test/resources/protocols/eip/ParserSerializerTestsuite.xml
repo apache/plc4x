@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+
+  <name>EIP</name>
+  <testcase>
+    <name>Register Session</name>
+    <raw>00650004000000000000000000000000000000000000000000010000</raw>
+    <root-type>EipPacket</root-type>
+    <xml>
+      <EipConnectionRequest className="org.apache.plc4x.java.eip.readwrite.EipConnectionRequest">
+          <sessionHandle>0</sessionHandle>
+          <status>0</status>
+          <senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+            <senderContext>0</senderContext>
+          </senderContext>
+          <options>0</options>
+      </EipConnectionRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Read Request</name>
+    <raw>006F0028000012340000000001000000000000010000000000000000000000020000000000B200185202200624019D05000A4C03910472617465000100010104</raw>
+    <root-type>EipPacket</root-type>
+    <xml>
+      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+        <sessionHandle>4660</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>1</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>1</senderContext>
+        </senderContext>
+        <options>0</options>
+        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+          <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
+            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
+              <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
+                  but there seems to be some mismatch with the XML generation from Objects
+                  (arguments are also in the wrong order) -->
+              <tag>910472617465</tag>
+              <elementNb>1</elementNb>
+              <requestPathSize>3</requestPathSize>
+            </unconnectedService>
+            <backPlane>1</backPlane>
+            <slot>4</slot>
+          </service>
+        </exchange>
+      </CipRRData>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Read Response</name>
+    <raw>006F001A000012340000000001000000000000010000000000000000000000020000000000B2000ACC00000000C400000216</raw>
+    <root-type>EipPacket</root-type>
+    <xml>
+      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+        <sessionHandle>4660</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>1</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>1</senderContext>
+        </senderContext>
+        <options>0</options>
+        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+          <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
+            <status>0</status>
+            <extStatus>0</extStatus>
+            <dataType>DINT</dataType> <!--0xC4-->
+            <data>00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
+          </service>
+        </exchange>
+      </CipRRData>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Write Request</name>
+    <raw>006F0034000012340000000001000000000000010000000000000000000000020000000000B200245202200624019D0500164D069116436172746F6E53697A6500C400010000000E00010104</raw>
+    <root-type>EipPacket</root-type>
+    <xml>
+      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+        <sessionHandle>4660</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>1</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>1</senderContext>
+        </senderContext>
+        <options>0</options>
+        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+          <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
+            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipWriteRequest">
+              <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
+                  but there seems to be some mismatch with the XML generation from Objects
+                  (arguments are also in the wrong order) -->
+              <tag>9116436172746F6E53697A65</tag>
+              <dataType>DINT</dataType>
+              <elementNb>1</elementNb>
+              <data>0000000E</data> <!--0x14 but again issue when parsing Object to XML-->
+              <requestPathSize>6</requestPathSize>
+            </unconnectedService>
+            <backPlane>1</backPlane>
+            <slot>4</slot>
+          </service>
+        </exchange>
+      </CipRRData>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Write Response</name>
+    <raw>006F0014000012340000000001000000000000010000000000000000000000020000000000B20004CD000000</raw>
+    <root-type>EipPacket</root-type>
+    <xml>
+      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+        <sessionHandle>4660</sessionHandle>
+        <status>0</status>
+        <senderContext>
+          <senderContext>1</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>0</senderContext>
+          <senderContext>1</senderContext>
+        </senderContext>
+        <options>0</options>
+        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+          <service className="org.apache.plc4x.java.eip.readwrite.CipWriteResponse">
+            <status>0</status>
+            <extStatus>0</extStatus>
+          </service>
+        </exchange>
+      </CipRRData>
+    </xml>
+  </testcase>
+
+
+</test:testsuite>

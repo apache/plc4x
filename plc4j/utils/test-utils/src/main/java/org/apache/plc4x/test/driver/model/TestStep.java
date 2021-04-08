@@ -18,17 +18,25 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model;
 
+import org.apache.plc4x.test.model.Location;
+import org.apache.plc4x.test.model.LocationAware;
 import org.dom4j.Element;
 
-public class TestStep {
+import java.util.List;
+import java.util.Optional;
+
+public class TestStep implements LocationAware {
 
     private final StepType type;
     private final String name;
+    private final List<String> parserArguments;
     private final Element payload;
+    private Location location;
 
-    public TestStep(StepType type, String name, Element payload) {
+    public TestStep(StepType type, String name, List<String> parserArguments, Element payload) {
         this.type = type;
         this.name = name;
+        this.parserArguments = parserArguments;
         this.payload = payload;
     }
 
@@ -40,8 +48,21 @@ public class TestStep {
         return name;
     }
 
+    public List<String> getParserArguments() {
+        return parserArguments;
+    }
+
     public Element getPayload() {
         return payload;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public Optional<Location> getLocation() {
+        return Optional.ofNullable(location);
     }
 
 }

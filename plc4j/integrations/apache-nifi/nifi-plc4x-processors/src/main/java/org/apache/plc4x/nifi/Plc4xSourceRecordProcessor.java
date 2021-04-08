@@ -255,7 +255,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				session.transfer(fileToProcess, REL_FAILURE);
 			}
 		} finally {
-			logger.warn("Force the close");
+			logger.info("Force the close"); //TODO log level, antes estaba a warn
 			if(force && this.connection != null)
 				try {
 					this.connection.close();

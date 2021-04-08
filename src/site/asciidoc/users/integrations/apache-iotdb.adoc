@@ -17,9 +17,9 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Apache IotDB (Incubating)
+== Apache IotDB
 
-Apache IoTDB (incubating) is database for storing time serie data.
+Apache IoTDB is database for storing time serie data.
 Therefore, it can be a good solution for managing the data which is collected by PLC4x.
 
 

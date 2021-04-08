@@ -67,6 +67,11 @@ public class MockField implements PlcField {
     }
 
     @Override
+    public String getPlcDataType() {
+        return type.toString();
+    }
+
+    @Override
     public String toString() {
         return "mock field: " + address;
     }
