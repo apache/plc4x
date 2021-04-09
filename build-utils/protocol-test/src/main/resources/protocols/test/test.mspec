@@ -51,16 +51,6 @@
     //[typeSwitch 'simpleField' ]
 ]
 
-[simple ufloat 8.23 'ufloatField']
-
-[simple ufloat 11.52 'udoubleField']
-
-[simple time 8 'timeField']
-
-[simple date 8 'dateField']
-
-[simple dateTime 8 'dateTimeField']
-
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
     [simple int 8 'intField']
@@ -311,8 +301,8 @@
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
 //[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
-//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'IEC61131_BOOL'         , 'BOOL']]
-//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'IEC61131_BYTE'         , 'UINT']]
+//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
+//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
 //TODO:  Keyword named parameters aren't allowed
@@ -323,8 +313,8 @@
 
 //Showing allowed parameter types for enums
 [enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string '-1' 'stringType', EnumType 'enumType']
-    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'IEC61131_BOOL'         , 'BOOL']]
-    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'IEC61131_BYTE'         , 'UINT']]
+    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
+    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]
 
 ////////////////////////////////////////////////////////////////

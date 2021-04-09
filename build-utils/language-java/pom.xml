@@ -111,7 +111,6 @@
           <debug>true</debug>
           <projectsDirectory>src/test/resources</projectsDirectory>
           <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <settingsFile>src/test/resources/settings.xml</settingsFile>
           <pomIncludes>
             <pomInclude>*/pom.xml</pomInclude>
