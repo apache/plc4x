@@ -407,7 +407,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	plcValues := map[string]values.PlcValue{}
 	// Get the field from the request
 	for _, fieldName := range readRequest.GetFieldNames() {
-		log.Trace().Msg("get a field from request")
+		log.Debug().Msgf("get a field from request with name %s", fieldName)
 		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 		if err != nil {
 			return nil, errors.Wrap(err, "error casting to ads-field")

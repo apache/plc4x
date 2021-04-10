@@ -66,9 +66,9 @@ type PlcValue interface {
 	IsTime() bool
 	GetTime() time.Time
 	IsDate() bool
-	GetDate()
+	GetDate() time.Time
 	IsDateTime() bool
-	GetDateTime()
+	GetDateTime() time.Time
 
 	// Raw Access
 	GetRaw() []byte

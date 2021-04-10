@@ -102,21 +102,21 @@ func (m PlcINT) GetInt16() int16 {
 }
 
 func (m PlcINT) GetInt32() int32 {
-	return int32(m.GetInt8())
+	return int32(m.GetInt16())
 }
 
 func (m PlcINT) GetInt64() int64 {
-	return int64(m.GetInt8())
+	return int64(m.GetInt16())
 }
 
 func (m PlcINT) GetFloat32() float32 {
 	//TODO: Check if this is ok
-	return float32(m.GetInt8())
+	return float32(m.GetInt16())
 }
 
 func (m PlcINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
-	return float64(m.GetInt8())
+	return float64(m.GetInt16())
 }
 
 func (m PlcINT) GetString() string {

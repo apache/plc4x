@@ -85,7 +85,7 @@ func TestManualAds(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(ads.NewDriver())
 	driverManager.RegisterTransport(tcp.NewTransport())
-	test := testutils.NewManualTestSuite(connectionString, driverManager)
+	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})
 	test.AddTestCase("main.hurz_WORD:WORD", []bool{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false})
