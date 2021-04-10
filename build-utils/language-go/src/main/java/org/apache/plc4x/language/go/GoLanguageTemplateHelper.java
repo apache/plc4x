@@ -381,7 +381,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), null) + "), \"" +
+                return "io.WriteString(uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
                     encoding + "\", " + fieldName + ")";
             }
         }
@@ -517,6 +517,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         operation +
                         " (" + toExpression(null, b, parserArguments, serializerArguments, serialize, suppressPointerAccessOverride) + "))";
                 default:
+                    if (fieldType instanceof StringTypeReference) {
+                        return  toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) +
+                            operation + " " +
+                            toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false);
+                    }
                     return getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) + ") " +
                         operation + " " +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")";
