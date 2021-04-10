@@ -51,6 +51,23 @@
     //[typeSwitch 'simpleField' ]
 ]
 
+/*
+ * TODO: doesn't compile in java
+[type 'UFloatTypeTest'
+    [simple ufloat 8.23 'ufloatField']
+    [simple ufloat 11.52 'udoubleField']
+]
+*/
+
+/*
+ * TODO: doesn't compile in java
+[type 'TimeTypeTest'
+    [simple time 8 'timeField']
+    [simple date 8 'dateField']
+    [simple dateTime 8 'dateTimeField']
+]
+*/
+
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
     [simple int 8 'intField']
@@ -92,7 +109,7 @@
 //]
 
 [type 'ConstTypeTest'
-    [const bit 'bitField' true]
+    [const bit 'bitField' 'true']
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
     [const float 8.23 'floatField' '100.0']
@@ -251,11 +268,6 @@
 // Enumerated Type Tests
 ////////////////////////////////////////////////////////////////
 
-//Not really useful, but this uses the pojo templates instead of the enum templates
-[enum int 8 'EnumEmpty'
-
-]
-
 [enum bit 'EnumTypeBit'
     ['true' TRUE]
     ['false' FALSE]
@@ -320,10 +332,6 @@
 ////////////////////////////////////////////////////////////////
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
-
-[dataIo 'DataIOTypeEmpty'
-
-]
 
 [dataIo 'DataIOType' [EnumType 'dataType']
     [typeSwitch 'dataType'

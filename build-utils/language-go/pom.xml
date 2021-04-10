@@ -78,12 +78,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.2</version>
         <configuration>
           <debug>true</debug>
           <projectsDirectory>src/test/resources</projectsDirectory>
           <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <settingsFile>src/test/resources/settings.xml</settingsFile>
           <pomIncludes>
             <pomInclude>*/pom.xml</pomInclude>

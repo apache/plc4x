@@ -25,6 +25,7 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.*;
 
@@ -61,6 +62,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     private String connectionString;
     private Map<String, String> addressMap;
+
+    private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
@@ -141,6 +144,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             // TODO: Add validation here ...
             return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
         }
+    }
+
+    protected PooledPlcDriverManager getDriverManager() {
+        return driverManager;
     }
 
 }
