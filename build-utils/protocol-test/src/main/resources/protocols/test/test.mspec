@@ -51,26 +51,22 @@
     //[typeSwitch 'simpleField' ]
 ]
 
-//The following data types are not yet implemented but have a reference
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 8.23 'ufloatField']
+/*
+ * TODO: doesn't compile in java
+[type 'UFloatTypeTest'
+    [simple ufloat 8.23 'ufloatField']
+    [simple ufloat 11.52 'udoubleField']
+]
+*/
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 11.52 'udoubleField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple time 8 'timeField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple date 8 'dateField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple dateTime 8 'dateTimeField']
+/*
+ * TODO: doesn't compile in java
+[type 'TimeTypeTest'
+    [simple time 8 'timeField']
+    [simple date 8 'dateField']
+    [simple dateTime 8 'dateTimeField']
+]
+*/
 
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
@@ -113,7 +109,7 @@
 //]
 
 [type 'ConstTypeTest'
-    [const bit 'bitField' true]
+    [const bit 'bitField' 'true']
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
     [const float 8.23 'floatField' '100.0']
@@ -272,11 +268,6 @@
 // Enumerated Type Tests
 ////////////////////////////////////////////////////////////////
 
-//Not really useful, but this uses the pojo templates instead of the enum templates
-[enum int 8 'EnumEmpty'
-
-]
-
 [enum bit 'EnumTypeBit'
     ['true' TRUE]
     ['false' FALSE]
@@ -322,8 +313,8 @@
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
 //[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
-//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'IEC61131_BOOL'         , 'BOOL']]
-//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'IEC61131_BYTE'         , 'UINT']]
+//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
+//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
 //TODO:  Keyword named parameters aren't allowed
@@ -334,17 +325,13 @@
 
 //Showing allowed parameter types for enums
 [enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string '-1' 'stringType', EnumType 'enumType']
-    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'IEC61131_BOOL'         , 'BOOL']]
-    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'IEC61131_BYTE'         , 'UINT']]
+    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
+    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]
 
 ////////////////////////////////////////////////////////////////
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
-
-[dataIo 'DataIOTypeEmpty'
-
-]
 
 [dataIo 'DataIOType' [EnumType 'dataType']
     [typeSwitch 'dataType'

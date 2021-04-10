@@ -37,14 +37,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Driver Manager who Caches ONE Single Connection.
- *
+ * <p>
  * Usage Example:
  * <code>
- *     PlcDriverManager manager = new PlcDriverManager();
- *     PlcDriverManager cached = new CachedDriverManager(url, () -&gt; manager.getConnection(url));
+ * PlcDriverManager manager = new PlcDriverManager();
+ * PlcDriverManager cached = new CachedDriverManager(url, () -&gt; manager.getConnection(url));
  * </code>
  * Now you can use "cached" everywhere you need the corresponding connection.
- *
  *
  * @author julian
  * Created by julian on 24.02.20
@@ -82,10 +81,11 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     public CachedDriverManager(String url, PlcConnectionFactory connectionFactory) {
         this(url, connectionFactory, 1000);
     }
+
     /**
      * @param url               Url that this connection is for
      * @param connectionFactory Factory to create a suitable connection.
-     * @param timeoutMillis Time out in milliseonds
+     * @param timeoutMillis     Time out in milliseonds
      */
     public CachedDriverManager(String url, PlcConnectionFactory connectionFactory, int timeoutMillis) {
         logger.info("Creating new cached Connection for url {} with timeout {} ms", url, timeoutMillis);
@@ -96,8 +96,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         // MBean
         try {
             ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("org.pragmaticindustries.cockpit.plc:name=cached-driver-manager,url=\"" + url + "\""));
-        } catch (Exception e) {
-            // Intentionally do nothing
+        } catch (Exception ignore) {
         }
     }
 
@@ -107,16 +106,17 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         cancelWatchdog();
         if (state.get() == ConnectionState.DISCONNECTED) {
             // Getting Disconnected Connection, nothing to do.
+            logger.trace("Connection allready disconnected");
             return;
         }
         if (state.get() != ConnectionState.BORROWED) {
-            // Log at least a WARN???
             logger.warn("Connection was returned, although it is not borrowed, currently.");
         }
         this.borrowedConnection = null;
         setState(ConnectionState.AVAILABLE);
         // Check the queue
         checkQueue();
+        logger.trace("Connection successfully returned");
     }
 
     private void setState(ConnectionState available) {
@@ -152,36 +152,40 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     /**
      * This call now waits (with the timeout given in constructor) until it fails
      * or returns a valid connection in this window.
+     *
      * @throws PlcConnectionException if connection cannot be established
      */
     @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         if (!this.url.equals(url)) {
-            throw new IllegalArgumentException("This Cached Driver Manager only supports the Conection " + url);
+            throw new IllegalArgumentException("This Cached Driver Manager only supports the Connection " + url);
         }
         synchronized (this) {
+            logger.trace("current queue size before check {}", queue.size());
             if (queue.isEmpty() && isConnectionAvailable()) {
+                logger.trace("queue is empty and a connection is available");
                 return getConnection_(url);
             } else {
+                logger.trace("Getting a connection and instantly close it");
                 // At least trigger a connection
                 try {
                     getConnection_(url).close();
-                } catch (Exception e) {
-                    // Ignore here.
+                } catch (Exception ignore) {
                 }
             }
         }
         CompletableFuture<PlcConnection> future = new CompletableFuture<>();
         synchronized (this) {
+            logger.trace("current queue size before add {}", queue.size());
             queue.add(future);
         }
         try {
             return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.");
+            throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.");
+            throw new PlcConnectionException("No Connection Available, interrupted while waiting in queue.", e);
         } finally {
             future.cancel(true);
         }
@@ -191,6 +195,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
      * Private Impl.
      */
     private synchronized PlcConnection getConnection_(String url) throws PlcConnectionException {
+        logger.trace("Current State {}", this.state.get());
         switch (state.get()) {
             case AVAILABLE:
                 logger.debug("Connection was requested and is available, thus, returning Chached Connection for usage");
@@ -220,6 +225,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                             setState(ConnectionState.AVAILABLE);
                             // Now See if there is someone waiting in the line
                             checkQueue();
+                            logger.trace("Inline queue check succeeded");
                         }
                     } catch (Exception e) {
                         logger.warn("Unable to establish connection to PLC {}", url, e);
@@ -249,6 +255,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     private synchronized void checkQueue() {
         logger.debug("Connection is available, checking if someone is waiting in the queue...");
         CompletableFuture<PlcConnection> next;
+        logger.trace("current queue size before check queue {}", queue.size());
         while ((next = queue.poll()) != null) {
             if (next.isCancelled()) {
                 logger.trace("Cleaning up already timed out connection...");
@@ -262,6 +269,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                 logger.debug("Got an Exception on fetching a connection", e);
             }
         }
+        logger.trace("check queue ended");
     }
 
     private void startWatchdog(CachedPlcConnection connection) {

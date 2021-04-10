@@ -374,6 +374,22 @@ func DataItemParse(io *utils.ReadBuffer, dataType ModbusDataType, numberOfValues
 			value = append(value, values.NewPlcUINT(_item))
 		}
 		return values.NewPlcList(value), nil
+	case dataType == ModbusDataType_STRING: // STRING
+
+		// Simple Field (value)
+		value, _valueErr := io.ReadString(uint32((numberOfValues) * (8)))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		return values.NewPlcSTRING(value), nil
+	case dataType == ModbusDataType_WSTRING: // STRING
+
+		// Simple Field (value)
+		value, _valueErr := io.ReadString(uint32((numberOfValues) * (16)))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		return values.NewPlcSTRING(value), nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
@@ -640,6 +656,18 @@ func DataItemSerialize(io *utils.WriteBuffer, value api.PlcValue, dataType Modbu
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
+		}
+	case dataType == ModbusDataType_STRING: // STRING
+
+		// Simple Field (value)
+		if _err := io.WriteString(uint8(numberOfValues*(8)), "UTF-8", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
+	case dataType == ModbusDataType_WSTRING: // STRING
+
+		// Simple Field (value)
+		if _err := io.WriteString(uint8(numberOfValues*(16)), "UTF-16", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:
 		// TODO: add more info which type it is actually

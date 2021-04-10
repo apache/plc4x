@@ -37,23 +37,23 @@ import (
 type ConnectionMetadata struct {
 }
 
-func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
+func (m *ConnectionMetadata) GetConnectionAttributes() map[string]string {
 	return map[string]string{}
 }
 
-func (m ConnectionMetadata) CanRead() bool {
+func (m *ConnectionMetadata) CanRead() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanWrite() bool {
+func (m *ConnectionMetadata) CanWrite() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanSubscribe() bool {
+func (m *ConnectionMetadata) CanSubscribe() bool {
 	return true
 }
 
-func (m ConnectionMetadata) CanBrowse() bool {
+func (m *ConnectionMetadata) CanBrowse() bool {
 	return false
 }
 
@@ -182,7 +182,7 @@ func checkForRequiredParameters(options map[string][]string, requiredParameters 
 	return nil
 }
 
-func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -192,7 +192,7 @@ func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (m Connection) BlockingClose() {
+func (m *Connection) BlockingClose() {
 	log.Trace().Msg("Closing blocked")
 	closeResults := m.Close()
 	select {
@@ -203,7 +203,7 @@ func (m Connection) BlockingClose() {
 	}
 }
 
-func (m Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	log.Trace().Msg("Close")
 	// TODO: Implement ...
 	ch := make(chan plc4go.PlcConnectionCloseResult)
@@ -213,53 +213,53 @@ func (m Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	return ch
 }
 
-func (m Connection) IsConnected() bool {
+func (m *Connection) IsConnected() bool {
 	panic("implement me")
 }
 
-func (m Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	panic("implement me")
 }
 
-func (m Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return ConnectionMetadata{}
+func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+	return &ConnectionMetadata{}
 }
 
-func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, m.reader)
 }
 
-func (m Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(m.fieldHandler, m.valueHandler, m.writer)
 }
 
-func (m Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
 	panic("implement me")
 }
 
-func (m Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
 	panic("implement me")
 }
 
-func (m Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 	panic("implement me")
 }
 
-func (m Connection) GetTransportInstance() transports.TransportInstance {
+func (m *Connection) GetTransportInstance() transports.TransportInstance {
 	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
 		return mc.GetTransportInstance()
 	}
 	return nil
 }
 
-func (m Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
+func (m *Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
 	return m.fieldHandler
 }
 
-func (m Connection) GetPlcValueHandler() spi.PlcValueHandler {
+func (m *Connection) GetPlcValueHandler() spi.PlcValueHandler {
 	return m.valueHandler
 }
 
-func (m Connection) String() string {
+func (m *Connection) String() string {
 	return fmt.Sprintf("ads.Connection{}")
 }

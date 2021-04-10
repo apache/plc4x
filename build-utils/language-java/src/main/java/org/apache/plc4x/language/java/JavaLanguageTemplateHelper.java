@@ -764,7 +764,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                 break;
                         }
                     } else {
-                        sb.append(toVariableSerializationExpression(field, va, null));
+                        sb.append(toVariableSerializationExpression(field, va, serialzerArguments));
                     }
                 } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -815,7 +815,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                     break;
                             }
                         } else {
-                            sb.append(toVariableSerializationExpression(field, va, null));
+                            sb.append(toVariableSerializationExpression(field, va, serialzerArguments));
                         }
                     } else if (arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
@@ -899,7 +899,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     sb.append("(").append(toSerializationExpression(null, manualField.getLengthExpression(), ctx)).append(") + ");
                 } else if (type instanceof SimpleTypeReference) {
                     SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
-                    sizeInBits += simpleTypeReference.getSizeInBits();
+                    if (simpleTypeReference instanceof StringTypeReference) {
+                        sb.append(toSerializationExpression(null, ((StringTypeReference) simpleTypeReference).getLengthExpression(), parserArguments)).append(" + ");
+                    } else {
+                        sizeInBits += simpleTypeReference.getSizeInBits();
+                    }
                 } else {
                     // No ComplexTypeReference supported.
                 }

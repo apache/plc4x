@@ -85,8 +85,8 @@ public class SimulatedDevice {
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
-                    case "IEC61131_STRING":
-                    case "IEC61131_WSTRING":
+                    case "STRING":
+                    case "WSTRING":
                         break;
                     default:
                         try {
@@ -108,7 +108,6 @@ public class SimulatedDevice {
         if (type.equals(Byte.class)) {
             return IEC61131ValueHandler.of((byte) random.nextInt(1 << 8));
         }
-
         if (type.equals(Short.class)) {
             return IEC61131ValueHandler.of((short) random.nextInt(1 << 16));
         }

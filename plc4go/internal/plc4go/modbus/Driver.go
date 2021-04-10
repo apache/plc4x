@@ -97,7 +97,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 			}
 		}
 	}()
-	codec := NewMessageCodec(transportInstance, nil)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1

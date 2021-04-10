@@ -248,7 +248,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
+		var wb *utils.WriteBuffer
+		switch m.driverName {
+		case "ads":
+			wb = utils.NewLittleEndianWriteBuffer()
+		default:
+			wb = utils.NewWriteBuffer()
+		}
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing message")
@@ -338,7 +344,13 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
+		var wb *utils.WriteBuffer
+		switch m.driverName {
+		case "ads":
+			wb = utils.NewLittleEndianWriteBuffer()
+		default:
+			wb = utils.NewWriteBuffer()
+		}
 		err = ser.Serialize(*wb)
 		if err != nil {
 			return errors.Wrap(err, "error serializing message")

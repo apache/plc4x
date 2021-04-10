@@ -134,6 +134,10 @@ type Connection struct {
 	sync.Mutex
 }
 
+func (m *Connection) String() string {
+	return fmt.Sprintf("knx.Connection{}")
+}
+
 type KnxReadResult struct {
 	value    *values.PlcValue
 	numItems uint8

@@ -110,68 +110,68 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         if(values.length == 1) {
             Object value = values[0];
             switch (field.getPlcDataType().toUpperCase()) {
-                case "IEC61131_BOOL":
-                case "IEC61131_BIT":
+                case "BOOL":
+                case "BIT":
                     return PlcBOOL.of(value);
-                case "IEC61131_BYTE":
-                case "IEC61131_BITARR8":
+                case "BYTE":
+                case "BITARR8":
                     return PlcBYTE.of(value);
-                case "IEC61131_SINT":
-                case "IEC61131_INT8":
+                case "SINT":
+                case "INT8":
                     return PlcSINT.of(value);
-                case "IEC61131_USINT":
-                case "IEC61131_UINT8":
-                case "IEC61131_BIT8":
+                case "USINT":
+                case "UINT8":
+                case "BIT8":
                     return PlcUSINT.of(value);
-                case "IEC61131_INT":
-                case "IEC61131_INT16":
+                case "INT":
+                case "INT16":
                     return PlcINT.of(value);
-                case "IEC61131_UINT":
-                case "IEC61131_UINT16":
+                case "UINT":
+                case "UINT16":
                     return PlcUINT.of(value);
-                case "IEC61131_WORD":
-                case "IEC61131_BITARR16":
+                case "WORD":
+                case "BITARR16":
                     return PlcWORD.of(value);
-                case "IEC61131_DINT":
-                case "IEC61131_INT32":
+                case "DINT":
+                case "INT32":
                     return PlcDINT.of(value);
-                case "IEC61131_UDINT":
-                case "IEC61131_UINT32":
+                case "UDINT":
+                case "UINT32":
                     return PlcUDINT.of(value);
-                case "IEC61131_DWORD":
-                case "IEC61131_BITARR32":
+                case "DWORD":
+                case "BITARR32":
                     return PlcDWORD.of(value);
-                case "IEC61131_LINT":
-                case "IEC61131_INT64":
+                case "LINT":
+                case "INT64":
                     return PlcLINT.of(value);
-                case "IEC61131_ULINT":
-                case "IEC61131_UINT64":
+                case "ULINT":
+                case "UINT64":
                     return PlcULINT.of(value);
-                case "IEC61131_LWORD":
-                case "IEC61131_BITARR64":
+                case "LWORD":
+                case "BITARR64":
                     return PlcLWORD.of(value);
-                case "IEC61131_REAL":
-                case "IEC61131_FLOAT":
+                case "REAL":
+                case "FLOAT":
                     return PlcREAL.of(value);
-                case "IEC61131_LREAL":
-                case "IEC61131_DOUBLE":
+                case "LREAL":
+                case "DOUBLE":
                     return PlcLREAL.of(value);
-                case "IEC61131_CHAR":
+                case "CHAR":
                     return PlcCHAR.of(value);
-                case "IEC61131_WCHAR":
+                case "WCHAR":
                     return PlcWCHAR.of(value);
-                case "IEC61131_STRING":
+                case "STRING":
                     return PlcSTRING.of(value);
-                case "IEC61131_WSTRING":
-                case "IEC61131_STRING16":
+                case "WSTRING":
+                case "STRING16":
                     return PlcSTRING.of(value);
-                case "IEC61131_TIME":
+                case "TIME":
                     return PlcTIME.of(value);
-                case "IEC61131_DATE":
+                case "DATE":
                     return PlcDATE.of(value);
-                case "IEC61131_TIME_OF_DAY":
+                case "TIME_OF_DAY":
                     return PlcTIME_OF_DAY.of(value);
-                case "IEC61131_DATE_AND_TIME":
+                case "DATE_AND_TIME":
                     return PlcDATE_AND_TIME.of(value);
                 default:
                     return customDataType(field, new Object[] {value});

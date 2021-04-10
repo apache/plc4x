@@ -29,15 +29,11 @@ import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReferen
 import org.apache.plc4x.plugins.codegenerator.types.references.StringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class BaseFreemarkerLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
 
     private final TypeDefinition thisType;
     private final String protocolName;
