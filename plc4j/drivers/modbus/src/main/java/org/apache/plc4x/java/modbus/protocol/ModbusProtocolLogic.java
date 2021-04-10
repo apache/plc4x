@@ -382,7 +382,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if(fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -391,10 +391,10 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
-            if(fieldDataTypeSize < 2) {
+            if((dataType != ModbusDataType.STRING) && fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -445,7 +445,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, 1, false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {

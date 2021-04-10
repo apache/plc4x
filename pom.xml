@@ -149,7 +149,7 @@
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
     <logstash.version>7.10.0</logstash.version>
-    <milo.version>0.5.3</milo.version>
+    <milo.version>0.5.4</milo.version>
     <mockito.version>3.6.28</mockito.version>
     <netty.version>4.1.54.Final</netty.version>
     <owasp-dependency-check.version>6.0.3</owasp-dependency-check.version>

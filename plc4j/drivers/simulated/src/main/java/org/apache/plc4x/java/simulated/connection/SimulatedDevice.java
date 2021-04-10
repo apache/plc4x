@@ -97,8 +97,8 @@ public class SimulatedDevice {
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
-                    case "IEC61131_STRING":
-                    case "IEC61131_WSTRING":
+                    case "STRING":
+                    case "WSTRING":
                         break;
                     default:
                         try {
@@ -117,7 +117,7 @@ public class SimulatedDevice {
     private PlcValue randomValue(SimulatedField field) {
         Object result = null;
 
-        Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
+        Short fieldDataTypeSize = field.getDataType().getDataTypeSize();
 
         byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
         new Random().nextBytes(b);
