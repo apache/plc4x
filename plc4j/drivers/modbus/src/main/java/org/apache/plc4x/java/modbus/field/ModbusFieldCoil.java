@@ -32,8 +32,8 @@ public class ModbusFieldCoil extends ModbusField {
 
     protected static final int REGISTER_MAXADDRESS = 65535;
 
-    public ModbusFieldCoil(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+    public ModbusFieldCoil(int address, Integer quantity, Integer stringLength, ModbusDataType dataType) {
+        super(address, quantity, stringLength, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -66,6 +66,9 @@ public class ModbusFieldCoil extends ModbusField {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
+        String stringLengthString = matcher.group("stringLength");
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 1;
+
         String quantityString = matcher.group("quantity");
         int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
         if ((address + quantity) > REGISTER_MAXADDRESS) {
@@ -74,7 +77,7 @@ public class ModbusFieldCoil extends ModbusField {
 
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
 
-        return new ModbusFieldCoil(address, quantity, dataType);
+        return new ModbusFieldCoil(address, quantity, stringLength, dataType);
     }
 
 }

@@ -32,8 +32,8 @@ public class ModbusFieldHoldingRegister extends ModbusField {
 
     protected static final int REGISTER_MAXADDRESS = 65535;
 
-    protected ModbusFieldHoldingRegister(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+    protected ModbusFieldHoldingRegister(int address, Integer quantity, Integer stringLength, ModbusDataType dataType) {
+        super(address, quantity, stringLength, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -65,6 +65,9 @@ public class ModbusFieldHoldingRegister extends ModbusField {
             throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
         }
 
+        String stringLengthString = matcher.group("stringLength");
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 1;
+
         String quantityString = matcher.group("quantity");
         int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
         if ((address + quantity) > REGISTER_MAXADDRESS) {
@@ -73,7 +76,7 @@ public class ModbusFieldHoldingRegister extends ModbusField {
 
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.INT;
 
-        return new ModbusFieldHoldingRegister(address, quantity, dataType);
+        return new ModbusFieldHoldingRegister(address, quantity, stringLength, dataType);
     }
 
 }

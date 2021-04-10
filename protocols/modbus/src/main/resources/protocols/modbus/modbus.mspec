@@ -270,7 +270,7 @@
     [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues', uint 16 'stringLength']
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
@@ -375,11 +375,17 @@
         ['WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['STRING' STRING
+        ['STRING','1' STRING
             [simple string 'numberOfValues * 8' 'UTF-8' 'value']
         ]
-        ['WSTRING' STRING
+        ['STRING' List
+            [array string 'stringLength * 8' 'UTF-8' 'value' count 'numberOfValues']
+        ]
+        ['WSTRING','1' STRING
             [simple string 'numberOfValues* 16' 'UTF-16' 'value']
+        ]
+        ['WSTRING' List
+            [array string 'stringLength * 16' 'UTF-16' 'value' count 'numberOfValues']
         ]
     ]
 ]

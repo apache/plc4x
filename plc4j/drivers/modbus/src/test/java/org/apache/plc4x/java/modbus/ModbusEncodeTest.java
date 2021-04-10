@@ -23,6 +23,7 @@ import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
 import org.apache.plc4x.java.modbus.field.*;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
@@ -163,21 +164,22 @@ public class ModbusEncodeTest {
         Assertions.assertEquals("[1.1,1000.1,100000.1,1.7E308,-1.7E308,-1.0,1.038475993484E13]", list.toString());
     }
 
-    /*@Test
+    @Test
     public void testEncodeStringSTRING() {
         String[] object = {"Hello Toddy!"};
-        ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:STRING");
+        ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:STRING[12]");
         ModbusFieldHandler handler = new ModbusFieldHandler();
-        PlcList list = (PlcList) handler.encodeString(holdingregister, object);
-        Assertions.assertEquals("[H,e,l,l,o, ,T,o,d,d,y,!]", list.toString());
+        PlcSTRING list = (PlcSTRING) IEC61131ValueHandler.of(holdingregister, object);
+        Assertions.assertEquals("\"Hello Toddy!\"", list.toString());
     }
 
     @Test
     public void testEncodeStringWSTRING() {
         String[] object = {"Hello Toddy!"};
-        ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:WSTRING");
+        ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:WSTRING[12]");
         ModbusFieldHandler handler = new ModbusFieldHandler();
-        PlcList list = (PlcList) handler.encodeString(holdingregister, object);
-        Assertions.assertEquals("[H,e,l,l,o, ,T,o,d,d,y,!]", list.toString());
-    } */
+        PlcSTRING list = (PlcSTRING) IEC61131ValueHandler.of(holdingregister, object);
+        System.out.println(list.toString());
+        Assertions.assertEquals("\"Hello Toddy!\"", list.toString());
+    }
 }

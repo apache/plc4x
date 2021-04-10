@@ -32,8 +32,8 @@ public class ModbusFieldDiscreteInput extends ModbusField {
 
     protected static final int REGISTER_MAX_ADDRESS = 65535;
 
-    public ModbusFieldDiscreteInput(int address, Integer quantity, ModbusDataType dataType) {
-        super(address, quantity, dataType);
+    public ModbusFieldDiscreteInput(int address, Integer quantity, Integer stringLength, ModbusDataType dataType) {
+        super(address, quantity, stringLength, dataType);
     }
 
     public static boolean matches(String addressString) {
@@ -72,8 +72,11 @@ public class ModbusFieldDiscreteInput extends ModbusField {
             throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAX_ADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
         }
 
+        String stringLengthString = matcher.group("stringLength");
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 1;
+
         ModbusDataType dataType = (matcher.group("datatype") != null) ? ModbusDataType.valueOf(matcher.group("datatype")) : ModbusDataType.BOOL;
 
-        return new ModbusFieldDiscreteInput(address, quantity, dataType);
+        return new ModbusFieldDiscreteInput(address, quantity, stringLength, dataType);
     }
 }

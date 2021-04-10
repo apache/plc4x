@@ -31,14 +31,16 @@ import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField, XmlSerializable {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\((?<stringLength>\\d{1,3})\\))?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\((?<stringLength>\\d{1,3})\\))?(\\[(?<quantity>\\d+)])?");
 
     protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
     private final int quantity;
+
+    private final int stringLength;
 
     private final ModbusDataType dataType;
 
@@ -61,11 +63,17 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
-    protected ModbusField(int address, Integer quantity, ModbusDataType dataType) {
+    protected ModbusField(int address, Integer quantity, Integer stringLength, ModbusDataType dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
         }
+
+        this.stringLength = stringLength != null ? stringLength : 1;
+        if (this.stringLength <= 0) {
+            throw new IllegalArgumentException("stringLength must be greater than zero. Was " + this.stringLength);
+        }
+
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
             throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
@@ -77,17 +85,21 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         return address;
     }
 
+    public int getStringLength() {
+        return stringLength;
+    }
+
     public int getNumberOfElements() {
         return quantity;
     }
 
     public int getLengthBytes() {
-        return quantity * dataType.getDataTypeSize();
+        return quantity * getStringLength() * dataType.getDataTypeSize();
     }
 
     @JsonIgnore
     public int getLengthWords() {
-        return (int) ((quantity * (float) dataType.getDataTypeSize())/2.0f);
+        return Math.round(getLengthBytes() / 2.0f);       
     }
 
     public ModbusDataType getDataType() {
@@ -133,6 +145,10 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         Element addressElement = doc.createElement("address");
         addressElement.appendChild(doc.createTextNode(Integer.toString(getAddress())));
         messageElement.appendChild(addressElement);
+
+        Element stringLengthElement = doc.createElement("stringLength");
+        stringLengthElement.appendChild(doc.createTextNode(Integer.toString(getStringLength())));
+        messageElement.appendChild(stringLengthElement);
 
         Element quantityElement = doc.createElement("numberOfElements");
         quantityElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));

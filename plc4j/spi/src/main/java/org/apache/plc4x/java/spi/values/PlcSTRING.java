@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
@@ -232,7 +233,10 @@ public class PlcSTRING extends PlcSimpleValue<String> {
 
     @Override
     public void xmlSerialize(Element parent) {
-        // TODO: Implement
+        Document doc = parent.getOwnerDocument();
+        Element plcValueElement = doc.createElement(getClass().getSimpleName());
+        plcValueElement.appendChild(doc.createTextNode(this.value));
+        parent.appendChild(plcValueElement);
     }
 
 }
