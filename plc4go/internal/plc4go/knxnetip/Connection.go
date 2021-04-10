@@ -21,7 +21,6 @@ package knxnetip
 import (
 	"bytes"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -35,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"math"
 	"net"
@@ -132,6 +132,9 @@ type Connection struct {
 	requestInterceptor internalModel.RequestInterceptor
 	plc4go.PlcConnection
 	sync.Mutex
+
+	// indicates if the tunneling requests loop is running
+	handleTunnelingRequests bool
 }
 
 func (m *Connection) String() string {
@@ -165,16 +168,17 @@ type InternalResult struct {
 
 func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
 	connection := &Connection{
-		options:            options,
-		fieldHandler:       fieldHandler,
-		valueHandler:       NewValueHandler(),
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
-		subscribers:        []*Subscriber{},
-		valueCache:         map[uint16][]int8{},
-		valueCacheMutex:    sync.RWMutex{},
-		metadata:           &ConnectionMetadata{},
-		defaultTtl:         time.Second * 10,
-		DeviceConnections:  map[driverModel.KnxAddress]*KnxDeviceConnection{},
+		options:                 options,
+		fieldHandler:            fieldHandler,
+		valueHandler:            NewValueHandler(),
+		requestInterceptor:      interceptors.NewSingleItemRequestInterceptor(),
+		subscribers:             []*Subscriber{},
+		valueCache:              map[uint16][]int8{},
+		valueCacheMutex:         sync.RWMutex{},
+		metadata:                &ConnectionMetadata{},
+		defaultTtl:              time.Second * 10,
+		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
+		handleTunnelingRequests: true,
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
 
@@ -198,13 +202,13 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	go func() {
 		err := m.messageCodec.Connect()
 		if err != nil {
-			sendResult(nil, errors.New("error opening connection"))
+			sendResult(nil, errors.Wrap(err, "error opening connection"))
 			return
 		}
 
 		searchResponse, err := m.sendGatewaySearchRequest()
 		if err != nil {
-			sendResult(nil, errors.New("error discovering device capabilities"))
+			sendResult(nil, errors.Wrap(err, "error discovering device capabilities"))
 			return
 		}
 
@@ -237,7 +241,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			// As soon as we got a successful search-response back, send a connection request.
 			connectionResponse, err := m.sendGatewayConnectionRequest()
 			if err != nil {
-				sendResult(nil, errors.New("error connecting to device"))
+				sendResult(nil, errors.Wrap(err, "error connecting to device"))
 				return
 			}
 
@@ -253,9 +257,9 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			switch connectionResponse.Status {
 			case driverModel.Status_NO_ERROR:
 				// Save the KNX Address the Gateway assigned to us for this connection.
-				tunnelConnectionDataBlock :=
-					driverModel.CastConnectionResponseDataBlockTunnelConnection(
-						connectionResponse.ConnectionResponseDataBlock)
+				tunnelConnectionDataBlock := driverModel.CastConnectionResponseDataBlockTunnelConnection(
+					connectionResponse.ConnectionResponseDataBlock,
+				)
 				m.ClientKnxAddress = tunnelConnectionDataBlock.KnxAddress
 
 				// Create a go routine to handle incoming tunneling-requests which haven't been
@@ -263,7 +267,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// are being handled.
 				go func() {
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
-					for {
+					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
 						tunnelingRequest := driverModel.CastTunnelingRequest(incomingMessage)
 						if tunnelingRequest == nil {
@@ -273,41 +277,44 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							} else {
 								log.Warn().Msgf("Not a TunnelingRequest or TunnelingResponse message %v\n", incomingMessage)
 							}
+							continue
+						}
+
+						if tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
+							log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
+							continue
+						}
+
+						lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
+						if lDataInd == nil {
+							continue
+						}
+						// Get APDU, source and target address
+						lDataFrameData := driverModel.CastLDataExtended(lDataInd.DataFrame)
+						sourceAddress := lDataFrameData.SourceAddress
+
+						// If this is not an APDU, there is no need to further handle it.
+						if lDataFrameData.Apdu == nil {
+							continue
+						}
+
+						// If this is an incoming disconnect request, remove the device
+						// from the device connections, otherwise handle it as normal
+						// incoming message.
+						apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.Apdu)
+						if apduControlContainer != nil {
+							disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.ControlApdu)
+							if disconnectApdu != nil {
+								if m.DeviceConnections[*sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
+									// Remove the connection
+									delete(m.DeviceConnections, *sourceAddress)
+								}
+							}
 						} else {
-							if tunnelingRequest.TunnelingRequestDataBlock.CommunicationChannelId != m.CommunicationChannelId {
-								log.Warn().Msgf("Not for this connection %v\n", tunnelingRequest)
-								continue
-							}
-
-							lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi)
-							if lDataInd != nil {
-								// Get APDU, source and target address
-								lDataFrameData := driverModel.CastLDataExtended(lDataInd.DataFrame)
-								sourceAddress := lDataFrameData.SourceAddress
-
-								// If this is not an APDU, there is no need to further handle it.
-								if lDataFrameData.Apdu == nil {
-									continue
-								}
-
-								// If this is an incoming disconnect request, remove the device
-								// from the device connections, otherwise handle it as normal
-								// incoming message.
-								apduControlContainer := driverModel.CastApduControlContainer(lDataFrameData.Apdu)
-								if apduControlContainer != nil {
-									disconnectApdu := driverModel.CastApduControlDisconnect(apduControlContainer.ControlApdu)
-									if disconnectApdu != nil {
-										if m.DeviceConnections[*sourceAddress] != nil /* && m.ClientKnxAddress == Int8ArrayToKnxAddress(targetAddress)*/ {
-											// Remove the connection
-											delete(m.DeviceConnections, *sourceAddress)
-										}
-									}
-								} else {
-									m.handleIncomingTunnelingRequest(tunnelingRequest)
-								}
-							}
+							m.handleIncomingTunnelingRequest(tunnelingRequest)
 						}
 					}
+					log.Warn().Msg("Tunneling handler shat down")
 				}()
 
 				// Fire the "connected" event
@@ -354,8 +361,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Send a disconnect request from the gateway.
 		_, err := m.sendGatewayDisconnectionRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionCloseResult(m, errors.New(
-				fmt.Sprintf("got an error when disconnecting: %s", err.Error())))
+			result <- plc4go.NewPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
 		} else {
 			result <- plc4go.NewPlcConnectionCloseResult(m, nil)
 		}
@@ -385,8 +391,7 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		// Send the connection state request
 		_, err := m.sendConnectionStateRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionPingResult(errors.New(
-				fmt.Sprintf("got an error: %s", err.Error())))
+			result <- plc4go.NewPlcConnectionPingResult(errors.Wrap(err, "got an error"))
 		} else {
 			result <- plc4go.NewPlcConnectionPingResult(nil)
 		}
@@ -467,8 +472,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 	go func() {
 		groupAddressReadResponse, err := m.sendGroupAddressReadRequest(groupAddress)
 		if err != nil {
-			sendResponse(nil, 0, errors.New(
-				"error reading group address: "+err.Error()))
+			sendResponse(nil, 0, errors.Wrap(err, "error reading group address"))
 			return
 		}
 
@@ -490,7 +494,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 		// Parse the value
 		plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
 		if err != nil {
-			sendResponse(nil, 0, errors.New("error parsing group address response: "+err.Error()))
+			sendResponse(nil, 0, errors.Wrap(err, "error parsing group address response"))
 			return
 		}
 
@@ -524,8 +528,7 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 		// First send a connection request
 		controlConnectResponse, err := m.sendDeviceConnectionRequest(targetAddress)
 		if err != nil {
-			sendResponse(nil, errors.New(
-				"error creating device connection: "+err.Error()))
+			sendResponse(nil, errors.Wrap(err, "error creating device connection"))
 			return
 		}
 		if controlConnectResponse == nil {
@@ -573,6 +576,8 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 				// Return the result
 				if err == nil {
 					deviceApduSize = plcValue.GetUint16()
+				} else {
+					log.Debug().Err(err).Msgf("Error parsing knx property")
 				}
 			}
 		}
@@ -636,31 +641,27 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 			deviceConnectionResult := <-connections
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
-				sendResponse(errors.New(
-					"error connecting to device at: " +
-						KnxAddressToString(&targetAddress)))
+				sendResponse(errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)))
 			}
 		}
 
 		// If we successfully got a connection, read the property
-		if connection != nil {
-			authenticationLevel := uint8(0)
-			authenticationResponse, err := m.sendDeviceAuthentication(targetAddress, authenticationLevel, buildingKey)
-			if err == nil {
-				if authenticationResponse.Level == authenticationLevel {
-					sendResponse(nil)
-				} else {
-					// We authenticated correctly but not to the level requested.
-					sendResponse(errors.New("got error authenticating at device " +
-						KnxAddressToString(&targetAddress)))
-				}
+		if connection == nil {
+			sendResponse(errors.New("unable to connect to device"))
+			return
+		}
+		authenticationLevel := uint8(0)
+		authenticationResponse, err := m.sendDeviceAuthentication(targetAddress, authenticationLevel, buildingKey)
+		if err == nil {
+			if authenticationResponse.Level == authenticationLevel {
+				sendResponse(nil)
 			} else {
-				sendResponse(errors.New(
-					"got error authenticating at device " +
-						KnxAddressToString(&targetAddress)))
+				// We authenticated correctly but not to the level requested.
+				sendResponse(errors.Errorf("got error authenticating at device %s",
+					KnxAddressToString(&targetAddress)))
 			}
 		} else {
-			sendResponse(errors.New("unable to connect to device"))
+			sendResponse(errors.Errorf("got error authenticating at device %s", KnxAddressToString(&targetAddress)))
 		}
 	}()
 
@@ -690,51 +691,52 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			deviceConnectionResult := <-connections
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
-				sendResponse(nil, 0, errors.New(
-					"error connecting to device at: "+
-						KnxAddressToString(&targetAddress)))
+				sendResponse(nil,
+					0,
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+				)
 			}
 		}
 
 		// If we successfully got a connection, read the property
-		if connection != nil {
-			propertyValueResponse, err := m.sendDevicePropertyReadRequest(targetAddress, objectId, propertyId, propertyIndex, numElements)
-			if err != nil {
-				sendResponse(nil, 0, err)
-				return
-			}
+		if connection == nil {
+			sendResponse(nil, 0, errors.New("unable to connect to device"))
+			return
+		}
+		propertyValueResponse, err := m.sendDevicePropertyReadRequest(targetAddress, objectId, propertyId, propertyIndex, numElements)
+		if err != nil {
+			sendResponse(nil, 0, err)
+			return
+		}
 
-			// Find out the type of the property
-			var objectType *driverModel.KnxInterfaceObjectType
-			for curObjectType := driverModel.KnxInterfaceObjectType_OT_UNKNOWN; curObjectType <= driverModel.KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC; curObjectType++ {
-				if curObjectType.Code() == strconv.Itoa(int(objectId)) {
-					objectType = &curObjectType
+		// Find out the type of the property
+		var objectType *driverModel.KnxInterfaceObjectType
+		for curObjectType := driverModel.KnxInterfaceObjectType_OT_UNKNOWN; curObjectType <= driverModel.KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC; curObjectType++ {
+			if curObjectType.Code() == strconv.Itoa(int(objectId)) {
+				objectType = &curObjectType
+				break
+			}
+		}
+		property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
+		if objectType != nil {
+			for curProperty := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; curProperty <= driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; curProperty++ {
+				if curProperty.PropertyId() == propertyId &&
+					(curProperty.ObjectType() == driverModel.KnxInterfaceObjectType_OT_GENERAL ||
+						curProperty.ObjectType() == *objectType) {
+					property = curProperty
 					break
 				}
 			}
-			property := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN
-			if objectType != nil {
-				for curProperty := driverModel.KnxInterfaceObjectProperty_PID_UNKNOWN; curProperty <= driverModel.KnxInterfaceObjectProperty_PID_SUNBLIND_SENSOR_BASIC_ENABLE_TOGGLE_MODE; curProperty++ {
-					if curProperty.PropertyId() == propertyId {
-						if curProperty.ObjectType() == driverModel.KnxInterfaceObjectType_OT_GENERAL || curProperty.ObjectType() == *objectType {
-							property = curProperty
-							break
-						}
-					}
-				}
-			}
+		}
 
-			dataLength := uint8(len(propertyValueResponse.Data))
-			data := propertyValueResponse.Data
-			rb := utils.NewReadBuffer(data)
-			plcValue, err := driverModel.KnxPropertyParse(rb, property.PropertyDataType(), dataLength)
-			if err != nil {
-				sendResponse(nil, 0, err)
-			} else {
-				sendResponse(&plcValue, 1, err)
-			}
+		dataLength := uint8(len(propertyValueResponse.Data))
+		data := propertyValueResponse.Data
+		rb := utils.NewReadBuffer(data)
+		plcValue, err := driverModel.KnxPropertyParse(rb, property.PropertyDataType(), dataLength)
+		if err != nil {
+			sendResponse(nil, 0, err)
 		} else {
-			sendResponse(nil, 0, errors.New("unable to connect to device"))
+			sendResponse(&plcValue, 1, err)
 		}
 	}()
 
@@ -764,31 +766,33 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 			deviceConnectionResult := <-connections
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
-				sendResponse(nil, 0, errors.New(
-					"error connecting to device at: "+
-						KnxAddressToString(&targetAddress)))
+				sendResponse(
+					nil,
+					0,
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+				)
 			}
 		}
 
-		// If we successfully got a connection, read the property
-		if connection != nil {
-			propertyDescriptionResponse, err := m.sendDevicePropertyDescriptionReadRequest(targetAddress, objectId, propertyId)
-			if err != nil {
-				sendResponse(nil, 0, err)
-				return
-			}
-
-			val := map[string]values.PlcValue{}
-			val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.WriteEnabled)
-			val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.PropertyDataType.Name())
-			val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.MaxNrOfElements)
-			val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.ReadLevel.String())
-			val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.WriteLevel.String())
-			str := values2.NewPlcStruct(val)
-			sendResponse(&str, 1, nil)
-		} else {
+		if connection == nil {
 			sendResponse(nil, 0, errors.New("unable to connect to device"))
+			return
 		}
+		// If we successfully got a connection, read the property
+		propertyDescriptionResponse, err := m.sendDevicePropertyDescriptionReadRequest(targetAddress, objectId, propertyId)
+		if err != nil {
+			sendResponse(nil, 0, err)
+			return
+		}
+
+		val := map[string]values.PlcValue{}
+		val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.WriteEnabled)
+		val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.PropertyDataType.Name())
+		val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.MaxNrOfElements)
+		val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.ReadLevel.String())
+		val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.WriteLevel.String())
+		str := values2.NewPlcStruct(val)
+		sendResponse(&str, 1, nil)
 	}()
 
 	return result
@@ -823,64 +827,69 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 			deviceConnectionResult := <-connections
 			// If we didn't get a connect, abort
 			if deviceConnectionResult.err != nil {
-				sendResponse(nil, 0, errors.New(
-					"error connecting to device at: "+
-						KnxAddressToString(&targetAddress)))
+				sendResponse(
+					nil,
+					0,
+					errors.Wrapf(deviceConnectionResult.err, "error connecting to device at: %s", KnxAddressToString(&targetAddress)),
+				)
 			}
 		}
 
+		if connection == nil {
+			// TODO: do we need to send a response here
+			return
+		}
 		// If we successfully got a connection, read the property
-		if connection != nil {
-			// Depending on the gateway Max APDU and the device Max APDU, split this up into multiple requests.
-			// An APDU starts with the last 6 bits of the first data byte containing the count
-			// followed by the 16-bit address, so these are already used.
-			elementSize := datapointType.DatapointMainType().SizeInBits() / 8
-			remainingRequestElements := numElements
-			curStartingAddress := address
-			var results []values.PlcValue
-			for remainingRequestElements > 0 {
-				// As the maxApdu can change, we have to do this in the loop.
-				maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
-				maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
-				numElements := uint8(math.Min(float64(remainingRequestElements), float64(maxNumElementsPerRequest)))
-				numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
-				memoryReadResponse, err := m.sendDeviceMemoryReadRequest(targetAddress, curStartingAddress, numBytes)
+		// Depending on the gateway Max APDU and the device Max APDU, split this up into multiple requests.
+		// An APDU starts with the last 6 bits of the first data byte containing the count
+		// followed by the 16-bit address, so these are already used.
+		elementSize := datapointType.DatapointMainType().SizeInBits() / 8
+		remainingRequestElements := numElements
+		curStartingAddress := address
+		var results []values.PlcValue
+		for remainingRequestElements > 0 {
+			// As the maxApdu can change, we have to do this in the loop.
+			maxNumBytes := uint8(math.Min(float64(connection.maxApdu-3), float64(63)))
+			maxNumElementsPerRequest := uint8(math.Floor(float64(maxNumBytes / elementSize)))
+			numElements := uint8(math.Min(float64(remainingRequestElements), float64(maxNumElementsPerRequest)))
+			numBytes := numElements * uint8(math.Max(float64(1), float64(datapointType.DatapointMainType().SizeInBits()/8)))
+			memoryReadResponse, err := m.sendDeviceMemoryReadRequest(targetAddress, curStartingAddress, numBytes)
+			if err != nil {
+				// TODO: do we need to send a response here
+				return
+			}
+
+			// If the number of bytes read is less than expected,
+			// Update the connection.maxApdu value. This is required
+			// as some devices seem to be sending back less than the
+			// number of bytes specified than the maxApdu.
+			if uint8(len(memoryReadResponse.Data)) < numBytes {
+				connection.maxApdu = uint16(len(memoryReadResponse.Data) + 3)
+			}
+
+			// Parse the data according to the property type information
+			rb := utils.NewReadBuffer(memoryReadResponse.Data)
+			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
+				plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
+				// Return the result
 				if err != nil {
+					sendResponse(nil, 0, err)
 					return
 				}
+				results = append(results, plcValue)
 
-				// If the number of bytes read is less than expected,
-				// Update the connection.maxApdu value. This is required
-				// as some devices seem to be sending back less than the
-				// number of bytes specified than the maxApdu.
-				if uint8(len(memoryReadResponse.Data)) < numBytes {
-					connection.maxApdu = uint16(len(memoryReadResponse.Data) + 3)
-				}
-
-				// Parse the data according to the property type information
-				rb := utils.NewReadBuffer(memoryReadResponse.Data)
-				for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-					plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
-					// Return the result
-					if err != nil {
-						sendResponse(nil, 0, err)
-						return
-					}
-					results = append(results, plcValue)
-
-					// Update the counters and addresses.
-					remainingRequestElements--
-					curStartingAddress = curStartingAddress + uint16(elementSize)
-				}
-				// If there are still remaining bytes, keep them for the next time.
+				// Update the counters and addresses.
+				remainingRequestElements--
+				curStartingAddress = curStartingAddress + uint16(elementSize)
 			}
-			if len(results) > 1 {
-				var plcList values.PlcValue
-				plcList = values2.NewPlcList(results)
-				sendResponse(&plcList, 1, nil)
-			} else if len(results) == 1 {
-				sendResponse(&results[0], 1, nil)
-			}
+			// If there are still remaining bytes, keep them for the next time.
+		}
+		if len(results) > 1 {
+			var plcList values.PlcValue
+			plcList = values2.NewPlcList(results)
+			sendResponse(&plcList, 1, nil)
+		} else if len(results) == 1 {
+			sendResponse(&results[0], 1, nil)
 		}
 	}()
 
@@ -902,12 +911,13 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
-		return nil, errors.New("error getting local address: " + err.Error())
+		return nil, errors.Wrap(err, "error getting local address")
 	}
 
 	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
 	discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
-		driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
+		driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port),
+	)
 	searchRequest := driverModel.NewSearchRequest(discoveryEndpoint)
 
 	result := make(chan *driverModel.SearchResponse)
@@ -927,13 +937,13 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing search request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending search request: %s", err))
+		return nil, errors.Wrap(err, "got error sending search request")
 	}
 
 	select {
@@ -947,7 +957,7 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
-		return nil, errors.New("error getting local address: " + err.Error())
+		return nil, errors.Wrap(err, "error getting local address")
 	}
 
 	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
@@ -974,13 +984,13 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -994,7 +1004,7 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
-		return nil, errors.New("error getting local address: " + err.Error())
+		return nil, errors.Wrap(err, "error getting local address")
 	}
 
 	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
@@ -1003,7 +1013,9 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 		driverModel.NewHPAIControlEndpoint(
 			driverModel.HostProtocolCode_IPV4_UDP,
 			localAddr,
-			uint16(localAddress.Port)))
+			uint16(localAddress.Port),
+		),
+	)
 
 	result := make(chan *driverModel.DisconnectResponse)
 	errorResult := make(chan error)
@@ -1022,13 +1034,13 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1042,7 +1054,7 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateResponse, error) {
 	localAddress, err := m.getLocalAddress()
 	if err != nil {
-		return nil, errors.New("error getting local address: " + err.Error())
+		return nil, errors.Wrap(err, "error getting local address")
 	}
 
 	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
@@ -1069,13 +1081,13 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1090,12 +1102,23 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []int8) (*driverMo
 	// Send the property read request and wait for a confirmation that this property is readable.
 	groupAddressReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(true, 6, 0,
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				true,
+				6,
+				0,
 				m.ClientKnxAddress, groupAddress,
-				driverModel.NewApduDataContainer(
-					driverModel.NewApduDataGroupValueRead(), false, 0),
-				true, true, driverModel.CEMIPriority_LOW, false, false)))
+				driverModel.NewApduDataContainer(driverModel.NewApduDataGroupValueRead(), false, 0),
+				true,
+				true,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataGroupValueResponse)
 	errorResult := make(chan error)
@@ -1141,13 +1164,13 @@ func (m *Connection) sendGroupAddressReadRequest(groupAddress []int8) (*driverMo
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1162,11 +1185,23 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 	// Send a connection request to the individual KNX device
 	deviceConnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, uint8(0),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), false, 0),
-				true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
+				true,
+				true,
+				driverModel.CEMIPriority_SYSTEM,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduControlConnect)
 	errorResult := make(chan error)
@@ -1207,7 +1242,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 
 			// If the error flag is set, there was an error connecting
 			if lDataCon.DataFrame.ErrorFlag {
-				errorResult <- errors.New("error connecting to device at: " + KnxAddressToString(&targetAddress))
+				errorResult <- errors.Errorf("error connecting to device at: %s", KnxAddressToString(&targetAddress))
 			} else {
 				result <- apduControlConnect
 			}
@@ -1219,13 +1254,13 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1240,11 +1275,23 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 	// Send a connection request to the individual KNX device
 	deviceDisconnectionRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, uint8(0),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect(), false, 0),
-				true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
+				true,
+				true,
+				driverModel.CEMIPriority_SYSTEM,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduControlDisconnect)
 	errorResult := make(chan error)
@@ -1286,7 +1333,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 
 			// If the error flag is set, there was an error disconnecting
 			if lDataCon.DataFrame.ErrorFlag {
-				errorResult <- errors.New("error disconnecting from device at: " + KnxAddressToString(&targetAddress))
+				errorResult <- errors.Errorf("error disconnecting from device at: %s", KnxAddressToString(&targetAddress))
 			} else {
 				result <- apduControlDisconnect
 			}
@@ -1298,13 +1345,13 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1328,13 +1375,27 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 	connection.counter++
 	deviceAuthenticationRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, uint8(0),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(driverModel.NewApduDataOther(
 					driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey))),
-					true, counter),
-				true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
+					true,
+					counter,
+				),
+				true,
+				true,
+				driverModel.CEMIPriority_SYSTEM,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataExtAuthorizeResponse)
 	errorResult := make(chan error)
@@ -1395,7 +1456,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 				if lDataInd.DataFrame.ErrorFlag {
 					errorResult <- errors.New("error authenticating at device: " + KnxAddressToString(&targetAddress))
 				} else if err != nil {
-					errorResult <- errors.New("error sending ack to device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
 				} else {
 					result <- apduAuthorizeResponse
 				}
@@ -1408,13 +1469,13 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending request: %s", err))
+		return nil, errors.Wrap(err, "got error sending request")
 	}
 
 	select {
@@ -1430,13 +1491,25 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 	counter := m.getNextCounter(targetAddress)
 	deviceDescriptorReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, uint8(0),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataDeviceDescriptorRead(0), true, counter),
-				true, true, driverModel.CEMIPriority_LOW, false, false)))
+				true,
+				true,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataDeviceDescriptorResponse)
 	errorResult := make(chan error)
@@ -1487,7 +1560,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 				if lDataInd.DataFrame.ErrorFlag {
 					errorResult <- errors.New("error reading device descriptor from device: " + KnxAddressToString(&targetAddress))
 				} else if err != nil {
-					errorResult <- errors.New("error sending ack to device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
 				} else {
 					result <- deviceDescriptorResponse
 				}
@@ -1500,13 +1573,13 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending device descriptor read request: %s", err))
+		return nil, errors.Wrap(err, "got error sending device descriptor read request")
 	}
 
 	select {
@@ -1523,15 +1596,30 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 	counter := m.getNextCounter(targetAddress)
 	propertyReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, 0,
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				0,
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex)),
-					true, counter),
-				true, true, driverModel.CEMIPriority_LOW, false, false)))
+						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex),
+					),
+					true,
+					counter,
+				),
+				true,
+				true,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataExtPropertyValueResponse)
 	errorResult := make(chan error)
@@ -1587,7 +1675,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 				if lDataInd.DataFrame.ErrorFlag {
 					errorResult <- errors.New("error reading property value from device: " + KnxAddressToString(&targetAddress))
 				} else if err != nil {
-					errorResult <- errors.New("error sending ack to device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
 				} else {
 					result <- propertyValueResponse
 				}
@@ -1600,13 +1688,13 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending device property read request: %s", err))
+		return nil, errors.Wrap(err, "got error sending device property read request")
 	}
 
 	select {
@@ -1623,15 +1711,30 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 	counter := m.getNextCounter(targetAddress)
 	propertyReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, 0,
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				0,
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1)),
-					true, counter),
-				true, true, driverModel.CEMIPriority_LOW, false, false)))
+						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1),
+					),
+					true,
+					counter,
+				),
+				true,
+				true,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataExtPropertyDescriptionResponse)
 	errorResult := make(chan error)
@@ -1685,9 +1788,9 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
 				// If the error flag is set, there was an error authenticating
 				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.New("error reading property description from device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Errorf("error reading property description from device: %s", KnxAddressToString(&targetAddress))
 				} else if err != nil {
-					errorResult <- errors.New("error sending ack to device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Wrapf(err, "error sending ack to device: %s", KnxAddressToString(&targetAddress))
 				} else {
 					result <- propertyDescriptionResponse
 				}
@@ -1724,14 +1827,28 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 	// Send the property read request and wait for a confirmation that this property is readable.
 	propertyReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, 0,
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				0,
 				driverModel.NewKnxAddress(0, 0, 0),
 				KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataMemoryRead(numBytes, address),
-					true, counter),
-				true, true, driverModel.CEMIPriority_LOW, false, false)))
+					true,
+					counter,
+				),
+				true,
+				true,
+				driverModel.CEMIPriority_LOW,
+				false,
+				false,
+			),
+		),
+	)
 
 	result := make(chan *driverModel.ApduDataMemoryResponse)
 	errorResult := make(chan error)
@@ -1781,9 +1898,9 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 			_ = m.sendDeviceAck(targetAddress, dataFrameExt.Apdu.Counter, func(err error) {
 				// If the error flag is set, there was an error authenticating
 				if lDataInd.DataFrame.ErrorFlag {
-					errorResult <- errors.New("error reading memory from device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Errorf("error reading memory from device: %s", KnxAddressToString(&targetAddress))
 				} else if err != nil {
-					errorResult <- errors.New("error sending ack to device: " + KnxAddressToString(&targetAddress))
+					errorResult <- errors.Errorf("error sending ack to device: %s", KnxAddressToString(&targetAddress))
 				} else {
 					result <- dataApduMemoryResponse
 				}
@@ -1796,13 +1913,13 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			errorResult <- errors.New(fmt.Sprintf("got error processing request: %s", err))
+			errorResult <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
 		m.defaultTtl)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("got error sending memory read request: %s", err))
+		return nil, errors.Wrap(err, "got error sending memory read request")
 	}
 
 	select {
@@ -1816,11 +1933,23 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter uint8, callback func(err error)) error {
 	ack := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
-		driverModel.NewLDataReq(0, nil,
-			driverModel.NewLDataExtended(false, 6, uint8(0),
+		driverModel.NewLDataReq(
+			0,
+			nil,
+			driverModel.NewLDataExtended(
+				false,
+				6,
+				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), true, counter),
-				true, true, driverModel.CEMIPriority_SYSTEM, false, false)))
+				true,
+				true,
+				driverModel.CEMIPriority_SYSTEM,
+				false,
+				false,
+			),
+		),
+	)
 
 	err := m.messageCodec.SendRequest(
 		ack,
@@ -1869,7 +1998,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
-			callback(errors.New(fmt.Sprintf("got error processing request: %s", err)))
+			callback(errors.Wrap(err, "got error processing request"))
 			return nil
 		},
 		m.defaultTtl)
@@ -1900,48 +2029,52 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) *driverModel.IPAddress {
 func (m *Connection) handleIncomingTunnelingRequest(tunnelingRequest *driverModel.TunnelingRequest) {
 	go func() {
 		lDataInd := driverModel.CastLDataInd(tunnelingRequest.Cemi.Child)
-		if lDataInd != nil {
-			var destinationAddress []int8
-			switch lDataInd.DataFrame.Child.(type) {
-			case *driverModel.LDataExtended:
-				dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
-				destinationAddress = dataFrame.DestinationAddress
-				switch dataFrame.Apdu.Child.(type) {
-				case *driverModel.ApduDataContainer:
-					container := driverModel.CastApduDataContainer(dataFrame.Apdu)
-					switch container.DataApdu.Child.(type) {
-					case *driverModel.ApduDataGroupValueWrite:
-						groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
-						if destinationAddress != nil {
-							var payload []int8
-							payload = append(payload, groupValueWrite.DataFirstByte)
-							payload = append(payload, groupValueWrite.Data...)
-
-							m.handleValueCacheUpdate(destinationAddress, payload)
-						}
-					default:
-						// If this is an individual address and it is targeted at us, we need to ack that.
-						if !dataFrame.GroupAddress {
-							targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
-							if *targetAddress == *m.ClientKnxAddress {
-								log.Info().Msg("Acknowleding an unhandled data message.")
-								_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
-							}
-						}
+		if lDataInd == nil {
+			return
+		}
+		var destinationAddress []int8
+		switch lDataInd.DataFrame.Child.(type) {
+		case *driverModel.LDataExtended:
+			dataFrame := driverModel.CastLDataExtended(lDataInd.DataFrame)
+			destinationAddress = dataFrame.DestinationAddress
+			switch dataFrame.Apdu.Child.(type) {
+			case *driverModel.ApduDataContainer:
+				container := driverModel.CastApduDataContainer(dataFrame.Apdu)
+				switch container.DataApdu.Child.(type) {
+				case *driverModel.ApduDataGroupValueWrite:
+					groupValueWrite := driverModel.CastApduDataGroupValueWrite(container.DataApdu)
+					if destinationAddress == nil {
+						return
 					}
-				case *driverModel.ApduControlContainer:
+					var payload []int8
+					payload = append(payload, groupValueWrite.DataFirstByte)
+					payload = append(payload, groupValueWrite.Data...)
+
+					m.handleValueCacheUpdate(destinationAddress, payload)
+				default:
+					if dataFrame.GroupAddress {
+						return
+					}
 					// If this is an individual address and it is targeted at us, we need to ack that.
-					if !dataFrame.GroupAddress {
-						targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
-						if *targetAddress == *m.ClientKnxAddress {
-							log.Info().Msg("Acknowleding an unhandled contol message.")
-							_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
-						}
+					targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+					if *targetAddress == *m.ClientKnxAddress {
+						log.Info().Msg("Acknowleding an unhandled data message.")
+						_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
 					}
 				}
-			default:
-				log.Info().Msg("Unknown unhandled message.")
+			case *driverModel.ApduControlContainer:
+				if dataFrame.GroupAddress {
+					return
+				}
+				// If this is an individual address and it is targeted at us, we need to ack that.
+				targetAddress := Int8ArrayToKnxAddress(dataFrame.DestinationAddress)
+				if *targetAddress == *m.ClientKnxAddress {
+					log.Info().Msg("Acknowleding an unhandled contol message.")
+					_ = m.sendDeviceAck(*dataFrame.SourceAddress, dataFrame.Apdu.Counter, func(err error) {})
+				}
 			}
+		default:
+			log.Info().Msg("Unknown unhandled message.")
 		}
 	}()
 }
@@ -1995,12 +2128,14 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 			return uint8(groupAddressNumLevels)
 		}
 	}
+	// TODO: document magic number
 	return 3
 }
 
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
+			log.Debug().Msgf("Subscriber %v already added", subscriber)
 			return
 		}
 	}
@@ -2015,6 +2150,7 @@ func (m *Connection) removeSubscriber(subscriber *Subscriber) {
 	}
 }
 
+// TODO: we can replace this with reflect.DeepEqual()
 func (m *Connection) sliceEqual(a, b []int8) bool {
 	if len(a) != len(b) {
 		return false
@@ -2061,12 +2197,12 @@ func (m *Connection) getNextCounter(targetAddress driverModel.KnxAddress) uint8 
 	}
 	counter := connection.counter
 	connection.counter++
-	if connection.counter == 16 {
+	if connection.counter >= 16 {
 		connection.counter = 0
 	}
 	return counter
 }
 
 func KnxAddressToString(knxAddress *driverModel.KnxAddress) string {
-	return strconv.Itoa(int(knxAddress.MainGroup)) + "." + strconv.Itoa(int(knxAddress.MiddleGroup)) + "." + strconv.Itoa(int(knxAddress.SubGroup))
+	return fmt.Sprintf("%d.%d.%d", knxAddress.MainGroup, knxAddress.MiddleGroup, knxAddress.SubGroup)
 }
