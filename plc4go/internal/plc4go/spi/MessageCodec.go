@@ -86,6 +86,7 @@ type MessageCodec interface {
 	GetDefaultIncomingMessageChannel() chan interface{}
 }
 
+// DefaultCodecRequiredInterface adds required methods to MessageCodec that are needed when using DefaultCodec
 type DefaultCodecRequiredInterface interface {
 	MessageCodec
 	TimeoutExpectations(now time.Time)
@@ -93,6 +94,7 @@ type DefaultCodecRequiredInterface interface {
 	Receive() (interface{}, error)
 }
 
+// DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
 type DefaultCodec struct {
 	DefaultCodecRequiredInterface
 	TransportInstance             transports.TransportInstance
