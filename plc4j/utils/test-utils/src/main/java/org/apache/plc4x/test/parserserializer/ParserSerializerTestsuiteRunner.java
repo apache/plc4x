@@ -25,6 +25,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.test.XmlTestsuiteRunner;
+import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
+import org.apache.plc4x.test.dom4j.LocationAwareElement;
+import org.apache.plc4x.test.dom4j.LocationAwareSAXReader;
+import org.apache.plc4x.test.mapper.TestSuiteMappingModule;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
 import org.apache.plc4x.test.parserserializer.model.ParserSerializerTestsuite;
 import org.apache.plc4x.test.parserserializer.model.Testcase;
@@ -33,6 +38,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
@@ -40,50 +46,51 @@ import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.util.*;
 
-public class ParserSerializerTestsuiteRunner {
+public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
 
-    private final String testsuiteDocument;
+    private final Set<String> ignoredTestCases = new HashSet<>();
 
-    public ParserSerializerTestsuiteRunner(String testsuiteDocument) {
-        this.testsuiteDocument = testsuiteDocument;
+    public ParserSerializerTestsuiteRunner(String testsuiteDocument, String... ignoredTestCases) {
+        super(testsuiteDocument);
+        Collections.addAll(this.ignoredTestCases, ignoredTestCases);
     }
 
     @TestFactory
-    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
-        ParserSerializerTestsuite testSuite = parseTestsuite(ParserSerializerTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
-        if(testSuite == null) {
-            throw new ParserSerializerTestsuiteException("Couldn't find testsuite document");
-        }
+    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException, URISyntaxException {
+        ParserSerializerTestsuite testSuite = parseTestsuite();
         List<DynamicTest> dynamicTests = new LinkedList<>();
-        for(Testcase testcase : testSuite.getTestcases()) {
+        for (Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
             String testcaseLabel = testSuite.getName() + ": " + testcaseName;
-            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, () ->
-                run(testSuite, testcase)
+            DynamicTest test = DynamicTest.dynamicTest(testcaseLabel, getSourceUri(testcase), () -> {
+                    Assumptions.assumeFalse(() -> ignoredTestCases.contains(testcaseName), "Testcase " + testcaseName + " ignored");
+                    run(testSuite, testcase);
+                }
             );
             dynamicTests.add(test);
         }
         return dynamicTests;
     }
 
-    private ParserSerializerTestsuite parseTestsuite(InputStream testsuiteDocumentXml) throws ParserSerializerTestsuiteException {
+    private ParserSerializerTestsuite parseTestsuite() throws ParserSerializerTestsuiteException {
         try {
-            SAXReader reader = new SAXReader();
+            SAXReader reader = new LocationAwareSAXReader();
+            reader.setDocumentFactory(new LocationAwareDocumentFactory());
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
             boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
             Element testsuiteName = testsuiteXml.element(new QName("name"));
             List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
             List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
-            for(Element testcaseXml : testcasesXml) {
+            for (Element testcaseXml : testcasesXml) {
                 Element nameElement = testcaseXml.element(new QName("name"));
                 Element descriptionElement = testcaseXml.element(new QName("description"));
                 Element rawElement = testcaseXml.element(new QName("raw"));
@@ -98,13 +105,18 @@ public class ParserSerializerTestsuiteRunner {
 
                 // Parse additional parser arguments.
                 List<String> parserArguments = new LinkedList<>();
-                if(parserArgumentsElement != null) {
+                if (parserArgumentsElement != null) {
                     for (Element element : parserArgumentsElement.elements()) {
                         parserArguments.add(element.getTextTrim());
                     }
                 }
 
-                testcases.add(new Testcase(name, description, raw, rootType, parserArguments, xmlElement));
+                Testcase testcase = new Testcase(name, description, raw, rootType, parserArguments, xmlElement);
+                if (testcaseXml instanceof LocationAwareElement) {
+                    // pass source location to test
+                    testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
+                }
+                testcases.add(testcase);
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
             return new ParserSerializerTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
@@ -116,7 +128,7 @@ public class ParserSerializerTestsuiteRunner {
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-        ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+        ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
         ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
 
@@ -125,21 +137,21 @@ public class ParserSerializerTestsuiteRunner {
             Object msg = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());
             String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
-            if(diff.hasDifferences()) {
+            if (diff.hasDifferences()) {
                 System.out.println(xmlString);
                 throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
             WriteBuffer writeBuffer = new WriteBuffer(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
-            if(testcase.getRaw().length != data.length) {
+            if (testcase.getRaw().length != data.length) {
                 LOGGER.info("Expected a byte array with a length of " + testcase.getRaw().length +
                     " but got one with " + data.length);
             }
-            if(!Arrays.equals(testcase.getRaw(), data)) {
+            if (!Arrays.equals(testcase.getRaw(), data)) {
                 int i;
-                for(i = 0; i < data.length; i++) {
-                    if(data[i] != testcase.getRaw()[i]) {
+                for (i = 0; i < data.length; i++) {
+                    if (data[i] != testcase.getRaw()[i]) {
                         break;
                     }
                 }
@@ -166,22 +178,22 @@ public class ParserSerializerTestsuiteRunner {
             Method serializeMethodTmp = null;
             final List<Class<?>> parameterTypes = new LinkedList<>();
             for (Method method : ioClass.getMethods()) {
-                if(method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) &&
+                if (method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) &&
                     (method.getReturnType() == ioRootClass)) {
                     parseMethodTmp = method;
 
                     // Get a list of additional parameter types for the parser.
-                    for(int i = 1; i < method.getParameterCount(); i++) {
+                    for (int i = 1; i < method.getParameterCount(); i++) {
                         Class<?> parameterType = parseMethodTmp.getParameterTypes()[i];
                         parameterTypes.add(parameterType);
                     }
                 }
-                if(method.getName().equals("staticSerialize") && Modifier.isStatic(method.getModifiers()) &&
+                if (method.getName().equals("staticSerialize") && Modifier.isStatic(method.getModifiers()) &&
                     (method.getParameterTypes()[1] == ioRootClass)) {
                     serializeMethodTmp = method;
                 }
             }
-            if((parseMethodTmp == null) || (serializeMethodTmp == null)) {
+            if ((parseMethodTmp == null) || (serializeMethodTmp == null)) {
                 throw new ParserSerializerTestsuiteException(
                     "Unable to instantiate IO component. Missing static parse or serialize methods.");
             }

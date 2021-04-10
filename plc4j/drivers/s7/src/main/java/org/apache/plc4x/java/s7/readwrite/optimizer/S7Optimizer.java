@@ -87,8 +87,8 @@ public class S7Optimizer extends BaseOptimizer {
                     ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_READ_REQUEST_SIZE;
-                curResponseSize = EMPTY_READ_RESPONSE_SIZE;
+                curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
+                curResponseSize = EMPTY_READ_RESPONSE_SIZE + readResponseItemSize;
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.

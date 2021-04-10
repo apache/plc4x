@@ -19,15 +19,18 @@
 
 package org.apache.plc4x.language.java;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -47,12 +50,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     public String getLanguageTypeNameForField(Field field) {
         boolean optional = field instanceof OptionalField;
         // If the referenced type is a DataIo type, the value is of type PlcValue.
-        if(field instanceof PropertyField) {
+        if (field instanceof PropertyField) {
             PropertyField propertyField = (PropertyField) field;
-            if(propertyField.getType() instanceof ComplexTypeReference) {
+            if (propertyField.getType() instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
                 final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
-                if(typeDefinition instanceof DataIoTypeDefinition) {
+                if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
             }
@@ -73,8 +76,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(typeReference, false);
     }
 
+    public String adjustLiterals(String javaType, String value) {
+        switch (javaType) {
+            case "long":
+            case "Long":
+                return value + "L";
+            default:
+                return value;
+        }
+    }
+
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
-        if(typeReference instanceof SimpleTypeReference) {
+        if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
@@ -145,7 +158,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
-        if(typeReference instanceof SimpleTypeReference) {
+        if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
@@ -214,7 +227,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     @Override
     public String getNullValueForTypeReference(TypeReference typeReference) {
-        if(typeReference instanceof SimpleTypeReference) {
+        if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
@@ -301,7 +314,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    @Override
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.readBit()";
@@ -353,7 +367,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.readString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.readString(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
             }
         }
@@ -361,7 +375,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.writeBit((boolean) " + fieldName + ")";
@@ -401,7 +415,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-
                 if (floatTypeReference.getSizeInBits() <= 32) {
                     return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
@@ -412,7 +425,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.writeString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.writeString(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + ", \"" +
                     stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
             }
         }
@@ -431,7 +444,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getReservedValue(ReservedField reservedField) {
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType(), true);
-        if("BigInteger".equals(languageTypeName)) {
+        if ("BigInteger".equals(languageTypeName)) {
             return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
         } else {
             return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
@@ -489,27 +502,27 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return toExpression(field, term, term1 -> toVariableParseExpression(field, term1, parserArguments));
     }
 
-    public String toSerializationExpression(TypedField field, Term term, Argument[] parserArguments) {
-        return toExpression(field, term, term1 -> toVariableSerializationExpression(field, term1, parserArguments));
+    public String toSerializationExpression(TypedField field, Term term, Argument[] serializerArgments) {
+        return toExpression(field, term, term1 -> toVariableSerializationExpression(field, term1, serializerArgments));
     }
 
     private String toExpression(TypedField field, Term term, Function<Term, String> variableExpressionGenerator) {
-        if(term == null) {
+        if (term == null) {
             return "";
         }
-        if(term instanceof Literal) {
-            if(term instanceof NullLiteral) {
+        if (term instanceof Literal) {
+            if (term instanceof NullLiteral) {
                 return "null";
-            } else if(term instanceof BooleanLiteral) {
+            } else if (term instanceof BooleanLiteral) {
                 return Boolean.toString(((BooleanLiteral) term).getValue());
-            } else if(term instanceof NumericLiteral) {
+            } else if (term instanceof NumericLiteral) {
                 return ((NumericLiteral) term).getNumber().toString();
-            } else if(term instanceof StringLiteral) {
+            } else if (term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
-            } else if(term instanceof VariableLiteral) {
+            } else if (term instanceof VariableLiteral) {
                 VariableLiteral variableLiteral = (VariableLiteral) term;
                 // If this literal references an Enum type, then we have to output it differently.
-                if(getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                     return variableLiteral.getName() + "." + variableLiteral.getChild().getName() +
                         ((variableLiteral.getChild().getChild() != null) ?
                             "." + toVariableExpressionRest(variableLiteral.getChild().getChild()) : "");
@@ -522,7 +535,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (term instanceof UnaryTerm) {
             UnaryTerm ut = (UnaryTerm) term;
             Term a = ut.getA();
-            switch(ut.getOperation()) {
+            switch (ut.getOperation()) {
                 case "!":
                     return "!(" + toExpression(field, a, variableExpressionGenerator) + ")";
                 case "-":
@@ -545,11 +558,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
-            if("if".equals(tt.getOperation())) {
+            if ("if".equals(tt.getOperation())) {
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                return "((" +  toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
+                return "((" + toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -561,18 +574,17 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private String toVariableParseExpression(TypedField field, Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
-        if("CAST".equals(vl.getName())) {
+        if ("CAST".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder(vl.getName());
-            if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
+            if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
             sb.append("(").append(toVariableParseExpression(field, vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-        }
-        else if("STATIC_CALL".equals(vl.getName())) {
+        } else if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
-            if(!(vl.getArgs().get(0) instanceof StringLiteral)) {
+            if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
                 throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
             }
             // Get the class and method name
@@ -580,17 +592,17 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             // Cut off the double-quotes
             methodName = methodName.substring(1, methodName.length() - 1);
             sb.append(methodName).append("(");
-            for(int i = 1; i < vl.getArgs().size(); i++) {
+            for (int i = 1; i < vl.getArgs().size(); i++) {
                 Term arg = vl.getArgs().get(i);
-                if(i > 1) {
+                if (i > 1) {
                     sb.append(", ");
                 }
-                if(arg instanceof VariableLiteral) {
+                if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" is the default name of the reader argument which is always available.
                     boolean isParserArg = "io".equals(va.getName());
                     boolean isTypeArg = "_type".equals(va.getName());
-                    if(!isParserArg && !isTypeArg && parserArguments != null) {
+                    if (!isParserArg && !isTypeArg && parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
                             if (parserArgument.getName().equals(va.getName())) {
                                 isParserArg = true;
@@ -598,11 +610,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             }
                         }
                     }
-                    if(isParserArg) {
+                    if (isParserArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
                     }
                     // We have to manually evaluate the type information at code-generation time.
-                    else if(isTypeArg) {
+                    else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -621,21 +633,25 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     } else {
                         sb.append(toVariableParseExpression(field, va, null));
                     }
-                } else if(arg instanceof StringLiteral) {
+                } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
                 }
             }
             sb.append(")");
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        else if (isVariableLiteralImplicitField(vl)) {
+            return vl.getName();
+        }
         // All uppercase names are not fields, but utility methods.
-        else if(vl.getName().equals(vl.getName().toUpperCase())) {
+        else if (vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder(vl.getName());
-            if(vl.getArgs() != null) {
+            if (vl.getArgs() != null) {
                 sb.append("(");
                 boolean firstArg = true;
-                for(Term arg : vl.getArgs()) {
-                    if(!firstArg) {
+                for (Term arg : vl.getArgs()) {
+                    if (!firstArg) {
                         sb.append(", ");
                     }
                     sb.append(toParseExpression(field, arg, parserArguments));
@@ -643,7 +659,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
                 sb.append(")");
             }
-            if(vl.getIndex() != VariableLiteral.NO_INDEX) {
+            if (vl.getIndex() != VariableLiteral.NO_INDEX) {
                 sb.append("[").append(vl.getIndex()).append("]");
             }
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
@@ -653,25 +669,25 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     private String toVariableSerializationExpression(TypedField field, Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
-        if("STATIC_CALL".equals(vl.getName())) {
+        if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
-            if(!(vl.getArgs().get(0) instanceof StringLiteral)) {
+            if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
                 throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
             }
             String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
             methodName = methodName.substring(1, methodName.length() - 1);
             sb.append(methodName).append("(");
-            for(int i = 1; i < vl.getArgs().size(); i++) {
+            for (int i = 1; i < vl.getArgs().size(); i++) {
                 Term arg = vl.getArgs().get(i);
-                if(i > 1) {
+                if (i > 1) {
                     sb.append(", ");
                 }
-                if(arg instanceof VariableLiteral) {
+                if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" and "_value" are always available in every parser.
                     boolean isSerializerArg = "io".equals(va.getName()) || "_value".equals(va.getName()) || "element".equals(va.getName());
                     boolean isTypeArg = "_type".equals(va.getName());
-                    if(!isSerializerArg && !isTypeArg && serialzerArguments != null) {
+                    if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
                         for (Argument serializerArgument : serialzerArguments) {
                             if (serializerArgument.getName().equals(va.getName())) {
                                 isSerializerArg = true;
@@ -679,9 +695,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             }
                         }
                     }
-                    if(isSerializerArg) {
+                    if (isSerializerArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                    } else if(isTypeArg) {
+                    } else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -698,9 +714,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                 break;
                         }
                     } else {
-                        sb.append(toVariableSerializationExpression(field, va, null));
+                        sb.append(toVariableSerializationExpression(field, va, serialzerArguments));
                     }
-                } else if(arg instanceof StringLiteral) {
+                } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
                 }
             }
@@ -708,21 +724,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return sb.toString();
         }
         // All uppercase names are not fields, but utility methods.
-        else if(vl.getName().equals(vl.getName().toUpperCase())) {
+        else if (vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder(vl.getName());
-            if(vl.getArgs() != null) {
+            if (vl.getArgs() != null) {
                 sb.append("(");
                 boolean firstArg = true;
-                for(Term arg : vl.getArgs()) {
-                    if(!firstArg) {
+                for (Term arg : vl.getArgs()) {
+                    if (!firstArg) {
                         sb.append(", ");
                     }
 
-                    if(arg instanceof VariableLiteral) {
+                    if (arg instanceof VariableLiteral) {
                         VariableLiteral va = (VariableLiteral) arg;
                         boolean isSerializerArg = "io".equals(va.getName());
                         boolean isTypeArg = "_type".equals(va.getName());
-                        if(!isSerializerArg && !isTypeArg && serialzerArguments != null) {
+                        if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
                             for (Argument serializerArgument : serialzerArguments) {
                                 if (serializerArgument.getName().equals(va.getName())) {
                                     isSerializerArg = true;
@@ -730,9 +746,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                 }
                             }
                         }
-                        if(isSerializerArg) {
+                        if (isSerializerArg) {
                             sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                        } else if(isTypeArg) {
+                        } else if (isTypeArg) {
                             String part = va.getChild().getName();
                             switch (part) {
                                 case "name":
@@ -749,9 +765,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                     break;
                             }
                         } else {
-                            sb.append(toVariableSerializationExpression(field, va, null));
+                            sb.append(toVariableSerializationExpression(field, va, serialzerArguments));
                         }
-                    } else if(arg instanceof StringLiteral) {
+                    } else if (arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
                     }
                     firstArg = false;
@@ -760,10 +776,14 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             return sb.toString();
         }
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+        else if (isVariableLiteralImplicitField(vl)) {
+            return toSerializationExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serialzerArguments);
+        }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
-        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName());
+        boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName()) || "size".equals(vl.getName());
         boolean isTypeArg = "_type".equals(vl.getName());
-        if(!isSerializerArg && !isTypeArg && serialzerArguments != null) {
+        if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
             for (Argument serializerArgument : serialzerArguments) {
                 if (serializerArgument.getName().equals(vl.getName())) {
                     isSerializerArg = true;
@@ -771,20 +791,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
             }
         }
-        if(isSerializerArg) {
+        if (isSerializerArg) {
             return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-        } else if(isTypeArg) {
+        } else if (isTypeArg) {
             String part = vl.getChild().getName();
             switch (part) {
                 case "name":
-                    return"\"" + field.getTypeName() + "\"";
+                    return "\"" + field.getTypeName() + "\"";
                 case "length":
-                    return"\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
+                    return "\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
                 case "encoding":
                     String encoding = ((StringTypeReference) field.getType()).getEncoding();
                     // Cut off the single quotes.
                     encoding = encoding.substring(1, encoding.length() - 1);
-                    return"\"" + encoding + "\"";
+                    return "\"" + encoding + "\"";
                 default:
                     return "";
             }
@@ -794,15 +814,22 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     private String toVariableExpressionRest(VariableLiteral vl) {
-        return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
-            ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        // length is kind of a keyword in mspec, so we shouldn't be naming variables length. if we ask for the length of a object we can just return length().
+        // This way we can get the length of a string when serializing
+        if (vl.getName().equals("length")) {
+            return vl.getName() + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+                ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        } else {
+            return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+                ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+        }
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, Argument[] parserArguments) {
         int sizeInBits = 0;
         StringBuilder sb = new StringBuilder("");
         for (Field field : complexTypeDefinition.getFields()) {
-            if(field instanceof ArrayField) {
+            if (field instanceof ArrayField) {
                 ArrayField arrayField = (ArrayField) field;
                 final SimpleTypeReference type = (SimpleTypeReference) arrayField.getType();
                 switch (arrayField.getLoopType()) {
@@ -816,16 +843,19 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                         // No terminated.
                         break;
                 }
-            } else if(field instanceof TypedField) {
+            } else if (field instanceof TypedField) {
                 TypedField typedField = (TypedField) field;
                 final TypeReference type = typedField.getType();
-                if(field instanceof ManualField) {
+                if (field instanceof ManualField) {
                     ManualField manualField = (ManualField) field;
                     sb.append("(").append(toSerializationExpression(null, manualField.getLengthExpression(), parserArguments)).append(") + ");
-                }
-                else if(type instanceof SimpleTypeReference) {
+                } else if (type instanceof SimpleTypeReference) {
                     SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
-                    sizeInBits += simpleTypeReference.getSizeInBits();
+                    if (simpleTypeReference instanceof StringTypeReference) {
+                        sb.append(toSerializationExpression(null, ((StringTypeReference) simpleTypeReference).getLengthExpression(), parserArguments)).append(" + ");
+                    } else {
+                        sizeInBits += simpleTypeReference.getSizeInBits();
+                    }
                 } else {
                     // No ComplexTypeReference supported.
                 }
@@ -835,16 +865,16 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String escapeValue(TypeReference typeReference, String valueString) {
-        if(valueString == null) {
+        if (valueString == null) {
             return null;
         }
-        if(typeReference instanceof SimpleTypeReference) {
+        if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
                 case UINT:
                 case INT:
                     // If it's a one character string and is numeric, output it as char.
-                    if(!NumberUtils.isParsable(valueString) && (valueString.length() == 1)) {
+                    if (!NumberUtils.isParsable(valueString) && (valueString.length() == 1)) {
                         return "'" + valueString + "'";
                     }
                     break;

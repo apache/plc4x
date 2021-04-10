@@ -1,0 +1,86 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+=== The Connection Cache concept
+
+There's an another version of pool manager with similar target but different implementation. 
+
+The idea behind this second pool driver is that a connection could be lost for a lot of external reason, without the possibility to handle those from the plc4x point of view (e.g. the cable is unplugged in a reading session). In the Cached Pool Manager every connection could be used for only a limited period of time, at the end the connection is no more valid and must be returned to the poll. 
+
+Even in the Cached Pool Manager, getting a connection from the pool is effortless so the typical live cycle of a connection is: 
+
+```
+Get a connection -> use the connection -> return the connection to the pool
+```
+
+In the Cached Pool Manager a watchdog will invalidate any open connection at the end of it's live time even if no answer came back from the PLC; in this case the library could continue to talk to the PLC with some other connections fetched from the pool. 
+
+Let explain this concept in more detail using the Cached Pool with an example:
+
+[source,java]
+----
+    public static void main(String[] args) throws Exception {
+        String connectionString = "s7://192.168.1.192";
+            PlcDriverManager manager = new PlcDriverManager();
+            PlcDriverManager cached = new CachedDriverManager(connectionString,() -> manager.getConnection(connectionString));
+            for (int i = 0; i < 10000; i++) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(500);
+                    try (PlcConnection conn = cached.getConnection(connectionString)) {
+                        if (conn.isConnected()){
+                            PlcReadRequest.Builder builder = conn.readRequestBuilder();
+                            builder.addItem("PollingValue", "%DB1:4.0:BOOL");
+                            PlcReadRequest readRequest = builder.build();
+                            PlcReadResponse syncResponse = readRequest.execute().get(2000, TimeUnit.MILLISECONDS);
+                            printResponse(syncResponse);
+                        } else {
+                            logger.info("PLC is not connected, let's try again to connect");
+                            conn.connect();
+                        }
+                    }
+                } catch (PlcConnectionException e){
+                    logger.error("Connection exception in trying to connect", e);
+                } catch (CancellationException  e){
+                    logger.error("Polling Thread canceled", e);
+                } catch (IllegalStateException e){
+                    logger.error("Error in Netty state machine", e);
+                } catch (ExecutionException e){
+                    logger.error("Interrupted Exception fired", e);
+                } catch (TimeoutException e) {
+                    logger.error("Timeout exception fired", e);
+                }
+            }
+        System.exit(0);
+    }
+----
+
+[NOTE]
+=====================================================================
+To use the Connection Cache you have to add to Maven the latest version of `plc4j-connection-cache` and import `CachedDriverManager` into your code 
+=====================================================================
+
+In this snippet of code there are some considerations that are worth to be underlined.
+
+* The `try-with-resources` statement (i.e. ``try (PlcConnection conn = cached.getConnection(connectionString))``) ensure that an open connection will be automatically closed and returned to the pool after the use. As said before if the connection get stuck for any reason, after a fixed amount of time will be killed by a software watchdog (i.e. the amount of time is now fixed to 5000 ms, will be configurable in the future);
+* Check if the PLC is connected before reading some data is always advisable (i.e. ``conn.isConnected()``) but this doesn't mean that the PLC will be ready to answer to the connection, it means that the initial handshake went good and plc4x has the needed information to talk with the PLC;
+* the use of `get()` must be done with a timeout (i.e. ``readRequest.execute().get(2000, TimeUnit.MILLISECONDS)``). After the timeout amount of time a `TimeoutException` will be fired. In the code this is trapped and signaled with a simple line of log. This case could happen because the PLC for some reason could decide to not answer or the physical connection could have some problem;
+* the `PlcConnectionException` is a connection error that could happen in the handshaking phase between the PLC4x library and the PLC. It's a generic error;
+* the `IllegalStateException` is a Netty library exception which could happen in some really troubled connection, mostly if a physical disconnection happen.
+
+All the others exceptions (i.e. `ExecutionException` and `CancellationException`) are thread java related exceptions; in this example these are caught to show how plc4x could be used to handle all the external problems that could happen in talking to a PLC and could recover from them.

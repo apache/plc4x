@@ -20,11 +20,11 @@ package model
 
 import (
 	"encoding/xml"
-	"errors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-    values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 )
 
 type DefaultPlcWriteRequestBuilder struct {
@@ -32,6 +32,9 @@ type DefaultPlcWriteRequestBuilder struct {
 	fieldHandler spi.PlcFieldHandler
 	valueHandler spi.PlcValueHandler
 	queries      map[string]string
+	queryNames   []string
+	fields       map[string]model.PlcField
+	fieldNames   []string
 	values       map[string]interface{}
 }
 
@@ -41,42 +44,58 @@ func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHan
 		fieldHandler: fieldHandler,
 		valueHandler: valueHandler,
 		queries:      map[string]string{},
+		queryNames:   make([]string, 0),
+		fields:       map[string]model.PlcField{},
+		fieldNames:   make([]string, 0),
 		values:       map[string]interface{}{},
 	}
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddItem(name string, query string, value interface{}) {
+func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) {
+	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.values[name] = value
 }
 
+func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) {
+	m.fieldNames = append(m.fieldNames, name)
+	m.fields[name] = field
+	m.values[name] = value
+}
+
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
-	fields := make(map[string]model.PlcField)
-	values := make(map[string]values.PlcValue)
-	for name, query := range m.queries {
+	// Parse the queries as well as pro
+	for _, name := range m.queryNames {
+		query := m.queries[name]
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
-			return nil, errors.New("Error parsing query: " + query + ". Got error: " + err.Error())
+			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
 		}
-		fields[name] = field
+		m.AddField(name, field, m.values[name])
+	}
+
+	// Process the values for fields.
+	plcValues := make(map[string]values.PlcValue)
+	for name, field := range m.fields {
 		value, err := m.valueHandler.NewPlcValue(field, m.values[name])
 		if err != nil {
-			return nil, errors.New("Error parsing value of type: " + field.GetTypeName() + ". Got error: " + err.Error())
+			return nil, errors.Wrapf(err, "Error parsing value of type: %s", field.GetTypeName())
 		}
-		values[name] = value
+		plcValues[name] = value
 	}
 	return DefaultPlcWriteRequest{
-		fields: fields,
-		values: values,
-		writer: m.writer,
+		fields:     m.fields,
+		fieldNames: m.fieldNames,
+		values:     plcValues,
+		writer:     m.writer,
 	}, nil
 }
 
 type DefaultPlcWriteRequest struct {
-	fields map[string]model.PlcField
-	values map[string]values.PlcValue
-	writer spi.PlcWriter
-	model.PlcWriteRequest
+	fields     map[string]model.PlcField
+	fieldNames []string
+	values     map[string]values.PlcValue
+	writer     spi.PlcWriter
 }
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
@@ -84,11 +103,7 @@ func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 }
 
 func (m DefaultPlcWriteRequest) GetFieldNames() []string {
-	var fieldNames []string
-	for fieldName, _ := range m.fields {
-		fieldNames = append(fieldNames, fieldName)
-	}
-	return fieldNames
+	return m.fieldNames
 }
 
 func (m DefaultPlcWriteRequest) GetField(name string) model.PlcField {
@@ -107,7 +122,8 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
 		return err
 	}
-	for fieldName, field := range m.fields {
+	for _, fieldName := range m.fieldNames {
+		field := m.fields[fieldName]
 		value := m.values[fieldName]
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err
@@ -128,7 +144,9 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 				if !subValue.IsString() {
 					return errors.New("value not serializable to string")
 				}
-				e.EncodeToken(xml.CharData(subValue.GetString()))
+				if err := e.EncodeToken(xml.CharData(subValue.GetString())); err != nil {
+					return err
+				}
 				if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
 					return err
 				}
@@ -140,7 +158,9 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 			if !value.IsString() {
 				return errors.New("value not serializable to string")
 			}
-			e.EncodeToken(xml.CharData(value.GetString()))
+			if err := e.EncodeToken(xml.CharData(value.GetString())); err != nil {
+				return err
+			}
 			if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
 				return err
 			}

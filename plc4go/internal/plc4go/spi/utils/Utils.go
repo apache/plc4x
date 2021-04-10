@@ -18,6 +18,7 @@
 //
 package utils
 
+// InlineIf is basically a inline if like construct for golang
 func InlineIf(test bool, a uint16, b uint16) uint16 {
 	if test {
 		return a

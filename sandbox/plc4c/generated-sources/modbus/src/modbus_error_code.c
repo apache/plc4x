@@ -32,12 +32,6 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
     if(strcmp(value_string, "ILLEGAL_FUNCTION") == 0) {
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_FUNCTION;
     }
-    if(strcmp(value_string, "GATEWAY_PATH_UNAVAILABLE") == 0) {
-        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_PATH_UNAVAILABLE;
-    }
-    if(strcmp(value_string, "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND") == 0) {
-        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND;
-    }
     if(strcmp(value_string, "ILLEGAL_DATA_ADDRESS") == 0) {
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_DATA_ADDRESS;
     }
@@ -59,6 +53,12 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
     if(strcmp(value_string, "MEMORY_PARITY_ERROR") == 0) {
         return plc4c_modbus_read_write_modbus_error_code_MEMORY_PARITY_ERROR;
     }
+    if(strcmp(value_string, "GATEWAY_PATH_UNAVAILABLE") == 0) {
+        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_PATH_UNAVAILABLE;
+    }
+    if(strcmp(value_string, "GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND") == 0) {
+        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND;
+    }
     return -1;
 }
 
@@ -72,31 +72,31 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_FUNCTION;
       }
       case 1: {
-        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_PATH_UNAVAILABLE;
-      }
-      case 2: {
-        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND;
-      }
-      case 3: {
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_DATA_ADDRESS;
       }
-      case 4: {
+      case 2: {
         return plc4c_modbus_read_write_modbus_error_code_ILLEGAL_DATA_VALUE;
       }
-      case 5: {
+      case 3: {
         return plc4c_modbus_read_write_modbus_error_code_SLAVE_DEVICE_FAILURE;
       }
-      case 6: {
+      case 4: {
         return plc4c_modbus_read_write_modbus_error_code_ACKNOWLEDGE;
       }
-      case 7: {
+      case 5: {
         return plc4c_modbus_read_write_modbus_error_code_SLAVE_DEVICE_BUSY;
       }
-      case 8: {
+      case 6: {
         return plc4c_modbus_read_write_modbus_error_code_NEGATIVE_ACKNOWLEDGE;
       }
-      case 9: {
+      case 7: {
         return plc4c_modbus_read_write_modbus_error_code_MEMORY_PARITY_ERROR;
+      }
+      case 8: {
+        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_PATH_UNAVAILABLE;
+      }
+      case 9: {
+        return plc4c_modbus_read_write_modbus_error_code_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND;
       }
       default: {
         return -1;

@@ -19,17 +19,17 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "strings"
+	"strings"
 )
 
 type PlcStruct struct {
 	values map[string]api.PlcValue
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
-func NewPlcStruct(value map[string]api.PlcValue) PlcStruct {
+func NewPlcStruct(value map[string]api.PlcValue) api.PlcValue {
 	return PlcStruct{
 		values: value,
 	}
@@ -66,17 +66,17 @@ func (m PlcStruct) GetStruct() map[string]api.PlcValue {
 }
 
 func (m PlcStruct) GetString() string {
-    var sb strings.Builder
-    sb.WriteString("PlcStruct{\n")
-    for fieldName, fieldValue := range m.values {
-        sb.WriteString("  ")
-        sb.WriteString(fieldName)
-        sb.WriteString(": \"")
-        sb.WriteString(fieldValue.GetString())
-        sb.WriteString("\"\n")
-    }
-    sb.WriteString("}")
-    return sb.String()
+	var sb strings.Builder
+	sb.WriteString("PlcStruct{\n")
+	for fieldName, fieldValue := range m.values {
+		sb.WriteString("  ")
+		sb.WriteString(fieldName)
+		sb.WriteString(": \"")
+		sb.WriteString(fieldValue.GetString())
+		sb.WriteString("\"\n")
+	}
+	sb.WriteString("}")
+	return sb.String()
 }
 
 func (m PlcStruct) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

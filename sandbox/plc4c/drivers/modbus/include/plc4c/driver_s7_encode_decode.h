@@ -28,7 +28,7 @@ extern "C" {
 #include <modbus_pdu.h>
 
 plc4c_return_code plc4c_driver_modbus_encode_address(
-    char* address, plc4c_modbus_read_write_modbus_pdu** item);
+    char* address, void** item);
 
 #ifdef __cplusplus
 }

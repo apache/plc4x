@@ -19,16 +19,16 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type PlcList struct {
 	Values []api.PlcValue
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
-func NewPlcList(values []api.PlcValue) PlcList {
+func NewPlcList(values []api.PlcValue) api.PlcValue {
 	return PlcList{
 		Values: values,
 	}

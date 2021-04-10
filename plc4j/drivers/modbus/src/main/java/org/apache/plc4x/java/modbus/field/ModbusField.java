@@ -40,7 +40,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
 
     private final int quantity;
 
-    private final String dataType;
+    private final ModbusDataType dataType;
 
     public static ModbusField of(String addressString) {
         if(ModbusFieldCoil.matches(addressString)) {
@@ -61,7 +61,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
-    protected ModbusField(int address, Integer quantity, String dataType) {
+    protected ModbusField(int address, Integer quantity, ModbusDataType dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
@@ -70,8 +70,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         if (this.quantity <= 0) {
             throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
-        this.dataType = dataType != null ? dataType : "INT";
-        ModbusDataTypeSizes.enumForValue(this.dataType);
+        this.dataType = dataType != null ? dataType : ModbusDataType.INT;
     }
 
     public int getAddress() {
@@ -83,25 +82,21 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
     }
 
     public int getLengthBytes() {
-        return quantity * ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
+        return quantity * dataType.getDataTypeSize();
     }
 
     @JsonIgnore
     public int getLengthWords() {
-        return (int) (quantity * ((float) ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize())/2.0f);
+        return (int) ((quantity * (float) dataType.getDataTypeSize())/2.0f);
     }
 
-    public String getDataType() {
+    public ModbusDataType getDataType() {
         return dataType;
     }
 
     @Override
     public String getPlcDataType() {
-        return dataType;
-    }
-
-    public int getDataTypeSize() {
-        return ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
+        return dataType.name();
     }
 
     @Override
@@ -144,7 +139,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
         messageElement.appendChild(quantityElement);
 
         Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getDataType()));
+        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
         messageElement.appendChild(datatypeElement);
     }
 

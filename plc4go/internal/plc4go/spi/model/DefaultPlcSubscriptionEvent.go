@@ -20,89 +20,88 @@ package model
 
 import (
 	"encoding/xml"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "time"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"time"
 )
 
 type DefaultPlcSubscriptionEvent struct {
-    fields        map[string]model.PlcField
-    types         map[string]SubscriptionType
-    intervals     map[string]time.Duration
-    responseCodes map[string]model.PlcResponseCode
-    values        map[string]values.PlcValue
-    model.PlcSubscriptionEvent
+	fields        map[string]model.PlcField
+	types         map[string]SubscriptionType
+	intervals     map[string]time.Duration
+	responseCodes map[string]model.PlcResponseCode
+	values        map[string]values.PlcValue
 }
 
 func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[string]SubscriptionType,
-    intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
-    values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
-    return DefaultPlcSubscriptionEvent{
-        fields:        fields,
-        types:         types,
-        intervals:     intervals,
-        responseCodes: responseCodes,
-        values:        values,
-    }
+	intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
+	values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
+	return DefaultPlcSubscriptionEvent{
+		fields:        fields,
+		types:         types,
+		intervals:     intervals,
+		responseCodes: responseCodes,
+		values:        values,
+	}
 }
 
 func (m DefaultPlcSubscriptionEvent) GetFieldNames() []string {
-    var fieldNames []string
-    for fieldName, _ := range m.fields {
-        fieldNames = append(fieldNames, fieldName)
-    }
-    return fieldNames
+	var fieldNames []string
+	for fieldName := range m.fields {
+		fieldNames = append(fieldNames, fieldName)
+	}
+	return fieldNames
 }
 
 func (m DefaultPlcSubscriptionEvent) GetField(name string) model.PlcField {
-    return m.fields[name]
+	return m.fields[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) GetType(name string) SubscriptionType {
-    return m.types[name]
+	return m.types[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
-    return m.intervals[name]
+	return m.intervals[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) GetResponseCode(name string) model.PlcResponseCode {
-    return m.responseCodes[name]
+	return m.responseCodes[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) GetAddress(name string) string {
-    panic("GetAddress not implemented")
+	panic("GetAddress not implemented")
 }
 
 func (m DefaultPlcSubscriptionEvent) GetValue(name string) values.PlcValue {
-    return m.values[name]
+	return m.values[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
-        return err
-    }
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+		return err
+	}
 
-    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
-        return err
-    }
-    for fieldName, field := range m.fields {
-        if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
-            return err
-        }
-        if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
-            return err
-        }
-        if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
-            return err
-        }
-    }
-    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
-        return err
-    }
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
+	for fieldName, field := range m.fields {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
 
-    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
-        return err
-    }
-    return nil
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+		return err
+	}
+	return nil
 }

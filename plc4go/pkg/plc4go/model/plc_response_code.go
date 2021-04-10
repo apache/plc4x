@@ -30,8 +30,9 @@ const (
 	PlcResponseCode_INTERNAL_ERROR   PlcResponseCode = 0x07
 	PlcResponseCode_REMOTE_BUSY      PlcResponseCode = 0x08
 	PlcResponseCode_REMOTE_ERROR     PlcResponseCode = 0x09
-	PlcResponseCode_UNSUPPORTED      PlcResponseCode = 0x010
+	PlcResponseCode_UNSUPPORTED      PlcResponseCode = 0x10
 	PlcResponseCode_RESPONSE_PENDING PlcResponseCode = 0x11
+	PlcResponseCode_REQUEST_TIMEOUT  PlcResponseCode = 0x12
 )
 
 func (m PlcResponseCode) GetName() string {
@@ -58,6 +59,9 @@ func (m PlcResponseCode) GetName() string {
 		return "UNSUPPORTED"
 	case PlcResponseCode_RESPONSE_PENDING:
 		return "RESPONSE_PENDING"
+	case PlcResponseCode_REQUEST_TIMEOUT:
+		return "REQUEST_TIMEOUT"
+	default:
+		return ""
 	}
-	return ""
 }

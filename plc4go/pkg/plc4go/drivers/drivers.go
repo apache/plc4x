@@ -19,15 +19,24 @@
 package drivers
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
 
+func RegisterAdsDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(ads.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
+}
+
 func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(knxnetip.NewKnxNetIpDriver())
+	driverManager.RegisterDriver(knxnetip.NewDriver())
+	transports.RegisterUdpTransport(driverManager)
 }
 
 func RegisterModbusDriver(driverManager plc4go.PlcDriverManager) {
-	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterDriver(modbus.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
 }

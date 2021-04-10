@@ -87,7 +87,7 @@ typedef void (*plc4c_connect_free_unsubscription_response_function)(
     plc4c_unsubscription_response *response);
 
 typedef plc4c_return_code (*plc4c_transport_configure_function)(
-    plc4c_list* parameters, void** configuration);
+    char* transport_connect_information, plc4c_list* parameters, void** configuration);
 
 // TODO: Implement the argument.
 typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);
@@ -236,6 +236,7 @@ struct plc4c_data_t {
     char *pstring_value;
     char *const_string_value;
     void *pvoid_value;
+    plc4c_list list_value;
   } data;
 
   plc4c_data_custom_destroy custom_destroy;
@@ -294,6 +295,7 @@ struct plc4c_unsubscription_request_t {
 struct plc4c_read_request_execution_t {
   plc4c_read_request *read_request;
   plc4c_read_response *read_response;
+  plc4c_list_element* cur_item;
   plc4c_system_task *system_task;
 };
 

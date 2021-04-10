@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
@@ -43,8 +44,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
@@ -243,7 +242,7 @@ public class Plc4xSourceTask extends SourceTask {
         } else {
             try {
                 List<SourceRecord> result = new ArrayList<>(1);
-                SourceRecord temp = buffer.poll(pollReturnInterval, TimeUnit.MILLISECONDS);
+                SourceRecord temp = buffer.poll(pollReturnInterval + RandomUtils.nextInt(0, (int) Math.round(pollReturnInterval*0.05)), TimeUnit.MILLISECONDS);
                 if (temp == null) {
                     return null;
                 }

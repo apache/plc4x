@@ -33,23 +33,6 @@ enum plc4c_driver_s7_read_states {
   PLC4C_DRIVER_S7_READ_FINISHED
 };
 
-plc4c_return_code plc4c_driver_s7_read_list_to_byte_array(plc4c_list* list, uint8_t** array) {
-  size_t array_size = plc4c_utils_list_size(list);
-  uint8_t* byte_array = malloc(sizeof(uint8_t) * array_size);
-  if(byte_array == NULL) {
-    return NO_MEMORY;
-  }
-  uint8_t* cur_byte = byte_array;
-  plc4c_list_element* cur_element = list->tail;
-  for(int i = 0; i < array_size; i++) {
-    *cur_byte = (uint8_t) (cur_element->value);
-    cur_byte++;
-    cur_element = cur_element->next;
-  }
-  *array = byte_array;
-  return OK;
-}
-
 plc4c_return_code plc4c_driver_s7_read_machine_function(
     plc4c_system_task* task) {
   plc4c_read_request_execution* read_request_execution = task->context;
@@ -128,21 +111,25 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
         // request item. Also get the number of elements, if it's an array.
         plc4c_s7_read_write_s7_var_request_parameter_item* s7_address = cur_request_item->address;
         plc4c_s7_read_write_transport_size transport_size = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
-        uint8_t data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
+        char* data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
         uint16_t num_elements = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
         int32_t string_length = 0;
+        if(transport_size == plc4c_s7_read_write_transport_size_STRING) {
+          // TODO: This needs to be changed to read arrays of strings.
+          string_length = num_elements;
+          num_elements = 1;
+        }
 
         // Convert the linked list with uint8_t elements into an array of uint8_t.
         plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item = cur_response_item_element->value;
-        uint8_t* byte_array = NULL;
-        plc4c_return_code result = plc4c_driver_s7_read_list_to_byte_array(cur_response_item->data, &byte_array);
-        if(result != OK) {
-          return result;
+        uint8_t* byte_array = plc4c_list_to_byte_array(cur_response_item->data);
+        if(byte_array == NULL) {
+          return INTERNAL_ERROR;
         }
 
         // Create a new read-buffer for reading data from the uint8_t array.
         plc4c_spi_read_buffer* read_buffer;
-        result = plc4c_spi_read_buffer_create(byte_array, plc4c_utils_list_size(cur_response_item->data), &read_buffer);
+        enum plc4c_return_code result = plc4c_spi_read_buffer_create(byte_array, plc4c_utils_list_size(cur_response_item->data), &read_buffer);
         if(result != OK) {
           return result;
         }

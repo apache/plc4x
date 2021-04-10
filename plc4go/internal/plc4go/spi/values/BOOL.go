@@ -19,12 +19,12 @@
 package values
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 )
 
 type PlcBOOL struct {
 	value bool
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcBOOL(value bool) PlcBOOL {

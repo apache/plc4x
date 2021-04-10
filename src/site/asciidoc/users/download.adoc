@@ -21,8 +21,67 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
+[#release-0_8_0]
+==== 0.8.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.asc[ASC] ]
+
+This is an ordinary PLC4X release, containing changes that
+accumulated over time. It doesn't have an explicit focus on
+a particular topic.
+
+===== New Features
+
+- The KNXnet/IP Driver now supports writing of values.
+- The Modbus driver now supports more common notations of Modbus addresses using a pure-numeric notation.
+- The ADS, KNX, Modbus, S7 and simulated drivers have been updated to support the IEC 61131-3 data-types.
+- We are now including PLC4Go as PLC4X implementation in the programming language Go(lang)
+- Integration with the Milo OPC UA Server is now available.
+- Kafka Connect workers have been updated source and sink connectors are now included.
+
+===== Incompatible changes
+
+- The syntax of the S7 addresses changed slightly allowing to provide a string length. Without this, a STRING datatype will read 254 characters, by adding the size in round brackets to the type name will use the specified number.
+
+  Examples:
+
+  Read one String which is max 10 chars long:
+  %DB2:30:STRING(10)
+
+  Read an array of 3 Strings where each is max 10 chars long:
+  %DB2:30:STRING(10)[3]
+
+- The PLCValue types have been refactored to align with the types defined in IEC 61131-3 (https://en.wikipedia.org/wiki/IEC_61131-3) directly using the older Java types (PlcBoolean) is no longer possible.
+
+===== Bug Fixes
+
+A lot of testing was done regarding the IEC 61131-3 data-types.
+This resulted in numerous bugfixes in many protocols.
+
+- PLC4X-132  [S7] Communication to S7 PLC dies in some situations
+- PLC4X-206  When writing short values exceptions are thrown while preparing the write request.
+- PLC4X-207  No registered handler found for message TPKTPacket[], using default decode method - Communication with S7 and Modbus device hangs
+- PLC4X-209  [S7] When writing INT and DINT values the Write operation fails with an internal error
+- PLC4X-210  [KNX] When running a KNX Tunneling Subscription for a longer time there are packets that kill the connection
+- PLC4X-211  PlcValues seem to always return "true" on the isXYZ" checks.
+- PLC4X-212  When writing multiple values in one request the item status is not correctly set
+- PLC4X-213  [Modbus] The Modbus driver doesn't handle error responses gracefully
+- PLC4X-214  [Modbus] Holding register addresses have an offset of 1 (Not reading the correct address)
+- PLC4X-215  Drivers using the BaseOptimizer (SingleFieldOptimizer) don't handle error responses gracefully
+- PLC4X-218  [Scraper] After stopping the scraper still the statistics are logged and the application doesn't terminate
+- PLC4X-239  Read DTL (Date and Time)
+- PLC4X-240  Protocol error in reading string
+- PLC4X-246  S7 driver hangs on read
+- PLC4X-245  [Modbus] Apache NiFi processor throws java.io.IOException after a while
+- PLC4X-255  Kafka Connector Source Task doesn't block within poll() resulting in high CPU usage.
+- PLC4X-261  Pooled connection manager returns a connection that isn't connected in some situations.
+- PLC4X-272  When splitting up large requests, too big sub-requests are generated (S7)
+- PLC4X-256  ReadBuffer truncate last byte of even small payloads
+- PLC4X-262  Error in reading Array
+- PLC4X-270  Ads driver does not accept double-digit array indexes
+
+=== Previous Releases
+
 [#release-0_7_0]
-==== 0.7.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip.asc[ASC] ]
+==== 0.7.0 Official https://archive.apache.org/dist/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.7.0/apache-plc4x-0.7.0-source-release.zip.asc[ASC] ]
 
 This version is the first after a major refactoring of the driver
 core. All previous driver versions are now considered deprecated
@@ -63,8 +122,6 @@ provide both a feature.xml as well as a `kar` bundled archive
 - PLC4X-174  UDP Transport does not accept ports containing 0
 - PLC4X-134  S7 is terminating the connection during handshake
 - PLC4X-192  Support for conversion of complex connection string parameters
-
-=== Previous Releases
 
 [#release-0_6_0]
 ==== 0.6.0 Official https://archive.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.asc[ASC] ]

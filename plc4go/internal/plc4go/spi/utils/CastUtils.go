@@ -19,8 +19,9 @@
 package utils
 
 import (
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strconv"
-    "strings"
+	"strings"
 )
 
 func Int8ArrayToUint8Array(input []int8) []uint8 {
@@ -32,14 +33,14 @@ func Int8ArrayToUint8Array(input []int8) []uint8 {
 }
 
 func Int8ArrayToString(data []int8, separator string) string {
-    var sb strings.Builder
-    for i, element := range data {
-        sb.WriteString(strconv.Itoa(int(uint8(element))))
-        if i < (len(data) - 1) {
-            sb.WriteString(separator)
-        }
-    }
-    return sb.String()
+	var sb strings.Builder
+	for i, element := range data {
+		sb.WriteString(strconv.Itoa(int(uint8(element))))
+		if i < (len(data) - 1) {
+			sb.WriteString(separator)
+		}
+	}
+	return sb.String()
 }
 
 func Uint8ArrayToInt8Array(input []uint8) []int8 {
@@ -66,6 +67,22 @@ func ByteArrayToInt8Array(input []byte) []int8 {
 	return output
 }
 
+func ByteArrayToUint8Array(input []byte) []uint8 {
+	output := make([]uint8, len(input))
+	for i, _val := range input {
+		output[i] = _val
+	}
+	return output
+}
+
+func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
+	var result []byte
+	for _, valueItem := range value.GetList() {
+		result = append(result, valueItem.GetUint8())
+	}
+	return result
+}
+
 func StrToBool(str string) (bool, error) {
 	boolVal, err := strconv.ParseBool(str)
 	if err != nil {
@@ -88,4 +105,12 @@ func StrToUint16(str string) (uint16, error) {
 		return 0, err
 	}
 	return uint16(intVal), nil
+}
+
+func StrToUint32(str string) (uint32, error) {
+	intVal, err := strconv.ParseInt(str, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint32(intVal), nil
 }

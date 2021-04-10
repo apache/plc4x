@@ -21,7 +21,8 @@ package model
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 
 type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
+	AddQuery(name string, query string)
+	AddField(name string, field PlcField)
 	Build() (PlcReadRequest, error)
 }
 
@@ -33,16 +34,15 @@ type PlcReadRequestResult struct {
 
 type PlcReadRequest interface {
 	Execute() <-chan PlcReadRequestResult
-    GetFieldNames() []string
+	GetFieldNames() []string
 	GetField(name string) PlcField
 	PlcRequest
 }
 
 type PlcReadResponse interface {
-    GetRequest() PlcReadRequest
-    GetFieldNames() []string
-    GetResponseCode(name string) PlcResponseCode
-    GetValue(name string) values.PlcValue
-    PlcResponse
+	GetRequest() PlcReadRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	GetValue(name string) values.PlcValue
+	PlcResponse
 }
-

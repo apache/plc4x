@@ -40,6 +40,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE = "PLC4X_FORCE_AWAIT_SETUP_COMPLETE";
 
+    public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE = "PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE";
+
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
@@ -59,6 +61,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected boolean awaitSetupComplete() {
         return true;
+    }
+
+    protected boolean awaitDisconnectComplete() {
+        return false;
     }
 
     protected BaseOptimizer getOptimizer() {
@@ -138,6 +144,12 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
 
+        // Make the "await disconnect complete" overridable via system property.
+        boolean awaitDisconnectComplete = awaitDisconnectComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
+            awaitDisconnectComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE));
+        }
+
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
@@ -145,6 +157,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             configuration,
             channelFactory,
             awaitSetupComplete,
+            awaitDisconnectComplete,
             getStackConfigurer(),
             getOptimizer());
     }

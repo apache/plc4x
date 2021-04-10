@@ -75,7 +75,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<CANOpenFrame> {
 
     @Override
     protected String getDefaultTransport() {
-        return "javacan";
+        return "socketcan";
     }
 
     @Override
@@ -94,6 +94,15 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<CANOpenFrame> {
                 return super.newPlcValue(field, values);
             }
         };
+    }
+
+    /**
+     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitDisconnectComplete() {
+        return false;
     }
 
     @Override

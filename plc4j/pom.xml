@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j</artifactId>
@@ -38,7 +38,6 @@
     <module>drivers</module>
     <module>examples</module>
     <module>integrations</module>
-    <!--module>karaf-features</module-->
     <module>spi</module>
     <module>tools</module>
     <module>transports</module>

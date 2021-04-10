@@ -19,45 +19,48 @@
 package model
 
 import (
-    "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-    "time"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"time"
 )
 
 type PlcSubscriptionEvent interface {
-    GetRequest() PlcSubscriptionRequest
-    GetFieldNames() []string
-    GetResponseCode(name string) PlcResponseCode
-    GetAddress(name string) string
-    GetValue(name string) values.PlcValue
-    PlcResponse
+	GetRequest() PlcSubscriptionRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
+	GetAddress(name string) string
+	GetValue(name string) values.PlcValue
+	PlcResponse
 }
 
 type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
-    AddCyclicItem(name string, query string, interval time.Duration)
-    AddChangeOfStateItem(name string, query string)
-    AddEventItem(name string, query string)
-    AddItemHandler(handler PlcSubscriptionEventHandler)
-    Build() (PlcSubscriptionRequest, error)
+	AddCyclicQuery(name string, query string, interval time.Duration)
+	AddCyclicField(name string, field PlcField, interval time.Duration)
+	AddChangeOfStateQuery(name string, query string)
+	AddChangeOfStateField(name string, field PlcField)
+	AddEventQuery(name string, query string)
+	AddEventField(name string, field PlcField)
+	AddItemHandler(handler PlcSubscriptionEventHandler)
+	Build() (PlcSubscriptionRequest, error)
 }
 
 type PlcSubscriptionRequestResult struct {
-    Request  PlcSubscriptionRequest
-    Response PlcSubscriptionResponse
-    Err      error
+	Request  PlcSubscriptionRequest
+	Response PlcSubscriptionResponse
+	Err      error
 }
 
 type PlcSubscriptionRequest interface {
-    Execute() <-chan PlcSubscriptionRequestResult
-    GetFieldNames() []string
-    GetField(name string) PlcField
-    GetEventHandler() PlcSubscriptionEventHandler
-    PlcRequest
+	Execute() <-chan PlcSubscriptionRequestResult
+	GetFieldNames() []string
+	GetField(name string) PlcField
+	GetEventHandler() PlcSubscriptionEventHandler
+	PlcRequest
 }
 
 type PlcSubscriptionResponse interface {
-    GetRequest() PlcSubscriptionRequest
-    GetFieldNames() []string
-    GetResponseCode(name string) PlcResponseCode
+	GetRequest() PlcSubscriptionRequest
+	GetFieldNames() []string
+	GetResponseCode(name string) PlcResponseCode
 }

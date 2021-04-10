@@ -18,13 +18,12 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-build-utils</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-build-utils-language-go</artifactId>
@@ -37,7 +36,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-build-utils-language-base-freemarker</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -46,13 +51,97 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-base</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <debug>true</debug>
+          <projectsDirectory>src/test/resources</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
+          <settingsFile>src/test/resources/settings.xml</settingsFile>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <goals>
+            <goal>test</goal>
+          </goals>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>mvn-golang-wrapper</artifactId>
+        <version>2.3.6</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>default-fix</id>
+            <!-- Move the execution of this after the code generation -->
+            <phase>process-sources</phase>
+            <goals>
+              <goal>fix</goal>
+            </goals>
+          </execution>
+          <!-- Move the execution of this after the code generation -->
+          <execution>
+            <id>default-get</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>get</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>run-go-vet</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>vet</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <packages>
+            <package>github.com/apache/plc4x/plc4go/cmd/main</package>
+          </packages>
+          <sources>${project.basedir}</sources>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>

@@ -20,12 +20,9 @@ package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.common.config.ConfigValue;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.kafka.config.Field;
 import org.apache.plc4x.kafka.config.*;
 import org.apache.plc4x.kafka.util.VersionUtil;

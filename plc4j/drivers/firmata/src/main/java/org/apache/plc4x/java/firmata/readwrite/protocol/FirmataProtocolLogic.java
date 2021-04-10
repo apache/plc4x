@@ -36,6 +36,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -118,7 +119,9 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             }
             Map<String, ResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
             for (String fieldName : subscriptionRequest.getFieldNames()) {
-                FirmataField field = (FirmataField) subscriptionRequest.getField(fieldName);
+                DefaultPlcSubscriptionField subscriptionField =
+                    (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
+                FirmataField field = (FirmataField) subscriptionField.getPlcField();
                 result.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
                     new FirmataSubscriptionHandle(this, fieldName, field)));
             }

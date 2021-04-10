@@ -19,11 +19,12 @@
 package tests
 
 import (
-    "github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
-    "github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-    "testing"
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"testing"
 )
 
 func TestModbusDriver(t *testing.T) {
-    testutils.RunDriverTestsuite(t, modbus.NewModbusDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
 }

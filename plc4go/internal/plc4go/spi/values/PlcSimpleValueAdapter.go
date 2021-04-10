@@ -19,7 +19,7 @@
 package values
 
 type PlcSimpleValueAdapter struct {
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func (m PlcSimpleValueAdapter) IsSimple() bool {
@@ -31,7 +31,7 @@ func (m PlcSimpleValueAdapter) GetLength() uint32 {
 }
 
 type PlcSimpleNumericValueAdapter struct {
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func (m PlcSimpleNumericValueAdapter) IsBool() bool {

@@ -24,12 +24,13 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
+#include "modbus_data_type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer* buf, char* dataType, uint16_t numberOfValues, plc4c_data** data_item);
+plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_data_type dataType, uint16_t numberOfValues, plc4c_data** data_item);
 
 plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_data** data_item);
 

@@ -220,3 +220,4 @@ The file:
 build-utils/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
 is licensed under the Category A: "UNLICENSE" which is available here:
 UNLICENSE file in the licenses directory.
+

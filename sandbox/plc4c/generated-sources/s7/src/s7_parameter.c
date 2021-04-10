@@ -37,6 +37,7 @@ const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_para
    .parameterType = 0x05, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_parameter_user_data */
    .parameterType = 0x00, .messageType = 0x07}
+
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -63,6 +64,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
   if(*_message == NULL) {
     return NO_MEMORY;
   }
+        // Discriminator Field (parameterType)
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
@@ -385,8 +387,8 @@ uint16_t plc4c_s7_read_write_s7_parameter_length_in_bytes(plc4c_s7_read_write_s7
 uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_parameter* _message) {
   uint16_t lengthInBits = 0;
 
-  // Discriminator Field (parameterType)
-  lengthInBits += 8;
+        // Discriminator Field (parameterType)
+                lengthInBits += 8;
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {

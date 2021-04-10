@@ -20,6 +20,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -43,6 +44,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     // As they should be shared over all language template implementations,
     // these are defined here manually.
     private static Map<String, SimpleTypeReference> builtInFields;
+
     {
         builtInFields = new HashMap<>();
         builtInFields.put("curPos", new SimpleTypeReference() {
@@ -121,12 +123,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public abstract String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
-        return getReadBufferReadMethodCall(simpleTypeReference, null);
+        return getReadBufferReadMethodCall(simpleTypeReference,null, null);
     }
 
-    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString);
+    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
 
-    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName);
+    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field);
 
     public abstract String getNullValueForTypeReference(TypeReference typeReference);
 
@@ -148,6 +150,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public boolean isComplexTypeReference(TypeReference typeReference) {
         return typeReference instanceof ComplexTypeReference;
+    }
+
+    public boolean isEnumTypeReference(TypeReference typeReference) {
+        return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
     }
 
     public boolean isStringTypeReference(TypeReference typeReference) {
@@ -176,7 +182,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         // If this is a subtype of a discriminated type, we have to add a reference to the parent type.
         if (baseType instanceof DiscriminatedComplexTypeDefinition) {
             DiscriminatedComplexTypeDefinition discriminatedComplexTypeDefinition = (DiscriminatedComplexTypeDefinition) baseType;
-            if(!discriminatedComplexTypeDefinition.isAbstract()) {
+            if (!discriminatedComplexTypeDefinition.isAbstract()) {
                 complexTypeReferences.add(((ComplexTypeReference)
                     discriminatedComplexTypeDefinition.getParentType().getTypeReference()).getName());
             }
@@ -186,13 +192,13 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (baseType instanceof ComplexTypeDefinition) {
             ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) baseType;
             for (Field field : complexTypeDefinition.getFields()) {
-                if(field instanceof PropertyField) {
+                if (field instanceof PropertyField) {
                     PropertyField propertyField = (PropertyField) field;
                     if (propertyField.getType() instanceof ComplexTypeReference) {
                         ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
                         complexTypeReferences.add(complexTypeReference.getName());
                     }
-                } else if(field instanceof SwitchField) {
+                } else if (field instanceof SwitchField) {
                     SwitchField switchField = (SwitchField) field;
                     for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
                         complexTypeReferences.addAll(getComplexTypeReferences(switchCase));
@@ -211,7 +217,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         // If the type has any parser arguments, these have to be checked too.
-        if(baseType.getParserArguments() != null) {
+        if (baseType.getParserArguments() != null) {
             for (Argument parserArgument : baseType.getParserArguments()) {
                 if (parserArgument.getType() instanceof ComplexTypeReference) {
                     ComplexTypeReference complexTypeReference = (ComplexTypeReference) parserArgument.getType();
@@ -225,19 +231,19 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /**
      * Little helper to return the type of a given property.
      *
-     * @param baseType base type definition that contains the given property.
+     * @param baseType     base type definition that contains the given property.
      * @param propertyName name of the property
      * @return the type reference of the given property
      */
     public Optional<TypeReference> getTypeReferenceForProperty(ComplexTypeDefinition baseType, String propertyName) {
         // If this is a built-in type, use that.
-        if(builtInFields.containsKey(propertyName)) {
+        if (builtInFields.containsKey(propertyName)) {
             return Optional.of(builtInFields.get(propertyName));
         }
         // Check if the expression root is referencing a field
         final Optional<PropertyField> propertyFieldOptional = baseType.getPropertyFields().stream().filter(
             propertyField -> propertyField.getName().equals(propertyName)).findFirst();
-        if(propertyFieldOptional.isPresent()) {
+        if (propertyFieldOptional.isPresent()) {
             final PropertyField propertyField = propertyFieldOptional.get();
             return Optional.of(propertyField.getType());
         }
@@ -245,12 +251,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         final Optional<ImplicitField> implicitFieldOptional = baseType.getFields().stream().filter(
             field -> field instanceof ImplicitField).map(field -> (ImplicitField) field).filter(
             implicitField -> implicitField.getName().equals(propertyName)).findFirst();
-        if(implicitFieldOptional.isPresent()) {
+        if (implicitFieldOptional.isPresent()) {
             final ImplicitField implicitField = implicitFieldOptional.get();
             return Optional.of(implicitField.getType());
         }
         // Check if the expression root is referencing an argument
-        if(baseType.getParserArguments() != null) {
+        if (baseType.getParserArguments() != null) {
             final Optional<Argument> argumentOptional = Arrays.stream(baseType.getParserArguments()).filter(
                 argument -> argument.getName().equals(propertyName)).findFirst();
             if (argumentOptional.isPresent()) {
@@ -263,7 +269,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         final Optional<DiscriminatorField> discriminatorFieldOptional = baseType.getFields().stream().filter(
             field -> field instanceof DiscriminatorField).map(field -> (DiscriminatorField) field).filter(
             discriminatorField -> discriminatorField.getName().equals(propertyName)).findFirst();
-        if(discriminatorFieldOptional.isPresent()) {
+        if (discriminatorFieldOptional.isPresent()) {
             final DiscriminatorField discriminatorField = discriminatorFieldOptional.get();
             return Optional.of(discriminatorField.getType());
         }
@@ -282,10 +288,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
         final TypeDefinition typeDefinition = types.get(complexTypeReference.getName());
-        if(typeDefinition == null) {
+        if (typeDefinition == null) {
             throw new RuntimeException("Couldn't find given enum type definition with name " + complexTypeReference.getName());
         }
-        if(!(typeDefinition instanceof EnumTypeDefinition)) {
+        if (!(typeDefinition instanceof EnumTypeDefinition)) {
             throw new RuntimeException("Referenced type with name " + complexTypeReference.getName() + " is not an enum type");
         }
         EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) typeDefinition;
@@ -298,8 +304,8 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      **********************************************************************************/
 
     public boolean hasFieldOfType(String fieldTypeName) {
-        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
-           return ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field -> field.getTypeName().equals(fieldTypeName));
+        if (getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+            return ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field -> field.getTypeName().equals(fieldTypeName));
         }
         return false;
     }
@@ -308,14 +314,14 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         for (String name : names) {
             boolean foundName = false;
             for (Field field : fields) {
-                if(field instanceof NamedField) {
-                    if(name.equals(((NamedField) field).getName())) {
+                if (field instanceof NamedField) {
+                    if (name.equals(((NamedField) field).getName())) {
                         foundName = true;
                         break;
                     }
                 }
             }
-            if(!foundName) {
+            if (!foundName) {
                 return false;
             }
         }
@@ -323,7 +329,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public Field getFieldForNameFromCurrentOrParent(String fieldName) {
-        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+        if (getThisTypeDefinition() instanceof ComplexTypeDefinition) {
             return ((ComplexTypeDefinition) getThisTypeDefinition()).getAllPropertyFields()
                 .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
         }
@@ -331,7 +337,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public Field getFieldForNameFromCurrent(String fieldName) {
-        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+        if (getThisTypeDefinition() instanceof ComplexTypeDefinition) {
             return ((ComplexTypeDefinition) getThisTypeDefinition()).getPropertyFields()
                 .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
         }
@@ -359,12 +365,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumField(Field field) {
-        if(field instanceof TypedField) {
+        if (field instanceof TypedField) {
             TypedField typedField = (TypedField) field;
             TypeReference typeReference = typedField.getType();
-            if(!isSimpleTypeReference(typeReference)) {
+            if (!isSimpleTypeReference(typeReference)) {
                 TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typedField.getType());
-                if(typeDefinition instanceof EnumTypeDefinition) {
+                if (typeDefinition instanceof EnumTypeDefinition) {
                     return true;
                 }
             }
@@ -417,11 +423,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isCountArrayField(Field field) {
-        if(field instanceof ArrayField) {
+        if (field instanceof ArrayField) {
             ArrayField arrayField = (ArrayField) field;
             return arrayField.getLoopType() == ArrayField.LoopType.COUNT;
         }
-        if(field instanceof ManualArrayField) {
+        if (field instanceof ManualArrayField) {
             ManualArrayField arrayField = (ManualArrayField) field;
             return arrayField.getLoopType() == ManualArrayField.LoopType.COUNT;
         }
@@ -429,11 +435,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isLengthArrayField(Field field) {
-        if(field instanceof ArrayField) {
+        if (field instanceof ArrayField) {
             ArrayField arrayField = (ArrayField) field;
             return arrayField.getLoopType() == ArrayField.LoopType.LENGTH;
         }
-        if(field instanceof ManualArrayField) {
+        if (field instanceof ManualArrayField) {
             ManualArrayField arrayField = (ManualArrayField) field;
             return arrayField.getLoopType() == ManualArrayField.LoopType.LENGTH;
         }
@@ -441,11 +447,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isTerminatedArrayField(Field field) {
-        if(field instanceof ArrayField) {
+        if (field instanceof ArrayField) {
             ArrayField arrayField = (ArrayField) field;
             return arrayField.getLoopType() == ArrayField.LoopType.TERMINATED;
         }
-        if(field instanceof ManualArrayField) {
+        if (field instanceof ManualArrayField) {
             ManualArrayField arrayField = (ManualArrayField) field;
             return arrayField.getLoopType() == ManualArrayField.LoopType.TERMINATED;
         }
@@ -477,7 +483,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public Collection<Field> getPropertyAndSwitchFields(TypeDefinition typeDefinition) {
-        if(thisType instanceof ComplexTypeDefinition) {
+        if (thisType instanceof ComplexTypeDefinition) {
             return ((ComplexTypeDefinition) thisType).getFields().stream().filter(
                 field -> (field instanceof PropertyField) || (field instanceof SwitchField)).collect(Collectors.toList());
         }
@@ -505,7 +511,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        if(!(typeReference instanceof ComplexTypeReference)) {
+        if (!(typeReference instanceof ComplexTypeReference)) {
             throw new RuntimeException("Type reference must be a complex type reference");
         }
         return getTypeDefinitions().get(((ComplexTypeReference) typeReference).getName());
@@ -619,11 +625,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     /**
      * Get an ordered list of generated names for the discriminators.
      * These names can be used to access the type definitions as well as well as the values.
+     *
      * @return list of symbolic names for the discriminators.
      */
     public List<String> getDiscriminatorNames() {
         TypeDefinition baseType = thisType;
-        if(thisType.getParentType() != null) {
+        if (thisType.getParentType() != null) {
             baseType = thisType.getParentType();
         }
         final SwitchField switchField = getSwitchField(baseType);
@@ -638,6 +645,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * Check if there's any field with the given name.
      * This is required to suppress the generation of a discriminator field
      * in case a named field is providing the information.
+     *
      * @param discriminatorName name of the discriminator name
      * @return true if a field with the given name already exists in the same type.
      */
@@ -648,31 +656,32 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     /**
      * Converts a given discriminator description into a symbolic name.
+     *
      * @param discriminatorExpression discriminator expression
      * @return name
      */
     public String getDiscriminatorName(Term discriminatorExpression) {
-        if(discriminatorExpression instanceof Literal) {
+        if (discriminatorExpression instanceof Literal) {
             Literal literal = (Literal) discriminatorExpression;
-            if(literal instanceof NullLiteral) {
+            if (literal instanceof NullLiteral) {
                 return "null";
-            } else if(literal instanceof BooleanLiteral) {
+            } else if (literal instanceof BooleanLiteral) {
                 return Boolean.toString(((BooleanLiteral) literal).getValue());
-            } else if(literal instanceof NumericLiteral) {
+            } else if (literal instanceof NumericLiteral) {
                 return ((NumericLiteral) literal).getNumber().toString();
-            } else if(literal instanceof StringLiteral) {
+            } else if (literal instanceof StringLiteral) {
                 return ((StringLiteral) literal).getValue();
-            } else if(literal instanceof VariableLiteral) {
+            } else if (literal instanceof VariableLiteral) {
                 VariableLiteral variableLiteral = (VariableLiteral) literal;
                 return getVariableLiteralName(variableLiteral);
             }
-        } else if(discriminatorExpression instanceof UnaryTerm) {
+        } else if (discriminatorExpression instanceof UnaryTerm) {
             UnaryTerm unaryTerm = (UnaryTerm) discriminatorExpression;
             return getDiscriminatorName(unaryTerm.getA());
-        } else if(discriminatorExpression instanceof BinaryTerm) {
+        } else if (discriminatorExpression instanceof BinaryTerm) {
             BinaryTerm binaryTerm = (BinaryTerm) discriminatorExpression;
             return getDiscriminatorName(binaryTerm.getA()) + "_" + getDiscriminatorName(binaryTerm.getB());
-        } else if(discriminatorExpression instanceof TernaryTerm) {
+        } else if (discriminatorExpression instanceof TernaryTerm) {
             TernaryTerm ternaryTerm = (TernaryTerm) discriminatorExpression;
             return getDiscriminatorName(ternaryTerm.getA()) + "_" + getDiscriminatorName(ternaryTerm.getB())
                 + "_" + getDiscriminatorName(ternaryTerm.getC());
@@ -682,7 +691,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     private String getVariableLiteralName(VariableLiteral variableLiteral) {
         String rest = "";
-        if(variableLiteral.getChild() != null) {
+        if (variableLiteral.getChild() != null) {
             rest = getVariableLiteralName(variableLiteral.getChild());
             rest = rest.substring(0, 1).toUpperCase() + rest.substring(1);
         }
@@ -691,6 +700,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     /**
      * Get a list of the types for every discriminator name.
+     *
      * @return Map mapping discriminator names to types.
      */
     public Map<String, TypeReference> getDiscriminatorTypes() {
@@ -737,6 +747,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     /**
      * Get a list of the values for every discriminator name for every discriminated type.
+     *
      * @return Map mapping discriminator names to discriminator values for every discriminated type.
      */
     public Map<String, Map<String, String>> getDiscriminatorValues() {
@@ -761,13 +772,13 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeReference getArgumentType(TypeReference typeReference, int index) {
-        if(typeReference instanceof ComplexTypeReference) {
+        if (typeReference instanceof ComplexTypeReference) {
             ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-            if(!getTypeDefinitions().containsKey(complexTypeReference.getName())) {
+            if (!getTypeDefinitions().containsKey(complexTypeReference.getName())) {
                 throw new RuntimeException("Could not find definition of complex type " + complexTypeReference.getName());
             }
             TypeDefinition complexTypeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
-            if(complexTypeDefinition.getParserArguments().length <= index) {
+            if (complexTypeDefinition.getParserArguments().length <= index) {
                 throw new RuntimeException("Type " + complexTypeReference.getName() + " specifies too few parser arguments");
             }
             return complexTypeDefinition.getParserArguments()[index].getType();
@@ -783,7 +794,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public List<Argument> getSerializerArguments(Argument[] arguments) {
         List<Argument> serializerArguments = new LinkedList<>();
-        if(arguments != null) {
+        if (arguments != null) {
             for (Argument argument : arguments) {
                 if ("lastItem".equals(argument.getName())) {
                     serializerArguments.add(argument);
@@ -795,7 +806,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public List<Term> getSerializerTerms(Term[] terms) {
         List<Term> serializerTerms = new LinkedList<>();
-        if(terms != null) {
+        if (terms != null) {
             for (Term term : terms) {
                 if (term.contains("lastItem")) {
                     serializerTerms.add(term);
@@ -806,7 +817,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean hasLastItemTerm(Term[] terms) {
-        if(terms != null) {
+        if (terms != null) {
             for (Term term : terms) {
                 if (term.contains("lastItem")) {
                     return true;
@@ -817,28 +828,28 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean discriminatorValueNeedsStringEqualityCheck(Term term) {
-        if(term instanceof VariableLiteral) {
+        if (term instanceof VariableLiteral) {
             VariableLiteral variableLiteral = (VariableLiteral) term;
             // If this literal references an Enum type, then we have to output it differently.
             if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                 return false;
             }
 
-            if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+            if (getThisTypeDefinition() instanceof ComplexTypeDefinition) {
                 Field referencedField = ((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().filter(field -> ((field instanceof NamedField) && ((NamedField) field).getName().equals(variableLiteral.getName()))).findFirst().orElse(null);
-                if(referencedField != null) {
-                    if(referencedField instanceof TypedField) {
+                if (referencedField != null) {
+                    if (referencedField instanceof TypedField) {
                         TypedField typedField = (TypedField) referencedField;
-                        if(typedField.getType() instanceof StringTypeReference) {
+                        if (typedField.getType() instanceof StringTypeReference) {
                             return true;
                         }
                     }
                 }
             }
-            if(getThisTypeDefinition().getParserArguments() != null) {
+            if (getThisTypeDefinition().getParserArguments() != null) {
                 for (Argument parserArgument : getThisTypeDefinition().getParserArguments()) {
                     if (parserArgument.getName().equals(variableLiteral.getName())) {
-                        if(parserArgument.getType() instanceof StringTypeReference) {
+                        if (parserArgument.getType() instanceof StringTypeReference) {
                             return true;
                         }
                     }
@@ -846,6 +857,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         return false;
+    }
+
+    public boolean isEnumExpression(String expression) {
+        if (!expression.contains(".")) {
+            return false;
+        }
+        String enumName = expression.substring(0, expression.indexOf('.'));
+        TypeDefinition typeDefinition = this.getTypeDefinitions().get(enumName);
+        return (typeDefinition instanceof EnumTypeDefinition);
     }
 
     public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
@@ -856,6 +876,89 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         return filteredEnumValues.values();
+    }
+
+    public Collection<EnumValue> getEnumValuesForUniqueConstantValues(EnumValue[] enumValues, String constantName) {
+        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
+        for (EnumValue enumValue : enumValues) {
+            if (!filteredEnumValues.containsKey(enumValue.getConstant(constantName))) {
+                filteredEnumValues.put(enumValue.getConstant(constantName), enumValue);
+            }
+        }
+        return filteredEnumValues.values();
+    }
+
+    public Collection<EnumValue> getEnumValuesForConstantValue(EnumValue[] enumValues, String constantName, String constantValue) {
+        List<EnumValue> filteredEnumValues = new ArrayList<>();
+        for (EnumValue enumValue : enumValues) {
+            if(enumValue.getConstant(constantName).equals(constantValue)) {
+                filteredEnumValues.add(enumValue);
+            }
+        }
+        return filteredEnumValues;
+    }
+
+    public SimpleTypeReference getEnumFieldSimpleTypeReference(TypeReference type, String fieldName) {
+        TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(type);
+
+        if (typeDefinition instanceof EnumTypeDefinition) {
+            if (((EnumTypeDefinition) typeDefinition).getConstantType(fieldName) instanceof SimpleTypeReference) {
+                return (SimpleTypeReference) ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Confirms if a variable is an implicit variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return boolean returns true if the variable's name is an implicit field
+    */
+    protected boolean isVariableLiteralImplicitField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return false;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals("implicit")) {
+                ImplicitField implicitField = (ImplicitField) field;
+                if (vl.getName().equals(implicitField.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the implicit field that has the same name as the variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return ImplicitField returns the implicit field that corresponds to the variable's name.
+     */
+    protected ImplicitField getReferencedImplicitField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return null;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals("implicit")) {
+                ImplicitField implicitField = (ImplicitField) field;
+                if (vl.getName().equals(implicitField.getName())) {
+                    return implicitField;
+                }
+            }
+        }
+        return null;
     }
 
 }
