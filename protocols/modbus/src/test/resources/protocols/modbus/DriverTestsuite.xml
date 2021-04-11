@@ -391,9 +391,9 @@
       <api-request name="Receive Write Request from application for holding register and strings">
         <TestWriteRequest className="org.apache.plc4x.test.driver.model.api.TestWriteRequest">
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestValueField">
+            <field className="org.apache.plc4x.test.driver.model.api.ModbusField">
               <name>hurz</name>
-              <address>400001:STRING(6)</address>
+              <address>400001:STRING(6)[1]</address>
               <value>Hello1</value>
             </field>
           </fields>
@@ -450,14 +450,14 @@
   </testcase>
 
   <testcase>
-    <name>Single element read request holding register and string</name>
+    <name>Read Holding Register String</name>
     <steps>
-      <api-request name="Receive Read Request from application for string">
+      <api-request name="Receive Read Request from application">
         <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
           <fields>
             <field className="org.apache.plc4x.test.driver.model.api.TestField">
               <name>hurz</name>
-              <address>400006:STRING(6)</address>
+              <address>400001:STRING(6)</address>
             </field>
           </fields>
         </TestReadRequest>
@@ -470,12 +470,12 @@
           <transactionIdentifier>1</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>5</startingAddress>
+            <startingAddress>0</startingAddress>
             <quantity>3</quantity>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
-      <incoming-plc-message name="Receive Modbus Holding-Register Read Response">
+      <incoming-plc-message name="Receive Modbus Input-Register Read Response">
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
@@ -483,7 +483,7 @@
           <transactionIdentifier>1</transactionIdentifier>
           <unitIdentifier>1</unitIdentifier>
           <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>48656c6c6f31</value>
+            <value>48656C6C6F31</value>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -493,7 +493,7 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>5</address>
+                  <address>0</address>
                   <stringLength>6</stringLength>
                   <numberOfElements>1</numberOfElements>
                   <dataType>STRING</dataType>

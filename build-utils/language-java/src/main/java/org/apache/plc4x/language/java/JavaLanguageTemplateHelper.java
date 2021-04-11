@@ -834,7 +834,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 final SimpleTypeReference type = (SimpleTypeReference) arrayField.getType();
                 switch (arrayField.getLoopType()) {
                     case COUNT:
-                        sb.append("(").append(toSerializationExpression(null, arrayField.getLoopExpression(), parserArguments)).append(" * ").append(type.getSizeInBits()).append(") + ");
+                        if (type instanceof StringTypeReference) {
+                            sb.append("(").append(toSerializationExpression(null, arrayField.getLoopExpression(), parserArguments)).append(" * ").append(toSerializationExpression(null, ((StringTypeReference) type).getLengthExpression(), parserArguments)).append(") + ");
+                        } else {
+                            sb.append("(").append(toSerializationExpression(null, arrayField.getLoopExpression(), parserArguments)).append(" * ").append(type.getSizeInBits()).append(") + ");
+                        }
                         break;
                     case LENGTH:
                         sb.append("(").append(toSerializationExpression(null, arrayField.getLoopExpression(), parserArguments)).append(" * 8) + ");

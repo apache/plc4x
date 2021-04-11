@@ -382,7 +382,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if(fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1), stringLength);
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)/stringLength), 1), stringLength);
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -394,7 +394,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if((dataType != ModbusDataType.STRING) && fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1), stringLength);
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)/stringLength), 1), stringLength);
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -430,7 +430,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         try {
             WriteBuffer buffer;
             if(plcValue instanceof PlcList) {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ((ModbusField) field).getStringLength(), false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, field.getNumberOfElements(), ((ModbusField) field).getStringLength(), false);
                 byte[] data = buffer.getData();
                 switch (((ModbusField) field).getDataType()) {
                     case BOOL:
@@ -445,7 +445,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ((ModbusField) field).getStringLength(), false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, field.getNumberOfElements(), ((ModbusField) field).getStringLength(), false);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {

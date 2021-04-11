@@ -376,13 +376,13 @@
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['STRING','1' STRING
-            [simple string 'numberOfValues * 8' 'UTF-8' 'value']
+            [simple string 'stringLength * 8' 'UTF-8' 'value']
         ]
         ['STRING' List
             [array string 'stringLength * 8' 'UTF-8' 'value' count 'numberOfValues']
         ]
         ['WSTRING','1' STRING
-            [simple string 'numberOfValues* 16' 'UTF-16' 'value']
+            [simple string 'stringLength* 16' 'UTF-16' 'value']
         ]
         ['WSTRING' List
             [array string 'stringLength * 16' 'UTF-16' 'value' count 'numberOfValues']
