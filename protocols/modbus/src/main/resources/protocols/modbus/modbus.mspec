@@ -375,12 +375,6 @@
         ['WCHAR' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['STRING' STRING
-            [simple string 'numberOfValues * 8' 'UTF-8' 'value']
-        ]
-        ['WSTRING' STRING
-            [simple string 'numberOfValues* 16' 'UTF-16' 'value']
-        ]
     ]
 ]
 
