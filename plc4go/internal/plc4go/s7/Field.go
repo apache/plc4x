@@ -27,6 +27,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+type S7PlcField interface {
+	GetDataType() readWrite.TransportSize
+	GetNumElements() uint16
+	GetBlockNumber() uint16
+	GetMemoryArea() readWrite.MemoryArea
+	GetByteOffset() uint16
+	GetBitOffset() uint8
+}
+
 type PlcField struct {
 	FieldType   FieldType
 	MemoryArea  readWrite.MemoryArea
@@ -80,6 +89,26 @@ func (m PlcField) GetTypeName() string {
 
 func (m PlcField) GetDataType() readWrite.TransportSize {
 	return m.Datatype
+}
+
+func (m PlcField) GetNumElements() uint16 {
+	return m.NumElements
+}
+
+func (m PlcField) GetBlockNumber() uint16 {
+	return m.BlockNumber
+}
+
+func (m PlcField) GetMemoryArea() readWrite.MemoryArea {
+	return m.MemoryArea
+}
+
+func (m PlcField) GetByteOffset() uint16 {
+	return m.ByteOffset
+}
+
+func (m PlcField) GetBitOffset() uint8 {
+	return m.BitOffset
 }
 
 func (m PlcField) GetQuantity() uint16 {

@@ -437,7 +437,7 @@ func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 
 func (m Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewWriter(m.messageCodec))
+		m.fieldHandler, m.valueHandler, NewWriter(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 
 func (m Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {

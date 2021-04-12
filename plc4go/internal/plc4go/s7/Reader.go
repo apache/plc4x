@@ -83,7 +83,11 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 		log.Trace().Msg("Assemble paket")
 		// TODO: why do we use a uint16 above and the cotp a uint8?
 		tpktPacket := readWriteModel.NewTPKTPacket(
-			readWriteModel.NewCOTPPacketData(true, uint8(tpduId), nil, s7MessageRequest),
+			readWriteModel.NewCOTPPacketData(true,
+				uint8(tpduId),
+				nil,
+				s7MessageRequest,
+			),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)
 		transaction := m.tm.StartRequest()
@@ -123,14 +127,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 							Request: readRequest,
 							Err:     errors.Wrap(err, "Error decoding response"),
 						}
-						// TODO: should we return the error here?
-						return nil
+						return transaction.EndRequest()
 					}
 					result <- model.PlcReadRequestResult{
 						Request:  readRequest,
 						Response: readResponse,
 					}
-					// TODO: check if we need to end transactions in error cases too
 					return transaction.EndRequest()
 				},
 				func(err error) error {
@@ -138,7 +140,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						Request: readRequest,
 						Err:     errors.Wrap(err, "got timeout while waiting for response"),
 					}
-					return nil
+					return transaction.EndRequest()
 				},
 				time.Second*1); err != nil {
 				result <- model.PlcReadRequestResult{
@@ -146,6 +148,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),
 				}
+				_ = transaction.EndRequest()
 			}
 		})
 	}()
@@ -233,12 +236,12 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 // Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field from PLC4X into
 // S7Address objects.
 func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
-	s7Field, ok := field.(PlcField)
+	s7Field, ok := field.(S7PlcField)
 	if !ok {
 		return nil, errors.Errorf("Unsupported address type %t", field)
 	}
-	transportSize := s7Field.Datatype
-	numElements := s7Field.NumElements
+	transportSize := s7Field.GetDataType()
+	numElements := s7Field.GetNumElements()
 	// For these date-types we have to convert the requests to simple byte-array requests
 	// As otherwise the S7 will deny them with "Data type not supported" replies.
 	if (transportSize == readWriteModel.TransportSize_TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
@@ -265,10 +268,10 @@ func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
 	return readWriteModel.NewS7AddressAny(
 		transportSize,
 		numElements,
-		s7Field.BlockNumber,
-		s7Field.MemoryArea,
-		s7Field.ByteOffset,
-		s7Field.BitOffset,
+		s7Field.GetBlockNumber(),
+		s7Field.GetMemoryArea(),
+		s7Field.GetByteOffset(),
+		s7Field.GetBitOffset(),
 	), nil
 }
 
