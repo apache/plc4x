@@ -131,15 +131,24 @@ func (e Executor) stop() {
 type CompletionFuture struct {
 	cancelRequested    bool
 	interruptRequested bool
+	completed          bool
+	errored            bool
 }
 
 func (f CompletionFuture) cancel(interrupt bool) {
 	f.cancelRequested = true
 	f.interruptRequested = interrupt
+	f.errored = true
 }
 
 func (f CompletionFuture) complete() {
-	// TODO: implement me
+	f.completed = true
+}
+
+func (f CompletionFuture) AwaitCompletion() {
+	for !f.completed || !f.errored {
+		time.Sleep(time.Millisecond * 10)
+	}
 }
 
 type RequestTransaction struct {
@@ -304,8 +313,8 @@ func (t *RequestTransaction) hashCode() int32 {
 
 func NewTransactionOperation(transactionId int32, delegate Runnable) Runnable {
 	return func() {
-		log.Trace().Int32("transactionId", transactionId).Msgf("Start execution of transaction %s", transactionId)
+		log.Trace().Int32("transactionId", transactionId).Msgf("Start execution of transaction %d", transactionId)
 		delegate()
-		log.Trace().Int32("transactionId", transactionId).Msgf("Completed execution of transaction {}", transactionId)
+		log.Trace().Int32("transactionId", transactionId).Msgf("Completed execution of transaction %d", transactionId)
 	}
 }
