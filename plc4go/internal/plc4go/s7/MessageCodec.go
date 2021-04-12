@@ -44,10 +44,10 @@ func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCod
 func (m *MessageCodec) Send(message interface{}) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	cotpMessage := model.CastCOTPPacket(message)
+	tpktPacket := model.CastTPKTPacket(message)
 	// Serialize the request
 	wb := utils.NewWriteBuffer()
-	err := cotpMessage.Serialize(*wb)
+	err := tpktPacket.Serialize(*wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

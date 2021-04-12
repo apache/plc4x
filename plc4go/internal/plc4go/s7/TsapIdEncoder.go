@@ -21,10 +21,10 @@ package s7
 
 import "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 
-func encodeS7TsapId(deviceGroup model.DeviceGroup, rack int32, slot int32) int32 {
+func encodeS7TsapId(deviceGroup model.DeviceGroup, rack int32, slot int32) uint16 {
 	firstByte := int32(deviceGroup) << 8
 	secondByte := (rack << 4) | (slot & 0x0F)
-	return firstByte | secondByte
+	return uint16(firstByte | secondByte)
 }
 
 func decodeDeviceGroup(tsapId int32) model.DeviceGroup {

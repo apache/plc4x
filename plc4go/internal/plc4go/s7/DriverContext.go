@@ -25,8 +25,8 @@ import (
 
 type DriverContext struct {
 	PassiveMode    bool
-	CallingTsapId  int32
-	CalledTsapId   int32
+	CallingTsapId  uint16
+	CalledTsapId   uint16
 	CotpTpduSize   model.COTPTpduSize
 	PduSize        uint16
 	MaxAmqCaller   uint16
