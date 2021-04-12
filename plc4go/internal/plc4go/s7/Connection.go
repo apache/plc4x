@@ -68,9 +68,10 @@ type Connection struct {
 	valueHandler       spi.PlcValueHandler
 	requestInterceptor internalModel.RequestInterceptor
 	defaultTtl         time.Duration
+	tm                 *spi.RequestTransactionManager
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler) Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager) Connection {
 	return Connection{
 		messageCodec:       messageCodec,
 		configuration:      configuration,
@@ -79,6 +80,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, d
 		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
 		defaultTtl:         time.Second * 10,
+		tm:                 tm,
 	}
 }
 
@@ -193,8 +195,7 @@ func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// I have never seen anything else than equal values for caller and
 				// callee, but if they were different, we're only limiting the outgoing
 				// requests.
-				// TODO: port RequestTransactionManager
-				//tm.setNumberOfConcurrentRequests(s7DriverContext.getMaxAmqCallee())
+				m.tm.SetNumberOfConcurrentRequests(int(m.driverContext.MaxAmqCallee))
 
 				// If the controller type is explicitly set, were finished with the login
 				// process. If it's set to ANY, we have to query the serial number information

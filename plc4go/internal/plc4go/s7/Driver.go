@@ -30,32 +30,34 @@ import (
 
 type Driver struct {
 	fieldHandler spi.PlcFieldHandler
+	tm           spi.RequestTransactionManager
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
 		fieldHandler: NewFieldHandler(),
+		tm:           spi.NewRequestTransactionManager(1),
 	}
 }
 
-func (m Driver) GetProtocolCode() string {
+func (m *Driver) GetProtocolCode() string {
 	return "s7"
 }
 
-func (m Driver) GetProtocolName() string {
+func (m *Driver) GetProtocolName() string {
 	return "Siemens S7 (Basic)"
 }
 
-func (m Driver) GetDefaultTransport() string {
+func (m *Driver) GetDefaultTransport() string {
 	return "tcp"
 }
 
-func (m Driver) CheckQuery(query string) error {
+func (m *Driver) CheckQuery(query string) error {
 	_, err := m.fieldHandler.ParseQuery(query)
 	return err
 }
 
-func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
@@ -96,15 +98,15 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	driverContext, err := NewDriverContext(configuration)
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.fieldHandler)
+	connection := NewConnection(codec, configuration, driverContext, m.fieldHandler, &m.tm)
 	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 
-func (m Driver) SupportsDiscovery() bool {
+func (m *Driver) SupportsDiscovery() bool {
 	return false
 }
 
-func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
 	panic("implement me")
 }
