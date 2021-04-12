@@ -51,10 +51,10 @@ func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset ui
 
 type PlcStringField struct {
 	PlcField
-	stringLength int32
+	stringLength uint16
 }
 
-func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength int32, datatype readWrite.TransportSize) PlcStringField {
+func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize) PlcStringField {
 	return PlcStringField{
 		PlcField: PlcField{
 			FieldType:   STRING_FIELD,

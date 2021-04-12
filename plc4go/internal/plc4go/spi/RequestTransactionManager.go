@@ -76,9 +76,11 @@ type WorkItem struct {
 }
 
 type Executor struct {
-	shutdown bool
-	worker   []*Worker
-	queue    chan WorkItem
+	running     bool
+	shutdown    bool
+	stateChange sync.Mutex
+	worker      []*Worker
+	queue       chan WorkItem
 }
 
 func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
@@ -102,7 +104,7 @@ func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
 	return &executor
 }
 
-func (e Executor) submit(runnable Runnable) *CompletionFuture {
+func (e *Executor) submit(runnable Runnable) *CompletionFuture {
 	completionFuture := &CompletionFuture{}
 	e.queue <- WorkItem{
 		runnable:         runnable,
@@ -111,7 +113,13 @@ func (e Executor) submit(runnable Runnable) *CompletionFuture {
 	return completionFuture
 }
 
-func (e Executor) start() {
+func (e *Executor) start() {
+	e.stateChange.Lock()
+	defer e.stateChange.Unlock()
+	if e.running {
+		return
+	}
+	e.running = true
 	e.shutdown = false
 	for i := 0; i < len(e.worker); i++ {
 		worker := e.worker[i]
@@ -119,8 +127,13 @@ func (e Executor) start() {
 	}
 }
 
-func (e Executor) stop() {
-	e.shutdown = false
+func (e *Executor) stop() {
+	e.stateChange.Lock()
+	defer e.stateChange.Unlock()
+	if !e.running {
+		return
+	}
+	e.shutdown = true
 	for i := 0; i < len(e.worker); i++ {
 		worker := e.worker[i]
 		worker.shutdown = true
@@ -198,7 +211,7 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 }
 
 func (r *RequestTransactionManager) submit(context func(RequestTransaction)) {
-	transaction := r.startRequest()
+	transaction := r.StartRequest()
 	context(transaction)
 	// r.submitHandle(transaction);
 }
@@ -227,7 +240,7 @@ func (r *RequestTransactionManager) processWorklog() {
 	}
 }
 
-func (r *RequestTransactionManager) startRequest() RequestTransaction {
+func (r *RequestTransactionManager) StartRequest() RequestTransaction {
 	r.transationMutex.Lock()
 	defer r.transationMutex.Unlock()
 	currentTransactionId := r.transactionId
@@ -273,7 +286,7 @@ func (t RequestTransaction) failRequest(err error) error {
 	return t.parent.failRequest(t)
 }
 
-func (t RequestTransaction) endRequest() error {
+func (t RequestTransaction) EndRequest() error {
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
@@ -290,7 +303,7 @@ func (t RequestTransaction) setCompletionFuture(completionFuture *CompletionFutu
 	t.completionFuture = completionFuture
 }
 
-func (t RequestTransaction) submit(operation Runnable) {
+func (t RequestTransaction) Submit(operation Runnable) {
 	log.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.setOperation(NewTransactionOperation(t.transactionId, operation))
 	t.parent.submitHandle(t)

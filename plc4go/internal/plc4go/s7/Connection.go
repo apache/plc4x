@@ -22,7 +22,6 @@ import (
 	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -33,6 +32,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"reflect"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -59,32 +59,49 @@ func (m ConnectionMetadata) CanBrowse() bool {
 	return false
 }
 
+type TpduGenerator struct {
+	currentTpduId uint16
+	lock          sync.Mutex
+}
+
+func (t *TpduGenerator) getAndIncrement() uint16 {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	// If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+	if t.currentTpduId >= 0xFFFF {
+		t.currentTpduId = 1
+	}
+	result := t.currentTpduId
+	t.currentTpduId += 1
+	return result
+}
+
 // TODO: maybe we can use a DefaultConnection struct here with delegates
 type Connection struct {
-	messageCodec       spi.MessageCodec
-	configuration      Configuration
-	driverContext      DriverContext
-	fieldHandler       spi.PlcFieldHandler
-	valueHandler       spi.PlcValueHandler
-	requestInterceptor internalModel.RequestInterceptor
-	defaultTtl         time.Duration
-	tm                 *spi.RequestTransactionManager
+	tpduGenerator TpduGenerator
+	messageCodec  spi.MessageCodec
+	configuration Configuration
+	driverContext DriverContext
+	fieldHandler  spi.PlcFieldHandler
+	valueHandler  spi.PlcValueHandler
+	defaultTtl    time.Duration
+	tm            *spi.RequestTransactionManager
 }
 
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager) Connection {
 	return Connection{
-		messageCodec:       messageCodec,
-		configuration:      configuration,
-		driverContext:      driverContext,
-		fieldHandler:       fieldHandler,
-		valueHandler:       NewValueHandler(),
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
-		defaultTtl:         time.Second * 10,
-		tm:                 tm,
+		tpduGenerator: TpduGenerator{currentTpduId: 10},
+		messageCodec:  messageCodec,
+		configuration: configuration,
+		driverContext: driverContext,
+		fieldHandler:  fieldHandler,
+		valueHandler:  NewValueHandler(),
+		defaultTtl:    time.Second * 10,
+		tm:            tm,
 	}
 }
 
-func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -265,7 +282,7 @@ func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (m Connection) extractControllerTypeAndFireConnected(payloadUserData *readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
+func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData *readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
 	// TODO: how do we handle the case if there no items at all? Should we assume it a successful or failure
 	for _, item := range payloadUserData.Items {
 		switch item.Child.(type) {
@@ -392,7 +409,7 @@ func (m Connection) BlockingClose() {
 	}
 }
 
-func (m Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	log.Trace().Msg("Close")
 	// TODO: Implement ...
 	ch := make(chan plc4go.PlcConnectionCloseResult)
@@ -415,8 +432,7 @@ func (m Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 }
 
 func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
-		NewReader(m.messageCodec), m.requestInterceptor)
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, NewReader(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 
 func (m Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {

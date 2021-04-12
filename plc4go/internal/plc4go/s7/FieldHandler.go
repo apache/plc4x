@@ -81,7 +81,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
-		stringLength := int32(atoi)
+		stringLength := uint16(atoi)
 		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
 		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
@@ -122,7 +122,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
-		stringLength := int32(atoi)
+		stringLength := uint16(atoi)
 		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
 		atoi, err = strconv.Atoi(match[BLOCK_NUMBER])
 		if err != nil {

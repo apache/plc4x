@@ -64,7 +64,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			}
 			return
 		}
-		stringLength := int32(0)
+		stringLength := uint16(0)
 		if s7StringField, ok := field.(*PlcStringField); ok {
 			stringLength = s7StringField.stringLength
 		}
@@ -72,7 +72,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
 		io := utils.NewWriteBuffer()
-		if err := readWriteModel.DataItemSerialize(io, value, s7Field.Datatype.DataProtocolId(), stringLength); err != nil {
+		if err := readWriteModel.DataItemSerialize(io, value, s7Field.Datatype.DataProtocolId(), int32(stringLength)); err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,
