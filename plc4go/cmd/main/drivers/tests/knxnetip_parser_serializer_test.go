@@ -25,6 +25,6 @@ import (
 )
 
 func TestKNXNetIPParserSerializer(t *testing.T) {
-	t.Skip("Still a work in progress")
+	t.Skip("Here are all types wrong")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/knxnetip/ParserSerializerTestsuite.xml")
 }

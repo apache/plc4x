@@ -121,7 +121,7 @@ func BACnetTagApplicationBitStringParse(io *utils.ReadBuffer, lengthValueType ui
 	// Array field (data)
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), uint16(uint16(uint16(extLength)-uint16(uint16(1)))), uint16(uint16(uint16(lengthValueType)-uint16(uint16(1)))))
+	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)

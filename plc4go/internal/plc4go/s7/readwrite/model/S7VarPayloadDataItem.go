@@ -85,7 +85,7 @@ func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(utils.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data)))%uint8(uint8(2)))))
+	_timesPadding := uint8(utils.InlineIf(false, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -120,8 +120,8 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 
 	// Array field (data)
 	// Count array
-	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength)))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength))); curItem++ {
+	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) })); curItem++ {
 		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
@@ -131,7 +131,7 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 
 	// Padding Field (padding)
 	{
-		_timesPadding := (utils.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(data)))%uint8(uint8(2)))))
+		_timesPadding := (utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(data))) % uint8(uint8(2))) }))
 		for ; (io.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
 			_, _err := io.ReadUint8(8)
@@ -162,7 +162,9 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
+	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
+		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
+	}))))
 	_dataLengthErr := io.WriteUint16(16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
@@ -180,7 +182,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 
 	// Padding Field (padding)
 	{
-		_timesPadding := uint8(utils.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data)))%uint8(uint8(2)))))
+		_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
 			_paddingErr := io.WriteUint8(8, (_paddingValue))

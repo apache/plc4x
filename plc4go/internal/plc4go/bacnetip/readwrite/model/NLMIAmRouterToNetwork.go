@@ -105,7 +105,7 @@ func NLMIAmRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, message
 	// Array field (destinationNetworkAddress)
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
-	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), uint16(uint16(3)), uint16(uint16(1)))))
+	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() uint16 { return uint16(uint16(3)) }, func() uint16 { return uint16(uint16(1)) })))
 	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
 		_item, _err := io.ReadUint16(16)

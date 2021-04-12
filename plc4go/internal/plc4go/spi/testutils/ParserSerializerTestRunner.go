@@ -22,7 +22,10 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
@@ -105,7 +108,22 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				readBuffer := utils.NewReadBuffer(rawInput)
 
 				// Parse the input according to the settings of the testcase
-				helper := new(model2.ModbusParserHelper)
+				var helper interface {
+					Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error)
+				}
+				switch testsuiteName {
+				case "Modbus":
+					helper = new(modbusModel.ModbusParserHelper)
+				case "Beckhoff ADS/AMS":
+					helper = new(adsModel.AdsParserHelper)
+				case "S7":
+					helper = new(s7Model.S7ParserHelper)
+				case "KNXNet/IP":
+					helper = new(knxModel.KnxnetipParserHelper)
+				default:
+					t.Errorf("Testsuite %s has not mapped parser", testsuiteName)
+					return
+				}
 				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
 				if err != nil {
 					t.Error("Error parsing input data: " + err.Error())
