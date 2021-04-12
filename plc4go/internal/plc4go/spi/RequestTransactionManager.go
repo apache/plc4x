@@ -134,11 +134,13 @@ func (e *Executor) stop() {
 		return
 	}
 	e.shutdown = true
+	close(e.queue)
 	for i := 0; i < len(e.worker); i++ {
 		worker := e.worker[i]
 		worker.shutdown = true
 		worker.interrupted = true
 	}
+	e.running = false
 }
 
 type CompletionFuture struct {
