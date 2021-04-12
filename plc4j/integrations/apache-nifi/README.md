@@ -6,7 +6,7 @@
 
 ##Plc4xSourceRecordProcessor
 
-This processor is <ins>record oriented</ins>, formatting output flowfile content using a Record Writer. An exmaple of operation is included on the following path:
+This processor is <ins>record oriented</ins>, formatting output flowfile content using a Record Writer. An example of operation is included on the following path:
 *./test-nifi-template/NIFI-PLC4XIntegration-record-example-1.12.xml*. This file is a Nifi Template that could be directly imported from the NiFi UI to test the operation.
 
 The Plc4xSourceRecord Processor can be configured using the following **properties**:
@@ -14,7 +14,7 @@ The Plc4xSourceRecord Processor can be configured using the following **properti
 - *PLC connection String:* PLC4X connection string used to connect to a given PLC device.
 - *PLC resource address String:* PLC4X address string used identify the resource to read/write on a given PLC device (Multiple values supported). The expected  format is: {name}={address}(;{name}={address}*)
 - *Record Writer:* Specifies the Controller Service to use for writing results to a FlowFile. The Record Writer may use Inherit Schema to emulate the inferred schema behavior, i.e. an explicit schema need not be defined in the writer, and will be supplied by the same logic used to infer the schema from the column types.
-- *Force Reconnect every request:* Specifies if the connection to the plc will be recreated on every trigger event
+- *Force Reconnect every request:* Specifies if the connection to the PLC will be recreated on every trigger event
 
 An *example* of these properties for reading values from a S7-1200:
 
@@ -52,4 +52,4 @@ The output flowfile will contain the PLC read values. This information is includ
 } ]
 ```
 
-Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as posible).
+Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as possible).
