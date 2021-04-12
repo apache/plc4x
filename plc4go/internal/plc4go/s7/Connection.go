@@ -56,16 +56,18 @@ func (m ConnectionMetadata) CanBrowse() bool {
 // TODO: maybe we can use a DefaultConnection struct here with delegates
 type Connection struct {
 	messageCodec       spi.MessageCodec
-	options            map[string][]string
+	configuration      Configuration
+	driverContext      DriverContext
 	fieldHandler       spi.PlcFieldHandler
 	valueHandler       spi.PlcValueHandler
 	requestInterceptor internalModel.RequestInterceptor
 }
 
-func NewConnection(messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler) Connection {
 	return Connection{
 		messageCodec:       messageCodec,
-		options:            options,
+		configuration:      configuration,
+		driverContext:      driverContext,
 		fieldHandler:       fieldHandler,
 		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
