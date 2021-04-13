@@ -132,6 +132,9 @@ func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServi
 		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedAuthenticateParse(io)
 	case serviceChoice == 0x0D: // BACnetConfirmedServiceACKRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

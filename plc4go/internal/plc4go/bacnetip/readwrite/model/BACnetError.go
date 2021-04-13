@@ -132,6 +132,9 @@ func BACnetErrorParse(io *utils.ReadBuffer) (*BACnetError, error) {
 		_parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(io)
 	case serviceChoice == 0x0D: // BACnetErrorRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

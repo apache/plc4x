@@ -128,6 +128,9 @@ func BACnetUnconfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BA
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestWriteGroupParse(io)
 	case serviceChoice == 0x0B: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

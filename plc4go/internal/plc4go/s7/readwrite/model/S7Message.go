@@ -188,6 +188,9 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 		_parent, typeSwitchError = S7MessageResponseDataParse(io)
 	case messageType == 0x07: // S7MessageUserData
 		_parent, typeSwitchError = S7MessageUserDataParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

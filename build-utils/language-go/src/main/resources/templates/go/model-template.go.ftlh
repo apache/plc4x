@@ -652,9 +652,13 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
+					<#--TODO: refactor the line below into multiple assigns -->
     <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>*</#if></#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else><#assign defaultCaseOutput=true></#if>: // ${case.name}
 		_parent, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")<@emitImport import="github.com/pkg/errors" />
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")<@emitImport import="github.com/pkg/errors" />

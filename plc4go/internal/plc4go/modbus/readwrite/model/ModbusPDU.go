@@ -192,6 +192,9 @@ func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationRequestParse(io)
 	case errorFlag == false && functionFlag == 0x2B && response == true: // ModbusPDUReadDeviceIdentificationResponse
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

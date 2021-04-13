@@ -106,6 +106,9 @@ func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (*S7ParameterUserDataIte
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
 		_parent, typeSwitchError = S7ParameterUserDataItemCPUFunctionsParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

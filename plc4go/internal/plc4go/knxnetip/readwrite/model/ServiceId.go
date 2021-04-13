@@ -118,6 +118,9 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(io)
 	case serviceType == 0x08: // KnxNetObjectServer
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

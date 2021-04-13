@@ -106,6 +106,9 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
 		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

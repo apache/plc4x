@@ -106,6 +106,9 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 	switch {
 	case addressType == 0x10: // S7AddressAny
 		_parent, typeSwitchError = S7AddressAnyParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

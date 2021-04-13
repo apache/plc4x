@@ -112,6 +112,9 @@ func ApduControlParse(io *utils.ReadBuffer) (*ApduControl, error) {
 		_parent, typeSwitchError = ApduControlAckParse(io)
 	case controlType == 0x3: // ApduControlNack
 		_parent, typeSwitchError = ApduControlNackParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

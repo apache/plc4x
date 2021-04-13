@@ -184,6 +184,9 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 		_parent, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
 	case contextSpecificTag == 1: // BACnetTagContext
 		_parent, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

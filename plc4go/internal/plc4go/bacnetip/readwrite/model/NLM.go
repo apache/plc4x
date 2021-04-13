@@ -124,6 +124,9 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 		_parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
 	case messageType == 0x1: // NLMIAmRouterToNetwork
 		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

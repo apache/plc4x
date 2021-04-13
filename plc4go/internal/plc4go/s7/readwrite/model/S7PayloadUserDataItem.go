@@ -150,6 +150,9 @@ func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io)
 	case cpuFunctionType == 0x08: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
 		_parent, typeSwitchError = S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

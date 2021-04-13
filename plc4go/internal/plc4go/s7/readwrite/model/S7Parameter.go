@@ -117,6 +117,9 @@ func S7ParameterParse(io *utils.ReadBuffer, messageType uint8) (*S7Parameter, er
 		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(io)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
 		_parent, typeSwitchError = S7ParameterUserDataParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

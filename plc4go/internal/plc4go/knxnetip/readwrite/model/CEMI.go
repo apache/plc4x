@@ -150,6 +150,9 @@ func CEMIParse(io *utils.ReadBuffer, size uint8) (*CEMI, error) {
 		_parent, typeSwitchError = MResetReqParse(io)
 	case messageCode == 0xF0: // MResetInd
 		_parent, typeSwitchError = MResetIndParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

@@ -108,6 +108,9 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
 		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

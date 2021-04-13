@@ -186,6 +186,9 @@ func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) 
 		_parent, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParse(io)
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
 		_parent, typeSwitchError = ApduDataExtFileStreamInfoReportParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

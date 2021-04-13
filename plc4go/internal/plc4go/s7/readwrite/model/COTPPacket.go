@@ -142,6 +142,9 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(io)
 	case tpduCode == 0x70: // COTPPacketTpduError
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

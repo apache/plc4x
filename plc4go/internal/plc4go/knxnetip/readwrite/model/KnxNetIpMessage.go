@@ -172,6 +172,9 @@ func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		_parent, typeSwitchError = TunnelingResponseParse(io)
 	case msgType == 0x0530: // RoutingIndication
 		_parent, typeSwitchError = RoutingIndicationParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
