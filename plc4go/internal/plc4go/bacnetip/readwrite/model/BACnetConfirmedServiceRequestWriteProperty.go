@@ -329,10 +329,12 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectType":
@@ -367,12 +369,18 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder
 			case "value":
 				var dt *BACnetTag
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Value = dt
 			case "priority":
 				var dt *BACnetTag
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Priority = dt
@@ -380,7 +388,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) UnmarshalXML(d *xml.Decoder
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

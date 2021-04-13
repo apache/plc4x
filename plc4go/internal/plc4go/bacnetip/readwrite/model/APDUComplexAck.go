@@ -270,10 +270,12 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "segmentedMessage":
@@ -309,6 +311,9 @@ func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			case "serviceAck":
 				var dt *BACnetServiceAck
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ServiceAck = dt
@@ -316,7 +321,7 @@ func (m *APDUComplexAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -250,16 +250,18 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "targetAmsNetId":
@@ -313,6 +315,9 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "data":
 				var dt *AdsData
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Data = dt

@@ -100,7 +100,9 @@ func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+	if m.Child != nil {
+		lengthInBits += m.Child.LengthInBits()
+	}
 
 	return lengthInBits
 }
@@ -215,16 +217,18 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "returnCode":

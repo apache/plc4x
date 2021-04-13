@@ -176,10 +176,12 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "originalInvokeId":
@@ -191,6 +193,9 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "error":
 				var dt *BACnetError
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Error = dt
@@ -198,7 +203,7 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

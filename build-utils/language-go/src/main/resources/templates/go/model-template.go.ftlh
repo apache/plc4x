@@ -923,6 +923,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {<@emitImport import="encoding/xml" />
 	var token xml.Token<@emitImport import="encoding/xml" />
 	var err error
+	foundContent := false
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 	token = start
 	</#if>
@@ -930,7 +931,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	<#if !helper.isDiscriminatedChildTypeDefinition()>
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {<@emitImport import="io" />
+			if err == io.EOF && foundContent {<@emitImport import="io" />
 				return nil
 			}
 			return err
@@ -938,6 +939,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	</#if>
 		switch token.(type) {
 		case xml.StartElement:<@emitImport import="encoding/xml" />
+			foundContent = true
 			tok := token.(xml.StartElement)<@emitImport import="encoding/xml" />
 			switch tok.Name.Local {
 	<#if type.fields?has_content>
@@ -978,6 +980,9 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 					<#else>
 				var dt *${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.${field.name?cap_first} = dt
@@ -1040,7 +1045,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {<@emitImport import="io" />
+			if err == io.EOF && foundContent {<@emitImport import="io" />
 				return nil
 			}
 			return err

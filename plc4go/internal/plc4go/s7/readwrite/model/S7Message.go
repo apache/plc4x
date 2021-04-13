@@ -106,7 +106,9 @@ func (m *S7Message) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+	if m.Child != nil {
+		lengthInBits += m.Child.LengthInBits()
+	}
 
 	// Optional Field (parameter)
 	if m.Parameter != nil {
@@ -222,6 +224,9 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 }
 
 func (m *S7Message) Serialize(io utils.WriteBuffer) error {
+	if m.Child == nil {
+		return nil
+	}
 	return m.Child.Serialize(io)
 }
 
@@ -302,16 +307,18 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tpduReference":
@@ -323,12 +330,18 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "parameter":
 				var dt *S7Parameter
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Parameter = dt
 			case "payload":
 				var dt *S7Payload
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Payload = dt

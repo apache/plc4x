@@ -474,16 +474,18 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "protocolVersionNumber":
@@ -567,12 +569,18 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "nlm":
 				var dt *NLM
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Nlm = dt
 			case "apdu":
 				var dt *APDU
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Apdu = dt
