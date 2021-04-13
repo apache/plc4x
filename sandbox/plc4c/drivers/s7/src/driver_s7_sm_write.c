@@ -189,7 +189,13 @@ plc4c_return_code plc4c_driver_s7_parse_write_responce(
 		  return NO_MEMORY;
 		
 		response_item->item = request_item->item;
-		response_item->response_code = PLC4C_RESPONSE_CODE_OK;
+    if (s7_payload_status->return_code == plc4c_s7_read_write_data_transport_error_code_OK)
+      response_item->response_code = PLC4C_RESPONSE_CODE_OK;
+    else
+      // TODO: how to map plc4c_s7_read_write_data_transport_error_code to 
+      // plc4c_responce_code, same issue in driver_s7_sm_read.c
+      response_item->response_code = PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
+
 
 		// Add the value-item to the list.
 		plc4c_utils_list_insert_head_value(response->response_items, response_item);

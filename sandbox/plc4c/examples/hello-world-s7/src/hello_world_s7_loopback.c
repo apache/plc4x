@@ -53,30 +53,7 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
   numOpenConnections--;
 }
 
-void plc4c_create_uint8_t_data_array(plc4c_data **data, uint8_t *values, int numItems) {
-  plc4c_list* list;
-  plc4c_data* elem;
-  int i;
-  plc4c_utils_list_create(&list);
-  for (i = 0; i < numItems; i++) {
-      elem = plc4c_data_create_uint8_t_data(*(values + i));
-      plc4c_utils_list_insert_head_value(list, elem);
-  }
-  *data = plc4c_data_create_list_data(*list);
-}
 
-void plc4c_create_uint16_t_data_array(plc4c_data **data, uint16_t *values, int numItems) {
-  plc4c_list* list;
-  plc4c_data* elem;
-  int i;
-  plc4c_utils_list_create(&list);
-  for (i = 0; i < numItems; i++) {
-      elem = plc4c_data_create_uint16_t_data(*(values + i));
-      plc4c_utils_list_insert_head_value(list, elem);
-  }
-  *data = plc4c_data_create_list_data(*list);
-}
-         
 
 enum plc4c_connection_state_t {
   CONNECTING,
@@ -114,6 +91,7 @@ int main(int argc, char** argv) {
   plc4c_return_code result;
   plc4c_connection_state state;
   bool loop = true;
+  int idx = 0;
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
   
@@ -191,7 +169,7 @@ int main(int argc, char** argv) {
         } else if (plc4c_connection_has_error(connection)) {
           printf("FAILED\n");
           return -1;
-        } 
+        }
         break;
       }
 
@@ -201,10 +179,10 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_write_request(connection, &write_request);
         CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
 
-        uint16_t valuestowrite[] = {1,2};
-        printf("Writing %d %d to %%DB2:4.0:USINT[2] ...\n", valuestowrite[0], valuestowrite[1]);
-        plc4c_create_uint16_t_data_array(&loopback_data, valuestowrite, 2);
-        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:UINT[2]", loopback_data);
+        float valuestowrite[] = {1.23,2.34};
+        printf("Writing %f %f to %%DB2:4.0:REAL[2] ...\n", valuestowrite[0], valuestowrite[1]);
+        loopback_data = plc4c_data_create_float_array(valuestowrite, 2);
+        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:REAL[2]", loopback_data);
         
         /*
         printf("Writing %d to %%DB2:0.0:BOOL ...\n", (bool) loopback_value[0]);
@@ -276,9 +254,12 @@ int main(int argc, char** argv) {
         write_response = plc4c_write_request_execution_get_response(write_request_execution);
         CHECK_RESULT(write_response == NULL, -1,"plc4c_write_request_execution_get_response failed (no responce)\n");
         cur_element = plc4c_utils_list_tail(write_response->response_items);
+        idx = 0;
         while (cur_element != NULL) {
+          plc4c_response_item *checker = (plc4c_response_item*) cur_element->value;
+          printf("Write item %d status: '%s'\n", idx++,
+                 plc4c_response_code_to_message(checker->response_code));
           cur_element = cur_element->next;
-          // todo: check responce is error free
         }
 
 #ifdef S7_LOOPBACK_TIME_IO
@@ -299,7 +280,7 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_read_request(connection, &read_request);
         CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
         
-        result = plc4c_read_request_add_item(read_request, "UINT", "%DB2:4.0:UINT[2]");
+        result = plc4c_read_request_add_item(read_request, "REAL", "%DB2:4.0:REAL[2]");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
         /*
         result = plc4c_read_request_add_item(read_request, "BOOL", "%DB2:0.0:BOOL");

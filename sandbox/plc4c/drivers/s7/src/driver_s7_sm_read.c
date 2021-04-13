@@ -159,14 +159,15 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
                                 plc4c_s7_read_write_tpkt_packet* packet) {
 
   // Locals
-  plc4c_s7_read_write_s7_payload* payload;
-  plc4c_list_element* cur_request_item_element;
-  plc4c_list_element* cur_response_item_element;
+  plc4c_s7_read_write_s7_message* s7_packet;
+  //plc4c_s7_read_write_s7_payload* payload;
+  plc4c_list_element* request_list_element;
+  plc4c_list_element* response_list_element;
   plc4c_item* cur_request_item;
   plc4c_s7_read_write_s7_var_request_parameter_item* s7_address;
   plc4c_s7_read_write_transport_size transport_size;
 
-  plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item;
+  plc4c_s7_read_write_s7_var_payload_data_item* s7_payload_data_item;
   plc4c_spi_read_buffer* read_buffer;
   plc4c_data* data_item;
   plc4c_response_value_item* response_value_item;
@@ -180,12 +181,12 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
 
   // Iterate over the request items and use the types to decode the
   // response items.
-  payload = packet->payload->payload->payload;
-  cur_request_item_element = plc4c_utils_list_tail(request->items);
-  cur_response_item_element = plc4c_utils_list_tail(payload->s7_payload_read_var_response_items);
+  s7_packet = packet->payload->payload;
+  request_list_element = plc4c_utils_list_tail(request->items);
+  response_list_element = plc4c_utils_list_tail(s7_packet->payload->s7_payload_read_var_response_items);
   
-  while ((cur_request_item_element != NULL) && (cur_response_item_element != NULL)) {
-    cur_request_item = cur_request_item_element->value;
+  while ((request_list_element != NULL) && (response_list_element != NULL)) {
+    cur_request_item = request_list_element->value;
 
     // Get the protocol id for the current item from the corresponding
     // request item. Also get the number of elements, if it's an array.
@@ -201,13 +202,13 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
     }
 
     // Convert the linked list with uint8_t elements into an array of uint8_t.
-    cur_response_item = cur_response_item_element->value;
-    byte_array = plc4c_list_to_byte_array(cur_response_item->data);
+    s7_payload_data_item = response_list_element->value;
+    byte_array = plc4c_list_to_byte_array(s7_payload_data_item->data);
     if (byte_array == NULL) 
       return INTERNAL_ERROR;
 
     // Create a new read-buffer for reading data from the uint8_t array.
-    list_size = plc4c_utils_list_size(cur_response_item->data);
+    list_size = plc4c_utils_list_size(s7_payload_data_item->data);
     result = plc4c_spi_read_buffer_create(byte_array, list_size, &read_buffer);
     if (result != OK) 
       return result;
@@ -221,14 +222,15 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
       return NO_MEMORY;
 
     response_value_item->item = cur_request_item;
+    // TODO: use actual repsonce transport error code
     response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
     response_value_item->value = data_item;
 
     // Add the value-item to the list.
     plc4c_utils_list_insert_head_value(response->items, response_value_item);
 
-    cur_request_item_element = cur_request_item_element->next;
-    cur_response_item_element = cur_response_item_element->next;
+    request_list_element = request_list_element->next;
+    response_list_element = response_list_element->next;
   }
   return OK;
 }
