@@ -379,7 +379,7 @@ func (m Connection) createS7ConnectionRequest(cotpPacketConnectionResponse *read
 	s7ParameterSetupCommunication := readWriteModel.NewS7ParameterSetupCommunication(
 		m.driverContext.MaxAmqCaller, m.driverContext.MaxAmqCallee, m.driverContext.PduSize,
 	)
-	s7Message := readWriteModel.NewS7Message(0, s7ParameterSetupCommunication, nil)
+	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
 	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 1, nil, s7Message)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }

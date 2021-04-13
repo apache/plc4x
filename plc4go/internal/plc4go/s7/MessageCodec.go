@@ -72,24 +72,25 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			return nil, nil
 		}
 		// Get the size of the entire packet
-		packetSize := (uint32(data[2]) << 8) + uint32(data[3]) + 4
+		packetSize := (uint32(data[2]) << 8) + uint32(data[3])
 		if num < packetSize {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
 		data, err = m.TransportInstance.Read(packetSize)
 		if err != nil {
+			log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		rb := utils.NewReadBuffer(data)
-		tcpAdu, err := model.COTPPacketParse(rb, uint16(packetSize))
+		tpktPacket, err := model.TPKTPacketParse(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		return tcpAdu, nil
+		return tpktPacket, nil
 	} else if err != nil {
 		log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
