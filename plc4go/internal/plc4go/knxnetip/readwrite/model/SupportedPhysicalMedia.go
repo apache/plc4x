@@ -32,6 +32,8 @@ type ISupportedPhysicalMedia interface {
 	KnxSupport() bool
 	Description() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -387,6 +389,13 @@ func (m *SupportedPhysicalMedia) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 			*m = SupportedPhysicalMediaByName(string(tok))
 		}
 	}
+}
+
+func (m SupportedPhysicalMedia) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e SupportedPhysicalMedia) String() string {

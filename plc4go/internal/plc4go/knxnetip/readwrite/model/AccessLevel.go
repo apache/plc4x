@@ -32,6 +32,8 @@ type IAccessLevel interface {
 	Purpose() string
 	NeedsAuthentication() bool
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -179,6 +181,13 @@ func (m *AccessLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 			*m = AccessLevelByName(string(tok))
 		}
 	}
+}
+
+func (m AccessLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e AccessLevel) String() string {

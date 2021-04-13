@@ -31,6 +31,8 @@ type ComObjectValueType uint8
 type IComObjectValueType interface {
 	SizeInBytes() uint8
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -239,6 +241,13 @@ func (m *ComObjectValueType) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			*m = ComObjectValueTypeByName(string(tok))
 		}
 	}
+}
+
+func (m ComObjectValueType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ComObjectValueType) String() string {

@@ -30,6 +30,8 @@ type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -145,6 +147,13 @@ func (m *ModbusErrorCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 			*m = ModbusErrorCodeByName(string(tok))
 		}
 	}
+}
+
+func (m ModbusErrorCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ModbusErrorCode) String() string {

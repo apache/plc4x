@@ -326,6 +326,14 @@ func (m *AdsReadWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	if err := e.EncodeElement(m.ReadLength, xml.StartElement{Name: xml.Name{Local: "readLength"}}); err != nil {
 		return err
 	}
+	if len(m.Items) <= 0 {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
+	}
 	for _, arrayElement := range m.Items {
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 			return err

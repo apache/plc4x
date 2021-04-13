@@ -33,6 +33,8 @@ type IKnxDatapointMainType interface {
 	Name() string
 	SizeInBits() uint8
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -1144,6 +1146,13 @@ func (m *KnxDatapointMainType) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 			*m = KnxDatapointMainTypeByName(string(tok))
 		}
 	}
+}
+
+func (m KnxDatapointMainType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e KnxDatapointMainType) String() string {

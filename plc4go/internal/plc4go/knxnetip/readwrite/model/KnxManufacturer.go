@@ -32,6 +32,8 @@ type IKnxManufacturer interface {
 	Number() uint16
 	Name() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -7238,6 +7240,13 @@ func (m *KnxManufacturer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 			*m = KnxManufacturerByName(string(tok))
 		}
 	}
+}
+
+func (m KnxManufacturer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e KnxManufacturer) String() string {

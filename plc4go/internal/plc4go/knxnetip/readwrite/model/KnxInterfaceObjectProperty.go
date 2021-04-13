@@ -34,6 +34,8 @@ type IKnxInterfaceObjectProperty interface {
 	PropertyId() uint8
 	ObjectType() KnxInterfaceObjectType
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -4670,6 +4672,13 @@ func (m *KnxInterfaceObjectProperty) UnmarshalXML(d *xml.Decoder, start xml.Star
 			*m = KnxInterfaceObjectPropertyByName(string(tok))
 		}
 	}
+}
+
+func (m KnxInterfaceObjectProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e KnxInterfaceObjectProperty) String() string {

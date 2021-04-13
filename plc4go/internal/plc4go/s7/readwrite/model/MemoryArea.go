@@ -31,6 +31,8 @@ type MemoryArea uint8
 type IMemoryArea interface {
 	ShortName() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -185,6 +187,13 @@ func (m *MemoryArea) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			*m = MemoryAreaByName(string(tok))
 		}
 	}
+}
+
+func (m MemoryArea) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e MemoryArea) String() string {

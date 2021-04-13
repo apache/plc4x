@@ -30,6 +30,8 @@ type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -390,6 +392,13 @@ func (m *BACnetObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			*m = BACnetObjectTypeByName(string(tok))
 		}
 	}
+}
+
+func (m BACnetObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e BACnetObjectType) String() string {

@@ -30,6 +30,8 @@ type ApplicationTag int8
 
 type IApplicationTag interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -160,6 +162,13 @@ func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			*m = ApplicationTagByName(string(tok))
 		}
 	}
+}
+
+func (m ApplicationTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ApplicationTag) String() string {

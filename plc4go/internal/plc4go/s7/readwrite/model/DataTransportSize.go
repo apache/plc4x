@@ -31,6 +31,8 @@ type DataTransportSize uint8
 type IDataTransportSize interface {
 	SizeInBits() bool
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -167,6 +169,13 @@ func (m *DataTransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			*m = DataTransportSizeByName(string(tok))
 		}
 	}
+}
+
+func (m DataTransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e DataTransportSize) String() string {

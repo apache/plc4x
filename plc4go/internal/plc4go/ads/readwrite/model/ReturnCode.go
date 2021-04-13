@@ -30,6 +30,8 @@ type ReturnCode uint32
 
 type IReturnCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -705,6 +707,13 @@ func (m *ReturnCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			*m = ReturnCodeByName(string(tok))
 		}
 	}
+}
+
+func (m ReturnCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ReturnCode) String() string {

@@ -30,6 +30,8 @@ type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -115,6 +117,13 @@ func (m *SzlModuleTypeClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			*m = SzlModuleTypeClassByName(string(tok))
 		}
 	}
+}
+
+func (m SzlModuleTypeClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e SzlModuleTypeClass) String() string {
