@@ -25,6 +25,5 @@ import (
 )
 
 func TestAdsParserSerializer(t *testing.T) {
-	t.Skip("Default port still wrong")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml")
 }

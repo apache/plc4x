@@ -196,6 +196,15 @@ func (m *AdsStampHeader) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	if err := e.EncodeElement(m.Samples, xml.StartElement{Name: xml.Name{Local: "samples"}}); err != nil {
 		return err
 	}
+	if len(m.AdsNotificationSamples) <= 0 {
+		// On empty lists be produce empty tokens
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
+			return err
+		}
+	}
 	for _, arrayElement := range m.AdsNotificationSamples {
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
 			return err

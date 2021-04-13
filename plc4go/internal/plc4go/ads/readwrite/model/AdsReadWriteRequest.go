@@ -327,6 +327,7 @@ func (m *AdsReadWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	if len(m.Items) <= 0 {
+		// On empty lists be produce empty tokens
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 			return err
 		}
