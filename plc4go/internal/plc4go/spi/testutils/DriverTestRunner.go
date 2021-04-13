@@ -22,11 +22,14 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
-	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
+	adsIO "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	knxIO "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	s7IO "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
@@ -231,12 +234,22 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		var err error
 		switch m.driverName {
 		case "modbus":
-			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "ads":
-			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "s7":
+			message, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "knx":
+			message, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
@@ -284,14 +297,21 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			if expectedRawOutput[i] != rawOutput[i] {
 				switch m.driverName {
 				case "modbus":
-					message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-					if err != nil {
-						return errors.Wrap(err, "error parsing xml")
-					}
+					expectation := ser.(*modbusModel.ModbusTcpADU)
+					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBuffer(rawOutput), false)
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "ads":
-					expectationAmsTCPPacket := ser.(*readWriteModel.AmsTCPPacket)
-					actualAmsTcpPacket, err := readWriteModel.AmsTCPPacketParse(utils.NewReadBuffer(rawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectationAmsTCPPacket, actualAmsTcpPacket)
+					expectation := ser.(*adsModel.AmsTCPPacket)
+					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBuffer(rawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				case "s7":
+					expectation := ser.(*s7Model.TPKTPacket)
+					actual, err := s7Model.TPKTPacketParse(utils.NewReadBuffer(rawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				case "knx":
+					expectation := ser.(*knxModel.KnxNetIpMessage)
+					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBuffer(rawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				}
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
 			}
@@ -327,22 +347,22 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		var err error
 		switch m.driverName {
 		case "modbus":
-			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "ads":
-			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "knx":
-			message, err = knxModel.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "s7":
-			message, err = s7Model.S7XmlParserHelper{}.Parse(typeName, payloadString)
+			message, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
