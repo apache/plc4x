@@ -62,6 +62,8 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 		return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
 	case string:
 		return BoxString(name, anything.(string), charWidth)
+	case fmt.Stringer:
+		return BoxString(name, anything.(fmt.Stringer).String(), 0)
 	default:
 		valueOf := reflect.ValueOf(anything)
 		switch valueOf.Kind() {
