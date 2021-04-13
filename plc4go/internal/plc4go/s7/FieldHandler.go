@@ -75,14 +75,14 @@ const (
 )
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
-	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
+	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		atoi, err := strconv.Atoi(match[STRING_LENGTH])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
 		stringLength := uint16(atoi)
-		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
+		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
 		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
 		if err != nil {
@@ -123,7 +123,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
 		stringLength := uint16(atoi)
-		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
+		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		atoi, err = strconv.Atoi(match[BLOCK_NUMBER])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting blocknumber")
@@ -259,7 +259,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
-		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
+		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
 		atoi, err := strconv.Atoi(match[BYTE_OFFSET])
 		if err != nil {

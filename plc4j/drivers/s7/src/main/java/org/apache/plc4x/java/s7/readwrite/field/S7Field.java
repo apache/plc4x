@@ -173,8 +173,6 @@ public class S7Field implements PlcField, XmlSerializable {
         if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
-            // DATA_BLOCK_STRING_ADDRESS_PATTERN No group with name <memoryArea>
-            //MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
@@ -272,7 +270,7 @@ public class S7Field implements PlcField, XmlSerializable {
             }
         } else if ((matcher = ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
-            MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
+            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
