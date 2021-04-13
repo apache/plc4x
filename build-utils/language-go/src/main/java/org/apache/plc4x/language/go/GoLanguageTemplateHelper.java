@@ -747,7 +747,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return vl.getName() + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
+        String indexCall="";
+        if (vl.getIndex() >= 0){
+            // We have a index call
+            indexCall = "["+vl.getIndex()+"]";
+        }
+        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) +indexCall+ ((vl.getChild() != null) ?
             "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
     }
 

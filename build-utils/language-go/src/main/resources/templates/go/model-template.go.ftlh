@@ -1071,32 +1071,27 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 				<#-- normal arrays have one element with the same name wrapping them -->
 				<#elseif helper.isArrayField(field) && helper.isComplexTypeReference(field.type)>
-	if len(m.${field.name?cap_first}) <= 0 {
-		// On empty lists be produce empty tokens
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
-			return err
-		}
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
+		return err
 	}
 	for _, arrayElement := range m.${field.name?cap_first} {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
+		return err
 	}
 				<#else>
 	if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
 		return err
 	}
 				</#if>
-			<#elseif helper.isSwitchField(field)>
+			</#if>
+		</#list>
+		<#-- TODO: we seperated these two loops because the way jackson/java renders fields-->
+		<#list type.fields as field>
+			<#if helper.isSwitchField(field)>
 	marshaller, ok := m.Child.(xml.Marshaler)<@emitImport import="encoding/xml" />
 	if !ok {
 		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)<@emitImport import="github.com/pkg/errors" />

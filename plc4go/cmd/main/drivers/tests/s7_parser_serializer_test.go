@@ -25,7 +25,7 @@ import (
 )
 
 func TestS7ParserSerializer(t *testing.T) {
-	// TODO: element order seems of
+	// TODO: java serializer wrongfully adds 0x00 at the end of the messages and therefore this test fails because they are unexpected
 	t.Skip("Still a work in progress")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml")
 }

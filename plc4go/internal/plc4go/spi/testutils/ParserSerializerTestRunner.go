@@ -169,7 +169,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				// Check if the output matches in size and content
 				rawOutput := writeBuffer.GetBytes()
 				if len(rawInput) != len(rawOutput) {
-					t.Error("Couldn't serialize message back to byte array")
+					t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
 					return
 				}
 				for i, val := range rawInput {
