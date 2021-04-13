@@ -186,6 +186,7 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
   response_list_element = plc4c_utils_list_tail(s7_packet->payload->s7_payload_read_var_response_items);
   
   while ((request_list_element != NULL) && (response_list_element != NULL)) {
+    
     cur_request_item = request_list_element->value;
 
     // Get the protocol id for the current item from the corresponding
@@ -222,8 +223,13 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
       return NO_MEMORY;
 
     response_value_item->item = cur_request_item;
-    // TODO: use actual repsonce transport error code
-    response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
+
+    // TODO: use other than just INTERNAL_ERROR on transport failure
+    if (s7_payload_data_item->return_code == plc4c_s7_read_write_data_transport_error_code_OK)
+      response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
+    else 
+      response_value_item->response_code = PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
+    
     response_value_item->value = data_item;
 
     // Add the value-item to the list.
