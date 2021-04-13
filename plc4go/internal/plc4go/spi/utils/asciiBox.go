@@ -49,6 +49,8 @@ type AsciiBoxer interface {
 
 func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 	switch anything.(type) {
+	case nil:
+		return ""
 	case AsciiBoxer:
 		// A box usually has its own name
 		return anything.(AsciiBoxer).Box(name, charWidth)
