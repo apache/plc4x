@@ -63,17 +63,16 @@ func (m *MessageCodec) Send(message interface{}) error {
 func (m *MessageCodec) Receive() (interface{}, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.TransportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
+	if num, err := m.TransportInstance.GetNumReadableBytes(); (err == nil) && (num >= 4) {
 		log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.TransportInstance.PeekReadableBytes(6)
+		data, err := m.TransportInstance.PeekReadableBytes(4)
 		if err != nil {
 			log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		// Get the size of the entire packet
-		// TODO: wrong size for s7
-		packetSize := (uint32(data[4]) << 8) + uint32(data[5]) + 6
+		packetSize := (uint32(data[2]) << 8) + uint32(data[3]) + 4
 		if num < packetSize {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil

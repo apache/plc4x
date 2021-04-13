@@ -79,8 +79,9 @@ func (m *TransportInstance) Close() error {
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
-	log.Trace().Msg("get number of readable bytes")
-	return uint32(len(m.readBuffer)), nil
+	readableBytes := len(m.readBuffer)
+	log.Trace().Msgf("return number of readable bytes %d", readableBytes)
+	return uint32(readableBytes), nil
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
