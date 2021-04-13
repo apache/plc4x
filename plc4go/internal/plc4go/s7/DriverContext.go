@@ -63,6 +63,7 @@ func NewDriverContext(configuration Configuration) (DriverContext, error) {
 		CallingTsapId:  callingTsapId,
 		CalledTsapId:   calledTsapId,
 		ControllerType: controllerType,
+		CotpTpduSize:   cotpTpduSize,
 		PduSize:        pduSize,
 		MaxAmqCaller:   maxAmqCaller,
 		MaxAmqCallee:   maxAmqCallee,
