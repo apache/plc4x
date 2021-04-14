@@ -82,7 +82,7 @@ func (m *LPollDataCon) GetTypeName() string {
 }
 
 func (m *LPollDataCon) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

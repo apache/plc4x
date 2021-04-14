@@ -85,7 +85,7 @@ func (m *DeviceConfigurationAck) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationAckDataBlock)
 	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()

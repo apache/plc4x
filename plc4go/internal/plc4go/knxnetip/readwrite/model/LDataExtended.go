@@ -106,7 +106,7 @@ func (m *LDataExtended) GetTypeName() string {
 }
 
 func (m *LDataExtended) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1

@@ -95,7 +95,7 @@ func (m *ModbusPDUReportServerIdResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8

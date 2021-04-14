@@ -82,7 +82,7 @@ func (m *ApduDataIndividualAddressWrite) GetTypeName() string {
 }
 
 func (m *ApduDataIndividualAddressWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

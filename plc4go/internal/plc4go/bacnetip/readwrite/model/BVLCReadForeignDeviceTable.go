@@ -82,7 +82,7 @@ func (m *BVLCReadForeignDeviceTable) GetTypeName() string {
 }
 
 func (m *BVLCReadForeignDeviceTable) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

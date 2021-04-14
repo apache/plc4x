@@ -78,12 +78,13 @@ func (m *ServiceId) GetTypeName() string {
 }
 
 func (m *ServiceId) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ServiceId) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

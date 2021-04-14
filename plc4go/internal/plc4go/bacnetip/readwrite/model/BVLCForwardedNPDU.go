@@ -89,7 +89,7 @@ func (m *BVLCForwardedNPDU) GetTypeName() string {
 }
 
 func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Ip) > 0 {

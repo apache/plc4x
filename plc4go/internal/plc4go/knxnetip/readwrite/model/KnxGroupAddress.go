@@ -78,10 +78,11 @@ func (m *KnxGroupAddress) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.Child.LengthInBits()
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *KnxGroupAddress) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }

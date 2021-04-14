@@ -91,7 +91,7 @@ func (m *COTPPacketDisconnectRequest) GetTypeName() string {
 }
 
 func (m *COTPPacketDisconnectRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16

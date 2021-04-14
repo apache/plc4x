@@ -82,7 +82,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) GetTypeName() string {
 }
 
 func (m *BVLCReadBroadcastDistributionTableAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

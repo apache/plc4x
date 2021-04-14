@@ -95,7 +95,7 @@ func (m *ModbusPDUReadCoilsRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16

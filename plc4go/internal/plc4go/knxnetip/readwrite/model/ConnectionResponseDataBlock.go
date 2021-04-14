@@ -78,15 +78,16 @@ func (m *ConnectionResponseDataBlock) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlock) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ConnectionResponseDataBlock) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
 	// Discriminator Field (connectionType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

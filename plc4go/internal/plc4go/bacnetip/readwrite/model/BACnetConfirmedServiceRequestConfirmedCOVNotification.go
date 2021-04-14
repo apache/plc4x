@@ -110,7 +110,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) GetTypeName() st
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8

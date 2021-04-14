@@ -82,7 +82,7 @@ func (m *BACnetErrorAtomicReadFile) GetTypeName() string {
 }
 
 func (m *BACnetErrorAtomicReadFile) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

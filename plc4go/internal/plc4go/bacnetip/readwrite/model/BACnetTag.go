@@ -83,6 +83,10 @@ func (m *BACnetTag) GetTypeName() string {
 }
 
 func (m *BACnetTag) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeOrTagNumber)
@@ -102,9 +106,6 @@ func (m *BACnetTag) LengthInBits() uint16 {
 	if m.ExtLength != nil {
 		lengthInBits += 8
 	}
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

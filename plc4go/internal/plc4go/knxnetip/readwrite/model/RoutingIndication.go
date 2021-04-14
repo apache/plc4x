@@ -82,7 +82,7 @@ func (m *RoutingIndication) GetTypeName() string {
 }
 
 func (m *RoutingIndication) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

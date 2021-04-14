@@ -95,7 +95,7 @@ func (m *ModbusPDUReadHoldingRegistersResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadHoldingRegistersResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8

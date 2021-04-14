@@ -82,7 +82,7 @@ func (m *ApduDataExtKeyResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtKeyResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

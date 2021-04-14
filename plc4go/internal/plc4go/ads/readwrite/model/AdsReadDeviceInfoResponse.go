@@ -99,7 +99,7 @@ func (m *AdsReadDeviceInfoResponse) GetTypeName() string {
 }
 
 func (m *AdsReadDeviceInfoResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32

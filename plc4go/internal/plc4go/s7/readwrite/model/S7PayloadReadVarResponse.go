@@ -89,7 +89,7 @@ func (m *S7PayloadReadVarResponse) GetTypeName() string {
 }
 
 func (m *S7PayloadReadVarResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {

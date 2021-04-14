@@ -85,7 +85,7 @@ func (m *COTPParameterCallingTsap) GetTypeName() string {
 }
 
 func (m *COTPParameterCallingTsap) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tsapId)
 	lengthInBits += 16

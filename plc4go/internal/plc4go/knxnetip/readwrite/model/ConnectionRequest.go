@@ -89,7 +89,7 @@ func (m *ConnectionRequest) GetTypeName() string {
 }
 
 func (m *ConnectionRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()

@@ -80,14 +80,15 @@ func (m *ModbusPDU) GetTypeName() string {
 }
 
 func (m *ModbusPDU) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ModbusPDU) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
 	// Discriminator Field (functionFlag)
 	lengthInBits += 7
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

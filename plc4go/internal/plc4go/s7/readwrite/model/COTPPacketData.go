@@ -89,7 +89,7 @@ func (m *COTPPacketData) GetTypeName() string {
 }
 
 func (m *COTPPacketData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (eot)
 	lengthInBits += 1

@@ -82,7 +82,7 @@ func (m *ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

@@ -78,10 +78,11 @@ func (m *AdsMultiRequestItem) GetTypeName() string {
 }
 
 func (m *AdsMultiRequestItem) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.Child.LengthInBits()
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *AdsMultiRequestItem) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }

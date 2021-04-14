@@ -89,7 +89,7 @@ func (m *S7ParameterUserData) GetTypeName() string {
 }
 
 func (m *S7ParameterUserData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8

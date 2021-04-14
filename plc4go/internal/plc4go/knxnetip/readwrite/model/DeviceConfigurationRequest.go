@@ -87,7 +87,7 @@ func (m *DeviceConfigurationRequest) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationRequestDataBlock)
 	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()

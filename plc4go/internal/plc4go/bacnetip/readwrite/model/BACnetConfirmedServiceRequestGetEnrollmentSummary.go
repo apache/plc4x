@@ -82,7 +82,7 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) GetTypeName() string
 }
 
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

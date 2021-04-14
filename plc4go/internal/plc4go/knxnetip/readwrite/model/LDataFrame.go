@@ -84,6 +84,10 @@ func (m *LDataFrame) GetTypeName() string {
 }
 
 func (m *LDataFrame) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *LDataFrame) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -104,9 +108,6 @@ func (m *LDataFrame) LengthInBits() uint16 {
 
 	// Simple field (errorFlag)
 	lengthInBits += 1
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

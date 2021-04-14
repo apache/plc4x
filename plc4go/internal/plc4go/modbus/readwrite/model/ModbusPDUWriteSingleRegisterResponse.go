@@ -95,7 +95,7 @@ func (m *ModbusPDUWriteSingleRegisterResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16

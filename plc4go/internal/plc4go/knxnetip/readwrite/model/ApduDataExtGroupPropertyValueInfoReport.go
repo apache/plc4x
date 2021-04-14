@@ -82,7 +82,7 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) GetTypeName() string {
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

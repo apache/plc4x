@@ -85,7 +85,7 @@ func (m *ApduDataExtAuthorizeResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8

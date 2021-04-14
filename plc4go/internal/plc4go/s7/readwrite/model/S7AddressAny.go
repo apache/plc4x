@@ -96,7 +96,7 @@ func (m *S7AddressAny) GetTypeName() string {
 }
 
 func (m *S7AddressAny) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8

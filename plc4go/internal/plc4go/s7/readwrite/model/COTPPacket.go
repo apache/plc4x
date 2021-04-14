@@ -80,15 +80,16 @@ func (m *COTPPacket) GetTypeName() string {
 }
 
 func (m *COTPPacket) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *COTPPacket) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
 	// Discriminator Field (tpduCode)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	// Array field
 	if len(m.Parameters) > 0 {

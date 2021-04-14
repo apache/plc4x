@@ -88,7 +88,7 @@ func (m *DisconnectRequest) GetTypeName() string {
 }
 
 func (m *DisconnectRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8

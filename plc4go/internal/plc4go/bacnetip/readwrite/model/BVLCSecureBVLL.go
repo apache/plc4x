@@ -82,7 +82,7 @@ func (m *BVLCSecureBVLL) GetTypeName() string {
 }
 
 func (m *BVLCSecureBVLL) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

@@ -91,7 +91,7 @@ func (m *BACnetTagApplicationUnsignedInteger) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {

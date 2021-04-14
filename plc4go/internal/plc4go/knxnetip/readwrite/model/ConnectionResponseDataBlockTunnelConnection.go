@@ -85,7 +85,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.LengthInBits()

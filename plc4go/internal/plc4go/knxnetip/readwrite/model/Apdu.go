@@ -80,6 +80,10 @@ func (m *Apdu) GetTypeName() string {
 }
 
 func (m *Apdu) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *Apdu) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (control)
 	lengthInBits += 1
@@ -89,9 +93,6 @@ func (m *Apdu) LengthInBits() uint16 {
 
 	// Simple field (counter)
 	lengthInBits += 4
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

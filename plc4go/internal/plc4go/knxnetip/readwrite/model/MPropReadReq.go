@@ -93,7 +93,7 @@ func (m *MPropReadReq) GetTypeName() string {
 }
 
 func (m *MPropReadReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16

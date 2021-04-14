@@ -87,7 +87,7 @@ func (m *UnknownMessage) GetTypeName() string {
 }
 
 func (m *UnknownMessage) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {

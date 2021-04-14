@@ -91,7 +91,7 @@ func (m *BACnetTagApplicationSignedInteger) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationSignedInteger) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {

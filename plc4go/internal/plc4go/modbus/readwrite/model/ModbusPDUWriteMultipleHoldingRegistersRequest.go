@@ -99,7 +99,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16

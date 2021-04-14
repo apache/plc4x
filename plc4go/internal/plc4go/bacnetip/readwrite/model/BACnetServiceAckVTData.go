@@ -82,7 +82,7 @@ func (m *BACnetServiceAckVTData) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckVTData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

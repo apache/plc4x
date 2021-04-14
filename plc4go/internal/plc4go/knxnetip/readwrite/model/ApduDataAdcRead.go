@@ -82,7 +82,7 @@ func (m *ApduDataAdcRead) GetTypeName() string {
 }
 
 func (m *ApduDataAdcRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

@@ -78,12 +78,13 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

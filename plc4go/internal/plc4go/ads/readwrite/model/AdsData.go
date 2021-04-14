@@ -79,10 +79,11 @@ func (m *AdsData) GetTypeName() string {
 }
 
 func (m *AdsData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.Child.LengthInBits()
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *AdsData) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }

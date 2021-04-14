@@ -94,7 +94,7 @@ func (m *APDUSegmentAck) GetTypeName() string {
 }
 
 func (m *APDUSegmentAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 2

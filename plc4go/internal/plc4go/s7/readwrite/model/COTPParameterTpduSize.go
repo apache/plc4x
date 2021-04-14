@@ -85,7 +85,7 @@ func (m *COTPParameterTpduSize) GetTypeName() string {
 }
 
 func (m *COTPParameterTpduSize) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (tpduSize)
 	lengthInBits += 8

@@ -85,7 +85,7 @@ func (m *BVLCOriginalUnicastNPDU) GetTypeName() string {
 }
 
 func (m *BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.LengthInBits()

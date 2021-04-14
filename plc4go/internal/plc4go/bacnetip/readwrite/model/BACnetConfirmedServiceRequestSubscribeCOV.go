@@ -105,7 +105,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8

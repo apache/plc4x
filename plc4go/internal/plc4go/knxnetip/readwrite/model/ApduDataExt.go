@@ -78,12 +78,13 @@ func (m *ApduDataExt) GetTypeName() string {
 }
 
 func (m *ApduDataExt) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ApduDataExt) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (extApciType)
 	lengthInBits += 6
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

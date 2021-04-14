@@ -82,7 +82,7 @@ func (m *ApduDataExtNetworkParameterResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtNetworkParameterResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

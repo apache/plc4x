@@ -87,7 +87,7 @@ func (m *ApduDataMemoryRead) GetTypeName() string {
 }
 
 func (m *ApduDataMemoryRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numBytes)
 	lengthInBits += 6

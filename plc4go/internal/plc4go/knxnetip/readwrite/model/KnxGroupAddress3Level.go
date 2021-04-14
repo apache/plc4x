@@ -89,7 +89,7 @@ func (m *KnxGroupAddress3Level) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5

@@ -85,7 +85,7 @@ func (m *KnxNetIpDeviceManagement) GetTypeName() string {
 }
 
 func (m *KnxNetIpDeviceManagement) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8

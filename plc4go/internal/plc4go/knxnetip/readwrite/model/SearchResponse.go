@@ -89,7 +89,7 @@ func (m *SearchResponse) GetTypeName() string {
 }
 
 func (m *SearchResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.LengthInBits()

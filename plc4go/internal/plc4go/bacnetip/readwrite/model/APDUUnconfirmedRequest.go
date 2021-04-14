@@ -86,7 +86,7 @@ func (m *APDUUnconfirmedRequest) GetTypeName() string {
 }
 
 func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4

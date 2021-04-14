@@ -89,7 +89,7 @@ func (m *ApduDataExtPropertyDescriptionRead) GetTypeName() string {
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8

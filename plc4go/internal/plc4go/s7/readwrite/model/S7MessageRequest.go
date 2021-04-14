@@ -85,7 +85,7 @@ func (m *S7MessageRequest) GetTypeName() string {
 }
 
 func (m *S7MessageRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

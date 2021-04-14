@@ -89,7 +89,7 @@ func (m *LDataInd) GetTypeName() string {
 }
 
 func (m *LDataInd) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8

@@ -85,7 +85,7 @@ func (m *S7VarRequestParameterItemAddress) GetTypeName() string {
 }
 
 func (m *S7VarRequestParameterItemAddress) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8

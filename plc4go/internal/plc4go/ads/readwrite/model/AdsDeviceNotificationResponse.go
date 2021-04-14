@@ -86,7 +86,7 @@ func (m *AdsDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *AdsDeviceNotificationResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

@@ -99,7 +99,7 @@ func (m *AdsReadWriteRequest) GetTypeName() string {
 }
 
 func (m *AdsReadWriteRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32

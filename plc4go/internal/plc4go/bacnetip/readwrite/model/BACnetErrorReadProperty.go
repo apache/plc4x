@@ -98,7 +98,7 @@ func (m *BACnetErrorReadProperty) GetTypeName() string {
 }
 
 func (m *BACnetErrorReadProperty) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (errorClassHeader)
 	lengthInBits += 5

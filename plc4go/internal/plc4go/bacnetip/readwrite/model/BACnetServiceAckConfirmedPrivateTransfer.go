@@ -82,7 +82,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

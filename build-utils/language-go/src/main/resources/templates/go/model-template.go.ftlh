@@ -212,6 +212,163 @@ func (m *${type.name}) GetTypeName() string {
 }
 
 func (m *${type.name}) LengthInBits() uint16 {
+	<#if helper.isDiscriminatedParentTypeDefinition()>
+	return m.Child.LengthInBits()
+	<#else>
+		<#if helper.isDiscriminatedChildTypeDefinition()>
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+		<#else>
+	lengthInBits := uint16(0)
+		</#if>
+		<#list type.fields as field>
+			<#switch field.typeName>
+				<#case "array">
+					<#assign arrayField = field>
+
+	// Array field
+	if len(m.${arrayField.name?cap_first}) > 0 {
+				<#assign simpleTypeReference = arrayField.type>
+				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
+		lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#elseif helper.isSimpleTypeReference(arrayField.type)>
+		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
+				<#else>
+		for _, element := range m.${arrayField.name?cap_first} {
+			lengthInBits += element.LengthInBits()
+		}
+				</#if>
+	}
+					<#break>
+				<#case "checksum">
+					<#assign checksumField = field>
+					<#assign simpleTypeReference = checksumField.type>
+
+	// Checksum Field (checksum)
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "const">
+					<#assign constField = field>
+					<#assign simpleTypeReference = constField.type>
+
+	// Const Field (${constField.name})
+				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+				<#else>
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+				</#if>
+					<#break>
+				<#case "discriminator">
+					<#assign discriminatorField = field>
+					<#assign simpleTypeReference = discriminatorField.type>
+	// Discriminator Field (${discriminatorField.name})
+		<#if helper.isSimpleTypeReference(simpleTypeReference)>
+			<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+			lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+			<#else>
+			lengthInBits += ${simpleTypeReference.sizeInBits};
+			</#if>
+		<#elseif helper.isEnumField(discriminatorField)>
+		lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+		<#else>
+		lengthInBits += ${discriminatorField.name}.getLengthInBits();
+		</#if>
+					<#break>
+				<#case "enum">
+					<#assign enumField = field>
+
+	// Enum Field (${enumField.name})
+	lengthInBits += ${helper.getEnumBaseTypeReference(enumField.type).sizeInBits}
+					<#break>
+				<#case "implicit">
+					<#assign implicitField = field>
+					<#assign simpleTypeReference = implicitField.type>
+
+	// Implicit Field (${implicitField.name})
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "manualArray">
+					<#assign manualArrayField = field>
+
+	// Manual Array Field (${manualArrayField.name})
+	lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
+					<#break>
+				<#case "manual">
+					<#assign manualField = field>
+
+	// Manual Field (${manualField.name})
+	lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8
+					<#break>
+				<#case "optional">
+					<#assign optionalField = field>
+
+	// Optional Field (${optionalField.name})
+	if m.${optionalField.name?cap_first} != nil {
+					<#if helper.isSimpleTypeReference(optionalField.type)>
+						<#assign simpleTypeReference = optionalField.type>
+		lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#elseif helper.isEnumField(field)>
+		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
+					<#else>
+		lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
+					</#if>
+	}
+					<#break>
+				<#case "padding">
+					<#assign paddingField = field>
+					<#assign simpleTypeReference = paddingField.type>
+
+	// Padding Field (padding)
+			<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+	for ;_timesPadding > 0; _timesPadding-- {
+		lengthInBits += ${simpleTypeReference.sizeInBits}
+	}
+					<#break>
+				<#case "reserved">
+					<#assign reservedField = field>
+					<#assign simpleTypeReference = reservedField.type>
+
+	// Reserved Field (reserved)
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "simple">
+					<#assign simpleField = field>
+
+	// Simple field (${simpleField.name})
+					<#if helper.isSimpleTypeReference(simpleField.type)>
+						<#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
+							<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+						<#else>
+							<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += ${simpleTypeReference.sizeInBits};
+						</#if>
+					<#elseif helper.isEnumField(field)>
+	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
+					<#else>
+	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
+					</#if>
+					<#break>
+				<#case "switch">
+					<#assign switchField = field>
+
+	// Length of sub-type elements will be added by sub-type...
+	lengthInBits += m.Child.LengthInBits()
+					<#break>
+				<#case "virtual">
+					<#assign virtualField = field>
+
+	// A virtual field doesn't have any in- or output.
+					<#break>
+			</#switch>
+		</#list>
+
+	return lengthInBits
+	</#if>
+}
+
+<#if helper.isDiscriminatedParentTypeDefinition()>
+func (m *${type.name}) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -220,17 +377,17 @@ func (m *${type.name}) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-			<#assign simpleTypeReference = arrayField.type>
-			<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
-		lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
-			<#elseif helper.isSimpleTypeReference(arrayField.type)>
-		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
-			<#else>
-		for _, element := range m.${arrayField.name?cap_first} {
-			lengthInBits += element.LengthInBits()
-		}
-			</#if>
+				<#assign simpleTypeReference = arrayField.type>
+				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#elseif helper.isSimpleTypeReference(arrayField.type)>
+	lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
+				<#else>
+	for _, element := range m.${arrayField.name?cap_first} {
+	lengthInBits += element.LengthInBits()
 	}
+				</#if>
+				}
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>
@@ -244,27 +401,27 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-			<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
+				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
 	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
-			<#else>
+				<#else>
 	lengthInBits += ${simpleTypeReference.sizeInBits}
-			</#if>
+				</#if>
 				<#break>
 			<#case "discriminator">
 				<#assign discriminatorField = field>
 				<#assign simpleTypeReference = discriminatorField.type>
 	// Discriminator Field (${discriminatorField.name})
-	<#if helper.isSimpleTypeReference(simpleTypeReference)>
-		<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-			lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
-		<#else>
-			lengthInBits += ${simpleTypeReference.sizeInBits};
-		</#if>
-	<#elseif helper.isEnumField(discriminatorField)>
-		lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
-	<#else>
-		lengthInBits += ${discriminatorField.name}.getLengthInBits();
-	</#if>
+				<#if helper.isSimpleTypeReference(simpleTypeReference)>
+					<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+					<#else>
+	lengthInBits += ${simpleTypeReference.sizeInBits};
+					</#if>
+				<#elseif helper.isEnumField(discriminatorField)>
+	lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+				<#else>
+	lengthInBits += ${discriminatorField.name}.getLengthInBits();
+				</#if>
 				<#break>
 			<#case "enum">
 				<#assign enumField = field>
@@ -311,7 +468,7 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#assign simpleTypeReference = paddingField.type>
 
 	// Padding Field (padding)
-			<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
+				<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
 	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
 	for ;_timesPadding > 0; _timesPadding-- {
 		lengthInBits += ${simpleTypeReference.sizeInBits}
@@ -342,12 +499,6 @@ func (m *${type.name}) LengthInBits() uint16 {
 	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
 				</#if>
 				<#break>
-			<#case "switch">
-				<#assign switchField = field>
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
-				<#break>
 			<#case "virtual">
 				<#assign virtualField = field>
 
@@ -358,6 +509,7 @@ func (m *${type.name}) LengthInBits() uint16 {
 
 	return lengthInBits
 }
+</#if>
 
 func (m *${type.name}) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8

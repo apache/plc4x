@@ -82,6 +82,10 @@ func (m *S7PayloadUserDataItem) GetTypeName() string {
 }
 
 func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7PayloadUserDataItem) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)
@@ -98,9 +102,6 @@ func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

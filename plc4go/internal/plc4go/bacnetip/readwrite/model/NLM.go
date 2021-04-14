@@ -80,6 +80,10 @@ func (m *NLM) GetTypeName() string {
 }
 
 func (m *NLM) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *NLM) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -88,9 +92,6 @@ func (m *NLM) LengthInBits() uint16 {
 	if m.VendorId != nil {
 		lengthInBits += 16
 	}
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

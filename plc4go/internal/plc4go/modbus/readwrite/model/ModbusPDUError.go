@@ -93,7 +93,7 @@ func (m *ModbusPDUError) GetTypeName() string {
 }
 
 func (m *ModbusPDUError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (exceptionCode)
 	lengthInBits += 8

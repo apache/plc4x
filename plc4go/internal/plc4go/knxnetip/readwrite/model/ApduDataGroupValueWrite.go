@@ -89,7 +89,7 @@ func (m *ApduDataGroupValueWrite) GetTypeName() string {
 }
 
 func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6

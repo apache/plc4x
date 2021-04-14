@@ -85,7 +85,7 @@ func (m *ApduDataOther) GetTypeName() string {
 }
 
 func (m *ApduDataOther) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (extendedApdu)
 	lengthInBits += m.ExtendedApdu.LengthInBits()

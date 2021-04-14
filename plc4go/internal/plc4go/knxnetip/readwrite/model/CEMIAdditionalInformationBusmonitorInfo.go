@@ -99,7 +99,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8

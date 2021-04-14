@@ -85,7 +85,7 @@ func (m *ComObjectTableRealisationType6) GetTypeName() string {
 }
 
 func (m *ComObjectTableRealisationType6) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (comObjectDescriptors)
 	lengthInBits += m.ComObjectDescriptors.LengthInBits()

@@ -89,7 +89,7 @@ func (m *BACnetTagApplicationReal) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationReal) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 32

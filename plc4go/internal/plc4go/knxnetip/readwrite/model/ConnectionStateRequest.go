@@ -88,7 +88,7 @@ func (m *ConnectionStateRequest) GetTypeName() string {
 }
 
 func (m *ConnectionStateRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8

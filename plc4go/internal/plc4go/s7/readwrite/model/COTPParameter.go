@@ -78,15 +78,16 @@ func (m *COTPParameter) GetTypeName() string {
 }
 
 func (m *COTPParameter) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *COTPParameter) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
 	// Implicit Field (parameterLength)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

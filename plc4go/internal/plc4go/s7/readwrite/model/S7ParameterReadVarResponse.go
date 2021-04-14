@@ -89,7 +89,7 @@ func (m *S7ParameterReadVarResponse) GetTypeName() string {
 }
 
 func (m *S7ParameterReadVarResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numItems)
 	lengthInBits += 8

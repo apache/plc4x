@@ -86,6 +86,10 @@ func (m *S7Message) GetTypeName() string {
 }
 
 func (m *S7Message) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7Message) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -104,9 +108,6 @@ func (m *S7Message) LengthInBits() uint16 {
 
 	// Implicit Field (payloadLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	// Optional Field (parameter)
 	if m.Parameter != nil {

@@ -95,7 +95,7 @@ func (m *ModbusPDUDiagnosticResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUDiagnosticResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16

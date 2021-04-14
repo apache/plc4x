@@ -93,7 +93,7 @@ func (m *ModbusPDUReadFifoQueueResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16

@@ -82,6 +82,10 @@ func (m *KnxNetIpMessage) GetTypeName() string {
 }
 
 func (m *KnxNetIpMessage) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -94,9 +98,6 @@ func (m *KnxNetIpMessage) LengthInBits() uint16 {
 
 	// Implicit Field (totalLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

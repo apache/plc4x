@@ -99,7 +99,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16

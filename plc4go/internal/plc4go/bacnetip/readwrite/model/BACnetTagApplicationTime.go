@@ -86,7 +86,7 @@ func (m *BACnetTagApplicationTime) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationTime) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

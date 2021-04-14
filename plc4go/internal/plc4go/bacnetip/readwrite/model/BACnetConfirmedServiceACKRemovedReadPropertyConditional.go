@@ -82,7 +82,7 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) GetTypeName() 
 }
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

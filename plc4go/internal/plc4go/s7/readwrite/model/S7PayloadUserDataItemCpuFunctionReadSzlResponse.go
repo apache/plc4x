@@ -93,7 +93,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetTypeName() string {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (szlItemLength)
 	lengthInBits += 16

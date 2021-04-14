@@ -82,7 +82,7 @@ func (m *MResetReq) GetTypeName() string {
 }
 
 func (m *MResetReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }

@@ -78,12 +78,13 @@ func (m *S7ParameterUserDataItem) GetTypeName() string {
 }
 
 func (m *S7ParameterUserDataItem) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7ParameterUserDataItem) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }

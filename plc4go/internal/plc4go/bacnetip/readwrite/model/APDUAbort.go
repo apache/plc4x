@@ -90,7 +90,7 @@ func (m *APDUAbort) GetTypeName() string {
 }
 
 func (m *APDUAbort) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 3

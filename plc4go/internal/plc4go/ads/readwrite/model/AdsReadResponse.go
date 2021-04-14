@@ -93,7 +93,7 @@ func (m *AdsReadResponse) GetTypeName() string {
 }
 
 func (m *AdsReadResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32

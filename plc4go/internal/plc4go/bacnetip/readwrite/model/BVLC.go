@@ -82,6 +82,10 @@ func (m *BVLC) GetTypeName() string {
 }
 
 func (m *BVLC) LengthInBits() uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BVLC) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetType)
@@ -91,9 +95,6 @@ func (m *BVLC) LengthInBits() uint16 {
 
 	// Implicit Field (bvlcLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
