@@ -49,7 +49,7 @@ type Worker struct {
 func (w Worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			log.Fatal().Msgf("Recovering from panic()=%v", recovered)
+			log.Error().Msgf("Recovering from panic()=%v", recovered)
 		}
 		if !w.shutdown {
 			// TODO: if we are not in shutdown we continue

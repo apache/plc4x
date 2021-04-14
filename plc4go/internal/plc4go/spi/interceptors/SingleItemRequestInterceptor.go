@@ -78,7 +78,7 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest apiModel.
 			}
 		} else if readResult.Response != nil {
 			if len(readResult.Response.GetRequest().GetFieldNames()) > 1 {
-				log.Fatal().Int("numberOfFields", len(readResult.Response.GetRequest().GetFieldNames())).Msg("We should only get 1")
+				log.Error().Int("numberOfFields", len(readResult.Response.GetRequest().GetFieldNames())).Msg("We should only get 1")
 			}
 			for _, fieldName := range readResult.Response.GetRequest().GetFieldNames() {
 				responseCodes[fieldName] = readResult.Response.GetResponseCode(fieldName)

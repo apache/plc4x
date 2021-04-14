@@ -512,7 +512,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		t.Run(testcase.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Error().Msgf("\n-------------------------------------------------------\nFatal Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
+					log.Error().Msgf("\n-------------------------------------------------------\nPanic Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
 					t.FailNow()
 				}
 			}()
