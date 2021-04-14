@@ -131,6 +131,9 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffe
 		}
 		value[curItem] = _item
 	}
+	if len(value) == 0 {
+		value = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadWriteMultipleHoldingRegistersResponse{

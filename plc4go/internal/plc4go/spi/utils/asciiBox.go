@@ -52,6 +52,9 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 	case nil:
 		return ""
 	case AsciiBoxer:
+		if reflect.ValueOf(anything).IsNil() {
+			return ""
+		}
 		// A box usually has its own name
 		return anything.(AsciiBoxer).Box(name, charWidth)
 	case bool:

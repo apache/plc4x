@@ -176,7 +176,7 @@ type RequestTransaction struct {
 }
 
 type RequestTransactionManager struct {
-	runningRequests []RequestTransaction
+	runningRequests []*RequestTransaction
 	// How many Transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
@@ -214,11 +214,11 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 
 func (r *RequestTransactionManager) submit(context func(RequestTransaction)) {
 	transaction := r.StartRequest()
-	context(transaction)
+	context(*transaction)
 	// r.submitHandle(transaction);
 }
 
-func (r *RequestTransactionManager) submitHandle(handle RequestTransaction) {
+func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
 	if handle.operation == nil {
 		panic("invalid handle")
 	}
@@ -235,33 +235,33 @@ func (r *RequestTransactionManager) processWorklog() {
 	r.worklogMutex.RLock()
 	defer r.worklogMutex.RUnlock()
 	for len(r.runningRequests) < r.getNumberOfConcurrentRequests() && r.worklog.Len() > 0 {
-		next := r.worklog.Front().Value.(RequestTransaction)
+		next := r.worklog.Front().Value.(*RequestTransaction)
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := executor.submit(next.operation)
 		next.completionFuture = completionFuture
 	}
 }
 
-func (r *RequestTransactionManager) StartRequest() RequestTransaction {
+func (r *RequestTransactionManager) StartRequest() *RequestTransaction {
 	r.transationMutex.Lock()
 	defer r.transationMutex.Unlock()
 	currentTransactionId := r.transactionId
 	r.transactionId += 1
-	return RequestTransaction{r, currentTransactionId, nil, nil}
+	return &RequestTransaction{r, currentTransactionId, nil, nil}
 }
 
 func (r *RequestTransactionManager) getNumberOfActiveRequests() int {
 	return len(r.runningRequests)
 }
 
-func (r *RequestTransactionManager) failRequest(transaction RequestTransaction) error {
+func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction) error {
 	// Try to fail it!
 	transaction.completionFuture.cancel(true)
 	// End it
 	return r.endRequest(transaction)
 }
 
-func (r *RequestTransactionManager) endRequest(transaction RequestTransaction) error {
+func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) error {
 	found := false
 	index := -1
 	for i, runningRequest := range r.runningRequests {
@@ -281,31 +281,31 @@ func (r *RequestTransactionManager) endRequest(transaction RequestTransaction) e
 	return nil
 }
 
-func (t RequestTransaction) start() {
+func (t *RequestTransaction) start() {
 }
 
-func (t RequestTransaction) failRequest(err error) error {
+func (t *RequestTransaction) failRequest(err error) error {
 	return t.parent.failRequest(t)
 }
 
-func (t RequestTransaction) EndRequest() error {
+func (t *RequestTransaction) EndRequest() error {
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
-func (t RequestTransaction) setOperation(operation Runnable) {
+func (t *RequestTransaction) setOperation(operation Runnable) {
 	t.operation = operation
 }
 
-func (t RequestTransaction) getCompletionFuture() *CompletionFuture {
+func (t *RequestTransaction) getCompletionFuture() *CompletionFuture {
 	return t.completionFuture
 }
 
-func (t RequestTransaction) setCompletionFuture(completionFuture *CompletionFuture) {
+func (t *RequestTransaction) setCompletionFuture(completionFuture *CompletionFuture) {
 	t.completionFuture = completionFuture
 }
 
-func (t RequestTransaction) Submit(operation Runnable) {
+func (t *RequestTransaction) Submit(operation Runnable) {
 	log.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.setOperation(NewTransactionOperation(t.transactionId, operation))
 	t.parent.submitHandle(t)

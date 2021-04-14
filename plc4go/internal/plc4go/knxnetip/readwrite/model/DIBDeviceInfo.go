@@ -165,6 +165,9 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		}
 		knxNetIpDeviceSerialNumber[curItem] = _item
 	}
+	if len(knxNetIpDeviceSerialNumber) == 0 {
+		knxNetIpDeviceSerialNumber = nil
+	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(io)
@@ -187,6 +190,9 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceFriendlyName' field")
 		}
 		deviceFriendlyName[curItem] = _item
+	}
+	if len(deviceFriendlyName) == 0 {
+		deviceFriendlyName = nil
 	}
 
 	// Create the instance

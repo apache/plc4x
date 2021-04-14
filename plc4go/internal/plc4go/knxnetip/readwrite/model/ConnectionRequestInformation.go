@@ -165,6 +165,17 @@ func (m *ConnectionRequestInformation) UnmarshalXML(d *xml.Decoder, start xml.St
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ConnectionRequestInformationDeviceManagement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
+			if m.Child == nil {
+				m.Child = &ConnectionRequestInformationDeviceManagement{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

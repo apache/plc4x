@@ -139,6 +139,9 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		fifoValue[curItem] = _item
 	}
+	if len(fifoValue) == 0 {
+		fifoValue = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueResponse{

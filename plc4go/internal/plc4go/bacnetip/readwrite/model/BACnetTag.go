@@ -24,6 +24,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -258,6 +259,59 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetTagApplicationNull needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationNull{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationBoolean needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationBoolean{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationOctetString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationOctetString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationCharacterString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationCharacterString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationDate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationDate{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationTime needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationTime{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationObjectIdentifier needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationObjectIdentifier{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
@@ -284,17 +338,33 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.LengthValueType = data
 			case "extTagNumber":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtTagNumber = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtTagNumber = &data
+				}
 			case "extLength":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtLength = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtLength = &data
+				}
 			default:
 				attr := start.Attr
 				if attr == nil || len(attr) <= 0 {

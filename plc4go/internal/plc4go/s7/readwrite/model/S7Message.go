@@ -106,9 +106,7 @@ func (m *S7Message) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Length of sub-type elements will be added by sub-type...
-	if m.Child != nil {
-		lengthInBits += m.Child.LengthInBits()
-	}
+	lengthInBits += m.Child.LengthInBits()
 
 	// Optional Field (parameter)
 	if m.Parameter != nil {
@@ -224,9 +222,6 @@ func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
 }
 
 func (m *S7Message) Serialize(io utils.WriteBuffer) error {
-	if m.Child == nil {
-		return nil
-	}
 	return m.Child.Serialize(io)
 }
 
@@ -308,6 +303,24 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// S7MessageRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.s7.readwrite.S7MessageRequest":
+			if m.Child == nil {
+				m.Child = &S7MessageRequest{
+					Parent: m,
+				}
+			}
+		// S7MessageUserData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.s7.readwrite.S7MessageUserData":
+			if m.Child == nil {
+				m.Child = &S7MessageUserData{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

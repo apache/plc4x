@@ -161,6 +161,9 @@ func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 		}
 		device[curItem] = _item
 	}
+	if len(device) == 0 {
+		device = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoResponse{

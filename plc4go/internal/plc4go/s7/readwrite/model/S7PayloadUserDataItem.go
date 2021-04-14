@@ -100,9 +100,7 @@ func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Length of sub-type elements will be added by sub-type...
-	if m.Child != nil {
-		lengthInBits += m.Child.LengthInBits()
-	}
+	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -218,6 +216,17 @@ func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// S7PayloadUserDataItemCpuFunctionReadSzlRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
+			if m.Child == nil {
+				m.Child = &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

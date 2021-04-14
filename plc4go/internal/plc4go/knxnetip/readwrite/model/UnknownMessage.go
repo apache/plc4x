@@ -113,6 +113,9 @@ func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMes
 		}
 		unknownData[curItem] = _item
 	}
+	if len(unknownData) == 0 {
+		unknownData = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{

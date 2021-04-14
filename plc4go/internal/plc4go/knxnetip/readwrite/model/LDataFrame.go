@@ -252,6 +252,17 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// LDataFrameACK needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameACK":
+			if m.Child == nil {
+				m.Child = &LDataFrameACK{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

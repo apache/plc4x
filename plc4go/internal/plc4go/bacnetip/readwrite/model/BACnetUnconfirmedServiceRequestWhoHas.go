@@ -200,6 +200,9 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUn
 		}
 		objectName = append(objectName, _item)
 	}
+	if len(objectName) == 0 {
+		objectName = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoHas{

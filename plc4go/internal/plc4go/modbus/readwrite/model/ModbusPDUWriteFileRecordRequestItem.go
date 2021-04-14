@@ -133,6 +133,9 @@ func ModbusPDUWriteFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDUW
 		}
 		recordData = append(recordData, _item)
 	}
+	if len(recordData) == 0 {
+		recordData = nil
+	}
 
 	// Create the instance
 	return NewModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData), nil

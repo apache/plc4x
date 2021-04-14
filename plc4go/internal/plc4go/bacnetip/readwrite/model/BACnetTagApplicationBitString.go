@@ -130,6 +130,9 @@ func BACnetTagApplicationBitStringParse(io *utils.ReadBuffer, lengthValueType ui
 		}
 		data = append(data, _item)
 	}
+	if len(data) == 0 {
+		data = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationBitString{

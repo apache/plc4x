@@ -172,6 +172,101 @@ func (m *BACnetServiceAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetServiceAckGetAlarmSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetAlarmSummary":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetAlarmSummary{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTData":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckVTData{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

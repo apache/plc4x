@@ -133,6 +133,9 @@ func ModbusPDUReadFileRecordResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 		}
 		items = append(items, _item)
 	}
+	if len(items) == 0 {
+		items = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFileRecordResponse{

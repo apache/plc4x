@@ -232,6 +232,17 @@ func (m *KnxNetIpMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// RoutingIndication needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.RoutingIndication":
+			if m.Child == nil {
+				m.Child = &RoutingIndication{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

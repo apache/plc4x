@@ -169,6 +169,45 @@ func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// AdsInvalidRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidRequest":
+			if m.Child == nil {
+				m.Child = &AdsInvalidRequest{
+					Parent: m,
+				}
+			}
+		// AdsInvalidResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidResponse":
+			if m.Child == nil {
+				m.Child = &AdsInvalidResponse{
+					Parent: m,
+				}
+			}
+		// AdsReadDeviceInfoRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadDeviceInfoRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadDeviceInfoRequest{
+					Parent: m,
+				}
+			}
+		// AdsReadStateRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadStateRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadStateRequest{
+					Parent: m,
+				}
+			}
+		// AdsDeviceNotificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsDeviceNotificationResponse":
+			if m.Child == nil {
+				m.Child = &AdsDeviceNotificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

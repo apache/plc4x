@@ -176,6 +176,66 @@ func (m *ApduData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ApduDataIndividualAddressWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataIndividualAddressRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressRead":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressRead{
+					Parent: m,
+				}
+			}
+		// ApduDataIndividualAddressResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataAdcRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataAdcRead":
+			if m.Child == nil {
+				m.Child = &ApduDataAdcRead{
+					Parent: m,
+				}
+			}
+		// ApduDataAdcResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataAdcResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataAdcResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataMemoryWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataMemoryWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataMemoryWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataUserMessage needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataUserMessage":
+			if m.Child == nil {
+				m.Child = &ApduDataUserMessage{
+					Parent: m,
+				}
+			}
+		// ApduDataRestart needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataRestart":
+			if m.Child == nil {
+				m.Child = &ApduDataRestart{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

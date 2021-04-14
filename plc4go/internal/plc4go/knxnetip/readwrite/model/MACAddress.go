@@ -91,6 +91,9 @@ func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
 		}
 		addr[curItem] = _item
 	}
+	if len(addr) == 0 {
+		addr = nil
+	}
 
 	// Create the instance
 	return NewMACAddress(addr), nil

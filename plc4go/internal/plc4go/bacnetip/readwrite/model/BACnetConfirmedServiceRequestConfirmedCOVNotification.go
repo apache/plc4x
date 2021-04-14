@@ -251,6 +251,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 		}
 		lifetimeSeconds[curItem] = _item
 	}
+	if len(lifetimeSeconds) == 0 {
+		lifetimeSeconds = nil
+	}
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8(8)
@@ -272,6 +275,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'notifications' field")
 		}
 		notifications = append(notifications, _item)
+	}
+	if len(notifications) == 0 {
+		notifications = nil
 	}
 
 	// Const Field (listOfValuesClosingTag)

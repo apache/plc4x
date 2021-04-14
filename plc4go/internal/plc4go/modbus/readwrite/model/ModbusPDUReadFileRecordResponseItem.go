@@ -113,6 +113,9 @@ func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUR
 		}
 		data = append(data, _item)
 	}
+	if len(data) == 0 {
+		data = nil
+	}
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil

@@ -190,6 +190,129 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// LRawReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawReq":
+			if m.Child == nil {
+				m.Child = &LRawReq{
+					Parent: m,
+				}
+			}
+		// LRawInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawInd":
+			if m.Child == nil {
+				m.Child = &LRawInd{
+					Parent: m,
+				}
+			}
+		// LRawCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawCon":
+			if m.Child == nil {
+				m.Child = &LRawCon{
+					Parent: m,
+				}
+			}
+		// LPollDataReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataReq":
+			if m.Child == nil {
+				m.Child = &LPollDataReq{
+					Parent: m,
+				}
+			}
+		// LPollDataCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataCon":
+			if m.Child == nil {
+				m.Child = &LPollDataCon{
+					Parent: m,
+				}
+			}
+		// TDataConnectedReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedReq":
+			if m.Child == nil {
+				m.Child = &TDataConnectedReq{
+					Parent: m,
+				}
+			}
+		// TDataConnectedInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedInd":
+			if m.Child == nil {
+				m.Child = &TDataConnectedInd{
+					Parent: m,
+				}
+			}
+		// TDataIndividualReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualReq":
+			if m.Child == nil {
+				m.Child = &TDataIndividualReq{
+					Parent: m,
+				}
+			}
+		// TDataIndividualInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualInd":
+			if m.Child == nil {
+				m.Child = &TDataIndividualInd{
+					Parent: m,
+				}
+			}
+		// MPropWriteReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteReq":
+			if m.Child == nil {
+				m.Child = &MPropWriteReq{
+					Parent: m,
+				}
+			}
+		// MPropWriteCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteCon":
+			if m.Child == nil {
+				m.Child = &MPropWriteCon{
+					Parent: m,
+				}
+			}
+		// MPropInfoInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropInfoInd":
+			if m.Child == nil {
+				m.Child = &MPropInfoInd{
+					Parent: m,
+				}
+			}
+		// MFuncPropCommandReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCommandReq":
+			if m.Child == nil {
+				m.Child = &MFuncPropCommandReq{
+					Parent: m,
+				}
+			}
+		// MFuncPropStateReadReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropStateReadReq":
+			if m.Child == nil {
+				m.Child = &MFuncPropStateReadReq{
+					Parent: m,
+				}
+			}
+		// MFuncPropCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCon":
+			if m.Child == nil {
+				m.Child = &MFuncPropCon{
+					Parent: m,
+				}
+			}
+		// MResetReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MResetReq":
+			if m.Child == nil {
+				m.Child = &MResetReq{
+					Parent: m,
+				}
+			}
+		// MResetInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MResetInd":
+			if m.Child == nil {
+				m.Child = &MResetInd{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

@@ -188,6 +188,9 @@ func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck,
 		}
 		propertyIdentifier[curItem] = _item
 	}
+	if len(propertyIdentifier) == 0 {
+		propertyIdentifier = nil
+	}
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8(8)

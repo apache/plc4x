@@ -119,6 +119,9 @@ func BACnetTagApplicationSignedIntegerParse(io *utils.ReadBuffer, lengthValueTyp
 		}
 		data = append(data, _item)
 	}
+	if len(data) == 0 {
+		data = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationSignedInteger{

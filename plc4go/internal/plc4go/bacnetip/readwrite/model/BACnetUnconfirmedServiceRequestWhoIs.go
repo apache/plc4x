@@ -156,6 +156,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 		}
 		deviceInstanceRangeLowLimit[curItem] = _item
 	}
+	if len(deviceInstanceRangeLowLimit) == 0 {
+		deviceInstanceRangeLowLimit = nil
+	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
 	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8(5)
@@ -181,6 +184,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
+	}
+	if len(deviceInstanceRangeHighLimit) == 0 {
+		deviceInstanceRangeHighLimit = nil
 	}
 
 	// Create a partially initialized instance

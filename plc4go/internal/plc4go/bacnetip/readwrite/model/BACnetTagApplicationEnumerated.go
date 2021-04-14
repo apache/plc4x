@@ -119,6 +119,9 @@ func BACnetTagApplicationEnumeratedParse(io *utils.ReadBuffer, lengthValueType u
 		}
 		data = append(data, _item)
 	}
+	if len(data) == 0 {
+		data = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationEnumerated{

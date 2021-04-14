@@ -73,6 +73,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return getLanguageTypeNameForTypeReference(((TypedField) field).getType());
     }
 
+    public boolean isComplex(Field field) {
+        return field instanceof PropertyField && ((PropertyField)field).getType() instanceof ComplexTypeReference;
+    }
+
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         if (typeReference instanceof SimpleTypeReference) {

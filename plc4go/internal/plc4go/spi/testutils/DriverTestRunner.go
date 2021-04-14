@@ -116,6 +116,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		return errors.New("transport must be of type TestTransport")
 	}
 
+	start := time.Now()
 	log.Info().Msgf("\n\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------", step.name)
 
 	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
@@ -290,6 +291,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			time.Sleep(10 * time.Millisecond)
 		}
 		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		if testTransportInstance.GetNumDrainableBytes() != 0 {
+			panic(fmt.Sprintf("to much drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes()))
+		}
 		if err != nil {
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
@@ -429,6 +433,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error closing transport")
 		}
 	}
+	log.Info().Msgf("\n\n-------------------------------------------------------\n - Finished step: %s after %vms \n-------------------------------------------------------", step.name, time.Now().Sub(start).Milliseconds())
 	return nil
 }
 

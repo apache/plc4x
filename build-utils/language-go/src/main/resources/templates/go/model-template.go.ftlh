@@ -1013,6 +1013,21 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 					return err
 				}
 				m.${field.name?cap_first} = data
+				<#--TODO: we need all optional fields to not intialized-->
+				<#elseif helper.needsPointerAccess(field) && helper.isOptionalField(field) && !helper.isComplex(field)>
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
+					return err
+				}
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)<@emitImport import="strconv" />
+					if err != nil {
+						return err
+					}
+					data := ${helper.getLanguageTypeNameForField(field)}(atoi)
+					m.${field.name?cap_first} = &data
+				}
 				<#elseif helper.needsPointerAccess(field)>
 				var data ${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&data, &tok); err != nil {

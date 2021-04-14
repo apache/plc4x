@@ -152,6 +152,38 @@ func (m *ApduControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ApduControlConnect needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlConnect":
+			if m.Child == nil {
+				m.Child = &ApduControlConnect{
+					Parent: m,
+				}
+			}
+		// ApduControlDisconnect needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlDisconnect":
+			if m.Child == nil {
+				m.Child = &ApduControlDisconnect{
+					Parent: m,
+				}
+			}
+		// ApduControlAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlAck":
+			if m.Child == nil {
+				m.Child = &ApduControlAck{
+					Parent: m,
+				}
+			}
+		// ApduControlNack needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlNack":
+			if m.Child == nil {
+				m.Child = &ApduControlNack{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

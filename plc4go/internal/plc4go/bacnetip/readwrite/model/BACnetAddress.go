@@ -93,6 +93,9 @@ func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
 		}
 		address[curItem] = _item
 	}
+	if len(address) == 0 {
+		address = nil
+	}
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16(16)

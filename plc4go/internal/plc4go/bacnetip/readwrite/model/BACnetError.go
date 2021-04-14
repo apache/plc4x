@@ -172,6 +172,101 @@ func (m *BACnetError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetErrorGetAlarmSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetAlarmSummary{
+					Parent: m,
+				}
+			}
+		// BACnetErrorGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetErrorGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetErrorAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetErrorAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetErrorAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetErrorAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetErrorCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetErrorCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetErrorReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetErrorReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetErrorReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetErrorReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetErrorConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetErrorConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetErrorVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetErrorVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetErrorVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTData":
+			if m.Child == nil {
+				m.Child = &BACnetErrorVTData{
+					Parent: m,
+				}
+			}
+		// BACnetErrorRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetErrorRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetErrorRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetErrorRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

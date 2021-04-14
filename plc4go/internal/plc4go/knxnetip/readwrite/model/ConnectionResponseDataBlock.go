@@ -165,6 +165,17 @@ func (m *ConnectionResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Sta
 	var token xml.Token
 	var err error
 	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ConnectionResponseDataBlockDeviceManagement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockDeviceManagement":
+			if m.Child == nil {
+				m.Child = &ConnectionResponseDataBlockDeviceManagement{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {

@@ -119,6 +119,9 @@ func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNu
 		}
 		data = append(data, _item)
 	}
+	if len(data) == 0 {
+		data = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagContext{

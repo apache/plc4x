@@ -135,6 +135,9 @@ func ComObjectTableRealisationType1Parse(io *utils.ReadBuffer) (*ComObjectTable,
 		}
 		comObjectDescriptors[curItem] = _item
 	}
+	if len(comObjectDescriptors) == 0 {
+		comObjectDescriptors = nil
+	}
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType1{
