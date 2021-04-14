@@ -427,9 +427,6 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 					</#if>
 	}
 				</#if>
-	if len(${arrayField.name}) == 0 {
-		${arrayField.name} = nil
-	}
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>

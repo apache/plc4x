@@ -197,9 +197,6 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len u
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	if len(propertyIdentifier) == 0 {
-		propertyIdentifier = nil
-	}
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8(8)

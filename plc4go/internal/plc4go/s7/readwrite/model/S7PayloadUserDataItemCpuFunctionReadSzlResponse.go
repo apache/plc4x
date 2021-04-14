@@ -143,9 +143,6 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) 
 		}
 		items[curItem] = _item
 	}
-	if len(items) == 0 {
-		items = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{

@@ -169,9 +169,6 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 		}
 		items[curItem] = _item
 	}
-	if len(items) == 0 {
-		items = nil
-	}
 
 	// Array field (data)
 	// Count array
@@ -182,9 +179,6 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
-	}
-	if len(data) == 0 {
-		data = nil
 	}
 
 	// Create a partially initialized instance

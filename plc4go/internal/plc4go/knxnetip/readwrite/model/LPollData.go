@@ -142,9 +142,6 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		targetAddress[curItem] = _item
 	}
-	if len(targetAddress) == 0 {
-		targetAddress = nil
-	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

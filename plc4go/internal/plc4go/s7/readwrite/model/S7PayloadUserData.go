@@ -117,9 +117,6 @@ func S7PayloadUserDataParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Pa
 		}
 		items[curItem] = _item
 	}
-	if len(items) == 0 {
-		items = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserData{

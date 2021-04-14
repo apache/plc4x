@@ -183,9 +183,6 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.Re
 		}
 		values = append(values, _item)
 	}
-	if len(values) == 0 {
-		values = nil
-	}
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8(8)

@@ -131,9 +131,6 @@ func ModbusPDUReadCoilsResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 		}
 		value[curItem] = _item
 	}
-	if len(value) == 0 {
-		value = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadCoilsResponse{

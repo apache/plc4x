@@ -113,9 +113,6 @@ func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) 
 		}
 		serviceIds = append(serviceIds, _item)
 	}
-	if len(serviceIds) == 0 {
-		serviceIds = nil
-	}
 
 	// Create the instance
 	return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil

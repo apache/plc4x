@@ -236,9 +236,6 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (*BACn
 		}
 		lifetimeSeconds[curItem] = _item
 	}
-	if len(lifetimeSeconds) == 0 {
-		lifetimeSeconds = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOV{

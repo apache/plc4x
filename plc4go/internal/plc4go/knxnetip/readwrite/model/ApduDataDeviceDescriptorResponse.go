@@ -124,9 +124,6 @@ func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorResponse{

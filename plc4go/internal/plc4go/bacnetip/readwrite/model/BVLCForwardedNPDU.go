@@ -121,9 +121,6 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 		}
 		ip[curItem] = _item
 	}
-	if len(ip) == 0 {
-		ip = nil
-	}
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16(16)

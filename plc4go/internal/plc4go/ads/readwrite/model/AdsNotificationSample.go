@@ -111,9 +111,6 @@ func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, e
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Create the instance
 	return NewAdsNotificationSample(notificationHandle, sampleSize, data), nil

@@ -139,9 +139,6 @@ func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	if len(additionalInformation) == 0 {
-		additionalInformation = nil
-	}
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)

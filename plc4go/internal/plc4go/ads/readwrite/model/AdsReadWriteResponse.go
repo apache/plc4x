@@ -138,9 +138,6 @@ func AdsReadWriteResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadWriteResponse{

@@ -91,9 +91,6 @@ func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
 		}
 		addr[curItem] = _item
 	}
-	if len(addr) == 0 {
-		addr = nil
-	}
 
 	// Create the instance
 	return NewIPAddress(addr), nil

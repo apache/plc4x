@@ -111,9 +111,6 @@ func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
-	if len(adsNotificationSamples) == 0 {
-		adsNotificationSamples = nil
-	}
 
 	// Create the instance
 	return NewAdsStampHeader(timestamp, samples, adsNotificationSamples), nil

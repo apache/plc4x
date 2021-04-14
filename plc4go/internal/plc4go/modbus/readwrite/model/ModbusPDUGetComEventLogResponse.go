@@ -164,9 +164,6 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 		}
 		events[curItem] = _item
 	}
-	if len(events) == 0 {
-		events = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogResponse{

@@ -124,9 +124,6 @@ func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueWrite{

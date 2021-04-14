@@ -175,9 +175,6 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (*BACn
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	if len(propertyIdentifier) == 0 {
-		propertyIdentifier = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadProperty{

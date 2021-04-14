@@ -155,9 +155,6 @@ func ApduDataExtPropertyValueWriteParse(io *utils.ReadBuffer, length uint8) (*Ap
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyValueWrite{

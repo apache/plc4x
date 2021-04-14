@@ -139,9 +139,6 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 		}
 		adsStampHeaders[curItem] = _item
 	}
-	if len(adsStampHeaders) == 0 {
-		adsStampHeaders = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationRequest{

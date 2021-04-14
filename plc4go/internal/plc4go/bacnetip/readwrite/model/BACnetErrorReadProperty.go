@@ -156,9 +156,6 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorClass[curItem] = _item
 	}
-	if len(errorClass) == 0 {
-		errorClass = nil
-	}
 
 	// Const Field (errorCodeHeader)
 	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8(5)
@@ -184,9 +181,6 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode[curItem] = _item
-	}
-	if len(errorCode) == 0 {
-		errorCode = nil
 	}
 
 	// Create a partially initialized instance

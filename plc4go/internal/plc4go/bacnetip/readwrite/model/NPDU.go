@@ -253,9 +253,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
-	if len(destinationAddress) == 0 {
-		destinationAddress = nil
-	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
@@ -286,9 +283,6 @@ func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
 		}
 		sourceAddress[curItem] = _item
-	}
-	if len(sourceAddress) == 0 {
-		sourceAddress = nil
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)

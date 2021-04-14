@@ -128,9 +128,6 @@ func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (*S7VarPaylo
 		}
 		data[curItem] = _item
 	}
-	if len(data) == 0 {
-		data = nil
-	}
 
 	// Padding Field (padding)
 	{

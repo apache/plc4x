@@ -114,9 +114,6 @@ func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messa
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
-	if len(destinationNetworkAddress) == 0 {
-		destinationNetworkAddress = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &NLMWhoIsRouterToNetwork{

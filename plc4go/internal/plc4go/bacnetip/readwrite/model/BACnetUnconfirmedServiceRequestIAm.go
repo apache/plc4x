@@ -193,9 +193,6 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 		}
 		maximumApduLengthAccepted[curItem] = _item
 	}
-	if len(maximumApduLengthAccepted) == 0 {
-		maximumApduLengthAccepted = nil
-	}
 
 	// Const Field (segmentationSupportedHeader)
 	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8(8)

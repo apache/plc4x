@@ -127,9 +127,6 @@ func S7ParameterReadVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error) 
 		}
 		items[curItem] = _item
 	}
-	if len(items) == 0 {
-		items = nil
-	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterReadVarRequest{
