@@ -169,6 +169,9 @@ func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 		_parent, typeSwitchError = LPollDataParse(io)
 	case notAckFrame == false: // LDataFrameACK
 		_parent, typeSwitchError = LDataFrameACKParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

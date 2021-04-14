@@ -652,9 +652,13 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
+					<#--TODO: refactor the line below into multiple assigns -->
     <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>*</#if></#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else><#assign defaultCaseOutput=true></#if>: // ${case.name}
 		_parent, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")<@emitImport import="github.com/pkg/errors" />
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")<@emitImport import="github.com/pkg/errors" />
@@ -1071,23 +1075,27 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	}
 				<#-- normal arrays have one element with the same name wrapping them -->
 				<#elseif helper.isArrayField(field) && helper.isComplexTypeReference(field.type)>
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
+		return err
+	}
 	for _, arrayElement := range m.${field.name?cap_first} {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
+		return err
 	}
 				<#else>
 	if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
 		return err
 	}
 				</#if>
-			<#elseif helper.isSwitchField(field)>
+			</#if>
+		</#list>
+		<#-- TODO: we seperated these two loops because the way jackson/java renders fields-->
+		<#list type.fields as field>
+			<#if helper.isSwitchField(field)>
 	marshaller, ok := m.Child.(xml.Marshaler)<@emitImport import="encoding/xml" />
 	if !ok {
 		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)<@emitImport import="github.com/pkg/errors" />

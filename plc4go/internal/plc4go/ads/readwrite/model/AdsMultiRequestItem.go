@@ -102,6 +102,9 @@ func AdsMultiRequestItemParse(io *utils.ReadBuffer, indexGroup uint32) (*AdsMult
 		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(io)
 	case indexGroup == 61570: // AdsMultiRequestItemReadWrite
 		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

@@ -32,6 +32,8 @@ type IKnxInterfaceObjectType interface {
 	Code() string
 	Name() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -439,6 +441,13 @@ func (m *KnxInterfaceObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 			*m = KnxInterfaceObjectTypeByName(string(tok))
 		}
 	}
+}
+
+func (m KnxInterfaceObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e KnxInterfaceObjectType) String() string {

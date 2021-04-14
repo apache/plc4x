@@ -409,6 +409,22 @@
                 <flag>Apache Software Foundation (ASF)</flag>
               </buildFlags>
               <packages>
+                <package>internal/plc4go/s7/fieldtype_string.go</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-license4</id>
+            <goals>
+              <goal>custom</goal>
+            </goals>
+            <configuration>
+              <exec>go-licenser</exec>
+              <customCommand>-licensor</customCommand>
+              <buildFlags>
+                <flag>Apache Software Foundation (ASF)</flag>
+              </buildFlags>
+              <packages>
                 <package>internal/plc4go/spi/testutils/steptype_string.go</package>
               </packages>
             </configuration>

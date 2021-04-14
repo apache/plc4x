@@ -30,6 +30,8 @@ type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -105,6 +107,13 @@ func (m *HostProtocolCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			*m = HostProtocolCodeByName(string(tok))
 		}
 	}
+}
+
+func (m HostProtocolCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e HostProtocolCode) String() string {

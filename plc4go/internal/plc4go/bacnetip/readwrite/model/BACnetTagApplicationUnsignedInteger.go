@@ -110,7 +110,7 @@ func BACnetTagApplicationUnsignedIntegerParse(io *utils.ReadBuffer, lengthValueT
 	// Array field (data)
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), uint16(extLength), uint16(lengthValueType))
+	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(extLength) }, func() uint16 { return uint16(lengthValueType) })
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		_item, _err := io.ReadInt8(8)

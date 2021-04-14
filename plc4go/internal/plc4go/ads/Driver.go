@@ -81,8 +81,16 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
+	configuration, err := ParseFromOptions(options)
+	if err != nil {
+		log.Error().Err(err).Msgf("Invalid options")
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
+		return ch
+	}
+
 	// Create the new connection
-	connection, err := NewConnection(codec, options, m.fieldHandler)
+	connection, err := NewConnection(codec, configuration, m.fieldHandler)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {

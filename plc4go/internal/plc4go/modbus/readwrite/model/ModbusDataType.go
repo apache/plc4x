@@ -31,6 +31,8 @@ type ModbusDataType uint8
 type IModbusDataType interface {
 	DataTypeSize() uint8
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -347,6 +349,13 @@ func (m *ModbusDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 			*m = ModbusDataTypeByName(string(tok))
 		}
 	}
+}
+
+func (m ModbusDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ModbusDataType) String() string {

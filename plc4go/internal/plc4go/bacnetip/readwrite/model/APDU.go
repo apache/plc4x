@@ -120,6 +120,9 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 		_parent, typeSwitchError = APDURejectParse(io)
 	case apduType == 0x7: // APDUAbort
 		_parent, typeSwitchError = APDUAbortParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

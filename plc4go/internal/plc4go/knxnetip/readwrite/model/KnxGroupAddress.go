@@ -102,6 +102,9 @@ func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddre
 		_parent, typeSwitchError = KnxGroupAddress2LevelParse(io)
 	case numLevels == 3: // KnxGroupAddress3Level
 		_parent, typeSwitchError = KnxGroupAddress3LevelParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

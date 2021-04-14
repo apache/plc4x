@@ -503,16 +503,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xm
 	if err := e.EncodeElement(_encodedLifetimeSeconds, xml.StartElement{Name: xml.Name{Local: "lifetimeSeconds"}}); err != nil {
 		return err
 	}
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "notifications"}}); err != nil {
+		return err
+	}
 	for _, arrayElement := range m.Notifications {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "notifications"}}); err != nil {
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "notifications"}}); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "notifications"}}); err != nil {
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "notifications"}}); err != nil {
+		return err
 	}
 	return nil
 }

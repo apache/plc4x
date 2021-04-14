@@ -84,6 +84,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
+	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan interface{})
 	go func() {
 		for {

@@ -159,7 +159,7 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
 	// Array field (propertyIdentifier)
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
-	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), uint16((*extLength)), uint16(lengthValueType))
+	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
 		_item, _err := io.ReadUint8(8)

@@ -156,6 +156,9 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 		_parent, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
 		_parent, typeSwitchError = BVLCSecureBVLLParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

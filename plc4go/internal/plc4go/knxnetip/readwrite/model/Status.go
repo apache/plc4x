@@ -30,6 +30,8 @@ type Status uint8
 
 type IStatus interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -155,6 +157,13 @@ func (m *Status) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			*m = StatusByName(string(tok))
 		}
 	}
+}
+
+func (m Status) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e Status) String() string {

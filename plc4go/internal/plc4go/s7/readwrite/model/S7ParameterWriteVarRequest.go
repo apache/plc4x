@@ -200,16 +200,16 @@ func (m *S7ParameterWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 }
 
 func (m *S7ParameterWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+		return err
+	}
 	for _, arrayElement := range m.Items {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+		return err
 	}
 	return nil
 }

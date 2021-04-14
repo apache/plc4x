@@ -30,6 +30,8 @@ type DeviceGroup int8
 
 type IDeviceGroup interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -110,6 +112,13 @@ func (m *DeviceGroup) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 			*m = DeviceGroupByName(string(tok))
 		}
 	}
+}
+
+func (m DeviceGroup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e DeviceGroup) String() string {

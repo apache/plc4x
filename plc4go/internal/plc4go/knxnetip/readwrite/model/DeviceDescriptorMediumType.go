@@ -30,6 +30,8 @@ type DeviceDescriptorMediumType uint8
 
 type IDeviceDescriptorMediumType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -125,6 +127,13 @@ func (m *DeviceDescriptorMediumType) UnmarshalXML(d *xml.Decoder, start xml.Star
 			*m = DeviceDescriptorMediumTypeByName(string(tok))
 		}
 	}
+}
+
+func (m DeviceDescriptorMediumType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e DeviceDescriptorMediumType) String() string {

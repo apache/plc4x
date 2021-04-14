@@ -31,6 +31,8 @@ type ComObjectTableAddresses uint16
 type IComObjectTableAddresses interface {
 	ComObjectTableAddress() uint16
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -15458,6 +15460,13 @@ func (m *ComObjectTableAddresses) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 			*m = ComObjectTableAddressesByName(string(tok))
 		}
 	}
+}
+
+func (m ComObjectTableAddresses) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ComObjectTableAddresses) String() string {

@@ -30,6 +30,8 @@ type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -110,6 +112,13 @@ func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			*m = BACnetNotifyTypeByName(string(tok))
 		}
 	}
+}
+
+func (m BACnetNotifyType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e BACnetNotifyType) String() string {

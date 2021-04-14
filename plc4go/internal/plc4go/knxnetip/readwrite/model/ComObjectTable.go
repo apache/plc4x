@@ -102,6 +102,9 @@ func ComObjectTableParse(io *utils.ReadBuffer, firmwareType *FirmwareType) (*Com
 		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(io)
 	case *firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

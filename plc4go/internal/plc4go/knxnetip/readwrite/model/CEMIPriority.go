@@ -30,6 +30,8 @@ type CEMIPriority uint8
 
 type ICEMIPriority interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -115,6 +117,13 @@ func (m *CEMIPriority) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 			*m = CEMIPriorityByName(string(tok))
 		}
 	}
+}
+
+func (m CEMIPriority) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e CEMIPriority) String() string {

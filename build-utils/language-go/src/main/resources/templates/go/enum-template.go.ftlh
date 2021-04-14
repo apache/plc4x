@@ -65,6 +65,8 @@ type I${type.name} interface {
 	</#list>
 </#if>
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const(
@@ -177,6 +179,13 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 			*m = ${type.name}ByName(string(tok))
 		}
 	}
+}
+
+func (m ${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e ${type.name}) String() string {

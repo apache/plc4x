@@ -30,6 +30,8 @@ type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -150,6 +152,13 @@ func (m *BACnetNetworkType) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			*m = BACnetNetworkTypeByName(string(tok))
 		}
 	}
+}
+
+func (m BACnetNetworkType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e BACnetNetworkType) String() string {

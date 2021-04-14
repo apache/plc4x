@@ -30,6 +30,8 @@ type FirmwareType uint16
 
 type IFirmwareType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -175,6 +177,13 @@ func (m *FirmwareType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 			*m = FirmwareTypeByName(string(tok))
 		}
 	}
+}
+
+func (m FirmwareType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e FirmwareType) String() string {

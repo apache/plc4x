@@ -30,6 +30,8 @@ type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -120,6 +122,13 @@ func (m *COTPProtocolClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			*m = COTPProtocolClassByName(string(tok))
 		}
 	}
+}
+
+func (m COTPProtocolClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e COTPProtocolClass) String() string {

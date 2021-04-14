@@ -32,6 +32,8 @@ type IDeviceDescriptor interface {
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -491,6 +493,13 @@ func (m *DeviceDescriptor) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			*m = DeviceDescriptorByName(string(tok))
 		}
 	}
+}
+
+func (m DeviceDescriptor) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e DeviceDescriptor) String() string {

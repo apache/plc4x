@@ -25,6 +25,5 @@ import (
 )
 
 func TestAdsParserSerializer(t *testing.T) {
-	t.Skip("Still a work in progress")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml")
 }

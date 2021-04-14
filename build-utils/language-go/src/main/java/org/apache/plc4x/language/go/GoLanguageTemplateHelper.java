@@ -534,8 +534,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 Term c = tt.getC();
                 // TODO: This is not quite correct with the cast to uint16
                 return "utils.InlineIf(" + toExpression(new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                    "uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + "), " +
-                    "uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + "))";
+                    "func() uint16 {return uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                    "func() uint16 {return uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -747,7 +747,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return vl.getName() + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
+        String indexCall="";
+        if (vl.getIndex() >= 0){
+            // We have a index call
+            indexCall = "["+vl.getIndex()+"]";
+        }
+        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) +indexCall+ ((vl.getChild() != null) ?
             "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
     }
 

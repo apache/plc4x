@@ -24,7 +24,9 @@ import (
 	"fmt"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
@@ -331,6 +333,16 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 		case "ads":
 			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "knx":
+			message, err = knxModel.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
+			if err != nil {
+				return errors.Wrap(err, "error parsing xml")
+			}
+		case "s7":
+			message, err = s7Model.S7XmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}

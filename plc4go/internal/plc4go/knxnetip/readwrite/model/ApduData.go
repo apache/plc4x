@@ -136,6 +136,9 @@ func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 		_parent, typeSwitchError = ApduDataRestartParse(io)
 	case apciType == 0xF: // ApduDataOther
 		_parent, typeSwitchError = ApduDataOtherParse(io, dataLength)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

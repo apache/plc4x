@@ -137,6 +137,9 @@ func AdsDataParse(io *utils.ReadBuffer, commandId *CommandId, response bool) (*A
 		_parent, typeSwitchError = AdsReadWriteRequestParse(io)
 	case *commandId == CommandId_ADS_READ_WRITE && response == true: // AdsReadWriteResponse
 		_parent, typeSwitchError = AdsReadWriteResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

@@ -32,6 +32,8 @@ type IAdsDataType interface {
 	NumBytes() uint16
 	DataFormatName() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -634,6 +636,13 @@ func (m *AdsDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 			*m = AdsDataTypeByName(string(tok))
 		}
 	}
+}
+
+func (m AdsDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e AdsDataType) String() string {

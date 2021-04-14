@@ -143,6 +143,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 		}
 
 		// Calculate a new unit identifier
+		// TODO: this is not threadsafe as the whole operation is not atomic
 		transactionIdentifier := atomic.AddUint32(&m.transactionIdentifier, 1)
 		if transactionIdentifier > math.MaxUint8 {
 			transactionIdentifier = 0

@@ -30,6 +30,8 @@ type CommandId uint16
 
 type ICommandId interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -145,6 +147,13 @@ func (m *CommandId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			*m = CommandIdByName(string(tok))
 		}
 	}
+}
+
+func (m CommandId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e CommandId) String() string {

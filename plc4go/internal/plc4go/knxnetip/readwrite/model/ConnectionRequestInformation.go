@@ -118,6 +118,9 @@ func ConnectionRequestInformationParse(io *utils.ReadBuffer) (*ConnectionRequest
 		_parent, typeSwitchError = ConnectionRequestInformationDeviceManagementParse(io)
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
 		_parent, typeSwitchError = ConnectionRequestInformationTunnelConnectionParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")

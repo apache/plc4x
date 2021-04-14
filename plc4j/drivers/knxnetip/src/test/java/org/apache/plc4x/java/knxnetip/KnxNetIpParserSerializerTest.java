@@ -21,9 +21,9 @@ package org.apache.plc4x.java.knxnetip;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class KnxNetIpTest extends ParserSerializerTestsuiteRunner {
+public class KnxNetIpParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
-    public KnxNetIpTest() {
+    public KnxNetIpParserSerializerTest() {
         super("/protocols/knxnetip/ParserSerializerTestsuite.xml");
     }
 
