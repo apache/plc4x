@@ -76,6 +76,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	log.Info().Msgf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------", testcase.name)
 
 	// Run the setup steps
+	log.Info().Msgf("\n\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------", testcase.name)
 	for _, testStep := range m.setupSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -84,6 +85,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the actual scenario steps
+	log.Info().Msgf("\n\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------", testcase.name)
 	for _, testStep := range testcase.steps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -92,6 +94,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the teardown steps
+	log.Info().Msgf("\n\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------", testcase.name)
 	for _, testStep := range m.teardownSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -113,7 +116,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		return errors.New("transport must be of type TestTransport")
 	}
 
-	log.Info().Msgf(" - Executing step: %s \n", step.name)
+	log.Info().Msgf("\n\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------", step.name)
 
 	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
 	switch step.stepType {
@@ -230,26 +233,26 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
-		var message interface{}
+		var expectedMessage interface{}
 		var err error
 		switch m.driverName {
 		case "modbus":
-			message, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "ads":
-			message, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "s7":
-			message, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "knx":
-			message, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
@@ -259,22 +262,22 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Write to bytes")
-		ser, ok := message.(utils.Serializable)
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		var wb *utils.WriteBuffer
+		var expectedWriteBuffer *utils.WriteBuffer
 		switch m.driverName {
 		case "ads":
-			wb = utils.NewLittleEndianWriteBuffer()
+			expectedWriteBuffer = utils.NewLittleEndianWriteBuffer()
 		default:
-			wb = utils.NewWriteBuffer()
+			expectedWriteBuffer = utils.NewWriteBuffer()
 		}
-		err = ser.Serialize(*wb)
+		err = expectedSerializable.Serialize(*expectedWriteBuffer)
 		if err != nil {
-			return errors.Wrap(err, "error serializing message")
+			return errors.Wrap(err, "error serializing expectedMessage")
 		}
-		expectedRawOutput := wb.GetBytes()
+		expectedRawOutput := expectedWriteBuffer.GetBytes()
 		expectedRawOutputLength := uint32(len(expectedRawOutput))
 
 		now := time.Now()
@@ -286,7 +289,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			time.Sleep(10 * time.Millisecond)
 		}
-		rawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if err != nil {
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
@@ -294,26 +297,26 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
-			if expectedRawOutput[i] != rawOutput[i] {
+			if expectedRawOutput[i] != actualRawOutput[i] {
 				switch m.driverName {
 				case "modbus":
-					expectation := ser.(*modbusModel.ModbusTcpADU)
-					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBuffer(rawOutput), false)
+					expectation := expectedSerializable.(*modbusModel.ModbusTcpADU)
+					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBuffer(actualRawOutput), false)
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "ads":
-					expectation := ser.(*adsModel.AmsTCPPacket)
-					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBuffer(rawOutput))
+					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
+					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBuffer(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "s7":
-					expectation := ser.(*s7Model.TPKTPacket)
-					actual, err := s7Model.TPKTPacketParse(utils.NewReadBuffer(rawOutput))
+					expectation := expectedSerializable.(*s7Model.TPKTPacket)
+					actual, err := s7Model.TPKTPacketParse(utils.NewReadBuffer(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "knx":
-					expectation := ser.(*knxModel.KnxNetIpMessage)
-					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBuffer(rawOutput))
+					expectation := expectedSerializable.(*knxModel.KnxNetIpMessage)
+					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBuffer(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", actualRawOutput, expectedRawOutput)
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
@@ -343,26 +346,26 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
-		var message interface{}
+		var expectedMessage interface{}
 		var err error
 		switch m.driverName {
 		case "modbus":
-			message, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "ads":
-			message, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "knx":
-			message, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
 		case "s7":
-			message, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
+			expectedMessage, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
 			if err != nil {
 				return errors.Wrap(err, "error parsing xml")
 			}
@@ -372,7 +375,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Serializing bytes")
-		ser, ok := message.(utils.Serializable)
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
@@ -383,9 +386,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		default:
 			wb = utils.NewWriteBuffer()
 		}
-		err = ser.Serialize(*wb)
+		err = expectedSerializable.Serialize(*wb)
 		if err != nil {
-			return errors.Wrap(err, "error serializing message")
+			return errors.Wrap(err, "error serializing expectedMessage")
 		}
 
 		// Send these bytes to the transport
