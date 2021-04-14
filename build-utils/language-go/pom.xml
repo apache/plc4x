@@ -80,6 +80,7 @@
         <artifactId>maven-invoker-plugin</artifactId>
         <version>3.2.2</version>
         <configuration>
+          <skipInvocation>${skipTests}</skipInvocation>
           <debug>true</debug>
           <projectsDirectory>src/test/resources</projectsDirectory>
           <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
