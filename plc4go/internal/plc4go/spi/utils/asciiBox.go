@@ -68,6 +68,9 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 		return BoxString(name, anything.(fmt.Stringer).String(), 0)
 	default:
 		valueOf := reflect.ValueOf(anything)
+		if valueOf.IsNil() {
+			return ""
+		}
 		switch valueOf.Kind() {
 		case reflect.Bool:
 			return BoxString(name, fmt.Sprintf("%t", anything), 0)
