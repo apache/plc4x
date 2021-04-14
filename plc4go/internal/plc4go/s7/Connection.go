@@ -120,6 +120,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 		// For testing purposes we can skip the waiting for a complete connection
 		if !m.driverContext.awaitSetupComplete {
+			go m.setupConnection(ch)
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
 			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
@@ -130,24 +131,77 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		// Only the TCP transport supports login.
 		log.Info().Msg("S7 Driver running in ACTIVE mode.")
 
-		log.Debug().Msg("Sending COTP Connection Request")
-		// Open the session on ISO Transport Protocol first.
-		result := make(chan *readWriteModel.COTPPacketConnectionResponse)
-		errorChan := make(chan error)
-		if err = m.messageCodec.SendRequest(
-			readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()),
+		m.setupConnection(ch)
+	}()
+	return ch
+}
+
+func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) {
+	log.Debug().Msg("Sending COTP Connection Request")
+	// Open the session on ISO Transport Protocol first.
+	cotpConnectionResult := make(chan *readWriteModel.COTPPacketConnectionResponse)
+	cotpConnectionErrorChan := make(chan error)
+	if err := m.messageCodec.SendRequest(
+		readWriteModel.NewTPKTPacket(m.createCOTPConnectionRequest()),
+		func(message interface{}) bool {
+			tpktPacket := readWriteModel.CastTPKTPacket(message)
+			if tpktPacket == nil {
+				return false
+			}
+			cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
+			return cotpPacketConnectionResponse != nil
+		},
+		func(message interface{}) error {
+			tpktPacket := readWriteModel.CastTPKTPacket(message)
+			cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
+			cotpConnectionResult <- cotpPacketConnectionResponse
+			return nil
+		},
+		func(err error) error {
+			// If this is a timeout, do a check if the connection requires a reconnection
+			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+				m.Close()
+			}
+			cotpConnectionErrorChan <- errors.Wrap(err, "got error processing request")
+			return nil
+		},
+		m.defaultTtl,
+	); err != nil {
+		m.fireConnectionError(errors.Wrap(err, "Error during sending of COTP Connection Request"), ch)
+	}
+	select {
+	case cotpPacketConnectionResponse := <-cotpConnectionResult:
+		log.Debug().Msg("Got COTP Connection Response")
+		log.Debug().Msg("Sending S7 Connection Request")
+
+		// Send an S7 login message.
+		s7ConnectionResult := make(chan *readWriteModel.S7ParameterSetupCommunication)
+		s7ConnectionErrorChan := make(chan error)
+		if err := m.messageCodec.SendRequest(
+			m.createS7ConnectionRequest(cotpPacketConnectionResponse),
 			func(message interface{}) bool {
 				tpktPacket := readWriteModel.CastTPKTPacket(message)
 				if tpktPacket == nil {
 					return false
 				}
-				cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
-				return cotpPacketConnectionResponse != nil
+				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+				if cotpPacketData == nil {
+					return false
+				}
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
+				if messageResponseData == nil {
+					return false
+				}
+				parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				return parameterSetupCommunication != nil
 			},
 			func(message interface{}) error {
 				tpktPacket := readWriteModel.CastTPKTPacket(message)
-				cotpPacketConnectionResponse := readWriteModel.CastCOTPPacketConnectionResponse(tpktPacket.Payload)
-				result <- cotpPacketConnectionResponse
+				cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
+				messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
+				setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
+				s7ConnectionResult <- setupCommunication
 				return nil
 			},
 			func(err error) error {
@@ -156,23 +210,43 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 					m.Close()
 				}
-				errorChan <- errors.Wrap(err, "got error processing request")
+				s7ConnectionErrorChan <- errors.Wrap(err, "got error processing request")
 				return nil
 			},
 			m.defaultTtl,
 		); err != nil {
-			m.fireConnectionError(errors.Wrap(err, "Error during sending of COTP Connection Request"), ch)
+			m.fireConnectionError(errors.Wrap(err, "Error during sending of S7 Connection Request"), ch)
 		}
 		select {
-		case cotpPacketConnectionResponse := <-result:
-			log.Debug().Msg("Got COTP Connection Response")
-			log.Debug().Msg("Sending S7 Connection Request")
+		case setupCommunication := <-s7ConnectionResult:
+			log.Debug().Msg("Got S7 Connection Response")
+			log.Debug().Msg("Sending identify remote Request")
+			// Save some data from the response.
+			m.driverContext.MaxAmqCaller = setupCommunication.MaxAmqCaller
+			m.driverContext.MaxAmqCallee = setupCommunication.MaxAmqCallee
+			m.driverContext.PduSize = setupCommunication.PduLength
 
-			// Send an S7 login message.
-			result2 := make(chan *readWriteModel.S7ParameterSetupCommunication)
-			errorResult2 := make(chan error)
-			if err = m.messageCodec.SendRequest(
-				m.createS7ConnectionRequest(cotpPacketConnectionResponse),
+			// Update the number of concurrent requests to the negotiated number.
+			// I have never seen anything else than equal values for caller and
+			// callee, but if they were different, we're only limiting the outgoing
+			// requests.
+			m.tm.SetNumberOfConcurrentRequests(int(m.driverContext.MaxAmqCallee))
+
+			// If the controller type is explicitly set, were finished with the login
+			// process. If it's set to ANY, we have to query the serial number information
+			// in order to detect the type of PLC.
+			if m.driverContext.ControllerType != ControllerType_ANY {
+				// Send an event that connection setup is complete.
+				m.fireConnected(ch)
+				return
+			}
+
+			// Prepare a message to request the remote to identify itself.
+			log.Debug().Msg("Sending S7 Identification Request")
+			s7IdentificationResult := make(chan *readWriteModel.S7PayloadUserData)
+			s7IdentificationErrorChan := make(chan error)
+			if err := m.messageCodec.SendRequest(
+				m.createIdentifyRemoteMessage(),
 				func(message interface{}) bool {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					if tpktPacket == nil {
@@ -182,19 +256,17 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 					if cotpPacketData == nil {
 						return false
 					}
-					messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
-					if messageResponseData == nil {
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
+					if messageUserData == nil {
 						return false
 					}
-					parameterSetupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
-					return parameterSetupCommunication != nil
+					return readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload) != nil
 				},
 				func(message interface{}) error {
 					tpktPacket := readWriteModel.CastTPKTPacket(message)
 					cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-					messageResponseData := readWriteModel.CastS7MessageResponseData(cotpPacketData.Parent.Payload)
-					setupCommunication := readWriteModel.CastS7ParameterSetupCommunication(messageResponseData.Parent.Parameter)
-					result2 <- setupCommunication
+					messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
+					s7IdentificationResult <- readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload)
 					return nil
 				},
 				func(err error) error {
@@ -203,93 +275,26 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 						log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 						m.Close()
 					}
-					errorResult2 <- errors.Wrap(err, "got error processing request")
+					s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
 					return nil
 				},
 				m.defaultTtl,
 			); err != nil {
-				m.fireConnectionError(errors.Wrap(err, "Error during sending of S7 Connection Request"), ch)
+				m.fireConnectionError(errors.Wrap(err, "Error during sending of identify remote Request"), ch)
 			}
 			select {
-			case setupCommunication := <-result2:
-				log.Debug().Msg("Got S7 Connection Response")
-				log.Debug().Msg("Sending identify remote Request")
-				// Save some data from the response.
-				m.driverContext.MaxAmqCaller = setupCommunication.MaxAmqCaller
-				m.driverContext.MaxAmqCallee = setupCommunication.MaxAmqCallee
-				m.driverContext.PduSize = setupCommunication.PduLength
-
-				// Update the number of concurrent requests to the negotiated number.
-				// I have never seen anything else than equal values for caller and
-				// callee, but if they were different, we're only limiting the outgoing
-				// requests.
-				m.tm.SetNumberOfConcurrentRequests(int(m.driverContext.MaxAmqCallee))
-
-				// If the controller type is explicitly set, were finished with the login
-				// process. If it's set to ANY, we have to query the serial number information
-				// in order to detect the type of PLC.
-				if m.driverContext.ControllerType != ControllerType_ANY {
-					// Send an event that connection setup is complete.
-					m.fireConnected(ch)
-					return
-				}
-
-				// Prepare a message to request the remote to identify itself.
-				log.Debug().Msg("Sending S7 Identification Request")
-				result3 := make(chan *readWriteModel.S7PayloadUserData)
-				errorResult3 := make(chan error)
-				if err = m.messageCodec.SendRequest(
-					m.createIdentifyRemoteMessage(),
-					func(message interface{}) bool {
-						tpktPacket := readWriteModel.CastTPKTPacket(message)
-						if tpktPacket == nil {
-							return false
-						}
-						cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-						if cotpPacketData == nil {
-							return false
-						}
-						messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
-						if messageUserData == nil {
-							return false
-						}
-						return readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload) != nil
-					},
-					func(message interface{}) error {
-						tpktPacket := readWriteModel.CastTPKTPacket(message)
-						cotpPacketData := readWriteModel.CastCOTPPacketData(tpktPacket.Payload)
-						messageUserData := readWriteModel.CastS7MessageUserData(cotpPacketData.Parent.Payload)
-						result3 <- readWriteModel.CastS7PayloadUserData(messageUserData.Parent.Payload)
-						return nil
-					},
-					func(err error) error {
-						// If this is a timeout, do a check if the connection requires a reconnection
-						if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
-							log.Warn().Msg("Timeout during Connection establishing, closing channel...")
-							m.Close()
-						}
-						errorResult3 <- errors.Wrap(err, "got error processing request")
-						return nil
-					},
-					m.defaultTtl,
-				); err != nil {
-					m.fireConnectionError(errors.Wrap(err, "Error during sending of identify remote Request"), ch)
-				}
-				select {
-				case payloadUserData := <-result3:
-					log.Debug().Msg("Got S7 Identification Response")
-					m.extractControllerTypeAndFireConnected(payloadUserData, ch)
-				case err := <-errorResult3:
-					m.fireConnectionError(errors.Wrap(err, "Error receiving identify remote Request"), ch)
-				}
-			case err := <-errorResult2:
-				m.fireConnectionError(errors.Wrap(err, "Error receiving S7 Connection Request"), ch)
+			case payloadUserData := <-s7IdentificationResult:
+				log.Debug().Msg("Got S7 Identification Response")
+				m.extractControllerTypeAndFireConnected(payloadUserData, ch)
+			case err := <-s7IdentificationErrorChan:
+				m.fireConnectionError(errors.Wrap(err, "Error receiving identify remote Request"), ch)
 			}
-		case err := <-errorChan:
-			m.fireConnectionError(errors.Wrap(err, "Error receiving of COTP Connection Request"), ch)
+		case err := <-s7ConnectionErrorChan:
+			m.fireConnectionError(errors.Wrap(err, "Error receiving S7 Connection Request"), ch)
 		}
-	}()
-	return ch
+	case err := <-cotpConnectionErrorChan:
+		m.fireConnectionError(errors.Wrap(err, "Error receiving of COTP Connection Request"), ch)
+	}
 }
 
 func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
