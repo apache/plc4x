@@ -73,10 +73,10 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		return errors.Wrap(connectionResult.Err, "error getting a connection")
 	}
 
-	log.Info().Msgf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
 
 	// Run the setup steps
-	log.Info().Msgf("\n\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -85,7 +85,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the actual scenario steps
-	log.Info().Msgf("\n\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -94,7 +94,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the teardown steps
-	log.Info().Msgf("\n\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -102,7 +102,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		}
 	}
 
-	log.Info().Msgf("\n\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n\n")
+	log.Info().Msgf("\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
 	return nil
 }
 
@@ -117,7 +117,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	}
 
 	start := time.Now()
-	log.Info().Msgf("\n\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------", step.name)
+	log.Info().Msgf("\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------\n", step.name)
 
 	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
 	switch step.stepType {
@@ -497,6 +497,12 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		return
 	}
 
+	// We don't want to await completion of connection initalization
+	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
+		connectionConnectAwaiter.SetAwaitSetupComplete(false)
+		connectionConnectAwaiter.SetAwaitDisconnectComplete(false)
+	}
+
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterTransport(test.NewTransport())
@@ -506,7 +512,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		t.Run(testcase.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Error().Msgf("\n\n-------------------------------------------------------\nFatal Failure\n%+v\n%s\n-------------------------------------------------------\n", err, debug.Stack())
+					log.Error().Msgf("\n-------------------------------------------------------\nFatal Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
 					t.FailNow()
 				}
 			}()
@@ -517,13 +523,18 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 			log.Info().Msgf("Running testcase %s", testcase.name)
 			if err := testsuite.Run(driverManager, testcase); err != nil {
-				log.Error().Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n", err)
+				log.Error().Err(err).Msgf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
 				t.Fail()
 			}
 		})
 	}
 	// Execute the tests in the testsuite
 	log.Info().Msgf(testsuite.name)
+}
+
+type ConnectionConnectAwaiter interface {
+	SetAwaitSetupComplete(awaitComplete bool)
+	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 
 func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
