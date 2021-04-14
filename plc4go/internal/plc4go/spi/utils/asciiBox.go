@@ -85,6 +85,8 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 				boxes[i] = BoxAnything("", index.Interface(), charWidth-2)
 			}
 			return BoxBox(name, AlignBoxes(boxes, charWidth), 0)
+		case reflect.Ptr, reflect.Uintptr:
+			return BoxAnything(name, valueOf.Elem().Interface(), charWidth)
 		default:
 			return BoxString(name, fmt.Sprintf("0x%x", anything.(interface{})), charWidth)
 		}
