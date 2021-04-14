@@ -100,6 +100,73 @@ const (
 	KnxDatapointMainType_DPT_F16F16F16F16                                  KnxDatapointMainType = 59
 )
 
+var KnxDatapointMainTypeValues []KnxDatapointMainType
+
+func init() {
+	KnxDatapointMainTypeValues = []KnxDatapointMainType{
+		KnxDatapointMainType_DPT_UNKNOWN,
+		KnxDatapointMainType_DPT_64_BIT_SET,
+		KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE,
+		KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE,
+		KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE,
+		KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE,
+		KnxDatapointMainType_DPT_1_BIT,
+		KnxDatapointMainType_DPT_1_BIT_CONTROLLED,
+		KnxDatapointMainType_DPT_3_BIT_CONTROLLED,
+		KnxDatapointMainType_DPT_CHARACTER,
+		KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE,
+		KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE,
+		KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE,
+		KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE,
+		KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE,
+		KnxDatapointMainType_DPT_TIME,
+		KnxDatapointMainType_DPT_DATE,
+		KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE,
+		KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE,
+		KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE,
+		KnxDatapointMainType_DPT_ENTRANCE_ACCESS,
+		KnxDatapointMainType_DPT_CHARACTER_STRING,
+		KnxDatapointMainType_DPT_SCENE_NUMBER,
+		KnxDatapointMainType_DPT_SCENE_CONTROL,
+		KnxDatapointMainType_DPT_DATE_TIME,
+		KnxDatapointMainType_DPT_1_BYTE,
+		KnxDatapointMainType_DPT_8_BIT_SET,
+		KnxDatapointMainType_DPT_16_BIT_SET,
+		KnxDatapointMainType_DPT_2_BIT_SET,
+		KnxDatapointMainType_DPT_2_NIBBLE_SET,
+		KnxDatapointMainType_DPT_8_BIT_SET_2,
+		KnxDatapointMainType_DPT_32_BIT_SET,
+		KnxDatapointMainType_DPT_ELECTRICAL_ENERGY,
+		KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION,
+		KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM,
+		KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION,
+		KnxDatapointMainType_DPT_ALARM_INFO,
+		KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE,
+		KnxDatapointMainType_DPT_SCALING_SPEED,
+		KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION,
+		KnxDatapointMainType_DPT_MBUS_ADDRESS,
+		KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB,
+		KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1,
+		KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY,
+		KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL,
+		KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT,
+		KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT,
+		KnxDatapointMainType_DPT_POSITIONS,
+		KnxDatapointMainType_DPT_STATUS_32_BIT,
+		KnxDatapointMainType_DPT_STATUS_48_BIT,
+		KnxDatapointMainType_DPT_CONVERTER_STATUS,
+		KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT,
+		KnxDatapointMainType_DPT_BATTERY_INFORMATION,
+		KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION,
+		KnxDatapointMainType_DPT_STATUS_24_BIT,
+		KnxDatapointMainType_DPT_COLOUR_RGBW,
+		KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW,
+		KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB,
+		KnxDatapointMainType_DPT_F32F32,
+		KnxDatapointMainType_DPT_F16F16F16F16,
+	}
+}
+
 func (e KnxDatapointMainType) Number() uint16 {
 	switch e {
 	case 0:

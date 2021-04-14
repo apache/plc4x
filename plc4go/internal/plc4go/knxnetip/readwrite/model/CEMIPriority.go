@@ -41,6 +41,17 @@ const (
 	CEMIPriority_LOW    CEMIPriority = 0x3
 )
 
+var CEMIPriorityValues []CEMIPriority
+
+func init() {
+	CEMIPriorityValues = []CEMIPriority{
+		CEMIPriority_SYSTEM,
+		CEMIPriority_NORMAL,
+		CEMIPriority_URGENT,
+		CEMIPriority_LOW,
+	}
+}
+
 func CEMIPriorityByValue(value uint8) CEMIPriority {
 	switch value {
 	case 0x0:

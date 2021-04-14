@@ -39,6 +39,15 @@ const (
 	HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
 
+var HostProtocolCodeValues []HostProtocolCode
+
+func init() {
+	HostProtocolCodeValues = []HostProtocolCode{
+		HostProtocolCode_IPV4_UDP,
+		HostProtocolCode_IPV4_TCP,
+	}
+}
+
 func HostProtocolCodeByValue(value uint8) HostProtocolCode {
 	switch value {
 	case 0x01:

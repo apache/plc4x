@@ -47,6 +47,23 @@ const (
 	CommandId_ADS_READ_WRITE                 CommandId = 0x0009
 )
 
+var CommandIdValues []CommandId
+
+func init() {
+	CommandIdValues = []CommandId{
+		CommandId_INVALID,
+		CommandId_ADS_READ_DEVICE_INFO,
+		CommandId_ADS_READ,
+		CommandId_ADS_WRITE,
+		CommandId_ADS_READ_STATE,
+		CommandId_ADS_WRITE_CONTROL,
+		CommandId_ADS_ADD_DEVICE_NOTIFICATION,
+		CommandId_ADS_DELETE_DEVICE_NOTIFICATION,
+		CommandId_ADS_DEVICE_NOTIFICATION,
+		CommandId_ADS_READ_WRITE,
+	}
+}
+
 func CommandIdByValue(value uint16) CommandId {
 	switch value {
 	case 0x0000:

@@ -56,6 +56,32 @@ const (
 	SzlSublist_MODULE_DIAGNOSTIC_DATA                                        SzlSublist = 0xB1
 )
 
+var SzlSublistValues []SzlSublist
+
+func init() {
+	SzlSublistValues = []SzlSublist{
+		SzlSublist_MODULE_IDENTIFICATION,
+		SzlSublist_CPU_FEATURES,
+		SzlSublist_USER_MEMORY_AREA,
+		SzlSublist_SYSTEM_AREAS,
+		SzlSublist_BLOCK_TYPES,
+		SzlSublist_STATUS_MODULE_LEDS,
+		SzlSublist_COMPONENT_IDENTIFICATION,
+		SzlSublist_INTERRUPT_STATUS,
+		SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS,
+		SzlSublist_COMMUNICATION_STATUS_DATA,
+		SzlSublist_STATUS_SINGLE_MODULE_LED,
+		SzlSublist_DP_MASTER_SYSTEM_INFORMATION,
+		SzlSublist_MODULE_STATUS_INFORMATION,
+		SzlSublist_RACK_OR_STATION_STATUS_INFORMATION,
+		SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2,
+		SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION,
+		SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP,
+		SzlSublist_DIAGNOSTIC_BUFFER,
+		SzlSublist_MODULE_DIAGNOSTIC_DATA,
+	}
+}
+
 func SzlSublistByValue(value uint8) SzlSublist {
 	switch value {
 	case 0x11:

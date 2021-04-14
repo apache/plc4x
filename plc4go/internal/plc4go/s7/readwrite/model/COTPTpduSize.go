@@ -45,6 +45,20 @@ const (
 	COTPTpduSize_SIZE_8192 COTPTpduSize = 0x0d
 )
 
+var COTPTpduSizeValues []COTPTpduSize
+
+func init() {
+	COTPTpduSizeValues = []COTPTpduSize{
+		COTPTpduSize_SIZE_128,
+		COTPTpduSize_SIZE_256,
+		COTPTpduSize_SIZE_512,
+		COTPTpduSize_SIZE_1024,
+		COTPTpduSize_SIZE_2048,
+		COTPTpduSize_SIZE_4096,
+		COTPTpduSize_SIZE_8192,
+	}
+}
+
 func (e COTPTpduSize) SizeInBytes() uint16 {
 	switch e {
 	case 0x07:

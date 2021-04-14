@@ -26,6 +26,7 @@ import (
 )
 
 func TestS7Driver(t *testing.T) {
-	t.Skip("Still a work in progress")
+	// TODO: java serializer wrongfully adds 0x00 at the end of the messages and therefore this test fails because they are unexpected
+	t.Skip("Should work but is bocked by trailing zeros")
 	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
 }

@@ -59,6 +59,35 @@ const (
 	BACnetNodeType_ZONE           BACnetNodeType = 0x15
 )
 
+var BACnetNodeTypeValues []BACnetNodeType
+
+func init() {
+	BACnetNodeTypeValues = []BACnetNodeType{
+		BACnetNodeType_UNKNOWN,
+		BACnetNodeType_SYSTEM,
+		BACnetNodeType_NETWORK,
+		BACnetNodeType_DEVICE,
+		BACnetNodeType_ORGANIZATIONAL,
+		BACnetNodeType_AREA,
+		BACnetNodeType_EQUIPMENT,
+		BACnetNodeType_POINT,
+		BACnetNodeType_COLLECTION,
+		BACnetNodeType_PROPERTY,
+		BACnetNodeType_FUNCTIONAL,
+		BACnetNodeType_OTHER,
+		BACnetNodeType_SUBSYSTEM,
+		BACnetNodeType_BUILDING,
+		BACnetNodeType_FLOOR,
+		BACnetNodeType_SECTION,
+		BACnetNodeType_MODULE,
+		BACnetNodeType_TREE,
+		BACnetNodeType_MEMBER,
+		BACnetNodeType_PROTOCOL,
+		BACnetNodeType_ROOM,
+		BACnetNodeType_ZONE,
+	}
+}
+
 func BACnetNodeTypeByValue(value uint8) BACnetNodeType {
 	switch value {
 	case 0x00:

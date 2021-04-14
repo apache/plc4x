@@ -259,7 +259,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
-		memoryArea := readWriteModel.MemoryAreaByName(match[MEMORY_AREA])
+		memoryArea, err := getMemoryAreaForShortName(match[MEMORY_AREA])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error getting memory area")
+		}
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
 		atoi, err := strconv.Atoi(match[BYTE_OFFSET])
 		if err != nil {
@@ -329,4 +332,13 @@ func getSizeCode(value string) uint8 {
 		return 0
 	}
 	return uint8(atoi)
+}
+
+func getMemoryAreaForShortName(shortName string) (readWriteModel.MemoryArea, error) {
+	for _, memoryArea := range readWriteModel.MemoryAreaValues {
+		if memoryArea.ShortName() == shortName {
+			return memoryArea, nil
+		}
+	}
+	return 0, errors.Errorf("Unknown memory area for short name: '%s'", shortName)
 }

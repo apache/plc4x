@@ -75,6 +75,16 @@ const(
 </#list>
 )
 
+var ${type.name}Values []${type.name}
+
+func init() {
+	${type.name}Values = []${type.name} {
+<#list type.enumValues as enumValue>
+		${type.name}_${enumValue.name},
+</#list>
+	}
+}
+
 <#--
 If this enum also defines constant values, output one function for each.
 Each of these functions consist of a simple switch statement using the enum as switch-value

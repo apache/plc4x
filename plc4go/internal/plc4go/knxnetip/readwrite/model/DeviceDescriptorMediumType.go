@@ -43,6 +43,19 @@ const (
 	DeviceDescriptorMediumType_KNX_IP DeviceDescriptorMediumType = 0x5
 )
 
+var DeviceDescriptorMediumTypeValues []DeviceDescriptorMediumType
+
+func init() {
+	DeviceDescriptorMediumTypeValues = []DeviceDescriptorMediumType{
+		DeviceDescriptorMediumType_TP1,
+		DeviceDescriptorMediumType_PL110,
+		DeviceDescriptorMediumType_RF,
+		DeviceDescriptorMediumType_TP0,
+		DeviceDescriptorMediumType_PL132,
+		DeviceDescriptorMediumType_KNX_IP,
+	}
+}
+
 func DeviceDescriptorMediumTypeByValue(value uint8) DeviceDescriptorMediumType {
 	switch value {
 	case 0x0:

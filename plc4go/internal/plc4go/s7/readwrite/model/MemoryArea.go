@@ -47,6 +47,22 @@ const (
 	MemoryArea_LOCAL_DATA               MemoryArea = 0x86
 )
 
+var MemoryAreaValues []MemoryArea
+
+func init() {
+	MemoryAreaValues = []MemoryArea{
+		MemoryArea_COUNTERS,
+		MemoryArea_TIMERS,
+		MemoryArea_DIRECT_PERIPHERAL_ACCESS,
+		MemoryArea_INPUTS,
+		MemoryArea_OUTPUTS,
+		MemoryArea_FLAGS_MARKERS,
+		MemoryArea_DATA_BLOCKS,
+		MemoryArea_INSTANCE_DATA_BLOCKS,
+		MemoryArea_LOCAL_DATA,
+	}
+}
+
 func (e MemoryArea) ShortName() string {
 	switch e {
 	case 0x1C:

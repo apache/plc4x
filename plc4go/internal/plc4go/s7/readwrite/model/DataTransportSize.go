@@ -45,6 +45,20 @@ const (
 	DataTransportSize_OCTET_STRING    DataTransportSize = 0x09
 )
 
+var DataTransportSizeValues []DataTransportSize
+
+func init() {
+	DataTransportSizeValues = []DataTransportSize{
+		DataTransportSize_NULL,
+		DataTransportSize_BIT,
+		DataTransportSize_BYTE_WORD_DWORD,
+		DataTransportSize_INTEGER,
+		DataTransportSize_DINTEGER,
+		DataTransportSize_REAL,
+		DataTransportSize_OCTET_STRING,
+	}
+}
+
 func (e DataTransportSize) SizeInBits() bool {
 	switch e {
 	case 0x00:

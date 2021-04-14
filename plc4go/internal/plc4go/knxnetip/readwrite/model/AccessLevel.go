@@ -44,6 +44,18 @@ const (
 	AccessLevel_Level15 AccessLevel = 0xF
 )
 
+var AccessLevelValues []AccessLevel
+
+func init() {
+	AccessLevelValues = []AccessLevel{
+		AccessLevel_Level0,
+		AccessLevel_Level1,
+		AccessLevel_Level2,
+		AccessLevel_Level3,
+		AccessLevel_Level15,
+	}
+}
+
 func (e AccessLevel) Purpose() string {
 	switch e {
 	case 0x0:

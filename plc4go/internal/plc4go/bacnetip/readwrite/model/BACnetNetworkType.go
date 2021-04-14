@@ -48,6 +48,24 @@ const (
 	BACnetNetworkType_SERIAL             BACnetNetworkType = 0xA
 )
 
+var BACnetNetworkTypeValues []BACnetNetworkType
+
+func init() {
+	BACnetNetworkTypeValues = []BACnetNetworkType{
+		BACnetNetworkType_ETHERNET,
+		BACnetNetworkType_ARCNET,
+		BACnetNetworkType_MSTP,
+		BACnetNetworkType_PTP,
+		BACnetNetworkType_LONTALK,
+		BACnetNetworkType_IPV4,
+		BACnetNetworkType_ZIGBEE,
+		BACnetNetworkType_VIRTUAL,
+		BACnetNetworkType_REMOVED_NON_BACNET,
+		BACnetNetworkType_IPV6,
+		BACnetNetworkType_SERIAL,
+	}
+}
+
 func BACnetNetworkTypeByValue(value uint8) BACnetNetworkType {
 	switch value {
 	case 0x0:

@@ -41,6 +41,17 @@ const (
 	SzlModuleTypeClass_CP  SzlModuleTypeClass = 0xC
 )
 
+var SzlModuleTypeClassValues []SzlModuleTypeClass
+
+func init() {
+	SzlModuleTypeClassValues = []SzlModuleTypeClass{
+		SzlModuleTypeClass_CPU,
+		SzlModuleTypeClass_IM,
+		SzlModuleTypeClass_FM,
+		SzlModuleTypeClass_CP,
+	}
+}
+
 func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
 	switch value {
 	case 0x0:

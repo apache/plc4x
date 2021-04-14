@@ -301,7 +301,7 @@ func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 	if m.driverContext.awaitSetupComplete {
 		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
-		log.Fatal().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
+		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
 	}
 }
 

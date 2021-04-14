@@ -49,6 +49,25 @@ const (
 	Status_TUNNELLING_LAYER_NOT_SUPPORTED  Status = 0x29
 )
 
+var StatusValues []Status
+
+func init() {
+	StatusValues = []Status{
+		Status_NO_ERROR,
+		Status_PROTOCOL_TYPE_NOT_SUPPORTED,
+		Status_UNSUPPORTED_PROTOCOL_VERSION,
+		Status_OUT_OF_ORDER_SEQUENCE_NUMBER,
+		Status_INVALID_CONNECTION_ID,
+		Status_CONNECTION_TYPE_NOT_SUPPORTED,
+		Status_CONNECTION_OPTION_NOT_SUPPORTED,
+		Status_NO_MORE_CONNECTIONS,
+		Status_NO_MORE_UNIQUE_CONNECTIONS,
+		Status_DATA_CONNECTION,
+		Status_KNX_CONNECTION,
+		Status_TUNNELLING_LAYER_NOT_SUPPORTED,
+	}
+}
+
 func StatusByValue(value uint8) Status {
 	switch value {
 	case 0x00:

@@ -39,6 +39,7 @@ func init() {
 type Runnable func()
 
 type Worker struct {
+	id          int
 	shutdown    bool
 	runnable    Runnable
 	interrupted bool
@@ -56,15 +57,21 @@ func (w Worker) work() {
 		}
 	}()
 	for !w.shutdown {
+		log.Debug().Int("Worker id", w.id).Msg("Working")
 		select {
 		case workItem := <-w.executor.queue:
+			log.Debug().Int("Worker id", w.id).Msgf("Got work item %v", workItem)
 			if workItem.completionFuture.cancelRequested || (w.shutdown && w.interrupted) {
+				log.Debug().Int("Worker id", w.id).Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
+				log.Debug().Int("Worker id", w.id).Msgf("Running work item %v", workItem)
 				workItem.runnable()
 				workItem.completionFuture.complete()
+				log.Debug().Int("Worker id", w.id).Msgf("work item %v completed", workItem)
 			}
 		default:
+			log.Debug().Int("Worker id", w.id).Msgf("Idling")
 			time.Sleep(time.Millisecond * 10)
 		}
 	}
@@ -87,6 +94,7 @@ func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
 	workers := make([]*Worker, numberOfWorkers)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i] = &Worker{
+			id:          i,
 			shutdown:    false,
 			runnable:    nil,
 			interrupted: false,
