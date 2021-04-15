@@ -26,7 +26,7 @@ import (
 )
 
 func TestS7Driver(t *testing.T) {
-	// TODO: java serializer wrongfully adds 0x00 at the end of the messages and therefore this test fails because they are unexpected
-	t.Skip("Should work but is bocked by trailing zeros")
-	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
+	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml",
+		// TODO: this feature is still a WIP
+		"Single element read request with disabled PUT/GET")
 }
