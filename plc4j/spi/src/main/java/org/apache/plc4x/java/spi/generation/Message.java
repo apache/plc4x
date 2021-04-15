@@ -25,6 +25,8 @@ public interface Message {
 
     int getLengthInBits();
 
+    int getLengthInBitsConditional(boolean lastItem);
+
     MessageIO<? extends Message, ? extends Message> getMessageIO();
 
 }
