@@ -75,10 +75,6 @@ public class CANOpenSocketCANFrame implements CANOpenFrame {
     @Override
     @JsonIgnore
     public int getLengthInBits() {
-        return getLengthInBitsConditional(false);
-    }
-
-    public int getLengthInBitsConditional(boolean lastItem) {
         int lengthInBits = 0;
 
         // Simple field (node + service)

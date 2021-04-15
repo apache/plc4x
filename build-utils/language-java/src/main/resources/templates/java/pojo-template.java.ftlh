@@ -193,7 +193,8 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
             lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
         <#elseif helper.isCountArrayField(arrayField)>
             int i=0;
-            for(Message element : ${arrayField.name}) {
+            <#assign simpleTypeReference = arrayField.type>
+            for(${arrayField.type.name} element : ${arrayField.name}) {
                 boolean last = ++i >= ${arrayField.name}.length;
                 lengthInBits += element.getLengthInBitsConditional(last);
             }
