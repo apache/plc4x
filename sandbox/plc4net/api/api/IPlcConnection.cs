@@ -20,8 +20,8 @@ under the License.
 using System;
 using System.Threading.Tasks;
 using org.apache.plc4net.api.metadata;
-using org.apache.plc4net.messages;
 using org.apache.plc4net.model;
+using org.apache.plc4net.messages;
 
 namespace org.apache.plc4net.api
 {

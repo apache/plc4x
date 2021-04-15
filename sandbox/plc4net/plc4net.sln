@@ -7,21 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plc4net-api", "api\plc4net-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plc4net-spi", "spi\plc4net-spi.csproj", "{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "drivers", "drivers", "{35D8C56A-A721-46B3-A32C-71FCF212E85D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plc4net-driver-knxproj", "drivers\knxnetip\plc4net-driver-knxproj.csproj", "{640E582A-68DF-4E51-B019-AE5774F31B54}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plc4net-driver-knxproj-test", "drivers\knxnetip-test\plc4net-driver-knxproj-test.csproj", "{E9497B75-55B6-4C14-AAFB-DB93D0C88166}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hello-World PLC4X", "examples\Hello-World PLC4X\Hello-World PLC4X.csproj", "{0E38CC6E-71B6-4438-A143-81B57A6CDEB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{5EDC0A12-B192-42D6-AF7B-D457506A1AB2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "transports", "transports", "{5187AEA1-C082-4716-AAF5-86AF6F429569}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CANopen", "drivers\CANopen\CANopen.csproj", "{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "modbus", "drivers\modbus\modbus.csproj", "{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,36 +25,16 @@ Global
 		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A92DD9F9-1688-4E70-A95E-709E12DBB8C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{640E582A-68DF-4E51-B019-AE5774F31B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{640E582A-68DF-4E51-B019-AE5774F31B54}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9497B75-55B6-4C14-AAFB-DB93D0C88166}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E38CC6E-71B6-4438-A143-81B57A6CDEB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E38CC6E-71B6-4438-A143-81B57A6CDEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E38CC6E-71B6-4438-A143-81B57A6CDEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E38CC6E-71B6-4438-A143-81B57A6CDEB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{640E582A-68DF-4E51-B019-AE5774F31B54} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
-		{E9497B75-55B6-4C14-AAFB-DB93D0C88166} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
 		{0E38CC6E-71B6-4438-A143-81B57A6CDEB9} = {5EDC0A12-B192-42D6-AF7B-D457506A1AB2}
-		{9E163DCD-3F60-4643-8FF9-9FEA61F47CFC} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
-		{418D06E2-4CFD-4F03-AE8E-61BA1FC37BBF} = {35D8C56A-A721-46B3-A32C-71FCF212E85D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4A3822DB-8831-494E-801D-D8F7B61666CB}

@@ -44,4 +44,8 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="spi\connection" />
+    </ItemGroup>
+
 </Project>

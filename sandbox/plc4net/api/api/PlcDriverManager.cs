@@ -25,7 +25,7 @@ using org.apache.plc4net.api.authentication;
 using org.apache.plc4net.exceptions;
 using System.Threading;
 
-namespace org.apache.plc4net
+namespace org.apache.plc4net.api
 {
     /// <summary>
     /// Manages connections to PLCs
