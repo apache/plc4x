@@ -255,6 +255,14 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             final ImplicitField implicitField = implicitFieldOptional.get();
             return Optional.of(implicitField.getType());
         }
+        // Check if the expression is a VirtualField
+        final Optional<VirtualField> virtualFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof VirtualField).map(field -> (VirtualField) field).filter(
+            virtualField -> virtualField.getName().equals(propertyName)).findFirst();
+        if(virtualFieldOptional.isPresent()) {
+            final VirtualField virtualField = virtualFieldOptional.get();
+            return Optional.of(virtualField.getType());
+        }
         // Check if the expression root is referencing an argument
         if (baseType.getParserArguments() != null) {
             final Optional<Argument> argumentOptional = Arrays.stream(baseType.getParserArguments()).filter(

@@ -32,7 +32,8 @@
 
 [type 'FieldTypeTest'
     [simple         uint 8 'simpleField']
-    [abstract       unit 8  'abstractField']
+    //Abstract fields can only be used within discriminated base types.
+    //[abstract       unit 8  'abstractField']
     [array          uint 8  'arrayField'        count      '5']
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
@@ -84,6 +85,28 @@
     [abstract float 8.23 'floatField']
     [abstract float 11.52 'doubleField']
     [abstract string '8' 'UTF-8' 'stringField']
+]
+
+[type 'AbstractTypeTest'
+    //Abstract fields can only be used within discriminated base types.
+    [simple   uint 8 'simpleField']
+    [abstract bit 'abstractBitField']
+    [abstract int 8 'abstractIntField']
+    [abstract uint 8 'abstractUintField']
+    [abstract float 8.23 'abstractFloatField']
+    [abstract float 11.52 'abstractDoubleField']
+    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [typeSwitch 'simpleField'
+        ['0' AbstractedType
+            //Abstract fields need to be overriden in child
+            [simple bit 'abstractBitField']
+            [simple int 8 'abstractIntField']
+            [simple uint 8 'abstractUintField']
+            [simple float 8.23 'abstractFloatField']
+            [simple float 11.52 'abstractDoubleField']
+            [simple string '8' 'UTF-8' 'abstractStringField']
+        ]
+    ]
 ]
 
 [type 'ArrayTypeTest'
@@ -158,6 +181,33 @@
 [type 'ReservedTypeTest'
     [reserved       uint 8  '0x00']
 ]
+
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[type 'VirtualFieldTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'virtualStringField' 'simpleField']
+//]
+
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[discriminatedType 'DiscriminatedVirtualTypeTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'UTF-8' 'virtualStringField' 'simpleField']
+//    [typeSwitch 'simpleField'
+//        ['0' DiscriminatedVirtualType
+//            [simple int 8 'intField']
+//        ]
+//    ]
+//]
 
 [type 'IntTypeTest'
     [simple int 3 'ThreeField']
