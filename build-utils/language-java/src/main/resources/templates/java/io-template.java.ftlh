@@ -407,7 +407,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign virtualField = field>
 
         // Virtual field (Just declare a local variable so we can access it in the parser)
+        <#if helper.getLanguageTypeNameForField(field) = 'String'>
+        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)});
+        <#else>
         ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)});
+        </#if>
         <#break>
 </#switch>
 </#list>

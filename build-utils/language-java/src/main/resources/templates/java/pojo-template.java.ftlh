@@ -23,7 +23,7 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
-<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
 <#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
 <#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
@@ -160,11 +160,13 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
 </#list>
 <#list type.virtualFields as field>
-    <#if helper.isNonDiscriminatorField(field.name)>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
+        <#if helper.getLanguageTypeNameForField(field) = 'String'>
+        return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        <#else>
         return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        </#if>
     }
-    </#if>
 
 </#list>
     @Override

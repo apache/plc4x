@@ -182,6 +182,33 @@
     [reserved       uint 8  '0x00']
 ]
 
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[type 'VirtualFieldTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'virtualStringField' 'simpleField']
+//]
+
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[discriminatedType 'DiscriminatedVirtualTypeTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'UTF-8' 'virtualStringField' 'simpleField']
+//    [typeSwitch 'simpleField'
+//        ['0' DiscriminatedVirtualType
+//            [simple int 8 'intField']
+//        ]
+//    ]
+//]
+
 [type 'IntTypeTest'
     [simple int 3 'ThreeField']
     [simple int 8 'ByteField']
