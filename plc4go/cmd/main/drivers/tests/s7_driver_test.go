@@ -26,7 +26,5 @@ import (
 )
 
 func TestS7Driver(t *testing.T) {
-	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml",
-		// TODO: this feature is still a WIP
-		"Single element read request with disabled PUT/GET")
+	testutils.RunDriverTestsuite(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml")
 }

@@ -22,7 +22,9 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"time"
 )
@@ -127,7 +129,9 @@ func (m *DefaultCodec) Connect() error {
 	err := m.TransportInstance.Connect()
 	if err == nil {
 		if !m.Running {
+			log.Debug().Msg("Message codec currently not running")
 			if m.CustomWorkLoop != nil {
+				log.Info().Msg("Starting with custom loop")
 				go m.CustomWorkLoop(&m.DefaultCodecRequiredInterface)
 			} else {
 				go m.Work(&m.DefaultCodecRequiredInterface)
@@ -220,30 +224,38 @@ func (m *DefaultCodec) Work(codec *DefaultCodecRequiredInterface) {
 		log.Info().Msg("Keep running")
 		m.Work(codec)
 	}()
+
+	workerLog := log.With().Logger()
+	if !config.TraceDefaultMessageCodecWorker {
+		workerLog = zerolog.Nop()
+	}
 	// Start an endless loop
 mainLoop:
 	for m.Running {
+		workerLog.Trace().Msg("Working")
 		// Check for any expired expectations.
 		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
 		now := time.Now()
 
 		// Guard against empty expectations
 		if len(m.Expectations) <= 0 {
-			log.Trace().Msg("we got no expectation")
+			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
 			time.Sleep(time.Millisecond * 10)
 			continue mainLoop
 		}
 		m.TimeoutExpectations(now)
 
+		workerLog.Trace().Msg("Receiving message")
 		// Check for incoming messages.
 		message, err := m.Receive()
 		if err != nil {
-			log.Error().Err(err).Msg("got an error reading from transport")
+			workerLog.Error().Err(err).Msg("got an error reading from transport")
 			time.Sleep(time.Millisecond * 10)
 			continue mainLoop
 		}
 		if message == nil {
+			workerLog.Trace().Msg("Not enough data yet")
 			// Sleep for 10ms before checking again, in order to not
 			// consume 100% CPU Power.
 			time.Sleep(time.Millisecond * 10)
@@ -251,18 +263,25 @@ mainLoop:
 		}
 
 		if m.CustomMessageHandling != nil {
+			workerLog.Trace().Msg("Executing custom handling")
 			if m.CustomMessageHandling(codec, message) {
 				continue mainLoop
 			}
 		}
 
+		workerLog.Trace().Msg("Handle message")
 		// Go through all expectations
 		messageHandled := m.HandleMessages(message)
 
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
+			workerLog.Trace().Msg("Message was not handled")
 			// TODO: how do we prevent endless blocking if there is no reader on this channel?
-			m.DefaultIncomingMessageChannel <- message
+			select {
+			case m.DefaultIncomingMessageChannel <- message:
+			default:
+				workerLog.Warn().Msg("Message discarded")
+			}
 		}
 	}
 }

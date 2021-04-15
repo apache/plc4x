@@ -21,11 +21,11 @@ package spi
 
 import (
 	"container/list"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"reflect"
 	"sync"
 	"time"
 )
@@ -85,8 +85,13 @@ func (w Worker) work() {
 }
 
 type WorkItem struct {
+	transactionId    int32
 	runnable         Runnable
 	completionFuture *CompletionFuture
+}
+
+func (w WorkItem) String() string {
+	return fmt.Sprintf("Workitem{tid:%d}", w.transactionId)
 }
 
 type Executor struct {
@@ -119,12 +124,16 @@ func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
 	return &executor
 }
 
-func (e *Executor) submit(runnable Runnable) *CompletionFuture {
+func (e *Executor) submit(transactionId int32, runnable Runnable) *CompletionFuture {
+	log.Trace().Int32("transactionId", transactionId).Msg("Submitting runnable")
 	completionFuture := &CompletionFuture{}
+	// TODO: add select and timeout if queue is full
 	e.queue <- WorkItem{
+		transactionId:    transactionId,
 		runnable:         runnable,
 		completionFuture: completionFuture,
 	}
+	log.Trace().Int32("transactionId", transactionId).Msg("runnable queued")
 	return completionFuture
 }
 
@@ -163,12 +172,14 @@ type CompletionFuture struct {
 	interruptRequested bool
 	completed          bool
 	errored            bool
+	err                error
 }
 
-func (f CompletionFuture) cancel(interrupt bool) {
+func (f CompletionFuture) cancel(interrupt bool, err error) {
 	f.cancelRequested = true
 	f.interruptRequested = interrupt
 	f.errored = true
+	f.err = err
 }
 
 func (f CompletionFuture) complete() {
@@ -188,6 +199,12 @@ type RequestTransaction struct {
 	/** The initial operation to perform to kick off the request */
 	operation        Runnable
 	completionFuture *CompletionFuture
+
+	transactionLog zerolog.Logger
+}
+
+func (t RequestTransaction) String() string {
+	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }
 
 type RequestTransactionManager struct {
@@ -215,6 +232,7 @@ func (r *RequestTransactionManager) getNumberOfConcurrentRequests() int {
 }
 
 func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
+	log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
 	if numberOfConcurrentRequests < len(r.runningRequests) {
@@ -225,12 +243,6 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 
 	// As we might have increased the number, try to send some more requests.
 	r.processWorklog()
-}
-
-func (r *RequestTransactionManager) submit(context func(RequestTransaction)) {
-	transaction := r.StartRequest()
-	context(*transaction)
-	// r.submitHandle(transaction);
 }
 
 func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
@@ -249,39 +261,57 @@ func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
 func (r *RequestTransactionManager) processWorklog() {
 	r.worklogMutex.RLock()
 	defer r.worklogMutex.RUnlock()
-	for len(r.runningRequests) < r.getNumberOfConcurrentRequests() && r.worklog.Len() > 0 {
-		next := r.worklog.Front().Value.(*RequestTransaction)
+	log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.worklog.Len(), r.numberOfConcurrentRequests)
+	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.worklog.Len() > 0 {
+		front := r.worklog.Front()
+		if front == nil {
+			return
+		}
+		next := front.Value.(*RequestTransaction)
+		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
-		completionFuture := executor.submit(next.operation)
+		completionFuture := executor.submit(next.transactionId, next.operation)
 		next.completionFuture = completionFuture
+		r.worklog.Remove(front)
 	}
 }
 
-func (r *RequestTransactionManager) StartRequest() *RequestTransaction {
+func (r *RequestTransactionManager) StartTransaction() *RequestTransaction {
 	r.transationMutex.Lock()
 	defer r.transationMutex.Unlock()
 	currentTransactionId := r.transactionId
 	r.transactionId += 1
-	return &RequestTransaction{r, currentTransactionId, nil, nil}
+	transactionLogger := log.With().Int32("transactionId", currentTransactionId).Logger()
+	if !config.TraceTransactionManagerTransactions {
+		transactionLogger = zerolog.Nop()
+	}
+	return &RequestTransaction{
+		r,
+		currentTransactionId,
+		nil,
+		nil,
+		transactionLogger,
+	}
 }
 
 func (r *RequestTransactionManager) getNumberOfActiveRequests() int {
 	return len(r.runningRequests)
 }
 
-func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction) error {
+func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction, err error) error {
 	// Try to fail it!
-	transaction.completionFuture.cancel(true)
+	transaction.completionFuture.cancel(true, err)
 	// End it
 	return r.endRequest(transaction)
 }
 
 func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) error {
+	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
 	for i, runningRequest := range r.runningRequests {
-		// TODO: check this implementation
-		if (&runningRequest) == (&transaction) {
+		if runningRequest.transactionId == transaction.transactionId {
+			transaction.transactionLog.Debug().Msg("Found a existing transaction")
 			found = true
 			index = i
 			break
@@ -290,61 +320,38 @@ func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) 
 	if !found {
 		return errors.New("Unknown Transaction or Transaction already finished!")
 	}
+	transaction.transactionLog.Debug().Msg("Removing the existing transaction transaction")
 	r.runningRequests = append(r.runningRequests[:index], r.runningRequests[index+1:]...)
 	// Process the worklog, a slot should be free now
+	transaction.transactionLog.Debug().Msg("Processing the worklog")
 	r.processWorklog()
 	return nil
 }
 
-func (t *RequestTransaction) start() {
-}
-
-func (t *RequestTransaction) failRequest(err error) error {
-	return t.parent.failRequest(t)
+func (t *RequestTransaction) FailRequest(err error) error {
+	t.transactionLog.Trace().Msg("Fail the request")
+	return t.parent.failRequest(t, err)
 }
 
 func (t *RequestTransaction) EndRequest() error {
+	t.transactionLog.Trace().Msg("Ending the request")
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
-func (t *RequestTransaction) setOperation(operation Runnable) {
-	t.operation = operation
-}
-
-func (t *RequestTransaction) getCompletionFuture() *CompletionFuture {
-	return t.completionFuture
-}
-
-func (t *RequestTransaction) setCompletionFuture(completionFuture *CompletionFuture) {
-	t.completionFuture = completionFuture
-}
-
 func (t *RequestTransaction) Submit(operation Runnable) {
-	log.Trace().Msgf("Submission of transaction %d", t.transactionId)
-	t.setOperation(NewTransactionOperation(t.transactionId, operation))
+	if t.operation != nil {
+		panic("Operation already set")
+	}
+	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
+	t.operation = t.NewTransactionOperation(operation)
 	t.parent.submitHandle(t)
 }
 
-func (t *RequestTransaction) equals(o *RequestTransaction) bool {
-	if t == o {
-		return true
-	}
-	if o == nil || reflect.TypeOf(t).Kind() != reflect.TypeOf(o).Kind() {
-		return false
-	}
-	that := o
-	return t.transactionId == that.transactionId
-}
-
-func (t *RequestTransaction) hashCode() int32 {
-	return t.transactionId
-}
-
-func NewTransactionOperation(transactionId int32, delegate Runnable) Runnable {
+func (t *RequestTransaction) NewTransactionOperation(delegate Runnable) Runnable {
 	return func() {
-		log.Trace().Int32("transactionId", transactionId).Msgf("Start execution of transaction %d", transactionId)
+		t.transactionLog.Trace().Msgf("Start execution of transaction %d", t.transactionId)
 		delegate()
-		log.Trace().Int32("transactionId", transactionId).Msgf("Completed execution of transaction %d", transactionId)
+		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
 	}
 }

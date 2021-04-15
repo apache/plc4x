@@ -30,6 +30,5 @@ func init() {
 		//// Enable below if you want to see the filenames
 		//With().Caller().Logger().
 		Output(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: onJenkins}).
-		// TODO: set to INFO once log mining is done
-		Level(zerolog.TraceLevel)
+		Level(zerolog.InfoLevel)
 }

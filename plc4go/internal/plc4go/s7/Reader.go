@@ -90,7 +90,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			),
 		)
 		// Start a new request-transaction (Is ended in the response-handler)
-		transaction := m.tm.StartRequest()
+		transaction := m.tm.StartTransaction()
 		transaction.Submit(func() {
 
 			// Send the  over the wire
