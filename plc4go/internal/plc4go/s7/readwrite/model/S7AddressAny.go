@@ -133,7 +133,14 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 
 	// Enum field (transportSize)
-	transportSize, _transportSizeErr := TransportSizeParse(io)
+	transportSizeCode, _transportSizeErr := io.ReadUint8(8)
+	var transportSize TransportSize
+	for _, value := range TransportSizeValues {
+		if value.Code() == transportSizeCode {
+			transportSize = value
+			break
+		}
+	}
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
@@ -200,8 +207,7 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 
 		// Enum field (transportSize)
-		transportSize := CastTransportSize(m.TransportSize)
-		_transportSizeErr := transportSize.Serialize(io)
+		_transportSizeErr := io.WriteUint8(8, m.TransportSize.Code())
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}

@@ -211,7 +211,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 
 	payloadItems := payload.Items
 	for i, fieldName := range readRequest.GetFieldNames() {
-		field := readRequest.GetField(fieldName).(PlcField)
+		field := readRequest.GetField(fieldName).(S7PlcField)
 		payloadItem := payloadItems[i]
 
 		responseCode := decodeResponseCode(payloadItem.ReturnCode)
@@ -220,7 +220,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		rb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(payloadItem.Data))
 		responseCodes[fieldName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(rb, field.Datatype.DataProtocolId(), int32(field.GetQuantity()))
+			plcValue, err := readWriteModel.DataItemParse(rb, field.GetDataType().DataProtocolId(), int32(field.GetNumElements()))
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}

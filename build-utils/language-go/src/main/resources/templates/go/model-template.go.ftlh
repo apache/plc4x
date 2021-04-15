@@ -648,11 +648,27 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			<#case "enum">
 				<#assign enumField = field>
 
+				<#if enumField.fieldName?has_content>
+						<#assign enumFieldName=enumField.name+enumField.fieldName?cap_first>
+	// Enum field (${enumField.name})
+	${enumFieldName}, _${enumField.name}Err := ${helper.getReadBufferReadMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))}
+	var ${enumField.name} ${enumField.name?cap_first}
+	for _, value := range ${enumField.name?cap_first}Values {
+		if value.Code() == ${enumFieldName} {
+			${enumField.name} = value
+			break
+		}
+	}
+	if _${enumField.name}Err != nil {
+		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+					<#else>
 	// Enum field (${enumField.name})
 	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
 	if _${enumField.name}Err != nil {
 		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
+					</#if>
 				<#break>
 			<#case "implicit">
 				<#assign implicitField = field>
@@ -960,18 +976,27 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#if>
 
 	if _${discriminatorField.name}Err != nil {
-	return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "enum">
 				<#assign enumField = field>
 
+					<#if enumField.fieldName?has_content>
+						<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
+	// Enum field (${enumField.name})
+	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField)}
+	if _${enumField.name}Err != nil {
+		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+					<#else>
 	// Enum field (${enumField.name})
 	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
 	_${enumField.name}Err := ${enumField.name}.Serialize(io)
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
+			</#if>
 				<#break>
 			<#case "implicit">
 				<#assign implicitField = field>
