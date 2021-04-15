@@ -24,6 +24,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -82,6 +83,14 @@ func (m *BACnetTag) GetTypeName() string {
 }
 
 func (m *BACnetTag) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTag) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeOrTagNumber)
@@ -101,9 +110,6 @@ func (m *BACnetTag) LengthInBits() uint16 {
 	if m.ExtLength != nil {
 		lengthInBits += 8
 	}
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -257,16 +263,71 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetTagApplicationNull needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationNull{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationBoolean needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationBoolean{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationOctetString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationOctetString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationCharacterString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationCharacterString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationDate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationDate{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationTime needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationTime{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationObjectIdentifier needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationObjectIdentifier{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "typeOrTagNumber":
@@ -282,17 +343,33 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.LengthValueType = data
 			case "extTagNumber":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtTagNumber = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtTagNumber = &data
+				}
 			case "extLength":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtLength = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtLength = &data
+				}
 			default:
 				attr := start.Attr
 				if attr == nil || len(attr) <= 0 {

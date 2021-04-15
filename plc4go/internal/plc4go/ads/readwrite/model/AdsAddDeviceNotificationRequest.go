@@ -101,7 +101,11 @@ func (m *AdsAddDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -258,10 +262,12 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error 
 func (m *AdsAddDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "indexGroup":
@@ -304,7 +310,7 @@ func (m *AdsAddDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -78,15 +78,20 @@ func (m *ConnectionRequestInformation) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformation) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequestInformation) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ConnectionRequestInformation) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
 	lengthInBits += 8
 	// Discriminator Field (connectionType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -164,16 +169,29 @@ func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, chi
 func (m *ConnectionRequestInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ConnectionRequestInformationDeviceManagement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
+			if m.Child == nil {
+				m.Child = &ConnectionRequestInformationDeviceManagement{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

@@ -21,7 +21,9 @@ package spi
 
 import (
 	"container/list"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"reflect"
 	"sync"
@@ -39,6 +41,7 @@ func init() {
 type Runnable func()
 
 type Worker struct {
+	id          int
 	shutdown    bool
 	runnable    Runnable
 	interrupted bool
@@ -48,23 +51,34 @@ type Worker struct {
 func (w Worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			log.Fatal().Msgf("Recovering from panic()=%v", recovered)
+			log.Error().Msgf("Recovering from panic()=%v", recovered)
 		}
 		if !w.shutdown {
 			// TODO: if we are not in shutdown we continue
 			w.work()
 		}
 	}()
+	workerLog := log.With().Int("Worker id", w.id).Logger()
+	if !config.TraceTransactionManagerWorkers {
+		workerLog = zerolog.Nop()
+	}
+
 	for !w.shutdown {
+		workerLog.Debug().Msg("Working")
 		select {
 		case workItem := <-w.executor.queue:
+			workerLog.Debug().Msgf("Got work item %v", workItem)
 			if workItem.completionFuture.cancelRequested || (w.shutdown && w.interrupted) {
+				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
+				workerLog.Debug().Msgf("Running work item %v", workItem)
 				workItem.runnable()
 				workItem.completionFuture.complete()
+				workerLog.Debug().Msgf("work item %v completed", workItem)
 			}
 		default:
+			workerLog.Debug().Msgf("Idling")
 			time.Sleep(time.Millisecond * 10)
 		}
 	}
@@ -87,6 +101,7 @@ func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
 	workers := make([]*Worker, numberOfWorkers)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i] = &Worker{
+			id:          i,
 			shutdown:    false,
 			runnable:    nil,
 			interrupted: false,
@@ -176,7 +191,7 @@ type RequestTransaction struct {
 }
 
 type RequestTransactionManager struct {
-	runningRequests []RequestTransaction
+	runningRequests []*RequestTransaction
 	// How many Transactions are allowed to run at the same time?
 	numberOfConcurrentRequests int
 	// Assigns each request a Unique Transaction Id, especially important for failure handling
@@ -214,11 +229,11 @@ func (r *RequestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 
 func (r *RequestTransactionManager) submit(context func(RequestTransaction)) {
 	transaction := r.StartRequest()
-	context(transaction)
+	context(*transaction)
 	// r.submitHandle(transaction);
 }
 
-func (r *RequestTransactionManager) submitHandle(handle RequestTransaction) {
+func (r *RequestTransactionManager) submitHandle(handle *RequestTransaction) {
 	if handle.operation == nil {
 		panic("invalid handle")
 	}
@@ -235,33 +250,33 @@ func (r *RequestTransactionManager) processWorklog() {
 	r.worklogMutex.RLock()
 	defer r.worklogMutex.RUnlock()
 	for len(r.runningRequests) < r.getNumberOfConcurrentRequests() && r.worklog.Len() > 0 {
-		next := r.worklog.Front().Value.(RequestTransaction)
+		next := r.worklog.Front().Value.(*RequestTransaction)
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := executor.submit(next.operation)
 		next.completionFuture = completionFuture
 	}
 }
 
-func (r *RequestTransactionManager) StartRequest() RequestTransaction {
+func (r *RequestTransactionManager) StartRequest() *RequestTransaction {
 	r.transationMutex.Lock()
 	defer r.transationMutex.Unlock()
 	currentTransactionId := r.transactionId
 	r.transactionId += 1
-	return RequestTransaction{r, currentTransactionId, nil, nil}
+	return &RequestTransaction{r, currentTransactionId, nil, nil}
 }
 
 func (r *RequestTransactionManager) getNumberOfActiveRequests() int {
 	return len(r.runningRequests)
 }
 
-func (r *RequestTransactionManager) failRequest(transaction RequestTransaction) error {
+func (r *RequestTransactionManager) failRequest(transaction *RequestTransaction) error {
 	// Try to fail it!
 	transaction.completionFuture.cancel(true)
 	// End it
 	return r.endRequest(transaction)
 }
 
-func (r *RequestTransactionManager) endRequest(transaction RequestTransaction) error {
+func (r *RequestTransactionManager) endRequest(transaction *RequestTransaction) error {
 	found := false
 	index := -1
 	for i, runningRequest := range r.runningRequests {
@@ -281,31 +296,31 @@ func (r *RequestTransactionManager) endRequest(transaction RequestTransaction) e
 	return nil
 }
 
-func (t RequestTransaction) start() {
+func (t *RequestTransaction) start() {
 }
 
-func (t RequestTransaction) failRequest(err error) error {
+func (t *RequestTransaction) failRequest(err error) error {
 	return t.parent.failRequest(t)
 }
 
-func (t RequestTransaction) EndRequest() error {
+func (t *RequestTransaction) EndRequest() error {
 	// Remove it from Running Requests
 	return t.parent.endRequest(t)
 }
 
-func (t RequestTransaction) setOperation(operation Runnable) {
+func (t *RequestTransaction) setOperation(operation Runnable) {
 	t.operation = operation
 }
 
-func (t RequestTransaction) getCompletionFuture() *CompletionFuture {
+func (t *RequestTransaction) getCompletionFuture() *CompletionFuture {
 	return t.completionFuture
 }
 
-func (t RequestTransaction) setCompletionFuture(completionFuture *CompletionFuture) {
+func (t *RequestTransaction) setCompletionFuture(completionFuture *CompletionFuture) {
 	t.completionFuture = completionFuture
 }
 
-func (t RequestTransaction) Submit(operation Runnable) {
+func (t *RequestTransaction) Submit(operation Runnable) {
 	log.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.setOperation(NewTransactionOperation(t.transactionId, operation))
 	t.parent.submitHandle(t)

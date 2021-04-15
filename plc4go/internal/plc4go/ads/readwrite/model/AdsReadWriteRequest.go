@@ -99,7 +99,11 @@ func (m *AdsReadWriteRequest) GetTypeName() string {
 }
 
 func (m *AdsReadWriteRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -115,8 +119,9 @@ func (m *AdsReadWriteRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -253,10 +258,12 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "indexGroup":
@@ -308,7 +315,7 @@ func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

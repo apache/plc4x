@@ -87,7 +87,11 @@ func (m *ApduDataMemoryRead) GetTypeName() string {
 }
 
 func (m *ApduDataMemoryRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataMemoryRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -151,10 +155,12 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "numBytes":
@@ -173,7 +179,7 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -68,6 +68,10 @@ func (m *TPKTPacket) GetTypeName() string {
 }
 
 func (m *TPKTPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -166,21 +170,26 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 func (m *TPKTPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "payload":
 				var dt *COTPPacket
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Payload = dt

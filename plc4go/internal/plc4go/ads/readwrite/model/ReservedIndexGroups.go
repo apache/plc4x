@@ -67,6 +67,43 @@ const (
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE       ReservedIndexGroups = 0x00000002
 )
 
+var ReservedIndexGroupsValues []ReservedIndexGroups
+
+func init() {
+	ReservedIndexGroupsValues = []ReservedIndexGroups{
+		ReservedIndexGroups_ADSIGRP_SYMTAB,
+		ReservedIndexGroups_ADSIGRP_SYMNAME,
+		ReservedIndexGroups_ADSIGRP_SYMVAL,
+		ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VALBYHND,
+		ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND,
+		ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VERSION,
+		ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX,
+		ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD,
+		ReservedIndexGroups_ADSIGRP_SYM_UPLOAD,
+		ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO,
+		ReservedIndexGroups_ADSIGRP_SYMNOTE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE,
+		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
+		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
+		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
+	}
+}
+
 func ReservedIndexGroupsByValue(value uint32) ReservedIndexGroups {
 	switch value {
 	case 0x00000000:

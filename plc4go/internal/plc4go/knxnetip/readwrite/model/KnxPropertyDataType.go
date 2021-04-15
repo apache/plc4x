@@ -90,6 +90,63 @@ const (
 	KnxPropertyDataType_PDT_ESCAPE              KnxPropertyDataType = 49
 )
 
+var KnxPropertyDataTypeValues []KnxPropertyDataType
+
+func init() {
+	KnxPropertyDataTypeValues = []KnxPropertyDataType{
+		KnxPropertyDataType_PDT_UNKNOWN,
+		KnxPropertyDataType_PDT_CONTROL,
+		KnxPropertyDataType_PDT_CHAR,
+		KnxPropertyDataType_PDT_UNSIGNED_CHAR,
+		KnxPropertyDataType_PDT_INT,
+		KnxPropertyDataType_PDT_UNSIGNED_INT,
+		KnxPropertyDataType_PDT_KNX_FLOAT,
+		KnxPropertyDataType_PDT_DATE,
+		KnxPropertyDataType_PDT_TIME,
+		KnxPropertyDataType_PDT_LONG,
+		KnxPropertyDataType_PDT_UNSIGNED_LONG,
+		KnxPropertyDataType_PDT_FLOAT,
+		KnxPropertyDataType_PDT_DOUBLE,
+		KnxPropertyDataType_PDT_CHAR_BLOCK,
+		KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS,
+		KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK,
+		KnxPropertyDataType_PDT_DATE_TIME,
+		KnxPropertyDataType_PDT_VARIABLE_LENGTH,
+		KnxPropertyDataType_PDT_GENERIC_01,
+		KnxPropertyDataType_PDT_GENERIC_02,
+		KnxPropertyDataType_PDT_GENERIC_03,
+		KnxPropertyDataType_PDT_GENERIC_04,
+		KnxPropertyDataType_PDT_GENERIC_05,
+		KnxPropertyDataType_PDT_GENERIC_06,
+		KnxPropertyDataType_PDT_GENERIC_07,
+		KnxPropertyDataType_PDT_GENERIC_08,
+		KnxPropertyDataType_PDT_GENERIC_09,
+		KnxPropertyDataType_PDT_GENERIC_10,
+		KnxPropertyDataType_PDT_GENERIC_11,
+		KnxPropertyDataType_PDT_GENERIC_12,
+		KnxPropertyDataType_PDT_GENERIC_13,
+		KnxPropertyDataType_PDT_GENERIC_14,
+		KnxPropertyDataType_PDT_GENERIC_15,
+		KnxPropertyDataType_PDT_GENERIC_16,
+		KnxPropertyDataType_PDT_GENERIC_17,
+		KnxPropertyDataType_PDT_GENERIC_18,
+		KnxPropertyDataType_PDT_GENERIC_19,
+		KnxPropertyDataType_PDT_GENERIC_20,
+		KnxPropertyDataType_PDT_UTF_8,
+		KnxPropertyDataType_PDT_VERSION,
+		KnxPropertyDataType_PDT_ALARM_INFO,
+		KnxPropertyDataType_PDT_BINARY_INFORMATION,
+		KnxPropertyDataType_PDT_BITSET8,
+		KnxPropertyDataType_PDT_BITSET16,
+		KnxPropertyDataType_PDT_ENUM8,
+		KnxPropertyDataType_PDT_SCALING,
+		KnxPropertyDataType_PDT_NE_VL,
+		KnxPropertyDataType_PDT_NE_FL,
+		KnxPropertyDataType_PDT_FUNCTION,
+		KnxPropertyDataType_PDT_ESCAPE,
+	}
+}
+
 func (e KnxPropertyDataType) Number() uint8 {
 	switch e {
 	case 0:

@@ -85,7 +85,11 @@ func (m *SearchRequest) GetTypeName() string {
 }
 
 func (m *SearchRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SearchRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiIDiscoveryEndpoint)
 	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
@@ -131,10 +135,12 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiIDiscoveryEndpoint":
@@ -147,7 +153,7 @@ func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

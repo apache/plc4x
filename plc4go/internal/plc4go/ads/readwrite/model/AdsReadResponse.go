@@ -93,7 +93,11 @@ func (m *AdsReadResponse) GetTypeName() string {
 }
 
 func (m *AdsReadResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -183,10 +187,12 @@ func (m *AdsReadResponse) Serialize(io utils.WriteBuffer) error {
 func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -210,7 +216,7 @@ func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

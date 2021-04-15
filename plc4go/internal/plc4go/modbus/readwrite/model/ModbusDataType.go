@@ -65,6 +65,40 @@ const (
 	ModbusDataType_WSTRING        ModbusDataType = 27
 )
 
+var ModbusDataTypeValues []ModbusDataType
+
+func init() {
+	ModbusDataTypeValues = []ModbusDataType{
+		ModbusDataType_BOOL,
+		ModbusDataType_BYTE,
+		ModbusDataType_WORD,
+		ModbusDataType_DWORD,
+		ModbusDataType_LWORD,
+		ModbusDataType_SINT,
+		ModbusDataType_INT,
+		ModbusDataType_DINT,
+		ModbusDataType_LINT,
+		ModbusDataType_USINT,
+		ModbusDataType_UINT,
+		ModbusDataType_UDINT,
+		ModbusDataType_ULINT,
+		ModbusDataType_REAL,
+		ModbusDataType_LREAL,
+		ModbusDataType_TIME,
+		ModbusDataType_LTIME,
+		ModbusDataType_DATE,
+		ModbusDataType_LDATE,
+		ModbusDataType_TIME_OF_DAY,
+		ModbusDataType_LTIME_OF_DAY,
+		ModbusDataType_DATE_AND_TIME,
+		ModbusDataType_LDATE_AND_TIME,
+		ModbusDataType_CHAR,
+		ModbusDataType_WCHAR,
+		ModbusDataType_STRING,
+		ModbusDataType_WSTRING,
+	}
+}
+
 func (e ModbusDataType) DataTypeSize() uint8 {
 	switch e {
 	case 1:

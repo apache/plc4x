@@ -89,7 +89,11 @@ func (m *AdsDeleteDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeleteDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -135,10 +139,12 @@ func (m *AdsDeleteDeviceNotificationResponse) Serialize(io utils.WriteBuffer) er
 func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -151,7 +157,7 @@ func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

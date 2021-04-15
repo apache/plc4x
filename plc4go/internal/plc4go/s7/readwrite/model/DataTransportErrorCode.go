@@ -43,6 +43,19 @@ const (
 	DataTransportErrorCode_NOT_FOUND               DataTransportErrorCode = 0x0A
 )
 
+var DataTransportErrorCodeValues []DataTransportErrorCode
+
+func init() {
+	DataTransportErrorCodeValues = []DataTransportErrorCode{
+		DataTransportErrorCode_RESERVED,
+		DataTransportErrorCode_OK,
+		DataTransportErrorCode_ACCESS_DENIED,
+		DataTransportErrorCode_INVALID_ADDRESS,
+		DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED,
+		DataTransportErrorCode_NOT_FOUND,
+	}
+}
+
 func DataTransportErrorCodeByValue(value uint8) DataTransportErrorCode {
 	switch value {
 	case 0x00:

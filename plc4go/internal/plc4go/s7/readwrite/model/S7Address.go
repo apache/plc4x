@@ -78,12 +78,17 @@ func (m *S7Address) GetTypeName() string {
 }
 
 func (m *S7Address) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7Address) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7Address) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -145,16 +150,22 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

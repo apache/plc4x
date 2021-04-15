@@ -87,7 +87,11 @@ func (m *UnknownMessage) GetTypeName() string {
 }
 
 func (m *UnknownMessage) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -144,10 +148,12 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "unknownData":
@@ -165,7 +171,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

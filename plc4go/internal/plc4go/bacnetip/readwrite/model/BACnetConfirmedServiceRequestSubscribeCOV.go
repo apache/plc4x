@@ -105,7 +105,11 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8
@@ -337,10 +341,12 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "subscriberProcessIdentifier":
@@ -388,7 +394,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) UnmarshalXML(d *xml.Decoder,
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

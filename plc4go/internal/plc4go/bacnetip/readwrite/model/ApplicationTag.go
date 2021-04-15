@@ -50,6 +50,26 @@ const (
 	ApplicationTag_BACNET_OBJECT_IDENTIFIER ApplicationTag = 0xC
 )
 
+var ApplicationTagValues []ApplicationTag
+
+func init() {
+	ApplicationTagValues = []ApplicationTag{
+		ApplicationTag_NULL,
+		ApplicationTag_BOOLEAN,
+		ApplicationTag_UNSIGNED_INTEGER,
+		ApplicationTag_SIGNED_INTEGER,
+		ApplicationTag_REAL,
+		ApplicationTag_DOUBLE,
+		ApplicationTag_OCTET_STRING,
+		ApplicationTag_CHARACTER_STRING,
+		ApplicationTag_BIT_STRING,
+		ApplicationTag_ENUMERATED,
+		ApplicationTag_DATE,
+		ApplicationTag_TIME,
+		ApplicationTag_BACNET_OBJECT_IDENTIFIER,
+	}
+}
+
 func ApplicationTagByValue(value int8) ApplicationTag {
 	switch value {
 	case 0x0:

@@ -94,7 +94,11 @@ func (m *APDUSegmentAck) GetTypeName() string {
 }
 
 func (m *APDUSegmentAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUSegmentAck) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -234,10 +238,12 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "negativeAck":
@@ -274,7 +280,7 @@ func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -89,7 +89,11 @@ func (m *KnxGroupAddress3Level) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddress3Level) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -170,10 +174,12 @@ func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 func (m *KnxGroupAddress3Level) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "mainGroup":
@@ -198,7 +204,7 @@ func (m *KnxGroupAddress3Level) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

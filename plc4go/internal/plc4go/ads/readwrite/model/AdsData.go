@@ -79,10 +79,15 @@ func (m *AdsData) GetTypeName() string {
 }
 
 func (m *AdsData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *AdsData) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -168,16 +173,57 @@ func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializ
 func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// AdsInvalidRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidRequest":
+			if m.Child == nil {
+				m.Child = &AdsInvalidRequest{
+					Parent: m,
+				}
+			}
+		// AdsInvalidResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidResponse":
+			if m.Child == nil {
+				m.Child = &AdsInvalidResponse{
+					Parent: m,
+				}
+			}
+		// AdsReadDeviceInfoRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadDeviceInfoRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadDeviceInfoRequest{
+					Parent: m,
+				}
+			}
+		// AdsReadStateRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadStateRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadStateRequest{
+					Parent: m,
+				}
+			}
+		// AdsDeviceNotificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsDeviceNotificationResponse":
+			if m.Child == nil {
+				m.Child = &AdsDeviceNotificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

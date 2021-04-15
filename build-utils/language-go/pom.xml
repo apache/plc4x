@@ -31,75 +31,36 @@
   <name>PLC4X: Build Utils: Language: Go</name>
   <description>Code generation template for generating Go(lang) code</description>
 
-  <dependencies>
-    <!-- We are using the Freemarker module to generate Java code -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-language-base-freemarker</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x.plugins</groupId>
-      <artifactId>plc4x-code-generation-types-base</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x.plugins</groupId>
-      <artifactId>plc4x-code-generation-language-base</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-
-  </dependencies>
-
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
         <version>3.2.2</version>
-        <configuration>
-          <skipInvocation>${skipTests}</skipInvocation>
-          <debug>true</debug>
-          <projectsDirectory>src/test/resources</projectsDirectory>
-          <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
-          <settingsFile>src/test/resources/settings.xml</settingsFile>
-          <pomIncludes>
-            <pomInclude>*/pom.xml</pomInclude>
-          </pomIncludes>
-          <goals>
-            <goal>test</goal>
-          </goals>
-        </configuration>
         <executions>
           <execution>
             <id>integration-test</id>
             <goals>
+              <!-- Install the current project artifacts into the maven local repo, so they can be used in the test -->
               <goal>install</goal>
+              <!-- Execute the maven builds defines in src/test/resources -->
               <goal>integration-test</goal>
+              <!-- Checks the results of the maven builds -->
               <goal>verify</goal>
             </goals>
+            <configuration>
+              <debug>true</debug>
+              <projectsDirectory>src/test/resources</projectsDirectory>
+              <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
+              <settingsFile>src/test/resources/settings.xml</settingsFile>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+              <!-- The goals we will be executing in the test-projects -->
+              <goals>
+                <goal>test</goal>
+              </goals>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -141,8 +102,47 @@
           <sources>${project.basedir}</sources>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
+
+  <dependencies>
+    <!-- We are using the Freemarker module to generate Java code -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-language-base-freemarker</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-types-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x.plugins</groupId>
+      <artifactId>plc4x-code-generation-language-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

@@ -53,6 +53,28 @@ const (
 	ComObjectValueType_BYTE14 ComObjectValueType = 0x0E
 )
 
+var ComObjectValueTypeValues []ComObjectValueType
+
+func init() {
+	ComObjectValueTypeValues = []ComObjectValueType{
+		ComObjectValueType_BIT1,
+		ComObjectValueType_BIT2,
+		ComObjectValueType_BIT3,
+		ComObjectValueType_BIT4,
+		ComObjectValueType_BIT5,
+		ComObjectValueType_BIT6,
+		ComObjectValueType_BIT7,
+		ComObjectValueType_BYTE1,
+		ComObjectValueType_BYTE2,
+		ComObjectValueType_BYTE3,
+		ComObjectValueType_BYTE4,
+		ComObjectValueType_BYTE6,
+		ComObjectValueType_BYTE8,
+		ComObjectValueType_BYTE10,
+		ComObjectValueType_BYTE14,
+	}
+}
+
 func (e ComObjectValueType) SizeInBytes() uint8 {
 	switch e {
 	case 0x00:

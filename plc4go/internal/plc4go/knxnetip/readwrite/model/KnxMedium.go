@@ -43,6 +43,19 @@ const (
 	KnxMedium_MEDIUM_KNX_IP     KnxMedium = 0x20
 )
 
+var KnxMediumValues []KnxMedium
+
+func init() {
+	KnxMediumValues = []KnxMedium{
+		KnxMedium_MEDIUM_RESERVED_1,
+		KnxMedium_MEDIUM_TP1,
+		KnxMedium_MEDIUM_PL110,
+		KnxMedium_MEDIUM_RESERVED_2,
+		KnxMedium_MEDIUM_RF,
+		KnxMedium_MEDIUM_KNX_IP,
+	}
+}
+
 func KnxMediumByValue(value uint8) KnxMedium {
 	switch value {
 	case 0x01:

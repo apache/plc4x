@@ -71,6 +71,10 @@ func (m *GroupObjectDescriptorRealisationType7) GetTypeName() string {
 }
 
 func (m *GroupObjectDescriptorRealisationType7) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *GroupObjectDescriptorRealisationType7) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dataAddress)
@@ -236,16 +240,18 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 func (m *GroupObjectDescriptorRealisationType7) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dataAddress":

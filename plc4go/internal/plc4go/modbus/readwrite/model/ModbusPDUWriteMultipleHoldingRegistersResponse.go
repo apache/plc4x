@@ -95,7 +95,11 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -159,10 +163,12 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(io utils.Writ
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "startingAddress":
@@ -181,7 +187,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Dec
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

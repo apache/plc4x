@@ -74,6 +74,39 @@ const (
 	TransportSize_DT            TransportSize = 0x1B
 )
 
+var TransportSizeValues []TransportSize
+
+func init() {
+	TransportSizeValues = []TransportSize{
+		TransportSize_BOOL,
+		TransportSize_BYTE,
+		TransportSize_WORD,
+		TransportSize_DWORD,
+		TransportSize_LWORD,
+		TransportSize_INT,
+		TransportSize_UINT,
+		TransportSize_SINT,
+		TransportSize_USINT,
+		TransportSize_DINT,
+		TransportSize_UDINT,
+		TransportSize_LINT,
+		TransportSize_ULINT,
+		TransportSize_REAL,
+		TransportSize_LREAL,
+		TransportSize_CHAR,
+		TransportSize_WCHAR,
+		TransportSize_STRING,
+		TransportSize_WSTRING,
+		TransportSize_TIME,
+		TransportSize_LTIME,
+		TransportSize_DATE,
+		TransportSize_TIME_OF_DAY,
+		TransportSize_TOD,
+		TransportSize_DATE_AND_TIME,
+		TransportSize_DT,
+	}
+}
+
 func (e TransportSize) Supported_S7_300() bool {
 	switch e {
 	case 0x01:

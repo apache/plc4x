@@ -215,7 +215,7 @@ func (m *DefaultCodec) HandleMessages(message interface{}) bool {
 func (m *DefaultCodec) Work(codec *DefaultCodecRequiredInterface) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Fatal().Msgf("recovered from %v", err)
+			log.Error().Msgf("recovered from %v", err)
 		}
 		log.Info().Msg("Keep running")
 		m.Work(codec)

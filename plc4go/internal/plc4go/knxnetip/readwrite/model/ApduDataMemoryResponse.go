@@ -87,7 +87,11 @@ func (m *ApduDataMemoryResponse) GetTypeName() string {
 }
 
 func (m *ApduDataMemoryResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -178,10 +182,12 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
@@ -200,7 +206,7 @@ func (m *ApduDataMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

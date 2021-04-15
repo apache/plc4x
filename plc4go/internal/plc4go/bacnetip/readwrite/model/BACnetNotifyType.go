@@ -40,6 +40,16 @@ const (
 	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
+var BACnetNotifyTypeValues []BACnetNotifyType
+
+func init() {
+	BACnetNotifyTypeValues = []BACnetNotifyType{
+		BACnetNotifyType_ALARM,
+		BACnetNotifyType_EVENT,
+		BACnetNotifyType_ACK_NOTIFICATION,
+	}
+}
+
 func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
 	switch value {
 	case 0x0:

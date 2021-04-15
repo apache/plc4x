@@ -79,10 +79,15 @@ func (m *S7Payload) GetTypeName() string {
 }
 
 func (m *S7Payload) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *S7Payload) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7Payload) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -136,16 +141,22 @@ func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, seri
 func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

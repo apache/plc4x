@@ -82,6 +82,14 @@ func (m *BVLC) GetTypeName() string {
 }
 
 func (m *BVLC) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLC) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BVLC) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetType)
@@ -91,9 +99,6 @@ func (m *BVLC) LengthInBits() uint16 {
 
 	// Implicit Field (bvlcLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -208,16 +213,92 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 func (m *BVLC) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BVLCResult needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCResult":
+			if m.Child == nil {
+				m.Child = &BVLCResult{
+					Parent: m,
+				}
+			}
+		// BVLCWideBroadcastDistributionTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCWideBroadcastDistributionTable":
+			if m.Child == nil {
+				m.Child = &BVLCWideBroadcastDistributionTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadBroadcastDistributionTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTable":
+			if m.Child == nil {
+				m.Child = &BVLCReadBroadcastDistributionTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadBroadcastDistributionTableAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTableAck":
+			if m.Child == nil {
+				m.Child = &BVLCReadBroadcastDistributionTableAck{
+					Parent: m,
+				}
+			}
+		// BVLCRegisterForeignDevice needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCRegisterForeignDevice":
+			if m.Child == nil {
+				m.Child = &BVLCRegisterForeignDevice{
+					Parent: m,
+				}
+			}
+		// BVLCReadForeignDeviceTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTable":
+			if m.Child == nil {
+				m.Child = &BVLCReadForeignDeviceTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadForeignDeviceTableAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTableAck":
+			if m.Child == nil {
+				m.Child = &BVLCReadForeignDeviceTableAck{
+					Parent: m,
+				}
+			}
+		// BVLCDeleteForeignDeviceTableEntry needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDeleteForeignDeviceTableEntry":
+			if m.Child == nil {
+				m.Child = &BVLCDeleteForeignDeviceTableEntry{
+					Parent: m,
+				}
+			}
+		// BVLCDistributeBroadcastToNetwork needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDistributeBroadcastToNetwork":
+			if m.Child == nil {
+				m.Child = &BVLCDistributeBroadcastToNetwork{
+					Parent: m,
+				}
+			}
+		// BVLCSecureBVLL needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCSecureBVLL":
+			if m.Child == nil {
+				m.Child = &BVLCSecureBVLL{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

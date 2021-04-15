@@ -65,6 +65,10 @@ func (m *SzlId) GetTypeName() string {
 }
 
 func (m *SzlId) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (typeClass)
@@ -136,16 +140,18 @@ func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "typeClass":

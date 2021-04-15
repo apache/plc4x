@@ -95,7 +95,11 @@ func (m *ModbusPDUReadCoilsRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadCoilsRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -159,10 +163,12 @@ func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "startingAddress":
@@ -181,7 +187,7 @@ func (m *ModbusPDUReadCoilsRequest) UnmarshalXML(d *xml.Decoder, start xml.Start
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

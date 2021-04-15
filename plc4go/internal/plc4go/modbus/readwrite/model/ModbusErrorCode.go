@@ -47,6 +47,23 @@ const (
 	ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND ModbusErrorCode = 11
 )
 
+var ModbusErrorCodeValues []ModbusErrorCode
+
+func init() {
+	ModbusErrorCodeValues = []ModbusErrorCode{
+		ModbusErrorCode_ILLEGAL_FUNCTION,
+		ModbusErrorCode_ILLEGAL_DATA_ADDRESS,
+		ModbusErrorCode_ILLEGAL_DATA_VALUE,
+		ModbusErrorCode_SLAVE_DEVICE_FAILURE,
+		ModbusErrorCode_ACKNOWLEDGE,
+		ModbusErrorCode_SLAVE_DEVICE_BUSY,
+		ModbusErrorCode_NEGATIVE_ACKNOWLEDGE,
+		ModbusErrorCode_MEMORY_PARITY_ERROR,
+		ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE,
+		ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND,
+	}
+}
+
 func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
 	switch value {
 	case 1:

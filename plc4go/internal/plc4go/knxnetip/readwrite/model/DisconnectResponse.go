@@ -87,7 +87,11 @@ func (m *DisconnectResponse) GetTypeName() string {
 }
 
 func (m *DisconnectResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DisconnectResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -150,10 +154,12 @@ func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
 func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":
@@ -172,7 +178,7 @@ func (m *DisconnectResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

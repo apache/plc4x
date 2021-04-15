@@ -80,14 +80,19 @@ func (m *ModbusPDU) GetTypeName() string {
 }
 
 func (m *ModbusPDU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDU) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ModbusPDU) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
 	// Discriminator Field (functionFlag)
 	lengthInBits += 7
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -239,16 +244,64 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ModbusPDUReadExceptionStatusRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadExceptionStatusRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUGetComEventCounterRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUGetComEventCounterRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUGetComEventLogRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUGetComEventLogRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReportServerIdRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReportServerIdRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReadDeviceIdentificationRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadDeviceIdentificationRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReadDeviceIdentificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadDeviceIdentificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

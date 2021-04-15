@@ -89,7 +89,11 @@ func (m *AdsMultiRequestItemWrite) GetTypeName() string {
 }
 
 func (m *AdsMultiRequestItemWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsMultiRequestItemWrite) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -170,10 +174,12 @@ func (m *AdsMultiRequestItemWrite) Serialize(io utils.WriteBuffer) error {
 func (m *AdsMultiRequestItemWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "itemIndexGroup":
@@ -198,7 +204,7 @@ func (m *AdsMultiRequestItemWrite) UnmarshalXML(d *xml.Decoder, start xml.StartE
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

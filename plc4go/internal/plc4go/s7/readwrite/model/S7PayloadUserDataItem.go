@@ -82,6 +82,14 @@ func (m *S7PayloadUserDataItem) GetTypeName() string {
 }
 
 func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7PayloadUserDataItem) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7PayloadUserDataItem) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)
@@ -98,9 +106,6 @@ func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -215,16 +220,29 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// S7PayloadUserDataItemCpuFunctionReadSzlRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
+			if m.Child == nil {
+				m.Child = &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "returnCode":

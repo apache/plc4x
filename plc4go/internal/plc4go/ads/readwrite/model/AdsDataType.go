@@ -79,6 +79,53 @@ const (
 	AdsDataType_DT            AdsDataType = 0x28
 )
 
+var AdsDataTypeValues []AdsDataType
+
+func init() {
+	AdsDataTypeValues = []AdsDataType{
+		AdsDataType_BOOL,
+		AdsDataType_BIT,
+		AdsDataType_BIT8,
+		AdsDataType_BYTE,
+		AdsDataType_BITARR8,
+		AdsDataType_WORD,
+		AdsDataType_BITARR16,
+		AdsDataType_DWORD,
+		AdsDataType_BITARR32,
+		AdsDataType_SINT,
+		AdsDataType_INT8,
+		AdsDataType_USINT,
+		AdsDataType_UINT8,
+		AdsDataType_INT,
+		AdsDataType_INT16,
+		AdsDataType_UINT,
+		AdsDataType_UINT16,
+		AdsDataType_DINT,
+		AdsDataType_INT32,
+		AdsDataType_UDINT,
+		AdsDataType_UINT32,
+		AdsDataType_LINT,
+		AdsDataType_INT64,
+		AdsDataType_ULINT,
+		AdsDataType_UINT64,
+		AdsDataType_REAL,
+		AdsDataType_FLOAT,
+		AdsDataType_LREAL,
+		AdsDataType_DOUBLE,
+		AdsDataType_CHAR,
+		AdsDataType_WCHAR,
+		AdsDataType_STRING,
+		AdsDataType_WSTRING,
+		AdsDataType_TIME,
+		AdsDataType_LTIME,
+		AdsDataType_DATE,
+		AdsDataType_TIME_OF_DAY,
+		AdsDataType_TOD,
+		AdsDataType_DATE_AND_TIME,
+		AdsDataType_DT,
+	}
+}
+
 func (e AdsDataType) NumBytes() uint16 {
 	switch e {
 	case 0x01:

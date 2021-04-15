@@ -101,7 +101,11 @@ func (m *LPollData) GetTypeName() string {
 }
 
 func (m *LPollData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.LengthInBits()
@@ -216,10 +220,12 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "sourceAddress":
@@ -249,7 +255,7 @@ func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

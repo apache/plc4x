@@ -40,6 +40,16 @@ const (
 	KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
+var KnxLayerValues []KnxLayer
+
+func init() {
+	KnxLayerValues = []KnxLayer{
+		KnxLayer_TUNNEL_LINK_LAYER,
+		KnxLayer_TUNNEL_RAW,
+		KnxLayer_TUNNEL_BUSMONITOR,
+	}
+}
+
 func KnxLayerByValue(value uint8) KnxLayer {
 	switch value {
 	case 0x02:

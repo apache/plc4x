@@ -178,7 +178,12 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     @Override
     @JsonIgnore
     public int getLengthInBits() {
-        int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
+        return getLengthInBitsConditional(false);
+    }
+
+<#-- TODO: use serializer args instead of a fixed bool for one case -->
+    public int getLengthInBitsConditional(boolean lastItem) {
+        int lengthInBits = <#if type.parentType??>super.getLengthInBitsConditional(lastItem)<#else>0</#if>;
         ${helper.getLanguageTypeNameForTypeReference(type.typeReference)} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
@@ -190,6 +195,13 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if helper.isSimpleTypeReference(arrayField.type)>
             <#assign simpleTypeReference = arrayField.type>
             lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
+        <#elseif helper.isCountArrayField(arrayField)>
+            int i=0;
+            <#assign simpleTypeReference = arrayField.type>
+            for(${arrayField.type.name} element : ${arrayField.name}) {
+                boolean last = ++i >= ${arrayField.name}.length;
+                lengthInBits += element.getLengthInBitsConditional(last);
+            }
         <#else>
             for(Message element : ${arrayField.name}) {
                 lengthInBits += element.getLengthInBits();
@@ -279,7 +291,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")});
+        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
         while (_timesPadding-- > 0) {
             lengthInBits += ${simpleTypeReference.sizeInBits};
         }

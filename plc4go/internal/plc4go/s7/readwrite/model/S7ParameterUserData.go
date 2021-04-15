@@ -89,15 +89,20 @@ func (m *S7ParameterUserData) GetTypeName() string {
 }
 
 func (m *S7ParameterUserData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterUserData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -165,10 +170,12 @@ func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
@@ -191,7 +198,7 @@ func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

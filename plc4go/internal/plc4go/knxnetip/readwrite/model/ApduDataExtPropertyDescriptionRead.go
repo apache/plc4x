@@ -89,7 +89,11 @@ func (m *ApduDataExtPropertyDescriptionRead) GetTypeName() string {
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtPropertyDescriptionRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -170,10 +174,12 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(io utils.WriteBuffer) err
 func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectIndex":
@@ -198,7 +204,7 @@ func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

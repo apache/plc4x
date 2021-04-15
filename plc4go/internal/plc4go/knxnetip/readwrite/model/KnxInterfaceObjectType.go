@@ -64,6 +64,38 @@ const (
 	KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC          KnxInterfaceObjectType = 24
 )
 
+var KnxInterfaceObjectTypeValues []KnxInterfaceObjectType
+
+func init() {
+	KnxInterfaceObjectTypeValues = []KnxInterfaceObjectType{
+		KnxInterfaceObjectType_OT_UNKNOWN,
+		KnxInterfaceObjectType_OT_GENERAL,
+		KnxInterfaceObjectType_OT_DEVICE,
+		KnxInterfaceObjectType_OT_ADDRESS_TABLE,
+		KnxInterfaceObjectType_OT_ASSOCIATION_TABLE,
+		KnxInterfaceObjectType_OT_APPLICATION_PROGRAM,
+		KnxInterfaceObjectType_OT_INTERACE_PROGRAM,
+		KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE,
+		KnxInterfaceObjectType_OT_ROUTER,
+		KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE,
+		KnxInterfaceObjectType_OT_CEMI_SERVER,
+		KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE,
+		KnxInterfaceObjectType_OT_POLLING_MASTER,
+		KnxInterfaceObjectType_OT_KNXIP_PARAMETER,
+		KnxInterfaceObjectType_OT_FILE_SERVER,
+		KnxInterfaceObjectType_OT_SECURITY,
+		KnxInterfaceObjectType_OT_RF_MEDIUM,
+		KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR,
+		KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR,
+		KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC,
+		KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC,
+		KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC,
+	}
+}
+
 func (e KnxInterfaceObjectType) Code() string {
 	switch e {
 	case 0:

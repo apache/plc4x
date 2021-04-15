@@ -53,6 +53,29 @@ const (
 	FirmwareType_SYSTEM_7_KNX_NET_IP        FirmwareType = 0x5700
 )
 
+var FirmwareTypeValues []FirmwareType
+
+func init() {
+	FirmwareTypeValues = []FirmwareType{
+		FirmwareType_SYSTEM_1,
+		FirmwareType_SYSTEM_2,
+		FirmwareType_SYSTEM_300,
+		FirmwareType_SYSTEM_7,
+		FirmwareType_SYSTEM_B,
+		FirmwareType_IR_DECODER,
+		FirmwareType_COUPLER,
+		FirmwareType_NONE,
+		FirmwareType_SYSTEM_1_PL110,
+		FirmwareType_SYSTEM_B_PL110,
+		FirmwareType_MEDIA_COUPLER_PL_TP,
+		FirmwareType_RF_BI_DIRECTIONAL_DEVICES,
+		FirmwareType_RF_UNI_DIRECTIONAL_DEVICES,
+		FirmwareType_SYSTEM_1_TP0,
+		FirmwareType_SYSTEM_1_PL132,
+		FirmwareType_SYSTEM_7_KNX_NET_IP,
+	}
+}
+
 func FirmwareTypeByValue(value uint16) FirmwareType {
 	switch value {
 	case 0x0010:

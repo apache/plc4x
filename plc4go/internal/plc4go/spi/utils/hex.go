@@ -61,6 +61,7 @@ func DumpAnything(anything interface{}) string {
 	return DumpFixedWidth(convertedBytes, 1)
 }
 
+// TODO: test with charWidht <12
 // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
 func DumpFixedWidth(data []byte, charWidth int) string {
 	if charWidth <= 0 {

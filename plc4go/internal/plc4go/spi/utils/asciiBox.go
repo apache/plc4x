@@ -49,7 +49,12 @@ type AsciiBoxer interface {
 
 func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 	switch anything.(type) {
+	case nil:
+		return ""
 	case AsciiBoxer:
+		if reflect.ValueOf(anything).IsNil() {
+			return ""
+		}
 		// A box usually has its own name
 		return anything.(AsciiBoxer).Box(name, charWidth)
 	case bool:
@@ -62,8 +67,13 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 		return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
 	case string:
 		return BoxString(name, anything.(string), charWidth)
+	case fmt.Stringer:
+		return BoxString(name, anything.(fmt.Stringer).String(), 0)
 	default:
 		valueOf := reflect.ValueOf(anything)
+		if valueOf.IsNil() {
+			return ""
+		}
 		switch valueOf.Kind() {
 		case reflect.Bool:
 			return BoxString(name, fmt.Sprintf("%t", anything), 0)
@@ -78,6 +88,8 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 				boxes[i] = BoxAnything("", index.Interface(), charWidth-2)
 			}
 			return BoxBox(name, AlignBoxes(boxes, charWidth), 0)
+		case reflect.Ptr, reflect.Uintptr:
+			return BoxAnything(name, valueOf.Elem().Interface(), charWidth)
 		default:
 			return BoxString(name, fmt.Sprintf("0x%x", anything.(interface{})), charWidth)
 		}

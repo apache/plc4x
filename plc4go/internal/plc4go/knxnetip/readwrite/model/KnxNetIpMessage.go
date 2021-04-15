@@ -82,6 +82,14 @@ func (m *KnxNetIpMessage) GetTypeName() string {
 }
 
 func (m *KnxNetIpMessage) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetIpMessage) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -94,9 +102,6 @@ func (m *KnxNetIpMessage) LengthInBits() uint16 {
 
 	// Implicit Field (totalLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -231,16 +236,29 @@ func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpM
 func (m *KnxNetIpMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// RoutingIndication needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.RoutingIndication":
+			if m.Child == nil {
+				m.Child = &RoutingIndication{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

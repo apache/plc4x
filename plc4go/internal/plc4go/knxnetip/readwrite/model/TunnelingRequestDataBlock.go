@@ -65,6 +65,10 @@ func (m *TunnelingRequestDataBlock) GetTypeName() string {
 }
 
 func (m *TunnelingRequestDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingRequestDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -162,16 +166,18 @@ func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":

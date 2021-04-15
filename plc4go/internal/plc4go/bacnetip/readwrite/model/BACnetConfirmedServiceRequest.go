@@ -78,12 +78,17 @@ func (m *BACnetConfirmedServiceRequest) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetConfirmedServiceRequest) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -205,16 +210,211 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, ch
 func (m *BACnetConfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetConfirmedServiceRequestAcknowledgeAlarm needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAcknowledgeAlarm{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedEventNotification needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedEventNotification":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedEventNotification{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAddListElement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAddListElement":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAddListElement{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemoveListElement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemoveListElement":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemoveListElement{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestDeleteObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeleteObject":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestDeleteObject{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestWritePropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWritePropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestWritePropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestDeviceCommunicationControl needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeviceCommunicationControl":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestDeviceCommunicationControl{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedTextMessage needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedTextMessage":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedTextMessage{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReinitializeDevice needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReinitializeDevice":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReinitializeDevice{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTClose needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTClose":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTClose{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTData":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTData{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedRequestKey needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedRequestKey":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedRequestKey{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestLifeSafetyOperation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestLifeSafetyOperation":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestLifeSafetyOperation{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestSubscribeCOVProperty needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVProperty":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestSubscribeCOVProperty{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

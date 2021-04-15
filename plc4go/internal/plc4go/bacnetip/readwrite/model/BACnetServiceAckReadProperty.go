@@ -102,7 +102,11 @@ func (m *BACnetServiceAckReadProperty) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckReadProperty) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -298,10 +302,12 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectType":
@@ -336,6 +342,9 @@ func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.St
 			case "value":
 				var dt *BACnetTag
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Value = dt
@@ -343,7 +352,7 @@ func (m *BACnetServiceAckReadProperty) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

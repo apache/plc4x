@@ -89,7 +89,11 @@ func (m *ConnectionRequest) GetTypeName() string {
 }
 
 func (m *ConnectionRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
@@ -167,10 +171,12 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiDiscoveryEndpoint":
@@ -188,6 +194,9 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 			case "connectionRequestInformation":
 				var dt *ConnectionRequestInformation
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ConnectionRequestInformation = dt
@@ -195,7 +204,7 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -66,6 +66,10 @@ func (m *ModbusConstants) GetTypeName() string {
 }
 
 func (m *ModbusConstants) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusConstants) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (modbusTcpDefaultPort)
@@ -107,16 +111,18 @@ func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusConstants) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}

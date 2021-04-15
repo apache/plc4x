@@ -80,15 +80,20 @@ func (m *COTPPacket) GetTypeName() string {
 }
 
 func (m *COTPPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacket) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *COTPPacket) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
 	// Discriminator Field (tpduCode)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	// Array field
 	if len(m.Parameters) > 0 {
@@ -234,16 +239,22 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
@@ -265,6 +276,9 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			case "payload":
 				var dt *S7Message
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Payload = dt

@@ -68,6 +68,42 @@ const (
 	DeviceDescriptor_KNX_IP_SYSTEM7             DeviceDescriptor = 0x5705
 )
 
+var DeviceDescriptorValues []DeviceDescriptor
+
+func init() {
+	DeviceDescriptorValues = []DeviceDescriptor{
+		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0,
+		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1,
+		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2,
+		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3,
+		DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0,
+		DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1,
+		DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5,
+		DeviceDescriptor_TP1_SYSTEM_300,
+		DeviceDescriptor_TP1_BIM_M112_0,
+		DeviceDescriptor_TP1_BIM_M112_1,
+		DeviceDescriptor_TP1_BIM_M112_5,
+		DeviceDescriptor_TP1_SYSTEM_B,
+		DeviceDescriptor_TP1_IR_DECODER_0,
+		DeviceDescriptor_TP1_IR_DECODER_1,
+		DeviceDescriptor_TP1_COUPLER_0,
+		DeviceDescriptor_TP1_COUPLER_1,
+		DeviceDescriptor_TP1_COUPLER_2,
+		DeviceDescriptor_TP1_KNXNETIP_ROUTER,
+		DeviceDescriptor_TP1_NONE_D,
+		DeviceDescriptor_TP1_NONE_E,
+		DeviceDescriptor_PL110_BCU_1_2,
+		DeviceDescriptor_PL110_BCU_1_3,
+		DeviceDescriptor_PL110_SYSTEM_B,
+		DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP,
+		DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES,
+		DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES,
+		DeviceDescriptor_TP0_BCU_1,
+		DeviceDescriptor_PL132_BCU_1,
+		DeviceDescriptor_KNX_IP_SYSTEM7,
+	}
+}
+
 func (e DeviceDescriptor) FirmwareType() FirmwareType {
 	switch e {
 	case 0x0010:

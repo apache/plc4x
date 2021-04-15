@@ -170,11 +170,13 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				rawOutput := writeBuffer.GetBytes()
 				if len(rawInput) != len(rawOutput) {
 					t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
+					t.Errorf("Hexdumps\nexpected:\n%s\nactual:\n%s\n", utils.Dump(rawInput), utils.Dump(rawOutput))
 					return
 				}
 				for i, val := range rawInput {
 					if rawOutput[i] != val {
 						t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
+						t.Errorf("Hexdumps\nexpected:\n%s\nactual:\n%s\n", utils.Dump(rawInput), utils.Dump(rawOutput))
 						return
 					}
 				}

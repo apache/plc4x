@@ -42,6 +42,18 @@ const (
 	COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
 
+var COTPProtocolClassValues []COTPProtocolClass
+
+func init() {
+	COTPProtocolClassValues = []COTPProtocolClass{
+		COTPProtocolClass_CLASS_0,
+		COTPProtocolClass_CLASS_1,
+		COTPProtocolClass_CLASS_2,
+		COTPProtocolClass_CLASS_3,
+		COTPProtocolClass_CLASS_4,
+	}
+}
+
 func COTPProtocolClassByValue(value int8) COTPProtocolClass {
 	switch value {
 	case 0x00:

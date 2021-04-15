@@ -86,7 +86,11 @@ func (m *APDUUnconfirmedRequest) GetTypeName() string {
 }
 
 func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUUnconfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -157,15 +161,20 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "serviceRequest":
 				var dt *BACnetUnconfirmedServiceRequest
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ServiceRequest = dt
@@ -173,7 +182,7 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

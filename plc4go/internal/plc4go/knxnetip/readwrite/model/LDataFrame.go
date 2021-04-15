@@ -84,6 +84,14 @@ func (m *LDataFrame) GetTypeName() string {
 }
 
 func (m *LDataFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataFrame) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *LDataFrame) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -104,9 +112,6 @@ func (m *LDataFrame) LengthInBits() uint16 {
 
 	// Simple field (errorFlag)
 	lengthInBits += 1
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -251,16 +256,29 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// LDataFrameACK needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameACK":
+			if m.Child == nil {
+				m.Child = &LDataFrameACK{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "frameType":

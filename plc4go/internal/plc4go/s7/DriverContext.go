@@ -24,14 +24,16 @@ import (
 )
 
 type DriverContext struct {
-	PassiveMode    bool
-	CallingTsapId  uint16
-	CalledTsapId   uint16
-	CotpTpduSize   model.COTPTpduSize
-	PduSize        uint16
-	MaxAmqCaller   uint16
-	MaxAmqCallee   uint16
-	ControllerType ControllerType
+	PassiveMode             bool
+	CallingTsapId           uint16
+	CalledTsapId            uint16
+	CotpTpduSize            model.COTPTpduSize
+	PduSize                 uint16
+	MaxAmqCaller            uint16
+	MaxAmqCallee            uint16
+	ControllerType          ControllerType
+	awaitSetupComplete      bool
+	awaitDisconnectComplete bool
 }
 
 func NewDriverContext(configuration Configuration) (DriverContext, error) {
@@ -63,6 +65,7 @@ func NewDriverContext(configuration Configuration) (DriverContext, error) {
 		CallingTsapId:  callingTsapId,
 		CalledTsapId:   calledTsapId,
 		ControllerType: controllerType,
+		CotpTpduSize:   cotpTpduSize,
 		PduSize:        pduSize,
 		MaxAmqCaller:   maxAmqCaller,
 		MaxAmqCallee:   maxAmqCallee,

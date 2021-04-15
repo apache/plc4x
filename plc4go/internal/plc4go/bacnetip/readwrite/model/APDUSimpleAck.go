@@ -88,7 +88,11 @@ func (m *APDUSimpleAck) GetTypeName() string {
 }
 
 func (m *APDUSimpleAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -177,10 +181,12 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "originalInvokeId":
@@ -199,7 +205,7 @@ func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

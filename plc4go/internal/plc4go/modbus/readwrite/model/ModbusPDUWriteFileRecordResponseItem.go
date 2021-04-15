@@ -68,6 +68,10 @@ func (m *ModbusPDUWriteFileRecordResponseItem) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)
@@ -184,16 +188,18 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(io utils.WriteBuffer) e
 func (m *ModbusPDUWriteFileRecordResponseItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "referenceType":

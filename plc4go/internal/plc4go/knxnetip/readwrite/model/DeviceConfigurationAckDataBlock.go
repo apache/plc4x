@@ -65,6 +65,10 @@ func (m *DeviceConfigurationAckDataBlock) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceConfigurationAckDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -152,16 +156,18 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
 func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":

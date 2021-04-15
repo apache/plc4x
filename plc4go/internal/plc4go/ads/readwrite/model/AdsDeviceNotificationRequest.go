@@ -93,7 +93,11 @@ func (m *AdsDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -103,8 +107,9 @@ func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.AdsStampHeaders) > 0 {
-		for _, element := range m.AdsStampHeaders {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.AdsStampHeaders {
+			last := i == len(m.AdsStampHeaders)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -186,10 +191,12 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "length":
@@ -214,7 +221,7 @@ func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

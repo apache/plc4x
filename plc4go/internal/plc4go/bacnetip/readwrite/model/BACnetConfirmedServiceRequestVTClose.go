@@ -82,7 +82,11 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestVTClose) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -112,17 +116,19 @@ func (m *BACnetConfirmedServiceRequestVTClose) Serialize(io utils.WriteBuffer) e
 func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

@@ -78,12 +78,17 @@ func (m *BACnetUnconfirmedServiceRequest) GetTypeName() string {
 }
 
 func (m *BACnetUnconfirmedServiceRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetUnconfirmedServiceRequest) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -167,16 +172,78 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, 
 func (m *BACnetUnconfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetUnconfirmedServiceRequestIHave needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestIHave{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestUnconfirmedEventNotification needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedEventNotification":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestUnconfirmedTextMessage needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedTextMessage":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestTimeSynchronization needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestTimeSynchronization{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestUTCTimeSynchronization needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUTCTimeSynchronization":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestWriteGroup needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWriteGroup":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestWriteGroup{
+					Parent: m,
+				}
+			}
+		// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:

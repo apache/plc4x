@@ -29,14 +29,18 @@ import (
 )
 
 type Driver struct {
-	fieldHandler spi.PlcFieldHandler
-	tm           spi.RequestTransactionManager
+	fieldHandler            spi.PlcFieldHandler
+	tm                      spi.RequestTransactionManager
+	awaitSetupComplete      bool
+	awaitDisconnectComplete bool
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		fieldHandler: NewFieldHandler(),
-		tm:           spi.NewRequestTransactionManager(1),
+		fieldHandler:            NewFieldHandler(),
+		tm:                      spi.NewRequestTransactionManager(1),
+		awaitSetupComplete:      true,
+		awaitDisconnectComplete: true,
 	}
 }
 
@@ -96,10 +100,20 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	driverContext, err := NewDriverContext(configuration)
+	if err != nil {
+		log.Error().Err(err).Msgf("Invalid options")
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid options"))
+		}()
+		return ch
+	}
+	driverContext.awaitSetupComplete = m.awaitSetupComplete
+	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
 	connection := NewConnection(codec, configuration, driverContext, m.fieldHandler, &m.tm)
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Info().Stringer("connection", &connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 
@@ -109,4 +123,12 @@ func (m *Driver) SupportsDiscovery() bool {
 
 func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
 	panic("implement me")
+}
+
+func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {
+	m.awaitSetupComplete = awaitComplete
+}
+
+func (m *Driver) SetAwaitDisconnectComplete(awaitComplete bool) {
+	m.awaitDisconnectComplete = awaitComplete
 }

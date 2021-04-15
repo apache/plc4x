@@ -24,6 +24,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -79,6 +80,14 @@ func (m *NLM) GetTypeName() string {
 }
 
 func (m *NLM) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NLM) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *NLM) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -87,9 +96,6 @@ func (m *NLM) LengthInBits() uint16 {
 	if m.VendorId != nil {
 		lengthInBits += 16
 	}
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -173,24 +179,38 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "vendorId":
-				var data uint16
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.VendorId = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint16(atoi)
+					m.VendorId = &data
+				}
 			default:
 				attr := start.Attr
 				if attr == nil || len(attr) <= 0 {

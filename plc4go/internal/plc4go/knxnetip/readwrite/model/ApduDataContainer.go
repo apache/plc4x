@@ -87,7 +87,11 @@ func (m *ApduDataContainer) GetTypeName() string {
 }
 
 func (m *ApduDataContainer) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataContainer) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (dataApdu)
 	lengthInBits += m.DataApdu.LengthInBits()
@@ -133,15 +137,20 @@ func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataContainer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dataApdu":
 				var dt *ApduData
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.DataApdu = dt
@@ -149,7 +158,7 @@ func (m *ApduDataContainer) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

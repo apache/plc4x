@@ -68,6 +68,10 @@ func (m *AmsSerialAcknowledgeFrame) GetTypeName() string {
 }
 
 func (m *AmsSerialAcknowledgeFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -187,16 +191,18 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(io utils.WriteBuffer) error {
 func (m *AmsSerialAcknowledgeFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "magicCookie":

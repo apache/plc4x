@@ -106,7 +106,11 @@ func (m *LDataExtended) GetTypeName() string {
 }
 
 func (m *LDataExtended) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -263,10 +267,12 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "groupAddress":
@@ -307,6 +313,9 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 			case "apdu":
 				var dt *Apdu
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Apdu = dt
@@ -314,7 +323,7 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err

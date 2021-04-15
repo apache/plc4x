@@ -40,6 +40,16 @@ const (
 	DeviceGroup_OTHERS   DeviceGroup = 0x03
 )
 
+var DeviceGroupValues []DeviceGroup
+
+func init() {
+	DeviceGroupValues = []DeviceGroup{
+		DeviceGroup_PG_OR_PC,
+		DeviceGroup_OS,
+		DeviceGroup_OTHERS,
+	}
+}
+
 func DeviceGroupByValue(value int8) DeviceGroup {
 	switch value {
 	case 0x01:

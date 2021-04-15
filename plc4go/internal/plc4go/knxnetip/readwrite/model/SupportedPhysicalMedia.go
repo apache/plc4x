@@ -60,6 +60,34 @@ const (
 	SupportedPhysicalMedia_RADIO_CONVERTER           SupportedPhysicalMedia = 0x37
 )
 
+var SupportedPhysicalMediaValues []SupportedPhysicalMedia
+
+func init() {
+	SupportedPhysicalMediaValues = []SupportedPhysicalMedia{
+		SupportedPhysicalMedia_OTHER,
+		SupportedPhysicalMedia_OIL_METER,
+		SupportedPhysicalMedia_ELECTRICITY_METER,
+		SupportedPhysicalMedia_GAS_METER,
+		SupportedPhysicalMedia_HEAT_METER,
+		SupportedPhysicalMedia_STEAM_METER,
+		SupportedPhysicalMedia_WARM_WATER_METER,
+		SupportedPhysicalMedia_WATER_METER,
+		SupportedPhysicalMedia_HEAT_COST_ALLOCATOR,
+		SupportedPhysicalMedia_COMPRESSED_AIR,
+		SupportedPhysicalMedia_COOLING_LOAD_METER_INLET,
+		SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET,
+		SupportedPhysicalMedia_HEAT_INLET,
+		SupportedPhysicalMedia_HEAT_AND_COOL,
+		SupportedPhysicalMedia_BUS_OR_SYSTEM,
+		SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE,
+		SupportedPhysicalMedia_BREAKER,
+		SupportedPhysicalMedia_VALVE,
+		SupportedPhysicalMedia_WASTE_WATER_METER,
+		SupportedPhysicalMedia_GARBAGE,
+		SupportedPhysicalMedia_RADIO_CONVERTER,
+	}
+}
+
 func (e SupportedPhysicalMedia) KnxSupport() bool {
 	switch e {
 	case 0x00:
