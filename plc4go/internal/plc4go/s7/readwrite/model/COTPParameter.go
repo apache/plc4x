@@ -78,6 +78,10 @@ func (m *COTPParameter) GetTypeName() string {
 }
 
 func (m *COTPParameter) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameter) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

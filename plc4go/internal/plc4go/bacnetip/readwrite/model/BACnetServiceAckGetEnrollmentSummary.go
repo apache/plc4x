@@ -82,6 +82,10 @@ func (m *BACnetServiceAckGetEnrollmentSummary) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

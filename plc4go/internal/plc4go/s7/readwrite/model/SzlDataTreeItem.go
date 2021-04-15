@@ -69,6 +69,10 @@ func (m *SzlDataTreeItem) GetTypeName() string {
 }
 
 func (m *SzlDataTreeItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (itemIndex)

@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

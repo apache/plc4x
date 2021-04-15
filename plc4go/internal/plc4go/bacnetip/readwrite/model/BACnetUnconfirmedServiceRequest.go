@@ -78,6 +78,10 @@ func (m *BACnetUnconfirmedServiceRequest) GetTypeName() string {
 }
 
 func (m *BACnetUnconfirmedServiceRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

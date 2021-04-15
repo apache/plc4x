@@ -99,6 +99,10 @@ func (m *AdsReadWriteRequest) GetTypeName() string {
 }
 
 func (m *AdsReadWriteRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
@@ -115,8 +119,9 @@ func (m *AdsReadWriteRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 

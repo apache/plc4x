@@ -79,6 +79,10 @@ func (m *AdsData) GetTypeName() string {
 }
 
 func (m *AdsData) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

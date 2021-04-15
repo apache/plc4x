@@ -89,6 +89,10 @@ func (m *SearchResponse) GetTypeName() string {
 }
 
 func (m *SearchResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SearchResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)

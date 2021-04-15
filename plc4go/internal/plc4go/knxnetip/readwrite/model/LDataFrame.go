@@ -84,6 +84,10 @@ func (m *LDataFrame) GetTypeName() string {
 }
 
 func (m *LDataFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

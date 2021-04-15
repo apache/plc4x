@@ -64,6 +64,10 @@ func (m *ChannelInformation) GetTypeName() string {
 }
 
 func (m *ChannelInformation) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (numChannels)

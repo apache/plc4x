@@ -97,6 +97,10 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (referenceAddress)

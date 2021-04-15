@@ -78,6 +78,10 @@ func (m *BACnetConfirmedServiceACK) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceACK) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceACK) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

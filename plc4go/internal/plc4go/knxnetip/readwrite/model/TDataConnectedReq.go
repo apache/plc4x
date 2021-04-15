@@ -82,6 +82,10 @@ func (m *TDataConnectedReq) GetTypeName() string {
 }
 
 func (m *TDataConnectedReq) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TDataConnectedReq) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

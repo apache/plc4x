@@ -89,6 +89,10 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (len)

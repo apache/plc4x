@@ -89,6 +89,10 @@ func (m *ComObjectTableRealisationType2) GetTypeName() string {
 }
 
 func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ComObjectTableRealisationType2) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numEntries)
@@ -99,8 +103,9 @@ func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.ComObjectDescriptors) > 0 {
-		for _, element := range m.ComObjectDescriptors {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.ComObjectDescriptors {
+			last := i == len(m.ComObjectDescriptors)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 

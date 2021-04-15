@@ -82,6 +82,10 @@ func (m *MFuncPropCon) GetTypeName() string {
 }
 
 func (m *MFuncPropCon) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MFuncPropCon) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

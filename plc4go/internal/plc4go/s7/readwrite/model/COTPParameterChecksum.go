@@ -85,6 +85,10 @@ func (m *COTPParameterChecksum) GetTypeName() string {
 }
 
 func (m *COTPParameterChecksum) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (crc)

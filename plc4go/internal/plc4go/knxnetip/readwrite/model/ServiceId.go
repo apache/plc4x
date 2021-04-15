@@ -78,6 +78,10 @@ func (m *ServiceId) GetTypeName() string {
 }
 
 func (m *ServiceId) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ServiceId) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

@@ -65,6 +65,10 @@ func (m *IPAddress) GetTypeName() string {
 }
 
 func (m *IPAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field

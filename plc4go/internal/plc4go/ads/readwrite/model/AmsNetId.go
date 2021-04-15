@@ -68,6 +68,10 @@ func (m *AmsNetId) GetTypeName() string {
 }
 
 func (m *AmsNetId) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsNetId) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (octet1)

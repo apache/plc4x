@@ -68,6 +68,10 @@ func (m *TPKTPacket) GetTypeName() string {
 }
 
 func (m *TPKTPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TPKTPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)

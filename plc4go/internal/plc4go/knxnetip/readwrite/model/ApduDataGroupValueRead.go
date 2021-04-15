@@ -84,6 +84,10 @@ func (m *ApduDataGroupValueRead) GetTypeName() string {
 }
 
 func (m *ApduDataGroupValueRead) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataGroupValueRead) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)

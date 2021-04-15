@@ -82,6 +82,10 @@ func (m *ApduDataExtFileStreamInfoReport) GetTypeName() string {
 }
 
 func (m *ApduDataExtFileStreamInfoReport) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtFileStreamInfoReport) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

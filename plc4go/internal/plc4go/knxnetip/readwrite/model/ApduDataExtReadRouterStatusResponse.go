@@ -82,6 +82,10 @@ func (m *ApduDataExtReadRouterStatusResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtReadRouterStatusResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtReadRouterStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

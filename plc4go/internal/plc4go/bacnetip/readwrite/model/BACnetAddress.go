@@ -64,6 +64,10 @@ func (m *BACnetAddress) GetTypeName() string {
 }
 
 func (m *BACnetAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field

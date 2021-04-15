@@ -82,6 +82,10 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

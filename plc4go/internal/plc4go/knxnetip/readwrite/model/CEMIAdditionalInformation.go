@@ -78,6 +78,10 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMIAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

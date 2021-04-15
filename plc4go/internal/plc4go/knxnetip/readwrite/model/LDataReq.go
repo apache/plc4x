@@ -89,6 +89,10 @@ func (m *LDataReq) GetTypeName() string {
 }
 
 func (m *LDataReq) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)

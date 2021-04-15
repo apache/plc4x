@@ -87,6 +87,10 @@ func (m *ConnectionStateResponse) GetTypeName() string {
 }
 
 func (m *ConnectionStateResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)

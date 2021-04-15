@@ -80,6 +80,10 @@ func (m *COTPPacket) GetTypeName() string {
 }
 
 func (m *COTPPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

@@ -85,6 +85,10 @@ func (m *KnxNetObjectServer) GetTypeName() string {
 }
 
 func (m *KnxNetObjectServer) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetObjectServer) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (version)

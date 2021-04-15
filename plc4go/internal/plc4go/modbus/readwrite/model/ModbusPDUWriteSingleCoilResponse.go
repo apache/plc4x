@@ -95,6 +95,10 @@ func (m *ModbusPDUWriteSingleCoilResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteSingleCoilResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (address)

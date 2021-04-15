@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) GetTypeName() string
 }
 
 func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestReadPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

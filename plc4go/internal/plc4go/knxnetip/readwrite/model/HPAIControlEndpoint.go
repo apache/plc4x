@@ -65,6 +65,10 @@ func (m *HPAIControlEndpoint) GetTypeName() string {
 }
 
 func (m *HPAIControlEndpoint) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *HPAIControlEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

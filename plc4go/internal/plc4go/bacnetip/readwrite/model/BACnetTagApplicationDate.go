@@ -86,6 +86,10 @@ func (m *BACnetTagApplicationDate) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationDate) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationDate) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

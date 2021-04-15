@@ -68,6 +68,10 @@ func (m *ModbusPDUWriteFileRecordResponseItem) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)

@@ -78,6 +78,10 @@ func (m *AdsMultiRequestItem) GetTypeName() string {
 }
 
 func (m *AdsMultiRequestItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsMultiRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

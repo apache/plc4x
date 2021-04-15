@@ -93,6 +93,10 @@ func (m *ModbusPDUReadFifoQueueRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadFifoQueueRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (fifoPointerAddress)

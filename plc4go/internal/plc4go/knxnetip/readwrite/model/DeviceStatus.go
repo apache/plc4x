@@ -64,6 +64,10 @@ func (m *DeviceStatus) GetTypeName() string {
 }
 
 func (m *DeviceStatus) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)

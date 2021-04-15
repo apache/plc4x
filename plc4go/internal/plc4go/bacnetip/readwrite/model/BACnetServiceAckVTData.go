@@ -82,6 +82,10 @@ func (m *BACnetServiceAckVTData) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckVTData) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckVTData) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

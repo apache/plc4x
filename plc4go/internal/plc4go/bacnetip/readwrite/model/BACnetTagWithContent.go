@@ -75,6 +75,10 @@ func (m *BACnetTagWithContent) GetTypeName() string {
 }
 
 func (m *BACnetTagWithContent) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagWithContent) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeOrTagNumber)

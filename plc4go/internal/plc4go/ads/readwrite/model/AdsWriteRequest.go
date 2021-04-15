@@ -95,6 +95,10 @@ func (m *AdsWriteRequest) GetTypeName() string {
 }
 
 func (m *AdsWriteRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)

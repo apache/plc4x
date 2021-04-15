@@ -78,6 +78,10 @@ func (m *ConnectionRequestInformation) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformation) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequestInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

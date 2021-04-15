@@ -65,6 +65,10 @@ func (m *TunnelingRequestDataBlock) GetTypeName() string {
 }
 
 func (m *TunnelingRequestDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingRequestDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

@@ -64,6 +64,10 @@ func (m *AmsTCPPacket) GetTypeName() string {
 }
 
 func (m *AmsTCPPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsTCPPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)

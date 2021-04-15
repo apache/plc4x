@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

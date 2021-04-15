@@ -86,6 +86,10 @@ func (m *AdsReadStateRequest) GetTypeName() string {
 }
 
 func (m *AdsReadStateRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadStateRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

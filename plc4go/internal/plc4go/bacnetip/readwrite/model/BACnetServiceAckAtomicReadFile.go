@@ -82,6 +82,10 @@ func (m *BACnetServiceAckAtomicReadFile) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckAtomicReadFile) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckAtomicReadFile) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

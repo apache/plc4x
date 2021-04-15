@@ -78,6 +78,10 @@ func (m *S7Address) GetTypeName() string {
 }
 
 func (m *S7Address) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7Address) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

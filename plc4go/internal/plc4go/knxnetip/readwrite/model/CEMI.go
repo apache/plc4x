@@ -78,6 +78,10 @@ func (m *CEMI) GetTypeName() string {
 }
 
 func (m *CEMI) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMI) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

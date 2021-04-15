@@ -65,6 +65,10 @@ func (m *AdsStampHeader) GetTypeName() string {
 }
 
 func (m *AdsStampHeader) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -75,8 +79,9 @@ func (m *AdsStampHeader) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.AdsNotificationSamples) > 0 {
-		for _, element := range m.AdsNotificationSamples {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.AdsNotificationSamples {
+			last := i == len(m.AdsNotificationSamples)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 

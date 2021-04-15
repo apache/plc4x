@@ -93,6 +93,10 @@ func (m *AdsDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (length)
@@ -103,8 +107,9 @@ func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.AdsStampHeaders) > 0 {
-		for _, element := range m.AdsStampHeaders {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.AdsStampHeaders {
+			last := i == len(m.AdsStampHeaders)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 

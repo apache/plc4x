@@ -85,6 +85,10 @@ func (m *DeviceConfigurationAck) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceConfigurationAck) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationAckDataBlock)

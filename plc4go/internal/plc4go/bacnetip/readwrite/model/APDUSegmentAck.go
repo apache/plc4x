@@ -94,6 +94,10 @@ func (m *APDUSegmentAck) GetTypeName() string {
 }
 
 func (m *APDUSegmentAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUSegmentAck) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)

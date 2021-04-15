@@ -65,6 +65,10 @@ func (m *SzlId) GetTypeName() string {
 }
 
 func (m *SzlId) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (typeClass)

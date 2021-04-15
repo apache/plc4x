@@ -71,6 +71,10 @@ func (m *AmsPacket) GetTypeName() string {
 }
 
 func (m *AmsPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)

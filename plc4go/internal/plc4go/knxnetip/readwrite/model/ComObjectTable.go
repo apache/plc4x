@@ -78,6 +78,10 @@ func (m *ComObjectTable) GetTypeName() string {
 }
 
 func (m *ComObjectTable) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ComObjectTable) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

@@ -93,6 +93,10 @@ func (m *BACnetTagApplicationBitString) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationBitString) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationBitString) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (unusedBits)

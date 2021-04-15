@@ -106,6 +106,10 @@ func (m *LDataExtended) GetTypeName() string {
 }
 
 func (m *LDataExtended) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (groupAddress)

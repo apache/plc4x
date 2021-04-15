@@ -93,6 +93,10 @@ func (m *ModbusPDUWriteFileRecordResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteFileRecordResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteFileRecordResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)

@@ -95,6 +95,10 @@ func (m *MPropReadCon) GetTypeName() string {
 }
 
 func (m *MPropReadCon) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MPropReadCon) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)

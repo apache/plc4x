@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) GetTypeName() string
 }
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

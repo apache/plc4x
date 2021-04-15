@@ -66,6 +66,10 @@ func (m *ModbusConstants) GetTypeName() string {
 }
 
 func (m *ModbusConstants) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusConstants) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (modbusTcpDefaultPort)

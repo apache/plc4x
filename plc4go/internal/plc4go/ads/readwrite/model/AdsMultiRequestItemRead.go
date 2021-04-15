@@ -89,6 +89,10 @@ func (m *AdsMultiRequestItemRead) GetTypeName() string {
 }
 
 func (m *AdsMultiRequestItemRead) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsMultiRequestItemRead) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (itemIndexGroup)

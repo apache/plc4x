@@ -89,6 +89,10 @@ func (m *BVLCForwardedNPDU) GetTypeName() string {
 }
 
 func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field

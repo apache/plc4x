@@ -82,6 +82,10 @@ func (m *BVLCDistributeBroadcastToNetwork) GetTypeName() string {
 }
 
 func (m *BVLCDistributeBroadcastToNetwork) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCDistributeBroadcastToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

@@ -79,6 +79,10 @@ func (m *NPDU) GetTypeName() string {
 }
 
 func (m *NPDU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NPDU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (protocolVersionNumber)

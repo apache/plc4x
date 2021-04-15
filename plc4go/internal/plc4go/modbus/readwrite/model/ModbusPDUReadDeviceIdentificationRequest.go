@@ -90,6 +90,10 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

@@ -82,6 +82,10 @@ func (m *ApduDataExtKeyWrite) GetTypeName() string {
 }
 
 func (m *ApduDataExtKeyWrite) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtKeyWrite) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

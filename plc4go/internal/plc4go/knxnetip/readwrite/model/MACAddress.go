@@ -65,6 +65,10 @@ func (m *MACAddress) GetTypeName() string {
 }
 
 func (m *MACAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MACAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field

@@ -100,6 +100,10 @@ func (m *S7ParameterUserDataItemCPUFunctions) GetTypeName() string {
 }
 
 func (m *S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterUserDataItemCPUFunctions) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (itemLength)

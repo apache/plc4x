@@ -68,6 +68,10 @@ func (m *AmsSerialAcknowledgeFrame) GetTypeName() string {
 }
 
 func (m *AmsSerialAcknowledgeFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsSerialAcknowledgeFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)

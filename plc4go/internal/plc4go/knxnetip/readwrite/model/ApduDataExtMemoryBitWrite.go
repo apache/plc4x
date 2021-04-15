@@ -82,6 +82,10 @@ func (m *ApduDataExtMemoryBitWrite) GetTypeName() string {
 }
 
 func (m *ApduDataExtMemoryBitWrite) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtMemoryBitWrite) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

@@ -104,6 +104,10 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)

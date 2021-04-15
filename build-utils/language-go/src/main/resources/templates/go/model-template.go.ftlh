@@ -212,6 +212,11 @@ func (m *${type.name}) GetTypeName() string {
 }
 
 func (m *${type.name}) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+<#-- TODO: use serializer args instead of a fixed bool for one case -->
+func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 	<#if helper.isDiscriminatedParentTypeDefinition()>
 	return m.Child.LengthInBits()
 	<#else>
@@ -233,8 +238,14 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#elseif helper.isSimpleTypeReference(arrayField.type)>
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
+				<#if helper.isCountArrayField(arrayField)>
+		for i, element := range m.${arrayField.name?cap_first} {
+			last := i == len(m.${arrayField.name?cap_first}) -1
+			lengthInBits += element.LengthInBitsConditional(last)
+				<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
 			lengthInBits += element.LengthInBits()
+				</#if>
 		}
 				</#if>
 	}
@@ -318,8 +329,7 @@ func (m *${type.name}) LengthInBits() uint16 {
 					<#assign simpleTypeReference = paddingField.type>
 
 	// Padding Field (padding)
-			<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 	for ;_timesPadding > 0; _timesPadding-- {
 		lengthInBits += ${simpleTypeReference.sizeInBits}
 	}
@@ -379,13 +389,19 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 	if len(m.${arrayField.name?cap_first}) > 0 {
 				<#assign simpleTypeReference = arrayField.type>
 				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
-	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+		lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
 				<#elseif helper.isSimpleTypeReference(arrayField.type)>
-	lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
+		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
-	for _, element := range m.${arrayField.name?cap_first} {
-	lengthInBits += element.LengthInBits()
-	}
+					<#if helper.isCountArrayField(arrayField)>
+		for i, element := range m.${arrayField.name?cap_first} {
+			last := i >= len(m.${arrayField.name?cap_first}) -1
+			lengthInBits += element.LengthInBitsConditional(last)
+					<#else>
+		for _, element := range m.${arrayField.name?cap_first} {
+			lengthInBits += element.LengthInBits()
+					</#if>
+		}
 				</#if>
 				}
 				<#break>
@@ -468,8 +484,7 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#assign simpleTypeReference = paddingField.type>
 
 	// Padding Field (padding)
-				<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 	for ;_timesPadding > 0; _timesPadding-- {
 		lengthInBits += ${simpleTypeReference.sizeInBits}
 	}

@@ -95,6 +95,10 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)

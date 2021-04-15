@@ -90,6 +90,10 @@ func (m *APDUAbort) GetTypeName() string {
 }
 
 func (m *APDUAbort) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)

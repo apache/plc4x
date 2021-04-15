@@ -63,6 +63,10 @@ func (m *S7VarPayloadStatusItem) GetTypeName() string {
 }
 
 func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)

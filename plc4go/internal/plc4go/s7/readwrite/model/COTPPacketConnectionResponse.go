@@ -91,6 +91,10 @@ func (m *COTPPacketConnectionResponse) GetTypeName() string {
 }
 
 func (m *COTPPacketConnectionResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacketConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (destinationReference)

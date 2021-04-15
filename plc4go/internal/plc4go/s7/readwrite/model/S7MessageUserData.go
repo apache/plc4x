@@ -85,6 +85,10 @@ func (m *S7MessageUserData) GetTypeName() string {
 }
 
 func (m *S7MessageUserData) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7MessageUserData) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

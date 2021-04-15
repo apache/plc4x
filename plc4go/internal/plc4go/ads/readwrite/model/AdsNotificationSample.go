@@ -67,6 +67,10 @@ func (m *AdsNotificationSample) GetTypeName() string {
 }
 
 func (m *AdsNotificationSample) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (notificationHandle)

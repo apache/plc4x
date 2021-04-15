@@ -82,6 +82,10 @@ func (m *TDataIndividualInd) GetTypeName() string {
 }
 
 func (m *TDataIndividualInd) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TDataIndividualInd) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

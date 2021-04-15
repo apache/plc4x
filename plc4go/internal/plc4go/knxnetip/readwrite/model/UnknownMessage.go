@@ -87,6 +87,10 @@ func (m *UnknownMessage) GetTypeName() string {
 }
 
 func (m *UnknownMessage) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field

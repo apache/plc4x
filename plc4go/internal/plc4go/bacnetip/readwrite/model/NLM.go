@@ -80,6 +80,10 @@ func (m *NLM) GetTypeName() string {
 }
 
 func (m *NLM) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NLM) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

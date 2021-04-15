@@ -94,6 +94,10 @@ func (m *S7ParameterSetupCommunication) GetTypeName() string {
 }
 
 func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)

@@ -89,6 +89,10 @@ func (m *COTPPacketData) GetTypeName() string {
 }
 
 func (m *COTPPacketData) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacketData) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (eot)

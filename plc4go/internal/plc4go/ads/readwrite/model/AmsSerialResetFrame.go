@@ -68,6 +68,10 @@ func (m *AmsSerialResetFrame) GetTypeName() string {
 }
 
 func (m *AmsSerialResetFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsSerialResetFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)

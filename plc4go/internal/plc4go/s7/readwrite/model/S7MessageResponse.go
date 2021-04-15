@@ -90,6 +90,10 @@ func (m *S7MessageResponse) GetTypeName() string {
 }
 
 func (m *S7MessageResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7MessageResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (errorClass)

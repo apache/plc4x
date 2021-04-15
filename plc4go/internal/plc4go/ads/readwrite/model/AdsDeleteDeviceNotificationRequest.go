@@ -89,6 +89,10 @@ func (m *AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (notificationHandle)

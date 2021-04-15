@@ -85,6 +85,10 @@ func (m *COTPParameterTpduSize) GetTypeName() string {
 }
 
 func (m *COTPParameterTpduSize) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (tpduSize)

@@ -82,6 +82,10 @@ func (m *BVLCReadForeignDeviceTableAck) GetTypeName() string {
 }
 
 func (m *BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCReadForeignDeviceTableAck) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

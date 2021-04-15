@@ -82,6 +82,10 @@ func (m *KnxNetIpMessage) GetTypeName() string {
 }
 
 func (m *KnxNetIpMessage) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetIpMessage) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

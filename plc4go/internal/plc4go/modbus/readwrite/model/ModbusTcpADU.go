@@ -69,6 +69,10 @@ func (m *ModbusTcpADU) GetTypeName() string {
 }
 
 func (m *ModbusTcpADU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusTcpADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionIdentifier)

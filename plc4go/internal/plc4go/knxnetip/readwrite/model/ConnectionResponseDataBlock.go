@@ -78,6 +78,10 @@ func (m *ConnectionResponseDataBlock) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionResponseDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

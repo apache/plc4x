@@ -99,6 +99,10 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (len)

@@ -67,6 +67,10 @@ func (m *ModbusSerialADU) GetTypeName() string {
 }
 
 func (m *ModbusSerialADU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusSerialADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionId)

@@ -82,6 +82,10 @@ func (m *LPollDataReq) GetTypeName() string {
 }
 
 func (m *LPollDataReq) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LPollDataReq) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

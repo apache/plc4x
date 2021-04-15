@@ -93,6 +93,10 @@ func (m *ModbusPDUError) GetTypeName() string {
 }
 
 func (m *ModbusPDUError) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (exceptionCode)

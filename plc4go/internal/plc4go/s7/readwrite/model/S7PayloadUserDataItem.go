@@ -82,6 +82,10 @@ func (m *S7PayloadUserDataItem) GetTypeName() string {
 }
 
 func (m *S7PayloadUserDataItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7PayloadUserDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

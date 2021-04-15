@@ -82,6 +82,10 @@ func (m *ApduDataIndividualAddressResponse) GetTypeName() string {
 }
 
 func (m *ApduDataIndividualAddressResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataIndividualAddressResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

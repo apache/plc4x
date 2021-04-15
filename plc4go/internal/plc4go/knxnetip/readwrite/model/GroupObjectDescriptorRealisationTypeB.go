@@ -70,6 +70,10 @@ func (m *GroupObjectDescriptorRealisationTypeB) GetTypeName() string {
 }
 
 func (m *GroupObjectDescriptorRealisationTypeB) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *GroupObjectDescriptorRealisationTypeB) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (updateEnable)

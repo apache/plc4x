@@ -82,6 +82,10 @@ func (m *ApduControlAck) GetTypeName() string {
 }
 
 func (m *ApduControlAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduControlAck) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

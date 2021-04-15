@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestVTClose) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

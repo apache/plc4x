@@ -65,6 +65,10 @@ func (m *DeviceConfigurationRequestDataBlock) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationRequestDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceConfigurationRequestDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

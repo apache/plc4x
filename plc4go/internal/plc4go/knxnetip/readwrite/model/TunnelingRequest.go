@@ -87,6 +87,10 @@ func (m *TunnelingRequest) GetTypeName() string {
 }
 
 func (m *TunnelingRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)

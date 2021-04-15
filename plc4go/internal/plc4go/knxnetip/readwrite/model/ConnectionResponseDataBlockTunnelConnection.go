@@ -85,6 +85,10 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxAddress)

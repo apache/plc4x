@@ -82,6 +82,10 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

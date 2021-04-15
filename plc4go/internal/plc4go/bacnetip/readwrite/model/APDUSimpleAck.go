@@ -88,6 +88,10 @@ func (m *APDUSimpleAck) GetTypeName() string {
 }
 
 func (m *APDUSimpleAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)

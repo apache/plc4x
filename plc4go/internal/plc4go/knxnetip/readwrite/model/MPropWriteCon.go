@@ -82,6 +82,10 @@ func (m *MPropWriteCon) GetTypeName() string {
 }
 
 func (m *MPropWriteCon) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MPropWriteCon) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

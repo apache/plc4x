@@ -25,10 +25,5 @@ import (
 )
 
 func TestS7ParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml",
-		"",
-		// TODO: One byte to short
-		"S7 Read Response",
-		"S7 Write Request",
-	)
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml")
 }

@@ -103,6 +103,10 @@ func (m *APDUConfirmedRequest) GetTypeName() string {
 }
 
 func (m *APDUConfirmedRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUConfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (segmentedMessage)

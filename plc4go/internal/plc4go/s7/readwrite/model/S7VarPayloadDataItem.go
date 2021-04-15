@@ -68,6 +68,10 @@ func (m *S7VarPayloadDataItem) GetTypeName() string {
 }
 
 func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)
@@ -85,7 +89,7 @@ func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(utils.InlineIf(false, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
+	_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}

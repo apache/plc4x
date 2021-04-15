@@ -89,6 +89,10 @@ func (m *S7ParameterWriteVarResponse) GetTypeName() string {
 }
 
 func (m *S7ParameterWriteVarResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterWriteVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numItems)

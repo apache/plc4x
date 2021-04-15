@@ -64,6 +64,10 @@ func (m *ProjectInstallationIdentifier) GetTypeName() string {
 }
 
 func (m *ProjectInstallationIdentifier) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (projectNumber)

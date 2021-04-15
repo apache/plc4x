@@ -72,6 +72,10 @@ func (m *DeviceDescriptorType2) GetTypeName() string {
 }
 
 func (m *DeviceDescriptorType2) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceDescriptorType2) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (manufacturerId)

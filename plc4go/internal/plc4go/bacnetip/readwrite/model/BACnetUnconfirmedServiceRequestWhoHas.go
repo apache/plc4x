@@ -99,6 +99,10 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) GetTypeName() string {
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (deviceInstanceLowLimitHeader)

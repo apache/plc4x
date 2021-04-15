@@ -95,6 +95,10 @@ func (m *ModbusPDUReadDiscreteInputsRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadDiscreteInputsRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)

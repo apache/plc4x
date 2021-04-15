@@ -95,6 +95,10 @@ func (m *ModbusPDUDiagnosticRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subFunction)

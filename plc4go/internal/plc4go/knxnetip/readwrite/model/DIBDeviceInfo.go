@@ -73,6 +73,10 @@ func (m *DIBDeviceInfo) GetTypeName() string {
 }
 
 func (m *DIBDeviceInfo) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)

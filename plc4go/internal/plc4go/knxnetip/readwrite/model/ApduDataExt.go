@@ -78,6 +78,10 @@ func (m *ApduDataExt) GetTypeName() string {
 }
 
 func (m *ApduDataExt) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExt) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

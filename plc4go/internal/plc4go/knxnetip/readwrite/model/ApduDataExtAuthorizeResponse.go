@@ -85,6 +85,10 @@ func (m *ApduDataExtAuthorizeResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtAuthorizeResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtAuthorizeResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (level)

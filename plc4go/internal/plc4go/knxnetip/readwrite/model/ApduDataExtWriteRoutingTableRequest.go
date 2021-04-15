@@ -82,6 +82,10 @@ func (m *ApduDataExtWriteRoutingTableRequest) GetTypeName() string {
 }
 
 func (m *ApduDataExtWriteRoutingTableRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtWriteRoutingTableRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

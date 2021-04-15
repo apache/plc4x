@@ -78,6 +78,10 @@ func (m *BACnetError) GetTypeName() string {
 }
 
 func (m *BACnetError) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetError) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

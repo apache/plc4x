@@ -78,6 +78,10 @@ func (m *KnxGroupAddress) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

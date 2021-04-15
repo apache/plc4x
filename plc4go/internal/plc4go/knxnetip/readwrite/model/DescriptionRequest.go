@@ -85,6 +85,10 @@ func (m *DescriptionRequest) GetTypeName() string {
 }
 
 func (m *DescriptionRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)

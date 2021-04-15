@@ -85,6 +85,10 @@ func (m *KnxGroupAddressFreeLevel) GetTypeName() string {
 }
 
 func (m *KnxGroupAddressFreeLevel) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddressFreeLevel) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subGroup)

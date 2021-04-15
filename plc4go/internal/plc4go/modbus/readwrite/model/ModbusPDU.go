@@ -80,6 +80,10 @@ func (m *ModbusPDU) GetTypeName() string {
 }
 
 func (m *ModbusPDU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDU) LengthInBitsConditional(lastItem bool) uint16 {
 	return m.Child.LengthInBits()
 }
 

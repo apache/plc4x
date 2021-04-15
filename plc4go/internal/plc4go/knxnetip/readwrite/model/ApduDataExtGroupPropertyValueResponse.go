@@ -82,6 +82,10 @@ func (m *ApduDataExtGroupPropertyValueResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtGroupPropertyValueResponse) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtGroupPropertyValueResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

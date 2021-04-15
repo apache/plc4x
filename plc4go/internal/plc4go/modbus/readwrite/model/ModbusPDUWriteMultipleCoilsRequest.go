@@ -99,6 +99,10 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)

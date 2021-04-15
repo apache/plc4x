@@ -90,6 +90,10 @@ func (m *ModbusPDUGetComEventCounterRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUGetComEventCounterRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUGetComEventCounterRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits

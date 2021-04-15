@@ -88,6 +88,10 @@ func (m *DisconnectRequest) GetTypeName() string {
 }
 
 func (m *DisconnectRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)

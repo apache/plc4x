@@ -86,6 +86,10 @@ func (m *NLMIAmRouterToNetwork) GetTypeName() string {
 }
 
 func (m *NLMIAmRouterToNetwork) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NLMIAmRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field

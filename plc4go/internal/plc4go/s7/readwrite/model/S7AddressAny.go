@@ -96,6 +96,10 @@ func (m *S7AddressAny) GetTypeName() string {
 }
 
 func (m *S7AddressAny) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (transportSize)

@@ -101,6 +101,10 @@ func (m *AdsAddDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsAddDeviceNotificationRequest) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsAddDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
