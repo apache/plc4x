@@ -21,7 +21,9 @@ package spi
 
 import (
 	"container/list"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"reflect"
 	"sync"
@@ -56,22 +58,27 @@ func (w Worker) work() {
 			w.work()
 		}
 	}()
+	workerLog := log.With().Int("Worker id", w.id).Logger()
+	if !config.TraceTransactionManagerWorkers {
+		workerLog = zerolog.Nop()
+	}
+
 	for !w.shutdown {
-		log.Debug().Int("Worker id", w.id).Msg("Working")
+		workerLog.Debug().Msg("Working")
 		select {
 		case workItem := <-w.executor.queue:
-			log.Debug().Int("Worker id", w.id).Msgf("Got work item %v", workItem)
+			workerLog.Debug().Msgf("Got work item %v", workItem)
 			if workItem.completionFuture.cancelRequested || (w.shutdown && w.interrupted) {
-				log.Debug().Int("Worker id", w.id).Msg("We need to stop")
+				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
-				log.Debug().Int("Worker id", w.id).Msgf("Running work item %v", workItem)
+				workerLog.Debug().Msgf("Running work item %v", workItem)
 				workItem.runnable()
 				workItem.completionFuture.complete()
-				log.Debug().Int("Worker id", w.id).Msgf("work item %v completed", workItem)
+				workerLog.Debug().Msgf("work item %v completed", workItem)
 			}
 		default:
-			log.Debug().Int("Worker id", w.id).Msgf("Idling")
+			workerLog.Debug().Msgf("Idling")
 			time.Sleep(time.Millisecond * 10)
 		}
 	}
