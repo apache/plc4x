@@ -88,7 +88,9 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 	// Execute the read request
 	readResponseResult := <-readRequest.Execute()
 	if readResponseResult.Err != nil {
-		panic(err)
+		t.Errorf("Error getting response %v", err)
+		t.FailNow()
+		return
 	}
 	readResponse := readResponseResult.Response
 
@@ -174,11 +176,13 @@ func assertEquals(t *testing.T, expected interface{}, actual interface{}, messag
 	}
 	if expected != actual {
 		t.Errorf("actual %v doesn't match expected %v\nmessage: %s", actual, expected, message)
+		t.FailNow()
 	}
 }
 
 func assertNotNil(t *testing.T, actual interface{}, message ...string) {
 	if actual == nil {
 		t.Errorf("actual %v is nil\nmessage: %v", actual, message)
+		t.FailNow()
 	}
 }
