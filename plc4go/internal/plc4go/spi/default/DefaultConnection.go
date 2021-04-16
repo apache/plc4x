@@ -52,11 +52,6 @@ func NewDefaultConnection(requirements DefaultConnectionRequirements, options ..
 	return buildDefaultConnection(requirements, options...)
 }
 
-// WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
-type WithOption interface {
-	isOption() bool
-}
-
 // WithDefaultTtl ttl is time.Second * 10 by default
 func WithDefaultTtl(defaultTtl time.Duration) WithOption {
 	return withDefaultTtl{defaultTtl: defaultTtl}
@@ -79,14 +74,11 @@ type DefaultConnectionMetadata struct {
 	ProvidesBrowsing     bool
 }
 
-// Internal
-
-type option struct {
-}
-
-func (_ option) isOption() bool {
-	return true
-}
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
 
 type withDefaultTtl struct {
 	option
@@ -126,7 +118,6 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl
-			log.Debug()
 		case withPlcFieldHandler:
 			fieldHandler = option.(withPlcFieldHandler).plcFieldHandler
 		case withPlcValueHandler:
@@ -142,6 +133,12 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 		valueHandler,
 	}
 }
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
 
 func (d *defaultConnection) SetConnected(connected bool) {
 	d.connected = connected

@@ -22,6 +22,7 @@ package ads
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -29,15 +30,17 @@ import (
 )
 
 type MessageCodec struct {
-	*spi.DefaultCodec
+	_default.DefaultCodec
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{
-		DefaultCodec: spi.NewDefaultCodec(transportInstance),
-	}
-	codec.DefaultCodecRequiredInterface = codec
+	codec := &MessageCodec{}
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec
+}
+
+func (m *MessageCodec) GetCodec() spi.MessageCodec {
+	return m
 }
 
 func (m *MessageCodec) Send(message interface{}) error {
@@ -52,7 +55,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	}
 
 	// Send it to the PLC
-	err = m.TransportInstance.Write(wb.GetBytes())
+	err = m.GetTransportInstance().Write(wb.GetBytes())
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -62,9 +65,9 @@ func (m *MessageCodec) Send(message interface{}) error {
 func (m *MessageCodec) Receive() (interface{}, error) {
 	log.Trace().Msg("receiving")
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.TransportInstance.GetNumReadableBytes(); (err == nil) && (num >= 6) {
+	if num, err := m.GetTransportInstance().GetNumReadableBytes(); (err == nil) && (num >= 6) {
 		log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.TransportInstance.PeekReadableBytes(6)
+		data, err := m.GetTransportInstance().PeekReadableBytes(6)
 		if err != nil {
 			log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
@@ -76,7 +79,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
-		data, err = m.TransportInstance.Read(packetSize)
+		data, err = m.GetTransportInstance().Read(packetSize)
 		if err != nil {
 			// TODO: Possibly clean up ...
 			return nil, nil
