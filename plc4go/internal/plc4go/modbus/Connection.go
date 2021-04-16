@@ -23,9 +23,9 @@ import (
 	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
@@ -33,86 +33,38 @@ import (
 	"time"
 )
 
-type ConnectionMetadata struct {
-}
-
-func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
-	return map[string]string{}
-}
-
-func (m ConnectionMetadata) CanRead() bool {
-	return true
-}
-
-func (m ConnectionMetadata) CanWrite() bool {
-	return true
-}
-
-func (m ConnectionMetadata) CanSubscribe() bool {
-	return false
-}
-
-func (m ConnectionMetadata) CanBrowse() bool {
-	return false
-}
-
-// TODO: maybe we can use a DefaultConnection struct here with delegates
 type Connection struct {
+	_default.DefaultConnection
 	unitIdentifier     uint8
 	messageCodec       spi.MessageCodec
 	options            map[string][]string
-	fieldHandler       spi.PlcFieldHandler
-	valueHandler       spi.PlcValueHandler
 	requestInterceptor internalModel.RequestInterceptor
 }
 
-func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) Connection {
-	return Connection{
+func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
+	connection := &Connection{
 		unitIdentifier:     unitIdentifier,
 		messageCodec:       messageCodec,
 		options:            options,
-		fieldHandler:       fieldHandler,
-		valueHandler:       NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
 	}
+	connection.DefaultConnection = _default.NewDefaultConnection(connection,
+		_default.WithDefaultTtl(time.Second*5),
+		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcValueHandler(NewValueHandler()),
+	)
+	return connection
 }
 
-func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
-	go func() {
-		err := m.messageCodec.Connect()
-		ch <- plc4go.NewPlcConnectionConnectResult(m, err)
-	}()
-	return ch
+func (m *Connection) GetConnection() plc4go.PlcConnection {
+	return m
 }
 
-func (m Connection) BlockingClose() {
-	log.Trace().Msg("Closing blocked")
-	closeResults := m.Close()
-	select {
-	case <-closeResults:
-		return
-	case <-time.After(time.Second * 5):
-		return
-	}
+func (m *Connection) GetMessageCodec() spi.MessageCodec {
+	return m.messageCodec
 }
 
-func (m Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	log.Trace().Msg("Close")
-	// TODO: Implement ...
-	ch := make(chan plc4go.PlcConnectionCloseResult)
-	go func() {
-		ch <- plc4go.NewPlcConnectionCloseResult(m, nil)
-	}()
-	return ch
-}
-
-func (m Connection) IsConnected() bool {
-	panic("implement me")
-}
-
-func (m Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
+func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	log.Trace().Msg("Pinging")
 	result := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
@@ -148,47 +100,30 @@ func (m Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	return result
 }
 
-func (m Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return ConnectionMetadata{}
-}
-
-func (m Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
-		NewReader(m.unitIdentifier, m.messageCodec), m.requestInterceptor)
-}
-
-func (m Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewWriter(m.unitIdentifier, m.messageCodec))
-}
-
-func (m Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	panic("implement me")
-}
-
-func (m Connection) GetTransportInstance() transports.TransportInstance {
-	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
-		return mc.GetTransportInstance()
+func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+	return _default.DefaultConnectionMetadata{
+		ProvidesReading: true,
+		ProvidesWriting: true,
 	}
-	return nil
 }
 
-func (m Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return m.fieldHandler
+func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(
+		m.GetPlcFieldHandler(),
+		NewReader(m.unitIdentifier, m.messageCodec),
+		m.requestInterceptor,
+	)
 }
 
-func (m Connection) GetPlcValueHandler() spi.PlcValueHandler {
-	return m.valueHandler
+func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	// TODO: don't we need a interceptor here?
+	return internalModel.NewDefaultPlcWriteRequestBuilder(
+		m.GetPlcFieldHandler(),
+		m.GetPlcValueHandler(),
+		NewWriter(m.unitIdentifier, m.messageCodec),
+	)
 }
 
-func (m Connection) String() string {
+func (m *Connection) String() string {
 	return fmt.Sprintf("modbus.Connection{unitIdentifier: %d}", m.unitIdentifier)
 }

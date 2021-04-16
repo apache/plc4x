@@ -23,9 +23,9 @@ import (
 	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -34,31 +34,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
-	"time"
 )
-
-type ConnectionMetadata struct {
-}
-
-func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
-	return map[string]string{}
-}
-
-func (m ConnectionMetadata) CanRead() bool {
-	return true
-}
-
-func (m ConnectionMetadata) CanWrite() bool {
-	return true
-}
-
-func (m ConnectionMetadata) CanSubscribe() bool {
-	return false
-}
-
-func (m ConnectionMetadata) CanBrowse() bool {
-	return false
-}
 
 type TpduGenerator struct {
 	currentTpduId uint16
@@ -77,30 +53,36 @@ func (t *TpduGenerator) getAndIncrement() uint16 {
 	return result
 }
 
-// TODO: maybe we can use a DefaultConnection struct here with delegates
 type Connection struct {
+	_default.DefaultConnection
 	tpduGenerator TpduGenerator
 	messageCodec  spi.MessageCodec
 	configuration Configuration
 	driverContext DriverContext
-	fieldHandler  spi.PlcFieldHandler
-	valueHandler  spi.PlcValueHandler
-	defaultTtl    time.Duration
 	tm            *spi.RequestTransactionManager
-	connected     bool
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager) Connection {
-	return Connection{
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager) *Connection {
+	connection := &Connection{
 		tpduGenerator: TpduGenerator{currentTpduId: 10},
 		messageCodec:  messageCodec,
 		configuration: configuration,
 		driverContext: driverContext,
-		fieldHandler:  fieldHandler,
-		valueHandler:  NewValueHandler(),
-		defaultTtl:    time.Second * 10,
 		tm:            tm,
 	}
+	connection.DefaultConnection = _default.NewDefaultConnection(connection,
+		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcValueHandler(NewValueHandler()),
+	)
+	return connection
+}
+
+func (m *Connection) GetConnection() plc4go.PlcConnection {
+	return m
+}
+
+func (m *Connection) GetMessageCodec() spi.MessageCodec {
+	return m.messageCodec
 }
 
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
@@ -124,8 +106,9 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			go m.setupConnection(ch)
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
+			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
 			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
-			m.connected = true
+			m.SetConnected(true)
 			return
 		}
 
@@ -167,7 +150,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			cotpConnectionErrorChan <- errors.Wrap(err, "got error processing request")
 			return nil
 		},
-		m.defaultTtl,
+		m.GetTtl(),
 	); err != nil {
 		m.fireConnectionError(errors.Wrap(err, "Error during sending of COTP Connection Request"), ch)
 	}
@@ -214,7 +197,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 				s7ConnectionErrorChan <- errors.Wrap(err, "got error processing request")
 				return nil
 			},
-			m.defaultTtl,
+			m.GetTtl(),
 		); err != nil {
 			m.fireConnectionError(errors.Wrap(err, "Error during sending of S7 Connection Request"), ch)
 		}
@@ -279,7 +262,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 					s7IdentificationErrorChan <- errors.Wrap(err, "got error processing request")
 					return nil
 				},
-				m.defaultTtl,
+				m.GetTtl(),
 			); err != nil {
 				m.fireConnectionError(errors.Wrap(err, "Error during sending of identify remote Request"), ch)
 			}
@@ -312,7 +295,7 @@ func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) 
 	} else {
 		log.Info().Msg("Successfully connected")
 	}
-	m.connected = true
+	m.SetConnected(true)
 }
 
 func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData *readWriteModel.S7PayloadUserData, ch chan<- plc4go.PlcConnectionConnectResult) {
@@ -434,74 +417,20 @@ func (m *Connection) createCOTPConnectionRequest() *readWriteModel.COTPPacket {
 	)
 }
 
-func (m *Connection) BlockingClose() {
-	log.Trace().Msg("Closing blocked")
-	closeResults := m.Close()
-	select {
-	case <-closeResults:
-		return
-	case <-time.After(time.Second * 5):
-		return
+func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
+	return _default.DefaultConnectionMetadata{
+		ProvidesReading: true,
+		ProvidesWriting: true,
 	}
 }
 
-func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	log.Trace().Msg("Close")
-	m.connected = false
-	// TODO: Implement ...
-	ch := make(chan plc4go.PlcConnectionCloseResult)
-	go func() {
-		ch <- plc4go.NewPlcConnectionCloseResult(m, nil)
-	}()
-	return ch
-}
-
-func (m *Connection) IsConnected() bool {
-	return m.connected
-}
-
-func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	panic("Not implemented")
-}
-
-func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return ConnectionMetadata{}
-}
-
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, NewReader(&m.tpduGenerator, m.messageCodec, m.tm))
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.GetPlcFieldHandler(), NewReader(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 	return internalModel.NewDefaultPlcWriteRequestBuilder(
-		m.fieldHandler, m.valueHandler, NewWriter(&m.tpduGenerator, m.messageCodec, m.tm))
-}
-
-func (m *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	panic("implement me")
-}
-
-func (m *Connection) GetTransportInstance() transports.TransportInstance {
-	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
-		return mc.GetTransportInstance()
-	}
-	return nil
-}
-
-func (m *Connection) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return m.fieldHandler
-}
-
-func (m *Connection) GetPlcValueHandler() spi.PlcValueHandler {
-	return m.valueHandler
+		m.GetPlcFieldHandler(), m.GetPlcValueHandler(), NewWriter(&m.tpduGenerator, m.messageCodec, m.tm))
 }
 
 func (m *Connection) String() string {
