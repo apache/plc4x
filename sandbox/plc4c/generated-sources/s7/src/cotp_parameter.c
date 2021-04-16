@@ -140,7 +140,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = rest;
+      uint16_t itemCount = rest;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         uint8_t* _value = malloc(sizeof(uint8_t));

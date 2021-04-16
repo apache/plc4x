@@ -145,7 +145,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  {
             <#if helper.isCountArrayField(field)>
 <#if indentContent>  </#if>    // Count array
-<#if indentContent>  </#if>    uint8_t itemCount = ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)};
+<#if indentContent>  </#if>    uint16_t itemCount = ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)};
 <#if indentContent>  </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
 <#if indentContent>  </#if>      <#if !helper.isSimpleTypeReference(arrayField.type)>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->

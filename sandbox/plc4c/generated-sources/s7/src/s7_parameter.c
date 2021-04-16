@@ -142,7 +142,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     }
     {
       // Count array
-      uint8_t itemCount = numItems;
+      uint16_t itemCount = numItems;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_var_request_parameter_item* _value = NULL;
@@ -188,7 +188,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     }
     {
       // Count array
-      uint8_t itemCount = numItems;
+      uint16_t itemCount = numItems;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_var_request_parameter_item* _value = NULL;
@@ -234,7 +234,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     }
     {
       // Count array
-      uint8_t itemCount = numItems;
+      uint16_t itemCount = numItems;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_parameter_user_data_item* _value = NULL;

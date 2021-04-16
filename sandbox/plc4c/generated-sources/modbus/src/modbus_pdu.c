@@ -204,7 +204,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -260,7 +260,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -358,7 +358,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -436,7 +436,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -492,7 +492,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -590,7 +590,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -686,7 +686,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -720,7 +720,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -839,7 +839,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = fifoCount;
+      uint16_t itemCount = fifoCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         uint16_t* _value = malloc(sizeof(uint16_t));
@@ -1126,7 +1126,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = (byteCount) - (6);
+      uint16_t itemCount = (byteCount) - (6);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
@@ -1163,7 +1163,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint8_t itemCount = byteCount;
+      uint16_t itemCount = byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         int8_t* _value = malloc(sizeof(int8_t));
