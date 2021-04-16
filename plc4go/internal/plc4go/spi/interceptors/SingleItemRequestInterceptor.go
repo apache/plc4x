@@ -21,50 +21,64 @@ package interceptors
 
 import (
 	"errors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/rs/zerolog/log"
 )
 
+type ReaderExposer interface {
+	GetReader() spi.PlcReader
+}
+
+type ReadRequestInterceptorExposer interface {
+	GetReadRequestInterceptor() ReadRequestInterceptor
+}
+
+type requestFactory func(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
+
+type responseFactory func(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse
+
 type SingleItemRequestInterceptor struct {
+	requestFactory  requestFactory
+	responseFactory responseFactory
 }
 
-func NewSingleItemRequestInterceptor() SingleItemRequestInterceptor {
-	return SingleItemRequestInterceptor{}
+func NewSingleItemRequestInterceptor(requestFactory requestFactory, responseFactory responseFactory) SingleItemRequestInterceptor {
+	return SingleItemRequestInterceptor{requestFactory, responseFactory}
 }
 
-func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest apiModel.PlcReadRequest) []apiModel.PlcReadRequest {
+func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest {
 	// If this request just has one field, go the shortcut
 	if len(readRequest.GetFieldNames()) == 1 {
 		log.Debug().Msg("We got only one request, no splitting required")
-		return []apiModel.PlcReadRequest{readRequest}
+		return []model.PlcReadRequest{readRequest}
 	}
 	log.Trace().Msg("Splitting requests")
 	// In all other cases, create a new read request containing only one item
-	defaultReadRequest := readRequest.(model.DefaultPlcReadRequest)
-	var readRequests []apiModel.PlcReadRequest
+	var readRequests []model.PlcReadRequest
 	for _, fieldName := range readRequest.GetFieldNames() {
 		log.Debug().Str("fieldName", fieldName).Msg("Splitting into own request")
 		field := readRequest.GetField(fieldName)
-		subReadRequest := model.NewDefaultPlcReadRequest(
-			map[string]apiModel.PlcField{fieldName: field},
+		subReadRequest := m.requestFactory(
+			map[string]model.PlcField{fieldName: field},
 			[]string{fieldName},
-			defaultReadRequest.Reader,
-			defaultReadRequest.ReadRequestInterceptor)
+			readRequest.(ReaderExposer).GetReader(),
+			readRequest.(ReadRequestInterceptorExposer).GetReadRequestInterceptor(),
+		)
 		readRequests = append(readRequests, subReadRequest)
 	}
 	return readRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest apiModel.PlcReadRequest, readResults []apiModel.PlcReadRequestResult) apiModel.PlcReadRequestResult {
+func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult {
 	if len(readResults) == 1 {
 		log.Debug().Msg("We got only one response, no merging required")
 		return readResults[0]
 	}
 	log.Trace().Msg("Merging requests")
-	responseCodes := map[string]apiModel.PlcResponseCode{}
+	responseCodes := map[string]model.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
 	var err error = nil
 	for _, readResult := range readResults {
@@ -87,18 +101,18 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest apiModel.
 			}
 		}
 	}
-	return apiModel.PlcReadRequestResult{
+	return model.PlcReadRequestResult{
 		Request:  readRequest,
-		Response: model.NewDefaultPlcReadResponse(readRequest, responseCodes, val),
+		Response: m.responseFactory(readRequest, responseCodes, val),
 		Err:      err,
 	}
 }
 
-func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest apiModel.PlcWriteRequest) []apiModel.PlcWriteRequest {
-	return []apiModel.PlcWriteRequest{writeRequest}
+func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
+	return []model.PlcWriteRequest{writeRequest}
 }
 
-func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest apiModel.PlcWriteRequest, writeResponses []apiModel.PlcWriteRequestResult) apiModel.PlcWriteRequestResult {
+func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResponses []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
 	// TODO: unfinished implementation
-	return apiModel.PlcWriteRequestResult{}
+	return model.PlcWriteRequestResult{}
 }

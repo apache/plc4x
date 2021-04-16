@@ -19,31 +19,16 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
-type PlcReadRequestBuilder interface {
-	AddQuery(name string, query string) PlcReadRequestBuilder
-	AddField(name string, field PlcField) PlcReadRequestBuilder
-	Build() (PlcReadRequest, error)
+type DefaultResponse struct {
+	responseCodes map[string]model.PlcResponseCode
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func (m DefaultResponse) GetResponseCode(name string) model.PlcResponseCode {
+	return m.responseCodes[name]
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
-	PlcRequest
-}
-
-type PlcReadResponse interface {
-	GetRequest() PlcReadRequest
-	GetFieldNames() []string
-	GetResponseCode(name string) PlcResponseCode
-	GetValue(name string) values.PlcValue
-	PlcResponse
+func NewDefaultResponse(responseCodes map[string]model.PlcResponseCode) DefaultResponse {
+	return DefaultResponse{responseCodes}
 }

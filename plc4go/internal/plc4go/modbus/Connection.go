@@ -38,15 +38,18 @@ type Connection struct {
 	unitIdentifier     uint8
 	messageCodec       spi.MessageCodec
 	options            map[string][]string
-	requestInterceptor internalModel.RequestInterceptor
+	requestInterceptor interceptors.RequestInterceptor
 }
 
 func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
 	connection := &Connection{
-		unitIdentifier:     unitIdentifier,
-		messageCodec:       messageCodec,
-		options:            options,
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
+		unitIdentifier: unitIdentifier,
+		messageCodec:   messageCodec,
+		options:        options,
+		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
+			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcReadResponse,
+		),
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithDefaultTtl(time.Second*5),

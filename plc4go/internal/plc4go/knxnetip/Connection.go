@@ -123,8 +123,7 @@ type Connection struct {
 	TunnelingRequestExpectationId int32
 	DeviceConnections             map[driverModel.KnxAddress]*KnxDeviceConnection
 
-	requestInterceptor internalModel.RequestInterceptor
-	plc4go.PlcConnection
+	requestInterceptor interceptors.RequestInterceptor
 	sync.Mutex
 
 	// indicates if the tunneling requests loop is running
@@ -162,10 +161,13 @@ type InternalResult struct {
 
 func NewConnection(transportInstance transports.TransportInstance, options map[string][]string, fieldHandler spi.PlcFieldHandler) *Connection {
 	connection := &Connection{
-		options:                 options,
-		fieldHandler:            fieldHandler,
-		valueHandler:            NewValueHandler(),
-		requestInterceptor:      interceptors.NewSingleItemRequestInterceptor(),
+		options:      options,
+		fieldHandler: fieldHandler,
+		valueHandler: NewValueHandler(),
+		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
+			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcReadResponse,
+		),
 		subscribers:             []*Subscriber{},
 		valueCache:              map[uint16][]int8{},
 		valueCacheMutex:         sync.RWMutex{},

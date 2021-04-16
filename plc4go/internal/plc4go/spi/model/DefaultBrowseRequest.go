@@ -36,8 +36,9 @@ func NewDefaultPlcBrowseRequestBuilder(browser spi.PlcBrowser) *DefaultPlcBrowse
 	}
 }
 
-func (m *DefaultPlcBrowseRequestBuilder) AddItem(name string, query string) {
+func (m *DefaultPlcBrowseRequestBuilder) AddItem(name string, query string) model.PlcBrowseRequestBuilder {
 	m.queries[name] = query
+	return m
 }
 
 func (m *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error) {

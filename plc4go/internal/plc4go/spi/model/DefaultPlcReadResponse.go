@@ -26,16 +26,16 @@ import (
 )
 
 type DefaultPlcReadResponse struct {
-	request       model.PlcReadRequest
-	responseCodes map[string]model.PlcResponseCode
-	values        map[string]values.PlcValue
+	DefaultResponse
+	request model.PlcReadRequest
+	values  map[string]values.PlcValue
 }
 
-func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) DefaultPlcReadResponse {
+func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse {
 	return DefaultPlcReadResponse{
-		request:       request,
-		responseCodes: responseCodes,
-		values:        values,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
+		values:          values,
 	}
 }
 
@@ -52,10 +52,6 @@ func (m DefaultPlcReadResponse) GetFieldNames() []string {
 
 func (m DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
 	return m.request
-}
-
-func (m DefaultPlcReadResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {

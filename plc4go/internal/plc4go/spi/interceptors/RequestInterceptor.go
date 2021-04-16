@@ -17,33 +17,23 @@
 // under the License.
 //
 
-package model
+package interceptors
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+import (
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+)
 
-type PlcReadRequestBuilder interface {
-	AddQuery(name string, query string) PlcReadRequestBuilder
-	AddField(name string, field PlcField) PlcReadRequestBuilder
-	Build() (PlcReadRequest, error)
+type ReadRequestInterceptor interface {
+	InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest
+	ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+type WriteRequestInterceptor interface {
+	InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest
+	ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
-	PlcRequest
-}
-
-type PlcReadResponse interface {
-	GetRequest() PlcReadRequest
-	GetFieldNames() []string
-	GetResponseCode(name string) PlcResponseCode
-	GetValue(name string) values.PlcValue
-	PlcResponse
+type RequestInterceptor interface {
+	ReadRequestInterceptor
+	WriteRequestInterceptor
 }

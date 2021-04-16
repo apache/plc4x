@@ -25,14 +25,14 @@ import (
 )
 
 type DefaultPlcSubscriptionResponse struct {
-	request       model.PlcSubscriptionRequest
-	responseCodes map[string]model.PlcResponseCode
+	DefaultResponse
+	request model.PlcSubscriptionRequest
 }
 
 func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcSubscriptionResponse {
 	return DefaultPlcSubscriptionResponse{
-		request:       request,
-		responseCodes: responseCodes,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
 	}
 }
 
@@ -49,10 +49,6 @@ func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 		}
 	}
 	return fieldNames
-}
-
-func (m DefaultPlcSubscriptionResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcSubscriptionResponse) GetValue(name string) interface{} {

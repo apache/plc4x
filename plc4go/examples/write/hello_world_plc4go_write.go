@@ -45,9 +45,9 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a write-request
-	wrb := connection.WriteRequestBuilder()
-	wrb.AddQuery("field", "holding-register:26:REAL", 2.7182818284)
-	writeRequest, err := wrb.Build()
+	writeRequest, err := connection.WriteRequestBuilder().
+		AddQuery("field", "holding-register:26:REAL", 2.7182818284).
+		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return

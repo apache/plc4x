@@ -20,7 +20,7 @@
 package model
 
 type PlcBrowseRequestBuilder interface {
-	AddItem(name string, query string)
+	AddItem(name string, query string) PlcBrowseRequestBuilder
 	Build() (PlcBrowseRequest, error)
 }
 

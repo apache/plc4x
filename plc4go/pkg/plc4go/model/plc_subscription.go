@@ -36,13 +36,13 @@ type PlcSubscriptionEvent interface {
 type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
-	AddCyclicQuery(name string, query string, interval time.Duration)
-	AddCyclicField(name string, field PlcField, interval time.Duration)
-	AddChangeOfStateQuery(name string, query string)
-	AddChangeOfStateField(name string, field PlcField)
-	AddEventQuery(name string, query string)
-	AddEventField(name string, field PlcField)
-	AddItemHandler(handler PlcSubscriptionEventHandler)
+	AddCyclicQuery(name string, query string, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddCyclicField(name string, field PlcField, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddChangeOfStateQuery(name string, query string) PlcSubscriptionRequestBuilder
+	AddChangeOfStateField(name string, field PlcField) PlcSubscriptionRequestBuilder
+	AddEventQuery(name string, query string) PlcSubscriptionRequestBuilder
+	AddEventField(name string, field PlcField) PlcSubscriptionRequestBuilder
+	AddItemHandler(handler PlcSubscriptionEventHandler) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }
 

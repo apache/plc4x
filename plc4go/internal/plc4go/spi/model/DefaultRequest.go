@@ -19,21 +19,24 @@
 
 package model
 
-import (
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-)
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
-type ReadRequestInterceptor interface {
-	InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest
-	ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult
+type DefaultRequest struct {
+	fields     map[string]model.PlcField
+	fieldNames []string
 }
 
-type WriteRequestInterceptor interface {
-	InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest
-	ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult
+func NewDefaultRequest(Fields map[string]model.PlcField, FieldNames []string) DefaultRequest {
+	return DefaultRequest{Fields, FieldNames}
 }
 
-type RequestInterceptor interface {
-	ReadRequestInterceptor
-	WriteRequestInterceptor
+func (m DefaultRequest) GetFieldNames() []string {
+	return m.fieldNames
+}
+
+func (m DefaultRequest) GetField(name string) model.PlcField {
+	if field, ok := m.fields[name]; ok {
+		return field
+	}
+	return nil
 }

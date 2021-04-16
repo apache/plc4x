@@ -51,11 +51,11 @@ func main() {
 		defer connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
-		browseRequestBuilder := connection.BrowseRequestBuilder()
-		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
-		browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
-		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
-		browseRequest, err := browseRequestBuilder.Build()
+		browseRequest, err := connection.BrowseRequestBuilder().
+			//AddItem("allDevices", "[1-15].[1-15].[0-255]").
+			AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
+			//AddItem("onlyOneDevice", "1.1.20")
+			Build()
 		if err != nil {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
@@ -66,9 +66,9 @@ func main() {
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
-			browseRequestBuilder = connection.BrowseRequestBuilder()
-			browseRequestBuilder.AddItem("comObjects", knxAddress+"#com-obj")
-			browseRequest, err := browseRequestBuilder.Build()
+			browseRequest, err := connection.BrowseRequestBuilder().
+				AddItem("comObjects", knxAddress+"#com-obj").
+				Build()
 			if err != nil {
 				log.Error().Err(err).Msg("error creating read request")
 				return false
@@ -99,10 +99,10 @@ func main() {
 				log.Info().Msgf(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
 			}
 
-			readRequestBuilder := connection.ReadRequestBuilder()
-			readRequestBuilder.AddQuery("applicationProgramVersion", knxAddress+"#3/13")
-			readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddress+"#4/13")
-			readRequest, err := readRequestBuilder.Build()
+			readRequest, err := connection.ReadRequestBuilder().
+				AddQuery("applicationProgramVersion", knxAddress+"#3/13").
+				AddQuery("interfaceProgramVersion", knxAddress+"#4/13").
+				Build()
 			if err != nil {
 				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)
 				return false

@@ -33,7 +33,7 @@ import (
 type Connection struct {
 	_default.DefaultConnection
 	messageCodec       spi.MessageCodec
-	requestInterceptor internalModel.RequestInterceptor
+	requestInterceptor interceptors.RequestInterceptor
 	configuration      Configuration
 	reader             *Reader
 	writer             *Writer
@@ -56,10 +56,13 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, f
 		&reader,
 	)
 	connection := &Connection{
-		messageCodec:       messageCodec,
-		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(),
-		reader:             &reader,
-		writer:             &writer,
+		messageCodec: messageCodec,
+		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
+			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcReadResponse,
+		),
+		reader: &reader,
+		writer: &writer,
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
 		_default.WithPlcFieldHandler(fieldHandler),
