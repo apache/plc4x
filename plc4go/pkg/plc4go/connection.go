@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package plc4go
 
 import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"

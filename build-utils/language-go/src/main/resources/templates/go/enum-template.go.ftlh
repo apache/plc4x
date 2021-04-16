@@ -45,6 +45,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (

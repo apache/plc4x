@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package utils
 
 // InlineIf is basically a inline if like construct for golang
