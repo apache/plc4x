@@ -60,6 +60,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package ${outputFlavor?replace("-","")}
 
 import (
