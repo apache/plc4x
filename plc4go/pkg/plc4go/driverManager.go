@@ -29,24 +29,24 @@ import (
 
 // This is the main entry point for PLC4Go applications
 type PlcDriverManager interface {
-	// Manually register a new driver
+	// RegisterDriver Manually register a new driver
 	RegisterDriver(driver PlcDriver)
-	// List the names of all drivers registered in the system
+	// ListDriverNames List the names of all drivers registered in the system
 	ListDriverNames() []string
-	// Get access to a driver instance for a given driver-name
+	// GetDriver Get access to a driver instance for a given driver-name
 	GetDriver(driverName string) (PlcDriver, error)
 
-	// Manually register a new driver
+	// RegisterTransport Manually register a new driver
 	RegisterTransport(transport transports.Transport)
-	// List the names of all drivers registered in the system
+	// ListTransportNames List the names of all drivers registered in the system
 	ListTransportNames() []string
-	// Get access to a driver instance for a given driver-name
+	// GetTransport Get access to a driver instance for a given driver-name
 	GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error)
 
-	// Get a connection to a remote PLC for a given plc4x connection-string
+	// GetConnection Get a connection to a remote PLC for a given plc4x connection-string
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
-	// Execute all available discovery methods on all available drivers using all transports
+	// Discover Execute all available discovery methods on all available drivers using all transports
 	Discover(func(event model.PlcDiscoveryEvent)) error
 }
 

@@ -34,9 +34,9 @@ type PlcBrowseQueryResult struct {
 }
 
 type PlcBrowseRequest interface {
-	// Will not return until a potential scan is finished and will return all results in one block
+	// Execute Will not return until a potential scan is finished and will return all results in one block
 	Execute() <-chan PlcBrowseRequestResult
-	// Will call the given callback for every found resource
+	// ExecuteWithInterceptor Will call the given callback for every found resource
 	ExecuteWithInterceptor(interceptor func(result PlcBrowseEvent) bool) <-chan PlcBrowseRequestResult
 	GetQueryNames() []string
 	GetQueryString(name string) string

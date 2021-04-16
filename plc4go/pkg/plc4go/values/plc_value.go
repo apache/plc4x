@@ -88,17 +88,16 @@ type PlcValue interface {
 	GetStruct() map[string]PlcValue
 }
 
-/*
-   This type is used in cases where the driver doesn't have access to type information and therefore can't decode
-   the payload yet. This allows an application to take the raw plc-value and have the payload decoded later.
-*/
+// RawPlcValue This type is used in cases where the driver doesn't have access to type information and therefore can't decode
+// the payload yet. This allows an application to take the raw plc-value and have the payload decoded later.
 type RawPlcValue interface {
-	// Read the internal buffer and parse a value of given type
-	RawDecodeValue(typeName string) PlcValue
-	// If the internal read-buffer has not yet reached the end
-	RawHasMore() bool
-	// Reset the internal read-buffer (For the case that a raw plc-value has to be parsed multiple times)
-	RawReset()
-
+	// PlcValue the base value
 	PlcValue
+
+	// RawDecodeValue Read the internal buffer and parse a value of given type
+	RawDecodeValue(typeName string) PlcValue
+	// RawHasMore If the internal read-buffer has not yet reached the end
+	RawHasMore() bool
+	// RawReset Reset the internal read-buffer (For the case that a raw plc-value has to be parsed multiple times)
+	RawReset()
 }

@@ -25,12 +25,12 @@ import (
 )
 
 type PlcSubscriptionEvent interface {
+	PlcResponse
 	GetRequest() PlcSubscriptionRequest
 	GetFieldNames() []string
 	GetResponseCode(name string) PlcResponseCode
 	GetAddress(name string) string
 	GetValue(name string) values.PlcValue
-	PlcResponse
 }
 
 type PlcSubscriptionEventHandler func(event PlcSubscriptionEvent)
